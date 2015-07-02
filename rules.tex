@@ -1,0 +1,245 @@
+\documentclass{amsart}
+\usepackage{mathpartir,mathtools}
+\def\flet#1:=#2in{\mathsf{let}\;#1 \coloneqq #2\;\mathsf{in}\;}
+\def\ftype{\mathsf{type}}
+\def\lax{\sim\hspace{-5pt}:\hspace{3pt}}
+\def\inr{\mathsf{inr}\;}
+\def\inl{\mathsf{inl}\;}
+\def\case{\mathsf{case}}
+\begin{document}
+
+\section{Rules for $\flat$}
+\label{sec:rules-flat}
+
+The comonad $\flat$ is implemented like the Pfenning-Davies $\Box$, with a context of ``discrete assumptions'' $u::A$, which must all appear to the left of the ordinary context.
+We write $\Delta;\Gamma$ when $\Delta$ is the valid context and $\Gamma$ the ordinary context.
+A discrete variable can be used like an ordinary one.
+\[ \inferrule{\ }{\Delta,u::A,\Delta';\Gamma \vdash u:A} \]
+Formation and introduction rules clear the ordinary context:
+\[ \inferrule{\Delta;\cdot \vdash A:\ftype}{\Delta;\Gamma \vdash \flat A:\ftype} \qquad
+\inferrule{\Delta;\cdot \vdash M:A}{\Delta;\Gamma \vdash M^\flat :\flat A} \]
+The elimination rule pattern-matches on $x:\flat A$ to obtain $u::A$:
+\[ \inferrule{\Delta;\Gamma \vdash M:\flat A \\ \Delta,u::A;\Gamma \vdash N:C}{\Delta;\Gamma \vdash \flet u^\flat := M in N : C} \]
+Note that this only makes sense if from $\Delta;\Gamma \vdash \flat A:\ftype$ we can infer $\Delta;\cdot \vdash A:\ftype$.
+This is logical since the intro rule for $\flat$ clears the ordinary context.
+
+The reduction rules are as expected:
+\begin{align*}
+  (\flet u^\flat := M^\flat in N) &\Longrightarrow N[M/u]\\
+  M : \flat A &\Longrightarrow (\flet u^\flat := M in u^\flat)
+\end{align*}
+If $M:\flat A$, we write $M_\flat:A$ for ``$\flet u^\flat := M in u$''.
+Thus $(M^\flat)_\flat \equiv M$.
+
+Perhaps we also need some commuting conversions, as in Nanevski-Pfenning-Pientka, such as
+\[ (\flet u := (\flet v := N_1 in N_2) in M) \Longrightarrow (\flet v := N_1 in (\flet u := N_2 in M)) \]
+if $v$ is not free in $u.M$.
+
+\section{Rules for $\sharp$}
+\label{sec:rules-sharp}
+
+The monad $\sharp$ is implemented like the Pfenning-Davies $\bigcirc$, with a ``codiscrete term judgment'' $M\lax A$.
+An ordinary term is also codiscrete:
+\[ \inferrule{\Delta;\Gamma \vdash M:A}{\Delta;\Gamma \vdash M\lax A} \]
+Formation and introduction:
+\[ \inferrule{\Delta;\Gamma \vdash A:\ftype}{\Delta;\Gamma \vdash \sharp A:\ftype}\qquad
+\inferrule{\Delta;\Gamma \vdash M \lax A}{\Delta;\Gamma \vdash M^\sharp: \sharp A}
+\]
+Elimination:
+\[ \inferrule{\Delta;\Gamma \vdash M:\sharp A \\ \Delta;\Gamma,x:A \vdash N\lax C}{\Delta;\Gamma \vdash \flet x^\sharp := M in N \lax C} \]
+Reductions:
+\begin{align*}
+  (\flet x^\sharp := M^\sharp in N) &\Longrightarrow N[M/x]\\
+  M:\sharp A &\Longrightarrow (\flet x^\sharp := M in x)^\sharp 
+\end{align*}
+
+\subsection{The universal property}
+\label{sec:universal-property}
+
+Suppose $f:A\to \sharp B$.  Then $x:A \vdash f(x) : \sharp B$ and
+\[x:A \vdash (\flet y^\sharp := f(x) in y) \lax B.\]
+therefore
+\[u:\sharp A \vdash (\flet x^\sharp := u in (\flet y^\sharp := f(x) in y)) \lax B \]
+and so
+\[u:\sharp A \vdash (\flet x^\sharp := u in (\flet y^\sharp := f(x) in y))^\sharp : \sharp B \]
+which we can of course abstract into a function $g:\sharp A \to \sharp B$.
+Now if we substitute $x^\sharp$ for $u$, we get
+\begin{align*}
+  &\hspace{3ex} (\flet x^\sharp := x^\sharp in (\flet y^\sharp := f(x) in y))^\sharp\\
+  &\equiv (\flet y^\sharp := f(x) in y)^\sharp\\
+  &\equiv f(x).
+\end{align*}
+However, we seem to need something else to get uniqueness.
+
+
+\section{Rules for adjointness}
+\label{sec:rules-adjointness}
+
+The rules above don't yield any interaction between $\flat$ and $\sharp$.
+Here are some proposed rules implementing their intended relationship.
+
+Firstly, we can make a codiscrete term into an ordinary one, at the cost of clearing the ordinary context:
+\[ \inferrule{\Delta;\cdot \vdash M\lax A}{\Delta;\Gamma \vdash M^\natural : A} \]
+The computation laws for this look slightly odd, because the ``inverse'' of this operation is the silent regarding of $x:A$ as $x\lax A$.
+\[ \inferrule{\Delta;\cdot \vdash M: A}{\Delta;\Gamma \vdash M^\natural\equiv M : A}(\natural_1)\qquad
+\inferrule{\Delta;\cdot \vdash M\lax A}{\Delta;\Gamma \vdash M^\natural \equiv M \lax A}(\natural_2) \]
+In the first, we silently regard $M:A$ as $M\lax A$ in order to apply $(-)^\natural$ to it, and get back the same term $M:A$ that we started with.
+In the second, we silently regard $M^\natural :A$ as $M^\natural \lax A$, and get back the same term $M\lax A$ that we started with.
+Note that a special case of the second is $M^{\natural\sharp}\equiv M^\sharp$.
+
+Secondly, if proving a codiscrete goal, our assumptions might as well be discrete.
+\[ \inferrule{\Delta;\Gamma \vdash M:A \\ \Delta,u::A;\Gamma \vdash N \lax A}{\Delta;\Gamma \vdash (\flet u^\flat_\flat := M in N) \lax A} \]
+The computation laws for this simply reduce it to the expected $N[M/u]$, but under two conditions that make this well-typed: either $M$ makes sense in  a purely discrete context (hence can be substituted for the discrete hypothesis $u::A$), or $N$ doesn't use the discreteness of this hypothesis.
+\[ \inferrule{\Delta;\cdot \vdash M:A \\ \Delta,u::A;\Gamma \vdash N \lax A}{\Delta;\Gamma \vdash (\flet u^\flat_\flat := M in N) \equiv N[M/u] \lax A} ({}^\flat_{\flat1}) \]
+\[ \inferrule{\Delta;\Gamma \vdash M:A \\ \Delta;\Gamma,u:A \vdash N \lax A}{\Delta;\Gamma \vdash (\flet u^\flat_\flat := M in N) \equiv N[M/u] \lax A}({}^\flat_{\flat2}) \]
+We observe a couple of consequences involving the derived operation $(-)_\flat$.
+\begin{alignat*}{2}
+  (\flet u^\flat_\flat := M_\flat in N)
+  &\equiv (\flet u^\flat_\flat := (\flet v^\flat := M in v) in N)
+  &&\quad\text{(def.~of } (-)_\flat)\\
+  &\equiv (\flet v^\flat := M in (\flet u^\flat_\flat := v in N))
+  &&\quad\text{(commuting)}\\
+  &\equiv (\flet v^\flat := M in N[v/u])
+  &&\quad ({}^\flat_{\flat1})\\
+  &\equiv (\flet u^\flat := M in N)
+\end{alignat*}
+We will refer to the above rule as $(\beta_\flat)$.
+\begin{alignat*}{2}
+  (\flet u^\flat_\flat := M in u^\flat)_\flat
+  &\equiv (\flet v^\flat := (\flet u^\flat_\flat := M in u^\flat) in v)
+  &&\quad\text{(def.~of } (-)_\flat)\\
+  &\equiv (\flet u^\flat_\flat := M in (\flet v^\flat := u^\flat in v))
+  &&\quad\text{(commuting)}\\
+  &\equiv (\flet u^\flat_\flat := M in u)
+  &&\quad (\beta^\flat)\\
+  &\equiv M
+  &&\quad ({}^\flat_{\flat2})
+\end{alignat*}
+We will refer to the above rule as $(\eta_\flat)$.
+
+
+\subsection{Discretes are equivalent to codiscretes}
+\label{sec:disc=codisc}
+
+What we aim to capture semantically is that the category of $\flat$ types and the category of $\sharp$ types are equivalent, and that modulo that equivalence, $\flat$ and $\sharp$ are the operation.
+We can achieve this by saying that for any type $A$ (in purely discrete context), the induced maps $\flat A \to \flat\sharp A$ and $\sharp\flat A \to \sharp A$ (which can be defined without the connecting rules) are equivalences.
+
+The first of these is
+\[ x:\flat A \vdash (\flet w^\flat := x in w^{\sharp\flat}):\flat\sharp A. \]
+With the connecting rules, we can also define its inverse:
+\[ y:\flat\sharp A \vdash (\flet u^\flat := y in (\flet v^\sharp := u in v)^{\natural\flat}):\flat A \]
+Substituting the first for $y$ in the second, we have
+\begin{alignat*}{2}
+  x:\flat A\vdash &\hspace{3ex} \flet u^\flat := (\flet w^\flat := x in w^{\sharp\flat}) in (\flet v^\sharp := u in v)^{\natural\flat}\\
+  &\equiv \flet w^\flat := x in (\flet u^\flat := w^{\sharp\flat} in (\flet v^\sharp := u in v)^{\natural\flat})
+  &&\quad \text{(commuting)}\\
+  &\equiv \flet w^\flat := x in (\flet v^\sharp := w^\sharp in v)^{\natural\flat}
+  &&\quad (\beta^\flat)\\
+  &\equiv \flet w^\flat := x in w^{\natural\flat}
+  &&\quad (\beta^\sharp)\\
+  &\equiv \flet w^\flat := x in w^{\flat}
+  &&\quad (\natural_1)\\
+  &\equiv x.
+  &&\quad (\eta^\flat)
+\end{alignat*}
+And substituting the second for $x$ in the first, we have
+\begin{alignat*}{2}
+  Y:\flat\sharp A \vdash &\hspace{3ex} \flet w^\flat := (\flet u^\flat := y in (\flet v^\sharp := u in v)^{\natural\flat}) in w^{\sharp\flat}\\
+  &\equiv \flet u^\flat := y in (\flet w^\flat := (\flet v^\sharp := u in v)^{\natural\flat} in w^{\sharp\flat})
+  &&\quad \text{(commuting)}\\
+  &\equiv \flet u^\flat := y in (\flet v^\sharp := u in v)^{\natural\sharp\flat}
+  &&\quad (\beta^\flat)\\
+  &\equiv \flet u^\flat := y in (\flet v^\sharp := u in v)^{\sharp\flat}
+  &&\quad (\natural_2)\\
+  &\equiv \flet u^\flat := y in u^{\flat}
+  &&\quad (\eta^\sharp)\\
+  &\equiv y.
+  &&\quad (\eta^\flat)
+\end{alignat*}
+Therefore, we have a judgmental isomorphism between $\flat A$ and $\flat\sharp A$.
+
+Similarly, we can always define
+\[ x : \sharp\flat A \vdash (\flet u^\sharp := x in u_\flat)^\sharp : \sharp A. \]
+With the connecting rules, we can define its inverse
+\[ y : \sharp A \vdash (\flet v^\sharp := y in (\flet w^\flat_\flat := v in w^\flat))^\sharp : \sharp\flat A\]
+Substituting the first for $y$ in the second, we have
+\begin{alignat*}{2}
+  x:\sharp\flat A \vdash &\hspace{3ex} (\flet v^\sharp := (\flet u^\sharp := x in u_\flat)^\sharp in (\flet w^\flat_\flat := v in w^\flat))^\sharp\\
+  &\equiv (\flet w^\flat_\flat := (\flet u^\sharp := x in u_\flat) in w^\flat)^\sharp
+  &&\quad (\beta^\sharp)\\
+  &\equiv (\flet u^\sharp := x in (\flet w^\flat_\flat := u_\flat in w^\flat))^\sharp
+  &&\quad \text{(commuting)}\\
+  &\equiv (\flet u^\sharp := x in (\flet w^\flat := u in w^\flat))^\sharp
+  &&\quad (\beta_\flat)\\
+  &\equiv (\flet u^\sharp := x in u)^\sharp
+  &&\quad (\beta^\flat)\\
+  &\equiv x.
+  &&\quad (\eta^\sharp)
+\end{alignat*}
+And substituting the second for $x$ in the first, we have
+\begin{alignat*}{2}
+  y : \sharp A \vdash&\hspace{3ex} (\flet u^\sharp := (\flet v^\sharp := y in (\flet w^\flat_\flat := v in w^\flat))^\sharp in u_\flat)^\sharp\\
+  &\equiv ((\flet v^\sharp := y in (\flet w^\flat_\flat := v in w^\flat))_\flat)^\sharp
+  &&\quad (\beta^\sharp)\\
+  &\equiv (\flet z^\flat := (\flet v^\sharp := y in (\flet w^\flat_\flat := v in w^\flat)) in z)^\sharp
+  &&\quad \text{(def.~of } (-)_\flat)\\
+  &\equiv (\flet v^\sharp := y in (\flet z^\flat := (\flet w^\flat_\flat := v in w^\flat) in z))^\sharp
+  &&\quad \text{(commuting)}\\
+  &\equiv (\flet v^\sharp := y in (\flet w^\flat_\flat := v in w^\flat)_\flat)^\sharp
+  &&\quad \text{(def.~of } (-)_\flat)\\
+  &\equiv (\flet v^\sharp := y in v)^\sharp
+  &&\quad (\eta_\flat)\\
+  &\equiv y.
+  &&\quad (\eta^\sharp)
+\end{alignat*}
+Thus, we also have a judgmental isomorphism between $\sharp\flat A$ and $\sharp A$.
+So these rules do suffice to obtain the desired relation between $\flat$ and $\sharp$.
+
+\subsection{The adjunction}
+\label{sec:adjunction}
+
+We now show that indeed $\flat\dashv\sharp$, or at least that we have the usual adjunct correspondence between maps $\flat A \to B$ and $A\to\sharp B$.
+Suppose $A,B::\ftype$.
+Given $f::\flat A \to B$, we have
+\[ x:A \vdash (\flet u^\flat_\flat := x in f(u^\flat))^\sharp : \sharp B \]
+And given $g::A\to \sharp B$, we have
+\[ y:\flat A \vdash (\flet v^\flat := y in (\flet w^\sharp := g(v) in w)^\natural) : B \] 
+Going back and forth in one direction, we have
+\begin{alignat*}{2}
+  y:\flat A \vdash&\hspace{3ex} \flet v^\flat := y in (\flet w^\sharp := (\flet u^\flat_\flat := v in f(u^\flat))^\sharp in w)^\natural\\
+  &\equiv \flet v^\flat := y in (\flet u^\flat_\flat := v in f(u^\flat))^\natural
+  &&\quad (\beta^\sharp)\\
+  &\equiv \flet v^\flat := y in f(v^\flat)^\natural
+  &&\quad ({}^\flat_{\flat1})\\
+  &\equiv \flet v^\flat := y in f(v^\flat)
+  &&\quad (\natural_1)\\
+  &\equiv f(\flet v^\flat := y in v^\flat)
+  &&\quad \text{(commuting)}\\
+  &\equiv f(y).
+  &&\quad (\eta^\flat)
+\end{alignat*}
+And in the other we have 
+\begin{alignat*}{2}
+  x:A\vdash&\hspace{3ex} (\flet u^\flat_\flat := x in (\flet v^\flat := u^\flat in (\flet w^\sharp := g(v) in w)^\natural))^\sharp\\
+  &\equiv (\flet u^\flat_\flat := x in (\flet w^\sharp := g(u) in w)^\natural)^\sharp
+  &&\quad (\beta^\flat)\\
+  &\equiv (\flet u^\flat_\flat := x in (\flet w^\sharp := g(u) in w))^\sharp
+  &&\quad (\natural_2)\\
+  &\equiv (\flet w^\sharp := g(x) in w)^\sharp
+  &&\quad ({}^\flat_{\flat2})\\
+  &\equiv g(x).
+  &&\quad (\eta^\sharp)
+\end{alignat*}
+
+\subsection{Preservation of coproducts}
+\label{sec:pres-copr}
+
+With the adjointness rules, we can also prove that $\flat$ preserves colimits (since it is a left adjoint).
+\[ \inferrule{\Delta,u::A+B;\cdot \vdash C:\ftype \\ \Delta;\cdot\vdash z:A+B \\
+  \Delta,a::A;\cdot \vdash c_A :C[\inl a/u] \\\Delta,b::B;\cdot \vdash c_B :C[\inr b/u] }
+{\Delta;\cdot \vdash \case_{u.C}(z,x.(\flet a^\flat_\flat := x in c_A)^\natural,y.(\flet b^\flat_\flat := y in c_B)^\natural) : C[z/u]}\]
+If we call the above $\case^\flat_{u.C}(z,a.c_A,b.c_B)$, then we have for instance
+\[ (\lambda x:\flat(A+B). \flet u^\flat := x in \case^\flat_{\underline{\;}.\flat A+\flat B}(u,a.a^\flat,b.b^\flat)) \,:\, \flat(A+B) \to \flat A+\flat B \]
+which ought to be inverse to the canonical map in the other direction (but I have not checked this yet).
+
+\end{document}
