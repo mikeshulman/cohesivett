@@ -235,11 +235,15 @@ And in the other we have
 \label{sec:pres-copr}
 
 With the adjointness rules, we can also prove that $\flat$ preserves colimits (since it is a left adjoint).
-\[ \inferrule{\Delta,u::A+B;\cdot \vdash C:\ftype \\ \Delta;\cdot\vdash z:A+B \\
+\[ \inferrule{\Delta;u:A+B\cdot \vdash C:\ftype \\ \Delta;\cdot\vdash z:A+B \\
   \Delta,a::A;\cdot \vdash c_A :C[\inl a/u] \\\Delta,b::B;\cdot \vdash c_B :C[\inr b/u] }
 {\Delta;\cdot \vdash \case_{u.C}(z,x.(\flet a^\flat_\flat := x in c_A)^\natural,y.(\flet b^\flat_\flat := y in c_B)^\natural) : C[z/u]}\]
+Note that this is not as general as one might hope, since $C$ can't depend on a \emph{discrete} variable of type $A+B$, only a non-discrete one.
+This is because we have to bind $u.C$ in the ordinary case statement.
+There might be a way around this.
+
 If we call the above $\case^\flat_{u.C}(z,a.c_A,b.c_B)$, then we have for instance
-\[ (\lambda x:\flat(A+B). \flet u^\flat := x in \case^\flat_{\underline{\;}.\flat A+\flat B}(u,a.a^\flat,b.b^\flat)) \,:\, \flat(A+B) \to \flat A+\flat B \]
+\[ (\lambda x:\flat(A+B). \flet u^\flat := x in \case^\flat_{\underline{\:}.\flat A+\flat B}(u,a.a^\flat,b.b^\flat)) \,:\, \flat(A+B) \to \flat A+\flat B \]
 which ought to be inverse to the canonical map in the other direction (but I have not checked this yet).
 
 \end{document}
