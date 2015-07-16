@@ -1,0 +1,184 @@
+\documentclass{amsart}
+\usepackage{mathpartir,mathtools,amssymb}
+\usepackage[all]{xy}
+\def\flet#1:=^#2#3in{\mathsf{let}\;#1 \coloneqq^{#2} #3\;\mathsf{in}\;}
+\def\type{\mathsf{type}}
+\def\lax{\sim\hspace{-5pt}:\hspace{3pt}}
+\def\inr{\mathsf{inr}\;}
+\def\inl{\mathsf{inl}\;}
+\def\case{\mathsf{case}}
+\def\refl{\mathsf{refl}}
+\def\J{\mathsf{J}}
+\def\K{\ensuremath{\mathcal{K}}}
+\def\O{\ensuremath{\mathbb{O}}}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\title{Thoughts on adjoint logic indexed by a 2-category}
+\begin{document}
+\maketitle
+
+\section{Orientals}
+\label{sec:orientals}
+
+Let \K\ be the 2-category of modes.
+I will write $\alpha^* \dashv \alpha_*$ for the adjunction $F_\alpha \dashv U_\alpha$, since I'm thinking of it as a geometric morphism.
+
+Let's think about what data in \K should parametrize a judgment with multiple hypotheses and dependent types.
+The simple case is when $\alpha:y\to x$ and we have only one hypothesis:
+\[ x:A_x \vdash_{\alpha} b : B_y \]
+Semantically, this is a map $\alpha^*A_x \to B_y$, or equivalently $A_x \to \alpha_* B_y$.
+But the same rule should apply to dependent types, since they are maps into the universe:
+\[ x:A_x \vdash_{\alpha} B_y : \type_y \]
+Semantically, a judgment like this means that $B_y$ is a fibration over $\alpha^* A_x$.
+
+Now we should be able to add a variable of this type to the context:
+\[ x:A_x ,_\alpha y:B_y \vdash \]
+which means that in a context we must keep track of morphisms relating the modes at which the variables live.
+A term in this context
+\[ x:A_x ,_\alpha y:B_y \vdash c : C_z\]
+ought to involve morphisms $\beta : z \to y$ and $\gamma: z\to x$, which are related in some way to $\alpha$.
+It seems to me that the correct relationship is a 2-cell $\mu : \gamma \to \alpha \beta$.
+This allows us to say semantically that this is a map to $C_z$ from the following pullback:
+\begin{equation*}
+  \vcenter{\xymatrix{
+      \bullet \ar[r]\ar[d] &
+      \beta^* B_y\ar[d]\\
+      \gamma^* A_x \ar[r] &
+      \beta^* \alpha^* A_x
+      }}
+\end{equation*}
+Similarly, a dependent type
+\[ x:A_x ,_\alpha y:B_y \vdash C_z :\type_z\]
+will be a fibration over this pullback, and so when we add it to the context, we have to record not only $\alpha$, $\beta$, and $\gamma$, but also $\mu$.
+We can proceed in this way, leading to the following definition.
+
+\begin{defn}
+  An \textbf{$n$-oriental} in a 2-category \K consists of
+  \begin{itemize}
+  \item $n$ objects $p_1,\dots, p_n$
+  \item Whenever $1\le i<j\le n$, a morphism $\alpha_{ji} : p_j \to p_i$
+  \item Whenever $1\le i<j<k\le n$, a 2-cell $\mu_{kji} : \alpha_{ki} \to \alpha_{ji}\alpha_{ki}$
+  \item Whenever $1\le i<j<k<\ell\le n$, we have
+    \begin{equation*}
+      \vcenter{\xymatrix@+3pc{
+          p_j \ar[d]_{\alpha_{ji}}
+          \ar@{}[dr]|(.3){\Uparrow\mu_{kji}}
+          \ar@{}[dr]|(.7){\Uparrow\mu_{\ell ki}}
+          &
+          p_k\ar[l]^{\alpha_{kj}} \ar[dl]|{\alpha_{ki}}\\
+          p_i &
+          p_\ell \ar[l]^{\alpha_{\ell i}} \ar[u]_{\alpha_{\ell k}}
+        }}
+      = 
+      \vcenter{\xymatrix@+3pc{
+          p_j \ar[d]_{\alpha_{ji}} &
+          p_k\ar[l]^{\alpha_{kj}} \\
+          p_i
+          \ar@{}[ur]|(.3){\Uparrow\mu_{\ell ji}}
+          \ar@{}[ur]|(.7){\Uparrow\mu_{\ell kj}}
+          &
+          p_\ell \ar[l]^{\alpha_{\ell i}} \ar[u]_{\alpha_{\ell k}} \ar[ul]|{\alpha_{\ell j}}
+        }}\end{equation*}
+  \end{itemize}
+\end{defn}
+
+(It is possible to define orientals in an $\omega$-category involving cells up to dimension $n-1$, but in a 2-category all the higher cells trivialize.
+I suppose one might imagine an $(\infty,2)$-adjoint logic in which we need higher cells too, but not today.)
+
+The claim now is that every judgment
+\[ u_1 : A_1, \cdots, u_{n-1} : A_{n-1} \vdash_{\O} a_{n} : A_{n} \]
+in 2-adjoint logic should be parametrized by an $n$-oriental $\O$ in \K, where each type $A_i$ has mode $p_i$.
+It should be possible to define inductively the intended semantic meaning of this, with iterated applications of left adjoints and pullbacks as above.
+In the non-dependent case, it's easy to say what we mean: such a judgment should correspond to a map
+\[ \alpha_{n1}^* A_1 \times \cdots \times \alpha_{n,n-1}^* A_{n-1} \longrightarrow A_n \]
+in mode $n$.
+
+\section{The adjoint connectives}
+\label{sec:adjoint-connectives}
+
+For now, let's think about the rules for the adjoint connectives $\alpha^*$ and $\alpha_*$.
+The easiest one is UR:
+\[ \inferrule{\Gamma \vdash_{\O \circ \beta} M : A}{\Gamma \vdash_{\O} M_\beta : \beta_* B} \]
+Here $\O$ is an oriental ending at a mode $p_{n}$, and $\beta$ is a morphism $y \to p_{n}$, so that we have an oriental $\O \circ \beta$ obtained by composing each morphism $\alpha_{ni}$ with $\beta$.
+To see that this is sensible, think about the non-dependent semantics: the hypothesis is a map
+\[ (\alpha_{n1}\beta)^* A_1 \times \cdots \times (\alpha_{n,n-1}\beta)^* A_{n-1} \longrightarrow B \]
+which, assuming $\beta^*$ preserves products, is equivalent to a map
+\[ \beta^*\Big(\alpha_{n1}^* A_1 \times \cdots \times \alpha_{n,n-1}^* A_{n-1}\Big) \longrightarrow B \]
+and hence to a map
+\[ \alpha_{n1}^* A_1 \times \cdots \times \alpha_{n,n-1}^* A_{n-1} \longrightarrow \beta_* B \]
+which is the conclusion.
+
+For UL, note that any $n$-oriental $\O$ contains $n$ $(n-1)$-orientals $\partial_i\O$ obtained by omitting the mode $p_i$.
+Now let $\O$ be an $(n+1)$-oriental such that $\alpha_{n,n-1} = \beta$; then the rule is
+\[ \inferrule{\Gamma,u:A \vdash_{\partial_{n-1} \O} M:B}{\Gamma,x:\beta_*A \vdash_{\partial_n \O} (\flet u_\beta :=^\O x in M):B} \]
+Note that the oriental $\O$ can be considered extra data chosen on $\partial_{n}\O$ and $\beta$.
+So we can read this rule backwards as: given an arbitrary $n$-oriental ``$\partial_{n}\O$'' and a morphism $\beta$ ending at $p_{n-1}$, we can construct an element of $B$ judged along $\partial_{n}\O$ with a last hypothesis in $\beta_*A$ by choosing an $(n+1)$-oriental extending $\partial_{n}\O$ and $\beta$ and giving an element of $B$ judged along $\partial_{n-1}\O$ whose last hypothesis is instead in $A$.
+Semantically (and non-dependently), the hypothesis is a map
+\[ \alpha_{n+1,\bullet}^*\Gamma \times \alpha_{n+1,n}^* A \longrightarrow B \]
+and since $\beta = \alpha_{n,n-1}$, we have a natural transformation
+\[ \alpha_{n+1,n-1}^* \beta_* \to \alpha_{n+1,n}^* \beta^* \beta_*  \to \alpha_{n+1,n}^* \]
+using $\mu_{n+1,n,n-1}$ and the counit of the adjunction $\beta^* \dashv \beta_*$.
+Thus, we can compose with this transformation at $A$ to obtain the conclusion:
+\[ \alpha_{n+1,\bullet}^*\Gamma \times \alpha_{n+1,n-1}^* \beta_* A \longrightarrow B. \]
+
+The rule FL is similar, but with an extra condition.
+Let $\O$ be an $(n+1)$-oriental such that $\alpha_{n,n-1} = \beta$, and moreover $\mu_{n+1,n,n-1}$ is an identity (or an isomorphism).
+Then the rule is
+\[ \inferrule{\Gamma,u:A \vdash_{\partial_{n} \O} M:B}{\Gamma,x:\beta^* A \vdash_{\partial_{n-1} \O} (\flet u^\beta :=^\O x in M):B} \]
+Again, the rule can be read backwards by considering $\O$ as extra data chosen on $\partial_{n-1}\O$ and $\beta$.
+Semantically and non-dependently, the hypothesis is a map
+\[ \alpha_{n+1,\bullet}^*\Gamma \times \alpha_{n+1,n-1}^* A \longrightarrow B \]
+But since $\alpha_{n+1,n-1} \cong \beta \alpha_{n+1,n}$ (the isomorphism $\mu_{n+1,n,n-1}$), this is equivalent to a map
+\[ \alpha_{n+1,\bullet}^*\Gamma \times \alpha_{n+1,n}^* \beta^* A \longrightarrow B \]
+which is the conclusion.
+
+(Is the fact that the hypotheses of UR and FL are \emph{equivalent} to their conclusions what Reed meeds by saying that U is invertible on the right and F is invertible on the left?)
+
+I would like to also have ``Frobenius-ified'' versions of UL and FL that apply to a hypothesis anywhere in the context instead of just at the end.
+I'm not sure whether that is easy or not.
+
+Finally, FR is the trickiest.
+Here's the best I've been able to come up with; I'm not positive it's correct.
+Let $\O$ be an $(n+1)$-oriental and $1\le k\le n$, with $\alpha_{n+1,k} = \beta$.
+Then in addition to the $n$-oriental $\partial_k \O$, we have a $k$-oriental $\partial_{\le k} \O$ obtained by discarding all modes after $p_k$.
+Now the rule is
+\[ \inferrule{\Gamma\!\downharpoonright_k\; \vdash_{\partial_{\le k}\O} M : B }{\Gamma \vdash_{\partial_k \O} M^\beta : \beta^* B} \]
+Here $\Gamma\!\downharpoonright_k$ denotes $\Gamma$ restricted to $\partial_{< k}\O$.
+Semantically and non-dependently, the hypothesis is a map
+\[ \alpha_{k1}^* A_1 \times \cdots \times \alpha_{k,k-1}^* A_{k-1} \longrightarrow B \]
+so we can obtain the conclusion as the composite
+\begin{align*}
+  (\alpha_{n+1,1})^* A_1 \times \overbrace{\cdots}^{\widehat{k}} \times (\alpha_{n+1,n})^* A_{n}
+  &\to (\alpha_{n+1,1})^* A_1 \times {\cdots} \times (\alpha_{n+1,k-1})^* A_{k-1}\\
+  % &\to (\alpha_{k1}\alpha_{n+1,k})^* A_1 \times {\cdots} \times (\alpha_{k,k-1}\alpha_{n+1,k})^* A_{k-1}\\
+  &\to (\alpha_{k1}\beta)^* A_1 \times \cdots \times (\alpha_{k,k-1}\beta)^* A_{k-1}\\
+  &\cong \beta^*\alpha_{k1}^* A_1 \times \cdots \times \beta^*\alpha_{k,k-1}^* A_{k-1}\\
+  &\cong \beta^*\Big(\alpha_{k1}^* A_1 \times \cdots \times \alpha_{k,k-1}^* A_{k-1} \Big)\\
+  &\to \beta^* B.
+\end{align*}
+where the noninvertible maps are respectively a projection, induced by the 2-cells $\mu_{n+1,k,i}$, and the hypothesis.
+
+There should be computation rules that involve information about composition in \K.
+
+
+\section{Flat and sharp}
+\label{sec:flat-sharp}
+
+Now let's specialize to the case when $\K$ is the walking coreflection.
+Thus, it has two modes $v$ and $t$, two generating morphisms $\delta:t\to v$ and $\gamma:v\to t$, such that $\delta\gamma = 1_v$ (hence $\gamma\delta$ is idempotent), and a 2-cell $\epsilon : \gamma\delta \to 1_t$ such that $\delta*_l\epsilon$ and $\epsilon*_r\gamma$ are identities.
+
+An $n$-oriental in this \K\ is determined by the following:
+\begin{itemize}
+\item A list $p_1,\dots,p_n$ of modes (i.e.\ each either $v$ or $t$).
+\item Whenever $i<j$ and $p_i = p_j = t$, a choice of either $1_t$ or $\gamma\delta$ to be $\alpha_{ji}$.
+  (All other hom-sets are uniquely inhabited.)
+\item Whenever $i<j<k$ and $p_i = p_k = t$ and $\alpha_{ki} = 1_t$, it must be the case that $p_j = t$ and $\alpha_{kj} = \alpha_{ji} = 1_t$ as well.
+  (Any 2-cell other than $1_t$ is initial in its hom-category, so there is a unique choice of $\mu$.)
+\end{itemize}
+In particular, when making a judgment whose conclusion has mode $t$, the context splits up naturally as $\Delta;\Gamma$, where $\Gamma$ consists of those hypotheses of mode $t$ for which $\alpha_{nk} = 1_t$.
+
+The hypotheses in $\Delta$ can be of either mode, as can those in a judgment with conclusion of mode $v$.
+I'd like to say that in these cases we can go back and forth between the two kinds of hypotheses easily, but that seems to require Frobenius-ified versions of FL and UL.
+
+
+\end{document}
