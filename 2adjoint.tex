@@ -156,6 +156,18 @@ But I expect it should be possible to prove inductively that this particular lim
   Given such a $B$, the semantic meaning of $\Gamma\vdash_{\I,\Phi}^{H,h,\theta} b:B$ is a section of this fibration.
 \end{claim}
 
+To justify this somewhat, note that a map into $\theta^*\Gamma$, with domain $\Gamma_h$ say, is, by the universal property of the equalizer, determined by maps $\Gamma_{\beta} : \Gamma_h \to \Gamma_x$ for all $\beta\in H(x)$ such that the following square commutes for any ${\gamma : (x,\beta)\to (x',\beta')}$ in $\el(H)$:
+\begin{equation*}
+  \vcenter{\xymatrix{
+      \Gamma_h \ar[r]\ar[d] &
+      \theta_\beta^* \Gamma_y\ar[d]\\
+      \theta_{\beta'}^* \Gamma_x \ar[r] &
+      \theta_\beta^* \gamma^* \Gamma_x.
+    }}
+\end{equation*}
+But this is precisely what is needed to extend our object $\Gamma$ of the oplax limit of $\Phi$ to an object of the oplax limit of $\Phi \oplus (h,\theta)$.
+Thus, a type in context $\Gamma$ can always be added to the context, so our semantic notions are at least consistent (modulo the issue of fibrancy, which remains to be considered).
+
 As a simple example, suppose that $\I$ is a discrete category, with no nonidentity arrows, and that $H$ is constant at $\mathbf{1}$.
 This means there is no dependence at all between types in the context, but types and terms can depend uniquely on every variable in the context.
 In this case, $\theta^* \Gamma$ reduces to
