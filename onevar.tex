@@ -58,9 +58,12 @@ ABSTRACT
 
 \newcommand{\C}{\ensuremath{\mathcal{C}}}
 \newcommand{\D}{\ensuremath{\mathcal{D}}}
+\newcommand{\M}{\ensuremath{\mathcal{M}}}
 \newcommand{\la}{\ensuremath{\dashv}}
 \newcommand{\arrow}[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
+\newcommand{\tc}[2]{\ensuremath{#1 \Rightarrow #2}}
 \newcommand{\sh}{\text{\textesh}}
+\newcommand{\Adj}{\textbf{Adj}}
 
 \section{Introduction}
 
@@ -91,7 +94,7 @@ $UF$ of an adjunction between ``truth'' and ``lax truth'' categories,
 while the possibility modality $\diamond$ requires a more complicated
 encoding involving four adjunctions between four categories.  While
 specific adjunctions such as $(- \times A) \la (A \to -)$ arise in any
-logic, these calculi provide a formalism for abstract/uninterpreted
+logic, adjoint logics provide a formalism for abstract/uninterpreted
 adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
@@ -102,137 +105,217 @@ between the same two categories.  A motivating example is Lawvere's
 axiomatic cohesion~\citep{lawvereXXcohesion}, a general categorical
 interface that describes \emph{cohesive spaces}, such as topological
 spaces and manifolds with differentiable or smooth structures.  The
-interface consists of two categories \C and $\mathcal{S}$, quadruple of
-adjoint functors $\Pi_0 \la \Delta \la \Gamma \la \nabla$, where
-$\Gamma,\Pi_0 : \mathcal{C} \to \mathcal{S}$ and $\Delta,\nabla :
-\mathcal{S} \to \mathcal{C}$ (satisfying certain additional conditions).
-The idea is that $\mathcal{S}$ is some category of sets, which provides
-a notion of ``point'', and \C is some category of cohesive spaces built
-out of these sets, where points may be stuck together in some way
-(e.g. via topology).  $\Gamma$ takes the underlying set of points a
-cohesive space, forgetting the cohesive structure.  Its left adjoint
-$\Delta$ equips a set with \emph{discrete cohesion}, where no points are
-stuck together; the adjunction says that a map \emph{from} a discrete
-space is the same as a map of sets.  Its right adjoint $\nabla$ equips a
-set with codiscrete cohesion, where all points are stuck together; the
-adjunction says that a map \emph{into} a codiscrete space is the same as
-a map of sets.  The left adjoint of $\Delta$, $\Pi_0$ gives the set of
-connected components---i.e. each element is an equivalence class of
-points that are stuck together.  $\Pi_0$ is important because it
-translates some of the cohesive information about a space into a setting
-where we no longer need to care about the cohesion.  These functors must
-satisfy some additional laws, such as $\Delta$ and $\nabla$ being fully
-faithful (maps between discrete or codiscrete spaces should be the same
-as maps of sets).  
+interface consists of two categories \C and $\mathcal{S}$, and a
+quadruple of adjoint functors $\Gamma,\Pi_0 : \mathcal{C} \to
+\mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to \mathcal{C}$ where
+$\Pi_0 \la \Delta \la \Gamma \la \nabla$.  The idea is that
+$\mathcal{S}$ is some category of ``sets'' that provides a notion of
+``point'', and \C\/ is some category of cohesive spaces built out of
+these sets, where points may be stuck together in some way (e.g. via
+topology).  $\Gamma$ takes the underlying set of points a cohesive
+space, forgetting the cohesive structure.  Its left adjoint $\Delta$
+equips a set with \emph{discrete cohesion}, where no points are stuck
+together; the adjunction says that a map \emph{from} a discrete space is
+the same as a map of sets.  Its right adjoint $\nabla$ equips a set with
+codiscrete cohesion, where all points are stuck together; the adjunction
+says that a map \emph{into} a codiscrete space is the same as a map of
+sets.  The left adjoint of $\Delta$, $\Pi_0$ gives the set of connected
+components---i.e. each element is an equivalence class of points that
+are stuck together.  $\Pi_0$ is important because it translates some of
+the cohesive information about a space into a setting where we no longer
+need to care about the cohesion.  These functors must satisfy some
+additional laws, such as $\Delta$ and $\nabla$ being fully faithful
+(maps between discrete or codiscrete spaces should be the same as maps
+of sets).
 
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
-  theory}~\citep{ss,s15} is currently being explored in the setting of
-homotopy type theory and univalent
-foundations~\citep{voevodsky06note,uf13hott-book}.  Homotopy type theory
-uses Martin-L\"of's intensional type theory as a logic \emph{homotopy
-  spaces}: the identity type of type theory provides an
-$\infty$-groupoid structure on each type~\citep{...}, and spaces such as
-the spheres can be defined by their universal properties using higher
-inductive types~\citep{...}.  Theorems from homotopy theory can be
-proved \emph{synthetically} in this
-logic~\citep{ls13pi1s1,lb13pinsn,...}, and these proofs can be
-interpreted in a variety of models~\citep{...}.  However, an important
-but subtle distinction is that there is no topology (in the sense of
-\citep{scott,etc}) in synthetic homotopy theory: the ``homotopical
-circle'' is defined as a higher inductive type, essentially ``the free
-$\infty$-groupoid on a point and a loop,'' which a priori has nothing to
-do with the ``topological circle,'' $\{ (x,y) \in \mathbb{R}^2 \mid x^2
-+ y^2 = 1\}$, where $\mathbb{R}^2$ has the usual topology.  This is both
-a blessing and a curse: on the one hand, proofs are not encumbered by
-details such as the definition of paths as continuous maps from the real
-interval; but on the other, internally to homotopy type theory, we
-cannot use synthetic theorems to prove facts about topological spaces.
+  theory}~\citep{schreibershulman12cohesive,shulman15realcohesion} is
+currently being explored in the setting of homotopy type theory and
+univalent foundations~\citep{voevodsky06note,uf13hott-book}.  Homotopy
+type theory uses Martin-L\"of's intensional type theory as a logic
+\emph{homotopy spaces}: the identity type provides an $\infty$-groupoid
+structure on each type~\citep{...}, and spaces such as the spheres can
+be defined by their universal properties using higher inductive
+types~\citep{...}.  Theorems from homotopy theory can be proved
+\emph{synthetically} in this logic~\citep{ls13pi1s1,lb13pinsn,...}, and
+these proofs can be interpreted in a variety of models~\citep{...}.
+However, an important but subtle distinction is that there is no
+topology (in the sense of \citep{scott,etc}) in synthetic homotopy
+theory: the ``homotopical circle'' is defined as a higher inductive
+type, essentially ``the free $\infty$-groupoid on a point and a loop,''
+which a priori has nothing to do with the ``topological circle,'' $\{
+(x,y) \in \mathbb{R}^2 \mid x^2 + y^2 = 1\}$, where $\mathbb{R}^2$ has
+the usual topology.  This is both a blessing and a curse: on the one
+hand, proofs are not encumbered by topological details; but on the
+other, internally to homotopy type theory, we cannot use synthetic
+theorems to prove facts about topological spaces.
 
 Cohesive homotopy type theory combines the synthetic homotopy theory of
 homotopy type theory with the synthetic topology of axiomatic cohesion,
 using an adjoint quadruple $\sh \la \Delta \la \Gamma \la \nabla$.  In
 this higher categorical generalization, $\mathcal{S}$ is an
 $(\infty,1)$-category of homotopy spaces (e.g. $\infty$-groupoids), and
-$\C$ is an $(\infty,1)$-category of homotopy spaces that are
+$\C$ is an $(\infty,1)$-category of cohesive homotopy spaces, which are
 additionally equipped with a topological or other cohesive structure at
 each level.  The rules of type theory are now interpreted in \C, so that
 each type has an $\infty$-groupoid structure (given by the identity
 type) \emph{as well as} a separate cohesive structure on its objects,
 morphisms, morphisms between morphisms, etc.  For example, types have
 both morphisms, given by the identity type, and topological paths, given
-by maps from some interval that are continuous in the sense of the
-cohesion.  As in the 1-categorical case, $\Gamma$ forgets the cohesive
-structure, yielding the underlying homotopy space, while $\Delta$ and
-$\nabla$ equip a homotopy space with the discrete and codiscrete
-cohesion.  But in the $\infty$-categorical case, $\Delta$'s left adjoint
-$\sh A$ (pronounced ``shape of $A$'') generalizes from the connected
-components to the \emph{fundamental homotopy space} functor, which makes
-a homotopy space from the topological/cohesive paths, paths between
-paths, etc. of $A$.  This captures the process by which homotopy spaces
-arise from cohesive spaces internally; one can prove, for example, that
-the shape of the topological circle is the algebraic circle.  This
-extension allows synthetic homotopy theory to be used in proofs about
-topological spaces~\citep{s15}, and opens up additional possibilities
-for using synthetic homotopy theory as a tool in other areas of
-mathematics and theoretical physics.  
+by maps that are continuous in the sense of the cohesion.  As in the
+1-categorical case, $\Gamma$ forgets the cohesive structure, yielding
+the underlying homotopy space, while $\Delta$ and $\nabla$ equip a
+homotopy space with the discrete and codiscrete cohesion.  But in the
+$\infty$-categorical case, $\Delta$'s left adjoint $\sh A$ (pronounced
+``shape of $A$'') generalizes from the connected components to the
+\emph{fundamental homotopy space} functor, which makes a homotopy space
+from the topological/cohesive paths, paths between paths, etc. of $A$.
+This captures the process by which homotopy spaces arise from cohesive
+spaces; for example, one can prove (using some additional axioms) that
+the shape of the topological circle is the algebraic
+circle~\citep{shulman15realcohesion}.  This extension allows synthetic
+homotopy theory to be used in proofs about topological spaces, and opens
+up possibilities for using synthetic homotopy theory as a tool in other
+areas of mathematics and theoretical physics.
 
 This paper begins an investigation into the structural proof theory of
 cohesive homotopy type theory, as a special case of generalizing Reed's
-adjoint logic to allow multiple adjunctions between two categories.
+adjoint logic to allow multiple adjunctions between the same categories.
+As one might expect, the first step is to generalize the mode preorder
+to a mode category, so that we can have multiple different morphisms
+$\alpha, \beta : p\ge q$.  This allows the logic to talk about different
+but unrelated adjunctions between two categories.  However, in order to
+describe an adjoint triple such as $\Delta \la \Gamma \la \nabla$, we
+need to know that the same functor $\Gamma$ is both a left and right
+adjoint.  To describe such a situation, we generalize to a 2-category of
+modes, where each mode $p$ determines a category, each morphism $\alpha
+: p \ge q$ determines adjoint functors $F_\alpha : p \to q$ and
+$U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$, and each 2-cell $e :
+\tc \alpha  \beta : q \ge p$ determines a morphism of adjunctions between 
+$F_\alpha \la U_\alpha$ and $F_\beta \la U_\beta$.  For example, an
+adjoint triple is described by the 2-category with
+\begin{itemize}
+\item objects $c$ and $s$
+\item 1-cells $\Delta : s \ge c$ and $\nabla : c \ge s$
+\item 2-cells $\tc {1_c} {\nabla \Delta}$ 
+and $\tc {\Delta \nabla} {1_s}$ satisfying 
+some equations
+\end{itemize}
+The 1-cells generate $F_\Delta \la U_\Delta$ and $F_\nabla \la
+U_\nabla$, while the 2-cells are sufficient to prove that $U_\Delta$ is
+naturally isomorphic to $F_\nabla$, so we can define $\Delta :=
+F_\Delta$, $\nabla := U_\nabla$, and $\Gamma = U_\Delta \cong F_\nabla$
+and have the desired triple adjunction.  Indeed, you may recognize this
+2-category as the ``walking adjunction'' with $\Delta \la \nabla$---that
+is, we give a triple adjunction by saying that the morphism generating
+the left adjoint is itself left adjoint to the morphism generating the
+right adjoint.
 
+The resulting logic has a good definition-to-theorem ratio, in the sense
+that from some simple sequent calculus rules for $F$ and $U$, we can
+prove a variety of general facts that are true for any mode 2-category
+($F_\alpha$ and $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a
+comonad and $U_\alpha F_\alpha$ is a monad; $F_\alpha$ preserves
+colimits and $U_\alpha$ preserves limits), as well as facts specific to
+a particular theory (e.g. for the triple adjunction above, $\Gamma$
+preserves both colimits and limits, because it is an equivalent
+$U_\Delta$ and $F_\nabla$; the comonad $\flat := \Delta\Gamma$ and monad
+$\sharp := \nabla\Gamma$ are themselves adjoint).  Moreover, we can use
+different mode 2-categories to add aditional structure; for example,
+moving from the walking adjunction to the walking reflection (taking
+$\Delta \nabla = 1$) additionally gives that $\Delta$ and $\nabla$
+are full and faithful, and that $\flat$ and $\sharp$ are idempotent,
+which are some of the additional conditions for axiomatic cohesion.
+The logic also has good proof-theoretic properties: we start from a cut-
+and identity-free sequent calculus and prove that cut and identity are
+admissible.  While we do not consider focusing~\citep{andreoli92focus},
+we conjecture that the connectives have the same focusing behavior as in
+\citep{reed09adjoint}: $F$ is postive and $U$ is negative (which
+because limits are negative and colimits are positive, and like-polarity
+connectives compose together well, matches what left and right adjoints
+should preserve).  
 
+To study the basic ideas of 2-categorical adjoint logic, we make a few
+simplifying restrictions for this paper. First, we consider only the
+single-hypothesis, single-conclusion sequents, defering an investigation
+of products and exponentials to future work.  Second, on the semantic
+side, we consider only 1-categorical semantics of the derivations of the
+logic, rather than the $\infty$-groupoid semantics that we are
+ultimately interested in.  More precisely, for a specific 2-category
+\M\/ of modes, we can interpret the logic using a pseudofunctor $S : \M
+\to \Adj$, where $\Adj$ is the 2-category of categories, adjunctions,
+and morphisms of adjunctions (conjugate natural transformation).  By
+$S$, each mode determines a 1-category, and derivations in the logic are
+interprered as morphisms in these categories.  The action of $S$ on 1-
+and 2-cells is used to interpret $F$ and $U$.  Third, we consider only a
+logic of simple-types, rather than a dependent type theory.
 
+Because of the last restriction, we do not have an identity type
+available for proving equalities of proof terms.  However, we need an
+equational theory to make many of the statements above (e.g. ``$UF$ is a
+monad'' require proving some equational laws), and the definitional
+equalities arising from admissibility of cut and identity are not
+sufficient.  Thus, in addition to the sequent calculus itself, we give
+an equality judgement on sequent calculus derivations.  This judgement
+is interpreted by actual equality of morphisms in the semantics above,
+but we intend these rules to be propositional equalities in an eventual
+adjoint type theory.
 
-From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
-$\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
-both a right and a left adjoint, and so should behave like both the $F$
-and $U$ in adjoint logic.  One possibility would be to design rules for
-a left-and-right-adjoint connective.  However, such a connective would
-need to have an unusual focusing~\citep{andreoli92focus} behavior: In
-any adjunction, left adjoints preserve colimits (e.g. coproducts) and
-right adjoints preserve limits (e.g. products).  In focusing, limits are
-negative connectives (invertible on the right, focus on the left), while
-colimits are positive connectives (invertible on the left, focus on the
-right), and in general like-polarity connectives compose together well.
-Reed's adjoint logic is compatible with these two facts, because it
-admits a focusing interpretation where the left adjoint $F$ is positive
-and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
-left and a right adjoint, it seems like it would need to be both
-positive and negative.  
+In Section~\ref{sec:rules}, we define the rules of the logic, prove
+admissibility of identity and cut, and prove various equational
+properties of these operations.  In Section~\ref{sec:examples}, we give
+a variety of examples of constructions in the logic, including those
+mentioned above, as well as the rules for spatial type theory used
+in~\citep{shulman15realcohesion}.  In Section~\ref{sec:semantics}, we
+describe the 1-categorical semantics of the logic in the settings
+described above.
 
-Instead of giving rules for an ambipolar connective, we will provide a
-logic in which this comes true up to isomorphism: we can describe a quadruple
-\[
-F \la U \cong F' \la U'
-\]
-and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
-That is, the functor $\Gamma$ will be defined to be one of two naturally
-isomorphic functors, one of which is a left adjoint/positive and the
-other of which is a right adjoint/negative.  This idea is present in
-Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
-where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
-adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
-\cong F'$.  However, in the case of an adjoint triple, we want $U \cong
-F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
-same.  
+%% FIXME: 
 
-The first step in enriching the mode specifications to cover this case
-is to generalize the mode preorder to a mode category, so that we can
-have multiple different morphisms $p \ge q$, and therefore we can have
-$p \ge q$ and $q \ge p$ without $p$ being isomorphic to $q$.  However, a
-1-category of modes is not enough to capture the relationships between
-these different adjunctions---we need to say that $U \cong F'$ but not
-$F \cong U'$.  To accomplish this, we consider a 
+%% The first presentation of cohesive homotopy type
+%% theory~\citep{schreibershulman12cohesive} did not extend the judgement
+%% structure of type theory, and consequently had trouble with the
+%% $\Delta\Gamma$ composite comonad.  
 
-Definitional vs. propositional equality of proofs.  
+%% Because $\Delta$ and $\nabla$ are full and faithful, it is possible to
+%% avoid mention of the category $\mathcal{S}$, and instead focus on the
+%% composite endofunctors $\sh := \Delta\sh$, $\flat := \Delta\Gamma$, and
+%% $\sharp := \nabla\Gamma$ on \C.  For any adjoint quadruple as above,
+%% these will form an adjoint triple $\sh \la \flat \la \sharp$, and $\sh$
+%% and $\sharp$ will be monads, while $\flat$ will be a comonad.
 
-Simplifications: one variable, 1-categorical semantics.  
+%% From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
+%% $\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
+%% both a right and a left adjoint, and so should behave like both the $F$
+%% and $U$ in adjoint logic.  One possibility would be to design rules for
+%% a left-and-right-adjoint connective.  However, such a connective would
+%% need to have an unusual focusing~\citep{andreoli92focus} behavior: In
+%% any adjunction, left adjoints preserve colimits (e.g. coproducts) and
+%% right adjoints preserve limits (e.g. products).  In focusing, limits are
+%% negative connectives (invertible on the right, focus on the left), while
+%% colimits are positive connectives (invertible on the left, focus on the
+%% right), and in general like-polarity connectives compose together well.
+%% Reed's adjoint logic is compatible with these two facts, because it
+%% admits a focusing interpretation where the left adjoint $F$ is positive
+%% and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
+%% left and a right adjoint, it seems like it would need to be both
+%% positive and negative.  
 
-
-
-
-
-
+%% Instead of giving rules for an ambipolar connective, we will provide a
+%% logic in which this comes true up to isomorphism: we can describe a quadruple
+%% \[
+%% F \la U \cong F' \la U'
+%% \]
+%% and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
+%% That is, the functor $\Gamma$ will be defined to be one of two naturally
+%% isomorphic functors, one of which is a left adjoint/positive and the
+%% other of which is a right adjoint/negative.  This idea is present in
+%% Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
+%% where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
+%% adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
+%% \cong F'$.  However, in the case of an adjoint triple, we want $U \cong
+%% F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
+%% same.  
 
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
