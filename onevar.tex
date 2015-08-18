@@ -90,22 +90,25 @@ necessitation modality is the comonad $FU$ for an adjunction between
 monad $UF$ of an adjunction between ``truth'' and ``lax truth''
 categories, while the $\diamond$ possibility modality requires a more
 complicated encoding involving four adjunctions between four categories.
+While concrete adjunctions such as $(A \times -) \la (A \to -)$ also
+arise, these calculi provide an internal language for uninterpreted
+adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
-one adjunction between any two categories.  However, it is sometimes
-useful to consider multiple adjunctions between the same two categories.
-A motivating example is Lawvere's \emph{axiomatic
-  cohesion}~\citep{lawvereXXcohesion}.  In this case, we have two
-categories \C and $\mathcal{S}$, where $\mathcal{S}$ plays the role of
-sets, and \C represents sets equipped with some \emph{cohesive
-  structure}, which represents how elements are stuck together.  A
+one adjunction between any two categories (more precisely, there can be
+two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
+it is sometimes useful to consider multiple different adjunctions
+between the same two categories.  A motivating example is Lawvere's
+\emph{axiomatic cohesion}~\citep{lawvereXXcohesion}.  In this case, we
+have two categories \C and $\mathcal{S}$, where $\mathcal{S}$ plays the
+role of sets, and \C is sets equipped with some \emph{cohesive
+  structure}, where elements can be ``stuck together'' in some way.  A
 variety of notions of cohesion---topological, differentiable, smooth,
 \ldots---can be described abstractly by a quadruple of adjoint functors
-
-[picture]
-
-\noindent $\Gamma$ takes the underlying set of a space, forgetting the
-cohesive structure.  Its left adjoint $\Delta$ gives equips a set with
+$\Pi_0 \la \Delta \la \Gamma \la \nabla$, where $\Gamma,\Pi_0 :
+\mathcal{C} \to \mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to
+\mathcal{C}$.  $\Gamma$ takes the underlying set of a space, forgetting
+the cohesive structure.  Its left adjoint $\Delta$ equips a set with
 \emph{discrete cohesion}, where no points are stuck together; the
 adjunction says that a map \emph{from} a discrete space is the same as a
 map of sets.  Its right adjoint $\nabla$ equips a set with codiscrete
@@ -113,14 +116,14 @@ cohesion, where all points are stuck together; the adjunction says that
 a map \emph{into} a codiscrete space is the same as a map of sets.  The
 left adjoint of $\Delta$, $\Pi_0$ gives the set of connected
 components---i.e. the sets of points that are stuck together; the
-adjunction says that a map from the set of connected components the same
-as a map into a discrete space.  These functors must satisfy some
+adjunction says that a map from the set of connected components is the
+same as a map into a discrete space.  These functors must satisfy some
 additional laws, such as $\Delta$ and $\nabla$ being fully
 faithful---maps between discrete or codiscrete spaces should be the same
 as maps of sets.
 
-Lawvere's notion of axiomatic cohesion is currently being explored in
-the setting of homotopy type theory and univalent
+A variation of Lawvere's notion of axiomatic cohesion is currently being
+explored in the setting of homotopy type theory and univalent
 foundations~\citep{voevodsky06note,uf13hott-book}.  Homotopy type theory
 uses Martin-L\"of's intensional type theory as a logic of homotopy
 theory, where the identity type of type theory provides an
@@ -133,28 +136,89 @@ notions of morphism between elements of types, morphisms between those
 morphisms, and so on.  While we often refer to these morphisms as
 ``paths,'' an important but subtle distinction is that these paths have
 a priori nothing to do with the topological structure on
-types~\citep{scott,etc}, with the classical notion of a ``path'' as a
-map from the real interval.  For example, in homotopy type theory as in
-\citep{uf13hott-book}, there is no way to connect the algebraic
-definition of the circle as a higher inductive type to the topological
-definition of the circle as $\{ (x,y) \in \mathbb{R}^2 \mid x^2 + y^2 =
-1\}$.  \emph{Cohesive homotopy type theory}~\citep{ss12,shulman15}
+types~\citep{scott,etc}, which provides a different notion of a
+``path,'' e.g. as a map from the real interval.  For example, in
+homotopy type theory as in \citep{uf13hott-book}, there is no way to
+connect the algebraic definition of the circle as a higher inductive
+type to the topological definition of the circle as $\{ (x,y) \in
+\mathbb{R}^2 \mid x^2 + y^2 = 1\}$, and therefore no way to apply the
+body of results in synthetic homotopy theory to traditional topological
+spaces.  \emph{Cohesive homotopy type theory}~\citep{ss12,shulman15}
 addresses this issue by integrating axiomatic cohesion into homotopy
 type theory, using an adjoint quadruple $\sh \la \Delta \la \Gamma \la
 \nabla$.  In this higher categorical generalization, $\mathcal{S}$ is
-the category of $\infty$-groupoids---where the ``standard'' model of
-homotopy type theory lives---and $\C$ is cohesive
-$\infty$-groupoids---i.e. $\infty$-groupoids that also have some
-cohesive structure on their objects, morphisms, morphisms between
-morphisms, etc.  As above, $\Gamma$ forgets the $\infty$-groupoid
-strucutre, $\Delta$ and $\nabla$ equip an $\infty$-groupoid with thw
-discrete and codiscrete cohesion.  But $\Delta$'s left adjoint $\sh A$
-(pronounced ``shape of $A$'') is, in this context, the \emph{fundamental
-  $\infty$-groupoid} functor, which makes an $\infty$-groupoid from the
-\emph{topological} paths, paths between paths, etc. of $A$.  Using some
-axioms for cohesion, one can prove that the shape of the topological
-circle is the algebraic circle, which allows synthetic homotopy theory
-to be used in proofs about the topological spaces~\citep{s15}.  
+some category like $\infty$-groupoids---where the ``standard'' model of
+homotopy type theory lives---and $\C$ should be thought of as cohesive
+$\infty$-groupoids---i.e. $\infty$-groupoids that additionally have some
+cohesive structure at each level.  The rules of type theory are now
+interpreted in \C rather than $\mathcal{S}$, so that each type has an
+$\infty$-groupoid structure \emph{as well as} a separate cohesive
+structure on its objects, morphisms, morphisms between morphisms, etc.
+As in the 1-categorical case, $\Gamma$ forgets the cohesive structure,
+and $\Delta$ and $\nabla$ equip an $\infty$-groupoid with the discrete
+and codiscrete cohesion.  But in the $\infty$-categorical case,
+$\Delta$'s left adjoint $\sh A$ (pronounced ``shape of $A$'')
+generalizes from the connected components to the \emph{fundamental
+  $\infty$-groupoid} functor, which makes an algebraic $\infty$-groupoid
+from the \emph{cohesive} paths, paths between paths, etc. of $A$.  Using
+some axioms for cohesion, one can prove, for example, that the shape of
+the topological circle is the algebraic circle, which allows synthetic
+homotopy theory to be used in proofs about topological
+spaces~\citep{s15}, and opens up additional possibilities for using
+synthetic homotopy theory as a tool in other areas of mathematics and
+theoretical physics.
+
+This paper begins an investigation into the structural proof theory of
+cohesive homotopy type theory, as a special case of generalizing Reed's
+adjoint logic to allow multiple adjunctions between two categories.
+From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
+$\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
+both a right and a left adjoint, and so should behave like both the $F$
+and $U$ in adjoint logic.  One possibility would be to design rules for
+a left-and-right-adjoint connective.  However, such a connective would
+need to have an unusual focusing~\citep{andreoli92focus} behavior: In
+any adjunction, left adjoints preserve colimits (e.g. coproducts) and
+right adjoints preserve limits (e.g. products).  In focusing, limits are
+negative connectives (invertible on the right, focus on the left), while
+colimits are positive connectives (invertible on the left, focus on the
+right), and in general like-polarity connectives compose together well.
+Reed's adjoint logic is compatible with these two facts, because it
+admits a focusing interpretation where the left adjoint $F$ is positive
+and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
+left and a right adjoint, it seems like it would need to be both
+positive and negative.  
+
+Instead of giving rules for an ambipolar connective, we will provide a
+logic in which this comes true up to isomorphism: we can describe a quadruple
+\[
+F \la U \cong F' \la U'
+\]
+and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
+That is, the functor $\Gamma$ will be defined to be one of two naturally
+isomorphic functors, one of which is a left adjoint/positive and the
+other of which is a right adjoint/negative.  This idea is present in
+Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
+where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
+adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
+\cong F'$.  However, in the case of an adjoint triple, we want $U \cong
+F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
+same.  
+
+The first step in enriching the mode specifications to cover this case
+is to generalize the mode preorder to a mode category, so that we can
+have multiple different morphisms $p \ge q$, and therefore we can have
+$p \ge q$ and $q \ge p$ without $p$ being isomorphic to $q$.  However, a
+1-category of modes is not enough to capture the relationships between
+these different adjunctions---we need to say that $U \cong F'$ but not
+$F \cong U'$.  To accomplish this, we consider a 
+
+Definitional vs. propositional equality of proofs.  
+
+Simplifications: one variable, 1-categorical semantics.  
+
+
+
+
 
 
 
