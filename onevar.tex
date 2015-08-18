@@ -71,27 +71,27 @@ prototypical adjunction, which provides a mnemonic for the notation, is
 where $U$ takes the underlying set of some algebraic structure such as a
 group, and $F$ is the free structure on a set---the adjunction property
 says that a structure-preserving map from $F C$ to $D$ corresponds to a
-a map of sets from $C$ to $U D$, because the extension to the structure
-is determined by the requirement of being a homomorphism.  Adjunctions
-are important to the $\lambda$-calculi and proof theories of modal
-logics, because the composite $FU$ is a comonad, while $UF$ is a monad.
+a map of sets from $C$ to $U D$ (because the action on the structure is
+determined by being a homomorphism).  Adjunctions are important to the
+proof theories and $\lambda$-calculi of modal logics, because the
+composite $FU$ is a comonad on \D, while $UF$ is a monad on $\C$.
 \citet{bentonwadler96adjoint} describe an adjoint $\lambda$-calculus for
 mixing linear logic and structural/cartesian logic, with functors $U$
-from linear to cartesian and $F$ from cartesian to linear, where the $!
-A$ modality of linear logic arises as the comonad $FU$.
+from linear to cartesian and $F$ from cartesian to linear; the $! A$
+modality of linear logic arises as the comonad $FU$.
 \citet{reed09adjoint} describes a generalization of this idea to
 situations involving more than one category: the logic is parametrized
 by a preorder of \emph{modes}, where every mode $p$ determines a
 category, and there is an adjunction between categories $p$ and $q$
 exactly when $p \ge q$.  For example, the intuitionistic modal logics of
-\citet{pfenningdavies} can be encoded as follows: the $\Box$
-necessitation modality is the comonad $FU$ for an adjunction between
-``truth'' and ``validity'' categories, the $\bigcirc$ modality is the
-monad $UF$ of an adjunction between ``truth'' and ``lax truth''
-categories, while the $\diamond$ possibility modality requires a more
-complicated encoding involving four adjunctions between four categories.
-While concrete adjunctions such as $(A \times -) \la (A \to -)$ also
-arise, these calculi provide an internal language for uninterpreted
+\citet{pfenningdavies} can be encoded as follows: the necessitation
+modality $\Box$ is the comonad $FU$ for an adjunction between ``truth''
+and ``validity'' categories, the lax modality $\bigcirc$ is the monad
+$UF$ of an adjunction between ``truth'' and ``lax truth'' categories,
+while the possibility modality $\diamond$ requires a more complicated
+encoding involving four adjunctions between four categories.  While
+specific adjunctions such as $(- \times A) \la (A \to -)$ arise in any
+logic, these calculi provide a formalism for abstract/uninterpreted
 adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
@@ -99,78 +99,90 @@ one adjunction between any two categories (more precisely, there can be
 two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
 it is sometimes useful to consider multiple different adjunctions
 between the same two categories.  A motivating example is Lawvere's
-\emph{axiomatic cohesion}~\citep{lawvereXXcohesion}.  In this case, we
-have two categories \C and $\mathcal{S}$, where $\mathcal{S}$ plays the
-role of sets, and \C is sets equipped with some \emph{cohesive
-  structure}, where elements can be ``stuck together'' in some way.  A
-variety of notions of cohesion---topological, differentiable, smooth,
-\ldots---can be described abstractly by a quadruple of adjoint functors
-$\Pi_0 \la \Delta \la \Gamma \la \nabla$, where $\Gamma,\Pi_0 :
-\mathcal{C} \to \mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to
-\mathcal{C}$.  $\Gamma$ takes the underlying set of a space, forgetting
-the cohesive structure.  Its left adjoint $\Delta$ equips a set with
-\emph{discrete cohesion}, where no points are stuck together; the
-adjunction says that a map \emph{from} a discrete space is the same as a
-map of sets.  Its right adjoint $\nabla$ equips a set with codiscrete
-cohesion, where all points are stuck together; the adjunction says that
-a map \emph{into} a codiscrete space is the same as a map of sets.  The
-left adjoint of $\Delta$, $\Pi_0$ gives the set of connected
-components---i.e. the sets of points that are stuck together; the
-adjunction says that a map from the set of connected components is the
-same as a map into a discrete space.  These functors must satisfy some
-additional laws, such as $\Delta$ and $\nabla$ being fully
-faithful---maps between discrete or codiscrete spaces should be the same
-as maps of sets.
+axiomatic cohesion~\citep{lawvereXXcohesion}, a general categorical
+interface that describes \emph{cohesive spaces}, such as topological
+spaces and manifolds with differentiable or smooth structures.  The
+interface consists of two categories \C and $\mathcal{S}$, quadruple of
+adjoint functors $\Pi_0 \la \Delta \la \Gamma \la \nabla$, where
+$\Gamma,\Pi_0 : \mathcal{C} \to \mathcal{S}$ and $\Delta,\nabla :
+\mathcal{S} \to \mathcal{C}$ (satisfying certain additional conditions).
+The idea is that $\mathcal{S}$ is some category of sets, which provides
+a notion of ``point'', and \C is some category of cohesive spaces built
+out of these sets, where points may be stuck together in some way
+(e.g. via topology).  $\Gamma$ takes the underlying set of points a
+cohesive space, forgetting the cohesive structure.  Its left adjoint
+$\Delta$ equips a set with \emph{discrete cohesion}, where no points are
+stuck together; the adjunction says that a map \emph{from} a discrete
+space is the same as a map of sets.  Its right adjoint $\nabla$ equips a
+set with codiscrete cohesion, where all points are stuck together; the
+adjunction says that a map \emph{into} a codiscrete space is the same as
+a map of sets.  The left adjoint of $\Delta$, $\Pi_0$ gives the set of
+connected components---i.e. each element is an equivalence class of
+points that are stuck together.  $\Pi_0$ is important because it
+translates some of the cohesive information about a space into a setting
+where we no longer need to care about the cohesion.  These functors must
+satisfy some additional laws, such as $\Delta$ and $\nabla$ being fully
+faithful (maps between discrete or codiscrete spaces should be the same
+as maps of sets).  
 
-A variation of Lawvere's notion of axiomatic cohesion is currently being
-explored in the setting of homotopy type theory and univalent
+A variation on axiomatic cohesion called \emph{cohesive homotopy type
+  theory}~\citep{ss,s15} is currently being explored in the setting of
+homotopy type theory and univalent
 foundations~\citep{voevodsky06note,uf13hott-book}.  Homotopy type theory
-uses Martin-L\"of's intensional type theory as a logic of homotopy
-theory, where the identity type of type theory provides an
-$\infty$-groupoid structure on each type.  Theorems from homotopy theory
-can be proved \emph{synthetically} in this
-logic~\citep{ls13pi1s1,lb13pinsn,...}, and interpreted in a variety of
-models~\citep{...}.  The identity type equips every type with an
-\emph{algebraic} $\infty$-groupoid structure, providing primitive
-notions of morphism between elements of types, morphisms between those
-morphisms, and so on.  While we often refer to these morphisms as
-``paths,'' an important but subtle distinction is that these paths have
-a priori nothing to do with the topological structure on
-types~\citep{scott,etc}, which provides a different notion of a
-``path,'' e.g. as a map from the real interval.  For example, in
-homotopy type theory as in \citep{uf13hott-book}, there is no way to
-connect the algebraic definition of the circle as a higher inductive
-type to the topological definition of the circle as $\{ (x,y) \in
-\mathbb{R}^2 \mid x^2 + y^2 = 1\}$, and therefore no way to apply the
-body of results in synthetic homotopy theory to traditional topological
-spaces.  \emph{Cohesive homotopy type theory}~\citep{ss12,shulman15}
-addresses this issue by integrating axiomatic cohesion into homotopy
-type theory, using an adjoint quadruple $\sh \la \Delta \la \Gamma \la
-\nabla$.  In this higher categorical generalization, $\mathcal{S}$ is
-some category like $\infty$-groupoids---where the ``standard'' model of
-homotopy type theory lives---and $\C$ should be thought of as cohesive
-$\infty$-groupoids---i.e. $\infty$-groupoids that additionally have some
-cohesive structure at each level.  The rules of type theory are now
-interpreted in \C rather than $\mathcal{S}$, so that each type has an
-$\infty$-groupoid structure \emph{as well as} a separate cohesive
-structure on its objects, morphisms, morphisms between morphisms, etc.
-As in the 1-categorical case, $\Gamma$ forgets the cohesive structure,
-and $\Delta$ and $\nabla$ equip an $\infty$-groupoid with the discrete
-and codiscrete cohesion.  But in the $\infty$-categorical case,
-$\Delta$'s left adjoint $\sh A$ (pronounced ``shape of $A$'')
-generalizes from the connected components to the \emph{fundamental
-  $\infty$-groupoid} functor, which makes an algebraic $\infty$-groupoid
-from the \emph{cohesive} paths, paths between paths, etc. of $A$.  Using
-some axioms for cohesion, one can prove, for example, that the shape of
-the topological circle is the algebraic circle, which allows synthetic
-homotopy theory to be used in proofs about topological
-spaces~\citep{s15}, and opens up additional possibilities for using
-synthetic homotopy theory as a tool in other areas of mathematics and
-theoretical physics.
+uses Martin-L\"of's intensional type theory as a logic \emph{homotopy
+  spaces}: the identity type of type theory provides an
+$\infty$-groupoid structure on each type~\citep{...}, and spaces such as
+the spheres can be defined by their universal properties using higher
+inductive types~\citep{...}.  Theorems from homotopy theory can be
+proved \emph{synthetically} in this
+logic~\citep{ls13pi1s1,lb13pinsn,...}, and these proofs can be
+interpreted in a variety of models~\citep{...}.  However, an important
+but subtle distinction is that there is no topology (in the sense of
+\citep{scott,etc}) in synthetic homotopy theory: the ``homotopical
+circle'' is defined as a higher inductive type, essentially ``the free
+$\infty$-groupoid on a point and a loop,'' which a priori has nothing to
+do with the ``topological circle,'' $\{ (x,y) \in \mathbb{R}^2 \mid x^2
++ y^2 = 1\}$, where $\mathbb{R}^2$ has the usual topology.  This is both
+a blessing and a curse: on the one hand, proofs are not encumbered by
+details such as the definition of paths as continuous maps from the real
+interval; but on the other, internally to homotopy type theory, we
+cannot use synthetic theorems to prove facts about topological spaces.
+
+Cohesive homotopy type theory combines the synthetic homotopy theory of
+homotopy type theory with the synthetic topology of axiomatic cohesion,
+using an adjoint quadruple $\sh \la \Delta \la \Gamma \la \nabla$.  In
+this higher categorical generalization, $\mathcal{S}$ is an
+$(\infty,1)$-category of homotopy spaces (e.g. $\infty$-groupoids), and
+$\C$ is an $(\infty,1)$-category of homotopy spaces that are
+additionally equipped with a topological or other cohesive structure at
+each level.  The rules of type theory are now interpreted in \C, so that
+each type has an $\infty$-groupoid structure (given by the identity
+type) \emph{as well as} a separate cohesive structure on its objects,
+morphisms, morphisms between morphisms, etc.  For example, types have
+both morphisms, given by the identity type, and topological paths, given
+by maps from some interval that are continuous in the sense of the
+cohesion.  As in the 1-categorical case, $\Gamma$ forgets the cohesive
+structure, yielding the underlying homotopy space, while $\Delta$ and
+$\nabla$ equip a homotopy space with the discrete and codiscrete
+cohesion.  But in the $\infty$-categorical case, $\Delta$'s left adjoint
+$\sh A$ (pronounced ``shape of $A$'') generalizes from the connected
+components to the \emph{fundamental homotopy space} functor, which makes
+a homotopy space from the topological/cohesive paths, paths between
+paths, etc. of $A$.  This captures the process by which homotopy spaces
+arise from cohesive spaces internally; one can prove, for example, that
+the shape of the topological circle is the algebraic circle.  This
+extension allows synthetic homotopy theory to be used in proofs about
+topological spaces~\citep{s15}, and opens up additional possibilities
+for using synthetic homotopy theory as a tool in other areas of
+mathematics and theoretical physics.  
 
 This paper begins an investigation into the structural proof theory of
 cohesive homotopy type theory, as a special case of generalizing Reed's
 adjoint logic to allow multiple adjunctions between two categories.
+
+
+
+
 From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
 $\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
 both a right and a left adjoint, and so should behave like both the $F$
