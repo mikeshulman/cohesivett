@@ -32,6 +32,44 @@
 \end{small}
 \smallskip}
 
+\newcommand{\inv}[1]{\ensuremath{#1^{-1}}}
+
+\newcommand{\C}{\ensuremath{\mathcal{C}}}
+\newcommand{\D}{\ensuremath{\mathcal{D}}}
+\newcommand{\M}{\ensuremath{\mathcal{M}}}
+\newcommand{\la}{\ensuremath{\dashv}}
+\newcommand{\arrow}[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
+\newcommand{\tc}[2]{\ensuremath{#1 \Rightarrow #2}}
+\newcommand{\sh}{\text{\textesh}}
+\newcommand{\Adj}{\textbf{Adj}}
+
+\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+
+\renewcommand\wftp[2]{\ensuremath{#1 \,\,\, \dsd{type}_{#2}}}
+\newcommand\F[2]{\ensuremath{F_{#1} \,\, #2}}
+\newcommand\U[2]{\ensuremath{U_{#1} \,\, #2}}
+\newcommand\coprd[2]{\ensuremath{#1 + #2}}
+\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
+\renewcommand\irl[1]{\dsd{#1}}
+
+\newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
+\newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\cut[2]{\ensuremath{{\dsd{cut} \,\, #1 \,\, #2}}}
+\newcommand\cuti{\ensuremath{\bullet}}
+
+\newcommand\hyp[1]{\ensuremath{\dsd{hyp} \, {#1}}}
+\newcommand\Inl[1]{\ensuremath{\dsd{Inl}(#1)}}
+\newcommand\Inr[1]{\ensuremath{\dsd{Inr}(#1)}}
+\newcommand\Case[2]{\ensuremath{\dsd{Case}(#1,#2)}}
+\newcommand\UL[3]{\ensuremath{\dsd{UL}^{#1}_{#2}(#3)}}
+\newcommand\FR[3]{\ensuremath{\dsd{FR}^{#1}_{#2}(#3)}}
+\newcommand\FL[1]{\ensuremath{\dsd{FL}(#1)}}
+\newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
+
+\newcommand\ap[2]{\ensuremath{#1 \approx #2}}
+
 \title{Adjoint Logic with a 2-Category of Modes}
 
 \author{Daniel R. Licata\inst{1} \and Michael Shulman\inst{2}
@@ -55,15 +93,6 @@ Mellon University.
 \begin{abstract}
 ABSTRACT
 \end{abstract}
-
-\newcommand{\C}{\ensuremath{\mathcal{C}}}
-\newcommand{\D}{\ensuremath{\mathcal{D}}}
-\newcommand{\M}{\ensuremath{\mathcal{M}}}
-\newcommand{\la}{\ensuremath{\dashv}}
-\newcommand{\arrow}[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
-\newcommand{\tc}[2]{\ensuremath{#1 \Rightarrow #2}}
-\newcommand{\sh}{\text{\textesh}}
-\newcommand{\Adj}{\textbf{Adj}}
 
 \section{Introduction}
 
@@ -239,6 +268,9 @@ because limits are negative and colimits are positive, and like-polarity
 connectives compose together well, matches what left and right adjoints
 should preserve).  
 
+\emph{FIXME: explain the gap between the category theory and the proof
+theory.}
+
 To study the basic ideas of 2-categorical adjoint logic, we make a few
 simplifying restrictions for this paper. First, we consider only 
 single-hypothesis, single-conclusion sequents, defering an investigation
@@ -266,10 +298,10 @@ but we intend these rules to be propositional equalities in an eventual
 adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
-admissibility of identity and cut, and prove various equational
-properties of these operations.  In Section~\ref{sec:examples}, we give
-a variety of examples of constructions in the logic, including those
-mentioned above, as well as the rules for spatial type theory used
+admissibility of identity and cut, and define an equational theory on
+derivations.  In Section~\ref{sec:examples}, we give a variety of
+examples of constructions in the logic, including those mentioned above,
+as well as the rules for spatial type theory used
 in~\citep{shulman15realcohesion}.  In Section~\ref{sec:semantics}, we
 describe the 1-categorical semantics of the logic in the settings
 described above.  All of the syntactic metatheory of the logic and the
@@ -277,10 +309,6 @@ examples have been formalized in Agda~\citep{norell07thesis}.
 
 \section{Rules}
 \label{sec:rules}
-
-\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
-\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
-\newcommand\comph[2]{\ensuremath{#1 \star #2}}
 
 \subsection{Sequent Calculus}
 
@@ -299,27 +327,20 @@ for 2-cells say that \compv{}{} is associative with unit $1_\alpha$ for
 any $\alpha$, that \comph{}{} is associative with unit $1_1$, and that
 the interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
 \compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  We treat these
-equations as definitional equalities.
-
-\renewcommand\wftp[2]{\ensuremath{#1 \,\,\, \dsd{type}_{#2}}}
-\newcommand\F[2]{\ensuremath{F_{#1} \,\, #2}}
-\newcommand\U[2]{\ensuremath{U_{#1} \,\, #2}}
-\newcommand\coprd[2]{\ensuremath{#1 + #2}}
-\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
-\renewcommand\irl[1]{\dsd{#1}}
+equations as definitional equalities in all judgements.
 
 Each object $p$ of the mode category determines a category, and objects
 of that category are types; the syntactic judgement \wftp{A}{p} will
 mean that $A$ is an object of the category $p$.  A morphism $\alpha : q
 \ge p$ in the mode category determines an adjunction between categories
 $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {} : p \to q$;
-syntactically, we have $\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and
-$\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We write $P$ for atomic
-propositions, each of which has a designated mode.  To add additional
-structure to a category or to all categories, we can add rules for
-additional connectives; for example, a rule \wftp{\coprd{A}{B}}{p} if
-\wftp{A}{p} and \wftp{B}{p} (parametric in $p$) says that any mode
-$p$ has a coproduct type constructor.
+syntactically, the action on objects is given by $\wftp{\F \alpha A}{p}$
+when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We
+write $P$ for atomic propositions, each of which has a designated mode.
+To add additional structure to a category or to all categories, we can
+add rules for additional connectives; for example, a rule
+\wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric in
+$p$) says that any category $p$ has a coproduct type constructor.
 
 The sequent calculus judgement has the form \seq A \alpha C where
 \wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  That is, the
@@ -408,17 +429,13 @@ The case for \irl{UR} is dual.
 
 \subsection{Admissible Rules}
 
-\paragraph{Respect for 2-cells}
+\paragraph{Adjunction morphisms}
 
 The following rule provides the action of a 2-cell $e : \tc \alpha
-\beta$ on a derivation $D : \seq{A}{\alpha}{B}$.  Semantically, 
-$D$ is interpreted as a map \arrow{\F \alpha A}{B} (say), 
-so to get a map \arrow{\F \beta A}{B} we can precompose with the
-morphism of adjunctions determined by $e$.  
-
-\newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
-\newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
-\newcommand\cut[2]{\ensuremath{{\dsd{cut} \,\, #1 \,\, #2}}}
+\beta$ on a derivation $D : \seq{A}{\alpha}{B}$.  Semantically, $D$ is
+interpreted as a map \arrow{}{\F \alpha A}{B} (say), so to get a map
+\arrow{}{\F \beta A}{B} we can precompose with the $F$ part of the
+morphism of adjunctions determined by $e$.
 
 \[
 \infer[\irl{\tr{-}{-}}]
@@ -426,6 +443,26 @@ morphism of adjunctions determined by $e$.
       {\tc \alpha \beta &
        \seq A {\alpha} {C}}
 \]
+
+Because we will care about the equational properties of this operation,
+we give its definition as a transformation on derivations.  We will
+elide the cases for coproducts, which are included in the companion Agda
+code.  
+
+\[
+\begin{array}{rcl}
+  \tr {e}{\hyp e'} & := & \hyp {(\compv{e'}{e})}\\
+  \tr {e}{\FR \gamma {e'} D} & := & \FR \gamma {\compv{e'}{e}} D \\
+  \tr {e}{\FL D} & := &\FL {\tr{(\comph{1}{e})} D}\\
+  \tr {e}{\UL \gamma {e'} D} & := & \UL \gamma {\compv{e'}{e}} D\\
+  \tr {e}{\UR D} & := & \UR {\tr {(\comph{e}{1})} D} \\
+\end{array}
+\]
+%
+The hypothesis rule and \irl{FR} and \irl{UL} build in some movement
+along a 2-cell, so in those cases we compose the $e$ with the 2-cells
+that are already present.  For \irl{FL} and \irl{UR} (and for the rules
+for coproducts), the operation commutes with the rule.
 
 \paragraph{Identity}
 
@@ -435,7 +472,6 @@ The identity rule is admissible:
       {\seq {A_p} {1} {A_p}}
       {}
 \]
-
 The general strategy is ``apply the invertible rule and then the focus
 rule and then the inductive hypothesis.'' For example, for $\F \alpha
 A$, the following reduces the problem to identity on $A$:
@@ -447,7 +483,14 @@ A$, the following reduces the problem to identity on $A$:
              {1_q : q \ge q & 1 : \tc{\compo{1}{\alpha}}{\alpha} &
                \seq{A}{1}{A}}}
 \]
-$U$ is dual; for atomic propositions identity is a rule.  
+As a function from types to derivations, we have
+\[
+\begin{array}{rcl}
+  \ident{P} & := & \hyp 1\\
+  \ident{\U \alpha A} & := & \UR {\UL 1 1 {\ident A}}\\
+  \ident{\F \alpha A} & := & \FL {\FR 1 1 {\ident A}}\\
+\end{array}
+\]
 
 \paragraph{Cut}
 
@@ -459,21 +502,54 @@ The following cut rule is admissible:
        \seq {B_r} {\alpha} {C_p}}
 \]
 
-\emph{FIXME: how much of the code for these is necessary to understand the
-  rest?}
+For example, consider the principal cut for $F$:
+\[
+\infer[\irl{cut}]
+      {\seq {A} {\compo{\beta}{\alpha}} {C}}
+      {\infer[\irl{FR}]
+             {\seq {A} {\beta} {\F {\alpha_1} B}}
+             {e : \tc{\compo{\gamma}{\alpha_1}}{\beta} & 
+              D : \seq {A} {\gamma} {B}} &
+       \infer[\irl{FL}]
+             {\seq {\F {\alpha_1} B} {\alpha} {C}}
+             {E : {\seq{B}{\compo{\alpha_1}{\alpha}}{C}}}}
+\]
+In this case the cut reduces to
+\[
+\infer[\irl{\tr{-}{-}}]
+      {\seq{A}{\compo{\beta}{\alpha}}{C}}
+      {\comph{e}{1} : \tc {\compo{(\compo{\gamma}{\alpha_1})}{\alpha}} {\compo{\beta}{\alpha}} &
+        \infer[\irl{cut}]
+              {\seq{A}{\compo{\compo{\gamma}{\alpha_1}}{\alpha}}{C}}
+              {D : \seq{A}{\gamma}{B} &
+                E : \seq{B}{\compo{\alpha_1}{\alpha}}{C}}}
+\]
+
+As a transformation on derivations, we have
+\[
+\begin{array}{rcll}
+  \cut {(\hyp e)} {(\hyp {e'})} & := & \hyp {\comph{e}{e'}}\\
+  \cut {(\FR \gamma e D)} {(\FL E)} & := & \tr {\comph{e}{1}} {\cut D E}\\
+  \cut {(\UR D)} {(\UL \gamma e E)} & := & \tr {\comph{1}{e}} {\cut D E}\\
+  \cut D {(\FR \gamma e E)} & := & \FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}\\
+  \cut D {(\UR E)} & := & \UR {\cut D E} \\
+  \cut {(\FL D)} E & := & \FL {\cut D E} & \text{if $E$ is not a right rule} \\
+  \cut {(\UL \gamma e D)} E & := & \UL {\compo{\gamma}{\alpha}} {\comph{e}{1}} {\cut D E} & \text{if $E$ is not a right rule}
+\end{array}
+\]
+
+The first case is for atomic propositions.  The next two cases are the
+principal cuts, when a right rule meets a left rule; these correspond to
+$\beta$-reduction in natural deduction.  The next two cases are
+right-commutative cuts, which push any $D$ inside a right rule for $E$.
+The final two cases are left commutative cuts, which push any $E$ inside
+a left rule for $D$.  The left-commutative and right-commutative cuts
+overlap when $D$ is a left rule and $E$ is a right rule; we resolve this
+arbitrarily by saying that right-commutative cuts take precedence.
+Using the equational theory below, we will be able to prove the
+unrestricted left-commutative rules.
 
 \subsection{Equations}
-
-\newcommand\hyp[1]{\ensuremath{\dsd{hyp}{#1}}}
-\newcommand\Inl[1]{\ensuremath{\dsd{Inl}(#1)}}
-\newcommand\Inr[1]{\ensuremath{\dsd{Inr}(#1)}}
-\newcommand\Case[2]{\ensuremath{\dsd{Case}(#1,#2)}}
-\newcommand\UL[3]{\ensuremath{\dsd{UL}^{#1}_{#2}(#3)}}
-\newcommand\FR[3]{\ensuremath{\dsd{FR}^{#1}_{#2}(#3)}}
-\newcommand\FL[1]{\ensuremath{\dsd{FL}(#1)}}
-\newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
-
-\newcommand\ap[2]{\ensuremath{#1 \approx #2}}
 
 The above definitions of \tr{e}{D} and \ident{A} and \cut{D}{E} give a
 notion of definitional equality of proofs, but to prove the desired
@@ -498,39 +574,53 @@ rule, respectively.  For $F$ and $U$ we have:
 \end{array}
 \]
 
-Second, we have rules arising from the 2-cell structure:
-
+Second, we have rules arising from the 2-cell structure.  For example,
+suppose we construct a derivation by $\FR{\gamma}{e}{D}$ for some
+$\gamma : r \ge q$ and $e : \tc {\compo{\gamma}{\alpha}}{\beta}$, but
+there is another morphism $\gamma' : r \ge q$ such that there is a
+2-cell between $\gamma$ and $\gamma'$.  The following says that we can
+equally well pick $\gamma'$ and suitably transformed $e$ and $D$, 
+using composition and \tr{e_2}{-} to make the types match up.  
 \[
-FIXME
+\infer{\ap{\FR{\gamma}{e}{\tr{e_2}{D'}}}{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D'}}}
+      {e : \tc{\compo{\gamma}{\alpha}}{\beta} & 
+       D : \seq{C}{\gamma'}{A} &
+       e_2 : \tc{\gamma'}{\gamma} & }
+\quad
+\infer{\ap{\UL{\gamma}{e}{\tr{e_2}{D'}}}{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D'}}}
+      {e : \tc{\compo{\gamma}{\alpha}}{\beta} & 
+       D : \seq{C}{\gamma'}{A} &
+       e_2 : \tc{\gamma'}{\gamma} & }
 \]
+Semantically, these rules will be justified by some of the pseudofunctor
+laws for $S : \M \to \Adj$.  
 
-The final class of rules we need are an artifact of the sequent calculus
-presentation, and would not be necessary in a more traditional natural
-deduction calculus; they say that left rules of negatives and right
-rules of positives commute.  
-
+The final rules say that left rules of negatives and right rules of
+positives commute. These are needed to prove the left-commutative cut
+equations in the case where $E$ is a right rule, because we chose to
+give right-commutative cuts precedence defintionally (the full
+left-commutative equations seem necessary for proving some of the
+theorems we want to prove below.)  For $U$ and $F$, we have
 \[
-FIXME
+\infer{\ap{\UL {}{e_2} {\FR {} {e_1} {D}}}{\FR {} {e_4} {\UL {} {e_3} {D}}}}
+      {\compv{(\comph{1}{e_1})}{e_2} \equiv {\compv{(\comph{e_3}{1})}{e_4}}}
 \]
-
-For other positive connectives, such as our running example of
-coproducts, we will also need their $\eta$ rule, and rules commuting
-negative left rules with their right rule
-(e.g. \ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl{D}}} ).
-For other negative connectives, we will need their $\eta$ rule, and
-rules commuting their left rule with the right rules for all positives.  
+We elide the details of the typing of the 2-cells $e_i$, which will not
+be needed below; they are the most general thing that makes both sides
+of the conclusion type check.
 
 \paragraph{Admissible rules}
 
 The following equality rules are admissible.  The proofs have a lot of
 cases (about 800 lines of Agda total) but are not difficult, except for
-somewhat subtle staging.  The rules in each of the following groups are
-proved by mutual induction, and use the preceding groups:
+somewhat subtle staging.  The rules in each of the following groups
+(except the first) are proved by mutual induction, and use the preceding
+groups:
 
 \begin{enumerate}
 \item 
-For each $D$, \tr{e}{D} is functorial in the 2-cell identity and
-vertical composition in $e$: 
+For each $D$, \tr{e}{D} is functorial on the 2-cell identity and
+vertical composition: 
 
 \[
 \infer{\tr{1}{D} \equiv D}{}
@@ -540,11 +630,11 @@ vertical composition in $e$:
 \]
 
 It is important for the remaining proofs that these are definitional
-equalities, not just $\ap{}{}$, so that we can use them ``in context''
-before we know that cut is well-defined on $\ap{}{}$.
+equalities, not $\ap{}{}$, so that we can use them ``in context'' before
+we know that cut is well-defined on $\ap{}{}$.
 
 \item 
-\tr{e}{-} is well-defined on \ap{-}{-}:
+\tr{e}{-} is well-defined on \ap{}{}:
 
 \[
 \infer{\ap{\tr{e}{D}}{\tr{e}{D'}}}
@@ -569,7 +659,8 @@ and \tr{e}{-} commutes with cut:
 \]
 
 \item Cut is well-defined on $\ap{}{}$, identities are units for cut,
-  and cutting with a left rule is equivalent to pushing inside:
+  and the left-commutative cut rules hold always (definitionally, they
+  true only when $E$ is not a right rule).  
 
 \[
 \infer{\ap{\cut{D}{\ident{}}}{D}}
@@ -585,19 +676,68 @@ and \tr{e}{-} commutes with cut:
       {\ap{E}{E'}}
 \]
 
-FIXME cutUL, cutFL, 
+\[
+\infer{\ap{\cut {(\FL D)} E} {\FL {\cut D E}}}{}
+\quad 
+\infer{\ap{\cut {(\UL \gamma e D)} E} {\UL {\compo{\gamma}{\alpha}} {\comph{e}{1}} {\cut D E}}}{}
+\]
 
 \end{enumerate}
 
-Because the operations \tr{e}{-} and \cut{-}{-} are well-defined, we can
-quotient derivations by $\ap{}{}$.  The \wftp{A}{p} and quotiented
-derivations of \seq{A}{1_p}{B} form a category, with identities given by
-\ident{A} and composition given by \cut{}{}.  
+Taken together, these rules imply that for each $p$, there is a category
+whose objects are \wftp{A}{p} and whose morphisms are derivations of
+\seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities given by
+\ident{A} and composition given by \cut{}{}.
 
 \section{Examples}
 \label{sec:examples}
 
+\newcommand\iso{\cong}
+
+For $\wftp{A,B}{p}$, an isomorphism $A \iso B$ consists of a pair $D :
+\seq{A}{1}{B}$ and $E : \seq{B}{1}{A}$ such that
+$\ap{\cut{D}{E}}{\ident{A}}$ and $\ap{\cut{E}{D}}{\ident{B}}$.
+
+We write $D \cuti E$ as an infix notation for \cut{D}{E}.  
+
 \subsection{General}
+
+First, we investigate some properties of $F$ and $U$ that hold for any
+theory $\M$.  The free variables are implicitly universally quantified
+with the most general possible types.
+
+\begin{enumerate}
+\item $F$ and $U$ are functorial on maps: If $D : \seq{A}{1}{B}$ then
+  $\F \alpha D : \seq{\F \alpha A}{1}{\F \alpha B}$ and $\U \alpha D :
+  \seq{\U \alpha A}{1}{\U \alpha B}$.  Moreover, $\ap{\F \alpha
+    {\ident{A}}}{\ident{\F \alpha A}}$ and $\ap{\F \alpha
+    {({D}\cuti{E})}}{{\F \alpha {D}} \cuti {\F \alpha {E}}}$, and analogously
+  for $U$.
+
+\item $F$ and $U$ preserve isomorphisms:
+If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A \cong \F \alpha B$
+and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U \alpha B$.  
+
+\item $\F{\alpha}{A}$ and $\U{\alpha}{B}$ are functorial in $\alpha$: We have
+$F_1 : \F {1}{A} \iso A$ and $U_1 : \U {1} A \iso A$
+and $F_\circ : \F{\alpha}{\F{\beta}{A}} \iso \F {\compo{\beta}{\alpha}} A$
+and $U_\circ : \U \beta {\U \alpha A} \iso \U {\compo{\beta}{\alpha}} A$.  
+
+\item $\F{\alpha}{D}$ and $\U{\alpha}{D}$ are functorial in $\alpha$, up
+  to the isomorphisms above: We have
+\ap{\F {1} D} {{F_1} \cuti {D} \cuti {\inv{F_1}}}
+and 
+\ap{\F {\beta} (\F \alpha D)} {F_\circ \cuti \F {\compo{\alpha}{\beta}} D \cuti \inv{F_\circ}}
+and similarly for $U$.  
+
+\item $F$ and $U$ are adjoint: 
+If $D : \seq{\F \alpha A}{1}{B}$ then
+there is a $D' : \seq{A}{1}{\U \alpha B}$, 
+and vice versa, and round-triping the two is the identity on $D$ up to
+$\ap{}{}$.  
+%%FIXME: naturality
+
+\end{enumerate}
 
 \subsection{Adjoint Triple}
 
