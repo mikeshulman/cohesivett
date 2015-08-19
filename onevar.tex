@@ -81,21 +81,22 @@ composite $FU$ is a comonad on \D, while $UF$ is a monad on $\C$.
 \citet{bentonwadler96adjoint} describe an adjoint $\lambda$-calculus for
 mixing linear logic and structural/cartesian logic, with functors $U$
 from linear to cartesian and $F$ from cartesian to linear; the $! A$
-modality of linear logic arises as the comonad $FU$.
+modality of linear logic arises as the comonad $FU$, while the monad of
+Moggi's metalanguage~\citep{moggi91monad} arises as $UF$.
 \citet{reed09adjoint} describes a generalization of this idea to
 situations involving more than one category: the logic is parametrized
 by a preorder of \emph{modes}, where every mode $p$ determines a
-category, and there is an adjunction between categories $p$ and $q$
-exactly when $p \ge q$.  For example, the intuitionistic modal logics of
-\citet{pfenningdavies} can be encoded as follows: the necessitation
-modality $\Box$ is the comonad $FU$ for an adjunction between ``truth''
-and ``validity'' categories, the lax modality $\bigcirc$ is the monad
-$UF$ of an adjunction between ``truth'' and ``lax truth'' categories,
-while the possibility modality $\diamond$ requires a more complicated
-encoding involving four adjunctions between four categories.  While
-specific adjunctions such as $(- \times A) \la (A \to -)$ arise in any
-logic, adjoint logics provide a formalism for abstract/uninterpreted
-adjunctions.
+category, and there is an adjunction $F \la U$ between categories $p$
+and $q$ (with $F : q \to p$) exactly when $p \ge q$.  For example, the
+intuitionistic modal logics of \citet{pfenningdavies} can be encoded as
+follows: the necessitation modality $\Box$ is the comonad $FU$ for an
+adjunction between ``truth'' and ``validity'' categories, the lax
+modality $\bigcirc$ is the monad $UF$ of an adjunction between ``truth''
+and ``lax truth'' categories, while the possibility modality $\diamond$
+requires a more complicated encoding involving four adjunctions between
+four categories.  While specific adjunctions such as $(- \times A) \la
+(A \to -)$ arise in any logic, adjoint logics provide a formalism for
+abstract/uninterpreted adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
 one adjunction between any two categories (more precisely, there can be
@@ -119,14 +120,14 @@ together; the adjunction says that a map \emph{from} a discrete space is
 the same as a map of sets.  Its right adjoint $\nabla$ equips a set with
 codiscrete cohesion, where all points are stuck together; the adjunction
 says that a map \emph{into} a codiscrete space is the same as a map of
-sets.  The left adjoint of $\Delta$, $\Pi_0$ gives the set of connected
-components---i.e. each element is an equivalence class of points that
-are stuck together.  $\Pi_0$ is important because it translates some of
-the cohesive information about a space into a setting where we no longer
-need to care about the cohesion.  These functors must satisfy some
-additional laws, such as $\Delta$ and $\nabla$ being fully faithful
-(maps between discrete or codiscrete spaces should be the same as maps
-of sets).
+sets.  The left adjoint $\Pi_0 \la \Delta$, gives the set of connected
+components---i.e. each element of $\Pi_0 C$ is an equivalence class of
+points of $C$ that are stuck together.  $\Pi_0$ is important because it
+translates some of the cohesive information about a space into a setting
+where we no longer need to care about the cohesion.  These functors must
+satisfy some additional laws, such as $\Delta$ and $\nabla$ being fully
+faithful (maps between discrete or codiscrete cohesive spaces should be
+the same as maps of sets).
 
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
   theory}~\citep{schreibershulman12cohesive,shulman15realcohesion} is
@@ -172,8 +173,8 @@ $\infty$-categorical case, $\Delta$'s left adjoint $\sh A$ (pronounced
 from the topological/cohesive paths, paths between paths, etc. of $A$.
 This captures the process by which homotopy spaces arise from cohesive
 spaces; for example, one can prove (using some additional axioms) that
-the shape of the topological circle is the algebraic
-circle~\citep{shulman15realcohesion}.  This extension allows synthetic
+the shape of the topological circle is the homotopy
+circle~\citep{shulman15realcohesion}.  This allows synthetic
 homotopy theory to be used in proofs about topological spaces, and opens
 up possibilities for using synthetic homotopy theory as a tool in other
 areas of mathematics and theoretical physics.
@@ -204,7 +205,7 @@ some equations
 The 1-cells generate $F_\Delta \la U_\Delta$ and $F_\nabla \la
 U_\nabla$, while the 2-cells are sufficient to prove that $U_\Delta$ is
 naturally isomorphic to $F_\nabla$, so we can define $\Delta :=
-F_\Delta$, $\nabla := U_\nabla$, and $\Gamma = U_\Delta \cong F_\nabla$
+F_\Delta$, $\nabla := U_\nabla$, and $\Gamma := U_\Delta \cong F_\nabla$
 and have the desired triple adjunction.  Indeed, you may recognize this
 2-category as the ``walking adjunction'' with $\Delta \la \nabla$---that
 is, we give a triple adjunction by saying that the morphism generating
@@ -230,13 +231,13 @@ The logic also has good proof-theoretic properties: we start from a cut-
 and identity-free sequent calculus and prove that cut and identity are
 admissible.  While we do not consider focusing~\citep{andreoli92focus},
 we conjecture that the connectives have the same focusing behavior as in
-\citep{reed09adjoint}: $F$ is postive and $U$ is negative (which
+\citep{reed09adjoint}: $F$ is postive and $U$ is negative (which,
 because limits are negative and colimits are positive, and like-polarity
 connectives compose together well, matches what left and right adjoints
 should preserve).  
 
 To study the basic ideas of 2-categorical adjoint logic, we make a few
-simplifying restrictions for this paper. First, we consider only the
+simplifying restrictions for this paper. First, we consider only 
 single-hypothesis, single-conclusion sequents, defering an investigation
 of products and exponentials to future work.  Second, on the semantic
 side, we consider only 1-categorical semantics of the derivations of the
@@ -268,9 +269,325 @@ a variety of examples of constructions in the logic, including those
 mentioned above, as well as the rules for spatial type theory used
 in~\citep{shulman15realcohesion}.  In Section~\ref{sec:semantics}, we
 describe the 1-categorical semantics of the logic in the settings
-described above.
+described above.  All of the syntactic metatheory of the logic and the
+examples have been formalized in Agda~\citep{norell07thesis}.
 
-%% FIXME: 
+\section{Rules}
+\label{sec:rules}
+
+\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \star #2}}
+
+\subsection{Sequent Calculus}
+
+The logic is parametrized by a 2-category of modes.  We write $p,q$ for
+the 0-cells (modes), $\alpha,\beta,\gamma,\delta$ for the 1-cells $p \ge
+q$, and $e : \tc \alpha \beta$ for the 2-cells.  We write
+\compo{\beta}{\alpha} for 1-cell composition in function composition
+order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
+$\compo{\beta}{\alpha} : r \ge p$), \compv{e_1}{e_2} for vertical
+composition of 2-cells in diagramatic order, and \comph{e_1}{e_2} for
+horizontal composition of 2-cells.  We assume the 2-category is
+strict---the associativity and unit laws for 1-cells hold as equality of
+1-cells, rather than as 2-cells.  For 2-cells, recall that the equations
+say that \compv{}{} is associative with unit $1_\alpha$ for any
+$\alpha$, that \comph{}{} is associative with unit $1_1$, and that the
+interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
+\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  We treat these
+equations as definitional equalities.
+
+\renewcommand\wftp[2]{\ensuremath{#1 \,\,\, \dsd{type}_{#2}}}
+\newcommand\F[2]{\ensuremath{F_{#1} \,\, #2}}
+\newcommand\U[2]{\ensuremath{U_{#1} \,\, #2}}
+\newcommand\coprd[2]{\ensuremath{#1 + #2}}
+\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
+\renewcommand\irl[1]{\dsd{#1}}
+
+Each object $p$ of the mode category determines a category, and objects
+of that category are types; the syntactic judgement \wftp{A}{p} will
+mean that $A$ is an object of the category $p$.  A morphism $\alpha : q
+\ge p$ in the mode category determines an adjunction between categories
+$p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {} : p \to q$;
+syntactically, we have $\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and
+$\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We write $P$ for atomic
+propositions, each of which has a specified mode.  To add additional
+structure to a category or to all categories, we can add rules for
+additional connectives; for example, a rule \wftp{\coprd{A}{B}}{p} if
+\wftp{A}{p} and \wftp{B}{p} (parametric in $p$) says that any mode
+$p$ has a coproduct type constructor.
+
+The sequent calculus judgement has the form \seq A \alpha C where
+\wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  That is, the
+judgement represents a map from an object of some category $q$ to an
+object of another category $p$ along some adjunction $\F \alpha {} \la
+\U \alpha {}$.  Semantically, this mixed-category map can be interpreted
+equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
+  \alpha C}.  In the rules, we write $A_p$ to abbreviate a premise
+\wftp{A}{p}.
+
+The rules for atomic propositions and for $U$ and $F$ are as follows:
+\[
+\begin{small}
+\begin{array}{c}
+\infer[\irl{hyp}]
+      {\seq P \alpha P}
+      {\tc 1 \alpha}
+\\ \\
+\infer[\irl{FL}]
+      {\seq {\F \alpha A_p} {\beta}{C_r}}
+      { \alpha : r \ge q & \beta : q \ge p & 
+        \seq {A_r} {\compo{\alpha}{\beta}} {C_p}
+      }
+\quad
+\infer[\irl{FR}]
+      {\seq {C_r} \beta {\F \alpha A_q}}
+      { \alpha : q \ge p & \beta : r \ge p & 
+        \gamma : r \ge q & \tc{\compo{\gamma}{\alpha}}{\beta} &
+        \seq {C_r} \gamma {A_q}}
+\\ \\
+\infer[\irl{UL}]
+      {\seq {\U \alpha A_q} {\beta} {C_p}}
+      {\alpha : r \ge q &
+        \beta : r \ge p &
+        \gamma : q \ge p &
+        \tc{\compo{\alpha}{\gamma}} {\beta} &
+        \seq{A_q}{\gamma}{C_p}}
+\quad
+\infer[\irl{UR}]
+      {\seq {C_r} {\beta} {\U {\alpha} A_p}}
+      {\alpha : q \ge p &
+       \beta : r \ge q &
+       \seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
+\end{array}
+\end{small}
+\]
+We include the premises for $\alpha$ and $\beta$ because they are
+helpful for reading the rules, but they really part of the
+well-formedness of the conclusion sequent, so we will elide them
+whenever we give derivations.   
+
+The rules for other connectives do not change $\alpha$; for example, we
+can add coproducts to every category with the following rules (where
+$\alpha : q \ge p$):
+\[
+\begin{small}
+\infer[\irl{Inl}]
+      {\seq {C_q} {\alpha} {\coprd{A_p}{B_p}}}
+      {\seq {C_q} {\alpha} {A_p}}
+\quad
+\infer[\irl{Inr}]
+      {\seq {C_q} {\alpha} {\coprd{A_p}{B_p}}}
+      {\seq {C_q} {\alpha} {B_p}}
+\quad
+\infer[\irl{Case}]
+      {\seq {\coprd{A_q}{B_q}} {\alpha} {C_p}}
+      {\seq {A_q} {\alpha} {C_p} & 
+       \seq {B_q} {\alpha} {C_p} 
+      }
+\end{small}
+\]
+Alternatively, we could restrict these rules to where $p$ is some
+specific set of modes to have coproducts only in those categories.
+
+\emph{FIXME: need to explain what's going on, but let's see where we're going first...}
+
+\subsection{Admissible Rules}
+
+\paragraph{Respect for 2-cells}
+
+The following rule provides the action of a 2-cell $e : \tc \alpha
+\beta$ on a derivation $D : \seq{A}{\alpha}{B}$.  Semantically, 
+$D$ is interpreted as a map \arrow{\F \alpha A}{B} (say), 
+so to get a map \arrow{\F \beta A}{B} we can precompose with the
+morphism of adjunctions determined by $e$.  
+
+\newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
+\newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\cut[2]{\ensuremath{{\dsd{cut} \,\, #1 \,\, #2}}}
+
+\[
+\infer[\irl{\tr{-}{-}}]
+      {\seq A {\beta} B}
+      {\tc \alpha \beta &
+       \seq A {\alpha} {C}}
+\]
+
+\paragraph{Identity}
+
+The identity rule is admissible:
+\[
+\infer[\irl{ident}]
+      {\seq {A_p} {1} {A_p}}
+      {}
+\]
+
+The general strategy is ``apply the invertible rule and then the focus
+rule and then the inductive hypothesis.'' For example, for $\F \alpha
+A$, the following reduces the problem to identity on $A$:
+\[
+\infer[\irl{FL}]
+      {\seq{\F {\alpha : q \ge p} A}{1}{\F \alpha A}}
+      {\infer[\irl{FR}]
+             {\seq{A}{\alpha}{\F \alpha A}}
+             {1_q : q \ge q & 1 : \tc{\compo{1}{\alpha}}{\alpha} &
+               \seq{A}{1}{A}}}
+\]
+$U$ is dual; for atomic propositions identity is a rule.  
+
+\paragraph{Cut}
+
+The following cut rule is admissible:
+\[
+\infer[\irl{cut}]
+      {\seq {A_r} {\compo{\beta}{\alpha}} {C_p}}
+      {\seq {A_r} {\beta} {B_q} &
+       \seq {B_r} {\alpha} {C_p}}
+\]
+
+\emph{FIXME: how much of the code for these is necessary to understand the
+  rest?}
+
+\subsection{Equations}
+
+\newcommand\hyp[1]{\ensuremath{\dsd{hyp}{#1}}}
+\newcommand\Inl[1]{\ensuremath{\dsd{Inl}(#1)}}
+\newcommand\Inr[1]{\ensuremath{\dsd{Inr}(#1)}}
+\newcommand\Case[2]{\ensuremath{\dsd{Case}(#1,#2)}}
+\newcommand\UL[3]{\ensuremath{\dsd{UL}^{#1}_{#2}(#3)}}
+\newcommand\FR[3]{\ensuremath{\dsd{FR}^{#1}_{#2}(#3)}}
+\newcommand\FL[1]{\ensuremath{\dsd{FL}(#1)}}
+\newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
+
+\newcommand\ap[2]{\ensuremath{#1 \approx #2}}
+
+The above definitions of \tr{e}{D} and \ident{A} and \cut{D}{E} give a
+notion of definitional equality of proofs, but to prove the desired
+equations in the examples below, we will need some additional
+``propositional'' equations.  We define a judgement \ap{D}{D'} on two
+derivations $D,D' : \seq{A}{\alpha}{C}$ to be the least congruence
+closed under the following rules.  First, we have uniqueness/$\eta$
+rules, which say that any map from a positive/into a negative is equal
+to a derivation that begins with an application of the left/right rule,
+respectively, and then cuts the original derivation with the right/left
+rule, respectively.  For $F$ and $U$ we have:
+
+\[
+\begin{array}{l}
+\infer[\irl{F\eta}]
+      {\ap{D}{\FL {\cut{(\FR 1 1 {\ident{A}})}{D}} }}
+      {D : \seq{\F \alpha A}{\beta}{C}}
+\quad
+\infer[\irl{U\eta}]
+      {\ap{D}{\UR {\cut{D}{(\UL 1 1 {\ident{A}})}}}}
+      {D : \seq{C}{\beta}{\U \alpha A}}
+\end{array}
+\]
+
+Second, we have rules arising from the 2-cell structure:
+
+\[
+FIXME
+\]
+
+The final class of rules we need are an artifact of the sequent calculus
+presentation, and would not be necessary in a more traditional natural
+deduction calculus; they say that left rules of negatives and right
+rules of positives commute.  
+
+\[
+FIXME
+\]
+
+For other positive connectives, such as our running example of
+coproducts, we will also need their $\eta$ rule, and rules commuting
+negative left rules with their right rule
+(e.g. \ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl{D}}} ).
+For other negative connectives, we will need their $\eta$ rule, and
+rules commuting their left rule with the right rules for all positives.  
+
+\paragraph{Admissible rules}
+
+The following equality rules are admissible.  The proofs have a lot of
+cases (about 800 lines of Agda total) but are not difficult, except for
+somewhat subtle staging.  The rules in each of the following groups are
+proved by mutual induction, and use the preceding groups:
+
+\begin{enumerate}
+\item 
+For each $D$, \tr{e}{D} is functorial in the 2-cell identity and
+vertical composition in $e$: 
+
+\[
+\infer{\tr{1}{D} \equiv D}{}
+\qquad
+\infer{\tr{(\compv{e_1}{e_2})}{D} \equiv \tr{e_2}{\tr{e_1}{D}}}
+      {}
+\]
+
+It is important for the remaining proofs that these are definitional
+equalities, not just $\ap{}{}$, so that we can use them ``in context''
+before we know that cut is well-defined on $\ap{}{}$.
+
+\item 
+\tr{e}{-} is well-defined on \ap{-}{-}:
+
+\[
+\infer{\ap{\tr{e}{D}}{\tr{e}{D'}}}
+      {\ap{D}{D'}}
+\]
+
+and \tr{e}{-} commutes with cut:
+
+\[
+\infer{\ap{\tr{(\comph{e}{e'})}{\cut{D}{D'}}}{\cut{(\tr{e}{D})}{(\tr{e'}{D'})}}}
+      {e : \tc{\alpha}{\alpha'} &
+       e' : \tc{\beta}{\beta'} &
+       D : \seq{A}{\alpha}{B} &
+       D' : \seq{B}{\beta}{C}}
+\]
+
+\item Cut is associative:
+
+\[
+\infer{\ap{\cut{D_1}{(\cut{D_2}{D_3})}}{\cut{(\cut{D_1}{D_2})}{D_3}}}
+      {}
+\]
+
+\item Cut is well-defined on $\ap{}{}$, identities are units for cut,
+  and cutting with a left rule is equivalent to pushing inside:
+
+\[
+\infer{\ap{\cut{D}{\ident{}}}{D}}
+      {}
+\quad
+\infer{\ap{\cut{\ident{}}{D}}{D}}
+      {}
+\quad
+\infer{\ap{\cut{D}{E}}{\cut{D'}{E}}}
+      {\ap{D}{D'}}
+\quad
+\infer{\ap{\cut{D}{E}}{\cut{D}{E'}}}
+      {\ap{E}{E'}}
+\]
+
+FIXME cutUL, cutFL, 
+
+\end{enumerate}
+
+Because the operations \tr{e}{-} and \cut{-}{-} are well-defined, we can
+quotient derivations by $\ap{}{}$.  The \wftp{A}{p} and quotiented
+derivations of \seq{A}{1_p}{B} form a category, with identities given by
+\ident{A} and composition given by \cut{}{}.  
+
+\section{Examples}
+\label{sec:examples}
+
+\subsection{General}
+
+\subsection{Adjoint Triple}
+
+\subsection{Reflection}
 
 %% The first presentation of cohesive homotopy type
 %% theory~\citep{schreibershulman12cohesive} did not extend the judgement
@@ -316,6 +633,13 @@ described above.
 %% \cong F'$.  However, in the case of an adjoint triple, we want $U \cong
 %% F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
 %% same.  
+
+\section{Semantics}
+\label{sec:semantics}
+
+\section{Conclusion}
+
+Discuss \sh{} here?
 
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
