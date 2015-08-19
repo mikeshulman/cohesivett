@@ -132,24 +132,27 @@ the same as maps of sets).
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
   theory}~\citep{schreibershulman12cohesive,shulman15realcohesion} is
 currently being explored in the setting of homotopy type theory and
-univalent foundations~\citep{voevodsky06note,uf13hott-book}.  Homotopy
-type theory uses Martin-L\"of's intensional type theory as a logic
-\emph{homotopy spaces}: the identity type provides an $\infty$-groupoid
-structure on each type~\citep{...}, and spaces such as the spheres can
-be defined by their universal properties using higher inductive
-types~\citep{...}.  Theorems from homotopy theory can be proved
-\emph{synthetically} in this logic~\citep{ls13pi1s1,lb13pinsn,...}, and
-these proofs can be interpreted in a variety of models~\citep{...}.
-However, an important but subtle distinction is that there is no
-topology (in the sense of \citep{scott,etc}) in synthetic homotopy
-theory: the ``homotopical circle'' is defined as a higher inductive
-type, essentially ``the free $\infty$-groupoid on a point and a loop,''
-which a priori has nothing to do with the ``topological circle,'' $\{
-(x,y) \in \mathbb{R}^2 \mid x^2 + y^2 = 1\}$, where $\mathbb{R}^2$ has
-the usual topology.  This is both a blessing and a curse: on the one
-hand, proofs are not encumbered by topological details; but on the
-other, internally to homotopy type theory, we cannot use synthetic
-theorems to prove facts about topological spaces.
+univalent
+foundations~\citep{voevodsky06homotopy,uf13hott-book,awodeywarren09identity,warren08thesis,gambinogarner08id,lumsdaine09omega,vandenberggarner10groupoids,streichersomething}.
+Homotopy type theory uses Martin-L\"of's intensional type theory as a
+logic of \emph{homotopy spaces}: the identity type provides an
+$\infty$-groupoid structure on each type, and spaces such as the spheres
+can be defined by their universal properties using higher inductive
+types~\citep{lumsdaine+13hits,shulman11hitsblog,lumsdaine11hitsblog}.
+Theorems from homotopy theory can be proved \emph{synthetically} in this
+logic~\citep{ls13pi1s1,lb13pinsn,lf14emspace,lb15cubical,favonia14covering,cavallo14mayervietoris},
+and these proofs can be interpreted in a variety of
+models~\citep{shulman13inversediag,voevodsky+12simpluniv,coquand+13cubical}.  However, an important but
+subtle distinction is that there is no topology (in the sense of
+\citep{scott,etc}) in synthetic homotopy theory: the ``homotopical
+circle'' is defined as a higher inductive type, essentially ``the free
+$\infty$-groupoid on a point and a loop,'' which a priori has nothing to
+do with the ``topological circle,'' $\{ (x,y) \in \mathbb{R}^2 \mid x^2
++ y^2 = 1\}$, where $\mathbb{R}^2$ has the usual topology.  This is both
+a blessing and a curse: on the one hand, proofs are not encumbered by
+topological details; but on the other, internally to homotopy type
+theory, we cannot use synthetic theorems to prove facts about
+topological spaces.
 
 Cohesive homotopy type theory combines the synthetic homotopy theory of
 homotopy type theory with the synthetic topology of axiomatic cohesion,
@@ -225,7 +228,7 @@ $\sharp := \nabla\Gamma$ are themselves adjoint).  Moreover, we can use
 different mode 2-categories to add aditional structure; for example,
 moving from the walking adjunction to the walking reflection (taking
 $\Delta \nabla = 1$) additionally gives that $\Delta$ and $\nabla$
-are full and faithful, and that $\flat$ and $\sharp$ are idempotent,
+are full and faithful and that $\flat$ and $\sharp$ are idempotent,
 which are some of the additional conditions for axiomatic cohesion.
 The logic also has good proof-theoretic properties: we start from a cut-
 and identity-free sequent calculus and prove that cut and identity are
@@ -281,19 +284,20 @@ examples have been formalized in Agda~\citep{norell07thesis}.
 
 \subsection{Sequent Calculus}
 
-The logic is parametrized by a 2-category of modes.  We write $p,q$ for
-the 0-cells (modes), $\alpha,\beta,\gamma,\delta$ for the 1-cells $p \ge
-q$, and $e : \tc \alpha \beta$ for the 2-cells.  We write
+The logic is parametrized by a strict 2-category of modes.  We write
+$p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p \ge q$
+for the 1-cells, and $e : \tc \alpha \beta$ for the 2-cells.  We write
 \compo{\beta}{\alpha} for 1-cell composition in function composition
 order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
 $\compo{\beta}{\alpha} : r \ge p$), \compv{e_1}{e_2} for vertical
 composition of 2-cells in diagramatic order, and \comph{e_1}{e_2} for
-horizontal composition of 2-cells.  We assume the 2-category is
-strict---the associativity and unit laws for 1-cells hold as equality of
-1-cells, rather than as 2-cells.  For 2-cells, recall that the equations
-say that \compv{}{} is associative with unit $1_\alpha$ for any
-$\alpha$, that \comph{}{} is associative with unit $1_1$, and that the
-interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
+horizontal composition of 2-cells in ``congruence of \compo{}{}'' order
+(if $e_1 : \tc \alpha {\alpha'}$ and $e_2 : \tc \beta \beta'$ then
+$\comph{e_1}{e_2} :
+\tc{\compo{\alpha}{\beta}}{\compo{\alpha'}{\beta'}}$).  The equations
+for 2-cells say that \compv{}{} is associative with unit $1_\alpha$ for
+any $\alpha$, that \comph{}{} is associative with unit $1_1$, and that
+the interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
 \compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  We treat these
 equations as definitional equalities.
 
@@ -311,7 +315,7 @@ mean that $A$ is an object of the category $p$.  A morphism $\alpha : q
 $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {} : p \to q$;
 syntactically, we have $\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and
 $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We write $P$ for atomic
-propositions, each of which has a specified mode.  To add additional
+propositions, each of which has a designated mode.  To add additional
 structure to a category or to all categories, we can add rules for
 additional connectives; for example, a rule \wftp{\coprd{A}{B}}{p} if
 \wftp{A}{p} and \wftp{B}{p} (parametric in $p$) says that any mode
@@ -323,55 +327,42 @@ judgement represents a map from an object of some category $q$ to an
 object of another category $p$ along some adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
-  \alpha C}.  In the rules, we write $A_p$ to abbreviate a premise
-\wftp{A}{p}.
+  \alpha C}.  In the rules, we write $A_p$ to refer to a type $A$ with
+an elided premise \wftp{A}{p}.
 
 The rules for atomic propositions and for $U$ and $F$ are as follows:
 \[
-\begin{small}
 \begin{array}{c}
 \infer[\irl{hyp}]
       {\seq P \alpha P}
       {\tc 1 \alpha}
 \\ \\
 \infer[\irl{FL}]
-      {\seq {\F \alpha A_p} {\beta}{C_r}}
-      { \alpha : r \ge q & \beta : q \ge p & 
-        \seq {A_r} {\compo{\alpha}{\beta}} {C_p}
+      {\seq {\F {\alpha : r \ge q} A_r} {\beta : q \ge p}{C_p}}
+      {\seq {A_r} {\compo{\alpha}{\beta}} {C_p}
       }
 \quad
 \infer[\irl{FR}]
-      {\seq {C_r} \beta {\F \alpha A_q}}
-      { \alpha : q \ge p & \beta : r \ge p & 
-        \gamma : r \ge q & \tc{\compo{\gamma}{\alpha}}{\beta} &
+      {\seq {C_r} {\beta : r \ge p} {\F {\alpha : q \ge p} A_q}}
+      { \gamma : r \ge q & \tc{\compo{\gamma}{\alpha}}{\beta} &
         \seq {C_r} \gamma {A_q}}
 \\ \\
 \infer[\irl{UL}]
-      {\seq {\U \alpha A_q} {\beta} {C_p}}
-      {\alpha : r \ge q &
-        \beta : r \ge p &
-        \gamma : q \ge p &
+      {\seq {\U {\alpha : r \ge q} A_q} {\beta : r \ge p} {C_p}}
+      { \gamma : q \ge p &
         \tc{\compo{\alpha}{\gamma}} {\beta} &
         \seq{A_q}{\gamma}{C_p}}
 \quad
 \infer[\irl{UR}]
-      {\seq {C_r} {\beta} {\U {\alpha} A_p}}
-      {\alpha : q \ge p &
-       \beta : r \ge q &
-       \seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
+      {\seq {C_r} {\beta : r \ge q} {\U {\alpha : q \ge p} A_p}}
+      {\seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
 \end{array}
-\end{small}
 \]
-We include the premises for $\alpha$ and $\beta$ because they are
-helpful for reading the rules, but they really part of the
-well-formedness of the conclusion sequent, so we will elide them
-whenever we give derivations.   
 
 The rules for other connectives do not change $\alpha$; for example, we
 can add coproducts to every category with the following rules (where
 $\alpha : q \ge p$):
 \[
-\begin{small}
 \infer[\irl{Inl}]
       {\seq {C_q} {\alpha} {\coprd{A_p}{B_p}}}
       {\seq {C_q} {\alpha} {A_p}}
@@ -385,12 +376,35 @@ $\alpha : q \ge p$):
       {\seq {A_q} {\alpha} {C_p} & 
        \seq {B_q} {\alpha} {C_p} 
       }
-\end{small}
 \]
 Alternatively, we could restrict these rules to where $p$ is some
 specific set of modes to have coproducts only in those categories.
 
-\emph{FIXME: need to explain what's going on, but let's see where we're going first...}
+To understand the rules for $F$ and $U$, it is helpful to begin with
+\irl{FL} and \irl{UR}.  In the special case where $\beta$ is 1, these
+rules pass from \seq{\F {\alpha}{A}}{1}{C} and \seq{A}{1}{\U{\alpha}{C}}
+to \seq{A}{\alpha}{C}, which makes sense because the judgement
+\seq{A}{\alpha}{C} is intended to mean either/both of these.  When
+$\beta$ is not 1, these rules also express some functoriality of
+$\F{\compo{\alpha}{\beta}}{}$ and $\U{\compo{\beta}{\alpha}}$ (see
+below).  While we do not formally give a focused sequent calculus, we
+conjecture that these two rules are \emph{invertible}: whenever you have
+\F{\alpha}{A} on the left or \U{\alpha}{A} on the right, you can
+immediately apply the rule, no matter what is on the other side of the
+sequent.  
+
+On the other hand, \irl{UL} and \irl{FR} are not rules that you can
+apply at any time, because they involve some constraints that may not be
+satisfied.  Consider \irl{FR}: we have $\alpha : q \ge p$ and $\beta : r
+\ge p$ and want to reduce proving \F{\alpha}{A} from $C$ to proving $A$
+from $C$.  However, there is not necessarily any relationship between
+$C$'s mode $r$ and $A$'s mode $q$, because all we know is that both of
+these are bigger than $p$.  Thus, to form a premise sequent, we need to
+choose a $\gamma : r \ge q$.  To make adjunctions generated by different
+morphisms be different, it is important that we choose not just any
+$\gamma$, but one where the triangle that it forms with $\alpha$ and
+$\beta$ is filled by a 2-cell, which is the second premise of the rule.
+The case for \irl{UR} is dual.  
 
 \subsection{Admissible Rules}
 
