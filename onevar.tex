@@ -32,7 +32,7 @@
 \end{small}
 \smallskip}
 
-\newcommand{\inv}[1]{\ensuremath{#1^{-1}}}
+\newcommand{\inv}[1]{\ensuremath{{#1}^{-1}}}
 
 \newcommand{\C}{\ensuremath{\mathcal{C}}}
 \newcommand{\D}{\ensuremath{\mathcal{D}}}
@@ -69,6 +69,11 @@
 \newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
 
 \newcommand\ap[2]{\ensuremath{#1 \approx #2}}
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \: {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \: {#2}}}
+
+%% \newtheorem{\example}[theorem]{Example}
 
 \title{Adjoint Logic with a 2-Category of Modes}
 
@@ -124,7 +129,7 @@ modality $\bigcirc$ is the monad $UF$ of an adjunction between ``truth''
 and ``lax truth'' categories, while the possibility modality $\diamond$
 requires a more complicated encoding involving four adjunctions between
 four categories.  While specific adjunctions such as $(- \times A) \la
-(A \to -)$ arise in any logic, adjoint logics provide a formalism for
+(A \to -)$ arise in many logics, adjoint logic provides a formalism for
 abstract/uninterpreted adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
@@ -134,7 +139,7 @@ it is sometimes useful to consider multiple different adjunctions
 between the same two categories.  A motivating example is Lawvere's
 axiomatic cohesion~\citep{lawvereXXcohesion}, a general categorical
 interface that describes \emph{cohesive spaces}, such as topological
-spaces and manifolds with differentiable or smooth structures.  The
+spaces, or manifolds with differentiable or smooth structures.  The
 interface consists of two categories \C and $\mathcal{S}$, and a
 quadruple of adjoint functors $\Pi_0,\Gamma : \mathcal{C} \to
 \mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to \mathcal{C}$ where
@@ -161,8 +166,7 @@ the same as maps of sets).
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
   theory}~\citep{schreibershulman12cohesive,shulman15realcohesion} is
 currently being explored in the setting of homotopy type theory and
-univalent
-foundations~\citep{voevodsky06homotopy,uf13hott-book,awodeywarren09identity,warren08thesis,gambinogarner08id,lumsdaine09omega,vandenberggarner10groupoids,streichersomething}.
+univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
 Homotopy type theory uses Martin-L\"of's intensional type theory as a
 logic of \emph{homotopy spaces}: the identity type provides an
 $\infty$-groupoid structure on each type, and spaces such as the spheres
@@ -171,10 +175,10 @@ types~\citep{lumsdaine+13hits,shulman11hitsblog,lumsdaine11hitsblog}.
 Theorems from homotopy theory can be proved \emph{synthetically} in this
 logic~\citep{ls13pi1s1,lb13pinsn,lf14emspace,lb15cubical,favonia14covering,cavallo14mayervietoris},
 and these proofs can be interpreted in a variety of
-models~\citep{shulman13inversediag,voevodsky+12simpluniv,coquand+13cubical}.  However, an important but
-subtle distinction is that there is no topology (in the sense of
-\citep{scott,etc}) in synthetic homotopy theory: the ``homotopical
-circle'' is defined as a higher inductive type, essentially ``the free
+models~\citep{shulman13inversediag,voevodsky+12simpluniv,coquand+13cubical}.
+However, an important but subtle distinction is that there is no
+\emph{topology} in synthetic homotopy theory: the ``homotopical circle''
+is defined as a higher inductive type, essentially ``the free
 $\infty$-groupoid on a point and a loop,'' which a priori has nothing to
 do with the ``topological circle,'' $\{ (x,y) \in \mathbb{R}^2 \mid x^2
 + y^2 = 1\}$, where $\mathbb{R}^2$ has the usual topology.  This is both
@@ -240,61 +244,69 @@ naturally isomorphic to $F_\nabla$, so we can define $\Delta :=
 F_\Delta$, $\nabla := U_\nabla$, and $\Gamma := U_\Delta \cong F_\nabla$
 and have the desired triple adjunction.  Indeed, you may recognize this
 2-category as the ``walking adjunction'' with $\Delta \la \nabla$---that
-is, we give a triple adjunction by saying that the morphism generating
-the left adjoint is itself left adjoint to the morphism generating the
+is, we give a triple adjunction by saying that the mode morphism generating
+the left adjoint is itself left adjoint to the mode morphism generating the
 right adjoint.
 
-The resulting logic has a good definition-to-theorem ratio, in the sense
-that from some simple sequent calculus rules for $F$ and $U$, we can
-prove a variety of general facts that are true for any mode 2-category
-($F_\alpha$ and $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a
-comonad and $U_\alpha F_\alpha$ is a monad; $F_\alpha$ preserves
-colimits and $U_\alpha$ preserves limits), as well as facts specific to
-a particular theory (e.g. for the triple adjunction above, $\Gamma$
-preserves both colimits and limits, because it is an equivalent
-$U_\Delta$ and $F_\nabla$; the comonad $\flat := \Delta\Gamma$ and monad
-$\sharp := \nabla\Gamma$ are themselves adjoint).  Moreover, we can use
-different mode 2-categories to add aditional structure; for example,
-moving from the walking adjunction to the walking reflection (taking
-$\Delta \nabla = 1$) additionally gives that $\Delta$ and $\nabla$
-are full and faithful and that $\flat$ and $\sharp$ are idempotent,
-which are some of the additional conditions for axiomatic cohesion.
-The logic also has good proof-theoretic properties: we start from a cut-
-and identity-free sequent calculus and prove that cut and identity are
+The main judgement of the logic is a ``mixed-category'' entailment
+judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
+and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
+from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
+map $F_\alpha A \to C$ or $A \to U_\alpha C$.  However, taking the
+mixed-mode judgement as primitive makes for a nicer sequent calculus:
+$U$ and $F$ can be specified independently from each other, by left and
+right rules, in such a way that identity and cut (composition) are
 admissible.  While we do not consider focusing~\citep{andreoli92focus},
-we conjecture that the connectives have the same focusing behavior as in
-\citep{reed09adjoint}: $F$ is postive and $U$ is negative (which,
-because limits are negative and colimits are positive, and like-polarity
-connectives compose together well, matches what left and right adjoints
-should preserve).  
+we conjecture that the connectives can be given the same focusing
+behavior as in \citep{reed09adjoint}: $F$ is postive and $U$ is negative
+(which, because limits are negative and colimits are positive, and
+like-polarity connectives compose together well, matches what left and
+right adjoints should preserve).
 
-\emph{FIXME: explain the gap between the category theory and the proof
-theory.}
+The resulting logic has a good definition-to-theorem ratio: from these
+simple sequent calculus rules for $F$ and $U$, we can prove a variety of
+general facts that are true for any mode 2-category ($F_\alpha$ and
+$U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
+F_\alpha$ is a monad; $F_\alpha$ preserves colimits and $U_\alpha$
+preserves limits), as well as facts specific to a particular theory
+(e.g. for the triple adjunction above, $\Gamma$ preserves both colimits
+and limits, because it is an equivalent $U_\Delta$ and $F_\nabla$; the
+comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
+themselves adjoint).  Moreover, we can use different mode 2-categories
+to add aditional structure; for example, moving from the walking
+adjunction to the walking reflection (taking $\Delta \nabla = 1$)
+additionally gives that $\Delta$ and $\nabla$ are full and faithful and
+that $\flat$ and $\sharp$ are idempotent, which are some of the
+additional conditions for axiomatic cohesion.
 
 To study the basic ideas of 2-categorical adjoint logic, we make a few
-simplifying restrictions for this paper. First, we consider only 
+simplifying restrictions for this paper. First, we consider only
 single-hypothesis, single-conclusion sequents, defering an investigation
-of products and exponentials to future work.  Second, on the semantic
-side, we consider only 1-categorical semantics of the derivations of the
-logic, rather than the $\infty$-groupoid semantics that we are
-ultimately interested in.  More precisely, for a specific 2-category
-\M\/ of modes, we can interpret the logic using a pseudofunctor $S : \M
-\to \Adj$, where $\Adj$ is the 2-category of categories, adjunctions,
-and morphisms of adjunctions (conjugate natural transformation).  By
-$S$, each mode determines a 1-category, and derivations in the logic are
-interprered as morphisms in these categories.  The action of $S$ on 1-
-and 2-cells is used to interpret $F$ and $U$.  Third, we consider only a
-logic of simple-types, rather than a dependent type theory.
+of products and exponentials to future work.  
 
-Because of the last restriction, we do not have an identity type
-available for proving equalities of proof terms.  However, we need an
-equational theory to make many of the statements above (e.g. ``$UF$ is a
-monad'' require proving some equational laws), and the definitional
-equalities arising from admissibility of cut and identity are not
-sufficient.  Thus, in addition to the sequent calculus itself, we give
-an equality judgement on sequent calculus derivations.  This judgement
-is interpreted by actual equality of morphisms in the semantics above,
-but we intend these rules to be propositional equalities in an eventual
+Second, on the semantic side, we consider only 1-categorical semantics
+of the derivations of the logic, rather than the $\infty$-groupoid
+semantics that we are ultimately interested in.  More precisely, for any
+2-category \M\/ of modes, we can interpret the logic using a
+pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
+categories, adjunctions, and morphisms of adjunctions (conjugate natural
+transformation).  By $S$, each mode determines a 1-category, and
+derivations in the logic are interprered as morphisms in these
+categories.  The action of $S$ on 1- and 2-cells is used to interpret
+$F$ and $U$.  We show that the syntax forms such a pseudofunctor, and
+conjecture that the syntax is initial in some category or 2-category of
+pseudofunctors, but have not yet tried to make this precise.
+
+Third, we consider only a logic of simple-types, rather than a dependent
+type theory.  Consequently, we do not have an identity type available
+for proving equalities of proof terms.  However, we need an equational
+theory to make many of the statements above (e.g. ``$UF$ is a monad''
+require proving some equational laws), and the definitional equalities
+arising from admissibility of cut and identity are not sufficient.
+Thus, in addition to the sequent calculus itself, we give an equality
+judgement on sequent calculus derivations.  This judgement is
+interpreted by actual equality of morphisms in the semantics above, but
+we intend these rules to be propositional equalities in an eventual
 adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
@@ -303,9 +315,9 @@ derivations.  In Section~\ref{sec:examples}, we give a variety of
 examples of constructions in the logic, including those mentioned above,
 as well as the rules for spatial type theory used
 in~\citep{shulman15realcohesion}.  In Section~\ref{sec:semantics}, we
-describe the 1-categorical semantics of the logic in the settings
-described above.  All of the syntactic metatheory of the logic and the
-examples have been formalized in Agda~\citep{norell07thesis}.
+describe the 1-categorical semantics of the logic.  All of the syntactic
+metatheory of the logic and the examples have been formalized in
+Agda~\citep{norell07thesis}.
 
 \section{Rules}
 \label{sec:rules}
@@ -348,8 +360,8 @@ judgement represents a map from an object of some category $q$ to an
 object of another category $p$ along some adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
-  \alpha C}.  In the rules, we write $A_p$ to refer to a type $A$ with
-an elided premise \wftp{A}{p}.
+  \alpha C}.  In the rules, we write $A_p$ indicate an elided premise
+\wftp{A}{p}.
 
 The rules for atomic propositions and for $U$ and $F$ are as follows:
 \[
@@ -425,7 +437,59 @@ choose a $\gamma : r \ge q$.  To make adjunctions generated by different
 morphisms be different, it is important that we choose not just any
 $\gamma$, but one where the triangle that it forms with $\alpha$ and
 $\beta$ is filled by a 2-cell, which is the second premise of the rule.
-The case for \irl{UR} is dual.  
+The case for \irl{UR} is dual.  We now give some examples to illustrate
+the rules.  
+
+\paragraph{Functoriality} For example, the functorial action of $F$ on terms is
+  derived as follows: given $\alpha : q \ge p$ and $D :
+  \seq{A}{1_q}{B}$, we have
+\[
+\infer[\irl{FL}]
+      {\seq{\F \alpha A}{1_p}{\F \alpha B}}
+      {\infer[\irl{FR}]
+        {\seq{A}{\compo{\alpha} {1_p}}{\F \alpha B}}
+        {\infer{1_q : q \ge q}{} & \infer{1 : \tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}}{} & D : \seq{A}{1_q}{B}}}
+\]
+Because \M\/ is a strict 2-category, the identity 2-cell has type 
+\tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.  We will often apply
+these equations silently.  
+
+\paragraph{Comonad} Define $\Bx \alpha A := \F \alpha (\U \alpha A)$
+where $\alpha : q \ge p$.
+The comonad operations are defined as follows:
+
+\[
+\begin{small}
+\begin{array}{c}
+\infer[\irl{FL}]{\seq{\Bx{\alpha}{P}}{1}{P}}
+      {\infer[\irl{UL}]
+        {\seq{\U \alpha P}{\alpha}{A}}
+        {\infer{1 : p \ge p}{} & \infer{1 : \tc{\compo{\alpha}{1_p}}{\alpha}}{} &
+          \infer[\irl{hyp}]{\seq{P}{1}{P}}{\infer{1 : \tc{1}{1}}{}}  }}
+\\
+\infer[\irl{FL}]{\seq{\Bx{\alpha}{P}}{1}{\Bx{\alpha}{\Bx{\alpha}{P}}}}
+      {\infer[\irl{FR}]{\seq{\U{\alpha}{P}}{\alpha}{\Bx{\alpha}{\Bx{\alpha}{P}}}}
+        {\infer{1 : q \ge q}{} & 
+          \infer{1 : \tc {\alpha} {\alpha}}{} & 
+          \infer[\irl{UR}]
+                {\seq{\U{\alpha}{P}}{1}{\U {\alpha} {\Bx \alpha P}}}
+                {\infer[\irl{FR}]{\seq{\U{\alpha}{P}}{\alpha}{\Bx \alpha P}}
+                  {\infer{1 : q \ge q}{} &
+                   \infer{1 : \tc \alpha \alpha}{} &
+                   \infer[\irl{UR}]{\seq{\U{\alpha}{P}}{1}{\U \alpha P}}
+                         {\infer[\irl{UL}]{\seq{\U \alpha P}{\alpha}{P}}
+                           {\infer{1 : p \ge p}{} & \infer{1 : \tc {\alpha} {\alpha}}{} &
+                             \infer[\irl{hyp}]{\seq{P}{1}{P}}{\infer{\tc{1}{1}}{}}
+                         }}}}}}
+\end{array}
+\end{small}
+\]
+%
+The same derivations work for an arbitrary type $A$ if we replace the
+final premise by the admissible identity princinple \seq{A}{1}{A},
+defined below.  Using a proof term notation, we write the above
+derivations as \FL{\UL{1}{1}{\hyp{1}}} and
+\FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
 
 \subsection{Admissible Rules}
 
@@ -549,6 +613,21 @@ arbitrarily by saying that right-commutative cuts take precedence.
 Using the equational theory below, we will be able to prove the
 unrestricted left-commutative rules.
 
+\paragraph{Adjunction} As an example, we give one of the maps from the
+bijection-on-hom-sets adjunction for $F$ and $U$: given $\alpha : q \ge
+p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
+{\seq{A}{1}{\U \alpha B}}:
+\[
+\infer[\irl{UR}]{\seq{A}{1}{\U \alpha B}}
+      {\infer[\irl{cut}]
+             {\seq{A}{\alpha}{B}}
+             {\infer[\irl{FR}]
+                    {\seq{A}{\alpha}{\F \alpha A}}
+                    {\infer{1 : q \ge q}{} & \infer{1 : \tc{\alpha}{\alpha}}{} & \infer[\irl{ident}]{\seq{A}{1}{A}}{} } & 
+               D : \seq { \F \alpha A}{1}{B} }}
+\]
+
+
 \subsection{Equations}
 
 The above definitions of \tr{e}{D} and \ident{A} and \cut{D}{E} give a
@@ -659,8 +738,8 @@ and \tr{e}{-} commutes with cut:
 \]
 
 \item Cut is well-defined on $\ap{}{}$, identities are units for cut,
-  and the left-commutative cut rules hold always (definitionally, they
-  true only when $E$ is not a right rule).  
+  and the left-commutative cut rules hold always (they are true
+  definitionally only when $E$ is not a right rule).
 
 \[
 \infer{\ap{\cut{D}{\ident{}}}{D}}
@@ -706,38 +785,63 @@ First, we investigate some properties of $F$ and $U$ that hold for any
 theory $\M$.  The free variables are implicitly universally quantified
 with the most general possible types.
 
-\begin{enumerate}
-\item $F$ and $U$ are functorial on maps: If $D : \seq{A}{1}{B}$ then
+\paragraph{$F$ and $U$ are functorial on maps.} If $D : \seq{A}{1}{B}$ then
   $\F \alpha D : \seq{\F \alpha A}{1}{\F \alpha B}$ and $\U \alpha D :
-  \seq{\U \alpha A}{1}{\U \alpha B}$.  Moreover, $\ap{\F \alpha
-    {\ident{A}}}{\ident{\F \alpha A}}$ and $\ap{\F \alpha
-    {({D}\cuti{E})}}{{\F \alpha {D}} \cuti {\F \alpha {E}}}$, and analogously
-  for $U$.
-
-\item $F$ and $U$ preserve isomorphisms:
+\seq{\U \alpha A}{1}{\U \alpha B}$.  Moreover, $\ap{\F \alpha
+  {\ident{A}}}{\ident{\F \alpha A}}$ and $\ap{\F \alpha
+  {({D}\cuti{E})}}{{\F \alpha {D}} \cuti {\F \alpha {E}}}$, and
+analogously for $U$.  It follows that $F$ and $U$ preserve isomorphisms:
 If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A \cong \F \alpha B$
 and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U \alpha B$.  
 
-\item $\F{\alpha}{A}$ and $\U{\alpha}{B}$ are functorial in $\alpha$: We have
-$F_1 : \F {1}{A} \iso A$ and $U_1 : \U {1} A \iso A$
-and $F_\circ : \F{\alpha}{\F{\beta}{A}} \iso \F {\compo{\beta}{\alpha}} A$
-and $U_\circ : \U \beta {\U \alpha A} \iso \U {\compo{\beta}{\alpha}} A$.  
+\paragraph{$F$ and $U$ are adjoint.}: If $D : \seq{\F \alpha A}{1}{B}$ then there is
+a $D' : \seq{A}{1}{\U \alpha B}$, and vice versa, and round-triping the
+two is the identity on $D$ up to $\ap{}{}$.
+FIXME: naturality
 
-\item $\F{\alpha}{D}$ and $\U{\alpha}{D}$ are functorial in $\alpha$, up
-  to the isomorphisms above: We have
-\ap{\F {1} D} {{F_1} \cuti {D} \cuti {\inv{F_1}}}
-and 
-\ap{\F {\beta} (\F \alpha D)} {F_\circ \cuti \F {\compo{\alpha}{\beta}} D \cuti \inv{F_\circ}}
-and similarly for $U$.  
+\paragraph{The functors $F_\alpha$ and $U_\alpha$ are determined
+  functorially in $\alpha$.} First, on objects we have $F^1 : \F {1}{A}
+\iso A$ and $U^1 : \U {1} A \iso A$ and $F^\circ :
+\F{\alpha}{\F{\beta}{A}} \iso \F {\compo{\beta}{\alpha}} A$ and $U^\circ
+: \U \beta {\U \alpha A} \iso \U {\compo{\beta}{\alpha}} A$.  Next, on
+morphisms, we have $\F{\alpha}{D}$ and $\U{\alpha}{D}$ are functorial in
+$\alpha$, up to the isomorphisms above: \ap{\F {1} D} {{F^1} \cuti {D}
+  \cuti {\inv{F^1}}} and \ap{\F {\beta} (\F \alpha D)} {F^\circ \cuti \F
+  {\compo{\alpha}{\beta}} D \cuti \inv{F^\circ}}, and similarly for $U$.
 
-\item $F$ and $U$ are adjoint: 
-If $D : \seq{\F \alpha A}{1}{B}$ then
-there is a $D' : \seq{A}{1}{\U \alpha B}$, 
-and vice versa, and round-triping the two is the identity on $D$ up to
-$\ap{}{}$.  
-%%FIXME: naturality
-
+\paragraph{$FU$ is a comonad and $UF$ is a monad.}
+Write $\Bx{\alpha}{A} := \F{\alpha}{\U{\alpha}{A}}$
+and  $\Crc{\alpha}{A} := \U{\alpha}{\F{\alpha}{A}}$.
+\Bx{\alpha}{A} is a comonad: 
+\begin{enumerate}
+\item If $D : \seq{A}{1}{B}$ then $\Bx{\alpha}{D} : \seq{\Bx{\alpha}{A}}{1}{\Bx{\alpha}{B}}$
+\item $\dsd{counit} : \seq{\Bx \alpha A}{1}{A}$
+\item $\dsd{comult} : \seq{\Bx \alpha A}{1}{\Bx \alpha {\Bx \alpha A}}$
+\item 
+ \ap{\dsd{comult} \cuti (\Bx{}{\dsd{comult}})}{\dsd{comult} \cuti
+   \dsd{comult}}
+and \ap{\dsd{comult} \cuti \dsd{counit}}{\ident{}}
+and \ap{\dsd{comult} \cuti (\Bx{}{\dsd{counit}})}{\ident{}}.  
+\item FIXME: naturality
 \end{enumerate}
+\Crc{\alpha}{A} is a monad: 
+\begin{enumerate}
+\item If $D : \seq{A}{1}{B}$ then $\Crc{\alpha}{D} : \seq{\Crc{\alpha}{A}}{1}{\Crc{\alpha}{B}}$
+\item $\dsd{unit} : \seq{A}{1}{\Crc \alpha A}$
+\item $\dsd{mult} : \seq{\Crc \alpha {\Crc \alpha A}}{1}{\Crc \alpha A}$
+ \item 
+ \ap{(\Crc{}{\dsd{mult}}) \cuti \dsd{mult} }{\dsd{mult} \cuti
+   \dsd{mult}}
+and \ap{\dsd{unit} \cuti \dsd{mult}}{\ident{}}
+and \ap{(\Crc{}{\dsd{unit}}) \cuti \dsd{mult}}{\ident{}}.  
+\item FIXME: naturality
+\end{enumerate}
+
+\paragraph{$F$ preserves coproducts.} As an example of left adjoints
+preserving colimits and right adjoints preserving limits, we have $\F
+\alpha (\coprd A B) \iso \coprd {\F \alpha A} {\F \alpha B}$.  
+
+
 
 \subsection{Adjoint Triple}
 
