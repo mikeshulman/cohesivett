@@ -491,6 +491,107 @@ defined below.  Using a proof term notation, we write the above
 derivations as \FL{\UL{1}{1}{\hyp{1}}} and
 \FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
 
+An advantage of using a cut-free sequent calculus is that we can observe
+some non-provabilities: for example, there is not in general a map
+\seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must begin with
+\irl{FR}, but to apply this rule, we need a $\gamma : p \ge q$ and a
+2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.
+
+\paragraph{$F$ preserves coproducts} As another example, we show a map
+from \F \alpha {(\coprd{P}{Q})} to \coprd{\F \alpha P}{\F \alpha Q},
+which is part of an isomorphism:
+\[
+\infer[\irl{FL}]{\seq{\F \alpha {(\coprd{P}{Q})}}{1}{\coprd{\F \alpha P}{\F \alpha Q}}}
+      {\infer[\irl{Case}]
+        {\seq{\coprd{P}{Q}}{\alpha}{\coprd{\F \alpha P}{\F \alpha Q}}}
+        {\infer[\irl{Inl}]
+          {\seq{P}{\alpha}{\coprd{\F \alpha P}{\F \alpha Q}}}
+          {\infer[\irl{FR}]
+                 {\seq{P}{\alpha}{\F \alpha P}}
+                 {\infer{1 : q \ge q}{} & \infer{1 : \tc{\alpha}{\alpha}}{} & \infer[\irl{\hyp 1}]{\seq{P}{1}{P}}{}}}
+          &
+         \infer[\irl{Inr}]
+          {\seq{Q}{\alpha}{\coprd{\F \alpha P}{\F \alpha Q}}}
+          {\infer[\irl{FR}]
+                 {\seq{Q}{\alpha}{\F \alpha Q}}
+                 {\infer{1 : q \ge q}{} & \infer{1 : \tc{\alpha}{\alpha}}{} & \infer[\irl{\hyp 1}]{\seq{Q}{1}{Q}}{}}}
+         }}
+\]
+The key idea is that we can apply the left rule for $F$ first, and then
+case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
+\irl{Inr} on the right; this is the direction of map doesn't exist for
+\U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
+applied until after applying \irl{UR}.  
+
+\paragraph{$F/U$ on identity and composition}
+
+For identity and composition of 1-cells, an obvious question is the
+relationship between $\F 1 A$ and $\U 1 A$ and $A$, between $\F
+{\compo{\beta}{\alpha}} A$ and $\F \alpha {(\F \beta A)}$, and between $\U
+{\compo{\beta}{\alpha}} A$ and $\U \beta {(\U \alpha A)}$.
+We do not have definitional equalities of types, but the types in each
+group are isomorphic (in a sense that will be made precise below).  
+For example, the maps for $F$ are as follows:
+
+\[
+\infer[\irl{FL}]
+      {\seq{\F 1 P}{1}{P}}
+      {\infer[\hyp 1]{\seq{P}{\compo 1 1}{P}}{}}
+\qquad
+\infer[\irl{FR}]
+      {\seq{P}{1}{\F 1 P}}
+      { \infer{1 : p \ge p}{} &
+        \infer{1 : \tc{\compo{1}{1}}{1}}{} &
+        \infer[\hyp 1]{\seq{P}{1}{P}}{}}
+\]
+\[
+\infer[\irl{FL}]
+      {\seq{\F {\compo{\beta}{\alpha}} P}{1}{\F \alpha {(\F \beta P)}}}
+      {\infer[\irl{FR}]
+             {\seq{P}{\compo{(\compo{\beta}{\alpha})}{1}}{\F \alpha {(\F \beta P)}}}
+             {{\beta : r \ge p} & 
+              \infer{1 : \tc{\compo{(\compo{\beta}{\alpha})}{1}}{\compo \beta \alpha}}{} & 
+              \infer{\seq{P}{\beta}{\F \beta P}}
+                    {\infer{1 : r \ge r}{} &
+                      \infer{1 : \tc{\compo{1}{\alpha}}{\alpha}}{} &
+                      \infer[\irl{\hyp 1}]{\seq{P}{1}{P}}{}
+                    }
+             }}
+\]
+\[
+\infer[\irl{FL}]
+      {\seq{\F \alpha {(\F \beta P)}}{1}{\F {\compo{\beta}{\alpha}} P}}
+      {\infer[\irl{FL}]
+             {\seq{\F \beta P}{\compo{\alpha}{1}}{\F {\compo{\beta}{\alpha}} P}}
+             {\infer[\irl{FR}]
+               {\seq{P}{\compo{\beta}{(\compo{\alpha}{1})}}{\F {\compo{\beta}{\alpha}} P}}
+               {\infer{1 : r \ge r}{} & 
+                 \infer{1 : \tc {\compo{1}{(\compo{\beta}{\alpha})}} {\compo{\beta}{(\compo{\alpha}{1})}}}{} &
+                 \infer[\irl{\hyp 1}]{\seq{P}{1}{P}}{}
+               }}}
+\]
+These derivations use the unit laws for \compo{1}{\alpha} and \compo{\alpha}{1}.
+
+\paragraph{$F/U$ on 2-cells}
+For every 2-cell $e : \tc \alpha \beta$, we have derivations of \seq{\F
+  \beta P}{1}{\F \alpha P} and \seq{\U \alpha P}{1}{\U \beta P}.
+\[
+\infer[\irl{FL}]
+      {\seq{\F \beta P}{1}{\F \alpha P}}
+      {\infer[\irl{FR}]{\seq{P}{\beta}{\F \alpha P}}
+                       {\infer{1 : q \ge q}{} & {e : \tc{\compo 1 \alpha}{\beta}} & \infer[\hyp{1}]{\seq{P}{1}{P}}{} }{}}
+\qquad
+\infer[\irl{UR}]
+      {\seq{\U \alpha P}{1}{\U \beta P}}
+      {\infer[\irl{UL}]
+             {\seq{\U \alpha P}{\beta}{P}}
+             { \infer{1 : p \ge p}{} & e : \tc{\compo{\alpha}{1}}{\beta} & \infer[\hyp 1]{\seq{P}{1}{P}}{}}}
+\]
+The other directions are not provable in general.  These derivations
+determine an adjunction morphism between $F_\beta \la U_\beta$ and
+$F_\alpha \la U_\alpha$.
+
+
 \subsection{Admissible Rules}
 
 \paragraph{Adjunction morphisms}
@@ -672,7 +773,7 @@ using composition and \tr{e_2}{-} to make the types match up.
        e_2 : \tc{\gamma'}{\gamma} & }
 \]
 Semantically, these rules will be justified by some of the pseudofunctor
-laws for $S : \M \to \Adj$.  
+laws.
 
 The final rules say that left rules of negatives and right rules of
 positives commute. These are needed to prove the left-commutative cut
@@ -763,51 +864,150 @@ and \tr{e}{-} commutes with cut:
 
 \end{enumerate}
 
-Taken together, these rules imply that for each $p$, there is a category
-whose objects are \wftp{A}{p} and whose morphisms are derivations of
-\seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities given by
-\ident{A} and composition given by \cut{}{}.
-
-\section{Examples}
+\section{Properties of the Syntactic Category}
 \label{sec:examples}
 
 \newcommand\iso{\cong}
+\newcommand\ltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
+\newcommand\rtol[2]{\ensuremath{#1^{\vartriangleleft_{#2}}}}
 
-For $\wftp{A,B}{p}$, an isomorphism $A \iso B$ consists of a pair $D :
+In this section, we investigate some constructions on $F$ and $U$ that
+hold for any mode specfication $\M$.  First, we show that the syntax
+forms a pseudofunctor $\M \to \Adj$, where $\Adj$ is the 2-category of
+categories, adjunctions, and conjugate natural transformations.  Since
+the objects of \Adj\/ are categories, the first step is to associate a
+category with each mode $p$.  The rules for $\ap{}{}$ in the previous
+section imply that for each $p$, there is a category whose objects are
+\wftp{A}{p} and whose morphisms are derivations of \seq{A}{1_p}{B}
+quotiented by $\ap{}{}$, with identities given by \ident{} and
+composition given by \cut{}{}.  We write $D \cuti E$ as an infix
+notation for \cut{D}{E}.  Some standard category-theoretic terminology
+applied to categories of this form unpacks as follows:
+\begin{enumerate}
+\item For $\wftp{A,B}{p}$, an isomorphism $A \iso B$ consists of a pair $D :
 \seq{A}{1}{B}$ and $E : \seq{B}{1}{A}$ such that
-$\ap{\cut{D}{E}}{\ident{A}}$ and $\ap{\cut{E}{D}}{\ident{B}}$.
+$\ap{{D} \cuti {E}}{\ident{A}}$ and $\ap{{E} \cuti {D}}{\ident{B}}$.
 
-We write $D \cuti E$ as an infix notation for \cut{D}{E}.  
+\item For modes $p$ and $q$, a functor from $p$ to $q$ consists of 
+a function $G_0$ from types with mode $p$ to types with mode $q$ 
+and a function $G_1$ from derivations \seq{A}{1}{B} to 
+derivations \seq{G_0 \, A}{1}{G_0 \, B}, such that
+$\ap {G_1(\ident{A})}  {\ident{G_0 A}}$
+and
+$\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
+
+\item For two functors $G,H : p \to q$, a natural transformation $t : G
+  \to H$ consists of a family of derivations $D_A :
+  \seq{G_0(A)}{1}{H_0(A)}$ for each \wftp{A}{p}, such that for any $D :
+  \seq{A}{1_p}{B}$, \ap{\cut{D_A}{(H_1(D))}}{\cut{(G_1(D))}{D_B}}.  A
+  natural isomorphism consists of a natural transoformation along with
+  inverses demonstrating that each $t_A$ is an isomorphism $G_0(A) \iso
+  H_0(A)$.  
+
+\item For two functors $L,R : p \to q$, an adjunction $L \la R$ (using
+  the natural bijection of hom sets defintion) consists of functions
+  $\ltor{-}{} : (\seq{L_0(A)}{1}{B}) \, \to \, (\seq{A}{1}{R_0(B)})$ and
+  $\rtol{-}{} : (\seq{A}{1}{R_0(B)}) \, \to \, (\seq{L_0(A)}{1}{B})$ which are
+  mutually inverse and such that \ltor{-}{} is natural in $A$ and $B$: for
+  $D_1 : \seq{A'}{1}{A}$ and $D_3 : \seq{B}{1}{B'}$ and $D_2 :
+  \seq{L_0(A)}{1}{B}$, \ap{\ltor{(L_1(D_1) \cuti D_2 \cuti D_3)}{}}{D_1
+    \cuti \ltor{D_2}{} \cuti {R_1(D_3)}} (it follows that \rtol{-}{} is
+  natural as well).  
+
+\item A morphism of adjunctions (or ``adjunction morphism'') from $L^1
+  \la_1 R^1$ to $L^2 \la_2 R^2$ consists of two natural transformations
+  $t^L : L^1 \to L^2$ and $t^R : R^2 \to R^1$ between the corresponding
+  functors that are ``conjugate'' under the adjunction
+  structure~\citep{maclane}:
+  \[
+  \ap {\ltor{\ident{}}{1} \cuti {R^1(t^L_{A})}} { \ltor{\ident{}}{2} \cuti t^R_{L^2(A)} } \text{ for all $A$ }
+  \]
+  An adjunction isomorphism consists of an adjunction morphism together
+  with inverses showing that $t^L$ and $t^R$ are each natural
+  isomorphisms.\footnote{This definition is equivalent to ``two inverse
+    adjunction morphisms,'' similarly to how isomorphisms that are
+    natural are the same as iso-natural transformations---we can recover
+    the conjugation condition for one direction from the other.}
+
+\item Because we treat equality of morphisms as
+  propositional/proof-irrelevant, two adjunction morphisms $(t^L,t^R)$
+  and $({u^L},{u^R}')$ between the same two adjunctions are equal when
+  the morphisms $\ap{{t^L}_A}{{u^L}_A}$ and $\ap{{t^L}_A}{{u^L}_A}$
+  for all $A$.
+\end{enumerate}
+%
+While these definitions are ``external'' (meta-theoretic), we are
+hopeful that it would be possible to internalize them in a dependent
+type theory based on adjoint logic.  For example, while the above
+definition allows a functor to be given by arbitrary meta-theoretic
+functions, in all of the examples we consider, the action on objects is
+in fact given by a syntactic type with a ``placeholder'', and the action
+on morphisms is given by taking an assumed derivation $D$ and applying
+rules to it.  Similarly, all of the equalities are proved by chaining
+together the equality rules (including the admissible ones, such as
+associativity and identity of cut) from the previous section.
+
+A pseudofunctor is a map between 2-categories that preserves identity
+and composition of 1-cells up to coherent isomorphism, rather than on
+the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} In this
+case, we have a pseudofunctor because e.g. $\F 1 A \iso A \iso \U 1 A$
+but this is not an equality of types.
+
+\begin{theorem}[Syntax Determines a Pseudofunctor]
+The syntax of adjoint logic determines a pseudeofunctor $\M \to \Adj$:
+\begin{enumerate}
+\item An object $p$ of \M is sent to the category whose objects are
+  \wftp{A}{p} and morphisms are $\seq{A}{1_p}{B}/\ap{}{}$.
+\item For each $q,p$, there is a functor from the category of morphisms
+  $q \ge p$ to the category of adjoint functors between $q$ and $p$.
+  \begin{itemize}
+  \item 
+  Each $\alpha : q \ge p$ is sent to $F_\alpha \la U_\alpha$ in
+  \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
+
+  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
+    morphism $(F^2(e),U^2(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
+    U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
+  \end{itemize}
+
+\item $\F 1 A \iso A$ and $\U 1 A \iso A$ naturally in $A$, and these
+  are conjugate, so there is an adjunction isomorphism $P^1$ between $\F 1 {}
+  \la \U 1 {}$ and the identity adjunction.
+
+\item $\F {\compo{\beta}{\alpha}} A \iso \F \alpha {(\F \beta A)}$ and
+  $\U {\compo{\beta}{\alpha}} A \iso \U \beta {(\U \alpha A)}$ naturally
+  in $A$, and these are conjugate, so there is an adjunction isomorphism
+  $P^{\circ}$ between $\F {\compo{\beta}{\alpha}} \la \U
+  {\compo{\beta}{\alpha}}$ and the composition of the adjunctions $\F
+  {\alpha} \la \U {\alpha}$ and $\F {\beta} \la \U {\beta}$.  Moreover,
+  this family of adjunction isomorphism is natural in $\alpha$ and
+  $\beta$.
+
+\item Three coherence conditions between $P^1$ and $P^\circ$ are
+  satisfied, which relate (1) $P^1$ and $P^\circ(\alpha,1)$,
+  (2) $P^1$ and $P^\circ(1,\alpha)$, and (3) 
+  $P^\circ(\gamma,\compo{\beta}{\alpha})$ composed with
+  $P^\circ(\beta,\alpha)$ and $P^\circ(\gamma,\beta)$ composed with
+  $P^\circ(\compo{\gamma}{\beta},\alpha)$.  
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+We have given a flavor for some of the maps in the examples above; the
+complete construction is in the companion Agda code.  There are many
+equations to verify for naturality, conjugation, and coherence, but they
+are all true using the \ap{}{} rules.
+\end{proof}
+
+\section{Triple Adjunction}
+\label{sec:triple}
 
 \subsection{General}
 
-First, we investigate some properties of $F$ and $U$ that hold for any
-theory $\M$.  The free variables are implicitly universally quantified
-with the most general possible types.
-
-\paragraph{$F$ and $U$ are functorial on maps.} If $D : \seq{A}{1}{B}$ then
-  $\F \alpha D : \seq{\F \alpha A}{1}{\F \alpha B}$ and $\U \alpha D :
-\seq{\U \alpha A}{1}{\U \alpha B}$.  Moreover, $\ap{\F \alpha
-  {\ident{A}}}{\ident{\F \alpha A}}$ and $\ap{\F \alpha
-  {({D}\cuti{E})}}{{\F \alpha {D}} \cuti {\F \alpha {E}}}$, and
-analogously for $U$.  It follows that $F$ and $U$ preserve isomorphisms:
-If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A \cong \F \alpha B$
-and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U \alpha B$.  
-
-\paragraph{$F$ and $U$ are adjoint.}: If $D : \seq{\F \alpha A}{1}{B}$ then there is
-a $D' : \seq{A}{1}{\U \alpha B}$, and vice versa, and round-triping the
-two is the identity on $D$ up to $\ap{}{}$.
-FIXME: naturality
-
-\paragraph{The functors $F_\alpha$ and $U_\alpha$ are determined
-  functorially in $\alpha$.} First, on objects we have $F^1 : \F {1}{A}
-\iso A$ and $U^1 : \U {1} A \iso A$ and $F^\circ :
-\F{\alpha}{\F{\beta}{A}} \iso \F {\compo{\beta}{\alpha}} A$ and $U^\circ
-: \U \beta {\U \alpha A} \iso \U {\compo{\beta}{\alpha}} A$.  Next, on
-morphisms, we have $\F{\alpha}{D}$ and $\U{\alpha}{D}$ are functorial in
-$\alpha$, up to the isomorphisms above: \ap{\F {1} D} {{F^1} \cuti {D}
-  \cuti {\inv{F^1}}} and \ap{\F {\beta} (\F \alpha D)} {F^\circ \cuti \F
-  {\compo{\alpha}{\beta}} D \cuti \inv{F^\circ}}, and similarly for $U$.
+%% It follows that $F$ and $U$ preserve isomorphisms:
+%% If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A
+%% \cong \F \alpha B$ and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U
+%% \alpha B$.
 
 \paragraph{$FU$ is a comonad and $UF$ is a monad.}
 Write $\Bx{\alpha}{A} := \F{\alpha}{\U{\alpha}{A}}$
