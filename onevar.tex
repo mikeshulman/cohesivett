@@ -1114,12 +1114,15 @@ about 150 lines of Agda.
 \newcommand\semUone{\ensuremath{\mathcal{U}^1}}
 \newcommand\semUcomp{\ensuremath{\mathcal{U}^\circ}}
 \newcommand\semFcomp{\ensuremath{\mathcal{F}^\circ}}
+\newcommand\semltor[1]{\ensuremath{#1^{\vartriangleright}}}
+\newcommand\semrtol[1]{\ensuremath{#1^{\vartriangleleft}}}
 
 Next, we show that we can interpret the rules of adjoint logic in any
 pseudofunctor $S : \M \to \Adj$.  On the semantic side, we write
 \begin{itemize}
 \item $\C_p$ for $S(p)$
-\item $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$.
+\item $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
+  \semltor{-} and \semrtol{-} for two maps of hom-sets of the adjunction
 \item $\semF{e}{} : \arrow{}{\F \beta A}{\F \alpha A}$
 and $\semU{e}{} : \arrow{}{\U \alpha A}{\U \beta A}$
  when {e : \tc{\alpha}{\beta}}
@@ -1204,6 +1207,44 @@ functoriality, we have $\semF{\alpha}{\sem D} : \arrow{}{\semF{\alpha}{\semF
 \rTo^{\semFcomp(\gamma,\alpha)} & \semF{\alpha}{\semF \gamma {\sem C}} & \rTo^{\semF{\alpha}{\sem D}} & {\semF \alpha {\sem A}}
 \end{diagram}
 
+\item For \irl{UL}
+\[
+\infer[\irl{UL}]
+      {\seq {\U {\alpha : r \ge q} A} {\beta : r \ge p} {C}}
+      { \gamma : q \ge p &
+        e : \tc{\compo{\alpha}{\gamma}} {\beta} &
+        \seq{A}{\gamma}{C}}
+\]
+The premise gives $\sem{D} : \arrow{}{\semF \gamma {\sem A}}{\sem C}$, 
+and we want \arrow{}{\semF {\beta} {\semU {\alpha} {\sem A}}}{\sem C}.  
+Using the adjunction, the premise gives
+\semltor{\sem{D}} : \arrow{}{A}{\semU \gamma C} and it suffices to give
+\arrow{}{{\semU {\alpha} {\sem A}}}{\semU {\beta} \sem C}.  So we form
+the composite
+\begin{diagram}
+{{\semU {\alpha} {\sem A}}} & \rTo^{\semU{\alpha}{(\semltor{\sem{D}})}} &
+\semU{\alpha}{\semU \gamma C} & \rTo^{\inv{\semUcomp(\alpha,\gamma)}} & 
+{\semU{\compo{\alpha}{\gamma}}{\sem{C}}} & \rTo^{\semUo{e}} &
+{\semU{\beta}{\sem{C}}}
+\end{diagram}
+and then move it along the adjunction.  
+
+\item For \irl{UR}
+\[
+\infer[\irl{UR}]
+      {\seq {C} {\beta} {\U {\alpha} A}}
+      {\seq {C} {\compo{\beta}{\alpha}} {A}}
+\]
+The premise gives \arrow{}{\semF{\compo{\beta}{\alpha}}{\sem C}}{\sem A}
+and we want 
+\arrow{}{\semF{{\beta}}{\sem C}}{\semU {\alpha} A}.  We have
+
+\begin{diagram}
+\semF{\alpha}{\semF{\beta}{\sem{C}}} & \rTo^{\inv{\semFcomp(\beta,\alpha)}} & {\semF{\compo{\beta}{\alpha}}{\sem C}} & \rTo^{\sem{D}} & {\sem A}
+\end{diagram}
+
+so using the adjunction gives the result.  
+
 \end{itemize}
 
 In summary, we have
@@ -1211,7 +1252,9 @@ In summary, we have
 \begin{array}{rcl}
 \sem{\hyp e} & := & \semFo{e};\semFone\\
 \sem{\FL {D}} & := & \inv{\semFcomp(\alpha,\beta)} ; \sem{D}\\
-\sem{\FR {\gamma}{e}{D}} & := & \semFo{e}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}
+\sem{\FR {\gamma}{e}{D}} & := & \semFo{e}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}\\
+\sem{\UR {D}} & := & \semltor{(\inv{\semFcomp(\beta,\alpha)};{\sem{D}})} \\
+\sem{\UL {\gamma}{e}{D}} & := & \semrtol{({\semU{\alpha}{(\semltor{\sem{D}})}} ; {\inv{\semUcomp(\alpha,\gamma)}} ; {\semUo{e}})}
 \end{array}
 \]
 
@@ -1223,15 +1266,7 @@ In summary, we have
 \begin{array}{l}
 \quad
 \\ \\
-\infer[\irl{UL}]
-      {\seq {\U {\alpha : r \ge q} A_q} {\beta : r \ge p} {C_p}}
-      { \gamma : q \ge p &
-        \tc{\compo{\alpha}{\gamma}} {\beta} &
-        \seq{A_q}{\gamma}{C_p}}
 \quad
-\infer[\irl{UR}]
-      {\seq {C_r} {\beta : r \ge q} {\U {\alpha : q \ge p} A_p}}
-      {\seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
 \end{array}
 \]
 
