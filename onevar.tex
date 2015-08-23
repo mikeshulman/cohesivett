@@ -314,15 +314,19 @@ adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
-derivations.  In Section~\ref{sec:examples}, we give a variety of
-examples of constructions in the logic, including those mentioned above,
-as well as the rules for spatial type theory used
-in~\citep{shulman15realcohesion}.  In Section~\ref{sec:semantics}, we
-describe the 1-categorical semantics of the logic.  All of the syntactic
-metatheory of the logic and the examples have been formalized in
-Agda~\citep{norell07thesis}.
+derivations.  In Section~\ref{sec:constructions}, we summarize some of
+the constructions that are possible in the logic for any mode
+specification \M, including showing that the syntax determines a
+pseudofunctor $\M \to \Adj$.  In Section~\ref{sec:semantics}, we
+describe the 1-categorical semantics of the logic.  Finally, in
+Section~\ref{sec:triple}, we examine some specific mode specifications
+for triple adjunctions, and discuss the relationship to the rules for
+spatial type theory used in~\citep{shulman15realcohesion}.  All of the
+syntactic metatheory of the logic and the examples have been formalized
+in Agda~\citep{norell07thesis}, using a syntactic representation of the
+sequent calculus and the equational theory as inductive families.  
 
-\section{Rules}
+\section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
 
 \subsection{Sequent Calculus}
@@ -609,7 +613,7 @@ morphism of adjunctions determined by $e$.
 
 \[
 \infer[\irl{\tr{-}{-}}]
-      {\seq A {\beta} B}
+      {\seq A {\beta} C}
       {\tc \alpha \beta &
        \seq A {\alpha} {C}}
 \]
@@ -696,7 +700,7 @@ In this case the cut reduces to
 As a transformation on derivations, we have
 \[
 \begin{array}{rcll}
-  \cut {(\hyp e)} {(\hyp {e'})} & := & \hyp {\comph{e}{e'}}\\
+  \cut {(\hyp e)} {(\hyp {e'})} & := & \hyp {(\comph{e}{e'})}\\
   \cut {(\FR \gamma e D)} {(\FL E)} & := & \tr {(\comph{e}{1})} {\cut D E}\\
   \cut {(\UR D)} {(\UL \gamma e E)} & := & \tr {(\comph{1}{e})} {\cut D E}\\
   \cut D {(\FR \gamma e E)} & := & \FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}\\
@@ -868,7 +872,7 @@ and \tr{e}{-} commutes with cut:
 \end{enumerate}
 
 \section{Syntactic Constructions}
-\label{sec:examples}
+\label{sec:constructions}
 
 \newcommand\iso{\cong}
 \newcommand\ltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
@@ -878,7 +882,13 @@ In this section, we investigate some constructions on $F$ and $U$ that
 hold for any mode specfication $\M$.  Taken together, the first set of
 constructions shows that the syntax forms a pseudofunctor $\M \to \Adj$,
 where $\Adj$ is the 2-category of categories, adjunctions, and conjugate
-natural transformations.  Since the objects of \Adj\/ are categories,
+natural transformations.  This is a standard way of proving logical
+completeness in categorical logic: we think of the pseudofunctors $\M
+\to \Adj$ as the class of models of the syntax, so this shows that if
+something is true in all models $\M \to \Adj$, then it is true in the
+syntax, because the syntax is one.  
+
+Since the objects of \Adj\/ are categories,
 the first step is to associate a category with each mode $p$.  The rules
 for $\ap{}{}$ in the previous section imply that for each $p$, there is
 a category whose objects are \wftp{A}{p} and whose morphisms are
@@ -905,7 +915,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   \seq{G_0(A)}{1}{H_0(A)}$ for each \wftp{A}{p}, such that for any $D :
   \seq{A}{1_p}{B}$, \ap{\cut{D_A}{(H_1(D))}}{\cut{(G_1(D))}{D_B}}.  A
   natural isomorphism consists of a natural transoformation along with
-  inverses demonstrating that each $t_A$ is an isomorphism $G_0(A) \iso
+  inverses demonstrating that each $D_A$ is an isomorphism $G_0(A) \iso
   H_0(A)$.  
 
 \item For two functors $L,R : p \to q$, an adjunction $L \la R$ (using
@@ -942,7 +952,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
 %
 While these definitions are ``external'' (meta-theoretic), we are
 hopeful that it would be possible to internalize them in a dependent
-type theory based on adjoint logic.  For example, while the above
+type theory based on adjoint logic.  For example, although the above
 definition allows a functor to be given by arbitrary meta-theoretic
 functions, in all of the examples we consider, the action on objects is
 in fact given by a syntactic type with a ``placeholder'', and the action
@@ -954,8 +964,8 @@ associativity and identity of cut) from the previous section.
 A pseudofunctor is a map between 2-categories that preserves identity
 and composition of 1-cells up to coherent isomorphism, rather than on
 the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} In this
-case, we have a pseudofunctor because e.g. $\F 1 A \iso A \iso \U 1 A$
-but this is not an equality of types.
+case, we have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
+similarly for composition, but these are not equalities of types.
 
 \begin{theorem}[Syntax Determines a Pseudofunctor]
 The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
@@ -970,7 +980,7 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
   \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
 
   \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
-    morphism $(F^2(e),U^2(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
+    morphism $(F(e),U(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
     U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
   \end{itemize}
 
@@ -999,8 +1009,8 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
 \begin{proof}
 We have given a flavor for some of the maps in the examples above; the
 complete construction is about 500 lines of Agda.  There are many
-equations to verify to check inverses, naturality, conjugation, and
-coherence, but they are all true for \ap{}{}.
+equations to verify---inverses, naturality, conjugation, and
+coherence---but they are all true for \ap{}{}.
 \end{proof}
 
 Next, we make some expected cosntructions on $F_\alpha \la U_\alpha$.
@@ -1042,66 +1052,9 @@ and \ap{(\Crc{}{\dsd{unit}}) \cuti \dsd{mult}}{\ident{}}.
 
 \begin{proof}
 We showed many of the maps above; the (co)monad laws, naturality
-conditions, and inverse laws are all true for \ap{}{}; the proof is
-about 150 lines of Agda.  
+conditions, and inverse laws are all true for \ap{}{}; the construction
+is about 150 lines of Agda.
 \end{proof}
-
-\section{Triple Adjunction}
-\label{sec:triple}
-
-%% It follows that $F$ and $U$ preserve isomorphisms:
-%% If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A
-%% \cong \F \alpha B$ and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U
-%% \alpha B$.
-
-\subsection{Adjoint Triple}
-
-\subsection{Reflection}
-
-%% The first presentation of cohesive homotopy type
-%% theory~\citep{schreibershulman12cohesive} did not extend the judgement
-%% structure of type theory, and consequently had trouble with the
-%% $\Delta\Gamma$ composite comonad.  
-
-%% Because $\Delta$ and $\nabla$ are full and faithful, it is possible to
-%% avoid mention of the category $\mathcal{S}$, and instead focus on the
-%% composite endofunctors $\sh := \Delta\sh$, $\flat := \Delta\Gamma$, and
-%% $\sharp := \nabla\Gamma$ on \C.  For any adjoint quadruple as above,
-%% these will form an adjoint triple $\sh \la \flat \la \sharp$, and $\sh$
-%% and $\sharp$ will be monads, while $\flat$ will be a comonad.
-
-%% From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
-%% $\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
-%% both a right and a left adjoint, and so should behave like both the $F$
-%% and $U$ in adjoint logic.  One possibility would be to design rules for
-%% a left-and-right-adjoint connective.  However, such a connective would
-%% need to have an unusual focusing~\citep{andreoli92focus} behavior: In
-%% any adjunction, left adjoints preserve colimits (e.g. coproducts) and
-%% right adjoints preserve limits (e.g. products).  In focusing, limits are
-%% negative connectives (invertible on the right, focus on the left), while
-%% colimits are positive connectives (invertible on the left, focus on the
-%% right), and in general like-polarity connectives compose together well.
-%% Reed's adjoint logic is compatible with these two facts, because it
-%% admits a focusing interpretation where the left adjoint $F$ is positive
-%% and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
-%% left and a right adjoint, it seems like it would need to be both
-%% positive and negative.  
-
-%% Instead of giving rules for an ambipolar connective, we will provide a
-%% logic in which this comes true up to isomorphism: we can describe a quadruple
-%% \[
-%% F \la U \cong F' \la U'
-%% \]
-%% and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
-%% That is, the functor $\Gamma$ will be defined to be one of two naturally
-%% isomorphic functors, one of which is a left adjoint/positive and the
-%% other of which is a right adjoint/negative.  This idea is present in
-%% Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
-%% where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
-%% adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
-%% \cong F'$.  However, in the case of an adjoint triple, we want $U \cong
-%% F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
-%% same.  
 
 \section{Semantics}
 \label{sec:semantics}
@@ -1118,7 +1071,8 @@ about 150 lines of Agda.
 \newcommand\semrtol[1]{\ensuremath{#1^{\vartriangleleft}}}
 
 Next, we show that we can interpret the rules of adjoint logic in any
-pseudofunctor $S : \M \to \Adj$.  On the semantic side, we write
+pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
+for these models.  On the semantic side, we write
 \begin{itemize}
 \item $\C_p$ for $S(p)$
 \item $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
@@ -1159,6 +1113,12 @@ not use the adjunction structure, while the interpretations of the rules
 for $U$ do.  We now consider the interpretation of the sequent calculus
 rules:
 
+\begin{theorem}[Soundness of the sequent calculus]
+There is a function \sem{-} from derivations $D : \seq{A}{\alpha}{B}$ 
+to morphisms \arrow{}{\semF \alpha {\sem A}}{\sem B}.
+\end{theorem}
+
+\begin{proof}
 \begin{itemize}
 \item 
 For the hypothesis rule
@@ -1257,19 +1217,273 @@ In summary, we have
 \sem{\UL {\gamma}{e}{D}} & := & \semrtol{({\semU{\alpha}{(\semltor{\sem{D}})}} ; {\inv{\semUcomp(\alpha,\gamma)}} ; {\semUo{e}})}
 \end{array}
 \]
+\end{proof}
 
+Next, we will prove that the interpretations of the admissible rules
+\tr{e}{D} and \ident{A} and \cut{D}{E} are equal to what we would have
+interpreted these constructs as if they were derivable rules.
+This will be useful for validating the \ap{}{} rules.  
+\begin{itemize}
+\item For \tr{e}{D}, we have
+\[
+\infer[\irl{\tr{e}{D}}]
+      {\seq A {\beta} C}
+      {e : \tc \alpha \beta &
+       D : \seq A {\alpha} {C}}
+\]
 
+The premise gives \arrow{}{\semF \alpha {\sem A}}{\sem C}, and we want
+\arrow{}{\semF \beta {\sem A}}{\sem C} so we have
+\begin{diagram}
+{\semF \beta {\sem A}} & \rTo^{\semFo{e}} & {\semF \alpha {\sem A}} & \rTo^{\sem{D}} & {\sem C}
+\end{diagram}
 
+\item For identity, we have
+\[
+\infer[\irl{ident}]
+      {\seq {A} {1} {A}}
+      {}
+\]
+We want \arrow{}{\semF{1}{\sem A}}{A}, so use $\semFone$.  
 
+\item For cut, we have
 
 \[
-\begin{array}{l}
-\quad
-\\ \\
-\quad
+\infer[\irl{cut}]
+      {\seq {A} {\compo{\beta}{\alpha}} {C}}
+      {D : \seq {A} {\beta} {B} &
+       E : \seq {B} {\alpha} {C}}
+\]
+The interpretations of the premises gives
+\arrow{}{\semF \beta {\sem A}}{\sem B}
+and 
+\arrow{}{\semF \alpha {\sem B}}{\sem C}.  
+To get 
+\arrow{}{\semF {\compo{\beta}{\alpha}} {\sem A}}{\sem C}, we compose as
+follows:
+\begin{diagram}
+{\semF {\compo{\beta}{\alpha}} {\sem A}} & \rTo^{\semFcomp(\beta,\alpha)} &
+{\semF {\alpha} {\semF \beta {\sem A}}}  & \rTo^{\semF{\alpha}{\sem{D}}} &
+{\semF {\alpha} {\sem B}} & \rTo^{\sem{E}} &
+{\sem{C}}
+\end{diagram}
+
+\end{itemize}
+
+In summary
+\[
+\begin{array}{rcl}
+\sem{\tr{e}{D}} & \text{ should be equal to } & \semFo{e};{\sem{D}} \\
+\sem{\ident A} & \text{ should be equal to } & \semFone\\
+\sem{\cut D E} & \text{ should be equal to } & {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}
 \end{array}
 \]
 
+We now show that this is the case.
+
+\begin{lemma}
+For all derivations $D$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
+\end{lemma}
+\begin{proof}
+
+The proof is by induction on $D$, and in each case we can unfold the
+definition of \tr{e}{D}, so we have to show:
+
+\begin{itemize}
+\item \semFo{e};{\sem{{\hyp e'}}} = \sem {\hyp {(\compv{e'}{e})}}
+
+TODO
+
+\item \semFo{e};{\sem{{\FR \gamma {e'} D}}} = \sem{\FR \gamma {\compv{e'}{e}} D}
+
+TODO
+
+\item \semFo{e};{\sem{{\FL D}}} = \sem{\FL {\tr{(\comph{1}{e})} D}}
+
+TODO
+
+\item \semFo{e};{\sem{\UL \gamma {e'} D}} = \sem{ \UL \gamma {\compv{e'}{e}} D}
+
+TODO
+
+\item \semFo{e};{\sem{\UR D}} = \sem{\UR {\tr {(\comph{e}{1})} D}}
+
+TODO
+\end{itemize}
+
+\end{proof}
+
+\begin{lemma}
+For all types $A$, $\sem{\ident A} = \semFone_{\sem{A}}$.    
+\end{lemma}
+
+\begin{proof}  The proof is by
+induction on $A$.  In each case, we can unfold the definition of
+\ident{A}, so we need to show:
+
+\begin{itemize}
+
+\item Case for $P$: $\semFone_P = \sem{\hyp 1}$
+
+TODO
+
+\item Case for $\F \alpha A$: $\semFone_{\semF \alpha {\sem A}} = \sem{\FL {\FR 1 1 {\ident A}}}$
+
+TODO
+
+\item Case for $\U \alpha A$: $\semFone_{\semU \alpha {\sem A}} = \sem {\UR {\UL 1 1 {\ident A}}}$
+
+TODO
+
+\end{itemize}
+
+\end{proof}
+
+\begin{lemma}
+For all derivations $D$ and $E$, $\sem{\cut D E} = {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}$
+\end{lemma}
+
+\newcommand{\semofcut}[2]{{\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{#1}}};{\sem{#2}}}
+
+\begin{proof}
+
+The proof is by the same induction on $A,D,E$ that defines cut, and in
+each case the cut reduces, so we need to show:
+
+\begin{itemize}
+\item $\semofcut {(\hyp e)} {(\hyp {e'})} = \sem{\hyp {(\comph{e}{e'})}}$
+
+TODO
+
+\item $\semofcut {(\FR \gamma e D)} {(\FL E)} = \sem{ \tr {(\comph{e}{1})} {\cut D E} }$
+
+TODO
+
+\item $\semofcut {(\UR D)} {(\UL \gamma e E)} = \tr {(\comph{1}{e})} {\cut D E}$
+
+TODO
+
+\item $\semofcut D {(\FR \gamma e E)} = \sem{\FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}}$
+
+TODO
+
+\item $\semofcut D {(\UR E)} = \sem{\UR {\cut D E}}$
+
+TODO
+
+\item $\semofcut {(\FL D)} E = \sem{\FL {\cut D E}}$ (if $E$ is not a
+  right rule -- do we need this assumption?)
+
+TODO
+
+\item $\semofcut {(\UL \gamma e D)} E = \sem{\UL {\compo{\gamma}{\alpha}}
+  {\comph{e}{1}} {\cut D E}}$ (if $E$ is not a right rule -- do we need
+  this assumption?)
+
+TODO
+\end{itemize}
+\end{proof}
+
+Next, we validate the rules for \ap{}{}.  
+
+\begin{theorem}[Soundess of the equational theory.] If \ap{D}{D'} then $\sem{D} = \sem{D'}$.  
+\end{theorem}
+
+\begin{proof}
+Because the goal is equality of morphisms, the congruence (equivalence
+relation, compatibility for each derivation constructor) rules are all
+true.  It remains to validate the axioms:
+
+\begin{itemize}
+\item $\sem{D} = \sem{\FL {\cut{(\FR 1 1 {\ident{A}})}{D}} }$
+when ${D : \seq{\F \alpha A}{\beta}{C}}$
+
+TODO
+
+\item $\sem{D} = \sem{\UR {\cut{D}{(\UL 1 1 {\ident{A}})}}}$
+when ${D : \seq{C}{\beta}{\U \alpha A}}$
+
+TODO
+
+\item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D'}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D'}}$
+when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
+and $D : \seq{C}{\gamma'}{A}$
+and $e_2 : \tc{\gamma'}{\gamma}$
+
+TODO
+
+\item $\sem{\UL{\gamma}{e}{\tr{e_2}{D'}}} = \sem{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D'}}$
+when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
+and $D : \seq{C}{\gamma'}{A}$
+and $e_2 : \tc{\gamma'}{\gamma}$.
+
+TODO
+
+\item $\sem{\UL {}{e_2} {\FR {} {e_1} {D}}} = \sem{\FR {} {e_4} {\UL {} {e_3} {D}}}$
+when ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$
+
+TODO
+
+\end{itemize}
+\end{proof}
+
+
+\section{Triple Adjunction}
+\label{sec:triple}
+
+%% It follows that $F$ and $U$ preserve isomorphisms:
+%% If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A
+%% \cong \F \alpha B$ and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U
+%% \alpha B$.
+
+\subsection{Adjoint Triple}
+
+\subsection{Reflection}
+
+%% The first presentation of cohesive homotopy type
+%% theory~\citep{schreibershulman12cohesive} did not extend the judgement
+%% structure of type theory, and consequently had trouble with the
+%% $\Delta\Gamma$ composite comonad.  
+
+%% Because $\Delta$ and $\nabla$ are full and faithful, it is possible to
+%% avoid mention of the category $\mathcal{S}$, and instead focus on the
+%% composite endofunctors $\sh := \Delta\sh$, $\flat := \Delta\Gamma$, and
+%% $\sharp := \nabla\Gamma$ on \C.  For any adjoint quadruple as above,
+%% these will form an adjoint triple $\sh \la \flat \la \sharp$, and $\sh$
+%% and $\sharp$ will be monads, while $\flat$ will be a comonad.
+
+%% From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
+%% $\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
+%% both a right and a left adjoint, and so should behave like both the $F$
+%% and $U$ in adjoint logic.  One possibility would be to design rules for
+%% a left-and-right-adjoint connective.  However, such a connective would
+%% need to have an unusual focusing~\citep{andreoli92focus} behavior: In
+%% any adjunction, left adjoints preserve colimits (e.g. coproducts) and
+%% right adjoints preserve limits (e.g. products).  In focusing, limits are
+%% negative connectives (invertible on the right, focus on the left), while
+%% colimits are positive connectives (invertible on the left, focus on the
+%% right), and in general like-polarity connectives compose together well.
+%% Reed's adjoint logic is compatible with these two facts, because it
+%% admits a focusing interpretation where the left adjoint $F$ is positive
+%% and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
+%% left and a right adjoint, it seems like it would need to be both
+%% positive and negative.  
+
+%% Instead of giving rules for an ambipolar connective, we will provide a
+%% logic in which this comes true up to isomorphism: we can describe a quadruple
+%% \[
+%% F \la U \cong F' \la U'
+%% \]
+%% and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
+%% That is, the functor $\Gamma$ will be defined to be one of two naturally
+%% isomorphic functors, one of which is a left adjoint/positive and the
+%% other of which is a right adjoint/negative.  This idea is present in
+%% Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
+%% where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
+%% adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
+%% \cong F'$.  However, in the case of an adjoint triple, we want $U \cong
+%% F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
+%% same.  
 
 \section{Conclusion}
 
