@@ -1061,7 +1061,7 @@ is about 150 lines of Agda.
 
 \newcommand\semF[2]{\ensuremath{\mathcal{F}_{#1} \,\, #2}}
 \newcommand\semU[2]{\ensuremath{\mathcal{U}_{#1} \,\, #2}}
-\newcommand\semFo[1]{\ensuremath{\mathcal{F}_{#1}}}
+\newcommand\semFo[1]{\ensuremath{{\mathcal{F}_{#1}}}}
 \newcommand\semUo[1]{\ensuremath{\mathcal{U}_{#1}}}
 \newcommand\semFone{\ensuremath{\mathcal{F}^1}}
 \newcommand\semUone{\ensuremath{\mathcal{U}^1}}
@@ -1072,20 +1072,34 @@ is about 150 lines of Agda.
 
 Next, we show that we can interpret the rules of adjoint logic in any
 pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
-for these models.  On the semantic side, we write
+for these models.  On the semantic side, we unpack the definition of a
+pseudofunctor as follows, writing
 \begin{itemize}
 \item $\C_p$ for $S(p)$
+
 \item $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
   \semltor{-} and \semrtol{-} for two maps of hom-sets of the adjunction
-\item $\semF{e}{} : \arrow{}{\F \beta A}{\F \alpha A}$
-and $\semU{e}{} : \arrow{}{\U \alpha A}{\U \beta A}$
+
+\item $\semFo{e} : \arrow{}{\F \beta A}{\F \alpha A}$
+and $\semUo{e} : \arrow{}{\U \alpha A}{\U \beta A}$
  when {e : \tc{\alpha}{\beta}}
 for the components of the two natural transformations in the adjunction 
 morphism $S(e) : \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la \semUo{\alpha}}$.  
+These are functorial: $\semFo{\compv{e}{e'}} = \semFo{e'};\semFo{e}$
+and $\semFo{1} = 1$ and 
+$\semUo{\compv{e}{e'}} = \semUo{e};\semUo{e'}$
+and $\semUo{1} = 1$.  Moreover, they are conjugate, which means 
+that for any $m : \arrow{}{\semF{\alpha}{A}}{B}$, we have
+$\semltor{m};\semUo{e} =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}$,
+or equivalently that 
+for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we have
+$\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
+
 \item $\semFone : \semF{1}{A} \iso A$ and $\semUone : \semU{1}{A} \iso
   A$ for the components of the two natural isomorphisms in the
   adjunction isomorphism $S^1$ between $\semFo{1}{} \la \semUo{1}$ and
   the identity adjunction.
+
 \item $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
   \semF{\alpha}{(\semF \beta A)}$ and $\semUcomp(\beta,\alpha) :
   \semU{\compo{\beta}{\alpha}}{A} \iso \semU{\beta}{(\semU{\alpha}{A})}$
@@ -1282,33 +1296,41 @@ In summary
 We now show that this is the case.
 
 \begin{lemma}
-For all derivations $D$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
+For all $e : \tc{\beta}{\beta'}$ and derivations $D : \seq{A}{\beta}{B}$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
 \end{lemma}
 \begin{proof}
+
 
 The proof is by induction on $D$, and in each case we can unfold the
 definition of \tr{e}{D}, so we have to show:
 
 \begin{itemize}
 \item \semFo{e};{\sem{{\hyp e'}}} = \sem {\hyp {(\compv{e'}{e})}}
-
-TODO
+After unfolding definitions, it suffices to use functoriality of
+$\semFo{e}$ to show $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$.  
 
 \item \semFo{e};{\sem{{\FR \gamma {e'} D}}} = \sem{\FR \gamma {\compv{e'}{e}} D}
-
-TODO
+Again, $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$ suffices.  
 
 \item \semFo{e};{\sem{{\FL D}}} = \sem{\FL {\tr{(\comph{1}{e})} D}}
+After unfolding definitions and applying the inductive hypothesis, we need to know that
+$\semFo{e}_{(\semF{\alpha} {A})}; \inv{\semFcomp(\alpha,\beta)} = \inv{\semFcomp(\alpha,\beta')}; \semFo{(\comph{1_\alpha}{e})}_{A}$
+as arrows \arrow{}{\semF{\beta'}{\semF{\alpha}{A}}}{\semF{\compo \alpha {\beta'}}{A}},
+which is true by naturality of $\semFcomp(-,-)$ and $\semFo{1} = 1$ and $\semF{\beta}{1} = 1$
 
-TODO
 
 \item \semFo{e};{\sem{\UL \gamma {e'} D}} = \sem{ \UL \gamma {\compv{e'}{e}} D}
 
 TODO
 
-\item \semFo{e};{\sem{\UR D}} = \sem{\UR {\tr {(\comph{e}{1})} D}}
+\item $\semFo{e};{\sem{\UR D}} = \sem{\UR {\tr {(\comph{e}{1})} D}}$
+After unfolding definitions and applying the IH, we need to know that
+$\semFo{e};\ltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{} = 
+\ltor{(\inv{\semFcomp(\beta',\alpha)};\semFo{\compv{e}{1_\alpha}};\sem{D})}{}$
+By naturality of the adjunction, the former is equal to
+\ltor{(\semF{\alpha}{(\semFo{e})};\inv{\semFcomp(\beta,\alpha)};\sem{D})}{}
+and then naturality of $\semFcomp(-,-)$ gives the result.  
 
-TODO
 \end{itemize}
 
 \end{proof}
