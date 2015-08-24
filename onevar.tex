@@ -1073,14 +1073,14 @@ is about 150 lines of Agda.
 Next, we show that we can interpret the rules of adjoint logic in any
 pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
 for these models.  On the semantic side, we unpack the definition of a
-pseudofunctor as follows, writing
+pseudofunctor as follows:
 \begin{itemize}
-\item $\C_p$ for $S(p)$
+\item We write $\C_p$ for $S(p)$.
 
-\item $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
+\item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
   \semltor{-} and \semrtol{-} for two maps of hom-sets of the adjunction
 
-\item $\semFo{e} : \arrow{}{\F \beta A}{\F \alpha A}$
+\item We write $\semFo{e} : \arrow{}{\F \beta A}{\F \alpha A}$
 and $\semUo{e} : \arrow{}{\U \alpha A}{\U \beta A}$
  when {e : \tc{\alpha}{\beta}}
 for the components of the two natural transformations in the adjunction 
@@ -1095,12 +1095,12 @@ or equivalently that
 for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we have
 $\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
 
-\item $\semFone : \semF{1}{A} \iso A$ and $\semUone : \semU{1}{A} \iso
+\item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone : \semU{1}{A} \iso
   A$ for the components of the two natural isomorphisms in the
   adjunction isomorphism $S^1$ between $\semFo{1}{} \la \semUo{1}$ and
   the identity adjunction.
 
-\item $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
+\item We write $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
   \semF{\alpha}{(\semF \beta A)}$ and $\semUcomp(\beta,\alpha) :
   \semU{\compo{\beta}{\alpha}}{A} \iso \semU{\beta}{(\semU{\alpha}{A})}$
   for the components of the two natural isomorphisms in the 
@@ -1108,6 +1108,19 @@ $\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
   \la \semUo{\compo{\beta}{\alpha}}$ and the composition of the
   adjunctions $\semFo{\alpha} \la \semUo{\alpha}$ and
   $\semFo{\beta} \la \semUo{\beta}$.  
+
+\item Because both $\M$ and $\Adj$ are strict 2-categories, and
+  unpacking the definition of horizontal composition of natural
+  transformations, one of the $\semFcomp/\semFone$ coherence laws
+  implies that $\semF{\alpha}{(\semFone_A)} = \inv{\semFcomp(1,\alpha)_A}$
+  as maps ${\arrow{}{\semF{\alpha}{\semF{1}{A}}}{\semF{\alpha}{A}}}$
+  (and, because functors preserve inverses,
+  $\semF{\alpha}{(\inv{\semFone})} = {\semFcomp(1,\alpha)}$).  The other
+  implies that $\inv{\semFcomp(\alpha,1)_{A}} =
+  \semFone_{(\semF{\alpha}{A})}$  as maps
+  $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  There are analogous
+  properties for $\semU{\alpha}{}$.
+
 \end{itemize}
 
 \sem{\wftp{A}{p}} is an object of $\C_p$; we assume an interpretation is
@@ -1346,13 +1359,20 @@ induction on $A$.  In each case, we can unfold the definition of
 
 \begin{itemize}
 
-\item Case for $P$: $\semFone_P = \sem{\hyp 1}$
-
-TODO
+\item Case for $P$: $\semFone_P = \sem{\hyp 1}$.  Works because
+  $\semFo{1} = 1$.  
 
 \item Case for $\F \alpha A$: $\semFone_{\semF \alpha {\sem A}} = \sem{\FL {\FR 1 1 {\ident A}}}$
+After unfolding the definitions and using the IH, it suffices to show
+that the composite
+\begin{diagram}
+\semF{1}{\semF{\alpha}{\sem{A}}} & \rTo^{\inv{\semFcomp(\alpha,1)}} &
+\semF{\alpha}{\sem A} & \rTo^{\semFcomp(1,\alpha)} &
+\semF{\alpha}{\semF{1}{\sem A}} & \rTo^{\semF{\alpha}{\semFone_{\sem A}}} & \semF{\alpha}{\sem A}
+\end{diagram}
+is $\semF{1}_{\semF{\alpha}{\sem A}}$, which is true by the
+$\semFone/\semFcomp$ coherence laws.  
 
-TODO
 
 \item Case for $\U \alpha A$: $\semFone_{\semU \alpha {\sem A}} = \sem {\UR {\UL 1 1 {\ident A}}}$
 
