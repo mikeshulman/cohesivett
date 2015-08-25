@@ -1480,7 +1480,7 @@ $\semFcomp(\beta,\beta');\semF{\beta'}{\semF{e}} =
 \semF{\comph{e}{1_{\beta'}}};\semFcomp(\compo{\gamma}{\alpha},\beta')$, 
 and using the associativity coherence to show
 $\semFcomp(\compo{\gamma}{\alpha},\beta');\semF{\beta'}{(\semFcomp(\gamma,\alpha))}
-= \semFcomp(\gamma,\compo{\alpha}{\beta'});\semFcomp(\alpha,\beta')$
+= \semFcomp(\gamma,\compo{\alpha}{\beta'});\semFcomp(\alpha,\beta')$.
 
 \item $\semofcut {(\UR D)} {(\UL \gamma e E)} = \tr {(\comph{1}{e})} {\cut D E}$
 
@@ -1488,11 +1488,27 @@ TODO
 
 \item $\semofcut D {(\FR \gamma e E)} = \sem{\FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}}$
 
-TODO
+After unfolding the definitions and using the
+IH on the right-hand side, 
+the proof uses naturality of $\semF{e}_A$ in $A$ to show
+$\semF{\beta'}{\sem D}; \semF{e} =
+\semF{e};\semF{\compo{\gamma}{\alpha}}{\sem D}$, 
+naturality of $\semFcomp_A$ in $A$ to show
+$\semF{\compo{\gamma}{\alpha}}{\sem D};\semFcomp(\gamma,\alpha) = 
+\semFcomp(\gamma,\alpha);\semF{\alpha}{\semF{\gamma}{\sem D}}$,
+naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to equate
+$\semFcomp(\beta,\beta');\semF{e} =
+\semF{\comph{1}{e}};\semFcomp(\beta,\compo{\gamma}{\alpha})$
+and the associativity coherence to equate 
+$\semFcomp(\beta,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
+= \semFcomp(\compo{\beta}{\gamma},\alpha);\semF{\alpha}(\semFcomp(\beta,\gamma))$.
 
 \item $\semofcut D {(\UR E)} = \sem{\UR {\cut D E}}$
 
-TODO
+After expanding the definitions and using the IH, the main step is to
+use the associativity coherence to show
+$\semFcomp(\alpha,\compo{\beta}{\beta'});\semFcomp(\beta,\beta') = 
+\semFcomp(\compo{\alpha}{\beta},\beta');\semF{\beta'}(\semFcomp(\alpha,\beta))$.  
 
 \item $\semofcut {(\FL D)} E = \sem{\FL {\cut D E}}$ (if $E$ is not a
   right rule -- do we need this assumption?)
