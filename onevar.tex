@@ -875,8 +875,8 @@ and \tr{e}{-} commutes with cut:
 \label{sec:constructions}
 
 \newcommand\iso{\cong}
-\newcommand\ltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
-\newcommand\rtol[2]{\ensuremath{#1^{\vartriangleleft_{#2}}}}
+\newcommand\ltor[2]{\ensuremath{{#1^{\vartriangleright_{#2}}}}}
+\newcommand\rtol[2]{\ensuremath{{#1^{\vartriangleleft_{#2}}}}}
 
 In this section, we investigate some constructions on $F$ and $U$ that
 hold for any mode specfication $\M$.  Taken together, the first set of
@@ -1063,12 +1063,12 @@ is about 150 lines of Agda.
 \newcommand\semU[2]{\ensuremath{\mathcal{U}_{#1} \,\, #2}}
 \newcommand\semFo[1]{\ensuremath{{\mathcal{F}_{#1}}}}
 \newcommand\semUo[1]{\ensuremath{\mathcal{U}_{#1}}}
-\newcommand\semFone{\ensuremath{\mathcal{F}^1}}
-\newcommand\semUone{\ensuremath{\mathcal{U}^1}}
+\newcommand\semFone{\ensuremath{{\mathcal{F}^1}}}
+\newcommand\semUone{\ensuremath{{\mathcal{U}^1}}}
 \newcommand\semUcomp{\ensuremath{\mathcal{U}^\circ}}
 \newcommand\semFcomp{\ensuremath{\mathcal{F}^\circ}}
-\newcommand\semltor[1]{\ensuremath{#1^{\vartriangleright}}}
-\newcommand\semrtol[1]{\ensuremath{#1^{\vartriangleleft}}}
+\newcommand\semltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
+\newcommand\semrtol[2]{\ensuremath{#1^{\vartriangleleft_{#2}}}}
 
 Next, we show that we can interpret the rules of adjoint logic in any
 pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
@@ -1078,7 +1078,7 @@ pseudofunctor as follows:
 \item We write $\C_p$ for $S(p)$.
 
 \item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
-  \semltor{-} and \semrtol{-} for two maps of hom-sets of the adjunction
+  \semltor{-}{\alpha} and \semrtol{-}{\alpha} for two maps of hom-sets of the adjunction
 
 \item We write $\semFo{e} : \arrow{}{\F \beta A}{\F \alpha A}$
 and $\semUo{e} : \arrow{}{\U \alpha A}{\U \beta A}$
@@ -1090,15 +1090,20 @@ and $\semFo{1} = 1$ and
 $\semUo{\compv{e}{e'}} = \semUo{e};\semUo{e'}$
 and $\semUo{1} = 1$.  Moreover, they are conjugate, which means 
 that for any $m : \arrow{}{\semF{\alpha}{A}}{B}$, we have
-$\semltor{m};\semUo{e} =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}$,
+$\semltor{m}{\alpha};\semUo{e} =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$,
 or equivalently that 
 for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we have
-$\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
+$\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}{\beta}$.
 
-\item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone : \semU{1}{A} \iso
-  A$ for the components of the two natural isomorphisms in the
-  adjunction isomorphism $S^1$ between $\semFo{1}{} \la \semUo{1}$ and
-  the identity adjunction.
+\item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone :
+  \semU{1}{A} \iso A$ for the components of the two natural isomorphisms
+  in the adjunction isomorphism $S^1$ between $\semFo{1}{} \la
+  \semUo{1}$ and the identity adjunction.  Specializing the definition
+  of conjugation to this case gives that for any $m : \arrow{}{A}{B}$,
+  $\ltor{(\semFone_A;m)}{1} = m;\inv{\semUone_B}$ (and similar
+  conditions for \rtol{-}{}, and for the other directions of the
+  isomorphisms), so in particular taking $m = 1$ gives
+  $\ltor{(\semFone_A)}{{1}} = \inv{(\semUone_A)}$.
 
 \item We write $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
   \semF{\alpha}{(\semF \beta A)}$ and $\semUcomp(\beta,\alpha) :
@@ -1107,7 +1112,9 @@ $\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
   natural adjunction isomorphism $S^\circ$ between $\semFo{\compo{\beta}{\alpha}}
   \la \semUo{\compo{\beta}{\alpha}}$ and the composition of the
   adjunctions $\semFo{\alpha} \la \semUo{\alpha}$ and
-  $\semFo{\beta} \la \semUo{\beta}$.  
+  $\semFo{\beta} \la \semUo{\beta}$.  The fact that these are conjugate
+  means that FIXME
+  %% $\semFcomp(\alpha,\beta);\semrtol{m}{} = \semrtol{m;\semUcomp(\alpha,\beta)}{}$
 
 \item Because both $\M$ and $\Adj$ are strict 2-categories, and
   unpacking the definition of horizontal composition of natural
@@ -1118,8 +1125,10 @@ $\semFo{e};\semrtol{m} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}$.
   $\semF{\alpha}{(\inv{\semFone})} = {\semFcomp(1,\alpha)}$).  The other
   implies that $\inv{\semFcomp(\alpha,1)_{A}} =
   \semFone_{(\semF{\alpha}{A})}$  as maps
-  $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  There are analogous
-  properties for $\semU{\alpha}{}$.
+  $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  
+   For $\semU{\alpha}{}$, we have
+  $\inv{\semUcomp(\alpha,1)_A} =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}} \semU{\alpha}{(\semUone_A)}$
+  and FIXME
 
 \end{itemize}
 
@@ -1197,7 +1206,7 @@ functoriality, we have $\semF{\alpha}{\sem D} : \arrow{}{\semF{\alpha}{\semF
 \item For \irl{UL}
 \[
 \infer[\irl{UL}]
-      {\seq {\U {\alpha : r \ge q} A} {\beta : r \ge p} {C}}
+      {\seq {\U {\alpha} A} {\beta} {C}}
       { \gamma : q \ge p &
         e : \tc{\compo{\alpha}{\gamma}} {\beta} &
         \seq{A}{\gamma}{C}}
@@ -1205,11 +1214,11 @@ functoriality, we have $\semF{\alpha}{\sem D} : \arrow{}{\semF{\alpha}{\semF
 The premise gives $\sem{D} : \arrow{}{\semF \gamma {\sem A}}{\sem C}$, 
 and we want \arrow{}{\semF {\beta} {\semU {\alpha} {\sem A}}}{\sem C}.  
 Using the adjunction, the premise gives
-\semltor{\sem{D}} : \arrow{}{A}{\semU \gamma C} and it suffices to give
+\semltor{\sem{D}}{\gamma} : \arrow{}{A}{\semU \gamma C} and it suffices to give
 \arrow{}{{\semU {\alpha} {\sem A}}}{\semU {\beta} \sem C}.  So we form
 the composite
 \begin{diagram}
-{{\semU {\alpha} {\sem A}}} & \rTo^{\semU{\alpha}{(\semltor{\sem{D}})}} &
+{{\semU {\alpha} {\sem A}}} & \rTo^{\semU{\alpha}{(\semltor{\sem{D}}{\gamma})}} &
 \semU{\alpha}{\semU \gamma C} & \rTo^{\inv{\semUcomp(\alpha,\gamma)}} & 
 {\semU{\compo{\alpha}{\gamma}}{\sem{C}}} & \rTo^{\semUo{e}} &
 {\semU{\beta}{\sem{C}}}
@@ -1240,8 +1249,8 @@ In summary, we have
 \sem{\hyp e} & := & \semFo{e};\semFone\\
 \sem{\FL {D}} & := & \inv{\semFcomp(\alpha,\beta)} ; \sem{D}\\
 \sem{\FR {\gamma}{e}{D}} & := & \semFo{e}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}\\
-\sem{\UR {D}} & := & \semltor{(\inv{\semFcomp(\beta,\alpha)};{\sem{D}})} \\
-\sem{\UL {\gamma}{e}{D}} & := & \semrtol{({\semU{\alpha}{(\semltor{\sem{D}})}} ; {\inv{\semUcomp(\alpha,\gamma)}} ; {\semUo{e}})}
+\sem{\UR {D}} & := & \semltor{(\inv{\semFcomp(\beta,\alpha)};{\sem{D}})}{\alpha} \\
+\sem{\UL {\gamma}{e}{D}} & := & \semrtol{({\semU{\alpha}{(\semltor{\sem{D}}{\gamma})}} ; {\inv{\semUcomp(\alpha,\gamma)}} ; {\semUo{e}})}{\beta}
 \end{array}
 \]
 \end{proof}
@@ -1340,7 +1349,7 @@ property for \rtol{-}{}.
 \item $\semFo{e};{\sem{\UR D}} = \sem{\UR {\tr {(\comph{e}{1})} D}}$
 After unfolding definitions and applying the IH, we need to know that
 $\semFo{e};\ltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{} = 
-\ltor{(\inv{\semFcomp(\beta',\alpha)};\semFo{\compv{e}{1_\alpha}};\sem{D})}{}$
+\ltor{(\inv{\semFcomp(\beta',\alpha)};\semFo{\comph{e}{1_\alpha}};\sem{D})}{}$
 By naturality of the adjunction, the former is equal to
 \ltor{(\semF{\alpha}{(\semFo{e})};\inv{\semFcomp(\beta,\alpha)};\sem{D})}{}
 and then naturality of $\semFcomp(-,-)$ gives the result.  
@@ -1376,7 +1385,34 @@ $\semFone/\semFcomp$ coherence laws.
 
 \item Case for $\U \alpha A$: $\semFone_{\semU \alpha {\sem A}} = \sem {\UR {\UL 1 1 {\ident A}}}$
 
-TODO
+Expanding the definitions and using the IH and using $\semU{1} = 1$, the
+right-hand side is equal to
+\[
+\semltor{(\inv{\semFcomp(1,\alpha)};
+          \semrtol{(\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; 
+          \inv{\semUcomp(\alpha,1)})}{\alpha}
+          )}{\alpha}
+\]
+By coherence $\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{(\semFone_{\semU {\alpha} {\sem A}})}$, 
+so by naturality of \semltor{-}{\alpha}, 
+it's equal to
+\[
+\semFone;\semltor{(
+          \semrtol{(\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; 
+          \inv{\semUcomp(\alpha,1)})}{\alpha}
+          )}{\alpha}
+\]
+and cancelling \semltor{{\semrtol{-}{\alpha}}}{\alpha} gives 
+\[
+\semFone;\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)}
+\]
+so it suffices to show
+\[
+\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)} = 1
+\]
+But by congutation $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ and by
+coherence $\inv{\semUcomp(\alpha,1)} =_{\arrow{}{\semU{\alpha}{\sem{A}}}{\semU{\alpha}{\semU{1}{\sem{A}}}}} \semU{\alpha}{\semUone}$
+so this is true.
 
 \end{itemize}
 
