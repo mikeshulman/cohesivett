@@ -59,7 +59,8 @@
 
 \newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
 \newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
-\newcommand\cut[2]{\ensuremath{{\dsd{cut} \,\, #1 \,\, #2}}}
+\newcommand\cutsym{\ensuremath{\dsd{cut}}}
+\newcommand\cut[2]{\ensuremath{{\cutsym \,\, #1 \,\, #2}}}
 \newcommand\cuti{\ensuremath{\bullet}}
 
 \newcommand\hyp[1]{\ensuremath{\dsd{hyp} \, {#1}}}
@@ -248,20 +249,22 @@ F_\Delta$, $\nabla := U_\nabla$, and $\Gamma := U_\Delta \cong F_\nabla$
 and have the desired triple adjunction.  Indeed, you may recognize this
 2-category as the ``walking adjunction'' with $\Delta \la \nabla$---that
 is, we give a triple adjunction by saying that the mode morphism generating
-the left adjoint is itself left adjoint to the mode morphism generating the
-right adjoint.
+the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
+adjunction $\Gamma\la\nabla$.
 
 The main judgement of the logic is a ``mixed-category'' entailment
 judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
 and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
 from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
-map $F_\alpha A \to C$ or $A \to U_\alpha C$.  However, taking the
+map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{In fact, there are also structures in category theory that include a basic notion of ``morphisms along $\alpha$'' that are bijective to, but not identical to, morphisms $F_\alpha A \to C$ or $A \to U_\alpha C$.
+For instance, we could consider a Grothendieck bifibration over the 2-category of modes, or a pseudofunctor to the bicategory of profunctors that are both representable and corepresentable.}
+However, taking the
 mixed-mode judgement as primitive makes for a nicer sequent calculus:
 $U$ and $F$ can be specified independently from each other, by left and
 right rules, in such a way that identity and cut (composition) are
 admissible.  While we do not consider focusing~\citep{andreoli92focus},
 we conjecture that the connectives can be given the same focusing
-behavior as in \citep{reed09adjoint}: $F$ is postive and $U$ is negative
+behavior as in \citep{reed09adjoint}: $F$ is positive and $U$ is negative
 (which, because limits are negative and colimits are positive, and
 like-polarity connectives compose together well, matches what left and
 right adjoints should preserve).
@@ -276,7 +279,7 @@ preserves limits), as well as facts specific to a particular theory
 and limits, because it is an equivalent $U_\Delta$ and $F_\nabla$; the
 comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
 themselves adjoint).  Moreover, we can use different mode 2-categories
-to add aditional structure; for example, moving from the walking
+to add additional structure; for example, moving from the walking
 adjunction to the walking reflection (taking $\Delta \nabla = 1$)
 additionally gives that $\Delta$ and $\nabla$ are full and faithful and
 that $\flat$ and $\sharp$ are idempotent, which are some of the
@@ -284,7 +287,7 @@ additional conditions for axiomatic cohesion.
 
 To study the basic ideas of 2-categorical adjoint logic, we make a few
 simplifying restrictions for this paper. First, we consider only
-single-hypothesis, single-conclusion sequents, defering an investigation
+single-hypothesis, single-conclusion sequents, deferring an investigation
 of products and exponentials to future work.  
 
 Second, on the semantic side, we consider only 1-categorical semantics
@@ -292,8 +295,8 @@ of the derivations of the logic, rather than the $\infty$-groupoid
 semantics that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
-categories, adjunctions, and morphisms of adjunctions (conjugate natural
-transformation).  By $S$, each mode determines a 1-category, and
+categories, adjunctions, and morphisms of adjunctions (pairs of conjugate natural
+transformations).  By $S$, each mode determines a 1-category, and
 derivations in the logic are interprered as morphisms in these
 categories.  The action of $S$ on 1- and 2-cells is used to interpret
 $F$ and $U$.  We show that the syntax forms such a pseudofunctor, and
@@ -337,7 +340,7 @@ for the 1-cells, and $e : \tc \alpha \beta$ for the 2-cells.  We write
 \compo{\beta}{\alpha} for 1-cell composition in function composition
 order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
 $\compo{\beta}{\alpha} : r \ge p$), \compv{e_1}{e_2} for vertical
-composition of 2-cells in diagramatic order, and \comph{e_1}{e_2} for
+composition of 2-cells in diagrammatic order, and \comph{e_1}{e_2} for
 horizontal composition of 2-cells in ``congruence of \compo{}{}'' order
 (if $e_1 : \tc \alpha {\alpha'}$ and $e_2 : \tc \beta \beta'$ then
 $\comph{e_1}{e_2} :
@@ -367,7 +370,7 @@ judgement represents a map from an object of some category $q$ to an
 object of another category $p$ along some adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
-  \alpha C}.  In the rules, we write $A_p$ indicate an elided premise
+  \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
 \wftp{A}{p}.
 
 The rules for atomic propositions and for $U$ and $F$ are as follows:
@@ -444,6 +447,9 @@ choose a $\gamma : r \ge q$.  To make adjunctions generated by different
 morphisms be different, it is important that we choose not just any
 $\gamma$, but one where the triangle that it forms with $\alpha$ and
 $\beta$ is filled by a 2-cell, which is the second premise of the rule.
+The direction of the 2-cell, and the fact that it may not be invertible,
+are chosen to match the intended semantics and permit the proofs of the
+desired admissible rules.
 The case for \irl{UR} is dual.  
 
 We now give some examples to illustrate the rules; these examples and
@@ -495,7 +501,7 @@ The comonad operations are defined as follows:
 \]
 %
 The same derivations work for an arbitrary type $A$ if we replace the
-final premise by the admissible identity princinple \seq{A}{1}{A},
+final premise by the admissible identity principle \seq{A}{1}{A},
 defined below.  Using a proof term notation, we write the above
 derivations as \FL{\UL{1}{1}{\hyp{1}}} and
 \FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
@@ -528,7 +534,7 @@ which is part of an isomorphism:
 \]
 The key idea is that we can apply the left rule for $F$ first, and then
 case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
-\irl{Inr} on the right; this is the direction of map doesn't exist for
+\irl{Inr} on the right; this direction of map doesn't exist for
 \U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
 applied until after applying \irl{UR}.  
 
@@ -606,10 +612,11 @@ $F_\alpha \la U_\alpha$.
 \paragraph{Adjunction morphisms}
 
 The following rule provides the action of a 2-cell $e : \tc \alpha
-\beta$ on a derivation $D : \seq{A}{\alpha}{B}$.  Semantically, $D$ is
-interpreted as a map \arrow{}{\F \alpha A}{B} (say), so to get a map
-\arrow{}{\F \beta A}{B} we can precompose with the $F$ part of the
-morphism of adjunctions determined by $e$.
+\beta$ on a derivation $D : \seq{A}{\alpha}{B}$, yielding a new
+derivation which we write as $\tr{e}{D} : \seq{A}{\beta}{B}$.
+Semantically, $D$ is interpreted as a map \arrow{}{\F \alpha A}{B}
+(say), so to get a map \arrow{}{\F \beta A}{B} we can precompose with
+the $F$ part of the morphism of adjunctions determined by $e$.
 
 \[
 \infer[\irl{\tr{-}{-}}]
@@ -744,10 +751,11 @@ equations in the examples below, we will need some additional
 ``propositional'' equations.  We define a judgement \ap{D}{D'} on two
 derivations $D,D' : \seq{A}{\alpha}{C}$ to be the least congruence
 closed under the following rules.  First, we have uniqueness/$\eta$
-rules, which say that any map from a positive/into a negative is equal
-to a derivation that begins with an application of the left/right rule,
-respectively, and then cuts the original derivation with the right/left
-rule, respectively.  For $F$ and $U$ we have:
+rules.
+The rule for $F$ says that any map from a positive is equal
+to a derivation that begins with an application of the left rule
+and then cuts the original derivation with the right
+rule.  The rule for $U$ is dual.
 
 \[
 \begin{array}{l}
@@ -893,8 +901,9 @@ the first step is to associate a category with each mode $p$.  The rules
 for $\ap{}{}$ in the previous section imply that for each $p$, there is
 a category whose objects are \wftp{A}{p} and whose morphisms are
 derivations of \seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities
-given by \ident{} and composition given by \cut{}{}.  We write $D \cuti
-E$ as an infix notation for \cut{D}{E}.  Some standard
+given by \ident{} and composition given by \cutsym.  We write $D \cuti
+E$ as an infix notation for \cut{D}{E}; this corresponds to writing
+composition in this category in diagrammatic notation. Some standard
 category-theoretic terminology applied to categories of this form
 unpacks as follows:
 \begin{enumerate}
@@ -914,7 +923,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   \to H$ consists of a family of derivations $D_A :
   \seq{G_0(A)}{1}{H_0(A)}$ for each \wftp{A}{p}, such that for any $D :
   \seq{A}{1_p}{B}$, \ap{\cut{D_A}{(H_1(D))}}{\cut{(G_1(D))}{D_B}}.  A
-  natural isomorphism consists of a natural transoformation along with
+  natural isomorphism consists of a natural transformation along with
   inverses demonstrating that each $D_A$ is an isomorphism $G_0(A) \iso
   H_0(A)$.  
 
@@ -994,7 +1003,7 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
   $P^{\circ}(\alpha,\beta)$ between $\F {\compo{\beta}{\alpha}} \la \U
   {\compo{\beta}{\alpha}}$ and the composition of the adjunctions $\F
   {\alpha} \la \U {\alpha}$ and $\F {\beta} \la \U {\beta}$.  Moreover,
-  this family of adjunction isomorphism is natural in $\alpha$ and
+  this family of adjunction isomorphisms is natural in $\alpha$ and
   $\beta$.
 
 \item Three coherence conditions between $P^1$ and $P^\circ$ are
@@ -1080,15 +1089,17 @@ pseudofunctor as follows:
 \item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
   \semltor{-}{\alpha} and \semrtol{-}{\alpha} for two maps of hom-sets of the adjunction
 
-\item We write $\semFo{e} : \arrow{}{\F \beta A}{\F \alpha A}$
-and $\semUo{e} : \arrow{}{\U \alpha A}{\U \beta A}$
+\item We write $\semFo{e} : \arrow{}{\semFo \beta A}{\semFo \alpha A}$
+and $\semUo{e} : \arrow{}{\semUo \alpha A}{\semUo \beta A}$
  when {e : \tc{\alpha}{\beta}}
 for the components of the two natural transformations in the adjunction 
 morphism $S(e) : \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la \semUo{\alpha}}$.  
 These are functorial: $\semFo{\compv{e}{e'}} = \semFo{e'};\semFo{e}$
 and $\semFo{1} = 1$ and 
 $\semUo{\compv{e}{e'}} = \semUo{e};\semUo{e'}$
-and $\semUo{1} = 1$.  Moreover, they are conjugate, which means 
+and $\semUo{1} = 1$.
+(The infix ``$;$'' denotes, as usual, composition in diagrammatic order.)
+Moreover, they are conjugate, which means 
 that for any $m : \arrow{}{\semF{\alpha}{A}}{B}$, we have
 $\semltor{m}{\alpha};\semUo{e} =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$,
 or equivalently that 
