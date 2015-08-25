@@ -1112,7 +1112,17 @@ $\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo
   natural adjunction isomorphism $S^\circ$ between $\semFo{\compo{\beta}{\alpha}}
   \la \semUo{\compo{\beta}{\alpha}}$ and the composition of the
   adjunctions $\semFo{\alpha} \la \semUo{\alpha}$ and
-  $\semFo{\beta} \la \semUo{\beta}$.  The fact that these are conjugate
+  $\semFo{\beta} \la \semUo{\beta}$.  
+  Naturality in $\alpha,\beta$ means that 
+  for any 
+  $e_1 : \tc{\beta}{\beta'}$ and $e_2 : \tc{\alpha}{\alpha'}$, 
+  we have
+  $ \semFo{\comph{e_1}{e_2}};\semFcomp(\beta,\alpha) =_{\arrow{}{\semF{\compo{\beta'}{\alpha'}}{A}}{\semF{\alpha}{\semF{\beta}{A}}}}
+  \semFcomp(\beta',\alpha');\semF{\alpha'}{\semFo{e_1}};{\semFo{e_2}}$,
+  or equivalently 
+  $\semFcomp(\beta',\alpha');{\semFo{e_2}};\semF{\alpha}{\semFo{e_1}}$,
+  and similarly for $\semU{}{}$.
+  The fact that these are conjugate
   means that FIXME
   %% $\semFcomp(\alpha,\beta);\semrtol{m}{} = \semrtol{m;\semUcomp(\alpha,\beta)}{}$
 
@@ -1419,7 +1429,7 @@ so this is true.
 \end{proof}
 
 \begin{lemma}
-For all derivations $D$ and $E$, $\sem{\cut D E} = {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}$
+For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\alpha}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}$
 \end{lemma}
 
 \newcommand{\semofcut}[2]{{\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{#1}}};{\sem{#2}}}
@@ -1432,7 +1442,24 @@ each case the cut reduces, so we need to show:
 \begin{itemize}
 \item $\semofcut {(\hyp e)} {(\hyp {e'})} = \sem{\hyp {(\comph{e}{e'})}}$
 
-TODO
+After expanding definitions, we need to show that
+\[
+\semFcomp(\beta,\alpha);\semF{\alpha}{(\semF{e};\semFone)};\semF{e'};\semFone = \semFo{\comph{e}{e'}};\semFone
+\]
+By functoriality, $\semF{\alpha}{(\semF{e};\semFone)} =
+\semF{\alpha}{\semF{e}};\semF{\alpha}{\semFone}$, and by naturality of
+\semFo{e'}, $\semF{e'};{\semF{1}{\semFone}} =
+\semF{\alpha}{\semFone};\semFo{e'}$,
+so the LHS equals
+\[
+(\semFcomp(\beta,\alpha);\semF{\alpha}{\semFo{e}};\semF{e'});{\semF{1}{\semFone}};\semFone
+\]
+By naturality of \semFcomp in $\alpha,\beta$, this equals
+\[
+\semFo{\comph{e}{e'}};\semFcomp(1,1);{\semF{1}{\semFone}};\semFone
+\]
+Coherence implies that $\inv{\semFcomp(1,1)} = \semF{1}{\semFone}$, so
+collapsing inverses gives the result.  
 
 \item $\semofcut {(\FR \gamma e D)} {(\FL E)} = \sem{ \tr {(\comph{e}{1})} {\cut D E} }$
 
