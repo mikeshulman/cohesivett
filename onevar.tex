@@ -1138,7 +1138,12 @@ $\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo
   $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  
    For $\semU{\alpha}{}$, we have
   $\inv{\semUcomp(\alpha,1)_A} =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}} \semU{\alpha}{(\semUone_A)}$
-  and FIXME
+  and FIXME.
+  The associativity coherences say that
+  $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
+  =_{\arrow{}{\semF{\compo{\gamma}{\compo{\beta}{\alpha}}}{A}}{\semF{\alpha}{\semF{\beta}{\semF{\gamma}{A}}}}}
+  \semFcomp(\compo{\gamma}{\beta},\alpha);\semF{\alpha}{\semFcomp(\gamma,\beta)}$
+  and similarly for $U$.  
 
 \end{itemize}
 
@@ -1327,7 +1332,7 @@ In summary
 
 We now show that this is the case.
 
-\begin{lemma}
+\begin{lemma} \label{lem:semtr}
 For all $e : \tc{\beta}{\beta'}$ and derivations $D : \seq{A}{\beta}{B}$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
 \end{lemma}
 \begin{proof}
@@ -1429,10 +1434,10 @@ so this is true.
 \end{proof}
 
 \begin{lemma}
-For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\alpha}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}$
+For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}$
 \end{lemma}
 
-\newcommand{\semofcut}[2]{{\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{#1}}};{\sem{#2}}}
+\newcommand{\semofcut}[2]{{\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{#1}}};{\sem{#2}}}
 
 \begin{proof}
 
@@ -1444,15 +1449,15 @@ each case the cut reduces, so we need to show:
 
 After expanding definitions, we need to show that
 \[
-\semFcomp(\beta,\alpha);\semF{\alpha}{(\semF{e};\semFone)};\semF{e'};\semFone = \semFo{\comph{e}{e'}};\semFone
+\semFcomp(\beta,\beta');\semF{\beta'}{(\semF{e};\semFone)};\semF{e'};\semFone = \semFo{\comph{e}{e'}};\semFone
 \]
-By functoriality, $\semF{\alpha}{(\semF{e};\semFone)} =
-\semF{\alpha}{\semF{e}};\semF{\alpha}{\semFone}$, and by naturality of
+By functoriality, $\semF{\beta'}{(\semF{e};\semFone)} =
+\semF{\beta'}{\semF{e}};\semF{\beta'}{\semFone}$, and by naturality of
 \semFo{e'}, $\semF{e'};{\semF{1}{\semFone}} =
-\semF{\alpha}{\semFone};\semFo{e'}$,
+\semF{\beta'}{\semFone};\semFo{e'}$,
 so the LHS equals
 \[
-(\semFcomp(\beta,\alpha);\semF{\alpha}{\semFo{e}};\semF{e'});{\semF{1}{\semFone}};\semFone
+(\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{e'});{\semF{1}{\semFone}};\semFone
 \]
 By naturality of \semFcomp in $\alpha,\beta$, this equals
 \[
@@ -1463,7 +1468,19 @@ collapsing inverses gives the result.
 
 \item $\semofcut {(\FR \gamma e D)} {(\FL E)} = \sem{ \tr {(\comph{e}{1})} {\cut D E} }$
 
-TODO
+After unfolding the definitions on the left-hand side, and using
+Lemma~\ref{lem:semtr} and the IH on the right-hand side, 
+the calculuation consists of using naturality of $\inv{\semFcomp_A}$ in $A$ to
+show that $\semF{\beta'}{\semF{\alpha}{\sem
+    D}};\inv{\semFcomp(\alpha,\beta')} =
+\inv{\semFcomp(\alpha,\beta')};\semF{\compo \alpha \beta'}{\sem{D}}$,
+using naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to
+show 
+$\semFcomp(\beta,\beta');\semF{\beta'}{\semF{e}} =
+\semF{\comph{e}{1_{\beta'}}};\semFcomp(\compo{\gamma}{\alpha},\beta')$, 
+and using the associativity coherence to show
+$\semFcomp(\compo{\gamma}{\alpha},\beta');\semF{\beta'}{(\semFcomp(\gamma,\alpha))}
+= \semFcomp(\gamma,\compo{\alpha}{\beta'});\semFcomp(\alpha,\beta')$
 
 \item $\semofcut {(\UR D)} {(\UL \gamma e E)} = \tr {(\comph{1}{e})} {\cut D E}$
 
@@ -1482,7 +1499,7 @@ TODO
 
 TODO
 
-\item $\semofcut {(\UL \gamma e D)} E = \sem{\UL {\compo{\gamma}{\alpha}}
+\item $\semofcut {(\UL \gamma e D)} E = \sem{\UL {\compo{\gamma}{\beta'}}
   {\comph{e}{1}} {\cut D E}}$ (if $E$ is not a right rule -- do we need
   this assumption?)
 
