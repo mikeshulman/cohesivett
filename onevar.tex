@@ -1090,7 +1090,7 @@ pseudofunctor as follows:
   \semltor{-}{\alpha} and \semrtol{-}{\alpha} for the two maps of hom-sets
   of the adjunction.
   Naturality of the maps of hom-sets says that 
-  $\semltor{(\semF{\alpha}{m_1};m_2;m_3)} = m_1;\semltor{m_2}{\alpha};\semU{\alpha}{m_3}$
+  $\semltor{(\semF{\alpha}{m_1};m_2;m_3)}{\alpha} = m_1;\semltor{m_2}{\alpha};\semU{\alpha}{m_3}$
   and 
   $\semrtol{(m_1;m_2;\semU{\alpha}{m_3})}{\alpha} = \semF{\alpha}{m_1};{\semrtol{m_2}{\alpha}};{m_3}$.  
 
@@ -1589,9 +1589,32 @@ $\semFcomp(\beta,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
 
 \item $\semofcut D {(\UR E)} = \sem{\UR {\cut D E}}$
 
-TODO
+After expanding definitions and using the IH, we need to show
+\[
+\semFcomp(\beta,\beta');\semF{\beta'}{\sem{D}};\semltor{(\inv{\semFcomp(\beta',\alpha)};\sem{E})}{\alpha}
+=
+\semltor{(\inv{\semFcomp(\compo{\beta}{\beta'},\alpha)};\semFcomp(\beta,\compo{\beta'}{\alpha});\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
+\]
+By the associativity coherence, 
+\[
+\inv{\semFcomp(\compo{\beta}{\beta'},\alpha)} = 
+\semF{\alpha}{(\semFcomp(\beta,\beta'))};\inv{\semFcomp(\beta',\alpha)};\inv{\semFcomp(\beta,\compo{\beta'}{\alpha})}
+\]
+and plugging this in to the RHS and then collapsing inverses gives 
+\[
+\semltor{(\semF{\alpha}{\semFcomp(\beta,\beta')};\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
+\]
+By naturality of \semltor{}{\alpha}, this is the same as
+\[
+{\semFcomp(\beta,\beta')};\semltor{(\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
+\]
+By naturality of \inv{\semFcomp(\beta',\alpha)}, this is the same as 
+\[
+{\semFcomp(\beta,\beta')};\semltor{(\semF{\alpha}{\semF{\beta'}{\sem D}};\inv{\semFcomp(\beta',\alpha)};\sem{E})}{\alpha}
+\]
+so using naturality of \semltor{}{\alpha} again gives the result.  
 
-\item $\semofcut {(\FL D)} E = \sem{\FL {\cut D E}}$ (note: we can
+\item $\semofcut {(\FL D)} E = \sem{\FL {\cut D E}}$ (note: we could
   assume that $E$ is not a right rule, but this assumption is not
   necessary).  After expanding the definitions and using the IH, the
   main step is to use the associativity coherence to show
@@ -1599,10 +1622,64 @@ TODO
   \semFcomp(\compo{\alpha}{\beta},\beta');\semF{\beta'}(\semFcomp(\alpha,\beta))$.
 
 \item $\semofcut {(\UL \gamma e D)} E = \sem{\UL {\compo{\gamma}{\beta'}}
-  {\comph{e}{1}} {\cut D E}}$ (if $E$ is not a right rule -- do we need
-  this assumption?)
+  {\comph{e}{1}} {\cut D E}}$ (note: we could assume that $E$ is not a
+  right rule, but this assumption is not necessary).  
 
-TODO
+First, observe that for any $\gamma,e,D$, \sem{\UL \gamma e D} is equal to
+\[
+\semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{D}
+\]
+By conjugation for $\semU{e}$ and $\semUcomp$, $\sem{\UL \gamma e D} = 
+\semF{e};\semFcomp(\alpha,\gamma);\semrtol{(\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha})}{\gamma}$
+By naturality of \semrtol{-}{\alpha},
+\[
+{\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha}} = 
+\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}} 
+\]
+and by naturality of \semrtol{-}{\gamma},
+\[
+\semrtol{(\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}})}{\gamma}
+= \semF{\gamma}{(\semrtol{1}{\alpha})};\semrtol{{{(\semltor{\sem{D}}{\gamma})}}}{\gamma}
+\]
+so collapsing inverses gives the result.  
+
+Applying this fact to the left and the right sides, and using the IH, we
+need to show $LHS = RHS$, where
+\[
+\begin{array}{l}
+LHS :=
+\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{\beta'}{\semFcomp(\alpha,\gamma)};\semF{\beta'}{\semF{\gamma}{(\semrtol
+    1 \alpha)}};\semF{\beta'}{\sem D};\sem{E}\\
+RHS :=
+\semFo{\comph{e}{1}};\semFcomp(\alpha,\compo{\gamma}{\beta'});\semF{\compo{\gamma}{\beta'}}{(\semrtol{1}{\alpha})};\semFcomp(\gamma,\beta');\semF{\beta'}{\sem D};\sem{E}
+\end{array}
+\]
+
+By naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$
+\[
+\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}} = \semFo{\comph{e}{1}};\semFcomp(\compo{\alpha}{\gamma},\beta')
+\]
+and by the associativity coherence, 
+\[
+\semFcomp(\compo{\alpha}{\gamma},\beta');\semF{\beta'}{\semFcomp(\alpha,\gamma)}
+= 
+\semFcomp(\alpha,\compo{\gamma}{\beta'});\semFcomp(\gamma,\beta')
+\]
+so 
+\[
+LHS = 
+\semFo{\comph{e}{1}};
+\semFcomp(\alpha,\compo{\gamma}{\beta'});\semFcomp(\gamma,\beta')
+;\semF{\beta'}{\semF{\gamma}{(\semrtol
+    1 \alpha)}};\semF{\beta'}{\sem D};\sem{E}
+\]
+Therefore using naturality of $\semFcomp(\gamma,\beta')_A$ in $A$ to
+move it to the right gives the result. 
+
+
+
+
+
 \end{itemize}
 \end{proof}
 
@@ -1629,14 +1706,14 @@ TODO
 
 \item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D'}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D'}}$
 when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-and $D : \seq{C}{\gamma'}{A}$
+and $D' : \seq{C}{\gamma'}{A}$
 and $e_2 : \tc{\gamma'}{\gamma}$
 
 TODO
 
 \item $\sem{\UL{\gamma}{e}{\tr{e_2}{D'}}} = \sem{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D'}}$
 when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-and $D : \seq{C}{\gamma'}{A}$
+and $D' : \seq{C}{\gamma'}{A}$
 and $e_2 : \tc{\gamma'}{\gamma}$.
 
 TODO
