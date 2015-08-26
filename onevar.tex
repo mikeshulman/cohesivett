@@ -105,6 +105,8 @@ ABSTRACT
 
 \section{Introduction}
 
+%% FIXME: don't overload Delta and Nabla
+
 An adjunction $F \la U$ between categories \C and \D\/ consists of a
 pair of functors $F : \C \to \D$ and $U : \D \to \C$ such that maps
 \arrow{\D}{F C}{D} correspond naturally to maps \arrow{\C}{C}{U D}.  A
@@ -141,7 +143,7 @@ one adjunction between any two categories (more precisely, there can be
 two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
 it is sometimes useful to consider multiple different adjunctions
 between the same two categories.  A motivating example is Lawvere's
-axiomatic cohesion~\citep{lawvereXXcohesion}, a general categorical
+axiomatic cohesion~\citep{lawvere07cohesion}, a general categorical
 interface that describes \emph{cohesive spaces}, such as topological
 spaces, or manifolds with differentiable or smooth structures.  The
 interface consists of two categories \C and $\mathcal{S}$, and a
@@ -168,7 +170,7 @@ faithful (maps between discrete or codiscrete cohesive spaces should be
 the same as maps of sets).
 
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
-  theory}~\citep{schreibershulman12cohesive,shulman15realcohesion} is
+  theory}~\citep{schreiber13dcct,schreibershulman12cohesive,shulman15realcohesion} is
 currently being explored in the setting of homotopy type theory and
 univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
 Homotopy type theory uses Martin-L\"of's intensional type theory as a
@@ -256,18 +258,22 @@ The main judgement of the logic is a ``mixed-category'' entailment
 judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
 and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
 from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
-map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{In fact, there are also structures in category theory that include a basic notion of ``morphisms along $\alpha$'' that are bijective to, but not identical to, morphisms $F_\alpha A \to C$ or $A \to U_\alpha C$.
-For instance, we could consider a Grothendieck bifibration over the 2-category of modes, or a pseudofunctor to the bicategory of profunctors that are both representable and corepresentable.}
-However, taking the
+map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{In fact, there
+  are also structures in category theory that include a basic notion of
+  ``morphisms along $\alpha$'' that are bijective to, but not identical
+  to, morphisms $F_\alpha A \to C$ or $A \to U_\alpha C$.  For instance,
+  we could consider a Grothendieck bifibration over the 2-category of
+  modes, or a pseudofunctor to the bicategory of profunctors that are
+  both representable and corepresentable.}  However, taking the
 mixed-mode judgement as primitive makes for a nicer sequent calculus:
 $U$ and $F$ can be specified independently from each other, by left and
 right rules, in such a way that identity and cut (composition) are
 admissible.  While we do not consider focusing~\citep{andreoli92focus},
 we conjecture that the connectives can be given the same focusing
-behavior as in \citep{reed09adjoint}: $F$ is positive and $U$ is negative
-(which, because limits are negative and colimits are positive, and
-like-polarity connectives compose together well, matches what left and
-right adjoints should preserve).
+behavior as in \citep{reed09adjoint}: $F$ is positive and $U$ is
+negative (which, because limits are negative and colimits are positive,
+and like-polarity connectives compose together well, matches what left
+and right adjoints should preserve).
 
 The resulting logic has a good definition-to-theorem ratio: from these
 simple sequent calculus rules for $F$ and $U$, we can prove a variety of
@@ -312,7 +318,7 @@ arising from admissibility of cut and identity are not sufficient.
 Thus, in addition to the sequent calculus itself, we give an equality
 judgement on sequent calculus derivations.  This judgement is
 interpreted by actual equality of morphisms in the semantics above, but
-we intend these rules to be propositional equalities in an eventual
+we intend some of these rules to be propositional equalities in an eventual
 adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
@@ -348,8 +354,7 @@ $\comph{e_1}{e_2} :
 for 2-cells say that \compv{}{} is associative with unit $1_\alpha$ for
 any $\alpha$, that \comph{}{} is associative with unit $1_1$, and that
 the interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
-\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  We treat these
-equations as definitional equalities in all judgements.
+\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  
 
 Each object $p$ of the mode category determines a category, and objects
 of that category are types; the syntactic judgement \wftp{A}{p} will
@@ -371,7 +376,11 @@ object of another category $p$ along some adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
   \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
-\wftp{A}{p}.
+\wftp{A}{p}.  We identify propositions and judgements that differ by
+equality in the mode 2-category; for example we consider \F{\alpha}{A}
+and \F{\compo{\alpha}{1}}{A} to be the same proposition, and we consider
+\seq{A}{\alpha}{B} and \seq{A}{\compo{1}{\alpha}}{B} to be the same
+judgement.
 
 The rules for atomic propositions and for $U$ and $F$ are as follows:
 \[
@@ -501,9 +510,11 @@ The comonad operations are defined as follows:
 \]
 %
 The same derivations work for an arbitrary type $A$ if we replace the
-final premise by the admissible identity principle \seq{A}{1}{A},
-defined below.  Using a proof term notation, we write the above
-derivations as \FL{\UL{1}{1}{\hyp{1}}} and
+top-right derivations of \seq{P}{1}{P} by the admissible identity
+principle \seq{A}{1}{A}, defined below (indeed, we can always substitute
+an arbitrary type for an atomic proposition).  Using a proof term
+notation for derivations, we write the counit as \FL{\UL{1}{1}{\hyp{1}}}
+and the comultiplication as
 \FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
 
 An advantage of using a cut-free sequent calculus is that we can observe
@@ -745,17 +756,22 @@ p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
 
 \subsection{Equations}
 
-The above definitions of \tr{e}{D} and \ident{A} and \cut{D}{E} give a
-notion of definitional equality of proofs, but to prove the desired
-equations in the examples below, we will need some additional
-``propositional'' equations.  We define a judgement \ap{D}{D'} on two
-derivations $D,D' : \seq{A}{\alpha}{C}$ to be the least congruence
-closed under the following rules.  First, we have uniqueness/$\eta$
-rules.
-The rule for $F$ says that any map from a positive is equal
-to a derivation that begins with an application of the left rule
-and then cuts the original derivation with the right
-rule.  The rule for $U$ is dual.
+%% FIXME: explain intrinsic encoding; using derivations as proof terms
+
+When we construct proofs using the admissible rules \tr{e}{D} and
+\ident{A} and \cut{D}{E}, there is a natural notion of definitional
+equality induced by the above definitions of these operations (e.g.
+$\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
+    A}}$).  I.e. the cut- and identity-free proofs are ``normal forms'',
+and a proof using cut or identity for specific $A,D,E$ is equal to its
+normal form.  However, to prove the desired equations in the examples
+below, we will need some additional ``propositional'' equations.  We
+define a judgement \ap{D}{D'} on two derivations $D,D' :
+\seq{A}{\alpha}{C}$ to be the least congruence closed under the
+following rules.  First, we have uniqueness/$\eta$ rules.  The rule for
+$F$ says that any map from a positive is equal to a derivation that
+begins with an application of the left rule and then cuts the original
+derivation with the right rule.  The rule for $U$ is dual.
 
 \[
 \begin{array}{l}
