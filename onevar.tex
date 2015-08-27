@@ -1484,6 +1484,31 @@ so this is true.
 
 \end{proof}
 
+The following equivalent definition of \sem{\UL{\gamma}{e}{D}} uses only
+\semF{}{} operations, except for the counit 
+$\semrtol{1_{\semU{\alpha}{\sem{A}}}}{\alpha} : \arrow{}{\semF{\alpha}{\semU{\alpha}{A}}}{A}$
+
+\begin{lemma}\label{lem:semulalt}
+For any $\gamma,e,D$, 
+$\sem{\UL \gamma e D}  = \semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1_{\semU{\alpha}{\sem{A}}}}{\alpha})};\sem{D}$
+\end{lemma}
+
+\begin{proof}
+By conjugation for $\semU{e}$ and $\semUcomp$, $\sem{\UL \gamma e D} = 
+\semF{e};\semFcomp(\alpha,\gamma);\semrtol{(\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha})}{\gamma}$
+By naturality of \semrtol{-}{\alpha},
+\[
+{\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha}} = 
+\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}} 
+\]
+and by naturality of \semrtol{-}{\gamma},
+\[
+\semrtol{(\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}})}{\gamma}
+= \semF{\gamma}{(\semrtol{1}{\alpha})};\semrtol{{{(\semltor{\sem{D}}{\gamma})}}}{\gamma}
+\]
+so collapsing inverses gives the result.  
+\end{proof}
+
 \begin{lemma}\label{lem:semcut}
 For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}$
 \end{lemma}
@@ -1659,26 +1684,8 @@ so using naturality of \semltor{}{\alpha} again gives the result.
   {\comph{e}{1}} {\cut D E}}$ (note: we could assume that $E$ is not a
   right rule, but this assumption is not necessary).  
 
-First, observe that for any $\gamma,e,D$, \sem{\UL \gamma e D} is equal to
-\[
-\semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{D}
-\]
-By conjugation for $\semU{e}$ and $\semUcomp$, $\sem{\UL \gamma e D} = 
-\semF{e};\semFcomp(\alpha,\gamma);\semrtol{(\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha})}{\gamma}$
-By naturality of \semrtol{-}{\alpha},
-\[
-{\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha}} = 
-\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}} 
-\]
-and by naturality of \semrtol{-}{\gamma},
-\[
-\semrtol{(\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}})}{\gamma}
-= \semF{\gamma}{(\semrtol{1}{\alpha})};\semrtol{{{(\semltor{\sem{D}}{\gamma})}}}{\gamma}
-\]
-so collapsing inverses gives the result.  
-
-Applying this fact to the left and the right sides, and using the IH, we
-need to show $LHS = RHS$, where
+Applying Lemma~\ref{sem:semulalt}, to the left and the right sides, and
+using the IH, we need to show $LHS = RHS$, where
 \[
 \begin{array}{l}
 LHS :=
@@ -1753,25 +1760,51 @@ Cancelling the $\semFcomp(\beta,\alpha)$ and using naturality of
 so it suffices to show that the later is the identity.  Cancelling the
 adjunction round-trip and $\semUo{1}$, it is equal to
 \[
-\semU{\alpha}{(\semrtol{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
+\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
 \]
 By conjugation for \semFone, $\semrtol{\semFone}{1} = \semUone$, and by
 the associativity coherence, $\inv{\semUcomp(\alpha,1)} =
 \semU{\alpha}{\semUone}$, so cancelling inverses gives the result.  
 
-\item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D'}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D'}}$
+\item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D}}$
 when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-and $D' : \seq{C}{\gamma'}{A}$
-and $e_2 : \tc{\gamma'}{\gamma}$
-
-TODO
-
-\item $\sem{\UL{\gamma}{e}{\tr{e_2}{D'}}} = \sem{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D'}}$
-when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-and $D' : \seq{C}{\gamma'}{A}$
+and $D : \seq{C}{\gamma'}{A}$
 and $e_2 : \tc{\gamma'}{\gamma}$.
 
-TODO
+After expanding the definitons and using Lemma~\ref{lem:semtr}, we need
+to show
+\[
+\semFo{e};\semFcomp(\gamma,\alpha);\semF{\alpha}{\semFo{e_2}};\semF{\alpha}{\sem{D}}
+= \semFo{\compv{(\comph{e_2}{1})}{e}};\semFcomp(\gamma',\alpha);\semF{\alpha}{\sem{D}}
+\]
+This is true using functoriality to show $\semFo{\compv{(\comph{e_2}{1})}{e}} =
+\semFo{e};\semFo{{(\comph{e_2}{1})}}$,
+and naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to show
+$\semFo{{(\comph{e_2}{1})}};\semFcomp(\gamma',\alpha) =
+\semFcomp(\gamma,\alpha);\semF{\alpha}{\semFo{e_2}}$.  
+  
+
+\item $\sem{\UL{\gamma}{e}{\tr{e_2}{D}}} = \sem{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D}}$
+when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
+and $D : \seq{C}{\gamma'}{A}$
+and $e_2 : \tc{\gamma'}{\gamma}$.
+
+Using Lemmas~\ref{lem:semulalt} and \ref{lem:semtr}, we need to show
+\[
+\semFo{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semltor{1}{\alpha})};\semFo{e_2};\sem{D}
+=
+\semFo{ \compv{(\comph{1}{e_2})}{e}   };\semFcomp(\alpha,\gamma');\semF{\gamma'}{(\semltor{1}{\alpha})};\sem{D}
+\]
+By functoriality, 
+$\semFo{ \compv{(\comph{1}{e_2})}{e}   } = \semF{e};\semF{\comph{1}{e_2}}$, 
+and by naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$,
+$\semFo{ {(\comph{1}{e_2})} };\semFcomp(\alpha,\gamma')
+= \semFcomp(\alpha,\gamma);\semFo{e_2}$, so
+the right-hand side is equal to 
+\[
+\semFo{e};\semFcomp(\alpha,\gamma);\semFo{e_2};\semF{\gamma'}{(\semltor{1}{\alpha})};\sem{D}
+\]
+so using naturality of \semFo{e_2} gives the result.  
 
 \item $\sem{\UL {}{e_2} {\FR {} {e_1} {D}}} = \sem{\FR {} {e_4} {\UL {} {e_3} {D}}}$
 when ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$
