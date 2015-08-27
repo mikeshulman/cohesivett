@@ -382,6 +382,24 @@ and \F{\compo{\alpha}{1}}{A} to be the same proposition, and we consider
 \seq{A}{\alpha}{B} and \seq{A}{\compo{1}{\alpha}}{B} to be the same
 judgement.
 
+%% FIXME:
+%% Maybe a better way to put it is that the thing that's a bit unusual here
+%% is to index a syntactic judgement by a semantic structure---we wouldn't
+%% be able to encode this directly in LF, e.g., and it's possible for the
+%% "definitional" equality of the syntax to be undecidable if we choose a
+%% mode category that includes undecidable word problems on groups.  A more
+%% syntactic way to do it would be to define a syntax for 2-categories, so
+%% that p and alpha and e are syntactic categories, and the compositions
+%% and units are term constructors, and there is a judgement of equality of
+%% e's and of alpha's, and there are definitional equality rules saying
+%% A [alpha]|- B
+%% alpha = beta
+%% ------------------
+%% A [beta]|- B
+%% etc, and then the syntax of the 2-category is interpreted in an actual
+%% mode 2-category.  But this seems like it would add complexity without
+%% much benefit, so I went with the more semantic approach.
+
 The rules for atomic propositions and for $U$ and $F$ are as follows:
 \[
 \begin{array}{c}
@@ -1406,7 +1424,7 @@ and then naturality of $\semFcomp(-,-)$ gives the result.
 
 \end{proof}
 
-\begin{lemma}
+\begin{lemma}\label{lem:semident}
 For all types $A$, $\sem{\ident A} = \semFone_{\sem{A}}$.    
 \end{lemma}
 
@@ -1466,7 +1484,7 @@ so this is true.
 
 \end{proof}
 
-\begin{lemma}
+\begin{lemma}\label{lem:semcut}
 For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}$
 \end{lemma}
 
@@ -1691,11 +1709,6 @@ LHS =
 \]
 Therefore using naturality of $\semFcomp(\gamma,\beta')_A$ in $A$ to
 move it to the right gives the result. 
-
-
-
-
-
 \end{itemize}
 \end{proof}
 
@@ -1713,12 +1726,38 @@ true.  It remains to validate the axioms:
 \item $\sem{D} = \sem{\FL {\cut{(\FR 1 1 {\ident{A}})}{D}} }$
 when ${D : \seq{\F \alpha A}{\beta}{C}}$
 
-TODO
+After expanding the definitions and using
+Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
+\[
+\inv{\semFcomp(\alpha,\beta)};\semFcomp(\alpha,\beta);\semF{\beta}{(\semFo{1};\semFcomp(1,\alpha);\semF{\alpha}{\semFone})};\sem{D}
+= \sem{D}
+\]
+This is true because $\semFo{1} = 1$ and because
+$\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{\semFone}$, so cancelling
+identities and inverses gives the result.  
 
 \item $\sem{D} = \sem{\UR {\cut{D}{(\UL 1 1 {\ident{A}})}}}$
 when ${D : \seq{C}{\beta}{\U \alpha A}}$
 
-TODO
+After expanding the definitions and using
+Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
+\[
+\semltor{(\inv{\semFcomp(\beta,\alpha)};\semFcomp(\beta,\alpha);\semF{\alpha}{\sem D};\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
+= \sem{D}
+\]
+Cancelling the $\semFcomp(\beta,\alpha)$ and using naturality of
+\semltor{-}{\alpha}, this is equal to
+\[
+\sem{D};\semltor{(\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
+\]
+so it suffices to show that the later is the identity.  Cancelling the
+adjunction round-trip and $\semUo{1}$, it is equal to
+\[
+\semU{\alpha}{(\semrtol{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
+\]
+By conjugation for \semFone, $\semrtol{\semFone}{1} = \semUone$, and by
+the associativity coherence, $\inv{\semUcomp(\alpha,1)} =
+\semU{\alpha}{\semUone}$, so cancelling inverses gives the result.  
 
 \item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D'}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D'}}$
 when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
