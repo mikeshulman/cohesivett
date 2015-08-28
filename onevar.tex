@@ -429,9 +429,11 @@ The rules for atomic propositions and for $U$ and $F$ are as follows:
 \end{array}
 \]
 
-The rules for other connectives do not change $\alpha$; for example, we
-can add coproducts to every category with the following rules (where
-$\alpha : q \ge p$):
+The rules for other connectives do not change $\alpha$; for example, see
+the rules for coproducts in Figure~\ref{fig:coprod}.
+
+\begin{figure}
+Sequent calculus rules:
 \[
 \infer[\irl{Inl}]
       {\seq {C_q} {\alpha} {\coprd{A_p}{B_p}}}
@@ -447,8 +449,40 @@ $\alpha : q \ge p$):
        \seq {B_q} {\alpha} {C_p} 
       }
 \]
-Alternatively, we could restrict these rules to where $p$ is some
-specific set of modes to have coproducts only in those categories.
+
+Definitions of \tr{-}{-} and \ident{-} and \cut{-}{-}:
+
+\[
+\begin{array}{rcl}
+\tr{e}{\Inl{D}} & := &  \Inl{\tr e D}\\
+\tr{e}{\Inr{D}} & := &  \Inr{\tr e D}\\
+\tr{e}{\Case{D_1}{D_2}} & := & \Case{\tr e {D_1}}{\tr e {D_2}}\\\\
+
+\ident{\coprd{A}{B}} & := & \Case {\Inl {\ident{A}}} {\Inr {\ident{B}}}\\\\
+                                                                           
+\cut{(\Inl{D})}{(\Case{E_1}{E_2})} & := & \cut{D}{E_1}\\
+\cut{(\Inr{D})}{(\Case{E_1}{E_2})} & := & \cut{D}{E_2}\\
+\cut{D}{(\Inl{E})} & := & \Inl{\cut{D}{E}}\\
+\cut{D}{(\Inr{E})} & := & \Inr{\cut{D}{E}}\\
+\cut{(\Case{D_1}{D_2})}{E} & := & \Case{\cut{D_1}{E}}{\cut{D_2}{E}} \text{if $E$ is not a right rule}\\
+\end{array}
+\]
+
+Equational theory:
+\[
+\begin{array}{l}
+\infer{\ap D {\Case{\cut{(\Inl{\ident{A}})}{D}}{\cut{(\Inr{\ident{B}})}{D}}}}
+      {D : \seq{\coprd{A}{B}}{\alpha}{C}}
+\\ \\ 
+\infer{\ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl D}}}{}
+\qquad
+\infer{\ap{\Inr{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inr D}}}{}
+\end{array}
+\]
+
+\caption{Sequent calculus and equations for coproducts}
+\label{fig:coprod}
+\end{figure}
 
 To understand the rules for $F$ and $U$, it is helpful to begin with
 \irl{FL} and \irl{UR}.  In the special case where $\beta$ is 1, these
@@ -773,6 +807,7 @@ p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
 
 
 \subsection{Equations}
+\label{sec:rules:equations}
 
 %% FIXME: explain intrinsic encoding; using derivations as proof terms
 
@@ -829,7 +864,7 @@ positives commute. These are needed to prove the left-commutative cut
 equations in the case where $E$ is a right rule, because we chose to
 give right-commutative cuts precedence defintionally (the full
 left-commutative equations seem necessary for proving some of the
-theorems we want to prove below.)  For $U$ and $F$, we have
+theorems we want to prove below).  For $U$ and $F$, we have
 \[
 \infer{\ap{\UL {}{e_2} {\FR {} {e_1} {D}}}{\FR {} {e_4} {\UL {} {e_3} {D}}}}
       {\compv{(\comph{1}{e_1})}{e_2} \equiv {\compv{(\comph{e_3}{1})}{e_4}}}
@@ -840,11 +875,12 @@ of the conclusion type check.
 
 \paragraph{Admissible rules}
 
-The following equality rules are admissible.  The proofs have a lot of
-cases (about 800 lines of Agda total) but are not difficult, except for
-somewhat subtle staging.  The rules in each of the following groups
-(except the first) are proved by mutual induction, and use the preceding
-groups:
+The following equality rules are admissible for the $U/F$ rules
+described above, and for the coproduct rules in Figure~\ref{fig:coprod}.
+The proofs have a lot of cases (about 800 lines of Agda total) but are
+not difficult, except for somewhat subtle staging.  The rules in each of
+the following groups (except the first) are proved by mutual induction,
+and use the preceding groups:
 
 \begin{enumerate}
 \item 
@@ -1113,47 +1149,50 @@ is about 150 lines of Agda.
 \newcommand\semltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
 \newcommand\semrtol[2]{\ensuremath{#1^{\vartriangleleft_{#2}}}}
 
+\newcommand\seminl[0]{\ensuremath{\mathit{inl}}}
+\newcommand\seminr[0]{\ensuremath{\mathit{inr}}}
+\newcommand\semcase[2]{\ensuremath{[#1,#2]}}
+
 Next, we show that we can interpret the rules of adjoint logic in any
 pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
 for these models.  On the semantic side, we unpack the definition of a
 pseudofunctor as follows:
 \begin{itemize}
-\item We write $\C_p$ for $S(p)$.
+\item We write $\C_p$ for $S(p)$.  We write ``$;$'' for composition of
+  morphisms in $\C_p$ in diagrammatic order.
 
-\item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$, and
-  \semltor{-}{\alpha} and \semrtol{-}{\alpha} for the two maps of hom-sets
-  of the adjunction.
-  Naturality of the maps of hom-sets says that 
-  $\semltor{(\semF{\alpha}{m_1};m_2;m_3)}{\alpha} = m_1;\semltor{m_2}{\alpha};\semU{\alpha}{m_3}$
-  and 
-  $\semrtol{(m_1;m_2;\semU{\alpha}{m_3})}{\alpha} = \semF{\alpha}{m_1};{\semrtol{m_2}{\alpha}};{m_3}$.  
+\item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$,
+  and \semltor{-}{\alpha} and \semrtol{-}{\alpha} for the two maps of
+  hom-sets of the adjunction.  Naturality of the maps of hom-sets says
+  that $\semltor{(\semF{\alpha}{m_1};m_2;m_3)}{\alpha} =
+  m_1;\semltor{m_2}{\alpha};\semU{\alpha}{m_3}$ and
+  $\semrtol{(m_1;m_2;\semU{\alpha}{m_3})}{\alpha} =
+  \semF{\alpha}{m_1};{\semrtol{m_2}{\alpha}};{m_3}$.
 
 \item We write $\semFo{e} : \arrow{}{\semFo \beta A}{\semFo \alpha A}$
-and $\semUo{e} : \arrow{}{\semUo \alpha A}{\semUo \beta A}$
- when {e : \tc{\alpha}{\beta}}
-for the components of the two natural transformations in the adjunction 
-morphism $S(e) : \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la \semUo{\alpha}}$.  
-These are functorial: $\semFo{\compv{e}{e'}} = \semFo{e'};\semFo{e}$
-and $\semFo{1} = 1$ and 
-$\semUo{\compv{e}{e'}} = \semUo{e};\semUo{e'}$
-and $\semUo{1} = 1$.
-(The infix ``$;$'' denotes, as usual, composition in diagrammatic order.)
-Moreover, they are conjugate, which means 
-that for any $m : \arrow{}{\semF{\alpha}{A}}{B}$, we have
-$\semltor{m}{\alpha};\semUo{e} =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$,
-or equivalently that 
-for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we have
-$\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo{e})}{\beta}$.
+  and $\semUo{e} : \arrow{}{\semUo \alpha A}{\semUo \beta A}$ when {e :
+    \tc{\alpha}{\beta}} for the components of the two natural
+  transformations in the adjunction morphism $S(e) :
+  \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la
+    \semUo{\alpha}}$.  Functoriality gives that $\semFo{\compv{e}{e'}} =
+  \semFo{e'};\semFo{e}$ and $\semFo{1} = 1$ and $\semUo{\compv{e}{e'}} =
+  \semUo{e};\semUo{e'}$ and $\semUo{1} = 1$.  Specializing the
+  definition of conjugations gives that for any $m :
+  \arrow{}{\semF{\alpha}{A}}{B}$, we have $\semltor{m}{\alpha};\semUo{e}
+  =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$, or
+  equivalently that for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we
+  have $\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}}
+  \semrtol{(m;\semUo{e})}{\beta}$.
 
 \item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone :
   \semU{1}{A} \iso A$ for the components of the two natural isomorphisms
   in the adjunction isomorphism $S^1$ between $\semFo{1}{} \la
   \semUo{1}$ and the identity adjunction.  Specializing the definition
   of conjugation to this case gives that for any $m : \arrow{}{A}{B}$,
-  $\ltor{(\semFone_A;m)}{1} = m;\inv{\semUone_B}$ (and similar
-  conditions for \rtol{-}{}, and for the other directions of the
-  isomorphisms), so in particular taking $m = 1$ gives
-  $\ltor{(\semFone_A)}{{1}} = \inv{(\semUone_A)}$.
+  $\ltor{(\semFone_A;m)}{1} = m;\inv{\semUone_B}$ (and for any $m :
+  \arrow{}{A}{B}$, $\semrtol{(m;\inv{\semUone})}{1} = \semFone;m$), so in
+  particular taking $m = 1$ gives $\ltor{(\semFone_A)}{{1}} =
+  \inv{(\semUone_A)}$.
 
 \item We write $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
   \semF{\alpha}{(\semF \beta A)}$ and $\semUcomp(\beta,\alpha) :
@@ -1189,12 +1228,12 @@ $\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}} \semrtol{(m;\semUo
   $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  
    For $\semU{\alpha}{}$, we have
   $\inv{\semUcomp(\alpha,1)_A} =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}} \semU{\alpha}{(\semUone_A)}$
-  and FIXME.
+  and $\semUcomp(1,\alpha)_A = \inv{(\semUone_{\semU{\alpha}{A}})}$.
   The associativity coherences say that
   $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
   =_{\arrow{}{\semF{\compo{\gamma}{\compo{\beta}{\alpha}}}{A}}{\semF{\alpha}{\semF{\beta}{\semF{\gamma}{A}}}}}
   \semFcomp(\compo{\gamma}{\beta},\alpha);\semF{\alpha}{\semFcomp(\gamma,\beta)}$
-  and similarly for $U$.  
+  and similarly for \semU{}{}.  
 
 \end{itemize}
 
@@ -1215,7 +1254,7 @@ not use the adjunction structure, while the interpretations of the rules
 for $U$ do.  We now consider the interpretation of the sequent calculus
 rules:
 
-\begin{theorem}[Soundness of the sequent calculus]
+\begin{theorem}[Soundness of the sequent calculus]  \label{thm:semsequent}
 There is a function \sem{-} from derivations $D : \seq{A}{\alpha}{B}$ 
 to morphisms \arrow{}{\semF \alpha {\sem A}}{\sem B}.
 \end{theorem}
@@ -1684,7 +1723,7 @@ so using naturality of \semltor{}{\alpha} again gives the result.
   {\comph{e}{1}} {\cut D E}}$ (note: we could assume that $E$ is not a
   right rule, but this assumption is not necessary).  
 
-Applying Lemma~\ref{sem:semulalt}, to the left and the right sides, and
+Applying Lemma~\ref{lem:semulalt}, to the left and the right sides, and
 using the IH, we need to show $LHS = RHS$, where
 \[
 \begin{array}{l}
@@ -1721,7 +1760,8 @@ move it to the right gives the result.
 
 Next, we validate the rules for \ap{}{}.  
 
-\begin{theorem}[Soundess of the equational theory.] If \ap{D}{D'} then $\sem{D} = \sem{D'}$.  
+\begin{theorem}[Soundess of the equational theory.] \label{thm:semeq}
+If \ap{D}{D'} then $\sem{D} = \sem{D'}$.  
 \end{theorem}
 
 \begin{proof}
@@ -1814,6 +1854,276 @@ TODO
 \end{itemize}
 \end{proof}
 
+In general, an admissible inference rule need not hold in all models.
+However, in this case, we have restricted the class of models to
+situations where the admissible rules for \ap{}{} discussed above do hold: 
+
+\begin{theorem}[Soundness of admissible rules] 
+The admissible rules for \ap{D}{D'} in Section~\ref{sec:rules:equations}
+are true in the semantics.  
+\end{theorem}
+
+\begin{proof}
+
+\begin{itemize}
+
+\item For ${\tr{1}{D} \equiv D}$
+and ${\tr{(\compv{e_1}{e_2})}{D} \equiv \tr{e_2}{\tr{e_1}{D}}}$,
+by Lemma~\ref{lem:semtr}, we need to show $\semFo{e};\sem{D} = \sem{D}$
+and $\semFo{\compv{e_1}{e_2}};{\sem D} =
+\semFo{e_2};\semFo{e_1};\sem{D}$, which are true by functoriality.  
+
+\item For the congruence rules:
+\[
+\infer{\ap{\tr{e}{D}}{\tr{e}{D'}}}
+      {\ap{D}{D'}}
+\quad
+\infer{\ap{\cut{D}{E}}{\cut{D'}{E}}}
+      {\ap{D}{D'}}
+\quad
+\infer{\ap{\cut{D}{E}}{\cut{D}{E'}}}
+      {\ap{E}{E'}}
+\]
+By assumption, $\sem{D} = \sem{D'}$ or $\sem{E} = \sem{E'}$.  
+By Lemma~\ref{lem:semtr} and~\ref{lem:semcut}, 
+\sem{\tr{e}{D}} and \sem{\cut D E} are compositional in \sem{D} and
+\sem{E}, so the conclusions are equal as well.  
+
+\item For
+  {\ap{\tr{(\comph{e}{e'})}{\cut{D}{D'}}}{\cut{(\tr{e}{D})}{(\tr{e'}{D'})}}}
+where $e : \tc \alpha {\beta}$ and $e' : \tc {\alpha'}{\beta'}$, 
+by Lemmas~\ref{lem:semtr} and \ref{lem:semcut}, we need to show
+\[
+\semFo{(\comph{e}{e'})};\semFcomp(\alpha,\alpha');\semF{\alpha'}{(\sem{D})};\sem{D'}
+=
+\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{\beta'}{\sem{D}};\semFo{e'};\sem{D'}
+\]
+Using naturality for \semFo{e'}, the right-hand side equals
+\[
+\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semFo{e'};\semF{\alpha'}{\sem{D}};\sem{D'}
+\]
+so naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ gives the
+result.  
+
+\item 
+For {\ap{\cut{D_1}{(\cut{D_2}{D_3})}}{\cut{(\cut{D_1}{D_2})}{D_3}}},
+by Lemma~\ref{lem:semcut}, we need to show
+\[
+\begin{array}{ll}
+  & \semFcomp(\beta_1,\compo{\beta_2}{\beta_3});\semF{\compo{\beta_2}{\beta_3}}{\sem{D_1}};\semFcomp(\beta_2,\beta_3);\semF{\beta_3}{\sem{D_2}};\sem{D_3}\\
+= & \semFcomp(\compo{\beta_1}{\beta_2},\beta_3);\semF{\beta_3}{\semFcomp(\beta_1,\beta_2)};\semF{\beta_3}{\semF{\beta_2}{\sem {D_1}}};\semF{\beta_3}{\sem{D_2}};\sem{D_3}
+\end{array}
+\]
+By naturality of $\semFcomp(\beta_2,\beta_3)_A$ in $A$, the LHS equals 
+\[
+\semFcomp(\beta_1,\compo{\beta_2}{\beta_3});\semFcomp(\beta_2,\beta_3);\semF{\beta_2}{\semF{\beta_3}{\sem{D_1}}};\semF{\beta_3}{\sem{D_2}};\sem{D_3}
+\]
+so the associativity coherence gives the result.
+
+\item For  
+{\ap{\cut{D}{\ident{}}}{D}},
+by Lemmas~\ref{lem:semcut} and \ref{lem:semident}, 
+it suffices to show 
+\[
+\semFcomp(\beta,1);\semF{1}{\sem{D}};\semFone = \sem{D}
+\]
+By naturality of \semFone, the left-hand side equals
+$\semFcomp(\beta,1);\semFone;\sem{D}$, so coherence (and a unit law for
+$\C_p$---interpreting a unit law for the syntax involves a unit law for
+the semantics) gives the result.
+
+\item For {\ap{\cut{\ident{}}{D}}{D}}, by 
+by Lemmas~\ref{lem:semcut} and \ref{lem:semident}, 
+it suffices to show 
+\[
+\semFcomp(1,\beta);\semF{\beta}{\semFone};{\sem{D}} = \sem{D}
+\]
+which is true by coherence (and a unit law for $\C_p$).
+
+\item The unrestricted left-commutative rules ${\ap{\cut {(\FL D)} E} {\FL {\cut D E}}}$
+and\\ ${\ap{\cut {(\UL \gamma e D)} E} {\UL {\compo{\gamma}{\alpha}}
+    {\comph{e}{1}} {\cut D E}}}$ were checked as part of the proof of
+Lemma~\ref{lem:semcut} above.   
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Interpretation of Coproducts]
+If each $\C_p$ has coproducts, then
+Theorem~\ref{thm:semsequent} and Lemmas~\ref{lem:semtr} and
+\ref{lem:semident} and \ref{lem:semcut} and Theorem \ref{thm:semeq} are
+true when the rules for coproducts in Figure~\ref{fig:coprod} are added
+to the logic.  
+\end{lemma}
+
+\begin{proof}  Write $\seminl : \arrow{}{A}{\coprd{A}{B}}$
+and $\seminr : \arrow{}{B}{\coprd{A}{B}}$
+and \semcase{m_1}{m_2} for the coproduct maps.  
+
+\begin{itemize}
+
+\item First, we show how to interpret the sequent calculus rules.
+ For \Inl{D} and \Inr{D}, define
+\[
+\begin{array}{rcl}
+\sem{\Inl{D}} & := & \sem{D};\seminl\\
+\sem{\Inr{D}} & := & \sem{D};\seminr\\
+\end{array}
+\]
+The left case makes sense because \sem{D} : \arrow{}{\sem C}{\sem A}, so
+post-composing with \seminl\/ has the right codomain; the other case is
+analogous.  
+
+For \sem{\Case{D_1}{D_2}}, we essentially need to do the proof that left adjoints
+preserve coproducts: we have
+$\sem{D_1} : \arrow{}{\semF{\alpha}{A}}{C}$
+and 
+$\sem{D_2} : \arrow{}{\semF{\alpha}{B}}{C}$
+and we want a map
+$\arrow{}{\semF{\alpha}{(\coprd{A}{B})}}{C}$, which we define as
+follows:
+\[
+\begin{array}{rcl}
+\sem{\Case{D_1}{D_2}} & := & \semrtol{\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}}}{\alpha}
+\end{array}
+\]
+
+\item Next, we give the new cases of Lemma~\ref{lem:semtr}, where $e :
+  \tc{\alpha}{\beta}$ and the given derivation has mode $\alpha$.
+For \Inl{D}, we need to show
+\[
+\sem{\tr e D};\seminl = \semFo{e};\sem{D};\seminl
+\]
+which is immediate by the IH (and associativity).  The \Inr{D} case is
+analogous.  For \Case{D_1}{D_2}, after expanding the definitions and
+using the IH, we need to show
+\[
+\semrtol{\semcase{\semltor{(\semFo{e};\sem{D_1})}{\beta}}{\semltor{(\semFo{e};\sem{D_2})}{\beta}}}{\beta} = \semFo{e};\semrtol{(\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}})}{\alpha}
+\]
+By conjugation, the right-hand side equals
+\[
+\semrtol{(\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}};\semUo{e})}{\beta}
+\]
+and the left-hand side equals 
+\[
+\semrtol{\semcase{\semltor{\sem{D_1}}{\beta};\semUo{e}}{\semltor{\sem{D_2}}{\beta};\semUo{e}}}{\beta}
+\]
+and these are equal by the uniqueness part of the universal property for coproducts.
+
+\item 
+Next, we give the new case of Lemma~\ref{lem:semident}:
+$\sem{\Case {\Inl {\ident{A}}} {\Inr {\ident{B}}}} = \semFone$.
+After expanding the definitions and using the IH, we need to show
+\[
+\semrtol{\semcase{\semltor{(\semFone;\seminl)}{1}}{\semltor{(\semFone;\seminr)}{1}}}{1}
+\]
+By conjugation for \semFone, this is equal to
+\[
+\semrtol{\semcase{\seminl;\inv{\semUone}}{\seminr;\inv{\semUone}}}{1}
+\]
+By uniqueness for coproducts, this is equal to
+\[
+\semrtol{(\semcase{\seminl}{\seminr};{\inv{\semUone}})}{1}
+\]
+By conjugation for \semUone, this is equal to 
+\[
+\semFone;{\semcase{\seminl}{\seminr}}
+\]
+and by uniqueness for coproducts, $\semcase{\seminl}{\seminr} = 1_{\coprd{A}{B}}$.  
+
+\item Next, we give the new cases of Lemma~\ref{lem:semcut}.  There are
+  5 reductions; we show the \Inl{-} cases of the principal and
+  right-commutative cuts, and the left-commutative cut case; the \Inr{-}
+  cases are analogous.
+
+\begin{itemize}
+\item For $\cut{(\Inl{D})}{(\Case{E_1}{E_2})} := \cut{D}{E_1}$,
+by the IH we need to show that 
+\[
+\semofcut{D}{E_1} = \semFcomp(\beta,\beta');\semF{\beta'}{\sem{D}};\semF{\beta'}{\seminl};{\semrtol{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}}{\beta'}}
+\]
+By naturality of \semrtol{\beta'}, 
+$\semF{\beta'}{\seminl};{\semrtol{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}}{\beta'}}
+=
+\semrtol{(\seminl;{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}})}{\beta'}$,
+which by the universal property for coproducts equals 
+\semrtol{({{\semltor{\sem{E_1}}{\beta'}}})}{\beta'},
+which equals {\sem{E_1}} by collapsing inverses.  
+
+\item For $\cut{D}{(\Inl{E})} := \Inl{\cut{D}{E}}$,
+the result is immediate by the IH.
+%% \cut{D}{(\Inr{E})} & := & \Inr{\cut{D}{E}}
+
+\item For $\cut{(\Case{D_1}{D_2})}{E} := \Case{\cut{D_1}{E}}{\cut{D_2}{E}}$,
+by the IH we need to show that
+\[
+\begin{array}{ll}
+& {\semrtol{\semcase{\semltor{(\semofcut{D_1}{E})}{\compo{\beta}{\beta'}}}{\semltor{(\semofcut{D_2}{E})}{\compo{\beta}{\beta'}}}}{\compo{\beta}{\beta'}}}\\
+= &\semFcomp(\beta,\beta');\semF{\beta'}{{\semrtol{\semcase{\semltor{\sem{D_1}}{\beta}}{\semltor{\sem{D_2}}{\beta}}}{\beta}}};\sem{E}
+\end{array}
+\]
+Conjugating the $\semFcomp(\beta,\beta')$ outside the
+$\semrtol{-}{\compo{\beta}{\beta'}}$, and then conjugating the resulting 
+$\semUcomp(\beta,\beta')$ outside the $\semltor{-}{\compo{\beta}{\beta'}}$,
+the left-hand side is equal to
+\[
+\semFcomp(\beta,\beta');
+\semrtol{(\semrtol{\semcase{\semltor{(\semltor{(\semF{\beta'}{\sem{D_1}};\sem{E})}{\beta'})}{\beta}}{\semltor{(\semltor{(\semF{\beta'}{\sem{D_2}};\sem{E})}{\beta'})}{\beta}}}{\beta})}{\beta'}
+\]
+By naturality of the adjunction, this is the same as 
+\[
+\semFcomp(\beta,\beta');
+\semrtol{(\semrtol{\semcase{\semltor{({\sem{D_1}};\semltor{\sem{E}}{\beta'})}{\beta}}{\semltor{({\sem{D_2}};\semltor{\sem{E}}{\beta'})}{\beta}}}{\beta})}{\beta'}
+\]
+and then
+\[
+\semFcomp(\beta,\beta');
+\semrtol{(\semrtol{\semcase{\semltor{{\sem{D_1}}}{\beta};\semU{\beta}{(\semltor{\sem{E}}{\beta'})}}
+                           {\semltor{{\sem{D_2}}}{\beta};\semU{\beta}{(\semltor{\sem{E}}{\beta'})}}}
+  {\beta})}{\beta'}
+\]
+By uniqueness for coproducts, this is
+\[
+\semFcomp(\beta,\beta');
+\semrtol{(\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
+                           {\semltor{{\sem{D_2}}}{\beta}};\semU{\beta}{(\semltor{\sem{E}}{\beta'})})}
+  {\beta})}{\beta'}
+\]
+By naturality of the adjunction, that is
+\[
+\semFcomp(\beta,\beta');
+\semrtol{(\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
+                           {\semltor{{\sem{D_2}}}{\beta}})}
+  {\beta};{(\semltor{\sem{E}}{\beta'})})}{\beta'}
+\]
+and then
+\[
+\semFcomp(\beta,\beta');
+\semF{\beta'}{
+(\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
+                           {\semltor{{\sem{D_2}}}{\beta}})}
+  {\beta})};
+\semrtol{{(\semltor{\sem{E}}{\beta'})}}{\beta'}
+\]
+so collapsing inverses gives the result.  
+
+\end{itemize}
+
+\item 
+\[
+\infer{\ap D {\Case{\cut{(\Inl{\ident{A}})}{D}}{\cut{(\Inr{\ident{B}})}{D}}}}
+      {D : \seq{\coprd{A}{B}}{\alpha}{C}}
+\]
+
+TODO
+
+\item The rule \ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl D}} (and
+  the analogous rule for \Inr{D}) is immediate by
+  Lemma~\ref{lem:semulalt}, because \sem{\UL{\gamma}{e}{D}} precomposes
+  \sem{D} with something, and \sem{\Inl{D}} postcomposes \sem{D} with
+  \seminl.
+
+\end{itemize}
+\end{proof}
 
 \section{Triple Adjunction}
 \label{sec:triple}
