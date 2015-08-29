@@ -873,7 +873,7 @@ We elide the details of the typing of the 2-cells $e_i$, which will not
 be needed below; they are the most general thing that makes both sides
 of the conclusion type check.
 
-\paragraph{Admissible rules}
+\subsubsection{Admissible rules}
 
 The following equality rules are admissible for the $U/F$ rules
 described above, and for the coproduct rules in Figure~\ref{fig:coprod}.
@@ -1360,10 +1360,16 @@ In summary, we have
 \]
 \end{proof}
 
-Next, we will prove that the interpretations of the admissible rules
-\tr{e}{D} and \ident{A} and \cut{D}{E} are equal to what we would have
-interpreted these constructs as if they were derivable rules.
-This will be useful for validating the \ap{}{} rules.  
+In general, an admissible inference rule need not hold in all models.
+However, in this case, we are considering a class of models
+(pseudofunctors into \Adj) in which the admissible rules are true.    
+
+\begin{lemma}
+The admissible rules \tr{e}{D} and \ident{A} and \cut{D}{E} 
+can be interpreted in the semantics.  
+\end{lemma}
+
+\begin{proof}
 \begin{itemize}
 \item For \tr{e}{D}, we have
 \[
@@ -1385,7 +1391,7 @@ The premise gives \arrow{}{\semF \alpha {\sem A}}{\sem C}, and we want
       {\seq {A} {1} {A}}
       {}
 \]
-We want \arrow{}{\semF{1}{\sem A}}{A}, so use $\semFone$.  
+We want \arrow{}{\semF{1}{\sem A}}{\sem A}, so use $\semFone$.  
 
 \item For cut, we have
 
@@ -1411,22 +1417,24 @@ follows:
 
 \end{itemize}
 
-In summary
+\end{proof}
+
+We now have two possible interpretations for the admissible rules:
+first, the one given by expanding the definition in each instance, and
+second, the compositional definition given above.  In the next few
+lemmas, we show that these agree:
 \[
 \begin{array}{rcl}
-\sem{\tr{e}{D}} & \text{ should be equal to } & \semFo{e};{\sem{D}} \\
-\sem{\ident A} & \text{ should be equal to } & \semFone\\
-\sem{\cut D E} & \text{ should be equal to } & {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}
+\sem{\tr{e}{D}} & = & \semFo{e};{\sem{D}} \\
+\sem{\ident A} & = & \semFone\\
+\sem{\cut D E} & = & {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}
 \end{array}
 \]
-
-We now show that this is the case.
 
 \begin{lemma} \label{lem:semtr}
 For all $e : \tc{\beta}{\beta'}$ and derivations $D : \seq{A}{\beta}{B}$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
 \end{lemma}
 \begin{proof}
-
 
 The proof is by induction on $D$, and in each case we can unfold the
 definition of \tr{e}{D}, so we have to show:
@@ -1846,19 +1854,54 @@ the right-hand side is equal to
 \]
 so using naturality of \semFo{e_2} gives the result.  
 
-\item $\sem{\UL {}{e_2} {\FR {} {e_1} {D}}} = \sem{\FR {} {e_4} {\UL {} {e_3} {D}}}$
-when ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$
+\item $\sem{\UL {\beta}{e_2} {\FR {\gamma} {e_1} {D}}} = \sem{\FR {\delta_3} {e_4} {\UL {\gamma} {e_3} {D}}}$
+when ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$,
+where 
+$e_1 : \tc{(\compo {\gamma} {\alpha})}{\beta}$  and
+$e_2 : \tc{(\compo {\delta_1} {\beta})}{\delta_2}$ and
+$e_3 : \tc{(\compo {\delta_1} {\gamma})}{\delta_3}$ and
+$e_4 : \tc{(\compo {\delta_3} {\alpha})}{\delta_2}$ and
 
-TODO
+Expanding the definitions and using Lemma~\ref{lem:semulalt}, we need to show
+\[
+\begin{array}{ll}
+  & \semFo{e_2};\semFcomp(\delta_1,\beta);\semF{\beta}{(\semrtol{1}{\delta_1})};\semFo{e_1}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}\\
+= & \semFo{e_4};\semFcomp(\delta_3,\alpha);\semF{\alpha}{\semFo{e_3}};\semF{\alpha}{\semFcomp(\delta_1,\gamma)};\semF{\alpha}{\semF{\gamma}{(\semltor{1}{\delta_1})}};\semF{\alpha}{\sem{D}}
+\end{array}
+\]
+Using naturality of \semFo{e_1} and $\semFcomp(\gamma,\alpha)$, the
+left-hand side is equal to
+\[
+\semFo{e_2};\semFcomp(\delta_1,\beta);\semFo{e_1};\semFcomp(\gamma,\alpha);\semF{\alpha}{\semF{\gamma}{(\semrtol{1}{\delta_1})}};\semF{\alpha}{\sem D}
+\]
+so it suffices to show
+\[
+\semFo{e_2};\semFcomp(\delta_1,\beta);\semFo{e_1};\semFcomp(\gamma,\alpha)
+= \semFo{e_4};\semFcomp(\delta_3,\alpha);\semF{\alpha}{\semFo{e_3}};\semF{\alpha}{\semFcomp(\delta_1,\gamma)}
+\]
+Using naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ the LHS equals
+\[
+\semFo{e_2};\semFo{\comph{1}{e_1}};\semFcomp(\delta_1,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
+\]
+and the RHS equals
+\[
+\semFo{e_4};\semFo{\comph{e_3}{1}};\semFcomp(\compo{\delta_1}{\gamma},\alpha);\semF{\alpha}{\semFcomp(\delta_1,\gamma)}
+\]
+But $\semFcomp(\delta_1,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha) = \semFcomp(\compo{\delta_1}{\gamma},\alpha);\semF{\alpha}{\semFcomp(\delta_1,\gamma)}$
+by the associativity coherence, and 
+$\semFo{e_2};\semFo{\comph{1}{e_1}} =
+\semFo{e_4};\semFo{\comph{e_3}{1}}$
+by functoriality using the assumption that 
+${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$.  
 
 \end{itemize}
 \end{proof}
 
-In general, an admissible inference rule need not hold in all models.
-However, in this case, we have restricted the class of models to
-situations where the admissible rules for \ap{}{} discussed above do hold: 
+Just as the class of models we are considering supported interpretations
+of \tr{e}{D} and \ident{A} and \cut{D}{E} in general, the admissible
+rules for \ap{}{} hold in general:
 
-\begin{theorem}[Soundness of admissible rules] 
+\begin{theorem}[Soundness of admissible equational rules] 
 The admissible rules for \ap{D}{D'} in Section~\ref{sec:rules:equations}
 are true in the semantics.  
 \end{theorem}
@@ -2108,13 +2151,27 @@ so collapsing inverses gives the result.
 
 \end{itemize}
 
-\item 
+\item For 
+{\ap D {\Case{\cut{(\Inl{\ident{A}})}{D}}{\cut{(\Inr{\ident{B}})}{D}}}}
+(where {D : \seq{\coprd{A}{B}}{\alpha}{C}}),
+we need to show that
 \[
-\infer{\ap D {\Case{\cut{(\Inl{\ident{A}})}{D}}{\cut{(\Inr{\ident{B}})}{D}}}}
-      {D : \seq{\coprd{A}{B}}{\alpha}{C}}
+\semrtol{\semcase{\semltor{(\semFcomp(1,\alpha);\semF{\alpha}{\semFone};\semF{\alpha}{\seminl};\sem{D})}{\alpha}}{\semltor{(\semFcomp(1,\alpha);\semF{\alpha}{\semFone};\semF{\alpha}{\seminr};\sem{D})}{\alpha}}}{\alpha}
 \]
-
-TODO
+By coherence, $\semFcomp(1,\alpha) = \inv{\semF{\alpha}{\semFone}}$, so
+  this is
+\[
+\semrtol{\semcase{\semltor{(\semF{\alpha}{\seminl};\sem{D})}{\alpha}}{\semltor{(\semF{\alpha}{\seminr};\sem{D})}{\alpha}}}{\alpha}.
+\]
+By naturality of the adjunction, this is 
+\[
+\semrtol{\semcase{{\seminl};\semltor{\sem{D}}{\alpha}}{{\seminr};\semltor{\sem{D}}{\alpha}}}{\alpha}.
+\]
+which by uniqueness for coproducts is 
+\[
+\semrtol{(\semltor{\sem{D}}{\alpha})}{\alpha}.
+\]
+so collapsing inverses gives the result.  
 
 \item The rule \ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl D}} (and
   the analogous rule for \Inr{D}) is immediate by
