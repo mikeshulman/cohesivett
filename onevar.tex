@@ -1176,8 +1176,8 @@ pseudofunctor as follows:
   \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la
     \semUo{\alpha}}$.  Functoriality gives that $\semFo{\compv{e}{e'}} =
   \semFo{e'};\semFo{e}$ and $\semFo{1} = 1$ and $\semUo{\compv{e}{e'}} =
-  \semUo{e};\semUo{e'}$ and $\semUo{1} = 1$.  Specializing the
-  definition of conjugations gives that for any $m :
+  \semUo{e};\semUo{e'}$ and $\semUo{1} = 1$.  The conjugation property 
+  specifies that for any $m :
   \arrow{}{\semF{\alpha}{A}}{B}$, we have $\semltor{m}{\alpha};\semUo{e}
   =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$, or
   equivalently that for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we
@@ -1187,11 +1187,11 @@ pseudofunctor as follows:
 \item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone :
   \semU{1}{A} \iso A$ for the components of the two natural isomorphisms
   in the adjunction isomorphism $S^1$ between $\semFo{1}{} \la
-  \semUo{1}$ and the identity adjunction.  Specializing the definition
-  of conjugation to this case gives that for any $m : \arrow{}{A}{B}$,
-  $\ltor{(\semFone_A;m)}{1} = m;\inv{\semUone_B}$ (and for any $m :
-  \arrow{}{A}{B}$, $\semrtol{(m;\inv{\semUone})}{1} = \semFone;m$), so in
-  particular taking $m = 1$ gives $\ltor{(\semFone_A)}{{1}} =
+  \semUo{1}$ and the identity adjunction.  The conjugation property
+  specifies that for any $m : \arrow{}{A}{B}$, $\ltor{(\semFone_A;m)}{1}
+  = m;\inv{\semUone_B}$, and for any $m : \arrow{}{A}{B}$,
+  $\semrtol{(m;\inv{\semUone})}{1} = \semFone;m$.  In particular, taking
+  $m = 1$ in the former, $\ltor{(\semFone_A)}{{1}} =
   \inv{(\semUone_A)}$.
 
 \item We write $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
@@ -1211,29 +1211,31 @@ pseudofunctor as follows:
   or equivalently 
   $\semFcomp(\beta',\alpha');{\semFo{e_2}};\semF{\alpha}{\semFo{e_1}}$,
   and similarly for $\semU{}{}$.
-  Specializing the definition of conjugation gives that 
+  The conjugation property specifies that 
   $\semrtol{(m;\inv{\semUcomp(\beta,\alpha)})}{\compo{\beta}{\alpha}} = \semFcomp(\beta,\alpha);\semrtol{{\semrtol{m}{\beta}}}{\alpha}$
   and similarly for \semltor{-}{}.  
 
 
-\item Because both $\M$ and $\Adj$ are strict 2-categories, and
-  unpacking the definition of horizontal composition of natural
-  transformations, one of the $\semFcomp/\semFone$ coherence laws
-  implies that $\semF{\alpha}{(\semFone_A)} = \inv{\semFcomp(1,\alpha)_A}$
-  as maps ${\arrow{}{\semF{\alpha}{\semF{1}{A}}}{\semF{\alpha}{A}}}$
-  (and, because functors preserve inverses,
-  $\semF{\alpha}{(\inv{\semFone})} = {\semFcomp(1,\alpha)}$).  The other
-  implies that $\inv{\semFcomp(\alpha,1)_{A}} =
-  \semFone_{(\semF{\alpha}{A})}$  as maps
-  $\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}$.  
-   For $\semU{\alpha}{}$, we have
-  $\inv{\semUcomp(\alpha,1)_A} =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}} \semU{\alpha}{(\semUone_A)}$
-  and $\semUcomp(1,\alpha)_A = \inv{(\semUone_{\semU{\alpha}{A}})}$.
-  The associativity coherences say that
-  $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
+\item Using the fact that both $\M$ and $\Adj$ are strict 2-categories,
+  and unpacking the definition of horizontal composition of natural
+  transformations, the three coherence laws relating $S^\circ$ and $S^1$
+  specify the following: 
+  \begin{itemize}
+  \item 
+    $\semF{\alpha}{(\semFone_A)}
+    =_{\arrow{}{\semF{\alpha}{\semF{1}{A}}}{\semF{\alpha}{A}}}
+    \inv{\semFcomp(1,\alpha)_A}$
+  \item $\inv{\semFcomp(\alpha,1)_{A}} =_{\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}} \semFone_{(\semF{\alpha}{A})}$
+  \item $\inv{\semUcomp(\alpha,1)_A}
+    =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}}
+    \semU{\alpha}{(\semUone_A)}$
+  \item $\semUcomp(1,\alpha)_A = \inv{(\semUone_{\semU{\alpha}{A}})}$
+  \item
+    $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
   =_{\arrow{}{\semF{\compo{\gamma}{\compo{\beta}{\alpha}}}{A}}{\semF{\alpha}{\semF{\beta}{\semF{\gamma}{A}}}}}
   \semFcomp(\compo{\gamma}{\beta},\alpha);\semF{\alpha}{\semFcomp(\gamma,\beta)}$
-  and similarly for \semU{}{}.  
+  and similarly for \semU{}{}.
+  \end{itemize}
 
 \end{itemize}
 
@@ -1241,9 +1243,7 @@ pseudofunctor as follows:
 given for each atomic proposition, and the basic rules of adjoint logic
 require only that we can interpret \F{\alpha}{A} and \U{\alpha}{A},
 which are interpreted as \semF{\alpha}{\sem{A}} and
-\semU{\alpha}{\sem{A}}. If we have additional type constructors such as
-\coprd{A}{B}, then we must assume that the corresponding $\C_p$ have
-these objects as well.  
+\semU{\alpha}{\sem{A}}.
 
 We can interpret the judgement \seq{A}{\alpha}{B} as either a morphism
 $\arrow{}{\semF \alpha {\sem A}}{\sem B}$ or a morphism $\arrow{}{\sem
@@ -1362,11 +1362,12 @@ In summary, we have
 
 In general, an admissible inference rule need not hold in all models.
 However, in this case, we are considering a class of models
-(pseudofunctors into \Adj) in which the admissible rules are true.    
+(pseudofunctors into \Adj) in which the admissible rules (e.g. cut and
+identity) are true.
 
 \begin{lemma}
-The admissible rules \tr{e}{D} and \ident{A} and \cut{D}{E} 
-can be interpreted in the semantics.  
+The admissible sequent calculus rules \tr{e}{D} and \ident{A} and
+\cut{D}{E} are sound.
 \end{lemma}
 
 \begin{proof}
@@ -1531,9 +1532,11 @@ so this is true.
 
 \end{proof}
 
-The following equivalent definition of \sem{\UL{\gamma}{e}{D}} uses only
-\semF{}{} operations, except for the counit 
-$\semrtol{1_{\semU{\alpha}{\sem{A}}}}{\alpha} : \arrow{}{\semF{\alpha}{\semU{\alpha}{A}}}{A}$
+To prove the cut lemma, it will helpful to use the following equivalent
+definition of \sem{\UL{\gamma}{e}{D}}, which uses only \semF{}{}
+operations, except for the counit
+$\semrtol{(1_{\semU{\alpha}{\sem{A}}})}{\alpha} :
+\arrow{}{\semF{\alpha}{\semU{\alpha}{A}}}{A}$
 
 \begin{lemma}\label{lem:semulalt}
 For any $\gamma,e,D$, 
