@@ -1014,9 +1014,10 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   \la_1 R^1$ to $L^2 \la_2 R^2$ consists of two natural transformations
   $t^L : L^1 \to L^2$ and $t^R : R^2 \to R^1$ between the corresponding
   functors that are ``conjugate'' under the adjunction
-  structure~\citep[\S IV.7]{maclane98working}:
+  structure~\citep[\S IV.7]{maclane98working}.
+  This means that for any $D : \seq{L^2(A)}{1}{B}$ we have
   \[
-  \ltor{(t^L \cuti D)}{1} = \ltor{D}{2} \cuti t^R
+  \ltor{(t^L \cuti D)}{1} = \ltor{D}{2} \cuti t^R.
   \]
   An adjunction isomorphism consists of an adjunction morphism together
   with inverses showing that $t^L$ and $t^R$ are each natural
@@ -2187,7 +2188,7 @@ so collapsing inverses gives the result.
 \end{itemize}
 \end{proof}
 
-\section{Adjoint Triple}
+\section{Examples}
 \label{sec:triple}
 
 %% It follows that $F$ and $U$ preserve isomorphisms:
@@ -2210,11 +2211,14 @@ and
 $\compv{(\comph{\dsd{unit}}{1_{\dsd{n}}})}{(\comph{1_{\dsd n}}{\dsd{counit}})} = 1$.
 \end{itemize}
 \noindent
-The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$ and
-$\F{\dsd n}{} \la \U{\dsd n}{}$, but the 2-cells are sufficient to prove
-that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$ are equal,
-resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd d}{}
-\iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.
+The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$
+and $\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the functoriality of
+$\F{}{}$ and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{}
+\la \F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right
+or left adjoint of a given functor is unique up to isomorphism, it
+follows that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to
+\dsd s$ are equal, resulting in an adjoint triple $\F{\dsd d}{} \la
+(\U{\dsd d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.
 
 \begin{lemma} \label{lem:mergeFU}
 $\U{\dsd d}{A} \iso \F{\dsd n}{A}$ naturally in $A$.
@@ -2266,7 +2270,7 @@ In the Agda code, we verify that these are inverse and natural.
 
 We can develop some of the expected properties of an adjoint triple $L
 \la M \la R$, such as the fact that the ``left'' comonad $LM$ is itself
-left adjoint to the ``right'' monad $RM$, and consequently, the $LM$
+left adjoint to the ``right'' monad $RM$, and consequently, $LM$
 preserves colimits.  In this case, we have $L = \F{\dsd{d}}{}$, $M =
 \U{\dsd{d}}{} \cong \F{\dsd{n}}{}$, and $R = \U{\dsd{n}}{}$, and we write
 $\Bx{\dsd{d}}{A} := \F{\dsd{d}}{\U{\dsd{d}}{A}}$
@@ -2285,7 +2289,7 @@ $\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.
 Using the fact that functors preserve natural isomorphisms,
 Lemma~\ref{lem:mergeFU}, and properties of $U$ and $F$ from
 Theorem~\ref{thm:syntacticpseudofunctor}, we can prove that \Bx{\dsd d}{A}
-and \Crc{\dsd n}{A}are isomorphic to a single $F$ and $U$, 
+and \Crc{\dsd n}{A} are isomorphic to a single $F$ and $U$, 
 respectively:
 \[
 \begin{array}{l}
@@ -2305,7 +2309,7 @@ From a polarity point of view, it is unusual for a comonad
 $\F{}{\U{}{A}}$ to preserve positives, because the negative connective
 $\U{}{}$ interrupts focus/inversion phases.  Here, this behavior is
 explained by the fact that $\F{\dsd{d}}{\U{\dsd{d}}{A}}$ is isomorphic
-to a single postive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
+to a single positive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
 ambipolar middle connective in a triple adjunction thus \emph{emerges}
 from the presence of two isomorphic connectives, one positive and one
 negative.
@@ -2319,12 +2323,15 @@ codiscrete spaces is exactly a map of sets) and consequently the comonad
 $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
 idempotent.  We can capture these proprties by considering a different
 mode 2-category, the ``walking reflection''.  This has the same objects
-and morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, so
-the counit is just the identity 2-cell, and the equations for
+and morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
+the counit being just the identity 2-cell, and the equations for
 $\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
 $\comph{\dsd{unit}}{1_{\dsd n}} = 1$ and $\comph{1_{\dsd d}}{\dsd{unit}}
-= 1$.  For this mode theory, we have the following additional
-properties:
+= 1$.
+We now write the comonad $\Bx{\dsd d}$ as $\Flat$ and the monad $\Crc{\dsd{n}}$ as $\Sharp$.
+Since in particular we still have an adjunction, this mode theory
+inherits all the theorems from the previous section; but it also has the
+following additional properties:
 
 \begin{theorem}[Properties of the walking reflection]
 \begin{enumerate}
@@ -2340,7 +2347,7 @@ and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
 
 The first two parts say that ``retopologizing'' twice is the same as the
 ``outer'' retopologization.  To prove them, using
-Theorem~\ref{thm:syntacticpseudofunctor}, the equality of morphsims
+Theorem~\ref{thm:syntacticpseudofunctor}, the equality of morphisms
 $\compo{\dsd d}{\dsd n} = 1$ implies that
 \[
 \begin{array}{l}
@@ -2348,9 +2355,8 @@ $\compo{\dsd d}{\dsd n} = 1$ implies that
 \U{\dsd{d}}{\U{\dsd{n}}{A}} \iso \U{\compo{\dsd d}{\dsd n}}{A} = \U{1}{A} \iso A\\
 \end{array}
 \]
-Consequently, by Lemma~\ref{lem:mergeFU} (the walking reflection is an
-adjunction, so we can reuse the theorems from the previous section for
-this mode theory), the other (co)monads besides $\flat$ and $\sharp$ are
+Consequently, by Lemma~\ref{lem:mergeFU},
+the other (co)monads besides $\flat$ and $\sharp$ are
 trivial: 
 \[
 \begin{array}{l}
@@ -2381,7 +2387,12 @@ as the outer one:
 \]
 
 Finally, we check that \F{\dsd d}{} and \U{\dsd n}{} are full and
-faithful.  Consider \F{\dsd d}{}; the same argument works for \U{\dsd
+faithful.  This follows by formal category-theoretic arguments from
+the triviality of $\Crc{\dsd d}{}$ and $\Bx{\dsd n}{}$ (see~\cite[\S
+IV.3]{maclane98working}), but to avoid needing to prove the Yoneda
+lemma in Agda we give an explicit argument instead.
+
+Consider \F{\dsd d}{}; the same argument works for \U{\dsd
   n}{}.  We want to show that the functoriality on derivations $\F{\dsd
   d}{(D : \seq{A}{1}{B})} : \seq{\F{\dsd d}{A}}{1}{\F{\dsd d}{A}}$ is a
 bijection.  Above, we showed that \F{\dsd{n}}{} is post-inverse to
@@ -2391,7 +2402,7 @@ bijection.  Above, we showed that \F{\dsd{n}}{} is post-inverse to
 \begin{diagram}
 A & \rTo^{{\inv i}} & \F{\dsd n}{\F{\dsd d} A} & \rTo^{\F{\dsd n}{D}} & \F{\dsd n}{\F{\dsd d} B} & \rTo^{i} B
 \end{diagram}
-By naturality of $i$, this function is post-inverse to \F{\dsd d}{D}
+By naturality of $i$, this function is post-inverse to \F{\dsd d}{}
 (i.e. $\ap{(\inv{i} \cuti (\F{\dsd n}{\F{\dsd d} D}) \cuti i)}{D}$),
 which shows that \F{\dsd d}{} is faithful.  To show that it is full, we
 need to check the other composite, which simplifies to checking that 
