@@ -74,8 +74,11 @@
 
 \newcommand\ap[2]{\ensuremath{#1 \approx #2}}
 
-\newcommand\Bx[2]{\ensuremath{\Box_{#1} \: {#2}}}
-\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \: {#2}}}
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
 
 %% \newtheorem{\example}[theorem]{Example}
 
@@ -154,20 +157,21 @@ $\mathcal{S}$ is some category of ``sets'' that provides a notion of
 ``point'', and \C\/ is some category of cohesive spaces built out of
 these sets, where points may be stuck together in some way (e.g. via
 topology).  $\Gamma$ takes the underlying set of points a cohesive
-space, forgetting the cohesive structure.  Its left adjoint $\Delta$
-equips a set with \emph{discrete cohesion}, where no points are stuck
-together; the adjunction says that a map \emph{from} a discrete space is
-the same as a map of sets.  Its right adjoint $\nabla$ equips a set with
-codiscrete cohesion, where all points are stuck together; the adjunction
-says that a map \emph{into} a codiscrete space is the same as a map of
-sets.  The left adjoint $\Pi_0 \la \Delta$, gives the set of connected
-components---i.e. each element of $\Pi_0 C$ is an equivalence class of
-points of $C$ that are stuck together.  $\Pi_0$ is important because it
-translates some of the cohesive information about a space into a setting
-where we no longer need to care about the cohesion.  These functors must
-satisfy some additional laws, such as $\Delta$ and $\nabla$ being fully
-faithful (maps between discrete or codiscrete cohesive spaces should be
-the same as maps of sets).
+space, forgetting the cohesive structure.  This forgetful functor's
+right adjoint $\Gamma \la \nabla$ equips a set with codiscrete cohesion,
+where all points are stuck together; the adjunction says that a map
+\emph{into} a codiscrete space is the same as a map of sets.  The
+forgetful functor's left adjoint $\Delta \la \Gamma$ equips a set with
+\emph{discrete cohesion}, where no points are stuck together; the
+adjunction says that a map \emph{from} a discrete space is the same as a
+map of sets.  The further left adjoint $\Pi_0 \la \Delta$, gives the set
+of connected components---i.e. each element of $\Pi_0 C$ is an
+equivalence class of points of $C$ that are stuck together.  $\Pi_0$ is
+important because it translates some of the cohesive information about a
+space into a setting where we no longer need to care about the cohesion.
+These functors must satisfy some additional laws, such as $\Delta$ and
+$\nabla$ being fully faithful (maps between discrete or codiscrete
+cohesive spaces should be the same as maps of sets).
 
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
   theory}~\citep{schreiber13dcct,schreibershulman12cohesive,shulman15realcohesion} is
@@ -235,21 +239,21 @@ modes, where each mode $p$ determines a category, each morphism $\alpha
 : p \ge q$ determines adjoint functors $F_\alpha : p \to q$ and
 $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$, and each 2-cell $e :
 \tc \alpha  \beta : q \ge p$ determines a morphism of adjunctions between 
-$F_\alpha \la U_\alpha$ and $F_\beta \la U_\beta$.  For example, an
-adjoint triple is described by the 2-category with
+$F_\beta \la U_\beta$ and $F_\alpha \la U_\alpha$.  Using this logic, an
+adjoint triple is specified by the mode 2-category with
 \begin{itemize}
 \item objects $c$ and $s$
-\item 1-cells $\Delta : s \ge c$ and $\nabla : c \ge s$
-\item 2-cells $\tc {1_c} {\nabla \Delta}$ 
-and $\tc {\Delta \nabla} {1_s}$ satisfying 
+\item 1-cells $\dsd{d} : s \ge c$ and $\dsd{n} : c \ge s$
+\item 2-cells $\tc {1_c} {\compo{\dsd{n}}{\dsd{d}}}$ 
+and $\tc {\compo{\dsd{d}}{\dsd{n}}} {1_s}$ satisfying 
 some equations
 \end{itemize}
-The 1-cells generate $F_\Delta \la U_\Delta$ and $F_\nabla \la
-U_\nabla$, while the 2-cells are sufficient to prove that $U_\Delta$ is
-naturally isomorphic to $F_\nabla$, so we can define $\Delta :=
-F_\Delta$, $\nabla := U_\nabla$, and $\Gamma := U_\Delta \cong F_\nabla$
-and have the desired triple adjunction.  Indeed, you may recognize this
-2-category as the ``walking adjunction'' with $\Delta \la \nabla$---that
+The 1-cells generate $F_{\dsd d} \la U_{\dsd d}$ and $F_{\dsd n} \la
+U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$ is
+naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
+F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong F_{\dsd n}$
+and have the desired adjoint triple.  Indeed, you may recognize this
+2-category as the ``walking adjunction'' with $\dsd d \la \dsd n$---that
 is, we give a triple adjunction by saying that the mode morphism generating
 the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
 adjunction $\Gamma\la\nabla$.
@@ -258,24 +262,23 @@ The main judgement of the logic is a ``mixed-category'' entailment
 judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
 and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
 from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
-map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{In fact, there
-  are also structures in category theory that include a basic notion of
-  ``morphisms along $\alpha$'' that are bijective to, but not identical
-  to, morphisms $F_\alpha A \to C$ or $A \to U_\alpha C$.  For instance,
-  we could consider a Grothendieck bifibration over the 2-category of
+map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{We could instead
+  use a structure that includes a basic notion of ``morphisms along
+  $\alpha$,' such as a Grothendieck bifibration over the 2-category of
   modes, or a pseudofunctor to the bicategory of profunctors that are
-  both representable and corepresentable.}  However, taking the
-mixed-mode judgement as primitive makes for a nicer sequent calculus:
-$U$ and $F$ can be specified independently from each other, by left and
-right rules, in such a way that identity and cut (composition) are
-admissible.  While we do not consider focusing~\citep{andreoli92focus},
-we conjecture that the connectives can be given the same focusing
-behavior as in \citep{reed09adjoint}: $F$ is positive and $U$ is
-negative (which, because limits are negative and colimits are positive,
-and like-polarity connectives compose together well, matches what left
-and right adjoints should preserve).
+  both representable and corepresentable; these are equivalent to the
+  structures used here.}  However, taking the mixed-mode judgement as
+primitive makes for a nicer sequent calculus: $U$ and $F$ can be
+specified independently from each other, by left and right rules, in
+such a way that identity and cut (composition) are admissible.  While we
+do not consider focusing~\citep{andreoli92focus}, we conjecture that the
+connectives can be given the same focusing behavior as in
+\citep{reed09adjoint}: $F$ is positive and $U$ is negative (which,
+because limits are negative and colimits are positive, and like-polarity
+connectives compose together well, matches what left and right adjoints
+should preserve).
 
-The resulting logic has a good definition-to-theorem ratio: from these
+The resulting logic has a good definition-to-theorem ratio: from 
 simple sequent calculus rules for $F$ and $U$, we can prove a variety of
 general facts that are true for any mode 2-category ($F_\alpha$ and
 $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
@@ -291,19 +294,18 @@ additionally gives that $\Delta$ and $\nabla$ are full and faithful and
 that $\flat$ and $\sharp$ are idempotent, which are some of the
 additional conditions for axiomatic cohesion.
 
-To study the basic ideas of 2-categorical adjoint logic, we make a few
-simplifying restrictions for this paper. First, we consider only
-single-hypothesis, single-conclusion sequents, deferring an investigation
-of products and exponentials to future work.  
+We make a few simplifying restrictions for this paper. First, we
+consider only single-hypothesis, single-conclusion sequents, deferring
+an investigation of products and exponentials to future work.
 
 Second, on the semantic side, we consider only 1-categorical semantics
 of the derivations of the logic, rather than the $\infty$-groupoid
 semantics that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
-categories, adjunctions, and morphisms of adjunctions (pairs of conjugate natural
-transformations).  By $S$, each mode determines a 1-category, and
-derivations in the logic are interprered as morphisms in these
+categories, adjunctions, and morphisms of adjunctions (conjugate pairs
+of natural transformations).  By $S$, each mode determines a 1-category,
+and derivations in the logic are interprered as morphisms in these
 categories.  The action of $S$ on 1- and 2-cells is used to interpret
 $F$ and $U$.  We show that the syntax forms such a pseudofunctor, and
 conjecture that the syntax is initial in some category or 2-category of
@@ -312,7 +314,7 @@ pseudofunctors, but have not yet tried to make this precise.
 Third, we consider only a logic of simple-types, rather than a dependent
 type theory.  Consequently, we do not have an identity type available
 for proving equalities of proof terms.  However, we need an equational
-theory to make many of the statements above (e.g. ``$UF$ is a monad''
+theory to make many of the statements we would like to make (e.g. ``$UF$ is a monad''
 require proving some equational laws), and the definitional equalities
 arising from admissibility of cut and identity are not sufficient.
 Thus, in addition to the sequent calculus itself, we give an equality
@@ -333,7 +335,8 @@ for triple adjunctions, and discuss the relationship to the rules for
 spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
 in Agda~\citep{norell07thesis}, using a syntactic representation of the
-sequent calculus and the equational theory as inductive families.  
+sequent calculus and the equational theory as inductive
+families.\footnote{See \url{http://www.github.com/dlicata335/hott-agda}.}
 
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
@@ -354,7 +357,15 @@ $\comph{e_1}{e_2} :
 for 2-cells say that \compv{}{} is associative with unit $1_\alpha$ for
 any $\alpha$, that \comph{}{} is associative with unit $1_1$, and that
 the interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
-\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  
+\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  For convenience,
+we think of the mode category as being fixed at the outset, and the
+syntax and judgements of the logic as being indexed by the actual
+semantic objects/morphisms/2-morphisms of this category; therefore,
+equal morphisms in the mode 2-category automatically determine equal
+propositions, judgements, and derivations.  An alternative would be to
+give a syntax and explicit equality judgement for the mode category,
+which would be helpful if we needed a mode theory where equality of
+morphisms or 2-morphisms were undecidable.
 
 Each object $p$ of the mode category determines a category, and objects
 of that category are types; the syntactic judgement \wftp{A}{p} will
@@ -382,23 +393,6 @@ and \F{\compo{\alpha}{1}}{A} to be the same proposition, and we consider
 \seq{A}{\alpha}{B} and \seq{A}{\compo{1}{\alpha}}{B} to be the same
 judgement.
 
-%% FIXME:
-%% Maybe a better way to put it is that the thing that's a bit unusual here
-%% is to index a syntactic judgement by a semantic structure---we wouldn't
-%% be able to encode this directly in LF, e.g., and it's possible for the
-%% "definitional" equality of the syntax to be undecidable if we choose a
-%% mode category that includes undecidable word problems on groups.  A more
-%% syntactic way to do it would be to define a syntax for 2-categories, so
-%% that p and alpha and e are syntactic categories, and the compositions
-%% and units are term constructors, and there is a judgement of equality of
-%% e's and of alpha's, and there are definitional equality rules saying
-%% A [alpha]|- B
-%% alpha = beta
-%% ------------------
-%% A [beta]|- B
-%% etc, and then the syntax of the 2-category is interpreted in an actual
-%% mode 2-category.  But this seems like it would add complexity without
-%% much benefit, so I went with the more semantic approach.
 
 The rules for atomic propositions and for $U$ and $F$ are as follows:
 \[
@@ -432,7 +426,7 @@ The rules for atomic propositions and for $U$ and $F$ are as follows:
 The rules for other connectives do not change $\alpha$; for example, see
 the rules for coproducts in Figure~\ref{fig:coprod}.
 
-\begin{figure}
+\begin{figure}[t]
 Sequent calculus rules:
 \[
 \infer[\irl{Inl}]
@@ -489,35 +483,47 @@ To understand the rules for $F$ and $U$, it is helpful to begin with
 rules pass from \seq{\F {\alpha}{A}}{1}{C} and \seq{A}{1}{\U{\alpha}{C}}
 to \seq{A}{\alpha}{C}, which makes sense because the judgement
 \seq{A}{\alpha}{C} is intended to mean either/both of these.  When
-$\beta$ is not 1, these rules also express some functoriality of
-$\F{\compo{\alpha}{\beta}}{}$ and $\U{\compo{\beta}{\alpha}}$ (see
-below).  While we do not formally give a focused sequent calculus, we
-conjecture that these two rules are \emph{invertible}: whenever you have
-\F{\alpha}{A} on the left or \U{\alpha}{A} on the right, you can
-immediately apply the rule, no matter what is on the other side of the
-sequent.  
+$\beta$ is not 1, these rules also express how
+$\F{\compo{\alpha}{\beta}}{}$ and $\U{\compo{\beta}{\alpha}}$ distribute
+over compositions (see below).  While we do not formally give a focused
+sequent calculus, we conjecture that these two rules are
+\emph{invertible}: whenever you have \F{\alpha}{A} on the left or
+\U{\alpha}{A} on the right, you can immediately apply the rule, no
+matter what is on the other side of the sequent.
 
-On the other hand, \irl{UL} and \irl{FR} are not rules that you can
-apply at any time, because they involve some constraints that may not be
-satisfied.  Consider \irl{FR}: we have $\alpha : q \ge p$ and $\beta : r
-\ge p$ and want to reduce proving \F{\alpha}{A} from $C$ to proving $A$
-from $C$.  However, there is not necessarily any relationship between
-$C$'s mode $r$ and $A$'s mode $q$, because all we know is that both of
-these are bigger than $p$.  Thus, to form a premise sequent, we need to
-choose a $\gamma : r \ge q$.  To make adjunctions generated by different
-morphisms be different, it is important that we choose not just any
-$\gamma$, but one where the triangle that it forms with $\alpha$ and
-$\beta$ is filled by a 2-cell, which is the second premise of the rule.
-The direction of the 2-cell, and the fact that it may not be invertible,
-are chosen to match the intended semantics and permit the proofs of the
-desired admissible rules.
-The case for \irl{UR} is dual.  
+On the other hand, the other two rules \irl{UL} and \irl{FR} cannot be
+applied at any time, because they involve some constraints that may not
+be satisfied.  Consider \irl{FR}: we have $\alpha : q \ge p$ and $\beta
+: r \ge p$ and want to reduce proving \F{\alpha}{A} from $C$ to proving
+$A$ from $C$.  However, there is not necessarily any relationship
+between $C$'s mode $r$ and $A$'s mode $q$, because all we know is that
+both of these are bigger than $p$.  Thus, to form a premise sequent, we
+need to choose a $\gamma : r \ge q$.  To make adjunctions generated by
+different morphisms be different, it is important that we choose not
+just any $\gamma$, but one where the triangle that it forms with
+$\alpha$ and $\beta$ is filled by a 2-cell, which is the second premise
+of the rule.  The direction of the 2-cell, and the fact that it may not
+be invertible, are chosen to match the intended semantics and permit the
+proofs of the desired admissible rules.  The case for \irl{UR} is dual.
+
+Because we are interested not only in provability, but also in the
+equational theory of proofs in this logic, one might think the next step
+would be to annotate the sequent judgement with a proof term, writing
+e.g. $x : A [ \alpha ] \vdash M : B$.  However, the proof terms $M$
+would have exactly the same structure as the derivations of this typing
+judgement.\footnote{This is not the case in a dependently typed language
+  that have a judgemental equality conversion rule in the derivations
+  but not the terms.} so we instead use the derivations themselves as
+the proof terms.  This corresponds to an ``intrinsic representation'' in
+Agda.  We sometimes write $D : \seq{A}{\alpha}{B}$ to indicate
+``typing'' in the metalanguage; i.e. this should be read ``$D$ is a
+derivation tree of the judgement \seq{A}{\alpha}{B}.''
 
 We now give some examples to illustrate the rules; these examples and
 many more like them are in the companion Agda code.  
 
 \paragraph{Example: Functoriality} We expect $F$ and $U$ to be functors;
-the functorial action of $F$ on terms is derived as follows: given
+the functorial action of $F$ on terms is derived as follows. Given
 $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$, we have
 \[
 \infer[\irl{FL}]
@@ -527,8 +533,7 @@ $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$, we have
         {\infer{1_q : q \ge q}{} & \infer{1 : \tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}}{} & D : \seq{A}{1_q}{B}}}
 \]
 Because \M\/ is a strict 2-category, the identity 2-cell has type 
-\tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.  We will often apply
-these equations silently.  
+\tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.    
 
 \paragraph{Example: Comonad} Define $\Bx \alpha A := \F \alpha (\U \alpha A)$
 where $\alpha : q \ge p$.
@@ -564,10 +569,11 @@ The comonad operations are defined as follows:
 The same derivations work for an arbitrary type $A$ if we replace the
 top-right derivations of \seq{P}{1}{P} by the admissible identity
 principle \seq{A}{1}{A}, defined below (indeed, we can always substitute
-an arbitrary type for an atomic proposition).  Using a proof term
-notation for derivations, we write the counit as \FL{\UL{1}{1}{\hyp{1}}}
-and the comultiplication as
-\FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
+an arbitrary type for an atomic proposition).  
+%% Using a proof term
+%% notation for derivations, we write the counit as \FL{\UL{1}{1}{\hyp{1}}}
+%% and the comultiplication as
+%% \FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
 
 An advantage of using a cut-free sequent calculus is that we can observe
 some non-provabilities: for example, there is not in general a map
@@ -648,7 +654,6 @@ For example, the maps for $F$ are as follows:
                  \infer[\irl{\hyp 1}]{\seq{P}{1}{P}}{}
                }}}
 \]
-These derivations use the unit laws for \compo{1}{\alpha} and \compo{\alpha}{1}.
 
 \paragraph{Example: $F/U$ on 2-cells}
 For every 2-cell $e : \tc \alpha \beta$, we have derivations of \seq{\F
@@ -665,10 +670,9 @@ For every 2-cell $e : \tc \alpha \beta$, we have derivations of \seq{\F
              {\seq{\U \alpha P}{\beta}{P}}
              { \infer{1 : p \ge p}{} & e : \tc{\compo{\alpha}{1}}{\beta} & \infer[\hyp 1]{\seq{P}{1}{P}}{}}}
 \]
-The other directions are not provable in general.  These derivations
-determine an adjunction morphism between $F_\beta \la U_\beta$ and
-$F_\alpha \la U_\alpha$.
-
+These derivations determine an adjunction morphism between $F_\beta \la
+U_\beta$ and $F_\alpha \la U_\alpha$.  The other directions
+(e.g. $\seq{\F \alpha P}{1}{\F \beta P}$) are not provable in general.
 
 \subsection{Admissible Rules}
 
@@ -809,22 +813,21 @@ p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
 \subsection{Equations}
 \label{sec:rules:equations}
 
-%% FIXME: explain intrinsic encoding; using derivations as proof terms
-
 When we construct proofs using the admissible rules \tr{e}{D} and
 \ident{A} and \cut{D}{E}, there is a natural notion of definitional
 equality induced by the above definitions of these operations (e.g.
 $\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
     A}}$).  I.e. the cut- and identity-free proofs are ``normal forms'',
-and a proof using cut or identity for specific $A,D,E$ is equal to its
-normal form.  However, to prove the desired equations in the examples
-below, we will need some additional ``propositional'' equations.  We
-define a judgement \ap{D}{D'} on two derivations $D,D' :
-\seq{A}{\alpha}{C}$ to be the least congruence closed under the
-following rules.  First, we have uniqueness/$\eta$ rules.  The rule for
-$F$ says that any map from a positive is equal to a derivation that
-begins with an application of the left rule and then cuts the original
-derivation with the right rule.  The rule for $U$ is dual.
+and a proof using cut or identity is equal to its normal form.  However,
+to prove the desired equations in the examples below, we will need some
+additional ``propositional'' equations, which, because we are using
+derivations as proof terms, we represent by a judgement \ap{D}{D'} on
+two derivations $D,D' : \seq{A}{\alpha}{C}$.  This judgement is the
+least congruence closed under the following rules.  First, we have
+uniqueness/$\eta$ rules.  The rule for $F$ says that any map from
+\F{\alpha}{A} is equal to a derivation that begins with an application
+of the left rule and then cuts the original derivation with the right
+rule; the rule for $U$ is dual.
 
 \[
 \begin{array}{l}
@@ -867,7 +870,7 @@ left-commutative equations seem necessary for proving some of the
 theorems we want to prove below).  For $U$ and $F$, we have
 \[
 \infer{\ap{\UL {}{e_2} {\FR {} {e_1} {D}}}{\FR {} {e_4} {\UL {} {e_3} {D}}}}
-      {\compv{(\comph{1}{e_1})}{e_2} \equiv {\compv{(\comph{e_3}{1})}{e_4}}}
+      {\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}
 \]
 We elide the details of the typing of the 2-cells $e_i$, which will not
 be needed below; they are the most general thing that makes both sides
@@ -875,12 +878,12 @@ of the conclusion type check.
 
 \subsubsection{Admissible rules}
 
-The following equality rules are admissible for the $U/F$ rules
-described above, and for the coproduct rules in Figure~\ref{fig:coprod}.
-The proofs have a lot of cases (about 800 lines of Agda total) but are
-not difficult, except for somewhat subtle staging.  The rules in each of
-the following groups (except the first) are proved by mutual induction,
-and use the preceding groups:
+The following equality rules are admissible for logic containing the
+$U/F$ rules described above and the coproduct rules in
+Figure~\ref{fig:coprod}.  The proofs have a lot of cases (about 800
+lines of Agda total) but are not difficult, except for somewhat subtle
+staging.  The rules in each of the following groups (except the first)
+are proved by mutual induction, and use the preceding groups:
 
 \begin{enumerate}
 \item 
@@ -888,9 +891,9 @@ For each $D$, \tr{e}{D} is functorial on the 2-cell identity and
 vertical composition: 
 
 \[
-\infer{\tr{1}{D} \equiv D}{}
+\infer{\tr{1}{D} = D}{}
 \qquad
-\infer{\tr{(\compv{e_1}{e_2})}{D} \equiv \tr{e_2}{\tr{e_1}{D}}}
+\infer{\tr{(\compv{e_1}{e_2})}{D} = \tr{e_2}{\tr{e_1}{D}}}
       {}
 \]
 
@@ -964,7 +967,7 @@ natural transformations.  This is a standard way of proving logical
 completeness in categorical logic: we think of the pseudofunctors $\M
 \to \Adj$ as the class of models of the syntax, so this shows that if
 something is true in all models $\M \to \Adj$, then it is true in the
-syntax, because the syntax is one.  
+syntax, because the syntax forms a model.  
 
 Since the objects of \Adj\/ are categories,
 the first step is to associate a category with each mode $p$.  The rules
@@ -998,7 +1001,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   H_0(A)$.  
 
 \item For two functors $L,R : p \to q$, an adjunction $L \la R$ (using
-  the natural bijection of hom sets defintion) consists of functions
+  the natural-bijection-of-hom-sets defintion) consists of functions
   $\ltor{-}{} : (\seq{L_0(A)}{1}{B}) \, \to \, (\seq{A}{1}{R_0(B)})$ and
   $\rtol{-}{} : (\seq{A}{1}{R_0(B)}) \, \to \, (\seq{L_0(A)}{1}{B})$ which are
   mutually inverse and such that \ltor{-}{} is natural in $A$ and $B$: for
@@ -1011,9 +1014,9 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   \la_1 R^1$ to $L^2 \la_2 R^2$ consists of two natural transformations
   $t^L : L^1 \to L^2$ and $t^R : R^2 \to R^1$ between the corresponding
   functors that are ``conjugate'' under the adjunction
-  structure~\citep{maclane}:
+  structure:
   \[
-  \ap {\ltor{\ident{}}{1} \cuti {R^1(t^L_{A})}} { \ltor{\ident{}}{2} \cuti t^R_{L^2(A)} } \text{ for all $A$ }
+  \ltor{(t^L \cuti D)}{1} = \ltor{D}{2} \cuti t^R
   \]
   An adjunction isomorphism consists of an adjunction morphism together
   with inverses showing that $t^L$ and $t^R$ are each natural
@@ -1025,7 +1028,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
 \item Because we treat equality of morphisms as
   propositional/proof-irrelevant, two adjunction morphisms $(t^L,t^R)$
   and $({u^L},{u^R}')$ between the same two adjunctions are equal iff
-  the derivations $\ap{{t^L}_A}{{u^L}_A}$ and $\ap{{t^L}_A}{{u^L}_A}$
+  $\ap{{t^L}_A}{{u^L}_A}$ and $\ap{{t^L}_A}{{u^L}_A}$
   for all $A$.
 \end{enumerate}
 %
@@ -1046,7 +1049,7 @@ the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} In this
 case, we have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
 similarly for composition, but these are not equalities of types.
 
-\begin{theorem}[Syntax Determines a Pseudofunctor]
+\begin{theorem}[Syntax Determines a Pseudofunctor] \label{thm:syntacticpseudofunctor}
 The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
 \begin{enumerate}
 \item An object $p$ of \M is sent to the category whose objects are
@@ -1092,12 +1095,11 @@ equations to verify---inverses, naturality, conjugation, and
 coherence---but they are all true for \ap{}{}.
 \end{proof}
 
-Next, we make some expected cosntructions on $F_\alpha \la U_\alpha$.
-Of course, these standard facts are corollaries of the above; the point
-is that we can construct them and prove the required equalities
-internally using the rules of the logic.
+Next, we summarize some expected cosntructions on $F_\alpha \la
+U_\alpha$.  Of course, these standard facts are corollaries of the
+above; the point is that we can construct them directly using the rules of the logic.
 
-\begin{lemma}[Some constructions on adjunctions]
+\begin{lemma}[Some constructions on adjunctions] \label{lem:constructionsonadjunctions}
 Let $\alpha : q \ge p$.  Then:
 \begin{enumerate}
 \item The composite functor $\Bx{\alpha}{A} := \F{\alpha}{\U{\alpha}{A}}$ is a comonad:
@@ -1222,14 +1224,14 @@ pseudofunctor as follows:
   specify the following: 
   \begin{itemize}
   \item 
-    $\semF{\alpha}{(\semFone_A)}
+    $\inv{\semFcomp(1,\alpha)_A}
     =_{\arrow{}{\semF{\alpha}{\semF{1}{A}}}{\semF{\alpha}{A}}}
-    \inv{\semFcomp(1,\alpha)_A}$
+    \semF{\alpha}{(\semFone_A)}$
   \item $\inv{\semFcomp(\alpha,1)_{A}} =_{\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}} \semFone_{(\semF{\alpha}{A})}$
   \item $\inv{\semUcomp(\alpha,1)_A}
     =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}}
     \semU{\alpha}{(\semUone_A)}$
-  \item $\semUcomp(1,\alpha)_A = \inv{(\semUone_{\semU{\alpha}{A}})}$
+  \item $\inv{\semUcomp(1,\alpha)_A} =_{\arrow{}{\semU{1}{\semU{\alpha}{A}}}{\semU{\alpha}{A}}} {(\semUone_{\semU{\alpha}{A}})}$
   \item
     $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
   =_{\arrow{}{\semF{\compo{\gamma}{\compo{\beta}{\alpha}}}{A}}{\semF{\alpha}{\semF{\beta}{\semF{\gamma}{A}}}}}
@@ -1386,15 +1388,15 @@ The premise gives \arrow{}{\semF \alpha {\sem A}}{\sem C}, and we want
 {\semF \beta {\sem A}} & \rTo^{\semFo{e}} & {\semF \alpha {\sem A}} & \rTo^{\sem{D}} & {\sem C}
 \end{diagram}
 
-\item For identity, we have
+\item For identity
 \[
 \infer[\irl{ident}]
       {\seq {A} {1} {A}}
       {}
 \]
-We want \arrow{}{\semF{1}{\sem A}}{\sem A}, so use $\semFone$.  
+we want \arrow{}{\semF{1}{\sem A}}{\sem A}, so use $\semFone$.  
 
-\item For cut, we have
+\item For cut
 
 \[
 \infer[\irl{cut}]
@@ -1402,7 +1404,7 @@ We want \arrow{}{\semF{1}{\sem A}}{\sem A}, so use $\semFone$.
       {D : \seq {A} {\beta} {B} &
        E : \seq {B} {\alpha} {C}}
 \]
-The interpretations of the premises gives
+the interpretations of the premises gives
 \arrow{}{\semF \beta {\sem A}}{\sem B}
 and 
 \arrow{}{\semF \alpha {\sem B}}{\sem C}.  
@@ -1913,8 +1915,8 @@ are true in the semantics.
 
 \begin{itemize}
 
-\item For ${\tr{1}{D} \equiv D}$
-and ${\tr{(\compv{e_1}{e_2})}{D} \equiv \tr{e_2}{\tr{e_1}{D}}}$,
+\item For ${\tr{1}{D} = D}$
+and ${\tr{(\compv{e_1}{e_2})}{D} = \tr{e_2}{\tr{e_1}{D}}}$,
 by Lemma~\ref{lem:semtr}, we need to show $\semFo{e};\sem{D} = \sem{D}$
 and $\semFo{\compv{e_1}{e_2}};{\sem D} =
 \semFo{e_2};\semFo{e_1};\sem{D}$, which are true by functoriality.  
@@ -2185,7 +2187,7 @@ so collapsing inverses gives the result.
 \end{itemize}
 \end{proof}
 
-\section{Triple Adjunction}
+\section{Adjoint Triple}
 \label{sec:triple}
 
 %% It follows that $F$ and $U$ preserve isomorphisms:
@@ -2195,7 +2197,234 @@ so collapsing inverses gives the result.
 
 \subsection{Adjoint Triple}
 
+Consider the walking adjunction $\dsd d \la \dsd n$, which has
+
+\begin{itemize}
+\item objects $\dsd{c}$ and $\dsd s$
+\item 1-cells $\dsd{d} : \dsd s \ge \dsd c$ and $\dsd{n} : \dsd c \ge
+  \dsd s$
+\item 2-cells $\dsd{unit} : \tc {1_{\dsd c}} {\compo{\dsd{n}} {\dsd{d}}}$ 
+and $\dsd{counit} : \tc {\compo{\dsd{d}} {\dsd{n}}} {1_{\dsd s}}$ satisfying \\
+$\compv{(\comph{1_{\dsd{d}}}{\dsd{unit}})}{(\comph{\dsd{counit}}{1_{\dsd d}})} = 1$
+and 
+$\compv{(\comph{\dsd{unit}}{1_{\dsd{n}}})}{(\comph{1_{\dsd n}}{\dsd{counit}})} = 1$.
+\end{itemize}
+\noindent
+The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$ and
+$\F{\dsd n}{} \la \U{\dsd n}{}$, but the 2-cells are sufficient to prove
+that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$ are equal,
+resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd d}{}
+\iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.
+
+\begin{lemma} \label{lem:mergeFU}
+$\U{\dsd d}{A} \iso \F{\dsd n}{A}$ naturally in $A$.
+\end{lemma}
+
+\begin{proof}
+One way to define the maps is to use the constructions of
+Theorem~\ref{thm:syntacticpseudofunctor} and
+Lemma~\ref{lem:constructionsonadjunctions} (the adjunction, the isomorphisms for $F/U$
+on $1$ and $\compo{}{}$, and the action of $F/U$ on 2-cells, the comonad
+structure):
+\begin{diagram}
+\U{\dsd d}{A} & \rTo & \F{1}{\U{\dsd d}{A}} & \rTo^{\F{\dsd{counit}}{}} & \F{\compo{\dsd d}{\dsd n}}{\U{\dsd d} A} & \rTo & \F{\dsd n}{(\F{\dsd d}{\U{\dsd d}{A}})} & \rTo & \F{\dsd n}{(A)}\\
+\end{diagram}
+\begin{diagram}
+\text{For $\F{\dsd n}{A} \to \U{\dsd d}{A}$, transpose } &
+A & \rTo & \U{1}{A} & \rTo^{\U{\dsd{unit}}{}} & \U{\compo{\dsd n}{\dsd d}}{A} & \rTo & \U{\dsd n}{\U{\dsd d}{A}}
+\end{diagram}
+However, we can also write the maps directly as follows:
+\[
+\begin{array}{c}
+\infer[\dsd{FR}]
+      {\seq{\U{\dsd d}{A}}{1}{\F{\dsd n}{A}}}
+      {\dsd{d} : \dsd s \ge \dsd c &
+            \dsd{counit} : \tc{\compo{\dsd{d}}{\dsd{n}}}{1} &
+            \infer[\irl{UL}]
+                  {\seq{\U{\dsd d}{A}}{\dsd d}{A}}
+                  {1 : \dsd c \ge \dsd c &
+                   1 : \tc{\dsd{d}}{\dsd d} &
+                   \infer[\dsd{ident}]
+                         {\seq{A}{1}{A}}
+                         {}
+                  }
+      }
+\\ \\
+\infer[\dsd{FL}]
+      {\seq{\F{\dsd n}{A}}{1}{\U{\dsd d}{A}}}
+      {\infer[\dsd{UR}]
+        {\seq{A}{\dsd n}{\U{\dsd d}{A}}}
+        {\infer[\tr{-}{-}]{\seq{A}{\compo{\dsd n}{\dsd d}}{A}}
+               {
+                 \dsd{unit} : \tc 1 {\compo{\dsd{n}}{\dsd{d}}} &
+                 \infer[\dsd{ident}]
+                       {\seq{A}{1}{A}}{}}}}
+\end{array}
+\]
+In the Agda code, we verify that these are inverse and natural.  
+\end{proof}
+
+We can develop some of the expected properties of an adjoint triple $L
+\la M \la R$, such as the fact that the ``left'' comonad $LM$ is itself
+left adjoint to the ``right'' monad $RM$, and consequently, the $LM$
+preserves colimits.  In this case, we have $L = \F{\dsd{d}}{}$, $M =
+\U{\dsd{d}}{} \cong \F{\dsd{n}}{}$, and $R = \U{\dsd{n}}{}$, and we write
+$\Bx{\dsd{d}}{A} := \F{\dsd{d}}{\U{\dsd{d}}{A}}$
+and 
+$\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.  
+
+
+\begin{theorem}[Properties of an adjoint triple]
+\begin{enumerate}
+\item $\Bx{\dsd{d}}{} \la \Crc{\dsd{n}}{}$ 
+\item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{A}}$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Using the fact that functors preserve natural isomorphisms,
+Lemma~\ref{lem:mergeFU}, and properties of $U$ and $F$ from
+Theorem~\ref{thm:syntacticpseudofunctor}, we can prove that \Bx{\dsd d}{A}
+and \Crc{\dsd n}{A}are isomorphic to a single $F$ and $U$, 
+respectively:
+\[
+\begin{array}{l}
+\Bx{\dsd d}{A} = \F{\dsd{d}}{\U{\dsd d}{A}} \cong \F{\dsd d}{\F{\dsd n}{A}} \cong \F{\compo{\dsd{n}}{\dsd{d}}}{A}\\
+\Crc{\dsd{n}}{A} = \U{\dsd{n}}{\F{\dsd n}{A}} \cong \U{\dsd n}{\U{\dsd d}{A}} \cong \U{\compo{\dsd{n}}{\dsd d}}{A}
+\end{array}
+\]
+This implies the above properties because 
+$\F{\compo{\dsd{n}}{\dsd{d}}}{} \la \U{\compo{\dsd{n}}{\dsd d}}{}$
+(Theorem~\ref{thm:syntacticpseudofunctor})
+and $\F{\compo{\dsd{n}}{\dsd{d}}}$ preserves coproducts
+(Lemma~\ref{lem:constructionsonadjunctions}) 
+and these facts respect natural isomorphism.  
+\end{proof}
+
+From a polarity point of view, it is unusual for a comonad
+$\F{}{\U{}{A}}$ to preserve positives, because the negative connective
+$\U{}{}$ interrupts focus/inversion phases.  Here, this behavior is
+explained by the fact that $\F{\dsd{d}}{\U{\dsd{d}}{A}}$ is isomorphic
+to a single postive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
+ambipolar middle connective in a triple adjunction thus \emph{emerges}
+from the presence of two isomorphic connectives, one positive and one
+negative.
+
 \subsection{Reflection}
+
+In our motivating example of axiomatic cohesion, the triple adjunction
+$\Delta \la \Gamma \la \nabla$ has some additional properties: First,
+$\Delta$ and $\nabla$ are full and faithful (a map between discrete or
+codiscrete spaces is exactly a map of sets) and consequently the comonad
+$\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
+idempotent.  We can capture these proprties by considering a different
+mode 2-category, the ``walking reflection''.  This has the same objects
+and morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, so
+the counit is just the identity 2-cell, and the equations for
+$\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
+$\comph{\dsd{unit}}{1_{\dsd n}} = 1$ and $\comph{1_{\dsd d}}{\dsd{unit}}
+= 1$.  For this mode theory, we have the following additional
+properties:
+
+\begin{theorem}[Properties of the walking reflection]
+\begin{enumerate}
+\item $\Flat{\Flat A} \iso \Flat A$ and $\Sharp{\Sharp A} \iso \Sharp A$
+  naturally in $A$.
+\item $\Sharp{\Flat A} \iso \Sharp{A}$ 
+and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
+\item \F{\dsd{d}}{} and \U{\dsd{n}}{} are full and faithful.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+
+The first two parts say that ``retopologizing'' twice is the same as the
+``outer'' retopologization.  To prove them, using
+Theorem~\ref{thm:syntacticpseudofunctor}, the equality of morphsims
+$\compo{\dsd d}{\dsd n} = 1$ implies that
+\[
+\begin{array}{l}
+\F{\dsd{n}}{\F{\dsd{d}}{A}} \iso \F{\compo{\dsd d}{\dsd n}}{A} = \F{1}{A} \iso A\\
+\U{\dsd{d}}{\U{\dsd{n}}{A}} \iso \U{\compo{\dsd d}{\dsd n}}{A} = \U{1}{A} \iso A\\
+\end{array}
+\]
+Consequently, by Lemma~\ref{lem:mergeFU} (the walking reflection is an
+adjunction, so we can reuse the theorems from the previous section for
+this mode theory), the other (co)monads besides $\flat$ and $\sharp$ are
+trivial: 
+\[
+\begin{array}{l}
+\Crc{\dsd{d}}{A} = \U{\dsd{d}}{\F{\dsd d}{A}} \iso \F{\dsd n}{\F{\dsd d}{A}} \iso A\\
+\Bx{\dsd{n}}{A} = \F{\dsd{n}}{\U{\dsd n}{A}} \iso \U{\dsd d}{\U{\dsd n}{A}} \iso A
+\end{array}
+\]
+
+Thus, we have idempotence:
+\[
+\begin{array}{l}
+\Flat{\Flat A} = \F{\dsd d}{(\U {\dsd d} {\F{\dsd d}{(\U {\dsd d} A)}})} \cong \F{\dsd d}{\U {\dsd d} A} = \Flat A\\
+\Sharp{\Sharp A} = \U{\dsd n}{(\F {\dsd n} {\U{\dsd n}{(\F {\dsd n} A)}})} \cong \U{\dsd n}{\F {\dsd n} A} = \Sharp A
+\end{array}
+\]
+and that composing discrete and codiscrete retopologization is the same
+as the outer one:
+\[
+\begin{array}{l}
+\Flat{\Sharp A} = \F{\dsd d}{(\U{\dsd d}{\U{\dsd n}{(\F{\dsd n}{A})}})} 
+\cong \F{\dsd d}{\F{\dsd n}{A}}
+\cong \F{\compo{\dsd n}{\dsd d}}{A} \cong \Flat A \\
+
+\Sharp{\Flat A} = \U{\dsd n}{(\F{\dsd n}{\F{\dsd d}{(\U{\dsd d}{A})}})} 
+\cong \U{\dsd n}{\U{\dsd d}{A}}
+\cong \U{\compo{\dsd n}{\dsd d}}{A} \cong \Sharp A \\
+\end{array}
+\]
+
+Finally, we check that \F{\dsd d}{} and \U{\dsd n}{} are full and
+faithful.  Consider \F{\dsd d}{}; the same argument works for \U{\dsd
+  n}{}.  We want to show that the functoriality on derivations $\F{\dsd
+  d}{(D : \seq{A}{1}{B})} : \seq{\F{\dsd d}{A}}{1}{\F{\dsd d}{A}}$ is a
+bijection.  Above, we showed that \F{\dsd{n}}{} is post-inverse to
+\F{\dsd d}{}---we have a natural isomorphism $i : \F{\dsd n}{\F{\dsd d}
+  A} \iso A$.  Therefore we can map a derivation $D : \seq{\F{\dsd
+    d}{A}}{1}{\F{\dsd d}{B}}$ to a derivation of \seq{A}{1}{B} by
+\begin{diagram}
+A & \rTo^{{\inv i}} & \F{\dsd n}{\F{\dsd d} A} & \rTo^{\F{\dsd n}{D}} & \F{\dsd n}{\F{\dsd d} B} & \rTo^{i} B
+\end{diagram}
+By naturality of $i$, this function is post-inverse to \F{\dsd d}{D}
+(i.e. $\ap{(\inv{i} \cuti (\F{\dsd n}{\F{\dsd d} D}) \cuti i)}{D}$),
+which shows that \F{\dsd d}{} is faithful.  To show that it is full, we
+need to check the other composite, which simplifies to checking that 
+for $D' : \seq{\F{\dsd d}A}{1}{\F{\dsd d}B}$,
+\[
+\ap {(\F{\dsd d}{\F{\dsd n} D'}) \cuti \F{\dsd d}{i}} { \F{\dsd d}{i} \cuti D'}
+\]
+(i.e. that $\F{\dsd d}{i}$ is a natural isomorphism between the
+inclusion functor from the full subcategory whose objects are of the
+form \F{\dsd d}{A}, and the functor \F{\dsd d}{\F{\dsd n}{}} restricted
+to this subcategory).  To show this, we prove that \F{\dsd d}{i} is
+equal to the $\F{d}{A}$ component of the following natural
+transformation $j$, which uses $\dsd{unit} :
+\tc{1}{\compo{\dsd{n}}{\dsd{d}}}$
+\begin{diagram}
+\F{\dsd d}{\F{\dsd n}{A}} & \rTo & 
+\F{\compo{\dsd n}{\dsd d}}{A} & \rTo^{\F{\dsd{unit}}{}} &
+\F{1}{A} & \rTo & 
+A
+\end{diagram}
+The fact that $\ap{\F{\dsd{d}}{i}}{j_{\F{\dsd d}{A}}}$ follows from the
+pseudofunctor associativity/unit coherences (used to show $\ap{\F{\dsd d}{i}}{
+(F^\circ(\dsd n,\dsd d) \cuti F^\circ(\dsd{d},\compo{\dsd n}{\dsd d}))}$
+and $F^\circ(\dsd d,1) = F^1_{\F{\dsd{d}}{A}}$) and naturality of the
+composition isomorphism (used to show $\ap{\F{\dsd{unit}}{} \cuti
+F^\circ(\dsd d,1)}{F^\circ(\dsd{d},\compo{\dsd n}{\dsd d})}$). Then the result we need is exactly the
+naturality square for $j$.
+
+\end{proof}
+
+\subsection{Spatial Type Theory}
+
+
 
 %% The first presentation of cohesive homotopy type
 %% theory~\citep{schreibershulman12cohesive} did not extend the judgement
