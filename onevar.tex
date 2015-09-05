@@ -254,7 +254,7 @@ naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
 F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong F_{\dsd n}$
 and have the desired adjoint triple.  Indeed, you may recognize this
 2-category as the ``walking adjunction'' with $\dsd d \la \dsd n$---that
-is, we give a triple adjunction by saying that the mode morphism generating
+is, we give an adjoint triple by saying that the mode morphism generating
 the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
 adjunction $\Gamma\la\nabla$.
 
@@ -284,7 +284,7 @@ general facts that are true for any mode 2-category ($F_\alpha$ and
 $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
 F_\alpha$ is a monad; $F_\alpha$ preserves colimits and $U_\alpha$
 preserves limits), as well as facts specific to a particular theory
-(e.g. for the triple adjunction above, $\Gamma$ preserves both colimits
+(e.g. for the adjoint triple above, $\Gamma$ preserves both colimits
 and limits, because it is an equivalent $U_\Delta$ and $F_\nabla$; the
 comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
 themselves adjoint).  Moreover, we can use different mode 2-categories
@@ -331,7 +331,7 @@ specification \M, including showing that the syntax determines a
 pseudofunctor $\M \to \Adj$.  In Section~\ref{sec:semantics}, we
 describe the 1-categorical semantics of the logic.  Finally, in
 Section~\ref{sec:triple}, we examine some specific mode specifications
-for triple adjunctions, and discuss the relationship to the rules for
+for adjoint triples, and discuss the relationship to the rules for
 spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
 in Agda~\citep{norell07thesis}, using a syntactic representation of the
@@ -2276,7 +2276,7 @@ and
 $\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.  
 
 
-\begin{theorem}[Properties of an adjoint triple]
+\begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple}
 \begin{enumerate}
 \item $\Bx{\dsd{d}}{} \la \Crc{\dsd{n}}{}$ 
 \item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{A}}$
@@ -2308,13 +2308,13 @@ $\F{}{\U{}{A}}$ to preserve positives, because the negative connective
 $\U{}{}$ interrupts focus/inversion phases.  Here, this behavior is
 explained by the fact that $\F{\dsd{d}}{\U{\dsd{d}}{A}}$ is isomorphic
 to a single positive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
-ambipolar middle connective in a triple adjunction thus \emph{emerges}
+ambipolar middle connective in an adjoint triple thus \emph{emerges}
 from the presence of two isomorphic connectives, one positive and one
 negative.
 
 \subsection{Reflection}
 
-In our motivating example of axiomatic cohesion, the triple adjunction
+In our motivating example of axiomatic cohesion, the adjoint triple
 $\Delta \la \Gamma \la \nabla$ has some additional properties.  We now
 write $\Flat{}$ for the comonad $\Delta\Gamma$ and $\Sharp{}$ for the
 monad $\nabla\Gamma$. $\Flat{}$ takes a cohesive space and
@@ -2460,20 +2460,41 @@ simplify the mode theory to the (strictly) idempotent monad:
   $\compo{\dsd{r}}{\dsd{r}} = 1$, so the only 1-cells are $1$ and \dsd{r}
 \item 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
   t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$, so 
-  the only 2-cells are $1_1, 1_{\dsd{r}}, and \dsd{unit}$. 
+  the only 2-cells are $1_1$, $1_{\dsd{r}}$, and  $\dsd{unit}$. 
 \end{itemize}
 This mode theory embeds in the walking reflection, with $\dsd{r} :=
-\compo{\dsd{d}}{\dsd{n}}$, so we could equivalently work in the
+\compo{\dsd{n}}{\dsd{d}}$, so we could equivalently work in the
 \dsd{c}-types above.
 
-Now we define $\Flat{} := \F{\dsd{r}}{}$ and $\Sharp{} := \U{\dsd{r}}{}$
-and immediately have $\Flat{} \la \Sharp{}$, which required proof above
-(but on the other hand, it now requires proof that they are
-monads/comonads).  For this mode theory, we can without loss of
-generality use the following instances of the sequent calculus rules:
+For this mode theory, we define $\Flat{} := \F{\dsd{r}}{}$ and $\Sharp{}
+:= \U{\dsd{r}}{}$.  In the walking reflection, we defined $\Flat{} :=
+\Bx{\dsd{d}}{}$ and $\Sharp{} := \Crc{\dsd{n}}{}$ and then proved (in
+the proof of Theorem~\ref{thm:adjointtriple}) that $\Flat{} \iso
+\F{\compo{\dsd n}{\dsd d}}$ and $\Sharp{} \iso \U{\compo{\dsd n}{\dsd
+    d}}$. Here, we take the other side of this isomorphism as the
+definition, so we immediately have $\Flat{} \la \Sharp{}$ and $\Flat{}$
+preserves coproducts by Theorem~\ref{thm:syntacticpseudofunctor} and
+Lemma~\ref{lem:constructionsonadjunctions}, but we must prove that they
+are (co)monads.  A simple route to this is to prove
+absorption and then to use Lemma~\ref{lem:constructionsonadjunctions}.  
+
+\begin{theorem}[Idempotence and Absorption]
+ $\Flat{\Flat A} \iso \Flat A$ and $\Sharp{\Sharp A} \iso \Sharp A$
+and $\Sharp{\Flat A} \iso \Sharp{A}$ 
+and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
+\end{theorem}
+\begin{proof}
+Because $\compo{\dsd r}{\dsd r} = {\dsd r}$, idempotence is just the composition
+isomorphisms $F^\circ$ and $U^\circ$ from
+Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
+are constructed directly; see our Agda formalization.
+\end{proof}
+
+For this mode theory, we can without loss of generality use the
+following instances of the sequent calculus rules:
 \[
 \begin{array}{c}
-\infer[\ident{A}]
+\infer[\hyp{1_{1}}]
       {\seq{P}{\dsd{1}}{P}}
       {}
 \quad
@@ -2497,43 +2518,149 @@ generality use the following instances of the sequent calculus rules:
       {\seq{\Flat A}{\dsd{\_}}{B}}
       {\seq{A}{\dsd{r}}{B}}
 \\ \\
-\text{plus rules for $F_1/U_1$}
-%% \infer[\UR{-}]
-%%       {\seq{A}{\alpha}{\F{1}{B}}}
-%%       {\seq{A}{\alpha}{B}}
-%% \quad
-%% \infer[\UL{\dsd{r}}{1}{-}]
-%%       {\seq{\Sharp A}{\dsd{r}}{B}}
-%%       {\seq{A}{\dsd{r}}{{B}}}
-%% \quad
-%% \infer[\FR{\dsd{r}}{1}{-}]
-%%       {\seq{A}{\dsd{r}}{\Flat B}}
-%%       {\seq{A}{\dsd{r}}{B}}
-%% \quad
-%% \infer[\FL{-}]
-%%       {\seq{\Flat A}{\dsd{\_}}{B}}
-%%       {\seq{A}{\dsd{r}}{B}}
+\infer[\UR{-}]
+      {\seq{A}{\alpha}{\U{1}{B}}}
+      {\seq{A}{\alpha}{B}}
+\quad
+\infer[\UL{1}{1}{-}]
+      {\seq{\U{1} A}{\dsd{\alpha}}{B}}
+      {\seq{A}{\dsd{\alpha}}{{B}}}
+\quad
+\infer[\FR{1}{1}{-}]
+      {\seq{A}{\alpha}{\F{1} B}}
+      {\seq{A}{\alpha}{B}}
+\quad
+\infer[\FL{-}]
+      {\seq{\F{1} A}{\alpha}{B}}
+      {\seq{A}{\alpha}{B}}
 \end{array}
 \]
-For \irl{FL} and \irl{UR}, whether we have a 1 or an \dsd{r} in the
-conclusion, we will compose with \dsd{r} in the premise, giving an
-\dsd{r} premise in both cases.  For \irl{FR}, a general instance would
-have the form
-\[
-\infer[\irl{FR}]
-      {\seq {C} {\beta} {\F {\dsd{r}} A}}
-      { \tc{\compo{\gamma}{\dsd{r}}}{\beta} &
-        \seq {C} {\gamma} {A}}
-\]
-However, because $\compo{\gamma}{\dsd{r}} = \dsd r$ for both $1$ and
-\dsd{r}, $\beta$ must be \dsd{r}, and $\gamma$ can be $1$ or \dsd{r}.
-But since an \dsd{r}-assumption is stronger than a 1-assumption, because
-\seq{C}{\dsd{r}}{C}, there is no reason to ``demote'' the assumption at
-this point, and we can without loss of generality choose $\gamma =
-\dsd{r}$.  (FIXME: explain that this works out equationally, too).  The
-same reasoning applies to \dsd{UR}.
+The interesting restriction here is that the $\gamma$ and $e$ in all
+instances of \irl{UL} and \irl{FR} are fixed, whereas the general rules
+allow choices.  The intuitive reading of the restricted rules is as
+follows.  We have two kinds of assumptions, cohesive ($A[1_\dsd{c}]$)
+and \emph{crisp} ($A[\dsd r]$, \dsd{r} for cRisp).  A crisp assumption
+is the judgemental analogue of \Flat{A}---i.e. it means we know $A$ with
+retopologized with the discrete cohesion.  The \Flat{} left rule says
+that if we know \Flat{A} either crisply or cohesively, then we know $A$
+crisply.  The \Flat{A} right rule says that we can map into \Flat{B} by
+mapping into $B$, as long as the assumption is already crisp---this
+restriction prevents using a cohesive variable to map into a discrete
+type.  The \Sharp{} right rule says that if we are mapping into the
+codiscretization of $B$, then we can make the assumption crisp.  The
+\Sharp{} left rule says that knowing the codiscretization crisply is the
+same as knowing $A$ crisply, because in either case we know $A$ under
+the discrete retopologization.  
 
-... get to natural deduction rules eventually ... 
+\begin{theorem}
+For all $D : \seq{A}{\alpha}{B}$, there is a derivation $D' :
+\seq{A}{\alpha}{B}$ that uses only the above rules and satisfies $\ap D {D'}$.  
+\end{theorem}
+
+\begin{proof}
+For this mode theory, the only mode is \dsd{c}, the only 1-cells are 
+1 and \dsd{r}, and the only 2-cells are $1_1$ and $1_{\dsd r}$ and
+\dsd{unit}.  The case for \hyp{e} is immediate, since the only 2-cells
+from $1$ are $1_1$ and \dsd{unit}, and we have included both of those.  
+
+We have included rules for $F$ and $U$ for both 1-cells; we discuss why
+the rules for $\Sharp{}$ are complete; the other connectives are
+analogous.  For \irl{UR}, a general instance of the rule will have some
+$\beta$ in the conclusion, and pass to $\compo{r}{\beta}$ in the
+premise.  But $\beta$ must be $1$ or \dsd{r}, and in either case the
+premise is \dsd{r}, so the IH gives the result.  For \irl{UL}, a general
+instance will have the form
+\[
+\infer[\irl{UL}]
+      {\seq {\U {\dsd{r}} A} {\beta} {C}}
+      { \tc{\compo{\dsd r}{\gamma}} {\beta} &
+        \seq{A}{\gamma}{C}}
+\]
+Here $\gamma$ can be $1$ or \dsd{r}, but in either case $\beta$ must
+have been \dsd{r}, because for either value of $\gamma$ we have
+$\compo{\dsd r}{\gamma} = \dsd{r}$ and there is no 2-cell \tc{\dsd
+  r}{1}.  Moreover, the only 2-cell \tc{\dsd{r}}{\dsd{r}} is 1, so the
+derivation must be of the form
+\[
+\infer[\UL{\gamma}{1}{-}]
+      {\seq {\U {\dsd{r}} A} {\dsd{r}} {C}}
+      {\seq{A}{\gamma}{C}}
+\]
+By the IH we have an equivalent derivation $D' : \seq{A}{\gamma}{C}$
+that uses only the specialized rules.  If $\gamma$ is \dsd{r}, this
+gives the result.  If $\gamma$ is 1, then we can make a derivation 
+\[
+\infer[\UL{\dsd{r}}{1}{-}]
+      {\seq {\U {\dsd{r}} A} {\dsd{r}} {C}}
+      {\infer[\dsd{cut}]
+             {\seq{A}{\dsd{r}}{C}}
+             {\infer[\tr{\dsd{unit}}{\ident{}}]
+                    {\seq{A}{\dsd{r}}{A}}
+                    {} &
+              D' : \seq{A}{1}{C}
+             }
+      }
+\]
+and show using the equational rules that
+\ap {\UL{\gamma}{1}{D}} {\UL{r}{1}{\cut{(\tr{\dsd{unit}}{\ident{}})}{D}}}.
+It remains to show that \tr{\dsd{unit}}{D} and \ident{A} and \cut{D}{E}
+are closed under the above rules.
+FIXME: check this
+\end{proof}
+
+\newcommand\addcrisp[1]{\ensuremath{#1\mathord{\uparrow}^{\dsd{crisp}}}}
+\newcommand\dropcoh[1]{\ensuremath{#1\mathord{\downarrow}_{\dsd{coh}}}}
+
+For the restricted rules, there is a natural generalization to a
+multiple assumption sequent, where we allow many assumptions, each of
+which is either cohesive or crisp.  We write $\Gamma$ for a context
+consisting of assumptions $A[1]$ or $A[\dsd r]$. We write
+\addcrisp{\Gamma} for a context where each cohesive assumption $A[1]$
+has been promoted into a crisp assumption $A[\dsd r]$, and each
+$A[\dsd{r}]$ has been kept the same. We write \dropcoh{\Gamma} for a
+context where each cohesive assumption $A[1]$ has been dropped, and each
+crisp assumption $A[r]$ has been kept the same.  Then the
+multi-assumptioned rules are as follows:
+\[
+\infer{{\Gamma} \vdash {P}}
+      {P[1] \in \Gamma}
+\quad
+\infer{{\Gamma} \vdash {P}}
+      {P[\dsd{r}] \in \Gamma}
+\quad
+\infer{\Gamma \vdash {\Sharp{B}}}
+      {\addcrisp {\Gamma} \vdash {B}}
+\quad
+\infer{\Gamma, {\Sharp A}[\dsd{r}] \vdash {B}}
+      {\Gamma, A[\dsd{r}] \vdash {{B}}}
+\quad
+\infer{\Gamma \vdash {\Flat B}}
+      {\dropcoh \Gamma \vdash {B}}
+\quad
+\infer{\Gamma, {\Flat A}[\dsd{\_}] \vdash {B}}
+      {\Gamma, {A}[\dsd{r}] \vdash {B}}
+\]
+The left rules are just the single-assumption left rules in context.
+The single-assumption \Sharp{} right rule promotes the one assumption to
+crisp; here, we promote all assumptions.  The single assumption \Flat{}
+right rule insists that the one assumption be crisp; here, we drop all
+non-crisp assumptions.  The rules for \Flat{} are reminiscent of the
+$\Bx{}{A}$ modality in \citet{pfenningdavies}, with crisp corresponding
+to the valid judgement, except here we can apply a left rule to a
+valid/crisp assumption of $\Bx{}{A}$, because \Flat{} is an $F$ which is
+a positive-to-positive connective.  The right rule for \Sharp{} is
+reminiscent of the right rule for the proof irrelevance/erasability
+modality $[A]$ in \citet{pfenning01proofirrel,pfenning08proofirrel},
+though the left rule is different.\footnote{The $[A]$ type in that work
+  is a product-preserving functor with no additional properties, so it
+  cannot be mapped into adjoint logic in a straightforward way, because
+  all of our functors have more properties.}
+
+These rules, translated to natural deduction in the standard way, and
+extended to dependent types, are used in an investigation of cohesive
+type theory in \citet{shulman15realcohesion}.  Here, we have given a
+proof theoretic explanation for them, as a particular mode theory in
+adjoint logic.
 
 \section{Conclusion}
 
