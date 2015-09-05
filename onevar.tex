@@ -2188,13 +2188,8 @@ so collapsing inverses gives the result.
 \end{itemize}
 \end{proof}
 
-\section{Examples}
+\section{Example Mode Theories}
 \label{sec:triple}
-
-%% It follows that $F$ and $U$ preserve isomorphisms:
-%% If $(D,E) : A \cong B$ then $(\F \alpha D,\F \alpha E) : \F \alpha A
-%% \cong \F \alpha B$ and $(\U \alpha D,\U \alpha E) : \U \alpha A \cong \U
-%% \alpha B$.
 
 \subsection{Adjoint Triple}
 
@@ -2211,14 +2206,17 @@ and
 $\compv{(\comph{\dsd{unit}}{1_{\dsd{n}}})}{(\comph{1_{\dsd n}}{\dsd{counit}})} = 1$.
 \end{itemize}
 \noindent
-The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$
-and $\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the functoriality of
-$\F{}{}$ and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{}
-\la \F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right
-or left adjoint of a given functor is unique up to isomorphism, it
-follows that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to
-\dsd s$ are equal, resulting in an adjoint triple $\F{\dsd d}{} \la
-(\U{\dsd d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.
+The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$ and
+$\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the functoriality of $\F{}{}$
+and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{} \la
+\F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right or
+left adjoint of a given functor is unique up to isomorphism, it follows
+that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$
+are equal, resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd
+  d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than
+proving $\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd
+  n}{}$ and then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from
+uniqueness of adjoints, we can construct the isomorphism directly:
 
 \begin{lemma} \label{lem:mergeFU}
 $\U{\dsd d}{A} \iso \F{\dsd n}{A}$ naturally in $A$.
@@ -2317,21 +2315,34 @@ negative.
 \subsection{Reflection}
 
 In our motivating example of axiomatic cohesion, the triple adjunction
-$\Delta \la \Gamma \la \nabla$ has some additional properties: First,
-$\Delta$ and $\nabla$ are full and faithful (a map between discrete or
-codiscrete spaces is exactly a map of sets) and consequently the comonad
-$\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
-idempotent.  We can capture these proprties by considering a different
-mode 2-category, the ``walking reflection''.  This has the same objects
-and morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
+$\Delta \la \Gamma \la \nabla$ has some additional properties.  We now
+write $\Flat{}$ for the comonad $\Delta\Gamma$ and $\Sharp{}$ for the
+monad $\nabla\Gamma$. $\Flat{}$ takes a cohesive space and
+``retopologizes'' it with the discrete cohesion, while $\Sharp{}$ takes
+a cohesive space and retopoligizes it with the codiscrete cohesion.
+Intuitively, retopologizing twice should be the same as retopologizing
+once, because each retopologization forgets the existing cohesive
+structure; that is, we want $\Flat{\Flat{A}} \iso \Flat A$ and
+$\Sharp{\Sharp{A}} \iso \Sharp A$ and $\Flat{\Sharp{A}} \iso \Flat A$ and
+$\Sharp{\Flat{A}} \iso \Sharp A$.  Moreover, $\Delta$ and $\nabla$ should
+be full and faithful, because a map between discrete or codiscrete
+spaces is exactly a map of sets.
+
+We can capture these properties by considering a different mode
+2-category, the ``walking reflection''.  This has the same objects and
+morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
 the counit being just the identity 2-cell, and the equations for
 $\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
 $\comph{\dsd{unit}}{1_{\dsd n}} = 1$ and $\comph{1_{\dsd d}}{\dsd{unit}}
-= 1$.
-We now write the comonad $\Bx{\dsd d}$ as $\Flat$ and the monad $\Crc{\dsd{n}}$ as $\Sharp$.
-Since in particular we still have an adjunction, this mode theory
-inherits all the theorems from the previous section; but it also has the
-following additional properties:
+= 1$.  Note that the only non-identity morphisms of this mode category
+are \dsd{d}, \dsd{n}, and \compo{\dsd{n}}{\dsd{d}}.  
+
+We write $\Delta := \F{\dsd{d}}{}$, $\Gamma := (\U{\dsd d}{} \iso
+\F{\dsd n}{})$, and $\nabla := \U{\dsd{n}}{}$, so $\Flat{} =
+\Bx{\dsd{d}}{}$ and $\Sharp{} = \Crc{\dsd{n}}{}$.  Since in particular
+we still have an adjunction, this mode theory inherits all the theorems
+from the previous section; but it also has the following additional
+properties:
 
 \begin{theorem}[Properties of the walking reflection]
 \begin{enumerate}
@@ -2387,12 +2398,11 @@ as the outer one:
 \]
 
 Finally, we check that \F{\dsd d}{} and \U{\dsd n}{} are full and
-faithful.  This follows by formal category-theoretic arguments from
+faithful.  This follows by general category-theoretic arguments from
 the triviality of $\Crc{\dsd d}{}$ and $\Bx{\dsd n}{}$ (see~\cite[\S
 IV.3]{maclane98working}), but to avoid needing to prove the Yoneda
-lemma in Agda we give an explicit argument instead.
-
-Consider \F{\dsd d}{}; the same argument works for \U{\dsd
+lemma in our formalization, we give an explicit argument instead.
+Consider \F{\dsd d}{}; an analogous argument works for \U{\dsd
   n}{}.  We want to show that the functoriality on derivations $\F{\dsd
   d}{(D : \seq{A}{1}{B})} : \seq{\F{\dsd d}{A}}{1}{\F{\dsd d}{A}}$ is a
 bijection.  Above, we showed that \F{\dsd{n}}{} is post-inverse to
@@ -2414,7 +2424,7 @@ for $D' : \seq{\F{\dsd d}A}{1}{\F{\dsd d}B}$,
 inclusion functor from the full subcategory whose objects are of the
 form \F{\dsd d}{A}, and the functor \F{\dsd d}{\F{\dsd n}{}} restricted
 to this subcategory).  To show this, we prove that \F{\dsd d}{i} is
-equal to the $\F{d}{A}$ component of the following natural
+equal to the $\F{\dsd d}{A}$ component of the following natural
 transformation $j$, which uses $\dsd{unit} :
 \tc{1}{\compo{\dsd{n}}{\dsd{d}}}$
 \begin{diagram}
@@ -2437,52 +2447,93 @@ square for $j$.
 
 \subsection{Spatial Type Theory}
 
+The above mode theory allows us to work with cohesive types (which have
+mode \dsd{c}) and non-cohesive types (which have mode \dsd{s}).
+However, because $\Delta$ and $\nabla$ are full and faithful, it is not
+strictly necessary to ever work in \dsd{s} itself---we could
+equivalently work in the image of $\Delta$ or $\nabla$ in \dsd{c}.  If
+we wish to restrict ourselves to constructions in \dsd{c}, we can
+simplify the mode theory to the (strictly) idempotent monad:
+\begin{itemize}
+\item object \dsd{c}
+\item 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
+  $\compo{\dsd{r}}{\dsd{r}} = 1$, so the only 1-cells are $1$ and \dsd{r}
+\item 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
+  t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$, so 
+  the only 2-cells are $1_1, 1_{\dsd{r}}, and \dsd{unit}$. 
+\end{itemize}
+This mode theory embeds in the walking reflection, with $\dsd{r} :=
+\compo{\dsd{d}}{\dsd{n}}$, so we could equivalently work in the
+\dsd{c}-types above.
 
+Now we define $\Flat{} := \F{\dsd{r}}{}$ and $\Sharp{} := \U{\dsd{r}}{}$
+and immediately have $\Flat{} \la \Sharp{}$, which required proof above
+(but on the other hand, it now requires proof that they are
+monads/comonads).  For this mode theory, we can without loss of
+generality use the following instances of the sequent calculus rules:
+\[
+\begin{array}{c}
+\infer[\ident{A}]
+      {\seq{P}{\dsd{1}}{P}}
+      {}
+\quad
+\infer[\hyp{\dsd{unit}}]
+      {\seq{P}{\dsd{r}}{P}}
+      {}
+\\ \\
+\infer[\UR{-}]
+      {\seq{A}{\_}{\Sharp{B}}}
+      {\seq{A}{\dsd{r}}{B}}
+\quad
+\infer[\UL{\dsd{r}}{1}{-}]
+      {\seq{\Sharp A}{\dsd{r}}{B}}
+      {\seq{A}{\dsd{r}}{{B}}}
+\quad
+\infer[\FR{\dsd{r}}{1}{-}]
+      {\seq{A}{\dsd{r}}{\Flat B}}
+      {\seq{A}{\dsd{r}}{B}}
+\quad
+\infer[\FL{-}]
+      {\seq{\Flat A}{\dsd{\_}}{B}}
+      {\seq{A}{\dsd{r}}{B}}
+\\ \\
+\text{plus rules for $F_1/U_1$}
+%% \infer[\UR{-}]
+%%       {\seq{A}{\alpha}{\F{1}{B}}}
+%%       {\seq{A}{\alpha}{B}}
+%% \quad
+%% \infer[\UL{\dsd{r}}{1}{-}]
+%%       {\seq{\Sharp A}{\dsd{r}}{B}}
+%%       {\seq{A}{\dsd{r}}{{B}}}
+%% \quad
+%% \infer[\FR{\dsd{r}}{1}{-}]
+%%       {\seq{A}{\dsd{r}}{\Flat B}}
+%%       {\seq{A}{\dsd{r}}{B}}
+%% \quad
+%% \infer[\FL{-}]
+%%       {\seq{\Flat A}{\dsd{\_}}{B}}
+%%       {\seq{A}{\dsd{r}}{B}}
+\end{array}
+\]
+For \irl{FL} and \irl{UR}, whether we have a 1 or an \dsd{r} in the
+conclusion, we will compose with \dsd{r} in the premise, giving an
+\dsd{r} premise in both cases.  For \irl{FR}, a general instance would
+have the form
+\[
+\infer[\irl{FR}]
+      {\seq {C} {\beta} {\F {\dsd{r}} A}}
+      { \tc{\compo{\gamma}{\dsd{r}}}{\beta} &
+        \seq {C} {\gamma} {A}}
+\]
+However, because $\compo{\gamma}{\dsd{r}} = \dsd r$ for both $1$ and
+\dsd{r}, $\beta$ must be \dsd{r}, and $\gamma$ can be $1$ or \dsd{r}.
+But since an \dsd{r}-assumption is stronger than a 1-assumption, because
+\seq{C}{\dsd{r}}{C}, there is no reason to ``demote'' the assumption at
+this point, and we can without loss of generality choose $\gamma =
+\dsd{r}$.  (FIXME: explain that this works out equationally, too).  The
+same reasoning applies to \dsd{UR}.
 
-%% The first presentation of cohesive homotopy type
-%% theory~\citep{schreibershulman12cohesive} did not extend the judgement
-%% structure of type theory, and consequently had trouble with the
-%% $\Delta\Gamma$ composite comonad.  
-
-%% Because $\Delta$ and $\nabla$ are full and faithful, it is possible to
-%% avoid mention of the category $\mathcal{S}$, and instead focus on the
-%% composite endofunctors $\sh := \Delta\sh$, $\flat := \Delta\Gamma$, and
-%% $\sharp := \nabla\Gamma$ on \C.  For any adjoint quadruple as above,
-%% these will form an adjoint triple $\sh \la \flat \la \sharp$, and $\sh$
-%% and $\sharp$ will be monads, while $\flat$ will be a comonad.
-
-%% From a proof-theoretic perspective the $\Gamma$ in a triple adjunction
-%% $\Delta \la \Gamma \la \nabla$ is a bit of an odd duck, because it is
-%% both a right and a left adjoint, and so should behave like both the $F$
-%% and $U$ in adjoint logic.  One possibility would be to design rules for
-%% a left-and-right-adjoint connective.  However, such a connective would
-%% need to have an unusual focusing~\citep{andreoli92focus} behavior: In
-%% any adjunction, left adjoints preserve colimits (e.g. coproducts) and
-%% right adjoints preserve limits (e.g. products).  In focusing, limits are
-%% negative connectives (invertible on the right, focus on the left), while
-%% colimits are positive connectives (invertible on the left, focus on the
-%% right), and in general like-polarity connectives compose together well.
-%% Reed's adjoint logic is compatible with these two facts, because it
-%% admits a focusing interpretation where the left adjoint $F$ is positive
-%% and the right adjoint $U$ is negative.  However, if $\Gamma$ is both a
-%% left and a right adjoint, it seems like it would need to be both
-%% positive and negative.  
-
-%% Instead of giving rules for an ambipolar connective, we will provide a
-%% logic in which this comes true up to isomorphism: we can describe a quadruple
-%% \[
-%% F \la U \cong F' \la U'
-%% \]
-%% and then define $\Delta := F$, $\nabla := U'$, $\Gamma := U \cong F'$.
-%% That is, the functor $\Gamma$ will be defined to be one of two naturally
-%% isomorphic functors, one of which is a left adjoint/positive and the
-%% other of which is a right adjoint/negative.  This idea is present in
-%% Reed's encoding of labeled deduction~\citep[Section ?]{reed09adjoint},
-%% where two modes $p,q$ such that $p \ge q$ and $q \ge p$ give rise to
-%% adjunctions $F \la U$ and $F' \la U'$ such that $F \cong U'$ and $U
-%% \cong F'$.  However, in the case of an adjoint triple, we want $U \cong
-%% F'$ but not $F \cong U'$, because $\Delta$ and $\nabla$ are not the
-%% same.  
+... get to natural deduction rules eventually ... 
 
 \section{Conclusion}
 
