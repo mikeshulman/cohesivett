@@ -108,8 +108,6 @@ ABSTRACT
 
 \section{Introduction}
 
-%% FIXME: don't overload Delta and Nabla
-
 An adjunction $F \la U$ between categories \C and \D\/ consists of a
 pair of functors $F : \C \to \D$ and $U : \D \to \C$ such that maps
 \arrow{\D}{F C}{D} correspond naturally to maps \arrow{\C}{C}{U D}.  A
@@ -2522,11 +2520,11 @@ following instances of the sequent calculus rules:
       {\seq{A}{\alpha}{\U{1}{B}}}
       {\seq{A}{\alpha}{B}}
 \quad
-\infer[\UL{1}{1}{-}]
+\infer[\UL{\alpha}{1}{-}]
       {\seq{\U{1} A}{\dsd{\alpha}}{B}}
       {\seq{A}{\dsd{\alpha}}{{B}}}
 \quad
-\infer[\FR{1}{1}{-}]
+\infer[\FR{\alpha}{1}{-}]
       {\seq{A}{\alpha}{\F{1} B}}
       {\seq{A}{\alpha}{B}}
 \quad
@@ -2563,13 +2561,13 @@ For this mode theory, the only mode is \dsd{c}, the only 1-cells are
 \dsd{unit}.  The case for \hyp{e} is immediate, since the only 2-cells
 from $1$ are $1_1$ and \dsd{unit}, and we have included both of those.  
 
-We have included rules for $F$ and $U$ for both 1-cells; we discuss why
-the rules for $\Sharp{}$ are complete; the other connectives are
-analogous.  For \irl{UR}, a general instance of the rule will have some
-$\beta$ in the conclusion, and pass to $\compo{r}{\beta}$ in the
-premise.  But $\beta$ must be $1$ or \dsd{r}, and in either case the
-premise is \dsd{r}, so the IH gives the result.  For \irl{UL}, a general
-instance will have the form
+We have included rules for $F$ and $U$ for both 1-cells $1$ and \dsd{r};
+we discuss why the rules for $\Sharp{}$ are complete ($\Flat{}$ and
+$\F{1}{}$ and $\U{1}{}$ are analogous).  For \irl{UR}, a general
+instance of the rule will have some $\beta$ in the conclusion, and pass
+to $\compo{\dsd r}{\beta}$ in the premise.  But $\beta$ must be $1$ or
+\dsd{r}, and in either case the premise is \dsd{r}, so the IH gives the
+result.  For \irl{UL}, a general instance will have the form
 \[
 \infer[\irl{UL}]
       {\seq {\U {\dsd{r}} A} {\beta} {C}}
@@ -2592,35 +2590,32 @@ gives the result.  If $\gamma$ is 1, then we can make a derivation
 \[
 \infer[\UL{\dsd{r}}{1}{-}]
       {\seq {\U {\dsd{r}} A} {\dsd{r}} {C}}
-      {\infer[\dsd{cut}]
+      {\infer[\tr{\dsd{unit}}{-}]
              {\seq{A}{\dsd{r}}{C}}
-             {\infer[\tr{\dsd{unit}}{\ident{}}]
-                    {\seq{A}{\dsd{r}}{A}}
-                    {} &
+             {
               D' : \seq{A}{1}{C}
              }
       }
 \]
 and show using the equational rules that
-\ap {\UL{\gamma}{1}{D}} {\UL{r}{1}{\cut{(\tr{\dsd{unit}}{\ident{}})}{D}}}.
-It remains to show that \tr{\dsd{unit}}{D} and \ident{A} and \cut{D}{E}
-are closed under the above rules.
-FIXME: check this
+\ap {\UL{\gamma}{1}{D'}} {\UL{\dsd r}{1}{\tr{\dsd{unit}}{D'}}}.
+It remains to show a lemma that \tr{\dsd{unit}}{D} is closed under the
+restricted rules, which can be proved by induction on $D$.  The complete
+proof of this theorem is about 250 lines of Agda.  
 \end{proof}
 
 \newcommand\addcrisp[1]{\ensuremath{#1\mathord{\uparrow}^{\dsd{crisp}}}}
 \newcommand\dropcoh[1]{\ensuremath{#1\mathord{\downarrow}_{\dsd{coh}}}}
 
 For the restricted rules, there is a natural generalization to a
-multiple assumption sequent, where we allow many assumptions, each of
-which is either cohesive or crisp.  We write $\Gamma$ for a context
-consisting of assumptions $A[1]$ or $A[\dsd r]$. We write
-\addcrisp{\Gamma} for a context where each cohesive assumption $A[1]$
-has been promoted into a crisp assumption $A[\dsd r]$, and each
-$A[\dsd{r}]$ has been kept the same. We write \dropcoh{\Gamma} for a
-context where each cohesive assumption $A[1]$ has been dropped, and each
-crisp assumption $A[r]$ has been kept the same.  Then the
-multi-assumptioned rules are as follows:
+multiple assumption sequent, where each of the assumptions is either
+cohesive or crisp.  We write $\Gamma$ for a context consisting of
+assumptions $A[1]$ or $A[\dsd r]$. We write \addcrisp{\Gamma} for a
+context where each cohesive assumption $A[1]$ has been promoted into a
+crisp assumption $A[\dsd r]$, and each $A[\dsd{r}]$ has been kept the
+same. We write \dropcoh{\Gamma} for a context where each cohesive
+assumption $A[1]$ has been dropped, and each crisp assumption $A[r]$ has
+been kept the same.  Then the multi-assumptioned rules are as follows:
 \[
 \infer{{\Gamma} \vdash {P}}
       {P[1] \in \Gamma}
