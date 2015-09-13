@@ -268,13 +268,13 @@ map $F_\alpha A \to C$ or $A \to U_\alpha C$.\footnote{We could instead
   structures used here.}  However, taking the mixed-mode judgement as
 primitive makes for a nicer sequent calculus: $U$ and $F$ can be
 specified independently from each other, by left and right rules, in
-such a way that identity and cut (composition) are admissible.  While we
-do not consider focusing~\citep{andreoli92focus}, we conjecture that the
-connectives can be given the same focusing behavior as in
-\citep{reed09adjoint}: $F$ is positive and $U$ is negative (which,
-because limits are negative and colimits are positive, and like-polarity
-connectives compose together well, matches what left and right adjoints
-should preserve).
+such a way that identity and cut (composition) are admissible, and the
+subformula property holds.  While we do not consider
+focusing~\citep{andreoli92focus}, we conjecture that the connectives can
+be given the same focusing behavior as in \citep{reed09adjoint}: $F$ is
+positive and $U$ is negative (which, because limits are negative and
+colimits are positive, and like-polarity connectives compose together
+well, matches what left and right adjoints should preserve).
 
 The resulting logic has a good definition-to-theorem ratio: from 
 simple sequent calculus rules for $F$ and $U$, we can prove a variety of
@@ -2488,7 +2488,11 @@ Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
 are constructed directly; see our Agda formalization.
 \end{proof}
 
-For this mode theory, we can without loss of generality use the
+\subsubsection{Restricted Sequent Calculus I}
+
+The general sequent calculus rules allow choices of $\gamma$ and $e$ in
+\irl{FR} and \irl{UL}.  However, for this specific mode theory, no
+choices are necessary: we can without loss of generality use the
 following instances of the sequent calculus rules:
 \[
 \begin{array}{c}
@@ -2533,22 +2537,20 @@ following instances of the sequent calculus rules:
       {\seq{A}{\alpha}{B}}
 \end{array}
 \]
-The interesting restriction here is that the $\gamma$ and $e$ in all
-instances of \irl{UL} and \irl{FR} are fixed, whereas the general rules
-allow choices.  The intuitive reading of the restricted rules is as
-follows.  We have two kinds of assumptions, cohesive ($A[1_\dsd{c}]$)
-and \emph{crisp} ($A[\dsd r]$, \dsd{r} for cRisp).  A crisp assumption
-is the judgemental analogue of \Flat{A}---i.e. it means we know $A$ with
-retopologized with the discrete cohesion.  The \Flat{} left rule says
-that if we know \Flat{A} either crisply or cohesively, then we know $A$
-crisply.  The \Flat{A} right rule says that we can map into \Flat{B} by
-mapping into $B$, as long as the assumption is already crisp---this
-restriction prevents using a cohesive variable to map into a discrete
-type.  The \Sharp{} right rule says that if we are mapping into the
+The intuitive reading of the restricted rules is as follows.  We have
+two kinds of assumptions, cohesive ($A[1_\dsd{c}]$) and \emph{crisp}
+($A[\dsd r]$, \dsd{r} for cRisp).  A crisp assumption is the judgemental
+analogue of \Flat{A}---i.e. it means we know $A$ with retopologized with
+the discrete cohesion.  The \Flat{} left rule says that if we know
+\Flat{A} either crisply or cohesively, then we know $A$ crisply.  The
+\Flat{A} right rule says that we can map into \Flat{B} by mapping into
+$B$, as long as the assumption is already crisp---this restriction
+prevents using a cohesive variable to map into a discrete type.  The
+\Sharp{} right rule says that if we are mapping into the
 codiscretization of $B$, then we can make the assumption crisp.  The
 \Sharp{} left rule says that knowing the codiscretization crisply is the
 same as knowing $A$ crisply, because in either case we know $A$ under
-the discrete retopologization.  
+the discrete retopologization.
 
 \begin{theorem}
 For all $D : \seq{A}{\alpha}{B}$, there is a derivation $D' :
@@ -2649,7 +2651,107 @@ modality $[A]$ in \citet{pfenning01proofirrel,pfenning08proofirrel},
 though the left rule is different.\footnote{The $[A]$ type in that work
   is a product-preserving functor with no additional properties, so it
   cannot be mapped into adjoint logic in a straightforward way, because
-  all of our functors have more properties.}
+  all of our functors have more properties.}  Like in
+Figure~\ref{fig:coprod}, the left rule for coproducts would allow
+elimination on a coproduct in either mode:
+\[
+\infer{\Gamma \vdash {\coprd{A}{B}}}
+      {\Gamma \vdash {A}}
+\quad
+\infer{\Gamma \vdash {\coprd{A}{B}}}
+      {\Gamma \vdash {B}}
+\quad
+\infer{\Gamma, {(\coprd{A}{B})} [\alpha] \vdash {C}}
+      {\Gamma, {(\coprd{A}{B})} [\alpha], A [\alpha] \vdash {C} & 
+       \Gamma, {(\coprd{A}{B})} [\alpha], B [\alpha] \vdash {C} & 
+      }
+\]
+
+\subsection{Restricted Sequent Calculus II}
+
+All of the sequent calculi defined in this paper, including the above
+restricted sequent calculus for this mode theory, are well-behaved from
+a proof-theoretic point view, in that they have the subformula property
+and the identity and cut rules are admissible.  The cut admissibility
+algorithm takes certain left-commutative cuts as definitional
+equalities; e.g. we have
+\[
+\cut{(\Case{D_1}{D_2})}{E} =\Case{\cut{D_1}{E}}{\cut{D_2}{E}} \text{ if $E$ is not a right rule}\\
+\]
+However, these left-commutative cuts are not typically taken as
+definitional equalities in intensional dependent type theories, and
+adding them may actually be undesirable from a semantic point view,
+where we are interested in interpreting the type theory in as wide a
+class of models as possible.  From a sequent calculus point of view, a
+positive type in intensional type theory is treated more like a base
+type/atomic proposition that is equipped with an elimination constant of
+function type.  For example, for coproducts, the elimination constant is
+\[
+\dsd{case} : (A \to C) \to (B \to C) \to ((\coprd{A}{B}) \to C)
+\]  
+and this is often used via (iterated) implication-left:
+\[
+\infer{\Gamma \vdash D}
+      {\Gamma \vdash A \to C & 
+       \Gamma \vdash B \to C & 
+       \Gamma \vdash \coprd{A}{B} &
+       \Gamma, C \vdash D
+      }
+\]
+This builds in a cut from the result type of the case $C$ to the overall
+goal $D$, so the left-commutiative cuts do not need to be commuted into
+the case branches.  However, because the elimination constant is
+polymorphic in $C$, the sequent calculus no longer has the subformula
+property, and identity and cut are no longer admissible rules.  
+
+\newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
+
+
+We can give a sequent calculus in this style for the current mode theory:
+\[
+\begin{array}{l}
+\infer{\rseq{A}{\dsd r}{A}}{}
+\quad
+\infer{\rseq{A}{1}{A}}{}
+\quad
+\infer{\rseq A { \compo {\beta} {\alpha}} C}
+      {\rseq A {\beta} B &
+       \rseq B {\alpha} C}
+\\ \\
+\infer{\rseq{A}{\alpha}{\Sharp B}}
+      {\rseq{A}{\dsd r} B}
+\quad
+\infer{\rseq{\sharp A}{\dsd r} B}
+      {\rseq{A}{\dsd r}{B}}
+\quad
+\infer{\rseq{A}{\dsd r}{\Flat B}}
+      {\rseq{A}{\dsd r}{B}}
+\quad
+\infer{\rseq{\Flat A}{1}{C}}
+      {\rseq{A}{\dsd r}{C}}
+\\ \\
+\infer{\rseq{C}{\alpha}{\coprd{A}{B}}}
+      {\rseq{C}{\alpha}{A}} 
+\quad
+\infer{\rseq{C}{\alpha}{\coprd{A}{B}}}
+      {\rseq{C}{\alpha}{B}} 
+\quad
+\infer{\rseq{(\coprd{A}{B})}{1}{C}}
+      {\rseq{A}{1}{C} &
+        \rseq{B}{1}{C}}
+\end{array}
+\]
+On the first line, we have identity (for both crisp and cohesive
+variables) and cut as derivable rules; the identity rules could be
+restricted to positives and atoms and made admissible for negatives in
+order to force $\eta$-expansion.  The rules for \Sharp{} and the right
+rules for \Flat{} and \coprd{}{} are the same as in the previous sequent
+calculus.  The left rules are restricted to cohesive variables, and the
+left rule for coproducts binds cohesive variables in the branches.  This
+corresponds to treating \Flat{} and \coprd{}{} as positive atoms:
+
+Next step: normal forms...
+
 
 These rules, translated to natural deduction in the standard way, and
 extended to dependent types, are used in an investigation of cohesive
