@@ -2667,14 +2667,14 @@ elimination on a coproduct in either mode:
       }
 \]
 
-\subsection{Restricted Sequent Calculus II}
+\subsubsection{Restricted Sequent Calculus II}
 
-All of the sequent calculi defined in this paper, including the above
-restricted sequent calculus for this mode theory, are well-behaved from
-a proof-theoretic point view, in that they have the subformula property
-and the identity and cut rules are admissible.  The cut admissibility
-algorithm takes certain left-commutative cuts as definitional
-equalities; e.g. we have
+All of the sequent calculi that we have defined so far, including the
+above restricted sequent calculus for this mode theory, are well-behaved
+from a proof-theoretic point view, in that they have the subformula
+property and the identity and cut rules are admissible.  The cut
+admissibility algorithm takes certain left-commutative cuts as
+definitional equalities; e.g. we have
 \[
 \cut{(\Case{D_1}{D_2})}{E} =\Case{\cut{D_1}{E}}{\cut{D_2}{E}} \text{ if $E$ is not a right rule}\\
 \]
@@ -2746,18 +2746,160 @@ variables) and cut as derivable rules; the identity rules could be
 restricted to positives and atoms and made admissible for negatives in
 order to force $\eta$-expansion.  The rules for \Sharp{} and the right
 rules for \Flat{} and \coprd{}{} are the same as in the previous sequent
-calculus.  The left rules are restricted to cohesive variables, and the
-left rule for coproducts binds cohesive variables in the branches.  This
-corresponds to treating \Flat{} and \coprd{}{} as positive atoms:
+calculus.  The left rules for positives are restricted to cohesive
+variables, and the left rule for coproducts binds cohesive variables in
+the branches.  
 
-Next step: normal forms...
+These restrictions correspond to having an elimination constant of
+function type, and in the presence of cut and identity rules, suffice to
+derive the left rules for crisp assumptions.  For \Flat{A}, this is just
+precomposition with using a crisp variable:
+\[
+\infer{\rseq{\Flat{A}}{\dsd r}{C}}
+      {\rseq{\Flat{A}}{\dsd r}{\Flat A} &
+       \infer{\rseq{\Flat{A}}{1}{C}}
+             {\rseq{A}{\dsd r}{C}}}
+\] 
+The fact that this works is quite specific to this mode theory, where
+forgetting the {\dsd r}-ness of the assumption and then reintroducing it
+arrives at the same place, because of idempotence.  For \coprd{A}{B}, we
+need to use, \Sharp{} on the right to derive the more general rule:
+\[
+\infer{\rseq{\coprd{A}{B}}{\dsd r}{C}}
+      {\infer{\rseq{\coprd{A}{B}}{1}{\Sharp C}}
+             {\infer{\rseq{A}{1}{\Sharp{C}}}
+                    {\rseq{A}{\dsd r}{C}} &
+              \infer{\rseq{B}{1}{\Sharp{C}}}
+                    {\rseq{B}{\dsd r}{C}} &
+             } & 
+       \infer{\rseq{\Sharp C}{\dsd r}{C}}
+             {\infer{\rseq{C}{\dsd r}{C}}{}}
+      }
+\] 
+Because they are derivable, we could of course add these as additional
+rules, but this shows that it is not necessary to do so.  A motivation
+for not including them as primitives is that the analogous crisp
+elimination rules do not hold for all higher inductive types in cohesive
+homotopy type theory, so it is more uniform never to include them.
 
+This sequent calculus is sound and complete for the original one, and
+every \ap{}{}-equivalence-class of sequent derivations in our original
+calculus can be described using these rules:\footnote{ignoring or adding
+  rules for \F{1}{} and \U{1}{}}
+\begin{theorem}
+There are functions from \seq{A}{\alpha}{B} to \rseq{A}{\alpha}{B}
+and back, and the composite from \seq{A}{\alpha}{B} to itself is the
+identity up to \ap{}{}.  
+\end{theorem}
 
-These rules, translated to natural deduction in the standard way, and
-extended to dependent types, are used in an investigation of cohesive
-type theory in \citet{shulman15realcohesion}.  Here, we have given a
-proof theoretic explanation for them, as a particular mode theory in
-adjoint logic.
+\begin{proof}
+The proof is about 150 lines of Agda.  
+\end{proof}
+
+\newcommand\nd[3]{\ensuremath{#1 \, [ #2 ] \, \vdash^{\dsd{nd}} \, #3}}
+
+Next, we convert this sequent calculus to a single-variable natural
+deduction system:
+\[
+\begin{array}{c}
+\infer{\nd{A}{\dsd r}{A}}{}
+\quad
+\infer{\nd{A}{1}{A}}{}
+\\ \\
+\infer{\nd{A}{\alpha}{\Sharp B}}
+      {\nd{A}{\dsd r} B}
+\quad
+\infer{\nd{C}{\dsd r}{A}}
+      {\nd{C}{\dsd r}{\Sharp A}}
+\quad
+\infer{\nd{C}{\dsd r}{\Flat A}}
+      {\nd{C}{\dsd r}{A}}
+\quad
+\infer{\nd{C}{\alpha}{B}}
+      {\nd{C}{\alpha}{\Flat A} &
+        \nd{A}{r}{B}}
+\\ \\
+\infer{\nd{C}{\alpha}{\coprd{A}{B}}}
+      {\nd{C}{\alpha}{A}} 
+\quad
+\infer{\nd{C}{\alpha}{\coprd{A}{B}}}
+      {\nd{C}{\alpha}{B}} 
+\quad
+\infer{\nd{C}{\alpha}{D}}
+      {\nd{C}{\alpha}{\coprd{A}{B}} &
+       \nd{A}{1}{D} &
+       \nd{A}{1}{D}}
+\end{array}
+\]
+
+The cut/substitution rule
+\[
+\infer{\rseq A { \compo {\beta} {\alpha}} C}
+      {\rseq A {\beta} B &
+       \rseq B {\alpha} C}
+\]
+is not included, but it is admissible, because each rule allows for
+precomposition.  
+
+The natural deduction system is also sound and complete for the original
+one, and the the proof factors through the above sequent calculus:
+\begin{theorem}
+There are functions 
+$(\seq{A}{\alpha}{B}) \leftrightarrow (\rseq{A}{\alpha}{B}) \leftrightarrow (\nd{A}{\alpha}{B})$
+and back, and the composite from \seq{A}{\alpha}{B} to itself is the
+identity up to \ap{}{}.  
+\end{theorem}
+
+\begin{proof}
+The proof is about 150 lines of Agda.  
+\end{proof}
+
+We can generalize these natural deduction rules to multiple assumptions
+as follows, writing $\Delta$ for the crisp assumptions and $\Gamma$
+for the cohesvive assumptions:
+\[
+\begin{array}{c}
+\infer{\Delta;\Gamma \vdash A}
+      {A \in \Gamma}
+\quad
+\infer{\Delta;\Gamma \vdash A}
+      {A \in \Delta}
+\\ \\
+\infer{\Delta;\Gamma \vdash {\Sharp B}}
+      {\Delta,\Gamma; \cdot \vdash B}
+\quad
+\infer{\Delta;\Gamma \vdash A}
+      {\Delta;\cdot \vdash {\Sharp A}}
+\quad
+\infer{\Delta; \Gamma \vdash {\Flat A}}
+      {\Delta; \cdot \vdash {A}}
+\quad
+\infer{\Delta; \Gamma \vdash B}
+      {\Delta; \Gamma \vdash {\Flat A} &
+        \Delta,A; \Gamma \vdash B}
+\\ \\
+\infer{\Delta;\Gamma \vdash {\coprd{A}{B}}}
+      {\Delta;\Gamma \vdash {A}} 
+\quad
+\infer{\Delta;\Gamma \vdash {\coprd{A}{B}}}
+      {\Delta;\Gamma \vdash {B}} 
+\quad
+\infer{\Delta;\Gamma \vdash {C}}
+      {\Delta;\Gamma \vdash {\coprd{A}{B}} &
+       \Delta;\Gamma,A \vdash {C} &
+       \Delta;\Gamma,B \vdash {C}}
+\end{array}
+\]
+These rules, generalized to dependent types, are exactly the rules used
+in an investigation of cohesive type theory in
+\citet{shulman15realcohesion}.  Here, we have given a proof theoretic
+explanation for them, by connecting them to a particular mode theory in
+adjoint logic.  The sequent calculus and natural deduction systems
+defined in this section allow arbitrary cuts/non-normal forms; a next
+step is to investigate normal forms for the equational theory given by
+only the $\beta$ rules for positives---the translation to the general
+adjoint logic sequent calculus normalizes too much, because it also
+performs left-commutative cuts.
 
 \section{Conclusion}
 
