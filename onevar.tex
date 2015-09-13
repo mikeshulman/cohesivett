@@ -303,7 +303,7 @@ semantics that we are ultimately interested in.  More precisely, for any
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
 categories, adjunctions, and morphisms of adjunctions (conjugate pairs
 of natural transformations).  By $S$, each mode determines a 1-category,
-and derivations in the logic are interprered as morphisms in these
+and derivations in the logic are interpreted as morphisms in these
 categories.  The action of $S$ on 1- and 2-cells is used to interpret
 $F$ and $U$.  We show that the syntax forms such a pseudofunctor, and
 conjecture that the syntax is initial in some category or 2-category of
@@ -863,7 +863,7 @@ laws.
 The final rules say that left rules of negatives and right rules of
 positives commute. These are needed to prove the left-commutative cut
 equations in the case where $E$ is a right rule, because we chose to
-give right-commutative cuts precedence defintionally (the full
+give right-commutative cuts precedence definitionally (the full
 left-commutative equations seem necessary for proving some of the
 theorems we want to prove below).  For $U$ and $F$, we have
 \[
@@ -958,7 +958,7 @@ and \tr{e}{-} commutes with cut:
 \newcommand\rtol[2]{\ensuremath{{#1^{\vartriangleleft_{#2}}}}}
 
 In this section, we investigate some constructions on $F$ and $U$ that
-hold for any mode specfication $\M$.  Taken together, the first set of
+hold for any mode specification $\M$.  Taken together, the first set of
 constructions shows that the syntax forms a pseudofunctor $\M \to \Adj$,
 where $\Adj$ is the 2-category of categories, adjunctions, and conjugate
 natural transformations.  This is a standard way of proving logical
@@ -999,7 +999,7 @@ $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
   H_0(A)$.  
 
 \item For two functors $L,R : p \to q$, an adjunction $L \la R$ (using
-  the natural-bijection-of-hom-sets defintion) consists of functions
+  the natural-bijection-of-hom-sets definition) consists of functions
   $\ltor{-}{} : (\seq{L_0(A)}{1}{B}) \, \to \, (\seq{A}{1}{R_0(B)})$ and
   $\rtol{-}{} : (\seq{A}{1}{R_0(B)}) \, \to \, (\seq{L_0(A)}{1}{B})$ which are
   mutually inverse and such that \ltor{-}{} is natural in $A$ and $B$: for
@@ -1094,7 +1094,7 @@ equations to verify---inverses, naturality, conjugation, and
 coherence---but they are all true for \ap{}{}.
 \end{proof}
 
-Next, we summarize some expected cosntructions on $F_\alpha \la
+Next, we summarize some expected constructions on $F_\alpha \la
 U_\alpha$.  Of course, these standard facts are corollaries of the
 above; the point is that we can construct them directly using the rules of the logic.
 
@@ -1517,7 +1517,7 @@ it's equal to
           \inv{\semUcomp(\alpha,1)})}{\alpha}
           )}{\alpha}
 \]
-and cancelling \semltor{{\semrtol{-}{\alpha}}}{\alpha} gives 
+and canceling \semltor{{\semrtol{-}{\alpha}}}{\alpha} gives 
 \[
 \semFone;\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)}
 \]
@@ -1525,7 +1525,7 @@ so it suffices to show
 \[
 \semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)} = 1
 \]
-But by congutation $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ and by
+But by conjugation $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ and by
 coherence $\inv{\semUcomp(\alpha,1)} =_{\arrow{}{\semU{\alpha}{\sem{A}}}{\semU{\alpha}{\semU{1}{\sem{A}}}}} \semU{\alpha}{\semUone}$
 so this is true.
 
@@ -1597,7 +1597,7 @@ collapsing inverses gives the result.
 
 After unfolding the definitions on the left-hand side, and using
 Lemma~\ref{lem:semtr} and the IH on the right-hand side, 
-the calculuation consists of using naturality of $\inv{\semFcomp_A}$ in $A$ to
+the calculation consists of using naturality of $\inv{\semFcomp_A}$ in $A$ to
 show that $\semF{\beta'}{\semF{\alpha}{\sem
     D}};\inv{\semFcomp(\alpha,\beta')} =
 \inv{\semFcomp(\alpha,\beta')};\semF{\compo \alpha \beta'}{\sem{D}}$,
@@ -1792,7 +1792,7 @@ Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
 = \sem{D}
 \]
 This is true because $\semFo{1} = 1$ and because
-$\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{\semFone}$, so cancelling
+$\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{\semFone}$, so canceling
 identities and inverses gives the result.  
 
 \item $\sem{D} = \sem{\UR {\cut{D}{(\UL 1 1 {\ident{A}})}}}$
@@ -1804,26 +1804,26 @@ Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
 \semltor{(\inv{\semFcomp(\beta,\alpha)};\semFcomp(\beta,\alpha);\semF{\alpha}{\sem D};\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
 = \sem{D}
 \]
-Cancelling the $\semFcomp(\beta,\alpha)$ and using naturality of
+Canceling the $\semFcomp(\beta,\alpha)$ and using naturality of
 \semltor{-}{\alpha}, this is equal to
 \[
 \sem{D};\semltor{(\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
 \]
-so it suffices to show that the later is the identity.  Cancelling the
+so it suffices to show that the later is the identity.  Canceling the
 adjunction round-trip and $\semUo{1}$, it is equal to
 \[
 \semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
 \]
 By conjugation for \semFone, $\semrtol{\semFone}{1} = \semUone$, and by
 the associativity coherence, $\inv{\semUcomp(\alpha,1)} =
-\semU{\alpha}{\semUone}$, so cancelling inverses gives the result.  
+\semU{\alpha}{\semUone}$, so canceling inverses gives the result.  
 
 \item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D}}$
 when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
 and $D : \seq{C}{\gamma'}{A}$
 and $e_2 : \tc{\gamma'}{\gamma}$.
 
-After expanding the definitons and using Lemma~\ref{lem:semtr}, we need
+After expanding the definitions and using Lemma~\ref{lem:semtr}, we need
 to show
 \[
 \semFo{e};\semFcomp(\gamma,\alpha);\semF{\alpha}{\semFo{e_2}};\semF{\alpha}{\sem{D}}
@@ -2444,6 +2444,7 @@ square for $j$.
 \end{proof}
 
 \subsection{Spatial Type Theory}
+\label{sec:idempotent}
 
 The above mode theory allows us to work with cohesive types (which have
 mode \dsd{c}) and non-cohesive types (which have mode \dsd{s}).
@@ -2699,7 +2700,7 @@ and this is often used via (iterated) implication-left:
       }
 \]
 This builds in a cut from the result type of the case $C$ to the overall
-goal $D$, so the left-commutiative cuts do not need to be commuted into
+goal $D$, so the left-commutative cuts do not need to be commuted into
 the case branches.  However, because the elimination constant is
 polymorphic in $C$, the sequent calculus no longer has the subformula
 property, and identity and cut are no longer admissible rules.  
@@ -2856,7 +2857,7 @@ The proof is about 150 lines of Agda.
 
 We can generalize these natural deduction rules to multiple assumptions
 as follows, writing $\Delta$ for the crisp assumptions and $\Gamma$
-for the cohesvive assumptions:
+for the cohesive assumptions:
 \[
 \begin{array}{c}
 \infer{\Delta;\Gamma \vdash A}
@@ -2903,8 +2904,38 @@ performs left-commutative cuts.
 
 \section{Conclusion}
 
-Discuss \sh{} here?
-
+In this paper, we have defined an adjoint logic that allows multiple
+different adjunctions between the same categories, shown soundness and
+completeness of the logic in pseudofunctors into the 2-category of
+adjunctions, and used some specific mode theories to model adjoint
+triples and the $\Flat{}$ and $\Sharp{}$ modalities of axiomatic
+cohesion.  While we have considered only a single-hypothesis sequent
+through most of the paper, we discussed a generalization to multiple
+hypotheses for the specific mode theory in Section~\ref{sec:idempotent},
+and the generalization of these rules to dependent types is discussed in
+\citet{shulman15realcohesion}.  One area for future work is to extend
+the general adjoint logic with multiple assumptions and dependent types.
+This would provide a context for investigating the shape modality $\sh{}
+\la \Flat{}$.  We could certainly give a mode theory with one mode and
+$\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta
+\la \Gamma \la \nabla$, but it remains to be investigated whether this
+can provide the right properties for \sh{} beyond adjointness.  On the
+one hand, too much might be true: \sh{} does not preserve identity
+types, and the general dependently typed rules for $F$ might force it
+to. On the other, too little might be true: for applications such as
+relating the shape of the topological circle to the homotopical circle,
+extra properties are needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of
+these issues can be addressed as in \citep{shulman15realcohesion} by
+treating \sh{} not as an abstract adjoint, of the kind we can represent
+using the mode 2-category, but as a defined type (specifically, a higher
+inductive), which among other things has the property that it is adjoint
+to $\Flat{}$ (adjoint logic / spatial type theory is still essential for
+representing $\Flat{}$ and $\Sharp{}$ themselves).  Another area for
+future work is to consider $\infty$-category semantics, rather than the
+1-categorical semantics of derivations that we have considered here.  A
+final area for future work is to investigate applications of other mode
+theories in our generalized adjoint logic, beyond the motivating
+example of cohesive homotopy type theory.
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { %% \small
