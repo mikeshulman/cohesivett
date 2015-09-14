@@ -109,20 +109,21 @@ Mellon University.
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
 (2009) to allow multiple different adjunctions between the same
-categories.  An motivating application is giving a proof-theoretic
-investigation cohesive homotopy type theory, which integrates the
-synthetic homotopy theory of homotopy type theory with the synthetic
-topology of Lawvere's axiomatic cohesion.  Whereas Reed's calculus is
-parametrizd by a preorder of modes, we generalize this to a 2-category
-of modes, where each mode represents a category, each mode morphism
-represents an adjunction, and each mode 2-morphism represents a morphism
-of adjunctions.  We give a sequent calculus, show that identity and cut
-are admissible, and define an equational theory on proofs.  We show that
-this syntax is sound and complete for pseudofunctors from the mode
-2-category to the 2-category of categories and adjunctions.  Finally, we
-investigate the consequences of some specific mode 2-categories, such as
-a theory giving rise to an adjoint triple, and a theory corresponding to
-the rules for cohesive homotopy type theory in Shulman (2015).
+categories.  A motivating application is investigating a proof-theory
+for cohesive homotopy type theory, which integrates the synthetic
+homotopy theory of homotopy type theory with the synthetic topology of
+Lawvere's axiomatic cohesion.  
+%% Whereas Reed's calculus is parametrizd by
+%% a preorder of modes, we generalize this to a 2-category of modes, where
+%% each mode represents a category, each mode morphism represents an
+%% adjunction, and each mode 2-morphism represents a morphism of
+%% adjunctions.  We give a sequent calculus, show that identity and cut are
+%% admissible, and define an equational theory on proofs.  We show that
+%% this syntax is sound and complete for pseudofunctors from the mode
+%% 2-category to the 2-category of categories and adjunctions.  Finally, we
+%% investigate the consequences of some specific mode 2-categories, such as
+%% a theory giving rise to an adjoint triple, and a theory corresponding to
+%% the rules for cohesive homotopy type theory in Shulman (2015).
 \end{abstract}
 
 \section{Introduction}
@@ -314,7 +315,6 @@ additional conditions for axiomatic cohesion.
 We make a few simplifying restrictions for this paper. First, we
 consider only single-hypothesis, single-conclusion sequents, deferring
 an investigation of products and exponentials to future work.
-
 Second, on the semantic side, we consider only 1-categorical semantics
 of the derivations of the logic, rather than the $\infty$-groupoid
 semantics that we are ultimately interested in.  More precisely, for any
@@ -340,6 +340,7 @@ interpreted by actual equality of morphisms in the semantics above, but
 we intend some of these rules to be propositional equalities in an eventual
 adjoint type theory.
 
+%% FIXME
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
 derivations.  In Section~\ref{sec:constructions}, we summarize some of
@@ -351,9 +352,10 @@ Section~\ref{sec:triple}, we examine some specific mode specifications
 for adjoint triples, and discuss the relationship to the rules for
 spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
-in Agda~\citep{norell07thesis}, using a syntactic representation of the
-sequent calculus and the equational theory as inductive
-families.\footnote{See \url{http://www.github.com/dlicata335/hott-agda}.}
+in Agda~\citep{norell07thesis}.\footnote{See
+  \url{http://www.github.com/dlicata335/hott-agda}.}
+Full definitions and proofs are available in the extended version of
+this paper.\footnote{Available from \url{http://dlicata.web.wesleyan.edu/pubs.html}.} 
 
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
@@ -374,10 +376,10 @@ $\comph{e_1}{e_2} :
 for 2-cells say that \compv{}{} is associative with unit $1_\alpha$ for
 any $\alpha$, that \comph{}{} is associative with unit $1_1$, and that
 the interchange law $\comph{(\compv{e_1}{e_2})}{(\compv{e_3}{e_4})} =
-\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  For convenience,
-we think of the mode category as being fixed at the outset, and the
-syntax and judgements of the logic as being indexed by the actual
-semantic objects/morphisms/2-morphisms of this category
+\compv{(\comph{e_1}{e_3})}{(\comph{e_2}{e_4})}$ holds.  We think of the
+mode category as being fixed at the outset, and the syntax and
+judgements of the logic as being indexed by the 0/1/2-cells of this
+category.
 %% ; therefore,
 %% equal morphisms in the mode 2-category automatically determine equal
 %% propositions, judgements, and derivations.
@@ -386,35 +388,34 @@ semantic objects/morphisms/2-morphisms of this category
 %% a mode theory where equality of morphisms or 2-morphisms were
 %% undecidable.
 
-Each object $p$ of the mode category determines a category, and objects
-of that category are types; the syntactic judgement \wftp{A}{p} will
-mean that $A$ is an object of the category $p$.  A morphism $\alpha : q
-\ge p$ in the mode category determines an adjunction between categories
-$p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {} : p \to q$;
-syntactically, the action on objects is given by $\wftp{\F \alpha A}{p}$
-when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We
-write $P$ for atomic propositions, each of which has a designated mode.
-To add additional structure to a category or to all categories, we can
-add rules for additional connectives; for example, a rule
-\wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric in
-$p$) says that any category $p$ has a coproduct type constructor.
+Each object $p$ of the mode category determines a category, and types
+represent objects of that category; the syntactic judgement \wftp{A}{p}
+will mean that $A$ is an object of the category $p$.  A morphism $\alpha
+: q \ge p$ in the mode category determines an adjunction between
+categories $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {}
+: p \to q$; syntactically, the action on objects is given by $\wftp{\F
+  \alpha A}{p}$ when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when
+$\wftp{A}{p}$.  We write $P$ for atomic propositions, each of which has
+a designated mode.  To add additional structure to a category or to all
+categories, we can add rules for additional connectives; for example, a
+rule \wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric
+in $p$) says that any category $p$ has a coproduct type constructor.
 
 The sequent calculus judgement has the form \seq A \alpha C where
-\wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  That is, the
-judgement represents a map from an object of some category $q$ to an
-object of another category $p$ along some adjunction $\F \alpha {} \la
-\U \alpha {}$.  Semantically, this mixed-category map can be interpreted
+\wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  The judgement
+represents a map from an object of some category $q$ to an object of
+another category $p$ along some adjunction $\F \alpha {} \la \U \alpha
+{}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
   \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
-\wftp{A}{p}.  
-
-The rules for atomic propositions and for $U$ and $F$ are as follows:
+\wftp{A}{p}.  The rules for atomic propositions and for $U$ and $F$ are
+as follows:
 \[
 \begin{array}{c}
 \infer[\irl{hyp}]
       {\seq P \alpha P}
       {\tc 1 \alpha}
-\\ \\
+\quad
 \infer[\irl{FL}]
       {\seq {\F {\alpha : r \ge q} A_r} {\beta : q \ge p}{C_p}}
       {\seq {A_r} {\compo{\alpha}{\beta}} {C_p}
@@ -436,7 +437,6 @@ The rules for atomic propositions and for $U$ and $F$ are as follows:
       {\seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
 \end{array}
 \]
-
 The rules for other connectives do not change $\alpha$; for example, see
 the rules for coproducts in Figure~\ref{fig:coprod}.
 
@@ -487,8 +487,8 @@ the rules for coproducts in Figure~\ref{fig:coprod}.
 %% \end{array}
 %% \]
 
-\caption{Sequent calculus for coproducts; see long version
-for identity, cut, and equational theory}
+\caption{Rules for coproducts; see extended version for identity, cut,
+  and equational theory}
 \label{fig:coprod}
 \end{figure}
 
@@ -517,28 +517,52 @@ different morphisms be different, it is important that we choose not
 just any $\gamma$, but one where the triangle that it forms with
 $\alpha$ and $\beta$ is filled by a 2-cell, which is the second premise
 of the rule.  The direction of the 2-cell, and the fact that it may not
-be invertible, are chosen to match the intended semantics and permit the
-proofs of the desired admissible rules.  The case for \irl{UR} is dual.
+be invertible, are chosen to match the intended semantics.  The case for
+\irl{UR} is dual.
 
 Because we are interested not only in provability, but also in the
 equational theory of proofs in this logic, one might think the next step
 would be to annotate the sequent judgement with a proof term, writing
 e.g. $x : A [ \alpha ] \vdash M : B$.  However, the proof terms $M$
 would have exactly the same structure as the derivations of this typing
-judgement.\footnote{This is not the case in a dependently typed language
-  that have a judgemental equality conversion rule in the derivations
-  but not the terms.} so we instead use the derivations themselves as
-the proof terms.  This corresponds to an ``intrinsic representation'' in
-Agda.  We sometimes write $D : \seq{A}{\alpha}{B}$ to indicate
-``typing'' in the metalanguage; i.e. this should be read ``$D$ is a
-derivation tree of the judgement \seq{A}{\alpha}{B}.''
+judgement, so we instead use the derivations themselves as the proof
+terms.  This corresponds to an ``intrinsic representation'' in Agda.  We
+sometimes write $D : \seq{A}{\alpha}{B}$ to indicate ``typing'' in the
+metalanguage; i.e. this should be read ``$D$ is a derivation tree of the
+judgement \seq{A}{\alpha}{B}.''
 
-We now give some examples to illustrate the rules; these examples and
-many more like them are in the companion Agda code.  
+We now give some examples in Figure~\ref{fig:examples}; these examples
+and many more like them are in the companion Agda code.  First, we give
+the functorial action of $F$ on maps ($U$ is similar)---because \M\/ is
+a strict 2-category, the identity 2-cell has type \tc{\compo{1_q}
+  \alpha}{\compo {\alpha} {1_p}}.  Next, the composites $FU$ and $UF$
+should be a comonad and a monad respectively; define $\Bx \alpha A := \F
+\alpha (\U \alpha A)$ where $\alpha : q \ge p$.  As an example of the
+(co)monad structure, the comonad comultiplication is defined in the
+figure.  An advantage of using a cut-free sequent calculus is that we
+can observe some non-provabilities: for example, there is not in general
+a map \seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must
+begin with \irl{FR}, but to apply this rule, we need a $\gamma : p \ge
+q$ and a 2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.
+Next, we give one half of the isomorphism showing that $F$ preserves
+coproducts.  The key idea is that we can apply the left rule for $F$
+first, and then case-analyze the $\coprd{P}{Q}$, before choosing between
+\irl{Inl} and \irl{Inr} on the right; this direction of map doesn't
+exist for \U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$
+cannot be applied until after applying \irl{UR}.  Next, for identity and
+composition of 1-cells, an obvious question is the relationship between
+$\F 1 A$ and $\U 1 A$ and $A$, between $\F {\compo{\beta}{\alpha}} A$
+and $\F \alpha {(\F \beta A)}$, and between $\U {\compo{\beta}{\alpha}}
+A$ and $\U \beta {(\U \alpha A)}$.  We do not have definitional
+equalities of types, but the types in each group are isomorphic (in a
+sense that will be made precise below).  For example, the maps for $F$
+on compositions are in the figure.  As a final example, for every 2-cell
+$e : \tc \alpha \beta$, we have derivations of \seq{\F \beta P}{1}{\F
+  \alpha P} and \seq{\U \alpha P}{1}{\U \beta P} that are an adjunction
+morphism between $F_\beta \la U_\beta$ and $F_\alpha \la U_\alpha$.  
 
-\paragraph{Example: Functoriality} We expect $F$ and $U$ to be functors;
-the functorial action of $F$ on terms is derived as follows. Given
-$\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$, we have
+\begin{figure}
+Functoriality, given $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$:
 \[
 \infer[\irl{FL}]
       {\seq{\F \alpha A}{1_p}{\F \alpha B}}
@@ -546,23 +570,9 @@ $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$, we have
         {\seq{A}{\compo{\alpha} {1_p}}{\F \alpha B}}
         {\infer{1_q : q \ge q}{} & \infer{1 : \tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}}{} & D : \seq{A}{1_q}{B}}}
 \]
-Because \M\/ is a strict 2-category, the identity 2-cell has type 
-\tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.    
 
-\paragraph{Example: Comonad} Define $\Bx \alpha A := \F \alpha (\U
-\alpha A)$ where $\alpha : q \ge p$.  For each $\alpha$, \Bx \alpha A is
-a comonad, and dually, $\Crc \alpha A := \U \alpha (\F \alpha A)$ is a
-monad.  For example, the comonad comultiplication is defined as follows:
-
+Comonad comultiplication:
 \[
-\begin{small}
-\begin{array}{c}
-%% \infer[\irl{FL}]{\seq{\Bx{\alpha}{P}}{1}{P}}
-%%       {\infer[\irl{UL}]
-%%         {\seq{\U \alpha P}{\alpha}{A}}
-%%         {\infer{1 : p \ge p}{} & \infer{1 : \tc{\compo{\alpha}{1_p}}{\alpha}}{} &
-%%           \infer[\irl{hyp}]{\seq{P}{1}{P}}{\infer{1 : \tc{1}{1}}{}}  }}
-%% \\
 \infer[\irl{FL}]{\seq{\Bx{\alpha}{P}}{1}{\Bx{\alpha}{\Bx{\alpha}{P}}}}
       {\infer[\irl{FR}]{\seq{\U{\alpha}{P}}{\alpha}{\Bx{\alpha}{\Bx{\alpha}{P}}}}
         {\infer{1 : q \ge q}{} & 
@@ -577,29 +587,9 @@ monad.  For example, the comonad comultiplication is defined as follows:
                            {\infer{1 : p \ge p}{} & \infer{1 : \tc {\alpha} {\alpha}}{} &
                              \infer[\irl{hyp}]{\seq{P}{1}{P}}{\infer{\tc{1}{1}}{}}
                          }}}}}}
-\end{array}
-\end{small}
 \]
-%
-The same derivation works for an arbitrary type $A$ if we replace the
-top-right derivations of \seq{P}{1}{P} by the admissible identity
-principle \seq{A}{1}{A}, defined below (indeed, we can always substitute
-an arbitrary type for an atomic proposition).  
-%% Using a proof term
-%% notation for derivations, we write the counit as \FL{\UL{1}{1}{\hyp{1}}}
-%% and the comultiplication as
-%% \FL{\FR{1}{1}{\UR{\FR{1}{1}{\UR{\UL{1}{1}{\hyp{1}}}}}}}.
-An advantage of using a cut-free sequent calculus is that we can observe
-some non-provabilities: for example, there is not in general a map
-\seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must begin with
-\irl{FR}, but to apply this rule, we need a $\gamma : p \ge q$ and a
-2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.
 
-
-
-\paragraph{Example: $F$ preserves coproducts} As another example, we show a map
-from \F \alpha {(\coprd{P}{Q})} to \coprd{\F \alpha P}{\F \alpha Q},
-which is part of an isomorphism:
+$F$ preserves coproducts (one half of a natural isomorphism):
 \[
 \infer[\irl{FL}]{\seq{\F \alpha {(\coprd{P}{Q})}}{1}{\coprd{\F \alpha P}{\F \alpha Q}}}
       {\infer[\irl{Case}]
@@ -617,33 +607,9 @@ which is part of an isomorphism:
                  {\infer{1 : q \ge q}{} & \infer{1 : \tc{\alpha}{\alpha}}{} & \infer[\irl{\hyp 1}]{\seq{Q}{1}{Q}}{}}}
          }}
 \]
-The key idea is that we can apply the left rule for $F$ first, and then
-case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
-\irl{Inr} on the right; this direction of map doesn't exist for
-\U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
-applied until after applying \irl{UR}.  
 
-\paragraph{Example: $F/U$ on identity and composition}
 
-For identity and composition of 1-cells, an obvious question is the
-relationship between $\F 1 A$ and $\U 1 A$ and $A$, between $\F
-{\compo{\beta}{\alpha}} A$ and $\F \alpha {(\F \beta A)}$, and between $\U
-{\compo{\beta}{\alpha}} A$ and $\U \beta {(\U \alpha A)}$.
-We do not have definitional equalities of types, but the types in each
-group are isomorphic (in a sense that will be made precise below).  
-For example, the maps for $F$ on compositions are as follows:
-
-%% \[
-%% \infer[\irl{FL}]
-%%       {\seq{\F 1 P}{1}{P}}
-%%       {\infer[\hyp 1]{\seq{P}{\compo 1 1}{P}}{}}
-%% \qquad
-%% \infer[\irl{FR}]
-%%       {\seq{P}{1}{\F 1 P}}
-%%       { \infer{1 : p \ge p}{} &
-%%         \infer{1 : \tc{\compo{1}{1}}{1}}{} &
-%%         \infer[\hyp 1]{\seq{P}{1}{P}}{}}
-%% \]
+$F$ on $\compo{\beta}{\alpha}$:
 \[
 \infer[\irl{FL}]
       {\seq{\F {\compo{\beta}{\alpha}} P}{1}{\F \alpha {(\F \beta P)}}}
@@ -671,9 +637,7 @@ For example, the maps for $F$ on compositions are as follows:
                }}}
 \]
 
-\paragraph{Example: $F/U$ on 2-cells}
-For every 2-cell $e : \tc \alpha \beta$, we have derivations of \seq{\F
-  \beta P}{1}{\F \alpha P} and \seq{\U \alpha P}{1}{\U \beta P}.
+$F/U$ on 2-cells:
 \[
 \infer[\irl{FL}]
       {\seq{\F \beta P}{1}{\F \alpha P}}
@@ -686,9 +650,10 @@ For every 2-cell $e : \tc \alpha \beta$, we have derivations of \seq{\F
              {\seq{\U \alpha P}{\beta}{P}}
              { \infer{1 : p \ge p}{} & e : \tc{\compo{\alpha}{1}}{\beta} & \infer[\hyp 1]{\seq{P}{1}{P}}{}}}
 \]
-These derivations determine an adjunction morphism between $F_\beta \la
-U_\beta$ and $F_\alpha \la U_\alpha$.  The other directions
-(e.g. $\seq{\F \alpha P}{1}{\F \beta P}$) are not provable in general.
+
+\caption{Some examples}
+\label{fig:examples}
+\end{figure}
 
 \subsection{Admissible Rules}
 
@@ -812,10 +777,9 @@ arbitrarily by saying that right-commutative cuts take precedence.
 Using the equational theory below, we will be able to prove the
 unrestricted left-commutative rules.
 
-\paragraph{Example: Adjunction} As an example, we give one of the maps from the
-bijection-on-hom-sets adjunction for $F$ and $U$: given $\alpha : q \ge
-p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
-{\seq{A}{1}{\U \alpha B}}:
+As an example, we give one of the maps from the bijection-on-hom-sets
+adjunction for $F$ and $U$: given $\alpha : q \ge p$ we can transform $D
+: \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U \alpha B}}:
 \[
 \infer[\irl{UR}]{\seq{A}{1}{\U \alpha B}}
       {\infer[\irl{cut}]
