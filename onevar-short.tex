@@ -342,22 +342,19 @@ interpreted by actual equality of morphisms in the semantics above, but
 we intend some of these rules to be propositional equalities in an eventual
 adjoint type theory.
 
-%% FIXME
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
-derivations.  In Section~\ref{sec:constructions}, we summarize some of
-the constructions that are possible in the logic for any mode
-specification \M, including showing that the syntax determines a
-pseudofunctor $\M \to \Adj$.  In Section~\ref{sec:semantics}, we
-describe the 1-categorical semantics of the logic.  Finally, in
+derivations.  In Section~\ref{sec:semantics}, discuss the semantics of
+the logic in pseudofunctors $\M \to \Adj$.  Finally, in
 Section~\ref{sec:triple}, we examine some specific mode specifications
 for adjoint triples, and discuss the relationship to the rules for
 spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
 in Agda~\citep{norell07thesis}.\footnote{See
-  \url{http://www.github.com/dlicata335/hott-agda}.}
-Full definitions and proofs are available in the extended version of
-this paper.\footnote{Available from \url{http://dlicata.web.wesleyan.edu/pubs.html}.} 
+  \url{http://www.github.com/dlicata335/hott-agda}.}  Full definitions
+and proofs are available in the extended version of this
+paper.\footnote{Available from
+  \url{http://dlicata.web.wesleyan.edu/pubs.html}.}
 
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
@@ -534,22 +531,23 @@ sometimes write $D : \seq{A}{\alpha}{B}$ to indicate ``typing'' in the
 metalanguage; i.e. this should be read ``$D$ is a derivation tree of the
 judgement \seq{A}{\alpha}{B}.''
 
-We now give some examples in Figure~\ref{fig:examples}; these examples
-and many more like them are in the companion Agda code.  First, we give
-the functorial action of $F$ on maps ($U$ is similar)---because \M\/ is
-a strict 2-category, the identity 2-cell has type \tc{\compo{1_q}
-  \alpha}{\compo {\alpha} {1_p}}.  Next, the composites $FU$ and $UF$
-should be a comonad and a monad respectively; define $\Bx \alpha A := \F
-\alpha (\U \alpha A)$ and $\Crc{\alpha} := \F{\alpha}{(\U{\alpha}{A})}$
-for any $\alpha : q \ge p$.  As an example of the (co)monad structure,
-the comonad comultiplication is defined in the figure.  An advantage of
-using a cut-free sequent calculus is that we can observe some
-non-provabilities: for example, there is not in general a map
-\seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must begin with
-\irl{FR}, but to apply this rule, we need a $\gamma : p \ge q$ and a
-2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.  Next, we
-give one half of the isomorphism showing that $F$ preserves coproducts.
-The key idea is that we can apply the left rule for $F$ first, and then
+We give some examples in Figure~\ref{fig:examples}; these examples and
+many more like them are in the companion Agda code.  First, we give the
+functorial action of $F$ on maps ($U$ is similar); note that because
+\M\/ is a strict 2-category, the identity 2-cell has type
+\tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.  Next, the composites
+$FU$ and $UF$ should be a comonad and a monad respectively; define $\Bx
+\alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha} :=
+\F{\alpha}{(\U{\alpha}{A})}$ for any $\alpha : q \ge p$.  As an example
+of the (co)monad structure, the comonad comultiplication is defined in
+the figure.  An advantage of using a cut-free sequent calculus is that
+we can observe some non-provabilities.  For example, there is not in
+general a map \seq{P}{1_p}{\Bx{\alpha}{P}} (unit for the comonad): by
+inversion, a derivation must begin with \irl{FR}, but to apply this
+rule, we need a $\gamma : p \ge q$ and a 2-cell
+$\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.  Next, we give
+one half of the isomorphism showing that $F$ preserves coproducts.  The
+key idea is that we can apply the left rule for $F$ first, and then
 case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
 \irl{Inr} on the right; this direction of map doesn't exist for
 \U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
@@ -776,9 +774,10 @@ precedence to right-commutative cuts definitionally, but using the
 equational theory below, we will be able to prove the general
 left-commutative rules.
 
-As an example, we give one of the maps from the bijection-on-hom-sets
-adjunction for $F$ and $U$: given $\alpha : q \ge p$ we can transform $D
-: \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U \alpha B}}:
+As an example using identity and cut, we give one of the maps from the
+bijection-on-hom-sets adjunction for $F$ and $U$: given $\alpha : q \ge
+p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U
+    \alpha B}}:
 \[
 \infer[\irl{UR}]{\seq{A}{1}{\U \alpha B}}
       {\infer[\irl{cut}]
@@ -844,17 +843,13 @@ laws.
 
 The final rules say that left rules of negatives and right rules of
 positives commute. These are needed to prove the left-commutative cut
-equations in the case where $E$ is a right rule, because we chose to
-give right-commutative cuts precedence definitionally (the full
-left-commutative equations seem necessary for proving some of the
-theorems we want to prove below).  For $U$ and $F$, we have
+equations in the case where $E$ is a right rule, which seem necessary
+for showing that cut is unital and associative.  For $U$ and $F$, we
+have
 \[
 \infer{\ap{\UL {}{e_2} {\FR {} {e_1} {D}}}{\FR {} {e_4} {\UL {} {e_3} {D}}}}
       {\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}
 \]
-We elide the details of the typing of the 2-cells $e_i$, which will not
-be needed below; they are the most general thing that makes both sides
-of the conclusion type check.
 
 \subsubsection{Admissible rules}
 
@@ -917,15 +912,13 @@ syntax.
 \end{theorem}
 A pseudofunctor is a map between 2-categories that preserves identity
 and composition of 1-cells up to coherent isomorphism, rather than on
-the nose (see the extended version for the definition). In this case, we
-have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
-$\F{\compo{\beta}{\alpha}}{A} \iso \F{\alpha}{\F{\beta}{A}}$ and
-$\U{\compo{\beta}{\alpha}}{A} \iso \U{\beta}{\U{\alpha}{A}}$, but these
-are not equalities of types.  Here we discusss some of the construction
-of a pseudofunctor from the syntax.
+the nose. In this case, we have a pseudofunctor because $\F 1 A \iso A
+\iso \U 1 A$ and $\F{\compo{\beta}{\alpha}}{A} \iso
+\F{\alpha}{\F{\beta}{A}}$ and $\U{\compo{\beta}{\alpha}}{A} \iso
+\U{\beta}{\U{\alpha}{A}}$, but these are not equalities of types.  Here
+we discusss some of completeness.
 
-%%  We write $D \cuti E$ as an infix notation for \cut{D}{E}
-%% (composition in diagrammatic notation).
+%% 
 %% Some standard category-theoretic terminology
 %% applied to categories of this form unpacks as follows:
 %% \begin{enumerate}
@@ -1026,12 +1019,8 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
   this family of adjunction isomorphisms is natural in $\alpha$ and
   $\beta$.
 
-\item Three coherence conditions between $P^1$ and $P^\circ$ are
-  satisfied, which relate (1) $P^1$ and $P^\circ(\alpha,1)$,
-  (2) $P^1$ and $P^\circ(1,\alpha)$, and (3) 
-  $P^\circ(\gamma,\compo{\beta}{\alpha})$ composed with
-  $P^\circ(\beta,\alpha)$ and $P^\circ(\gamma,\beta)$ composed with
-  $P^\circ(\compo{\gamma}{\beta},\alpha)$.  
+\item Three coherence conditions between these identity and composition
+  isomorphisms are satisfied.
 \end{enumerate}
 \end{theorem}
 
@@ -1042,9 +1031,9 @@ equations to verify---inverses, naturality, conjugation, and
 coherence---but they are all true for \ap{}{}.
 \end{proof}
 
-Next, we summarize some expected constructions on $F_\alpha \la
-U_\alpha$.  Of course, these standard facts are corollaries of the
-above; the point is that we can construct them directly using the rules of the logic.
+Next, we summarize some constructions on $F_\alpha \la U_\alpha$ that
+can be made in the logic. We write $D \cuti E$ as an infix notation for
+\cut{D}{E} (composition in diagrammatic notation).
 
 \begin{lemma}[Some constructions on adjunctions] \label{lem:constructionsonadjunctions}
 Let $\alpha : q \ge p$.  Then:
@@ -1079,7 +1068,7 @@ and \ap{(\Crc{}{\dsd{unit}}) \cuti \dsd{mult}}{\ident{}}.
 \end{lemma}
 
 \begin{proof}
-We showed many of the maps above; the (co)monad laws, naturality
+We showed some of the maps above; the (co)monad laws, naturality
 conditions, and inverse laws are all true for \ap{}{}; the construction
 is about 150 lines of Agda.
 \end{proof}
