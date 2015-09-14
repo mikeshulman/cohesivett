@@ -105,20 +105,27 @@ Mellon University.
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
 (2009) to allow multiple different adjunctions between the same
-categories.  An motivating application is investigating the proof theory
-of cohesive homotopy type theory, which integrates the synthetic
-homotopy theory of homotopy type theory with the synthetic topology of
-Lawvere's axiomatic cohesion.  Whereas Reed's calculus is parametrized by
-a preorder of modes, we generalize this to a 2-category of modes, where
-each mode represents a category, each mode morphism represents an
-adjunction, and each mode 2-morphism represents a morphism of
-adjunctions.  We give a sequent calculus, show that identity and cut are
-admissible, and define an equational theory on proofs.  We show that
-this syntax is sound and complete for pseudofunctors from the mode
-2-category to the 2-category of categories and adjunctions.  Finally, we
-investigate the consequences of some specific mode 2-categories, such as
-a theory giving rise to an adjoint triple, and a theory corresponding to
-the rules for cohesive homotopy type theory in Shulman (2015).
+categories.  This provides insight into the structural proof theory of
+cohesive homotopy type theory, which integrates the synthetic homotopy
+theory of homotopy type theory with the synthetic topology of Lawvere's
+axiomatic cohesion.  Reed's calculus is parametrized by a preorder of
+modes, where each mode determines a category, and there is an adjunction
+between categories that are related by the preorder.  Here, we consider
+a logic paramterized by a 2-category of modes, where each mode
+represents a category, each mode morphism represents an adjunction, and
+each mode 2-morphism represents a morphism of adjunctions.  For example,
+using this, we can give a mode theory for an adjoint triple $L \la M \la
+R$ by using two mode morphisms to generate two adjunctions between the
+same two categories, and then using mode 2-cells to identify the right
+adjoint of one with the left adjoint of the other.  Adding some
+additional structure to the mode 2-category gives an instance that is
+closely related to the rules for cohesive homotopy type theory in
+Shulman (2015).  In this paper, we give a sequent calculus, show that
+identity and cut are admissible, and define an equational theory on
+proofs.  We show that this syntax is sound and complete for
+pseudofunctors from the mode 2-category to the 2-category of categories,
+adjunctions, and adjunction morphisms.  Finally, we investigate some
+constructions in the example mode theories discussed above.
 \end{abstract}
 
 \section{Introduction}
@@ -272,7 +279,7 @@ the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism ge
 adjunction $\Gamma\la\nabla$.
 
 The main judgement of the logic is a ``mixed-category'' entailment
-judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
+\seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
 and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
 from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
 map $\F \alpha A \to C$ or $A \to \U \alpha C$.\footnote{We could instead
@@ -312,7 +319,7 @@ consider only single-hypothesis, single-conclusion sequents, deferring
 an investigation of products and exponentials to future work.
 
 Second, on the semantic side, we consider only 1-categorical semantics
-of the derivations of the logic, rather than the $\infty$-groupoid
+of the derivations of the logic, rather than the $\infty$-groupoid/$\infty$-topos
 semantics that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
@@ -349,7 +356,7 @@ spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
 in Agda~\citep{norell07thesis}, using a syntactic representation of the
 sequent calculus and the equational theory as inductive
-families.\footnote{See \url{http://www.github.com/dlicata335/hott-agda}.}
+families.\footnote{See \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}.}
 
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
@@ -394,7 +401,7 @@ add rules for additional connectives; for example, a rule
 $p$) says that any category $p$ has a coproduct type constructor.
 
 The sequent calculus judgement has the form \seq A \alpha C where
-\wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  That is, the
+\wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  This
 judgement represents a map from an object of some category $q$ to an
 object of another category $p$ along some adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
@@ -430,9 +437,8 @@ The rules for atomic propositions and for $U$ and $F$ are as follows:
       {\seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
 \end{array}
 \]
-
 The rules for other connectives do not change $\alpha$; for example, see
-the rules for coproducts in Figure~\ref{fig:coprod}.
+the sequent calculus rules for coproducts in Figure~\ref{fig:coprod}.
 
 \begin{figure}[t]
 Sequent calculus rules:
@@ -510,9 +516,11 @@ need to choose a $\gamma : r \ge q$.  To make adjunctions generated by
 different morphisms be different, it is important that we choose not
 just any $\gamma$, but one where the triangle that it forms with
 $\alpha$ and $\beta$ is filled by a 2-cell, which is the second premise
-of the rule.  The direction of the 2-cell, and the fact that it may not
-be invertible, are chosen to match the intended semantics and permit the
-proofs of the desired admissible rules.  The case for \irl{UR} is dual.
+of the rule.  
+%% The direction of the 2-cell, and the fact that it may not
+%% be invertible, are chosen to match the intended semantics and permit the
+%% proofs of the desired admissible rules.  
+The case for \irl{UR} is dual.
 
 Because we are interested not only in provability, but also in the
 equational theory of proofs in this logic, one might think the next step
@@ -755,7 +763,6 @@ The following cut rule is admissible:
       {\seq {A_r} {\beta} {B_q} &
        \seq {B_r} {\alpha} {C_p}}
 \]
-
 For example, consider the principal cut for $F$:
 \[
 \infer[\irl{cut}]
@@ -791,7 +798,6 @@ As a transformation on derivations, we have
   \cut {(\UL \gamma e D)} E & := & \UL {\compo{\gamma}{\alpha}} {\comph{e}{1}} {\cut D E} & \text{if $E$ is not a right rule}
 \end{array}
 \]
-
 The first case is for atomic propositions.  The next two cases are the
 principal cuts, when a right rule meets a left rule; these correspond to
 $\beta$-reduction in natural deduction.  The next two cases are
@@ -803,10 +809,10 @@ arbitrarily by saying that right-commutative cuts take precedence.
 Using the equational theory below, we will be able to prove the
 unrestricted left-commutative rules.
 
-\paragraph{Example: Adjunction} As an example, we give one of the maps from the
+\paragraph{Example: Adjunction} As an example using identity and cut, we give one of the maps from the
 bijection-on-hom-sets adjunction for $F$ and $U$: given $\alpha : q \ge
-p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into
-{\seq{A}{1}{\U \alpha B}}:
+p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U
+    \alpha B}}:
 \[
 \infer[\irl{UR}]{\seq{A}{1}{\U \alpha B}}
       {\infer[\irl{cut}]
@@ -825,9 +831,9 @@ When we construct proofs using the admissible rules \tr{e}{D} and
 \ident{A} and \cut{D}{E}, there is a natural notion of definitional
 equality induced by the above definitions of these operations (e.g.
 $\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
-    A}}$).  I.e. the cut- and identity-free proofs are ``normal forms'',
-and a proof using cut or identity is equal to its normal form.  However,
-to prove the desired equations in the examples below, we will need some
+    A}}$)---the cut- and identity-free proofs are normal forms, and a
+proof using cut or identity is equal to its normal form.  However, to
+prove the desired equations in the examples below, we will need some
 additional ``propositional'' equations, which, because we are using
 derivations as proof terms, we represent by a judgement \ap{D}{D'} on
 two derivations $D,D' : \seq{A}{\alpha}{C}$.  This judgement is the
