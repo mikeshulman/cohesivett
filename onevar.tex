@@ -105,15 +105,15 @@ Mellon University.
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
 (2009) to allow multiple different adjunctions between the same
-categories.  An motivating application is giving a proof-theoretic
-investigation of cohesive homotopy type theory, which integrates the
-synthetic homotopy theory of homotopy type theory with the synthetic
-topology of Lawvere's axiomatic cohesion.  Whereas Reed's calculus is
-parametrizd by a preorder of modes, we generalize this to a 2-category
-of modes, where each mode represents a category, each mode morphism
-represents an adjunction, and each mode 2-morphism represents a morphism
-of adjunctions.  We give a sequent calculus, show that identity and cut
-are admissible, and define an equational theory on proofs.  We show that
+categories.  An motivating application is investigating the proof theory
+of cohesive homotopy type theory, which integrates the synthetic
+homotopy theory of homotopy type theory with the synthetic topology of
+Lawvere's axiomatic cohesion.  Whereas Reed's calculus is parametrizd by
+a preorder of modes, we generalize this to a 2-category of modes, where
+each mode represents a category, each mode morphism represents an
+adjunction, and each mode 2-morphism represents a morphism of
+adjunctions.  We give a sequent calculus, show that identity and cut are
+admissible, and define an equational theory on proofs.  We show that
 this syntax is sound and complete for pseudofunctors from the mode
 2-category to the 2-category of categories and adjunctions.  Finally, we
 investigate the consequences of some specific mode 2-categories, such as
@@ -2499,6 +2499,20 @@ Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
 are constructed directly; see our Agda formalization.
 \end{proof}
 
+In the remainder of this section, we consider two specialized sequent
+calculi for this mode theory, and one specialized natural deduction
+system.  All three are sound (can be translated into the general adjoint
+logic), complete (the general adjoint logic can be translated into
+them), and correctly represent \ap{}{}-equivalence classes of proofs
+(the round-trip starting at the general adjoint logic is the identity).
+The first specialized calculus eliminates the choices of $\gamma$ and
+$e$ in \irl{FL} and \irl{UR}, which simplifies the construction of
+proofs, and has a simple generalization to multi-assumption sequents.
+The second specialized calculus interalizes identity and cut as
+derivable rules, which enables some restrictions on \irl{FL} and
+\irl{Case} without losing completeness; this corresponds closely to the
+rules for spatial type theory used in \citep{shulman15realcohesion}.    
+
 \subsubsection{Restricted Sequent Calculus I}
 
 The general sequent calculus rules allow choices of $\gamma$ and $e$ in
@@ -2845,9 +2859,9 @@ deduction system:
 
 The cut/substitution rule
 \[
-\infer{\rseq A { \compo {\beta} {\alpha}} C}
-      {\rseq A {\beta} B &
-       \rseq B {\alpha} C}
+\infer{\nd A { \compo {\beta} {\alpha}} C}
+      {\nd A {\beta} B &
+       \nd B {\alpha} C}
 \]
 is not included, but it is admissible, because each rule allows for
 precomposition.  
