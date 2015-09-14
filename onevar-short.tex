@@ -109,7 +109,7 @@ Mellon University.
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
 (2009) to allow multiple different adjunctions between the same
-categories.  An motivating application is giving a proof-theoretic
+categories.  A motivating application is giving a proof-theoretic
 investigation of cohesive homotopy type theory, which integrates the
 synthetic homotopy theory of homotopy type theory with the synthetic
 topology of Lawvere's axiomatic cohesion.  
@@ -351,7 +351,7 @@ for adjoint triples, and discuss the relationship to the rules for
 spatial type theory used in~\citep{shulman15realcohesion}.  All of the
 syntactic metatheory of the logic and the examples have been formalized
 in Agda~\citep{norell07thesis}.\footnote{See
-  \url{http://www.github.com/dlicata335/hott-agda}.}  Full definitions
+  \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}.}  Full definitions
 and proofs are available in the extended version of this
 paper.\footnote{Available from
   \url{http://dlicata.web.wesleyan.edu/pubs.html}.}
@@ -436,8 +436,8 @@ as follows:
       {\seq {C_r} {\compo{\beta}{\alpha}} {A_p}}
 \end{array}
 \]
-The rules for other connectives do not change $\alpha$; for example, see
-the rules for coproducts in Figure~\ref{fig:coprod}.
+The rules for other types do not change $\alpha$---e.g., see the rules
+for coproducts in Figure~\ref{fig:coprod}.
 
 \begin{figure}[t]
 \[
@@ -898,7 +898,7 @@ are proved by mutual induction, and use the preceding lines:
 \]
 
 \section{Semantics}
-\label{sec:constructions}
+\label{sec:semantics}
 
 In the extended version of this paper, we give a detailed account of the
 following result:
@@ -916,7 +916,7 @@ the nose. In this case, we have a pseudofunctor because $\F 1 A \iso A
 \iso \U 1 A$ and $\F{\compo{\beta}{\alpha}}{A} \iso
 \F{\alpha}{\F{\beta}{A}}$ and $\U{\compo{\beta}{\alpha}}{A} \iso
 \U{\beta}{\U{\alpha}{A}}$, but these are not equalities of types.  Here
-we discusss some of completeness.
+we expand the statement of completeness.
 
 %% 
 %% Some standard category-theoretic terminology
@@ -2287,48 +2287,41 @@ and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
 \end{enumerate}
 \end{theorem}
 
-%% \begin{proof}
+\begin{proof}
 
-%% The first two parts say that ``retopologizing'' twice is the same as the
-%% ``outer'' retopologization.  To prove them, using
-%% Theorem~\ref{thm:syntacticpseudofunctor}, the equality of morphisms
-%% $\compo{\dsd d}{\dsd n} = 1$ implies that
-%% \[
-%% \begin{array}{l}
-%% \F{\dsd{n}}{\F{\dsd{d}}{A}} \iso \F{\compo{\dsd d}{\dsd n}}{A} = \F{1}{A} \iso A\\
-%% \U{\dsd{d}}{\U{\dsd{n}}{A}} \iso \U{\compo{\dsd d}{\dsd n}}{A} = \U{1}{A} \iso A\\
-%% \end{array}
-%% \]
-%% Consequently, by Lemma~\ref{lem:mergeFU},
-%% the other (co)monads besides $\flat$ and $\sharp$ are
-%% trivial: 
-%% \[
-%% \begin{array}{l}
-%% \Crc{\dsd{d}}{A} = \U{\dsd{d}}{\F{\dsd d}{A}} \iso \F{\dsd n}{\F{\dsd d}{A}} \iso A\\
-%% \Bx{\dsd{n}}{A} = \F{\dsd{n}}{\U{\dsd n}{A}} \iso \U{\dsd d}{\U{\dsd n}{A}} \iso A
-%% \end{array}
-%% \]
+We discuss the first two parts. Using
+Theorem~\ref{thm:syntacticpseudofunctor}, the equality of morphisms
+$\compo{\dsd d}{\dsd n} = 1$ implies that
+\[
+\begin{array}{l}
+\F{\dsd{n}}{\F{\dsd{d}}{A}} \iso \F{\compo{\dsd d}{\dsd n}}{A} = \F{1}{A} \iso A\\
+\U{\dsd{d}}{\U{\dsd{n}}{A}} \iso \U{\compo{\dsd d}{\dsd n}}{A} = \U{1}{A} \iso A\\
+\end{array}
+\]
+Consequently, by Lemma~\ref{lem:mergeFU},
+the other (co)monads besides $\flat$ and $\sharp$ are
+trivial: 
+\[
+\begin{array}{l}
+\Crc{\dsd{d}}{A} = \U{\dsd{d}}{\F{\dsd d}{A}} \iso \F{\dsd n}{\F{\dsd d}{A}} \iso A\\
+\Bx{\dsd{n}}{A} = \F{\dsd{n}}{\U{\dsd n}{A}} \iso \U{\dsd d}{\U{\dsd n}{A}} \iso A
+\end{array}
+\]
 
-%% Thus, we have idempotence:
-%% \[
-%% \begin{array}{l}
-%% \Flat{\Flat A} = \F{\dsd d}{(\U {\dsd d} {\F{\dsd d}{(\U {\dsd d} A)}})} \cong \F{\dsd d}{\U {\dsd d} A} = \Flat A\\
-%% \Sharp{\Sharp A} = \U{\dsd n}{(\F {\dsd n} {\U{\dsd n}{(\F {\dsd n} A)}})} \cong \U{\dsd n}{\F {\dsd n} A} = \Sharp A
-%% \end{array}
-%% \]
-%% and that composing discrete and codiscrete retopologization is the same
-%% as the outer one:
-%% \[
-%% \begin{array}{l}
-%% \Flat{\Sharp A} = \F{\dsd d}{(\U{\dsd d}{\U{\dsd n}{(\F{\dsd n}{A})}})} 
-%% \cong \F{\dsd d}{\F{\dsd n}{A}}
-%% \cong \F{\compo{\dsd n}{\dsd d}}{A} \cong \Flat A \\
+This gives idempotence and absorption:
+\[
+\begin{array}{l}
+\Flat{\Flat A} = \F{\dsd d}{(\U {\dsd d} {\F{\dsd d}{(\U {\dsd d} A)}})} \cong \F{\dsd d}{\U {\dsd d} A} = \Flat A\\
+\Sharp{\Sharp A} = \U{\dsd n}{(\F {\dsd n} {\U{\dsd n}{(\F {\dsd n} A)}})} \cong \U{\dsd n}{\F {\dsd n} A} = \Sharp A\\
+\Flat{\Sharp A} = \F{\dsd d}{(\U{\dsd d}{\U{\dsd n}{(\F{\dsd n}{A})}})} 
+\cong \F{\dsd d}{\F{\dsd n}{A}}
+\cong \F{\compo{\dsd n}{\dsd d}}{A} \cong \Flat A \\
 
-%% \Sharp{\Flat A} = \U{\dsd n}{(\F{\dsd n}{\F{\dsd d}{(\U{\dsd d}{A})}})} 
-%% \cong \U{\dsd n}{\U{\dsd d}{A}}
-%% \cong \U{\compo{\dsd n}{\dsd d}}{A} \cong \Sharp A \\
-%% \end{array}
-%% \]
+\Sharp{\Flat A} = \U{\dsd n}{(\F{\dsd n}{\F{\dsd d}{(\U{\dsd d}{A})}})} 
+\cong \U{\dsd n}{\U{\dsd d}{A}}
+\cong \U{\compo{\dsd n}{\dsd d}}{A} \cong \Sharp A \\
+\end{array}
+\]
 
 %% Finally, we check that \F{\dsd d}{} and \U{\dsd n}{} are full and
 %% faithful.  This follows by general category-theoretic arguments from
@@ -2376,7 +2369,7 @@ and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
 %%     d}{\F{\dsd n} D'}) \cuti j} { j \cuti D'}$ is exactly the naturality
 %% square for $j$.
 
-%% \end{proof}
+\end{proof}
 
 \subsection{Spatial Type Theory}
 \label{sec:idempotent}
@@ -2415,12 +2408,12 @@ simple route to this is to prove absorption:
 and $\Sharp{\Flat A} \iso \Sharp{A}$ 
 and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
 \end{theorem}
-%% \begin{proof}
-%% Because $\compo{\dsd r}{\dsd r} = {\dsd r}$, idempotence is just the composition
-%% isomorphisms $F^\circ$ and $U^\circ$ from
-%% Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
-%% are constructed directly; see our Agda formalization.
-%% \end{proof}
+\begin{proof}
+Because $\compo{\dsd r}{\dsd r} = {\dsd r}$, idempotence is just the composition
+isomorphisms $F^\circ$ and $U^\circ$ from
+Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
+are constructed directly; see our Agda formalization.
+\end{proof}
 
 In the extended version of this paper, we connect this mode theory to
 the rules for spatial type theory used in
@@ -2844,36 +2837,38 @@ the rules for spatial type theory used in
 
 In this paper, we have defined an adjoint logic that allows multiple
 different adjunctions between the same categories, shown soundness and
-completeness of the logic in pseudofunctors into the 2-category of
-adjunctions, and used some specific mode theories to model adjoint
-triples and the $\Flat{}$ and $\Sharp{}$ modalities of axiomatic
-cohesion.  While we have considered only a single-hypothesis sequent
-through most of the paper, we discussed a generalization to multiple
-hypotheses for the specific mode theory in Section~\ref{sec:idempotent},
-and the generalization of these rules to dependent types is discussed in
-\citet{shulman15realcohesion}.  One area for future work is to extend
-the general adjoint logic with multiple assumptions and dependent types.
-This would provide a context for investigating the shape modality $\sh{}
-\la \Flat{}$.  We could certainly give a mode theory with one mode and
-$\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta
-\la \Gamma \la \nabla$, but it remains to be investigated whether this
-can provide the right properties for \sh{} beyond adjointness.  On the
-one hand, too much might be true: \sh{} does not preserve identity
-types, and the general dependently typed rules for $F$ might force it
-to. On the other, too little might be true: for applications such as
-relating the shape of the topological circle to the homotopical circle,
-extra properties are needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of
-these issues can be addressed as in \citep{shulman15realcohesion} by
-treating \sh{} not as an abstract adjoint, of the kind we can represent
-using the mode 2-category, but as a defined type (specifically, a higher
-inductive), which among other things has the property that it is adjoint
-to $\Flat{}$ (adjoint logic / spatial type theory is still essential for
-representing $\Flat{}$ and $\Sharp{}$ themselves).  Another area for
-future work is to consider $\infty$-category semantics, rather than the
-1-categorical semantics of derivations that we have considered here.  A
-final area for future work is to investigate applications of other mode
-theories in our generalized adjoint logic, beyond the motivating
-example of cohesive homotopy type theory.
+completeness of the logic in pseudofunctors $\M \to \Adj$, and used some
+specific mode theories to model adjoint triples and the $\Flat{}$ and
+$\Sharp{}$ modalities of axiomatic cohesion.
+%% While we have considered
+%% only a single-hypothesis sequent through most of the paper, we discussed
+%% a generalization to multiple hypotheses for the specific mode theory in
+%% Section~\ref{sec:idempotent}, and the generalization of these rules to
+%% dependent types is discussed in \citet{shulman15realcohesion}.  
+One area for future work is to extend this adjoint logic with multiple
+assumptions and dependent types (we discuss some special cases in the
+extended version).  This would provide a context for investigating the
+shape modality $\sh{} \la \Flat{}$.  We could certainly give a mode
+theory with one mode and $\sh{} \la \Flat{} \la \Sharp{}$, or with two
+modes and $\sh \la \Delta \la \Gamma \la \nabla$, but it remains to be
+investigated whether this can provide the right properties for \sh{}
+beyond adjointness.  On the one hand, too much might be true: \sh{} does
+not preserve identity types, and the general dependently typed rules for
+$F$ might force it to. On the other, too little might be true: for
+applications such as relating the shape of the topological circle to the
+homotopical circle, extra properties are needed, such as
+$\sh{\mathbb{R}} \cong 1$.  Both of these issues can be addressed as in
+\citep{shulman15realcohesion} by treating \sh{} not as an abstract
+adjoint, of the kind we can represent using the mode 2-category, but as
+a defined type (specifically, a higher inductive), which among other
+things has the property that it is adjoint to $\Flat{}$ (adjoint logic /
+is still essential for representing $\Flat{}$ and $\Sharp{}$
+themselves).  Another area for future work is to consider
+$\infty$-category semantics, rather than the 1-categorical semantics of
+derivations that we have considered here.  A final area for future work
+is to look for applications of other mode theories in our generalized
+adjoint logic beyond the motivating example of cohesive homotopy type
+theory.
 
 \setlength{\bibsep}{-1.75pt} %% dirty trick: make this negative
 { \small
