@@ -540,29 +540,30 @@ the functorial action of $F$ on maps ($U$ is similar)---because \M\/ is
 a strict 2-category, the identity 2-cell has type \tc{\compo{1_q}
   \alpha}{\compo {\alpha} {1_p}}.  Next, the composites $FU$ and $UF$
 should be a comonad and a monad respectively; define $\Bx \alpha A := \F
-\alpha (\U \alpha A)$ where $\alpha : q \ge p$.  As an example of the
-(co)monad structure, the comonad comultiplication is defined in the
-figure.  An advantage of using a cut-free sequent calculus is that we
-can observe some non-provabilities: for example, there is not in general
-a map \seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must
-begin with \irl{FR}, but to apply this rule, we need a $\gamma : p \ge
-q$ and a 2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.
-Next, we give one half of the isomorphism showing that $F$ preserves
-coproducts.  The key idea is that we can apply the left rule for $F$
-first, and then case-analyze the $\coprd{P}{Q}$, before choosing between
-\irl{Inl} and \irl{Inr} on the right; this direction of map doesn't
-exist for \U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$
-cannot be applied until after applying \irl{UR}.  Next, for identity and
+\alpha (\U \alpha A)$ and $\Crc{\alpha} := \F{\alpha}{(\U{\alpha}{A})}$
+for any $\alpha : q \ge p$.  As an example of the (co)monad structure,
+the comonad comultiplication is defined in the figure.  An advantage of
+using a cut-free sequent calculus is that we can observe some
+non-provabilities: for example, there is not in general a map
+\seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must begin with
+\irl{FR}, but to apply this rule, we need a $\gamma : p \ge q$ and a
+2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.  Next, we
+give one half of the isomorphism showing that $F$ preserves coproducts.
+The key idea is that we can apply the left rule for $F$ first, and then
+case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
+\irl{Inr} on the right; this direction of map doesn't exist for
+\U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
+applied until after applying \irl{UR}.  Next, for identity and
 composition of 1-cells, an obvious question is the relationship between
 $\F 1 A$ and $\U 1 A$ and $A$, between $\F {\compo{\beta}{\alpha}} A$
 and $\F \alpha {(\F \beta A)}$, and between $\U {\compo{\beta}{\alpha}}
 A$ and $\U \beta {(\U \alpha A)}$.  We do not have definitional
-equalities of types, but the types in each group are isomorphic (in a
-sense that will be made precise below).  For example, the maps for $F$
-on compositions are in the figure.  As a final example, for every 2-cell
-$e : \tc \alpha \beta$, we have derivations of \seq{\F \beta P}{1}{\F
-  \alpha P} and \seq{\U \alpha P}{1}{\U \beta P} that are an adjunction
-morphism between $F_\beta \la U_\beta$ and $F_\alpha \la U_\alpha$.  
+equalities of types, but the types in each group are isomorphic.  For
+example, the maps for $F$ on compositions are in the figure.  As a final
+example, for every 2-cell $e : \tc \alpha \beta$, we have derivations of
+\seq{\F \beta P}{1}{\F \alpha P} and \seq{\U \alpha P}{1}{\U \beta P}
+that are an adjunction morphism between $F_\beta \la U_\beta$ and
+$F_\alpha \la U_\alpha$.
 
 \begin{figure}
 Functoriality, given $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$:
@@ -675,10 +676,7 @@ the $F$ part of the morphism of adjunctions determined by $e$.
       {\tc \alpha \beta &
        \seq A {\alpha} {C}}
 \]
-
-Because we will care about the equational properties of this operation,
-we give its definition as a transformation on derivations.    
-
+This rule is defined as a transformation on derivations as follows:
 \[
 \begin{array}{rcl}
   \tr {e}{\hyp e'} & := & \hyp {(\compv{e'}{e})}\\
@@ -732,7 +730,6 @@ The following cut rule is admissible:
       {\seq {A_r} {\beta} {B_q} &
        \seq {B_r} {\alpha} {C_p}}
 \]
-
 For example, consider the principal cut for $F$:
 \[
 \infer[\irl{cut}]
@@ -768,17 +765,16 @@ As a transformation on derivations, we have
   \cut {(\UL \gamma e D)} E & := & \UL {\compo{\gamma}{\alpha}} {\comph{e}{1}} {\cut D E} & \text{if $E$ is not a right rule}
 \end{array}
 \]
-
 The first case is for atomic propositions.  The next two cases are the
 principal cuts, when a right rule meets a left rule; these correspond to
 $\beta$-reduction in natural deduction.  The next two cases are
 right-commutative cuts, which push any $D$ inside a right rule for $E$.
 The final two cases are left commutative cuts, which push any $E$ inside
 a left rule for $D$.  The left-commutative and right-commutative cuts
-overlap when $D$ is a left rule and $E$ is a right rule; we resolve this
-arbitrarily by saying that right-commutative cuts take precedence.
-Using the equational theory below, we will be able to prove the
-unrestricted left-commutative rules.
+overlap when $D$ is a left rule and $E$ is a right rule; we give
+precedence to right-commutative cuts definitionally, but using the
+equational theory below, we will be able to prove the general
+left-commutative rules.
 
 As an example, we give one of the maps from the bijection-on-hom-sets
 adjunction for $F$ and $U$: given $\alpha : q \ge p$ we can transform $D
@@ -801,9 +797,9 @@ When we construct proofs using the admissible rules \tr{e}{D} and
 \ident{A} and \cut{D}{E}, there is a natural notion of definitional
 equality induced by the above definitions of these operations (e.g.
 $\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
-    A}}$).  I.e. the cut- and identity-free proofs are ``normal forms'',
-and a proof using cut or identity is equal to its normal form.  However,
-to prove the desired equations in the examples below, we will need some
+    A}}$)---the cut- and identity-free proofs are normal forms, and a
+proof using cut or identity is equal to its normal form.  However, to
+prove the desired equations in the examples below, we will need some
 additional ``propositional'' equations, which, because we are using
 derivations as proof terms, we represent by a judgement \ap{D}{D'} on
 two derivations $D,D' : \seq{A}{\alpha}{C}$.  This judgement is the
@@ -866,8 +862,8 @@ The following equality rules are admissible for logic containing the
 $U/F$ rules described above and the coproduct rules in
 Figure~\ref{fig:coprod}.  The proofs have a lot of cases (about 800
 lines of Agda total) but are not difficult, except for somewhat subtle
-staging.  The rules in each of the following groups (except the first)
-are proved by mutual induction, and use the preceding groups:
+staging.  The rules in each of the following lines (except the first)
+are proved by mutual induction, and use the preceding lines:
 
 \[
 \begin{array}{c}
@@ -906,39 +902,32 @@ are proved by mutual induction, and use the preceding groups:
 \end{array}
 \]
 
-\subsection{Semantics}
+\section{Semantics}
+\label{sec:constructions}
+
+In the extended version of this paper, we give a detailed account of the
+following result:
 
 \begin{theorem}[Soundness and Completeness]
 For any mode theory \M, the rules of adjoint logic can be interpreted in
-any pseudeofunctor $\M \to \Adj$.  Moreover, there is a pseudofunctor
-$\M \to \Adj$ determined by the syntax.  
+any pseudeofunctor $\M \to \Adj$, where $\Adj$ is the 2-category of
+categories, adjunctions, and conjugate natural transformations.
+Moreover, there is a pseudofunctor $\M \to \Adj$ determined by the
+syntax.
 \end{theorem}
-Please see the extended version of this paper for a detailed discussion
-of this theorem.
+A pseudofunctor is a map between 2-categories that preserves identity
+and composition of 1-cells up to coherent isomorphism, rather than on
+the nose (see the extended version for the definition). In this case, we
+have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
+$\F{\compo{\beta}{\alpha}}{A} \iso \F{\alpha}{\F{\beta}{A}}$ and
+$\U{\compo{\beta}{\alpha}}{A} \iso \U{\beta}{\U{\alpha}{A}}$, but these
+are not equalities of types.  Here we discusss some of the construction
+of a pseudofunctor from the syntax.
 
-%% \section{Syntactic Constructions}
-%% \label{sec:constructions}
-
-%% In this section, we investigate some constructions on $F$ and $U$ that
-%% hold for any mode specification $\M$.  Taken together, the first set of
-%% constructions shows that the syntax forms a pseudofunctor $\M \to \Adj$,
-%% where $\Adj$ is the 2-category of categories, adjunctions, and conjugate
-%% natural transformations.  This is a standard way of proving logical
-%% completeness in categorical logic: we think of the pseudofunctors $\M
-%% \to \Adj$ as the class of models of the syntax, so this shows that if
-%% something is true in all models $\M \to \Adj$, then it is true in the
-%% syntax, because the syntax forms a model.  
-
-%% Since the objects of \Adj\/ are categories,
-%% the first step is to associate a category with each mode $p$.  The rules
-%% for $\ap{}{}$ in the previous section imply that for each $p$, there is
-%% a category whose objects are \wftp{A}{p} and whose morphisms are
-%% derivations of \seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities
-%% given by \ident{} and composition given by \cutsym.  We write $D \cuti
-%% E$ as an infix notation for \cut{D}{E}; this corresponds to writing
-%% composition in this category in diagrammatic notation. Some standard
-%% category-theoretic terminology applied to categories of this form
-%% unpacks as follows:
+%%  We write $D \cuti E$ as an infix notation for \cut{D}{E}
+%% (composition in diagrammatic notation).
+%% Some standard category-theoretic terminology
+%% applied to categories of this form unpacks as follows:
 %% \begin{enumerate}
 %% \item For $\wftp{A,B}{p}$, an isomorphism $A \iso B$ consists of a pair $D :
 %% \seq{A}{1}{B}$ and $E : \seq{B}{1}{A}$ such that
@@ -1004,99 +993,96 @@ of this theorem.
 %% together the equality rules (including the admissible ones, such as
 %% associativity and identity of cut) from the previous section.
 
-%% A pseudofunctor is a map between 2-categories that preserves identity
-%% and composition of 1-cells up to coherent isomorphism, rather than on
-%% the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} In this
-%% case, we have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
-%% similarly for composition, but these are not equalities of types.
+\begin{theorem}[Syntax Determines a Pseudofunctor] \label{thm:syntacticpseudofunctor}
+The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
+\begin{enumerate}
+\item An object $p$ of \M is sent to the category whose objects are
+  \wftp{A}{p} and morphisms are morphisms are derivations of
+  \seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities given by
+  \ident{} and composition given by \cutsym.
 
-%% \begin{theorem}[Syntax Determines a Pseudofunctor] \label{thm:syntacticpseudofunctor}
-%% The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
-%% \begin{enumerate}
-%% \item An object $p$ of \M is sent to the category whose objects are
-%%   \wftp{A}{p} and morphisms are $(\seq{A}{1_p}{B})/\ap{}{}$.
-%% \item For each $q,p$, there is a functor from the category of morphisms
-%%   $q \ge p$ to the category of adjoint functors between $q$ and $p$.
-%%   \begin{itemize}
-%%   \item 
-%%   Each $\alpha : q \ge p$ is sent to $F_\alpha \la U_\alpha$ in
-%%   \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
+\item For each $q,p$, there is a functor from the category of morphisms
+  $q \ge p$ to the category of adjoint functors between $q$ and $p$.
+  \begin{itemize}
+  \item 
+  Each $\alpha : q \ge p$ is sent to $F_\alpha \la U_\alpha$ in
+  \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
 
-%%   \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
-%%     morphism $(F(e),U(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
-%%     U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
-%%   \end{itemize}
+  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
+    morphism $(F(e),U(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
+    U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
+  \end{itemize}
 
-%% \item $\F 1 A \iso A$ and $\U 1 A \iso A$ naturally in $A$, and these
-%%   are conjugate, so there is an adjunction isomorphism $P^1$ between $\F 1 {}
-%%   \la \U 1 {}$ and the identity adjunction.
+\item $\F 1 A \iso A$ and $\U 1 A \iso A$ naturally in $A$, and these
+  are conjugate, so there is an adjunction isomorphism $P^1$ between $\F 1 {}
+  \la \U 1 {}$ and the identity adjunction.
 
-%% \item $\F {\compo{\beta}{\alpha}} A \iso \F \alpha {(\F \beta A)}$ and
-%%   $\U {\compo{\beta}{\alpha}} A \iso \U \beta {(\U \alpha A)}$ naturally
-%%   in $A$, and these are conjugate, so there is an adjunction isomorphism
-%%   $P^{\circ}(\alpha,\beta)$ between $\F {\compo{\beta}{\alpha}} \la \U
-%%   {\compo{\beta}{\alpha}}$ and the composition of the adjunctions $\F
-%%   {\alpha} \la \U {\alpha}$ and $\F {\beta} \la \U {\beta}$.  Moreover,
-%%   this family of adjunction isomorphisms is natural in $\alpha$ and
-%%   $\beta$.
+\item $\F {\compo{\beta}{\alpha}} A \iso \F \alpha {(\F \beta A)}$ and
+  $\U {\compo{\beta}{\alpha}} A \iso \U \beta {(\U \alpha A)}$ naturally
+  in $A$, and these are conjugate, so there is an adjunction isomorphism
+  $P^{\circ}(\alpha,\beta)$ between $\F {\compo{\beta}{\alpha}} \la \U
+  {\compo{\beta}{\alpha}}$ and the composition of the adjunctions $\F
+  {\alpha} \la \U {\alpha}$ and $\F {\beta} \la \U {\beta}$.  Moreover,
+  this family of adjunction isomorphisms is natural in $\alpha$ and
+  $\beta$.
 
-%% \item Three coherence conditions between $P^1$ and $P^\circ$ are
-%%   satisfied, which relate (1) $P^1$ and $P^\circ(\alpha,1)$,
-%%   (2) $P^1$ and $P^\circ(1,\alpha)$, and (3) 
-%%   $P^\circ(\gamma,\compo{\beta}{\alpha})$ composed with
-%%   $P^\circ(\beta,\alpha)$ and $P^\circ(\gamma,\beta)$ composed with
-%%   $P^\circ(\compo{\gamma}{\beta},\alpha)$.  
-%% \end{enumerate}
-%% \end{theorem}
+\item Three coherence conditions between $P^1$ and $P^\circ$ are
+  satisfied, which relate (1) $P^1$ and $P^\circ(\alpha,1)$,
+  (2) $P^1$ and $P^\circ(1,\alpha)$, and (3) 
+  $P^\circ(\gamma,\compo{\beta}{\alpha})$ composed with
+  $P^\circ(\beta,\alpha)$ and $P^\circ(\gamma,\beta)$ composed with
+  $P^\circ(\compo{\gamma}{\beta},\alpha)$.  
+\end{enumerate}
+\end{theorem}
 
-%% \begin{proof}
-%% We have given a flavor for some of the maps in the examples above; the
-%% complete construction is about 500 lines of Agda.  There are many
-%% equations to verify---inverses, naturality, conjugation, and
-%% coherence---but they are all true for \ap{}{}.
-%% \end{proof}
+\begin{proof}
+We have given a flavor for some of the maps in the examples above; the
+complete construction is about 500 lines of Agda.  There are many
+equations to verify---inverses, naturality, conjugation, and
+coherence---but they are all true for \ap{}{}.
+\end{proof}
 
-%% Next, we summarize some expected constructions on $F_\alpha \la
-%% U_\alpha$.  Of course, these standard facts are corollaries of the
-%% above; the point is that we can construct them directly using the rules of the logic.
+Next, we summarize some expected constructions on $F_\alpha \la
+U_\alpha$.  Of course, these standard facts are corollaries of the
+above; the point is that we can construct them directly using the rules of the logic.
 
-%% \begin{lemma}[Some constructions on adjunctions] \label{lem:constructionsonadjunctions}
-%% Let $\alpha : q \ge p$.  Then:
-%% \begin{enumerate}
-%% \item The composite functor $\Bx{\alpha}{A} := \F{\alpha}{\U{\alpha}{A}}$ is a comonad:
-%% \begin{itemize}
-%% \item[] $\dsd{counit} : \seq{\Bx \alpha A}{1}{A}$ naturally in $A$
-%% \item[] $\dsd{comult} : \seq{\Bx \alpha A}{1}{\Bx \alpha {\Bx \alpha A}}$
-%%   naturally in $A$
-%% \item[] 
-%%  \ap{\dsd{comult} \cuti (\Bx{}{\dsd{comult}})}{\dsd{comult} \cuti
-%%    \dsd{comult}}
-%% and \ap{\dsd{comult} \cuti \dsd{counit}}{\ident{}} \\
-%% and \ap{\dsd{comult} \cuti (\Bx{}{\dsd{counit}})}{\ident{}}.  
-%% \end{itemize}
+\begin{lemma}[Some constructions on adjunctions] \label{lem:constructionsonadjunctions}
+Let $\alpha : q \ge p$.  Then:
+\begin{enumerate}
+\item The composite functor $\Bx{\alpha}{A} := \F{\alpha}{\U{\alpha}{A}}$ is a comonad:
+\begin{itemize}
+\item[] $\dsd{counit} : \seq{\Bx \alpha A}{1}{A}$ naturally in $A$
+\item[] $\dsd{comult} : \seq{\Bx \alpha A}{1}{\Bx \alpha {\Bx \alpha A}}$
+  naturally in $A$
+\item[] 
+ \ap{\dsd{comult} \cuti (\Bx{}{\dsd{comult}})}{\dsd{comult} \cuti
+   \dsd{comult}}
+and \ap{\dsd{comult} \cuti \dsd{counit}}{\ident{}} \\
+and \ap{\dsd{comult} \cuti (\Bx{}{\dsd{counit}})}{\ident{}}.  
+\end{itemize}
 
-%% \item The composite functor $\Crc{\alpha}{A} := \U{\alpha}{\F{\alpha}{A}}$ is a monad:
-%% \begin{itemize}
-%% \item[] $\dsd{unit} : \seq{A}{1}{\Crc \alpha A}$ naturally in $A$
-%% \item[] $\dsd{mult} : \seq{\Crc \alpha {\Crc \alpha A}}{1}{\Crc \alpha A}$
-%%   naturally in $A$
-%% \item[] 
-%%  \ap{(\Crc{}{\dsd{mult}}) \cuti \dsd{mult} }{\dsd{mult} \cuti
-%%    \dsd{mult}}
-%% and \ap{\dsd{unit} \cuti \dsd{mult}}{\ident{}} \\
-%% and \ap{(\Crc{}{\dsd{unit}}) \cuti \dsd{mult}}{\ident{}}.  
-%% \end{itemize}
+\item The composite functor $\Crc{\alpha}{A} := \U{\alpha}{\F{\alpha}{A}}$ is a monad:
+\begin{itemize}
+\item[] $\dsd{unit} : \seq{A}{1}{\Crc \alpha A}$ naturally in $A$
+\item[] $\dsd{mult} : \seq{\Crc \alpha {\Crc \alpha A}}{1}{\Crc \alpha A}$
+  naturally in $A$
+\item[] 
+ \ap{(\Crc{}{\dsd{mult}}) \cuti \dsd{mult} }{\dsd{mult} \cuti
+   \dsd{mult}}
+and \ap{\dsd{unit} \cuti \dsd{mult}}{\ident{}} \\
+and \ap{(\Crc{}{\dsd{unit}}) \cuti \dsd{mult}}{\ident{}}.  
+\end{itemize}
 
-%% \item $F$ preserves coproducts: $\F \alpha (\coprd A B) \iso \coprd {\F
-%%   \alpha A} {\F \alpha B}$ naturally in $A$ and $B$.
-%% \end{enumerate}
-%% \end{lemma}
+\item $F$ preserves coproducts: $\F \alpha (\coprd A B) \iso \coprd {\F
+  \alpha A} {\F \alpha B}$ naturally in $A$ and $B$.
+\end{enumerate}
+\end{lemma}
 
-%% \begin{proof}
-%% We showed many of the maps above; the (co)monad laws, naturality
-%% conditions, and inverse laws are all true for \ap{}{}; the construction
-%% is about 150 lines of Agda.
-%% \end{proof}
+\begin{proof}
+We showed many of the maps above; the (co)monad laws, naturality
+conditions, and inverse laws are all true for \ap{}{}; the construction
+is about 150 lines of Agda.
+\end{proof}
 
 %% \section{Semantics}
 %% \label{sec:semantics}
