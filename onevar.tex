@@ -2734,6 +2734,8 @@ elimination on a coproduct in either mode:
 
 \subsection{Avoiding left-commutative cut reductions}
 
+FIXME: wrong story here; talk about crisp-only rules up front.
+
 All of the sequent calculi that we have defined so far, including the
 above restricted sequent calculus for this mode theory, are very nice
 from a proof-theoretic point view, in that they have the subformula
@@ -2887,12 +2889,13 @@ higher inductive types, and the
 
 
 
+\subsection{Natural deduction}
 
+Finally, to connect to the rules used in \citep{shulman15realcohesion},
+we convert the previous sequent calculus to a natural deduction system:
 
 \newcommand\nd[3]{\ensuremath{#1 \, [ #2 ] \, \vdash^{\dsd{nd}} \, #3}}
 
-Next, we convert this sequent calculus to a single-variable natural
-deduction system:
 \[
 \begin{array}{c}
 \infer{\nd{A}{\dsd r}{A}}{}
@@ -2924,7 +2927,6 @@ deduction system:
        \nd{A}{1}{D}}
 \end{array}
 \]
-
 The cut/substitution rule
 \[
 \infer{\nd A { \compo {\beta} {\alpha}} C}
@@ -2934,8 +2936,9 @@ The cut/substitution rule
 is not included, but it is admissible, because each rule allows for
 precomposition.  
 
-The natural deduction system is also sound and complete for the original
-one, and the the proof factors through the above sequent calculus:
+This natural deduction system is also sound and complete for adjoint
+logic with this mode theory, and the the proof factors through the above
+sequent calculus:
 \begin{theorem}
 There are functions 
 $(\seq{A}{\alpha}{B}) \leftrightarrow (\rseq{A}{\alpha}{B}) \leftrightarrow (\nd{A}{\alpha}{B})$
@@ -2948,8 +2951,8 @@ The proof is about 150 lines of Agda.
 \end{proof}
 
 We can generalize these natural deduction rules to multiple assumptions
-as follows, writing $\Delta$ for the crisp assumptions and $\Gamma$
-for the cohesive assumptions:
+as follows, writing $\Delta$ for the crisp assumptions $A[\dsd r]$ and
+$\Gamma$ for the cohesive assumptions $A[1]$:
 \[
 \begin{array}{c}
 \infer{\Delta;\Gamma \vdash A}
@@ -2987,12 +2990,16 @@ These rules, generalized to dependent types, are exactly the rules used
 in an investigation of cohesive type theory in
 \citet{shulman15realcohesion}.  Here, we have given a proof theoretic
 explanation for them, by connecting them to a particular mode theory in
-adjoint logic.  The sequent calculus and natural deduction systems
-defined in this section allow arbitrary cuts/non-normal forms; a next
-step is to investigate normal forms for the equational theory given by
-only the $\beta$ rules for positives---the translation to the general
-adjoint logic sequent calculus normalizes too much, because it also
-performs left-commutative cuts.
+adjoint logic.  A next step for future work is to analyze the normal
+forms of the $\beta$-only equational theory for positives (avoiding the
+left-commutative equations that are obtained by the translation to
+adjoint logic).  It is unclear whether structural cut
+elimination/hereditary substitution~\citep{watkins+03clf-tr} can be used
+to do this, because the unreduced left-commutative cuts break the
+subformula property; however, it should be possible to prove
+normalization using a logical relations argument (an equality algorithm
+for positives with only $\beta$-rules was considered in
+~\citet{lh05dmlproofs}).
 
 \section{Conclusion}
 
