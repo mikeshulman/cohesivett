@@ -350,13 +350,15 @@ the constructions that are possible in the logic for any mode
 specification \M, including showing that the syntax determines a
 pseudofunctor $\M \to \Adj$.  In Section~\ref{sec:semantics}, we
 describe the 1-categorical semantics of the logic.  Finally, in
-Section~\ref{sec:triple}, we examine some specific mode specifications
-for adjoint triples, and discuss the relationship to the rules for
-spatial type theory used in~\citep{shulman15realcohesion}.  All of the
-syntactic metatheory of the logic and the examples have been formalized
-in Agda~\citep{norell07thesis}, using a syntactic representation of the
+Sections~\ref{sec:triple} and \ref{sec:idempotent}, we examine some
+specific mode specifications for adjoint triples, and discuss the
+relationship to the rules for spatial type theory used
+in~\citep{shulman15realcohesion}.  All of the syntactic metatheory of
+the logic and the examples have been formalized in
+Agda~\citep{norell07thesis}, using a syntactic representation of the
 sequent calculus and the equational theory as inductive
-families.\footnote{See \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}.}
+families.\footnote{See
+  \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}.}
 
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
@@ -2202,12 +2204,18 @@ so collapsing inverses gives the result.
 \end{itemize}
 \end{proof}
 
-\section{Example Mode Theories}
+\section{Adjoint Triples}
 \label{sec:triple}
 
-\subsection{Adjoint Triple}
+In this section, we consider two mode theories for adjoint triples $L
+\la M \la R$.  The first corresponds to a general adjoint triple, while
+the second adds some additional properties motivated by the triple
+$\Delta \la \Gamma \la \nabla$ in axiomatic cohesion.  
 
-Consider the walking adjunction $\dsd d \la \dsd n$, which has
+\subsection{Walking Adjunction}
+
+Our first mode theory is the walking adjunction $\dsd d \la \dsd n$,
+which has
 
 \begin{itemize}
 \item objects $\dsd{c}$ and $\dsd s$
@@ -2326,7 +2334,7 @@ ambipolar middle connective in an adjoint triple thus \emph{emerges}
 from the presence of two isomorphic connectives, one positive and one
 negative.
 
-\subsection{Reflection}
+\subsection{Walking Reflection}
 
 In our motivating example of axiomatic cohesion, the adjoint triple
 $\Delta \la \Gamma \la \nabla$ has some additional properties.  We now
@@ -2459,16 +2467,19 @@ square for $j$.
 
 \end{proof}
 
-\subsection{Spatial Type Theory}
+\section{Spatial Type Theory}
 \label{sec:idempotent}
 
-The above mode theory allows us to work with cohesive types (which have
-mode \dsd{c}) and non-cohesive types (which have mode \dsd{s}).
-However, because $\Delta$ and $\nabla$ are full and faithful, it is not
-strictly necessary to ever work in \dsd{s} itself---we could
-equivalently work in the image of $\Delta$ or $\nabla$ in \dsd{c}.  If
-we wish to restrict ourselves to constructions in \dsd{c}, we can
-simplify the mode theory to the (strictly) idempotent monad:
+Next, we consider a further refinement on the walking reflection mode
+theory, and connect it to the rules for spatial type theory used in
+\citet{shulman15realcohesion}.  The walking reflection mode theory
+allows us to work with cohesive types (which have mode \dsd{c}) and
+non-cohesive types (which have mode \dsd{s}).  However, because $\Delta$
+and $\nabla$ are full and faithful, it is not strictly necessary to ever
+work in \dsd{s} itself---we could equivalently work in the image of
+$\Delta$ or $\nabla$ in \dsd{c}.  If we wish to restrict ourselves to
+constructions in \dsd{c}, we can simplify the mode theory to the
+(strictly) idempotent monad:
 \begin{itemize}
 \item object \dsd{c}
 \item 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
@@ -2490,8 +2501,9 @@ the proof of Theorem~\ref{thm:adjointtriple}) that $\Flat{} \iso
 definition, so we immediately have $\Flat{} \la \Sharp{}$ and $\Flat{}$
 preserves coproducts by Theorem~\ref{thm:syntacticpseudofunctor} and
 Lemma~\ref{lem:constructionsonadjunctions}, but we must prove that they
-are (co)monads.  A simple route to this is to prove
-absorption and then to use Lemma~\ref{lem:constructionsonadjunctions}.  
+are (co)monads.  A simple route to this is to prove absorption, because
+$\Flat{\Sharp{A}} = \F{\dsd{r}}{\U{\dsd{r}}{A}}$ which is a monad by
+Lemma~\ref{lem:constructionsonadjunctions}, and dually.
 
 \begin{theorem}[Idempotence and Absorption]
  $\Flat{\Flat A} \iso \Flat A$ and $\Sharp{\Sharp A} \iso \Sharp A$
@@ -2505,26 +2517,33 @@ Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
 are constructed directly; see our Agda formalization.
 \end{proof}
 
-In the remainder of this section, we consider two specialized sequent
-calculi for this mode theory, and one specialized natural deduction
-system.  All three are sound (can be translated into the general adjoint
-logic), complete (the general adjoint logic can be translated into
-them), and correctly represent \ap{}{}-equivalence classes of proofs
-(the round-trip starting at the general adjoint logic is the identity).
-The first specialized calculus eliminates the choices of $\gamma$ and
-$e$ in \irl{FL} and \irl{UR}, which simplifies the construction of
-proofs, and has a simple generalization to multi-assumption sequents.
-The second specialized calculus interalizes identity and cut as
-derivable rules, which enables some restrictions on \irl{FL} and
-\irl{Case} without losing completeness; this corresponds closely to the
-rules for spatial type theory used in \citep{shulman15realcohesion}.    
+In the remainder of this section, we explore some alternative proof
+theories for this mode theory.  If we think of these alternative proof
+theories as other ways to write derivations in adjoint logic with the
+walking idempotent mode theory, then we would like them to be sound (can
+be translated into adjoint logic) and complete (adjoint logic can be
+translated into them), and for soundness-after-completeness to be the
+identity up to \ap{}{}.  This way, any construction we do in the
+alternative proof theory could be done in adjoint logic, and any
+derivation in adjoint logic an be translated into a derivation in the
+alternative proof theory that represents its \ap{}{}-equivalence class.
+We give three alternative proof theories, two sequent calculi and one
+natural deduction system, all of which have these properties.  The first
+specialized calculus eliminates the choices of $\gamma$ and $e$ in
+\irl{FL} and \irl{UR}, which simplifies the construction of proofs, and
+has a simple generalization to multi-assumption sequents.  The second
+specialized calculus, and an equivalent natural deduction system, treats
+positive types more similarly to how they are traditionally handled in
+intension type theory, and corresponds closely to the rules for spatial
+type theory used in \citep{shulman15realcohesion}.
 
-\subsubsection{Restricted Sequent Calculus I}
+\subsection{Keep assumptions crisp as long as possible}
 
-The general sequent calculus rules allow choices of $\gamma$ and $e$ in
-\irl{FR} and \irl{UL}.  However, for this specific mode theory, no
-choices are necessary: we can without loss of generality use the
-following instances of the sequent calculus rules:
+For this mode theory, there are two 1-cells $\dsd{r}$ and $1$, the
+general sequent calculus rules allow choices of $\gamma$ and $e$ in
+\FR{\gamma}{e}{D} and \UL{\gamma}{e}{D}.  However, it turns out that we
+can without loss of generality always take $\gamma$ to be \dsd{r} and
+$e$ to be 1 in these rules, and use only the following instances of the rules:
 \[
 \begin{array}{c}
 \infer[\hyp{1_{1}}]
@@ -2568,20 +2587,32 @@ following instances of the sequent calculus rules:
       {\seq{A}{\alpha}{B}}
 \end{array}
 \]
-The intuitive reading of the restricted rules is as
-follows.  We have two kinds of assumptions, cohesive ($A[1_\dsd{c}]$)
-and \emph{crisp} ($A[\dsd r]$, \dsd{r} for cRisp).  A crisp assumption
-is the judgemental analogue of \Flat{A}---i.e. it means we know $A$
-retopologized with the discrete cohesion.  The \Flat{} left rule says
-that if we know \Flat{A} either crisply or cohesively, then we know $A$
-crisply.  The \Flat{} right rule says that we can map into \Flat{B} by
-mapping into $B$, as long as the assumption is already crisp---this
-restriction prevents using a cohesive variable to map into a discrete
-type.  The \Sharp{} right rule says that if we are mapping into the
-codiscretization of $B$, then we can make the assumption crisp.  The
-\Sharp{} left rule says that knowing the codiscretization crisply is the
-same as knowing $A$ crisply, because in either case we know $A$ under
-the discrete retopologization.
+Intuitively, we have two kinds of assumptions, which we call
+\emph{cohesive} ($A[1_\dsd{c}]$) and \emph{crisp} ($A[\dsd r]$, \dsd{r}
+for cRisp).  A crisp assumption is the judgemental analogue of
+\Flat{A}---i.e. it means we know $A$ retopologized with the discrete
+cohesion.  The admissible principle $\tr{\dsd{unit}}{\ident{A}} :
+\seq{A}{\dsd{r}}{A}$ says that a crisp assumption of $A$ can be used to
+prove $A$ itself, so a crisp assumption is stronger than a cohesive one.
+The \Flat{} left rule says that if we know \Flat{A} either crisply or
+cohesively, then we know $A$ crisply.  The \Flat{} right rule says that
+we can map into \Flat{B} by mapping into $B$, as long as the assumption
+is already crisp (this constraint prevents using a cohesive variable to
+map into a discrete type).  The restriction from the general adjoint
+logic rules is that we can, without loss of generality, keep the
+crispness of $A$ in the premise---there is no reason to demote it to a
+cohesive variable at this time.  The \Sharp{} right rule says that if we
+are mapping into the codiscretization of $B$, then we can make the
+assumption crisp.  The \Sharp{} left rule says that knowing the
+codiscretization crisply is the same as knowing $A$ crisply, because in
+either case we know $A$ under the discrete retopologization.  The
+restriction from the general adjoing logic rules is that we always
+assume $A$ crisply in the premise; we could instead assume it cohesively
+(take $\gamma = 1$), but we can without loss of generality keep it
+crisp.  
+
+These rules are clearly sound (they are a subset of adjoint logic) and
+also are complete:
 
 \begin{theorem}
 For all $D : \seq{A}{\alpha}{B}$, there is a derivation $D' :
@@ -2618,7 +2649,7 @@ derivation must be of the form
       {\seq{A}{\gamma}{C}}
 \]
 By the IH we have an equivalent derivation $D' : \seq{A}{\gamma}{C}$
-that uses only the specialized rules.  If $\gamma$ is \dsd{r}, this
+that uses only the restricted rules.  If $\gamma$ is \dsd{r}, this
 gives the result.  If $\gamma$ is 1, then we can make a derivation 
 \[
 \infer[\UL{\dsd{r}}{1}{-}]
@@ -2640,14 +2671,14 @@ proof of this theorem is about 250 lines of Agda.
 \newcommand\addcrisp[1]{\ensuremath{#1\mathord{\uparrow}^{\dsd{crisp}}}}
 \newcommand\dropcoh[1]{\ensuremath{#1\mathord{\downarrow}_{\dsd{coh}}}}
 
-For the restricted rules, there is a natural generalization to a
-multiple assumption sequent, where each of the assumptions is either
-cohesive or crisp.  We write $\Gamma$ for a context consisting of
+For this restricted sequent calculus, there is a natural generalization
+to a multiple assumption sequent, where each of the assumptions is
+either cohesive or crisp.  We write $\Gamma$ for a context consisting of
 assumptions $A[1]$ or $A[\dsd r]$. We write \addcrisp{\Gamma} for a
 context where each cohesive assumption $A[1]$ has been promoted into a
 crisp assumption $A[\dsd r]$, and each $A[\dsd{r}]$ has been kept the
 same. We write \dropcoh{\Gamma} for a context where each cohesive
-assumption $A[1]$ has been dropped, and each crisp assumption $A[r]$ has
+assumption $A[1]$ has been dropped, and each crisp assumption $A[\dsd r]$ has
 been kept the same.  Then the multi-assumptioned rules are as follows:
 \[
 \infer{{\Gamma} \vdash {P}}
@@ -2698,7 +2729,7 @@ elimination on a coproduct in either mode:
       }
 \]
 
-\subsubsection{Restricted Sequent Calculus II}
+\subsection{Restricted Sequent Calculus II}
 
 All of the sequent calculi that we have defined so far, including the
 above restricted sequent calculus for this mode theory, are well-behaved
