@@ -2014,7 +2014,7 @@ Lemma~\ref{lem:semcut} above.
 \end{itemize}
 \end{proof}
 
-\begin{lemma}[Interpretation of Coproducts]
+\begin{lemma}[Interpretation of Coproducts] \label{lem:coproductinterp}
 If each $\C_p$ has coproducts, then
 Theorem~\ref{thm:semsequent} and Lemmas~\ref{lem:semtr} and
 \ref{lem:semident} and \ref{lem:semcut} and Theorem \ref{thm:semeq} are
@@ -2732,16 +2732,16 @@ elimination on a coproduct in either mode:
       }
 \]
 
-\subsection{Avoiding left-commutative cut reductions}
+\subsection{Restricted Rules for Positives}
 
-FIXME: wrong story here; talk about crisp-only rules up front.
-
-All of the sequent calculi that we have defined so far, including the
-above restricted sequent calculus for this mode theory, are very nice
-from a proof-theoretic point view, in that they have the subformula
-property and the identity and cut rules are admissible.  The cut
-admissibility algorithm takes certain left-commutative cuts as
-definitional equalities; e.g. we have
+The treatment of positive types (such as $\Flat{}$ and $\coprd{}{}$) in
+sequent calculi is a bit different than how positives are typically
+treated in intensional type theory.  In sequent calculi, the goal is
+generally to have the subformula property, and for the identity and cut
+rules to be admissible (if not for the entire logic, then for as large a
+fragment as possible).  To achieve this, certain left commutative cuts
+are used as part of the cut admissibility algorithm, and are therefore
+definitional equalities; e.g. in defining cut we said
 \[
 \cut{(\Case{D_1}{D_2})}{E} =\Case{\cut{D_1}{E}}{\cut{D_2}{E}} \text{ if $E$ is not a right rule}\\
 \]
@@ -2764,39 +2764,51 @@ and this is often used via (iterated) implication-left:
       }
 \]
 This builds in a cut from the result type of the case $C$ to the overall
-goal $D$, so we do not need to reduce a left-commutative cut.  For
-infinite types such as the natural numbers, it seems necessary to build
-in these cuts, to allow strengthening the induction formula (unless one
-uses an infinitely wide proof tree with an $\omega$-rule).
+goal $D$, so we do not need to reduce left-commutative cuts.  
 
-There are good arguments for both including and not including the left
-commutative cut reductions as definitional equalities (they will be true
-for the identity type in any case): If we include them, then at least
-for fragments consisting only of finitary types, the calculus has the
-subformula property, identity and cut can be shown admissible by
-structural induction on types, and more terms are equal so more terms
-type check.  On the other hand, if we do not include them, then the
-syntax can be interpreted in models where they do not hold strictly, the
-rules for finite and infinite positives are more uniform with each
-other, and with the rules for higher inductive types.  Since it seems
-likely that the left-commutative cut reductions will not be strict
-equalities in some of the desired models of cohesive homotopy type
-theory (e.g. where positives involve a fibrant replacement), it is worth
-investigating an alternative sequent calculus in which the
-left-commutative cuts are not reduced.
+In adjoint logic specifically, there is another difference between the
+left rules for positives that we have been using and the use of an
+elimination constant.  The adjoint logic left rules allow eliminating a
+positive assumption such as $\coprd{A}{B}[\alpha]$ for any $\alpha$,
+keeping $A[\alpha]$ and $B[\alpha]$ in the premises.  For example, we
+can eliminate a crisp assumption of \coprd{A}{B}, getting crisp
+assumptions in the premises.  As we have seen in
+Lemma~\ref{lem:constructionsonadjunctions}, this allows us to prove that
+$\F{\alpha}{}$ preserves coproducts using only the judgemental structure
+of the calculus, without mentioning the right adjoint connective
+$\U{\alpha}{}$ (indeed, we must be able to do this if the logic is to
+have the subformula property)---essentially because some of the proof
+that $F$ preserves coproducts goes into the semantic interpretation (see
+Lemma~\ref{lem:coproductinterp}).  On the other hand, if we instead
+specify a positive type using the usual elimination constant in adjoint
+logic, then it is not automatic that we can eliminate on
+$\coprd{A}{B}[\dsd{r}]$ preserving the $A[\dsd{r}]$ and $B[\dsd{r}]$ in
+the premises---using the right rule for $A \to C$ would give an
+assumption $A[1]$, not $A[\dsd{r}]$.  However, as we will see below, for
+coproducts this can be proved using $U$.
 
-One way to accomplish this would be to take the sequent calculus from
-Section~\ref{sec:idempotent-calc1}, add cut as a derivable rule, and
-then define a normalization algorithm that reduces right-commutative and
-principal but not left-commutative cuts.  However, when the
-left-commutative cuts are internalized, it turns out that certain
-instances of the left rules for positives become provable from more
-restricted rules.  We use the following sequent calculus
-\rseq{A}{\alpha}{B} to explain this idea.  For simplicitly, we make all
-cuts derivable, and defer to future work an investigation of principal
-and right-commutative cut reduction, because the stuck left-commutative
-cuts prevent using the usual structural argument~\citep{pfenning94cut}.
-The rules are as follows:
+There are reasons to explore a calculus where all positives are treated
+via the elimination constant approach.  First, if we do not include the
+left-commutative reductions definitionally, then the syntax can be
+interpreted in models where they do not hold strictly (such as ones
+where positives involve a fibrant replacement).  Second, the elimination
+constant approach seems necessary for infinite types such as the natural
+numbers, to allow strengthening the induction formula (unless one uses
+an infinitely wide proof tree with an $\omega$-rule).  Moreover, the
+elimination constant approach seems necessary for certain higher
+inductive types, which semantically should \emph{not} be preserved by
+$\Flat{}$.  Thus, treating all positives with elimination constants is
+more uniform.  (On the other hand, there are also arguments for having
+the general left rules as rules for the connectives where they do make
+sense, such as finite colimits, since this gives the subformula property
+for as large a sublogic as possible.)
+
+We use the following sequent calculus \rseq{A}{\alpha}{B} to illustrate
+the idea of specifying all positives by elimination constants.  For
+simplicitly, we make all cuts derivable, and defer to future work an
+investigation of cut reduction for only principal and right-commutative
+cuts (the stuck left-commutative cuts prevent using the usual structural
+argument~\citep{pfenning94cut}).  The rules are as follows:
 \[
 \begin{array}{c}
 \infer{\rseq{A}{\dsd r}{A}}{}
@@ -2834,11 +2846,13 @@ On the first line, we have identity (for both crisp and cohesive
 variables) and cut as derivable rules; the identity rules could be
 restricted to positives and atoms and made admissible for negatives in
 order to force $\eta$-expansion.  The rules for \Sharp{} and the right
-rules for \Flat{} and \coprd{}{} are the same as in the previous sequent
-calculus.  The left rules for positives are restricted to cohesive
-variables, and the left rule for coproducts binds cohesive variables in
-the branches.  In the presence of cut and identity rules, we can derive
-the more general left rules for crisp positive assumptions
+rules for \Flat{} and \coprd{}{} are the same as in
+Section~\ref{sec:idempotent-calc1}.  The left rules for positives are
+restricted to cohesive variables, and the left rule for coproducts binds
+cohesive variables in the branches.
+
+However, in the presence of cut and identity rules, we can derive the
+more general left rules for crisp positive assumptions
 $\coprd{A}{B}[\dsd{r}]$ and $\Flat{A}[\dsd{r}]$.  For \Flat{A}, this is
 just precomposition with using a crisp variable:
 \[
@@ -2850,7 +2864,7 @@ just precomposition with using a crisp variable:
 The fact that this works is quite specific to this mode theory, where
 forgetting the {\dsd r}-ness of the assumption and then reintroducing it
 arrives at the same place, because of idempotence.  For \coprd{A}{B}, we
-need to use, \Sharp{} on the right to derive the more general rule:
+need to use \Sharp{} on the right to derive the more general rule:
 \[
 \infer{\rseq{\coprd{A}{B}}{\dsd r}{C}}
       {\infer{\rseq{\coprd{A}{B}}{1}{\Sharp C}}
@@ -2874,20 +2888,14 @@ This sequent calculus is sound and complete for the original
 one:\footnote{removing \F{1}{} and \U{1}{} from the original calculus or
   adding rules for them here}
 \begin{theorem}
-There are functions $\seq{A}{\alpha}{B} \leftrightarrow
-\rseq{A}{\alpha}{B}$ and the composite from \seq{A}{\alpha}{B} to itself
+There are functions $(\seq{A}{\alpha}{B}) \leftrightarrow
+(\rseq{A}{\alpha}{B})$ and the composite from \seq{A}{\alpha}{B} to itself
 is the identity up to \ap{}{}.
 \end{theorem}
 
 \begin{proof}
 The proof is about 150 lines of Agda.  
 \end{proof}
-
-The advantage of these restricted elimination constants is that
-analogous rules can be used for all colimits, inductive types, and
-higher inductive types, and the  
-
-
 
 \subsection{Natural deduction}
 
@@ -3010,18 +3018,19 @@ adjunctions, and used some specific mode theories to model adjoint
 triples and the $\Flat{}$ and $\Sharp{}$ modalities of axiomatic
 cohesion.  While we have considered only a single-hypothesis sequent
 through most of the paper, we discussed a generalization to multiple
-hypotheses for the specific mode theory in Section~\ref{sec:idempotent},
-and the generalization of these rules to dependent types is discussed in
-\citet{shulman15realcohesion}.  One area for future work is to extend
-the general adjoint logic with multiple assumptions and dependent types.
-This would provide a context for investigating the shape modality $\sh{}
-\la \Flat{}$.  We could certainly give a mode theory with one mode and
-$\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta
-\la \Gamma \la \nabla$, but it remains to be investigated whether this
-can provide the right properties for \sh{} beyond adjointness.  On the
-one hand, too much might be true: \sh{} does not preserve identity
-types, and the general dependently typed rules for $F$ might force it
-to. On the other, too little might be true: for applications such as
+hypotheses for the specific mode theory in
+Sections~\ref{sec:idempotent}, and the generalization of these rules to
+dependent types is discussed in \citet{shulman15realcohesion}.  One area
+for future work is to extend the general adjoint logic with multiple
+assumptions and dependent types.  This would provide a context for
+investigating the shape modality $\sh{} \la \Flat{}$.  Using the present
+theory, we could certainly give a mode theory with one mode and $\sh{}
+\la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta \la
+\Gamma \la \nabla$, but it remains to be investigated whether this can
+provide the right properties for \sh{} beyond adjointness.  On the one
+hand, too much might be true: \sh{} does not preserve identity types,
+but the general dependently typed rules for $F$ might force it to do
+so. On the other, too little might be true: for applications such as
 relating the shape of the topological circle to the homotopical circle,
 extra properties are needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of
 these issues can be addressed as in \citep{shulman15realcohesion} by
@@ -3033,8 +3042,8 @@ representing $\Flat{}$ and $\Sharp{}$ themselves).  Another area for
 future work is to consider $\infty$-category semantics, rather than the
 1-categorical semantics of derivations that we have considered here.  A
 final area for future work is to investigate applications of other mode
-theories in our generalized adjoint logic, beyond the motivating
-example of cohesive homotopy type theory.
+theories in our generalized adjoint logic, beyond the motivating example
+of cohesive homotopy type theory.
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { %% \small
