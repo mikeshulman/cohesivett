@@ -1470,7 +1470,7 @@ $\semFo{e}$ to show $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$.
 Again, $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$ suffices.  
 
 \item \semFo{e};{\sem{{\FL D}}} = \sem{\FL {\tr{(\comph{1}{e})} D}}
-After unfolding definitions and applying the inductive hypothesis, we need to know that
+After unfolding definitions and applying the IH, we need to know that
 $\semFo{e}_{(\semF{\alpha} {A})}; \inv{\semFcomp(\alpha,\beta)} = \inv{\semFcomp(\alpha,\beta')}; \semFo{(\comph{1_\alpha}{e})}_{A}$
 as arrows \arrow{}{\semF{\beta'}{\semF{\alpha}{A}}}{\semF{\compo \alpha {\beta'}}{A}},
 which is true by naturality of $\semFcomp(-,-)$ and $\semFo{1} = 1$ and $\semF{\beta}{1} = 1$.
@@ -1545,9 +1545,9 @@ so it suffices to show
 \[
 \semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)} = 1
 \]
-But by conjugation $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ and by
-coherence $\inv{\semUcomp(\alpha,1)} =_{\arrow{}{\semU{\alpha}{\sem{A}}}{\semU{\alpha}{\semU{1}{\sem{A}}}}} \semU{\alpha}{\semUone}$
-so this is true.
+But $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ by conjugation, and
+$\inv{\semUcomp(\alpha,1)} =_{\arrow{}{\semU{\alpha}{\sem{A}}}{\semU{\alpha}{\semU{1}{\sem{A}}}}} \semU{\alpha}{\semUone}$
+by coherence, so this is true.
 
 \end{itemize}
 
@@ -1581,7 +1581,8 @@ so collapsing inverses gives the result.
 \end{proof}
 
 \begin{lemma}\label{lem:semcut}
-For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}$
+  For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, we have
+  \[\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}. \]
 \end{lemma}
 
 \newcommand{\semofcut}[2]{{\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{#1}}};{\sem{#2}}}
@@ -1598,10 +1599,9 @@ After expanding definitions, we need to show that
 \[
 \semFcomp(\beta,\beta');\semF{\beta'}{(\semF{e};\semFone)};\semF{e'};\semFone = \semFo{\comph{e}{e'}};\semFone
 \]
-By functoriality, $\semF{\beta'}{(\semF{e};\semFone)} =
-\semF{\beta'}{\semF{e}};\semF{\beta'}{\semFone}$, and by naturality of
-\semFo{e'}, $\semF{e'};{\semF{1}{\semFone}} =
-\semF{\beta'}{\semFone};\semFo{e'}$,
+We have $\semF{\beta'}{(\semF{e};\semFone)} =
+\semF{\beta'}{\semF{e}};\semF{\beta'}{\semFone}$ by functoriality, and $\semF{e'};{\semF{1}{\semFone}} =
+\semF{\beta'}{\semFone};\semFo{e'}$ by naturality of \semFo{e'},
 so the LHS equals
 \[
 (\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{e'});{\semF{1}{\semFone}};\semFone
@@ -1691,13 +1691,13 @@ so collecting the three terms that are under \semF{\gamma}, to show that $LHS
 {\semFcomp(\beta,\alpha)};{\semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})}};{(\semrtol{1}{\alpha})} = \sem D
 \]
 By naturality of the adjunction,
-\[
+\begin{align*}
 \semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})};(\semrtol{1}{\alpha})
-= 
-\semrtol{({(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})};1)}{\alpha}
-=
+&= 
+\semrtol{({(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})};1)}{\alpha}\\
+&=
 {(\inv{\semFcomp(\beta,\alpha)};\sem{D})}
-\]
+\end{align*}
 so collapsing inverses gives the result.  
 
 \item $\semofcut D {(\FR \gamma e E)} = \sem{\FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}}$
@@ -1720,11 +1720,11 @@ $\semFcomp(\beta,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
 \item $\semofcut D {(\UR E)} = \sem{\UR {\cut D E}}$
 
 After expanding definitions and using the IH, we need to show
-\[
+\begin{multline*}
 \semFcomp(\beta,\beta');\semF{\beta'}{\sem{D}};\semltor{(\inv{\semFcomp(\beta',\alpha)};\sem{E})}{\alpha}
-=
-\semltor{(\inv{\semFcomp(\compo{\beta}{\beta'},\alpha)};\semFcomp(\beta,\compo{\beta'}{\alpha});\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
-\]
+\\=
+\semltor{(\inv{\semFcomp(\compo{\beta}{\beta'},\alpha)};\semFcomp(\beta,\compo{\beta'}{\alpha});\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}.
+\end{multline*}
 By the associativity coherence, 
 \[
 \inv{\semFcomp(\compo{\beta}{\beta'},\alpha)} = 
@@ -1732,7 +1732,7 @@ By the associativity coherence,
 \]
 and plugging this in to the RHS and then collapsing inverses gives 
 \[
-\semltor{(\semF{\alpha}{\semFcomp(\beta,\beta')};\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
+\semltor{(\semF{\alpha}{\semFcomp(\beta,\beta')};\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}.
 \]
 By naturality of \semltor{}{\alpha}, this is the same as
 \[
@@ -1834,8 +1834,8 @@ adjunction round-trip and $\semUo{1}$, it is equal to
 \[
 \semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
 \]
-By conjugation for \semFone, $\semrtol{\semFone}{1} = \semUone$, and by
-the associativity coherence, $\inv{\semUcomp(\alpha,1)} =
+By conjugation for \semFone, we have $\semrtol{\semFone}{1} = \semUone$, and by
+the associativity coherence, we have $\inv{\semUcomp(\alpha,1)} =
 \semU{\alpha}{\semUone}$, so canceling inverses gives the result.  
 
 \item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D}}$
