@@ -765,7 +765,7 @@ The following cut rule is admissible:
 \infer[\irl{cut}]
       {\seq {A_r} {\compo{\beta}{\alpha}} {C_p}}
       {\seq {A_r} {\beta} {B_q} &
-       \seq {B_r} {\alpha} {C_p}}
+       \seq {B_q} {\alpha} {C_p}}
 \]
 For example, consider the principal cut for $F$:
 \[
@@ -2303,7 +2303,7 @@ $\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.
 \begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple}
 \begin{enumerate}
 \item $\Bx{\dsd{d}}{} \la \Crc{\dsd{n}}{}$ 
-\item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{A}}$
+\item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{B}}$
 \end{enumerate}
 \end{theorem}
 
@@ -2485,7 +2485,7 @@ constructions in \dsd{c}, we can simplify the mode theory to the
 \begin{itemize}
 \item object \dsd{c}
 \item 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
-  $\compo{\dsd{r}}{\dsd{r}} = 1$, so the only 1-cells are $1$ and \dsd{r}
+  $\compo{\dsd{r}}{\dsd{r}} = \dsd{r}$, so the only 1-cells are $1$ and \dsd{r}
 \item 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
   t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$, so 
   the only 2-cells are $1_1$, $1_{\dsd{r}}$, and  $\dsd{unit}$. 
@@ -3045,6 +3045,9 @@ future work is to consider $\infty$-category semantics, rather than the
 final area for future work is to investigate applications of other mode
 theories in our generalized adjoint logic, beyond the motivating example
 of cohesive homotopy type theory.
+
+\paragraph{Acknowledgments}  We thank Jason Reed for discussions about
+this work.  
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { %% \small
