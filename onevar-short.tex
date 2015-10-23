@@ -134,7 +134,7 @@ pair of functors $F : \C \to \D$ and $U : \D \to \C$ such that maps
 prototypical adjunction, which provides a mnemonic for the notation, is
 where $U$ takes the underlying set of some algebraic structure such as a
 group, and $F$ is the free structure on a set---the adjunction property
-says that a structure-preserving map from $F C$ to $D$ corresponds to a
+says that a structure-preserving map from $F C$ to $D$ corresponds to
 a map of sets from $C$ to $U D$ (because the action on the structure is
 determined by being a homomorphism).  Adjunctions are important to the
 proof theories and $\lambda$-calculi of modal logics, because the
@@ -174,7 +174,7 @@ $\Pi_0 \la \Delta \la \Gamma \la \nabla$.  The idea is that
 $\mathcal{S}$ is some category of ``sets'' that provides a notion of
 ``point'', and \C\/ is some category of cohesive spaces built out of
 these sets, where points may be stuck together in some way (e.g. via
-topology).  $\Gamma$ takes the underlying set of points a cohesive
+topology).  $\Gamma$ takes the underlying set of points of a cohesive
 space, forgetting the cohesive structure.  This forgetful functor's
 right adjoint $\Gamma \la \nabla$ equips a set with codiscrete cohesion,
 where all points are stuck together; the adjunction says that a map
@@ -253,7 +253,7 @@ but unrelated adjunctions between two categories.  However, in order to
 describe an adjoint triple such as $\Delta \la \Gamma \la \nabla$, we
 need to know that the same functor $\Gamma$ is both a left and right
 adjoint.  To describe such a situation, we generalize to a 2-category of
-modes, where each mode $p$ determines a category, each morphism $\alpha
+modes, where each mode $p$ determines a category (also denoted by $p$), each morphism $\alpha
 : p \ge q$ determines adjoint functors $F_\alpha : p \to q$ and
 $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$, and each 2-cell $e :
 \tc \alpha  \beta : q \ge p$ determines a morphism of adjunctions between 
@@ -305,7 +305,7 @@ $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
 F_\alpha$ is a monad; $F_\alpha$ preserves colimits and $U_\alpha$
 preserves limits), as well as facts specific to a particular theory
 (e.g. for the adjoint triple above, $\Gamma$ preserves both colimits
-and limits, because it is an equivalent $U_\Delta$ and $F_\nabla$; the
+and limits, because it can be written either has $U_\Delta$ or $F_\nabla$; and the
 comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
 themselves adjoint).  Moreover, we can use different mode 2-categories
 to add additional structure; for example, moving from the walking
@@ -344,7 +344,7 @@ adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
-derivations.  In Section~\ref{sec:semantics}, discuss the semantics of
+derivations.  In Section~\ref{sec:semantics}, we discuss the semantics of
 the logic in pseudofunctors $\M \to \Adj$.  Finally, in
 Section~\ref{sec:triple}, we examine some specific mode specifications
 for adjoint triples, which are related to the rules for spatial type
@@ -388,18 +388,21 @@ category.
 %% a mode theory where equality of morphisms or 2-morphisms were
 %% undecidable.
 
-Each object $p$ of the mode category determines a category, and types
-represent objects of that category; the syntactic judgement \wftp{A}{p}
-will mean that $A$ is an object of the category $p$.  A morphism $\alpha
-: q \ge p$ in the mode category determines an adjunction between
-categories $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {}
-: p \to q$; syntactically, the action on objects is given by $\wftp{\F
-  \alpha A}{p}$ when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when
-$\wftp{A}{p}$.  We write $P$ for atomic propositions, each of which has
-a designated mode.  To add additional structure to a category or to all
-categories, we can add rules for additional connectives; for example, a
-rule \wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric
-in $p$) says that any category $p$ has a coproduct type constructor.
+In our intended semantics, each object $p$ of the mode category will
+determine a category (also denoted by $p$), and types will represent
+objects of that category; the syntactic judgement \wftp{A}{p} will
+mean that $A$ is an object of the category $p$.  A morphism $\alpha :
+q \ge p$ in the mode category will determine an adjunction between the
+categories $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha
+{} : p \to q$; syntactically, the action on objects is given by
+$\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$
+when $\wftp{A}{p}$.  We allow an arbitrary collection of atomic
+propositions (denoted $P$), each of which has a designated mode; these
+represent arbitrary objects of the corresponding categories.  To add
+additional structure to a category or to all categories, we can add
+rules for additional connectives; for example, a rule
+\wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric in
+$p$) says that any category $p$ has a coproduct type constructor.
 
 The sequent calculus judgement has the form \seq A \alpha C where
 \wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  The judgement
@@ -518,7 +521,7 @@ just any $\gamma$, but one where the triangle that it forms with
 $\alpha$ and $\beta$ is filled by a 2-cell, which is the second premise
 of the rule.  The direction of the 2-cell, and the fact that it may not
 be invertible, are chosen to match the intended semantics.  The case for
-\irl{UR} is dual.
+\irl{UL} is dual.
 
 Because we are interested not only in provability, but also in the
 equational theory of proofs in this logic, one might think the next step
@@ -533,12 +536,13 @@ judgement \seq{A}{\alpha}{B}.''
 
 We give some examples in Figure~\ref{fig:examples}; these examples and
 many more like them are in the companion Agda code.  First, we give the
-functorial action of $F$ on maps ($U$ is similar); note that because
-\M\/ is a strict 2-category, the identity 2-cell has type
+functorial action of $F$ on maps ($U$ is similar).  Note that because
+\M\/ is a strict 2-category, $\compo{1_q} \alpha$ is strictly equal to $\compo {\alpha} {1_p}$, so that
+the identity 2-cell can be given the type
 \tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.  Next, the composites
 $FU$ and $UF$ should be a comonad and a monad respectively; define $\Bx
-\alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha} :=
-\F{\alpha}{(\U{\alpha}{A})}$ for any $\alpha : q \ge p$.  As an example
+\alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha}A :=
+\U{\alpha}{(\F{\alpha}{A})}$ for any $\alpha : q \ge p$.  As an example
 of the (co)monad structure, the comonad comultiplication is defined in
 the figure.  An advantage of using a cut-free sequent calculus is that
 we can observe some non-provabilities.  For example, there is not in
@@ -767,7 +771,7 @@ The first case is for atomic propositions.  The next two cases are the
 principal cuts, when a right rule meets a left rule; these correspond to
 $\beta$-reduction in natural deduction.  The next two cases are
 right-commutative cuts, which push any $D$ inside a right rule for $E$.
-The final two cases are left commutative cuts, which push any $E$ inside
+The final two cases are left-commutative cuts, which push any $E$ inside
 a left rule for $D$.  The left-commutative and right-commutative cuts
 overlap when $D$ is a left rule and $E$ is a right rule; we give
 precedence to right-commutative cuts definitionally, but using the
@@ -990,7 +994,7 @@ we expand the statement of completeness.
 The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
 \begin{enumerate}
 \item An object $p$ of \M is sent to the category whose objects are
-  \wftp{A}{p} and morphisms are morphisms are derivations of
+  \wftp{A}{p} and morphisms are derivations of
   \seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities given by
   \ident{} and composition given by \cutsym.
 
@@ -1033,7 +1037,7 @@ coherence---but they are all true for \ap{}{}.
 
 Next, we summarize some constructions on $F_\alpha \la U_\alpha$ that
 can be made in the logic. We write $D \cuti E$ as an infix notation for
-\cut{D}{E} (composition in diagrammatic notation).
+\cut{D}{E} (composition in diagrammatic order).
 
 \begin{lemma}[Some constructions on adjunctions] \label{lem:constructionsonadjunctions}
 Let $\alpha : q \ge p$.  Then:
@@ -2147,7 +2151,7 @@ and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{} \la
 \F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right or
 left adjoint of a given functor is unique up to isomorphism, it follows
 that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$
-are equal, resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd
+are isomorphic, resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd
   d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than
 proving $\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd
   n}{}$ and then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from
@@ -2261,8 +2265,10 @@ $\Sharp{\Flat{A}} \iso \Sharp A$.  Moreover, $\Delta$ and $\nabla$ should
 be full and faithful, because a map between discrete or codiscrete
 spaces is exactly a map of sets.
 
-We can capture these properties by considering a different mode
-2-category, the ``walking reflection''.  This has the same objects and
+Recalling that a right (resp.\ left) adjoint is full and faithful
+exactly when the counit (resp.\ unit) of the adjunction is an isomorphism,
+we can capture these properties by considering a different mode
+2-category, the ``walking reflection''. This has the same objects and
 morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
 the counit being just the identity 2-cell, and the equations for
 $\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
