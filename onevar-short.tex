@@ -362,9 +362,15 @@ in Agda~\citep{norell07thesis}.\footnote{See
 
 \subsection{Sequent Calculus}
 
-The logic is parametrized by a strict 2-category of modes.  We write
-$p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p \ge q$
-for the 1-cells, and $e : \tc \alpha \beta$ for the 2-cells.  We write
+The logic is parametrized by a strict 2-category $\M$ of modes.  We
+write $p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p
+\ge q$ for the 1-cells from $q$ to $p$, and $e : \tc \alpha \beta$ for
+the 2-cells.  We write $p\ge q$ for the 1-cells even though $\M$ need
+not be a partial order, with arrows pointing ``lesser to greater'';
+and we order it $p\ge q$ because in our judgments the $p$-mode is on
+the left and the $q$-mode on the right (``validity is greater than truth'').
+
+We write
 \compo{\beta}{\alpha} for 1-cell composition in function composition
 order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
 $\compo{\beta}{\alpha} : r \ge p$), \compv{e_1}{e_2} for vertical
@@ -388,15 +394,21 @@ category.
 %% a mode theory where equality of morphisms or 2-morphisms were
 %% undecidable.
 
-In our intended semantics, each object $p$ of the mode category will
-determine a category (also denoted by $p$), and types will represent
-objects of that category; the syntactic judgement \wftp{A}{p} will
-mean that $A$ is an object of the category $p$.  A morphism $\alpha :
-q \ge p$ in the mode category will determine an adjunction between the
-categories $p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha
-{} : p \to q$; syntactically, the action on objects is given by
-$\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$
-when $\wftp{A}{p}$.  We allow an arbitrary collection of atomic
+In our semantics, each object $p$ of the mode category $\M$
+will determine a category (also denoted by $p$); the syntactic
+judgement \wftp{A}{p} will mean that $A$ determines an object of the
+category $p$.  A morphism $\alpha : q \ge p$ in $\M$ determines an
+adjunction $\F\alpha{} \la \U\alpha{}$, with $\F \alpha {} : q \to p$
+and $\U \alpha {} : p \to q$; note that the right adjoints are
+covariant and the left adjoints contravariant.  Syntactically, the
+action on objects is given by $\wftp{\F \alpha A}{p}$ when
+$\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.
+Finally, a 2-cell $e:\tc\alpha\beta$ in $\M$ determines natural
+transformations $\U\alpha{} \to \U\beta{}$ and $\F\beta{}\to
+\F\alpha{}$ which are ``conjugate''~\citep[\S
+IV.7]{maclane98working}.
+
+We allow an arbitrary collection of atomic
 propositions (denoted $P$), each of which has a designated mode; these
 represent arbitrary objects of the corresponding categories.  To add
 additional structure to a category or to all categories, we can add
@@ -490,8 +502,8 @@ for coproducts in Figure~\ref{fig:coprod}.
 %% \end{array}
 %% \]
 
-\caption{Rules for coproducts; see extended version for identity, cut,
-  and equational theory}
+\caption{Rules for coproducts; see extended version for the admissible identity and cut rules,
+  and for the equational theory extending the rules in Section~\ref{sec:rules:equations}}
 \label{fig:coprod}
 \end{figure}
 
@@ -904,15 +916,18 @@ are proved by mutual induction, and use the preceding lines:
 \section{Semantics}
 \label{sec:semantics}
 
-In the extended version of this paper, we give a detailed account of the
-following result:
+In the extended version of this paper, we give a detailed account of
+the following result.  Let $\Adj$ be the 2-category whose
+objects are categories, whose morphisms $\C\to\D$ are
+adjunctions $L \la R$ with $L:\D\to \C$ and $R:\C\to\D$, and whose
+2-cells $(L^1 \la R^1)\to (L^2 \la R^2)$ are conjugate pairs of
+transformations $t^L : L^2 \to L^1$ and $t^R : R^1 \to R^2$.
 
 \begin{theorem}[Soundness and Completeness]
 For any mode theory \M, the rules of adjoint logic can be interpreted in
-any pseudofunctor $\M \to \Adj$, where $\Adj$ is the 2-category of
-categories, adjunctions, and conjugate natural transformations.
+any pseudofunctor $\M \to \Adj$.
 Moreover, there is a pseudofunctor $\M \to \Adj$ determined by the
-syntax.
+syntax, in which validity is derivability.
 \end{theorem}
 A pseudofunctor is a map between 2-categories that preserves identity
 and composition of 1-cells up to coherent isomorphism, rather than on
@@ -1005,9 +1020,9 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
   Each $\alpha : q \ge p$ is sent to $F_\alpha \la U_\alpha$ in
   \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
 
-  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
-    morphism $(F(e),U(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
-    U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
+  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to a conjugate pair of transformations
+     $(F(e),U(e)) : (F_\alpha \la U_\alpha) \to (F_\beta \la
+    U_\beta)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
   \end{itemize}
 
 \item $\F 1 A \iso A$ and $\U 1 A \iso A$ naturally in $A$, and these
