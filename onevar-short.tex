@@ -262,15 +262,16 @@ but unrelated adjunctions between two categories.  However, in order to
 describe an adjoint triple such as $\Delta \la \Gamma \la \nabla$, we
 need to know that the same functor $\Gamma$ is both a left and right
 adjoint.  To describe such a situation, we generalize to a 2-category of
-modes. Each mode $p$ determines a category (also denoted by $p$).  Each
-morphism $\alpha : p \ge q$ determines adjoint functors $F_\alpha : p
-\to q$ and $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$.  Each
+modes, and arrange the syntax of the logic to capture the following
+semantics.  Each mode $p$ determines a category (also denoted by $p$).
+Each morphism $\alpha : p \ge q$ determines adjoint functors $F_\alpha :
+p \to q$ and $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$.  Each
 2-cell $e : \tc \alpha \beta$ determines a morphism of adjunctions
 between $F_\beta \la U_\beta$ and $F_\alpha \la U_\alpha$, which
 consists of natural transformations ${F_\beta} \to {F_\alpha}$ and
 ${U_\alpha} \to {U_\beta}$ that are conjugate under the adjunction
-structure~\citep[\S IV.7]{maclane98working}.  For example, an
-adjoint triple is specified by the mode 2-category with
+structure~\citep[\S IV.7]{maclane98working}.  Thus, an adjoint
+triple is specified by the mode 2-category with
 \begin{itemize}
 \item objects $c$ and $s$
 \item 1-cells $\dsd{d} : s \ge c$ and $\dsd{n} : c \ge s$
@@ -335,20 +336,17 @@ that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
 categories, adjunctions, and conjugate pairs of natural
-transformations~\citep[\S IV.7]{maclane98working}.  By $S$, each mode
-determines a 1-category, and derivations in the logic are interpreted as
-morphisms in these categories.  The action of $S$ on 1- and 2-cells is
-used to interpret $F$ and $U$.  We show that the syntax forms such a
-pseudofunctor, and conjecture that the syntax is initial in some
-category or 2-category of pseudofunctors, but have not yet tried to make
-this precise.  Third, we consider only a logic of simple-types, rather
-than a dependent type theory.  Because many of make many of the
-statements we would like to make require proving some equations between
-derivations (e.g. the monad laws), we we give an equality judgement on
-sequent calculus derivations.  This judgement is interpreted by actual
-equality of morphisms in the semantics above, but we intend some of
-these rules to be propositional equalities in an eventual adjoint type
-theory.
+transformations~\citep[\S IV.7]{maclane98working}.  We show that the
+syntax forms such a pseudofunctor, and conjecture that the syntax is
+initial in some category or 2-category of pseudofunctors, but have not
+yet tried to make this precise.  Third, we consider only a logic of
+simple-types, rather than a dependent type theory.  Because 
+many of the statements we would like to make require proving some
+equations between derivations (e.g. the monad laws), we we give an
+equality judgement on sequent calculus derivations.  This judgement is
+interpreted by actual equality of morphisms in the semantics above, but
+we intend some of these rules to be propositional equalities in an
+eventual adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
@@ -401,7 +399,7 @@ category.
 %% undecidable.
 
 In our pseudofunctor semantics, each object $p$ of the mode category
-$\M$ will determine a category (also denoted by $p$); the syntactic
+$\M$ will determine a category (also denoted by $p$). Syntactically, the
 judgement \wftp{A}{p} will mean that $A$ determines an object of the
 category $p$.  A morphism $\alpha : q \ge p$ in $\M$ determines an
 adjunction $\F\alpha{} \la \U\alpha{}$, with $\F \alpha {} : q \to p$
@@ -409,8 +407,8 @@ and $\U \alpha {} : p \to q$; note that the right adjoints are covariant
 and the left adjoints contravariant.  Syntactically, the action on
 objects is given by $\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and
 $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  The ``pseudo'' of the
-pseudofunctor means that, for example, the types \F{\beta}{\F \alpha A}
-and \F{\F {\compo{\alpha}{\beta}} A} will be isomorphic but not
+pseudofunctor means that, for example, the types \F{\beta}{(\F \alpha
+  A)} and {\F {\compo{\alpha}{\beta}} A} will be isomorphic but not
 definitionally equal.  Finally, a 2-cell $e:\tc\alpha\beta$ in $\M$
 determines natural transformations $\U\alpha{} \to \U\beta{}$ and
 $\F\beta{}\to \F\alpha{}$ which are ``conjugate''~\citep[\S
@@ -502,17 +500,17 @@ transformation transforms a derivation of \seq{A}{\alpha}{C} into a
 derivation of \seq{A}{\beta}{C}.  The admissibile rules are discussed
 further in Section~\ref{sec:admissible} below.  
 
-Consider the rules \irl{FL} and \irl{UR}.  In the special case where
-$\beta$ is 1, these rules pass from \seq{\F {\alpha}{A}}{1}{C} and
-\seq{A}{1}{\U{\alpha}{C}} to \seq{A}{\alpha}{C}, which makes sense
-because the judgement \seq{A}{\alpha}{C} is intended to mean either/both
-of these.  When $\beta$ is not 1, these rules compose the mode morphism
-in the connective with the mode morphism in the judgement. Semantically,
-this corresponds to one direction of the composition isomorphism between
+Consider the rules \irl{FL} and \irl{UR}.  When $\beta$ is 1, these
+rules pass from \seq{\F {\alpha}{A}}{1}{C} and \seq{A}{1}{\U{\alpha}{C}}
+to \seq{A}{\alpha}{C}, which makes sense because the judgement
+\seq{A}{\alpha}{C} is intended to mean either/both of these.  When
+$\beta$ is not 1, these rules compose the mode morphism in the
+connective with the mode morphism in the sequent.  Semantically, this
+corresponds to one direction of the composition isomorphism between
 $\F{\compo{\alpha}{\beta}}{A}$ and $\F{\beta}{\F{{\alpha}}{A}}$ and
 similarly for $U$; see the derivation in Example 2 in
-Figure~\ref{fig:examples}.  While we do not formally give a focused
-sequent calculus, we conjecture that these two rules are invertible.
+Figure~\ref{fig:examples}.  We conjecture that these two rules are
+invertible.
 
 Next, consider \irl{FR} (\irl{UL} is dual).  The rule is a bit complex
 because it involves three different aspects of the pseudofunctor
@@ -628,6 +626,28 @@ Example 5: $F$ preserves coproducts (one half of a natural isomorphism):
 \label{fig:examples}
 \end{figure}
 
+We give some additional examples in Figure~\ref{fig:examples}; these
+examples and many more like them are in the companion Agda code.  The
+composites $FU$ and $UF$ should be a comonad and a monad respectively;
+define $\Bx \alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha}A :=
+\U{\alpha}{(\F{\alpha}{A})}$ for any $\alpha : q \ge p$.  As an example
+of the (co)monad structure, the comonad comultiplication is defined in
+the figure.
+An advantage of using a cut-free sequent calculus is that
+we can observe some non-provabilities.  For example, there is not in
+general a map \seq{P}{1_p}{\Bx{\alpha}{P}} (unit for the comonad): by
+inversion, a derivation must begin with \irl{FR}, but to apply this
+rule, we need a $\gamma : p \ge q$ and a 2-cell
+$\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.  
+Next, we give
+one half of the isomorphism showing that $F$ preserves coproducts;
+this is a consequence of the left rule for $\coprd{P}{Q}$ allowing
+an arbitrary $\alpha$.
+%%   The key idea is that we can apply the left rule for $F$ first, and
+%% then apply the left rule (which allows an arbitrary $\alpha$), before
+%% choosing between \irl{Inl} and \irl{Inr} on the right; this direction
+%% of map doesn't exist for \U{\alpha}{(\coprd{P}{Q})} because the left
+%% rule for $U$ cannot be applied until after applying \irl{UR}.
 
 Because we are interested not only in provability, but also in the
 equational theory of proofs in this logic, one might think the next step
@@ -639,44 +659,24 @@ terms.  We sometimes write $D : \seq{A}{\alpha}{B}$ to indicate
 ``typing'' in the metalanguage; i.e. this should be read ``$D$ is a
 derivation tree of the judgement \seq{A}{\alpha}{B}.''
 
-We give some additional examples in Figure~\ref{fig:examples}; these
-examples and many more like them are in the companion Agda code.  The
-composites $FU$ and $UF$ should be a comonad and a monad respectively;
-define $\Bx \alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha}A :=
-\U{\alpha}{(\F{\alpha}{A})}$ for any $\alpha : q \ge p$.  As an example
-of the (co)monad structure, the comonad comultiplication is defined in
-the figure.  An advantage of using a cut-free sequent calculus is that
-we can observe some non-provabilities.  For example, there is not in
-general a map \seq{P}{1_p}{\Bx{\alpha}{P}} (unit for the comonad): by
-inversion, a derivation must begin with \irl{FR}, but to apply this
-rule, we need a $\gamma : p \ge q$ and a 2-cell
-$\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.  Next, we give
-one half of the isomorphism showing that $F$ preserves coproducts.  The
-key idea is that we can apply the left rule for $F$ first, and then
-case-analyze the $\coprd{P}{Q}$, before choosing between \irl{Inl} and
-\irl{Inr} on the right; this direction of map doesn't exist for
-\U{\alpha}{(\coprd{P}{Q})} because the left rule for $U$ cannot be
-applied until after applying \irl{UR}.
-
 \subsection{Admissible Rules}
 \label{sec:admissible}
 
 \paragraph{Adjunction morphisms}
 
-The following rule provides the action of a 2-cell $e : \tc \alpha
-\beta$ on a derivation $D : \seq{A}{\alpha}{B}$, yielding a new
-derivation which we write as $\tr{e}{D} : \seq{A}{\beta}{B}$.
-Semantically, $D$ is interpreted as a map \arrow{}{\F \alpha A}{B}
-(say), so to get a map \arrow{}{\F \beta A}{B} we can precompose with
-the $F$ part of the morphism of adjunctions determined by $e$.
-
+As discussed above, composition with the natural transformations
+$\F{\beta}{} \to \F{\alpha}{}$ and $\U{\alpha}{} \to \U{\beta}{}$
+induced by a 2-cell $e : \tc \alpha \beta$ is an admissible rule, which
+we write as $\tr{e}{D} : \seq{A}{\beta}{B}$:
 \[
 \infer[\irl{\tr{-}{-}}]
       {\seq A {\beta} C}
       {\tc \alpha \beta &
        \seq A {\alpha} {C}}
 \]
-This rule is defined as a transformation on derivations as follows:
+The definition of this operation pushes the natural transformation into
+the premises of a derivation until it reaches a rule that builds in a
+transformation (\irl{FR},\irl{UL},\irl{hyp}):
 \[
 \begin{array}{rcl}
   \tr {e}{\hyp e'} & := & \hyp {(\compv{e'}{e})}\\
@@ -686,11 +686,6 @@ This rule is defined as a transformation on derivations as follows:
   \tr {e}{\UR D} & := & \UR {\tr {(\comph{e}{1})} D} \\
 \end{array}
 \]
-%
-The hypothesis rule and \irl{FR} and \irl{UL} build in some movement
-along a 2-cell, so in those cases we compose the $e$ with the 2-cells
-that are already present.  For \irl{FL} and \irl{UR} (and for the rules
-for coproducts), the operation commutes with the rule.
 
 \paragraph{Identity}
 
@@ -700,18 +695,6 @@ The identity rule is admissible:
       {\seq {A_p} {1} {A_p}}
       {}
 \]
-The general strategy is ``apply the invertible rule and then the focus
-rule and then the inductive hypothesis.'' 
-%% For example, for $\F \alpha
-%% A$, the following reduces the problem to identity on $A$:
-%% \[
-%% \infer[\irl{FL}]
-%%       {\seq{\F {\alpha : q \ge p} A}{1}{\F \alpha A}}
-%%       {\infer[\irl{FR}]
-%%              {\seq{A}{\alpha}{\F \alpha A}}
-%%              {1_q : q \ge q & 1 : \tc{\compo{1}{\alpha}}{\alpha} &
-%%                \seq{A}{1}{A}}}
-%% \]
 As a function from types to derivations, we have
 \[
 \begin{array}{rcl}
@@ -796,19 +779,18 @@ p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U
 
 When we construct proofs using the admissible rules \tr{e}{D} and
 \ident{A} and \cut{D}{E}, there is a natural notion of definitional
-equality induced by the above definitions of these operations (e.g.
-$\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
-    A}}$)---the cut- and identity-free proofs are normal forms, and a
-proof using cut or identity is equal to its normal form.  However, to
-prove the desired equations in the examples below, we will need some
-additional ``propositional'' equations, which, because we are using
-derivations as proof terms, we represent by a judgement \ap{D}{D'} on
-two derivations $D,D' : \seq{A}{\alpha}{C}$.  This judgement is the
-least congruence closed under the following rules.  First, we have
-uniqueness/$\eta$ rules.  The rule for $F$ says that any map from
-\F{\alpha}{A} is equal to a derivation that begins with an application
-of the left rule and then cuts the original derivation with the right
-rule; the rule for $U$ is dual.
+equality induced by the above definitions of these operations---the cut-
+and identity-free proofs are normal forms, and a proof using cut or
+identity is equal to its normal form.  However, to prove the desired
+equations in the examples below, we will need some additional
+``propositional'' equations, which, because we are using derivations as
+proof terms, we represent by a judgement \ap{D}{D'} on two derivations
+$D,D' : \seq{A}{\alpha}{C}$.  This judgement is the least congruence
+closed under the following rules.  First, we have uniqueness/$\eta$
+rules.  The rule for $F$ says that any map from \F{\alpha}{A} is equal
+to a derivation that begins with an application of the left rule and
+then cuts the original derivation with the right rule; the rule for $U$
+is dual.
 
 \[
 \begin{array}{l}
@@ -853,14 +835,10 @@ have
       {\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}
 \]
 
-\subsubsection{Admissible rules}
-
-The following equality rules are admissible for logic containing the
-$U/F$ rules described above and the coproduct rules in
-Figure~\ref{fig:coprod}.  The proofs have a lot of cases (about 800
-lines of Agda total) but are not difficult, except for somewhat subtle
-staging.  The rules in each of the following lines (except the first)
-are proved by mutual induction, and use the preceding lines:
+The following additional equality rules are admissible for logic
+containing the $U/F$ rules described above and the coproduct rules in
+Figure~\ref{fig:coprod}.  The rules in each line (except the first) are
+proved by mutual induction, and use the preceding lines:
 
 \[
 \begin{array}{c}
@@ -903,95 +881,25 @@ are proved by mutual induction, and use the preceding lines:
 \label{sec:semantics}
 
 In the extended version of this paper, we give a detailed account of
-the following result.  Let $\Adj$ be the 2-category whose
-objects are categories, whose morphisms $\C\to\D$ are
-adjunctions $L \la R$ with $L:\D\to \C$ and $R:\C\to\D$, and whose
-2-cells $(L^1 \la R^1)\to (L^2 \la R^2)$ are conjugate pairs of
-transformations $t^L : L^2 \to L^1$ and $t^R : R^1 \to R^2$.
+soundness and completeness results.  Let $\Adj$ be the 2-category whose
+objects are categories, whose morphisms $\C\to\D$ are adjunctions $L \la
+R$ with $L:\D\to \C$ and $R:\C\to\D$, and whose 2-cells $(L^1 \la
+R^1)\to (L^2 \la R^2)$ are conjugate pairs of transformations $t^L : L^2
+\to L^1$ and $t^R : R^1 \to R^2$.  A pseudofunctor is a map between
+2-categories that preserves identity and composition of 1-cells up to
+coherent isomorphism, rather than on the nose.
 
-\begin{theorem}[Soundness and Completeness]
+\begin{theorem}[Soundness]
 For any mode theory \M, the rules of adjoint logic can be interpreted in
 any pseudofunctor $\M \to \Adj$.
-Moreover, there is a pseudofunctor $\M \to \Adj$ determined by the
-syntax, in which validity is derivability.
 \end{theorem}
-A pseudofunctor is a map between 2-categories that preserves identity
-and composition of 1-cells up to coherent isomorphism, rather than on
-the nose. In this case, we have a pseudofunctor because $\F 1 A \iso A
+
+In this case, the rules describe a pseudofunctor because $\F 1 A \iso A
 \iso \U 1 A$ and $\F{\compo{\beta}{\alpha}}{A} \iso
 \F{\alpha}{\F{\beta}{A}}$ and $\U{\compo{\beta}{\alpha}}{A} \iso
-\U{\beta}{\U{\alpha}{A}}$, but these are not equalities of types.  Here
-we expand the statement of completeness.
+\U{\beta}{\U{\alpha}{A}}$, but these are not equalities of types.  
 
-%% 
-%% Some standard category-theoretic terminology
-%% applied to categories of this form unpacks as follows:
-%% \begin{enumerate}
-%% \item For $\wftp{A,B}{p}$, an isomorphism $A \iso B$ consists of a pair $D :
-%% \seq{A}{1}{B}$ and $E : \seq{B}{1}{A}$ such that
-%% $\ap{{D} \cuti {E}}{\ident{A}}$ and $\ap{{E} \cuti {D}}{\ident{B}}$.
-
-%% \item For modes $p$ and $q$, a functor from $p$ to $q$ consists of 
-%% a function $G_0$ from types with mode $p$ to types with mode $q$ 
-%% and a function $G_1$ from derivations \seq{A}{1}{B} to 
-%% derivations \seq{G_0 \, A}{1}{G_0 \, B}, such that
-%% $\ap {G_1(\ident{A})}  {\ident{G_0 A}}$
-%% and
-%% $\ap {G_1(D \cuti E)}  {G_1(D) \cuti G_1(E)}$.
-
-%% \item For two functors $G,H : p \to q$, a natural transformation $t : G
-%%   \to H$ consists of a family of derivations $D_A :
-%%   \seq{G_0(A)}{1}{H_0(A)}$ for each \wftp{A}{p}, such that for any $D :
-%%   \seq{A}{1_p}{B}$, \ap{\cut{D_A}{(H_1(D))}}{\cut{(G_1(D))}{D_B}}.  A
-%%   natural isomorphism consists of a natural transformation along with
-%%   inverses demonstrating that each $D_A$ is an isomorphism $G_0(A) \iso
-%%   H_0(A)$.  
-
-%% \item For two functors $L,R : p \to q$, an adjunction $L \la R$ (using
-%%   the natural-bijection-of-hom-sets definition) consists of functions
-%%   $\ltor{-}{} : (\seq{L_0(A)}{1}{B}) \, \to \, (\seq{A}{1}{R_0(B)})$ and
-%%   $\rtol{-}{} : (\seq{A}{1}{R_0(B)}) \, \to \, (\seq{L_0(A)}{1}{B})$ which are
-%%   mutually inverse and such that \ltor{-}{} is natural in $A$ and $B$: for
-%%   $D_1 : \seq{A'}{1}{A}$ and $D_3 : \seq{B}{1}{B'}$ and $D_2 :
-%%   \seq{L_0(A)}{1}{B}$, \ap{\ltor{(L_1(D_1) \cuti D_2 \cuti D_3)}{}}{D_1
-%%     \cuti \ltor{D_2}{} \cuti {R_1(D_3)}} (it follows that \rtol{-}{} is
-%%   natural as well).  
-
-%% \item A morphism of adjunctions (or ``adjunction morphism'') from $L^1
-%%   \la_1 R^1$ to $L^2 \la_2 R^2$ consists of two natural transformations
-%%   $t^L : L^1 \to L^2$ and $t^R : R^2 \to R^1$ between the corresponding
-%%   functors that are ``conjugate'' under the adjunction
-%%   structure~\citep[\S IV.7]{maclane98working}.
-%%   This means that for any $D : \seq{L^2(A)}{1}{B}$ we have
-%%   \[
-%%   \ltor{(t^L \cuti D)}{1} = \ltor{D}{2} \cuti t^R.
-%%   \]
-%%   An adjunction isomorphism consists of an adjunction morphism together
-%%   with inverses showing that $t^L$ and $t^R$ are each natural
-%%   isomorphisms.\footnote{This definition is equivalent to ``two inverse
-%%     adjunction morphisms,'' similarly to how isomorphisms that are
-%%     natural are the same as iso-natural transformations---we can recover
-%%     the conjugation condition for one direction from the other.}
-
-%% \item Because we treat equality of morphisms as
-%%   propositional/proof-irrelevant, two adjunction morphisms $(t^L,t^R)$
-%%   and $({u^L},{u^R}')$ between the same two adjunctions are equal iff
-%%   $\ap{{t^L}_A}{{u^L}_A}$ and $\ap{{t^L}_A}{{u^L}_A}$
-%%   for all $A$.
-%% \end{enumerate}
-%% %
-%% While these definitions are ``external'' (meta-theoretic), we are
-%% hopeful that it would be possible to internalize them in a dependent
-%% type theory based on adjoint logic.  For example, although the above
-%% definition allows a functor to be given by arbitrary meta-theoretic
-%% functions, in all of the examples we consider, the action on objects is
-%% in fact given by a syntactic type with a ``placeholder'', and the action
-%% on morphisms is given by taking an assumed derivation $D$ and applying
-%% rules to it.  Similarly, all of the equalities are proved by chaining
-%% together the equality rules (including the admissible ones, such as
-%% associativity and identity of cut) from the previous section.
-
-\begin{theorem}[Syntax Determines a Pseudofunctor] \label{thm:syntacticpseudofunctor}
+\begin{theorem}[Completeness] \label{thm:syntacticpseudofunctor}
 The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
 \begin{enumerate}
 \item An object $p$ of \M is sent to the category whose objects are
@@ -1078,1056 +986,6 @@ conditions, and inverse laws are all true for \ap{}{}; the construction
 is about 150 lines of Agda.
 \end{proof}
 
-%% \section{Semantics}
-%% \label{sec:semantics}
-
-%% \newcommand\semF[2]{\ensuremath{\mathcal{F}_{#1} \,\, #2}}
-%% \newcommand\semU[2]{\ensuremath{\mathcal{U}_{#1} \,\, #2}}
-%% \newcommand\semFo[1]{\ensuremath{{\mathcal{F}_{#1}}}}
-%% \newcommand\semUo[1]{\ensuremath{\mathcal{U}_{#1}}}
-%% \newcommand\semFone{\ensuremath{{\mathcal{F}^1}}}
-%% \newcommand\semUone{\ensuremath{{\mathcal{U}^1}}}
-%% \newcommand\semUcomp{\ensuremath{\mathcal{U}^\circ}}
-%% \newcommand\semFcomp{\ensuremath{\mathcal{F}^\circ}}
-%% \newcommand\semltor[2]{\ensuremath{#1^{\vartriangleright_{#2}}}}
-%% \newcommand\semrtol[2]{\ensuremath{#1^{\vartriangleleft_{#2}}}}
-
-%% \newcommand\seminl[0]{\ensuremath{\mathit{inl}}}
-%% \newcommand\seminr[0]{\ensuremath{\mathit{inr}}}
-%% \newcommand\semcase[2]{\ensuremath{[#1,#2]}}
-
-%% Next, we show that we can interpret the rules of adjoint logic in any
-%% pseudofunctor $S : \M \to \Adj$.  This shows that the syntax is sound
-%% for these models.  On the semantic side, we unpack the definition of a
-%% pseudofunctor as follows:
-%% \begin{itemize}
-%% \item We write $\C_p$ for $S(p)$.  We write ``$;$'' for composition of
-%%   morphisms in $\C_p$ in diagrammatic order.
-
-%% \item We write $\semFo{\alpha}{} \la \semUo{\alpha}$ for $S(\alpha)$,
-%%   and \semltor{-}{\alpha} and \semrtol{-}{\alpha} for the two maps of
-%%   hom-sets of the adjunction.  Naturality of the maps of hom-sets says
-%%   that $\semltor{(\semF{\alpha}{m_1};m_2;m_3)}{\alpha} =
-%%   m_1;\semltor{m_2}{\alpha};\semU{\alpha}{m_3}$ and
-%%   $\semrtol{(m_1;m_2;\semU{\alpha}{m_3})}{\alpha} =
-%%   \semF{\alpha}{m_1};{\semrtol{m_2}{\alpha}};{m_3}$.
-
-%% \item We write $\semFo{e} : \arrow{}{\semFo \beta A}{\semFo \alpha A}$
-%%   and $\semUo{e} : \arrow{}{\semUo \alpha A}{\semUo \beta A}$ when {e :
-%%     \tc{\alpha}{\beta}} for the components of the two natural
-%%   transformations in the adjunction morphism $S(e) :
-%%   \arrow{}{\semFo{\beta}{} \la \semUo{\beta}} {\semFo{\alpha}{} \la
-%%     \semUo{\alpha}}$.  Functoriality gives that $\semFo{\compv{e}{e'}} =
-%%   \semFo{e'};\semFo{e}$ and $\semFo{1} = 1$ and $\semUo{\compv{e}{e'}} =
-%%   \semUo{e};\semUo{e'}$ and $\semUo{1} = 1$.  The conjugation property 
-%%   specifies that for any $m :
-%%   \arrow{}{\semF{\alpha}{A}}{B}$, we have $\semltor{m}{\alpha};\semUo{e}
-%%   =_{\arrow{}{A}{\semU{\beta}{B}}} \semltor{(\semFo{e};m)}{\beta}$, or
-%%   equivalently that for any $m : \arrow{}{{A}}{\semU{\alpha} B}$, we
-%%   have $\semFo{e};\semrtol{m}{\alpha} =_{\arrow{}{\semF \beta A}{B}}
-%%   \semrtol{(m;\semUo{e})}{\beta}$.
-
-%% \item We write $\semFone : \semF{1}{A} \iso A$ and $\semUone :
-%%   \semU{1}{A} \iso A$ for the components of the two natural isomorphisms
-%%   in the adjunction isomorphism $S^1$ between $\semFo{1}{} \la
-%%   \semUo{1}$ and the identity adjunction.  The conjugation property
-%%   specifies that for any $m : \arrow{}{A}{B}$, $\ltor{(\semFone_A;m)}{1}
-%%   = m;\inv{\semUone_B}$, and for any $m : \arrow{}{A}{B}$,
-%%   $\semrtol{(m;\inv{\semUone})}{1} = \semFone;m$.  In particular, taking
-%%   $m = 1$ in the former, $\ltor{(\semFone_A)}{{1}} =
-%%   \inv{(\semUone_A)}$.
-
-%% \item We write $\semFcomp(\beta,\alpha) : \semF{\compo{\beta}{\alpha}}{A} \iso
-%%   \semF{\alpha}{(\semF \beta A)}$ and $\semUcomp(\beta,\alpha) :
-%%   \semU{\compo{\beta}{\alpha}}{A} \iso \semU{\beta}{(\semU{\alpha}{A})}$
-%%   for the components of the two natural isomorphisms in the 
-%%   natural adjunction isomorphism $S^\circ$ between $\semFo{\compo{\beta}{\alpha}}
-%%   \la \semUo{\compo{\beta}{\alpha}}$ and the composition of the
-%%   adjunctions $\semFo{\alpha} \la \semUo{\alpha}$ and
-%%   $\semFo{\beta} \la \semUo{\beta}$.  
-%%   Naturality in $\alpha,\beta$ means that 
-%%   for any 
-%%   $e_1 : \tc{\beta}{\beta'}$ and $e_2 : \tc{\alpha}{\alpha'}$, 
-%%   we have
-%%   $ \semFo{\comph{e_1}{e_2}};\semFcomp(\beta,\alpha) =_{\arrow{}{\semF{\compo{\beta'}{\alpha'}}{A}}{\semF{\alpha}{\semF{\beta}{A}}}}
-%%   \semFcomp(\beta',\alpha');\semF{\alpha'}{\semFo{e_1}};{\semFo{e_2}}$,
-%%   or equivalently 
-%%   $\semFcomp(\beta',\alpha');{\semFo{e_2}};\semF{\alpha}{\semFo{e_1}}$,
-%%   and similarly for $\semU{}{}$.
-%%   The conjugation property specifies that 
-%%   $\semrtol{(m;\inv{\semUcomp(\beta,\alpha)})}{\compo{\beta}{\alpha}} = \semFcomp(\beta,\alpha);\semrtol{{\semrtol{m}{\beta}}}{\alpha}$
-%%   and similarly for \semltor{-}{}.  
-
-
-%% \item Using the fact that both $\M$ and $\Adj$ are strict 2-categories,
-%%   and unpacking the definition of horizontal composition of natural
-%%   transformations, the three coherence laws relating $S^\circ$ and $S^1$
-%%   specify the following: 
-%%   \begin{itemize}
-%%   \item 
-%%     $\inv{\semFcomp(1,\alpha)_A}
-%%     =_{\arrow{}{\semF{\alpha}{\semF{1}{A}}}{\semF{\alpha}{A}}}
-%%     \semF{\alpha}{(\semFone_A)}$
-%%   \item $\inv{\semFcomp(\alpha,1)_{A}} =_{\arrow{}{\semF{1}{\semF{\alpha}{A}}}{\semF{\alpha}{A}}} \semFone_{(\semF{\alpha}{A})}$
-%%   \item $\inv{\semUcomp(\alpha,1)_A}
-%%     =_{\arrow{}{\semU{\alpha}{\semU{1}{A}}}{\semU{\alpha}{A}}}
-%%     \semU{\alpha}{(\semUone_A)}$
-%%   \item $\inv{\semUcomp(1,\alpha)_A} =_{\arrow{}{\semU{1}{\semU{\alpha}{A}}}{\semU{\alpha}{A}}} {(\semUone_{\semU{\alpha}{A}})}$
-%%   \item
-%%     $\semFcomp(\gamma,\compo{\beta}{\alpha});\semFcomp(\beta,\alpha)
-%%   =_{\arrow{}{\semF{\compo{\gamma}{\compo{\beta}{\alpha}}}{A}}{\semF{\alpha}{\semF{\beta}{\semF{\gamma}{A}}}}}
-%%   \semFcomp(\compo{\gamma}{\beta},\alpha);\semF{\alpha}{\semFcomp(\gamma,\beta)}$
-%%   and similarly for \semU{}{}.
-%%   \end{itemize}
-
-%% \end{itemize}
-
-%% \sem{\wftp{A}{p}} is an object of $\C_p$; we assume an interpretation is
-%% given for each atomic proposition, and the basic rules of adjoint logic
-%% require only that we can interpret \F{\alpha}{A} and \U{\alpha}{A},
-%% which are interpreted as \semF{\alpha}{\sem{A}} and
-%% \semU{\alpha}{\sem{A}}.
-
-%% We can interpret the judgement \seq{A}{\alpha}{B} as either a morphism
-%% $\arrow{}{\semF \alpha {\sem A}}{\sem B}$ or a morphism $\arrow{}{\sem
-%%   A}{\semU \alpha {\sem B}}$.  We choose $\arrow{}{\semF \alpha A}{B}$
-%% because it seems like it will generalize better to a multiple-hypothesis
-%% sequent.  This means that the interpretations of the rules for $F$ do
-%% not use the adjunction structure, while the interpretations of the rules
-%% for $U$ do.  We now consider the interpretation of the sequent calculus
-%% rules:
-
-%% \begin{theorem}[Soundness of the sequent calculus]  \label{thm:semsequent}
-%% There is a function \sem{-} from derivations $D : \seq{A}{\alpha}{B}$ 
-%% to morphisms \arrow{}{\semF \alpha {\sem A}}{\sem B}.
-%% \end{theorem}
-
-%% \begin{proof}
-%% \begin{itemize}
-%% \item 
-%% For the hypothesis rule
-%% \[
-%% \infer[\irl{hyp}]
-%%       {\seq P \alpha P}
-%%       {e : \tc 1 \alpha}
-%% \]
-%% we need a morphism \arrow{}{\semF \alpha {\sem P}}{\sem P}, which we take to be the
-%% composite 
-%% \begin{diagram}
-%% {\semF \alpha {\sem P}}  & \rTo^{\semFo{e}} & {\semF{1}{\sem P}} & \rTo^{\semFone} & {\sem P}
-%% \end{diagram}
-
-%% \item 
-%% For \irl{FL}
-%% \[
-%% \infer[\irl{FL}]
-%%       {\seq {\F {\alpha} A} {\beta}{C}}
-%%       {D : \seq {A} {\compo{\alpha}{\beta}} {C}
-%%       }
-%% \]
-%% the premise is interpreted as $\sem{D} : \arrow{}{\semF{\compo{\alpha}{\beta}}{\sem A}}{\sem C}$
-%% and we want 
-%% \arrow{}{\semF{\beta}{\semF{\alpha}{\sem A}}}{\sem C}, so we take the
-%% interpretation to be
-%% \begin{diagram}
-%% {\semF{\beta}{\semF{\alpha}{\sem A}}} & \rTo^{\inv{\semFcomp(\alpha,\beta)}} & {\semF{\compo{\alpha}{\beta}}{\sem A}} & \rTo^ {\sem{D}} & {\sem C}
-%% \end{diagram}
-
-%% \item 
-%% For \irl{FR}
-%% \[
-%% \infer[\irl{FR}]
-%%       {\seq {C} {\beta} {\F {\alpha} A}}
-%%       { \gamma : r \ge q & e : \tc{\compo{\gamma}{\alpha}}{\beta} &
-%%          D : \seq {C} \gamma {A}}
-%% \]
-%% the premise $\sem{D}$ is \arrow{}{\semF \gamma {\sem C}}{\sem A}, and we
-%% want \arrow{}{\semF \beta {\sem C}}{\semF \alpha {\sem A}}.  Using
-%% functoriality, we have $\semF{\alpha}{\sem D} : \arrow{}{\semF{\alpha}{\semF
-%%     \gamma {\sem C}}}{\semF \alpha {\sem A}}$, so 
-%% \begin{diagram}
-%% {\semF{\beta}{\sem{C}}} & 
-%% \rTo^{\semFo{e}} & {\semF{\compo{\gamma}{\alpha}}{\sem{C}}} &
-%% \rTo^{\semFcomp(\gamma,\alpha)} & \semF{\alpha}{\semF \gamma {\sem C}} & \rTo^{\semF{\alpha}{\sem D}} & {\semF \alpha {\sem A}}
-%% \end{diagram}
-
-%% \item For \irl{UL}
-%% \[
-%% \infer[\irl{UL}]
-%%       {\seq {\U {\alpha} A} {\beta} {C}}
-%%       { \gamma : q \ge p &
-%%         e : \tc{\compo{\alpha}{\gamma}} {\beta} &
-%%         \seq{A}{\gamma}{C}}
-%% \]
-%% The premise gives $\sem{D} : \arrow{}{\semF \gamma {\sem A}}{\sem C}$, 
-%% and we want \arrow{}{\semF {\beta} {\semU {\alpha} {\sem A}}}{\sem C}.  
-%% Using the adjunction, the premise gives
-%% \semltor{\sem{D}}{\gamma} : \arrow{}{A}{\semU \gamma C} and it suffices to give
-%% \arrow{}{{\semU {\alpha} {\sem A}}}{\semU {\beta} \sem C}.  So we form
-%% the composite
-%% \begin{diagram}
-%% {{\semU {\alpha} {\sem A}}} & \rTo^{\semU{\alpha}{(\semltor{\sem{D}}{\gamma})}} &
-%% \semU{\alpha}{\semU \gamma C} & \rTo^{\inv{\semUcomp(\alpha,\gamma)}} & 
-%% {\semU{\compo{\alpha}{\gamma}}{\sem{C}}} & \rTo^{\semUo{e}} &
-%% {\semU{\beta}{\sem{C}}}
-%% \end{diagram}
-%% and then move it along the adjunction.  
-
-%% \item For \irl{UR}
-%% \[
-%% \infer[\irl{UR}]
-%%       {\seq {C} {\beta} {\U {\alpha} A}}
-%%       {\seq {C} {\compo{\beta}{\alpha}} {A}}
-%% \]
-%% The premise gives \arrow{}{\semF{\compo{\beta}{\alpha}}{\sem C}}{\sem A}
-%% and we want 
-%% \arrow{}{\semF{{\beta}}{\sem C}}{\semU {\alpha} A}.  We have
-
-%% \begin{diagram}
-%% \semF{\alpha}{\semF{\beta}{\sem{C}}} & \rTo^{\inv{\semFcomp(\beta,\alpha)}} & {\semF{\compo{\beta}{\alpha}}{\sem C}} & \rTo^{\sem{D}} & {\sem A}
-%% \end{diagram}
-
-%% so using the adjunction gives the result.  
-
-%% \end{itemize}
-
-%% In summary, we have
-%% \[
-%% \begin{array}{rcl}
-%% \sem{\hyp e} & := & \semFo{e};\semFone\\
-%% \sem{\FL {D}} & := & \inv{\semFcomp(\alpha,\beta)} ; \sem{D}\\
-%% \sem{\FR {\gamma}{e}{D}} & := & \semFo{e}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}\\
-%% \sem{\UR {D}} & := & \semltor{(\inv{\semFcomp(\beta,\alpha)};{\sem{D}})}{\alpha} \\
-%% \sem{\UL {\gamma}{e}{D}} & := & \semrtol{({\semU{\alpha}{(\semltor{\sem{D}}{\gamma})}} ; {\inv{\semUcomp(\alpha,\gamma)}} ; {\semUo{e}})}{\beta}
-%% \end{array}
-%% \]
-%% \end{proof}
-
-%% In general, an admissible inference rule need not hold in all models.
-%% However, in this case, we are considering a class of models
-%% (pseudofunctors into \Adj) in which the admissible rules (e.g. cut and
-%% identity) are true.
-
-%% \begin{lemma}
-%% The admissible sequent calculus rules \tr{e}{D} and \ident{A} and
-%% \cut{D}{E} are sound.
-%% \end{lemma}
-
-%% \begin{proof}
-%% \begin{itemize}
-%% \item For \tr{e}{D}, we have
-%% \[
-%% \infer[\irl{\tr{e}{D}}]
-%%       {\seq A {\beta} C}
-%%       {e : \tc \alpha \beta &
-%%        D : \seq A {\alpha} {C}}
-%% \]
-
-%% The premise gives \arrow{}{\semF \alpha {\sem A}}{\sem C}, and we want
-%% \arrow{}{\semF \beta {\sem A}}{\sem C} so we have
-%% \begin{diagram}
-%% {\semF \beta {\sem A}} & \rTo^{\semFo{e}} & {\semF \alpha {\sem A}} & \rTo^{\sem{D}} & {\sem C}
-%% \end{diagram}
-
-%% \item For identity
-%% \[
-%% \infer[\irl{ident}]
-%%       {\seq {A} {1} {A}}
-%%       {}
-%% \]
-%% we want \arrow{}{\semF{1}{\sem A}}{\sem A}, so use $\semFone$.  
-
-%% \item For cut
-
-%% \[
-%% \infer[\irl{cut}]
-%%       {\seq {A} {\compo{\beta}{\alpha}} {C}}
-%%       {D : \seq {A} {\beta} {B} &
-%%        E : \seq {B} {\alpha} {C}}
-%% \]
-%% the interpretations of the premises gives
-%% \arrow{}{\semF \beta {\sem A}}{\sem B}
-%% and 
-%% \arrow{}{\semF \alpha {\sem B}}{\sem C}.  
-%% To get 
-%% \arrow{}{\semF {\compo{\beta}{\alpha}} {\sem A}}{\sem C}, we compose as
-%% follows:
-%% \begin{diagram}
-%% {\semF {\compo{\beta}{\alpha}} {\sem A}} & \rTo^{\semFcomp(\beta,\alpha)} &
-%% {\semF {\alpha} {\semF \beta {\sem A}}}  & \rTo^{\semF{\alpha}{\sem{D}}} &
-%% {\semF {\alpha} {\sem B}} & \rTo^{\sem{E}} &
-%% {\sem{C}}
-%% \end{diagram}
-
-%% \end{itemize}
-
-%% \end{proof}
-
-%% We now have two possible interpretations for the admissible rules:
-%% first, the one given by expanding the definition in each instance, and
-%% second, the compositional definition given above.  In the next few
-%% lemmas, we show that these agree:
-%% \[
-%% \begin{array}{rcl}
-%% \sem{\tr{e}{D}} & = & \semFo{e};{\sem{D}} \\
-%% \sem{\ident A} & = & \semFone\\
-%% \sem{\cut D E} & = & {\semFcomp(\beta,\alpha)};{\semF{\alpha}{\sem{D}}};{\sem{E}}
-%% \end{array}
-%% \]
-
-%% \begin{lemma} \label{lem:semtr}
-%% For all $e : \tc{\beta}{\beta'}$ and derivations $D : \seq{A}{\beta}{B}$, $\sem{\tr{e}{D}} = \semFo{e};{\sem{D}}$.  
-%% \end{lemma}
-%% \begin{proof}
-
-%% The proof is by induction on $D$, and in each case we can unfold the
-%% definition of \tr{e}{D}, so we have to show:
-
-%% \begin{itemize}
-%% \item \semFo{e};{\sem{{\hyp e'}}} = \sem {\hyp {(\compv{e'}{e})}}
-%% After unfolding definitions, it suffices to use functoriality of
-%% $\semFo{e}$ to show $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$.  
-
-%% \item \semFo{e};{\sem{{\FR \gamma {e'} D}}} = \sem{\FR \gamma {\compv{e'}{e}} D}
-%% Again, $\semFo{\compv{e'}{e}} = \semFo{e};\semFo{e'}$ suffices.  
-
-%% \item \semFo{e};{\sem{{\FL D}}} = \sem{\FL {\tr{(\comph{1}{e})} D}}
-%% After unfolding definitions and applying the inductive hypothesis, we need to know that
-%% $\semFo{e}_{(\semF{\alpha} {A})}; \inv{\semFcomp(\alpha,\beta)} = \inv{\semFcomp(\alpha,\beta')}; \semFo{(\comph{1_\alpha}{e})}_{A}$
-%% as arrows \arrow{}{\semF{\beta'}{\semF{\alpha}{A}}}{\semF{\compo \alpha {\beta'}}{A}},
-%% which is true by naturality of $\semFcomp(-,-)$ and $\semFo{1} = 1$ and $\semF{\beta}{1} = 1$.
-
-
-%% \item \semFo{e};{\sem{\UL \gamma {e'} D}} = \sem{ \UL \gamma {\compv{e'}{e}} D}
-%% After unfolding the definitions, it suffices to use functoriality
-%% $\semUo{\compv{e'}{e}} = \semUo{e'};\semUo{e}$ and the conjugation
-%% property for \rtol{-}{}.  
-
-%% \item $\semFo{e};{\sem{\UR D}} = \sem{\UR {\tr {(\comph{e}{1})} D}}$
-%% After unfolding definitions and applying the IH, we need to know that
-%% $\semFo{e};\ltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{} = 
-%% \ltor{(\inv{\semFcomp(\beta',\alpha)};\semFo{\comph{e}{1_\alpha}};\sem{D})}{}$
-%% By naturality of the adjunction, the former is equal to
-%% \ltor{(\semF{\alpha}{(\semFo{e})};\inv{\semFcomp(\beta,\alpha)};\sem{D})}{}
-%% and then naturality of $\semFcomp(-,-)$ gives the result.  
-
-%% \end{itemize}
-
-%% \end{proof}
-
-%% \begin{lemma}\label{lem:semident}
-%% For all types $A$, $\sem{\ident A} = \semFone_{\sem{A}}$.    
-%% \end{lemma}
-
-%% \begin{proof}  The proof is by
-%% induction on $A$.  In each case, we can unfold the definition of
-%% \ident{A}, so we need to show:
-
-%% \begin{itemize}
-
-%% \item Case for $P$: $\semFone_P = \sem{\hyp 1}$.  Works because
-%%   $\semFo{1} = 1$.  
-
-%% \item Case for $\F \alpha A$: $\semFone_{\semF \alpha {\sem A}} = \sem{\FL {\FR 1 1 {\ident A}}}$
-%% After unfolding the definitions and using the IH, it suffices to show
-%% that the composite
-%% \begin{diagram}
-%% \semF{1}{\semF{\alpha}{\sem{A}}} & \rTo^{\inv{\semFcomp(\alpha,1)}} &
-%% \semF{\alpha}{\sem A} & \rTo^{\semFcomp(1,\alpha)} &
-%% \semF{\alpha}{\semF{1}{\sem A}} & \rTo^{\semF{\alpha}{\semFone_{\sem A}}} & \semF{\alpha}{\sem A}
-%% \end{diagram}
-%% is $\semF{1}_{\semF{\alpha}{\sem A}}$, which is true by the
-%% $\semFone/\semFcomp$ coherence laws.  
-
-
-%% \item Case for $\U \alpha A$: $\semFone_{\semU \alpha {\sem A}} = \sem {\UR {\UL 1 1 {\ident A}}}$
-
-%% Expanding the definitions and using the IH and using $\semU{1} = 1$, the
-%% right-hand side is equal to
-%% \[
-%% \semltor{(\inv{\semFcomp(1,\alpha)};
-%%           \semrtol{(\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; 
-%%           \inv{\semUcomp(\alpha,1)})}{\alpha}
-%%           )}{\alpha}
-%% \]
-%% By coherence $\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{(\semFone_{\semU {\alpha} {\sem A}})}$, 
-%% so by naturality of \semltor{-}{\alpha}, 
-%% it's equal to
-%% \[
-%% \semFone;\semltor{(
-%%           \semrtol{(\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; 
-%%           \inv{\semUcomp(\alpha,1)})}{\alpha}
-%%           )}{\alpha}
-%% \]
-%% and canceling \semltor{{\semrtol{-}{\alpha}}}{\alpha} gives 
-%% \[
-%% \semFone;\semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)}
-%% \]
-%% so it suffices to show
-%% \[
-%% \semU{\alpha}{(\semltor{(\semFone_{\sem A})}{1})}; \inv{\semUcomp(\alpha,1)} = 1
-%% \]
-%% But by conjugation $(\semltor{(\semFone)}{1}) = \inv{\semUone}$ and by
-%% coherence $\inv{\semUcomp(\alpha,1)} =_{\arrow{}{\semU{\alpha}{\sem{A}}}{\semU{\alpha}{\semU{1}{\sem{A}}}}} \semU{\alpha}{\semUone}$
-%% so this is true.
-
-%% \end{itemize}
-
-%% \end{proof}
-
-%% To prove the cut lemma, it will helpful to use the following equivalent
-%% definition of \sem{\UL{\gamma}{e}{D}}, which uses only \semF{}{}
-%% operations, except for the counit
-%% $\semrtol{(1_{\semU{\alpha}{\sem{A}}})}{\alpha} :
-%% \arrow{}{\semF{\alpha}{\semU{\alpha}{A}}}{A}$
-
-%% \begin{lemma}\label{lem:semulalt}
-%% For any $\gamma,e,D$, 
-%% $\sem{\UL \gamma e D}  = \semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1_{\semU{\alpha}{\sem{A}}}}{\alpha})};\sem{D}$
-%% \end{lemma}
-
-%% \begin{proof}
-%% By conjugation for $\semU{e}$ and $\semUcomp$, $\sem{\UL \gamma e D} = 
-%% \semF{e};\semFcomp(\alpha,\gamma);\semrtol{(\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha})}{\gamma}$
-%% By naturality of \semrtol{-}{\alpha},
-%% \[
-%% {\semrtol{(\semU{\alpha}{(\semltor{\sem{D}}{\gamma})})}{\alpha}} = 
-%% \semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}} 
-%% \]
-%% and by naturality of \semrtol{-}{\gamma},
-%% \[
-%% \semrtol{(\semrtol{1}{\alpha};{{(\semltor{\sem{D}}{\gamma})}})}{\gamma}
-%% = \semF{\gamma}{(\semrtol{1}{\alpha})};\semrtol{{{(\semltor{\sem{D}}{\gamma})}}}{\gamma}
-%% \]
-%% so collapsing inverses gives the result.  
-%% \end{proof}
-
-%% \begin{lemma}\label{lem:semcut}
-%% For all derivations $D : \seq{A}{\beta}{B}$ and $E : \seq{B}{\beta'}{C}$, $\sem{\cut D E} = {\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{D}}};{\sem{E}}$
-%% \end{lemma}
-
-%% \newcommand{\semofcut}[2]{{\semFcomp(\beta,\beta')};{\semF{\beta'}{\sem{#1}}};{\sem{#2}}}
-
-%% \begin{proof}
-
-%% The proof is by the same induction on $A,D,E$ that defines cut, and in
-%% each case the cut reduces, so we need to show:
-
-%% \begin{itemize}
-%% \item $\semofcut {(\hyp e)} {(\hyp {e'})} = \sem{\hyp {(\comph{e}{e'})}}$
-
-%% After expanding definitions, we need to show that
-%% \[
-%% \semFcomp(\beta,\beta');\semF{\beta'}{(\semF{e};\semFone)};\semF{e'};\semFone = \semFo{\comph{e}{e'}};\semFone
-%% \]
-%% By functoriality, $\semF{\beta'}{(\semF{e};\semFone)} =
-%% \semF{\beta'}{\semF{e}};\semF{\beta'}{\semFone}$, and by naturality of
-%% \semFo{e'}, $\semF{e'};{\semF{1}{\semFone}} =
-%% \semF{\beta'}{\semFone};\semFo{e'}$,
-%% so the LHS equals
-%% \[
-%% (\semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{e'});{\semF{1}{\semFone}};\semFone
-%% \]
-%% By naturality of \semFcomp in $\alpha,\beta$, this equals
-%% \[
-%% \semFo{\comph{e}{e'}};\semFcomp(1,1);{\semF{1}{\semFone}};\semFone
-%% \]
-%% Coherence implies that $\inv{\semFcomp(1,1)} = \semF{1}{\semFone}$, so
-%% collapsing inverses gives the result.  
-
-%% \item $\semofcut {(\FR \gamma e D)} {(\FL E)} = \sem{ \tr {(\comph{e}{1})} {\cut D E} }$
-
-%% After unfolding the definitions on the left-hand side, and using
-%% Lemma~\ref{lem:semtr} and the IH on the right-hand side, 
-%% the calculation consists of using naturality of $\inv{\semFcomp_A}$ in $A$ to
-%% show that $\semF{\beta'}{\semF{\alpha}{\sem
-%%     D}};\inv{\semFcomp(\alpha,\beta')} =
-%% \inv{\semFcomp(\alpha,\beta')};\semF{\compo \alpha \beta'}{\sem{D}}$,
-%% using naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to
-%% show 
-%% $\semFcomp(\beta,\beta');\semF{\beta'}{\semF{e}} =
-%% \semF{\comph{e}{1_{\beta'}}};\semFcomp(\compo{\gamma}{\alpha},\beta')$, 
-%% and using the associativity coherence to show
-%% $\semFcomp(\compo{\gamma}{\alpha},\beta');\semF{\beta'}{(\semFcomp(\gamma,\alpha))}
-%% = \semFcomp(\gamma,\compo{\alpha}{\beta'});\semFcomp(\alpha,\beta')$.
-
-%% \item $\semofcut {(\UR D)} {(\UL \gamma e E)} = \sem{\tr {(\comph{1}{e})} {\cut D E}}$
-
-%% Unfolding the definitions, using Lemma~\ref{lem:semtr} and the IH, we
-%% need to show $LHS = RHS$, where
-%% \[
-%% \begin{array}{l}
-%% LHS := \semFcomp(\beta,\beta');\semF{\beta}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )};
-%% \semrtol{(\semU{\alpha}{(\semltor{\sem{E}}{\gamma})};\inv{\semUcomp(\alpha,\gamma)};\semU{e})}{\beta'}\\
-%% RHS := \semF{\comph{1}{e}};\semFcomp(\compo{\beta}{\alpha},\gamma);\semF{\gamma}{\sem{D}};\sem{E}
-%% \end{array}
-%% \]
-
-%% Using conjugation to move \semU{e} and
-%% \inv{\semUcomp(\alpha,\gamma)} outside of the \semrtol{-}{\beta'}, we have
-%% \[
-%% \semrtol{(\semU{\alpha}{(\semltor{\sem{E}}{\gamma})};\inv{\semUcomp(\alpha,\gamma)};\semU{e})}{\beta'}
-%% = 
-%% \semF{e};\semFcomp(\alpha,\gamma);\semrtol{{\semrtol{(\semU{\alpha}{\semltor{\sem E}{\gamma}})}{\alpha}}}{\gamma}
-%% \]
-%% By naturality of \semrtol{-}{\alpha}, the right-hand side of that is equal to
-%% \[
-%% \semF{e};\semFcomp(\alpha,\gamma);\semrtol{{\semrtol{(\semrtol{1}{\alpha};\semltor{\sem{E}}{\gamma})}{\alpha}}}{\gamma}
-%% \]
-%% and then by naturality of \semrtol{-}{\gamma}, that is equal to
-%% \[
-%% \semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\semrtol{{{(\semltor{\sem{E}}{\gamma})}}}{\gamma}
-%% \]
-%% so collapsing inverses, we have overall that
-%% \[
-%% \semltor{(\semU{\alpha}{(\semltor{\sem{E}}{\gamma})};\inv{\semUcomp(\alpha,\gamma)};\semU{e})}{\beta'}
-%% =
-%% \semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-
-%% Therefore 
-%% \[
-%% LHS = \semFcomp(\beta,\beta');\semF{\beta}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )};
-%% \semF{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-%% Moving \semFo{e} to the left using its naturality, this is equal to
-%% \[
-%% \semFcomp(\beta,\beta');\semF{e};\semF{\compo{\alpha}{\gamma}}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )} ;\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-%% and then moving it to the left again using naturality of
-%% $\semFcomp(\alpha,\gamma)$ in $\alpha,\beta$ gives
-%% \[
-%% \semF{(\comph{1}{e})};\semFcomp(\beta,\compo{\alpha}{\gamma});\semF{\compo{\alpha}{\gamma}}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-%% and moving $\semFcomp_A(\alpha,\beta)$ to the left using naturality in $A$ gives
-%% \[
-%% \semF{(\comph{1}{e})};\semFcomp(\beta,\compo{\alpha}{\gamma});\semFcomp(\alpha,\gamma);\semF{\gamma}{\semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )}};\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-%% By the associativity coherence, this is equal to
-%% \[
-%% \semF{(\comph{1}{e})};\semFcomp(\compo{\beta}{\alpha},{\gamma});\semF{\gamma}{\semFcomp(\beta,\alpha)};\semF{\gamma}{\semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha}  )}};\semF{\gamma}{(\semrtol{1}{\alpha})};\sem{E}
-%% \]
-%% so collecting the three terms that are under \semF{\gamma}, to show that $LHS
-%% = RHS$, it suffices to show that
-%% \[
-%% {\semFcomp(\beta,\alpha)};{\semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})}};{(\semrtol{1}{\alpha})} = \sem D
-%% \]
-%% By naturality of the adjunction,
-%% \[
-%% \semF{\alpha}{(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})};(\semrtol{1}{\alpha})
-%% = 
-%% \semrtol{({(\semltor{(\inv{\semFcomp(\beta,\alpha)};\sem{D})}{\alpha})};1)}{\alpha}
-%% =
-%% {(\inv{\semFcomp(\beta,\alpha)};\sem{D})}
-%% \]
-%% so collapsing inverses gives the result.  
-
-%% \item $\semofcut D {(\FR \gamma e E)} = \sem{\FR {\compo{\beta}{\gamma}} {\comph{1}{e}} {\cut D E}}$
-
-%% After unfolding the definitions and using the
-%% IH on the right-hand side, 
-%% the proof uses naturality of $\semF{e}_A$ in $A$ to show
-%% $\semF{\beta'}{\sem D}; \semF{e} =
-%% \semF{e};\semF{\compo{\gamma}{\alpha}}{\sem D}$, 
-%% naturality of $\semFcomp_A$ in $A$ to show
-%% $\semF{\compo{\gamma}{\alpha}}{\sem D};\semFcomp(\gamma,\alpha) = 
-%% \semFcomp(\gamma,\alpha);\semF{\alpha}{\semF{\gamma}{\sem D}}$,
-%% naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to equate
-%% $\semFcomp(\beta,\beta');\semF{e} =
-%% \semF{\comph{1}{e}};\semFcomp(\beta,\compo{\gamma}{\alpha})$
-%% and the associativity coherence to equate 
-%% $\semFcomp(\beta,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
-%% = \semFcomp(\compo{\beta}{\gamma},\alpha);\semF{\alpha}(\semFcomp(\beta,\gamma))$.
-
-%% \item $\semofcut D {(\UR E)} = \sem{\UR {\cut D E}}$
-
-%% After expanding definitions and using the IH, we need to show
-%% \[
-%% \semFcomp(\beta,\beta');\semF{\beta'}{\sem{D}};\semltor{(\inv{\semFcomp(\beta',\alpha)};\sem{E})}{\alpha}
-%% =
-%% \semltor{(\inv{\semFcomp(\compo{\beta}{\beta'},\alpha)};\semFcomp(\beta,\compo{\beta'}{\alpha});\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
-%% \]
-%% By the associativity coherence, 
-%% \[
-%% \inv{\semFcomp(\compo{\beta}{\beta'},\alpha)} = 
-%% \semF{\alpha}{(\semFcomp(\beta,\beta'))};\inv{\semFcomp(\beta',\alpha)};\inv{\semFcomp(\beta,\compo{\beta'}{\alpha})}
-%% \]
-%% and plugging this in to the RHS and then collapsing inverses gives 
-%% \[
-%% \semltor{(\semF{\alpha}{\semFcomp(\beta,\beta')};\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
-%% \]
-%% By naturality of \semltor{}{\alpha}, this is the same as
-%% \[
-%% {\semFcomp(\beta,\beta')};\semltor{(\inv{\semFcomp(\beta',\alpha)};\semF{\compo{\beta'}{\alpha}}{\sem D};\sem{E})}{\alpha}
-%% \]
-%% By naturality of \inv{\semFcomp(\beta',\alpha)}, this is the same as 
-%% \[
-%% {\semFcomp(\beta,\beta')};\semltor{(\semF{\alpha}{\semF{\beta'}{\sem D}};\inv{\semFcomp(\beta',\alpha)};\sem{E})}{\alpha}
-%% \]
-%% so using naturality of \semltor{}{\alpha} again gives the result.  
-
-%% \item $\semofcut {(\FL D)} E = \sem{\FL {\cut D E}}$ (note: we could
-%%   assume that $E$ is not a right rule, but this assumption is not
-%%   necessary).  After expanding the definitions and using the IH, the
-%%   main step is to use the associativity coherence to show
-%%   $\semFcomp(\alpha,\compo{\beta}{\beta'});\semFcomp(\beta,\beta') =
-%%   \semFcomp(\compo{\alpha}{\beta},\beta');\semF{\beta'}(\semFcomp(\alpha,\beta))$.
-
-%% \item $\semofcut {(\UL \gamma e D)} E = \sem{\UL {\compo{\gamma}{\beta'}}
-%%   {\comph{e}{1}} {\cut D E}}$ (note: we could assume that $E$ is not a
-%%   right rule, but this assumption is not necessary).  
-
-%% Applying Lemma~\ref{lem:semulalt}, to the left and the right sides, and
-%% using the IH, we need to show $LHS = RHS$, where
-%% \[
-%% \begin{array}{l}
-%% LHS :=
-%% \semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{\beta'}{\semFcomp(\alpha,\gamma)};\semF{\beta'}{\semF{\gamma}{(\semrtol
-%%     1 \alpha)}};\semF{\beta'}{\sem D};\sem{E}\\
-%% RHS :=
-%% \semFo{\comph{e}{1}};\semFcomp(\alpha,\compo{\gamma}{\beta'});\semF{\compo{\gamma}{\beta'}}{(\semrtol{1}{\alpha})};\semFcomp(\gamma,\beta');\semF{\beta'}{\sem D};\sem{E}
-%% \end{array}
-%% \]
-
-%% By naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$
-%% \[
-%% \semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}} = \semFo{\comph{e}{1}};\semFcomp(\compo{\alpha}{\gamma},\beta')
-%% \]
-%% and by the associativity coherence, 
-%% \[
-%% \semFcomp(\compo{\alpha}{\gamma},\beta');\semF{\beta'}{\semFcomp(\alpha,\gamma)}
-%% = 
-%% \semFcomp(\alpha,\compo{\gamma}{\beta'});\semFcomp(\gamma,\beta')
-%% \]
-%% so 
-%% \[
-%% LHS = 
-%% \semFo{\comph{e}{1}};
-%% \semFcomp(\alpha,\compo{\gamma}{\beta'});\semFcomp(\gamma,\beta')
-%% ;\semF{\beta'}{\semF{\gamma}{(\semrtol
-%%     1 \alpha)}};\semF{\beta'}{\sem D};\sem{E}
-%% \]
-%% Therefore using naturality of $\semFcomp(\gamma,\beta')_A$ in $A$ to
-%% move it to the right gives the result. 
-%% \end{itemize}
-%% \end{proof}
-
-%% Next, we validate the rules for \ap{}{}.  
-
-%% \begin{theorem}[Soundess of the equational theory.] \label{thm:semeq}
-%% If \ap{D}{D'} then $\sem{D} = \sem{D'}$.  
-%% \end{theorem}
-
-%% \begin{proof}
-%% Because the goal is equality of morphisms, the congruence (equivalence
-%% relation, compatibility for each derivation constructor) rules are all
-%% true.  It remains to validate the axioms:
-
-%% \begin{itemize}
-%% \item $\sem{D} = \sem{\FL {\cut{(\FR 1 1 {\ident{A}})}{D}} }$
-%% when ${D : \seq{\F \alpha A}{\beta}{C}}$
-
-%% After expanding the definitions and using
-%% Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
-%% \[
-%% \inv{\semFcomp(\alpha,\beta)};\semFcomp(\alpha,\beta);\semF{\beta}{(\semFo{1};\semFcomp(1,\alpha);\semF{\alpha}{\semFone})};\sem{D}
-%% = \sem{D}
-%% \]
-%% This is true because $\semFo{1} = 1$ and because
-%% $\inv{\semFcomp(1,\alpha)} = \semF{\alpha}{\semFone}$, so canceling
-%% identities and inverses gives the result.  
-
-%% \item $\sem{D} = \sem{\UR {\cut{D}{(\UL 1 1 {\ident{A}})}}}$
-%% when ${D : \seq{C}{\beta}{\U \alpha A}}$
-
-%% After expanding the definitions and using
-%% Lemmas~\ref{lem:semident},~\ref{lem:semcut}, it suffices to show
-%% \[
-%% \semltor{(\inv{\semFcomp(\beta,\alpha)};\semFcomp(\beta,\alpha);\semF{\alpha}{\sem D};\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
-%% = \sem{D}
-%% \]
-%% Canceling the $\semFcomp(\beta,\alpha)$ and using naturality of
-%% \semltor{-}{\alpha}, this is equal to
-%% \[
-%% \sem{D};\semltor{(\semrtol{(\semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)};\semUo{1})}{\alpha})}{\alpha}
-%% \]
-%% so it suffices to show that the later is the identity.  Canceling the
-%% adjunction round-trip and $\semUo{1}$, it is equal to
-%% \[
-%% \semU{\alpha}{(\semltor{\semFone}{1})};\inv{\semUcomp(\alpha,1)}
-%% \]
-%% By conjugation for \semFone, $\semrtol{\semFone}{1} = \semUone$, and by
-%% the associativity coherence, $\inv{\semUcomp(\alpha,1)} =
-%% \semU{\alpha}{\semUone}$, so canceling inverses gives the result.  
-
-%% \item $\sem{{\FR{\gamma}{e}{\tr{e_2}{D}}}} = \sem{\FR{\gamma'}{(\compv{(\comph{e_2}{1})}{e})}{D}}$
-%% when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-%% and $D : \seq{C}{\gamma'}{A}$
-%% and $e_2 : \tc{\gamma'}{\gamma}$.
-
-%% After expanding the definitions and using Lemma~\ref{lem:semtr}, we need
-%% to show
-%% \[
-%% \semFo{e};\semFcomp(\gamma,\alpha);\semF{\alpha}{\semFo{e_2}};\semF{\alpha}{\sem{D}}
-%% = \semFo{\compv{(\comph{e_2}{1})}{e}};\semFcomp(\gamma',\alpha);\semF{\alpha}{\sem{D}}
-%% \]
-%% This is true using functoriality to show $\semFo{\compv{(\comph{e_2}{1})}{e}} =
-%% \semFo{e};\semFo{{(\comph{e_2}{1})}}$,
-%% and naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ to show
-%% $\semFo{{(\comph{e_2}{1})}};\semFcomp(\gamma',\alpha) =
-%% \semFcomp(\gamma,\alpha);\semF{\alpha}{\semFo{e_2}}$.  
-  
-
-%% \item $\sem{\UL{\gamma}{e}{\tr{e_2}{D}}} = \sem{\UL{\gamma'}{(\compv{(\comph{1}{e_2})}{e})}{D}}$
-%% when $e : \tc{\compo{\gamma}{\alpha}}{\beta}$
-%% and $D : \seq{C}{\gamma'}{A}$
-%% and $e_2 : \tc{\gamma'}{\gamma}$.
-
-%% Using Lemmas~\ref{lem:semulalt} and \ref{lem:semtr}, we need to show
-%% \[
-%% \semFo{e};\semFcomp(\alpha,\gamma);\semF{\gamma}{(\semltor{1}{\alpha})};\semFo{e_2};\sem{D}
-%% =
-%% \semFo{ \compv{(\comph{1}{e_2})}{e}   };\semFcomp(\alpha,\gamma');\semF{\gamma'}{(\semltor{1}{\alpha})};\sem{D}
-%% \]
-%% By functoriality, 
-%% $\semFo{ \compv{(\comph{1}{e_2})}{e}   } = \semF{e};\semF{\comph{1}{e_2}}$, 
-%% and by naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$,
-%% $\semFo{ {(\comph{1}{e_2})} };\semFcomp(\alpha,\gamma')
-%% = \semFcomp(\alpha,\gamma);\semFo{e_2}$, so
-%% the right-hand side is equal to 
-%% \[
-%% \semFo{e};\semFcomp(\alpha,\gamma);\semFo{e_2};\semF{\gamma'}{(\semltor{1}{\alpha})};\sem{D}
-%% \]
-%% so using naturality of \semFo{e_2} gives the result.  
-
-%% \item $\sem{\UL {\beta}{e_2} {\FR {\gamma} {e_1} {D}}} = \sem{\FR {\delta_3} {e_4} {\UL {\gamma} {e_3} {D}}}$
-%% when ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$,
-%% where 
-%% $e_1 : \tc{(\compo {\gamma} {\alpha})}{\beta}$  and
-%% $e_2 : \tc{(\compo {\delta_1} {\beta})}{\delta_2}$ and
-%% $e_3 : \tc{(\compo {\delta_1} {\gamma})}{\delta_3}$ and
-%% $e_4 : \tc{(\compo {\delta_3} {\alpha})}{\delta_2}$ and
-
-%% Expanding the definitions and using Lemma~\ref{lem:semulalt}, we need to show
-%% \[
-%% \begin{array}{ll}
-%%   & \semFo{e_2};\semFcomp(\delta_1,\beta);\semF{\beta}{(\semrtol{1}{\delta_1})};\semFo{e_1}  ; \semFcomp(\gamma,\alpha) ; \semF{\alpha}{\sem D}\\
-%% = & \semFo{e_4};\semFcomp(\delta_3,\alpha);\semF{\alpha}{\semFo{e_3}};\semF{\alpha}{\semFcomp(\delta_1,\gamma)};\semF{\alpha}{\semF{\gamma}{(\semltor{1}{\delta_1})}};\semF{\alpha}{\sem{D}}
-%% \end{array}
-%% \]
-%% Using naturality of \semFo{e_1} and $\semFcomp(\gamma,\alpha)$, the
-%% left-hand side is equal to
-%% \[
-%% \semFo{e_2};\semFcomp(\delta_1,\beta);\semFo{e_1};\semFcomp(\gamma,\alpha);\semF{\alpha}{\semF{\gamma}{(\semrtol{1}{\delta_1})}};\semF{\alpha}{\sem D}
-%% \]
-%% so it suffices to show
-%% \[
-%% \semFo{e_2};\semFcomp(\delta_1,\beta);\semFo{e_1};\semFcomp(\gamma,\alpha)
-%% = \semFo{e_4};\semFcomp(\delta_3,\alpha);\semF{\alpha}{\semFo{e_3}};\semF{\alpha}{\semFcomp(\delta_1,\gamma)}
-%% \]
-%% Using naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ the LHS equals
-%% \[
-%% \semFo{e_2};\semFo{\comph{1}{e_1}};\semFcomp(\delta_1,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha)
-%% \]
-%% and the RHS equals
-%% \[
-%% \semFo{e_4};\semFo{\comph{e_3}{1}};\semFcomp(\compo{\delta_1}{\gamma},\alpha);\semF{\alpha}{\semFcomp(\delta_1,\gamma)}
-%% \]
-%% But $\semFcomp(\delta_1,\compo{\gamma}{\alpha});\semFcomp(\gamma,\alpha) = \semFcomp(\compo{\delta_1}{\gamma},\alpha);\semF{\alpha}{\semFcomp(\delta_1,\gamma)}$
-%% by the associativity coherence, and 
-%% $\semFo{e_2};\semFo{\comph{1}{e_1}} =
-%% \semFo{e_4};\semFo{\comph{e_3}{1}}$
-%% by functoriality using the assumption that 
-%% ${\compv{(\comph{1}{e_1})}{e_2} = {\compv{(\comph{e_3}{1})}{e_4}}}$.  
-
-%% \end{itemize}
-%% \end{proof}
-
-%% Just as the class of models we are considering supported interpretations
-%% of \tr{e}{D} and \ident{A} and \cut{D}{E} in general, the admissible
-%% rules for \ap{}{} hold in general:
-
-%% \begin{theorem}[Soundness of admissible equational rules] 
-%% The admissible rules for \ap{D}{D'} in Section~\ref{sec:rules:equations}
-%% are true in the semantics.  
-%% \end{theorem}
-
-%% \begin{proof}
-
-%% \begin{itemize}
-
-%% \item For ${\tr{1}{D} = D}$
-%% and ${\tr{(\compv{e_1}{e_2})}{D} = \tr{e_2}{\tr{e_1}{D}}}$,
-%% by Lemma~\ref{lem:semtr}, we need to show $\semFo{e};\sem{D} = \sem{D}$
-%% and $\semFo{\compv{e_1}{e_2}};{\sem D} =
-%% \semFo{e_2};\semFo{e_1};\sem{D}$, which are true by functoriality.  
-
-%% \item For the congruence rules:
-%% \[
-%% \infer{\ap{\tr{e}{D}}{\tr{e}{D'}}}
-%%       {\ap{D}{D'}}
-%% \quad
-%% \infer{\ap{\cut{D}{E}}{\cut{D'}{E}}}
-%%       {\ap{D}{D'}}
-%% \quad
-%% \infer{\ap{\cut{D}{E}}{\cut{D}{E'}}}
-%%       {\ap{E}{E'}}
-%% \]
-%% By assumption, $\sem{D} = \sem{D'}$ or $\sem{E} = \sem{E'}$.  
-%% By Lemma~\ref{lem:semtr} and~\ref{lem:semcut}, 
-%% \sem{\tr{e}{D}} and \sem{\cut D E} are compositional in \sem{D} and
-%% \sem{E}, so the conclusions are equal as well.  
-
-%% \item For
-%%   {\ap{\tr{(\comph{e}{e'})}{\cut{D}{D'}}}{\cut{(\tr{e}{D})}{(\tr{e'}{D'})}}}
-%% where $e : \tc \alpha {\beta}$ and $e' : \tc {\alpha'}{\beta'}$, 
-%% by Lemmas~\ref{lem:semtr} and \ref{lem:semcut}, we need to show
-%% \[
-%% \semFo{(\comph{e}{e'})};\semFcomp(\alpha,\alpha');\semF{\alpha'}{(\sem{D})};\sem{D'}
-%% =
-%% \semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semF{\beta'}{\sem{D}};\semFo{e'};\sem{D'}
-%% \]
-%% Using naturality for \semFo{e'}, the right-hand side equals
-%% \[
-%% \semFcomp(\beta,\beta');\semF{\beta'}{\semFo{e}};\semFo{e'};\semF{\alpha'}{\sem{D}};\sem{D'}
-%% \]
-%% so naturality of $\semFcomp(\alpha,\beta)$ in $\alpha,\beta$ gives the
-%% result.  
-
-%% \item 
-%% For {\ap{\cut{D_1}{(\cut{D_2}{D_3})}}{\cut{(\cut{D_1}{D_2})}{D_3}}},
-%% by Lemma~\ref{lem:semcut}, we need to show
-%% \[
-%% \begin{array}{ll}
-%%   & \semFcomp(\beta_1,\compo{\beta_2}{\beta_3});\semF{\compo{\beta_2}{\beta_3}}{\sem{D_1}};\semFcomp(\beta_2,\beta_3);\semF{\beta_3}{\sem{D_2}};\sem{D_3}\\
-%% = & \semFcomp(\compo{\beta_1}{\beta_2},\beta_3);\semF{\beta_3}{\semFcomp(\beta_1,\beta_2)};\semF{\beta_3}{\semF{\beta_2}{\sem {D_1}}};\semF{\beta_3}{\sem{D_2}};\sem{D_3}
-%% \end{array}
-%% \]
-%% By naturality of $\semFcomp(\beta_2,\beta_3)_A$ in $A$, the LHS equals 
-%% \[
-%% \semFcomp(\beta_1,\compo{\beta_2}{\beta_3});\semFcomp(\beta_2,\beta_3);\semF{\beta_2}{\semF{\beta_3}{\sem{D_1}}};\semF{\beta_3}{\sem{D_2}};\sem{D_3}
-%% \]
-%% so the associativity coherence gives the result.
-
-%% \item For  
-%% {\ap{\cut{D}{\ident{}}}{D}},
-%% by Lemmas~\ref{lem:semcut} and \ref{lem:semident}, 
-%% it suffices to show 
-%% \[
-%% \semFcomp(\beta,1);\semF{1}{\sem{D}};\semFone = \sem{D}
-%% \]
-%% By naturality of \semFone, the left-hand side equals
-%% $\semFcomp(\beta,1);\semFone;\sem{D}$, so coherence (and a unit law for
-%% $\C_p$---interpreting a unit law for the syntax involves a unit law for
-%% the semantics) gives the result.
-
-%% \item For {\ap{\cut{\ident{}}{D}}{D}}, by 
-%% by Lemmas~\ref{lem:semcut} and \ref{lem:semident}, 
-%% it suffices to show 
-%% \[
-%% \semFcomp(1,\beta);\semF{\beta}{\semFone};{\sem{D}} = \sem{D}
-%% \]
-%% which is true by coherence (and a unit law for $\C_p$).
-
-%% \item The unrestricted left-commutative rules ${\ap{\cut {(\FL D)} E} {\FL {\cut D E}}}$
-%% and\\ ${\ap{\cut {(\UL \gamma e D)} E} {\UL {\compo{\gamma}{\alpha}}
-%%     {\comph{e}{1}} {\cut D E}}}$ were checked as part of the proof of
-%% Lemma~\ref{lem:semcut} above.   
-%% \end{itemize}
-%% \end{proof}
-
-%% \begin{lemma}[Interpretation of Coproducts]
-%% If each $\C_p$ has coproducts, then
-%% Theorem~\ref{thm:semsequent} and Lemmas~\ref{lem:semtr} and
-%% \ref{lem:semident} and \ref{lem:semcut} and Theorem \ref{thm:semeq} are
-%% true when the rules for coproducts in Figure~\ref{fig:coprod} are added
-%% to the logic.  
-%% \end{lemma}
-
-%% \begin{proof}  Write $\seminl : \arrow{}{A}{\coprd{A}{B}}$
-%% and $\seminr : \arrow{}{B}{\coprd{A}{B}}$
-%% and \semcase{m_1}{m_2} for the coproduct maps.  
-
-%% \begin{itemize}
-
-%% \item First, we show how to interpret the sequent calculus rules.
-%%  For \Inl{D} and \Inr{D}, define
-%% \[
-%% \begin{array}{rcl}
-%% \sem{\Inl{D}} & := & \sem{D};\seminl\\
-%% \sem{\Inr{D}} & := & \sem{D};\seminr\\
-%% \end{array}
-%% \]
-%% The left case makes sense because \sem{D} : \arrow{}{\sem C}{\sem A}, so
-%% post-composing with \seminl\/ has the right codomain; the other case is
-%% analogous.  
-
-%% For \sem{\Case{D_1}{D_2}}, we essentially need to do the proof that left adjoints
-%% preserve coproducts: we have
-%% $\sem{D_1} : \arrow{}{\semF{\alpha}{A}}{C}$
-%% and 
-%% $\sem{D_2} : \arrow{}{\semF{\alpha}{B}}{C}$
-%% and we want a map
-%% $\arrow{}{\semF{\alpha}{(\coprd{A}{B})}}{C}$, which we define as
-%% follows:
-%% \[
-%% \begin{array}{rcl}
-%% \sem{\Case{D_1}{D_2}} & := & \semrtol{\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}}}{\alpha}
-%% \end{array}
-%% \]
-
-%% \item Next, we give the new cases of Lemma~\ref{lem:semtr}, where $e :
-%%   \tc{\alpha}{\beta}$ and the given derivation has mode $\alpha$.
-%% For \Inl{D}, we need to show
-%% \[
-%% \sem{\tr e D};\seminl = \semFo{e};\sem{D};\seminl
-%% \]
-%% which is immediate by the IH (and associativity).  The \Inr{D} case is
-%% analogous.  For \Case{D_1}{D_2}, after expanding the definitions and
-%% using the IH, we need to show
-%% \[
-%% \semrtol{\semcase{\semltor{(\semFo{e};\sem{D_1})}{\beta}}{\semltor{(\semFo{e};\sem{D_2})}{\beta}}}{\beta} = \semFo{e};\semrtol{(\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}})}{\alpha}
-%% \]
-%% By conjugation, the right-hand side equals
-%% \[
-%% \semrtol{(\semcase{\semltor{\sem{D_1}}{\alpha}}{\semltor{\sem{D_2}}{\alpha}};\semUo{e})}{\beta}
-%% \]
-%% and the left-hand side equals 
-%% \[
-%% \semrtol{\semcase{\semltor{\sem{D_1}}{\beta};\semUo{e}}{\semltor{\sem{D_2}}{\beta};\semUo{e}}}{\beta}
-%% \]
-%% and these are equal by the uniqueness part of the universal property for coproducts.
-
-%% \item 
-%% Next, we give the new case of Lemma~\ref{lem:semident}:
-%% $\sem{\Case {\Inl {\ident{A}}} {\Inr {\ident{B}}}} = \semFone$.
-%% After expanding the definitions and using the IH, we need to show
-%% \[
-%% \semrtol{\semcase{\semltor{(\semFone;\seminl)}{1}}{\semltor{(\semFone;\seminr)}{1}}}{1}
-%% \]
-%% By conjugation for \semFone, this is equal to
-%% \[
-%% \semrtol{\semcase{\seminl;\inv{\semUone}}{\seminr;\inv{\semUone}}}{1}
-%% \]
-%% By uniqueness for coproducts, this is equal to
-%% \[
-%% \semrtol{(\semcase{\seminl}{\seminr};{\inv{\semUone}})}{1}
-%% \]
-%% By conjugation for \semUone, this is equal to 
-%% \[
-%% \semFone;{\semcase{\seminl}{\seminr}}
-%% \]
-%% and by uniqueness for coproducts, $\semcase{\seminl}{\seminr} = 1_{\coprd{A}{B}}$.  
-
-%% \item Next, we give the new cases of Lemma~\ref{lem:semcut}.  There are
-%%   5 reductions; we show the \Inl{-} cases of the principal and
-%%   right-commutative cuts, and the left-commutative cut case; the \Inr{-}
-%%   cases are analogous.
-
-%% \begin{itemize}
-%% \item For $\cut{(\Inl{D})}{(\Case{E_1}{E_2})} := \cut{D}{E_1}$,
-%% by the IH we need to show that 
-%% \[
-%% \semofcut{D}{E_1} = \semFcomp(\beta,\beta');\semF{\beta'}{\sem{D}};\semF{\beta'}{\seminl};{\semrtol{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}}{\beta'}}
-%% \]
-%% By naturality of \semrtol{\beta'}, 
-%% $\semF{\beta'}{\seminl};{\semrtol{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}}{\beta'}}
-%% =
-%% \semrtol{(\seminl;{\semcase{\semltor{\sem{E_1}}{\beta'}}{\semltor{\sem{E_2}}{\beta'}}})}{\beta'}$,
-%% which by the universal property for coproducts equals 
-%% \semrtol{({{\semltor{\sem{E_1}}{\beta'}}})}{\beta'},
-%% which equals {\sem{E_1}} by collapsing inverses.  
-
-%% \item For $\cut{D}{(\Inl{E})} := \Inl{\cut{D}{E}}$,
-%% the result is immediate by the IH.
-%% %% \cut{D}{(\Inr{E})} & := & \Inr{\cut{D}{E}}
-
-%% \item For $\cut{(\Case{D_1}{D_2})}{E} := \Case{\cut{D_1}{E}}{\cut{D_2}{E}}$,
-%% by the IH we need to show that
-%% \[
-%% \begin{array}{ll}
-%% & {\semrtol{\semcase{\semltor{(\semofcut{D_1}{E})}{\compo{\beta}{\beta'}}}{\semltor{(\semofcut{D_2}{E})}{\compo{\beta}{\beta'}}}}{\compo{\beta}{\beta'}}}\\
-%% = &\semFcomp(\beta,\beta');\semF{\beta'}{{\semrtol{\semcase{\semltor{\sem{D_1}}{\beta}}{\semltor{\sem{D_2}}{\beta}}}{\beta}}};\sem{E}
-%% \end{array}
-%% \]
-%% Conjugating the $\semFcomp(\beta,\beta')$ outside the
-%% $\semrtol{-}{\compo{\beta}{\beta'}}$, and then conjugating the resulting 
-%% $\semUcomp(\beta,\beta')$ outside the $\semltor{-}{\compo{\beta}{\beta'}}$,
-%% the left-hand side is equal to
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semrtol{(\semrtol{\semcase{\semltor{(\semltor{(\semF{\beta'}{\sem{D_1}};\sem{E})}{\beta'})}{\beta}}{\semltor{(\semltor{(\semF{\beta'}{\sem{D_2}};\sem{E})}{\beta'})}{\beta}}}{\beta})}{\beta'}
-%% \]
-%% By naturality of the adjunction, this is the same as 
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semrtol{(\semrtol{\semcase{\semltor{({\sem{D_1}};\semltor{\sem{E}}{\beta'})}{\beta}}{\semltor{({\sem{D_2}};\semltor{\sem{E}}{\beta'})}{\beta}}}{\beta})}{\beta'}
-%% \]
-%% and then
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semrtol{(\semrtol{\semcase{\semltor{{\sem{D_1}}}{\beta};\semU{\beta}{(\semltor{\sem{E}}{\beta'})}}
-%%                            {\semltor{{\sem{D_2}}}{\beta};\semU{\beta}{(\semltor{\sem{E}}{\beta'})}}}
-%%   {\beta})}{\beta'}
-%% \]
-%% By uniqueness for coproducts, this is
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semrtol{(\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
-%%                            {\semltor{{\sem{D_2}}}{\beta}};\semU{\beta}{(\semltor{\sem{E}}{\beta'})})}
-%%   {\beta})}{\beta'}
-%% \]
-%% By naturality of the adjunction, that is
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semrtol{(\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
-%%                            {\semltor{{\sem{D_2}}}{\beta}})}
-%%   {\beta};{(\semltor{\sem{E}}{\beta'})})}{\beta'}
-%% \]
-%% and then
-%% \[
-%% \semFcomp(\beta,\beta');
-%% \semF{\beta'}{
-%% (\semrtol{(\semcase{\semltor{{\sem{D_1}}}{\beta}}
-%%                            {\semltor{{\sem{D_2}}}{\beta}})}
-%%   {\beta})};
-%% \semrtol{{(\semltor{\sem{E}}{\beta'})}}{\beta'}
-%% \]
-%% so collapsing inverses gives the result.  
-
-%% \end{itemize}
-
-%% \item For 
-%% {\ap D {\Case{\cut{(\Inl{\ident{A}})}{D}}{\cut{(\Inr{\ident{B}})}{D}}}}
-%% (where {D : \seq{\coprd{A}{B}}{\alpha}{C}}),
-%% we need to show that
-%% \[
-%% \semrtol{\semcase{\semltor{(\semFcomp(1,\alpha);\semF{\alpha}{\semFone};\semF{\alpha}{\seminl};\sem{D})}{\alpha}}{\semltor{(\semFcomp(1,\alpha);\semF{\alpha}{\semFone};\semF{\alpha}{\seminr};\sem{D})}{\alpha}}}{\alpha}
-%% \]
-%% By coherence, $\semFcomp(1,\alpha) = \inv{\semF{\alpha}{\semFone}}$, so
-%%   this is
-%% \[
-%% \semrtol{\semcase{\semltor{(\semF{\alpha}{\seminl};\sem{D})}{\alpha}}{\semltor{(\semF{\alpha}{\seminr};\sem{D})}{\alpha}}}{\alpha}.
-%% \]
-%% By naturality of the adjunction, this is 
-%% \[
-%% \semrtol{\semcase{{\seminl};\semltor{\sem{D}}{\alpha}}{{\seminr};\semltor{\sem{D}}{\alpha}}}{\alpha}.
-%% \]
-%% which by uniqueness for coproducts is 
-%% \[
-%% \semrtol{(\semltor{\sem{D}}{\alpha})}{\alpha}.
-%% \]
-%% so collapsing inverses gives the result.  
-
-%% \item The rule \ap{\Inl{\UL{\gamma}{e}{D}}}{\UL{\gamma}{e}{\Inl D}} (and
-%%   the analogous rule for \Inr{D}) is immediate by
-%%   Lemma~\ref{lem:semulalt}, because \sem{\UL{\gamma}{e}{D}} precomposes
-%%   \sem{D} with something, and \sem{\Inl{D}} postcomposes \sem{D} with
-%%   \seminl.
-
-%% \end{itemize}
-%% \end{proof}
-
 \section{Example Mode Theories}
 \label{sec:triple}
 
@@ -2147,16 +1005,17 @@ $\compv{(\comph{\dsd{unit}}{1_{\dsd{n}}})}{(\comph{1_{\dsd n}}{\dsd{counit}})} =
 \end{itemize}
 \noindent
 The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$ and
-$\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the functoriality of $\F{}{}$
-and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{} \la
-\F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right or
-left adjoint of a given functor is unique up to isomorphism, it follows
-that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$
-are isomorphic, resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd
-  d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than
-proving $\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd
-  n}{}$ and then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from
-uniqueness of adjoints, we can construct the isomorphism directly:
+$\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the natural transformations
+specified by the 2-cells also give adjunctions $\F{\dsd d}{} \la \F{\dsd
+  n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$ (using the unit/counit
+definition of adjunction).  Since a right or left adjoint of a given
+functor is unique up to isomorphism, it follows that the two functors
+$\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$ are isomorphic,
+resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd d}{} \iso
+\F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than proving
+$\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd n}{}$ and
+then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from uniqueness of
+adjoints, we can construct the isomorphism directly:
 
 \begin{lemma} \label{lem:mergeFU}
 $\U{\dsd d}{A} \iso \F{\dsd n}{A}$ naturally in $A$.
@@ -2246,7 +1105,7 @@ $\F{}{\U{}{A}}$ to preserve positives, because the negative connective
 $\U{}{}$ interrupts focus/inversion phases.  Here, this behavior is
 explained by the fact that $\F{\dsd{d}}{\U{\dsd{d}}{A}}$ is isomorphic
 to a single positive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
-ambipolar middle connective in an adjoint triple thus \emph{emerges}
+ambipolar middle connective in an adjoint triple thus emerges
 from the presence of two isomorphic connectives, one positive and one
 negative.
 
@@ -2271,8 +1130,7 @@ exactly when the counit (resp.\ unit) of the adjunction is an isomorphism,
 we can capture these properties by considering a different mode
 2-category, the ``walking reflection''. This has the same objects and
 morphisms as above, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
-the counit being just the identity 2-cell, and the equations for
-$\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
+the counit being just the identity 2-cell, and the equations simplify to
 $\comph{\dsd{unit}}{1_{\dsd n}} = 1$ and $\comph{1_{\dsd d}}{\dsd{unit}}
 = 1$.  Note that the only non-identity morphisms of this mode category
 are \dsd{d}, \dsd{n}, and \compo{\dsd{n}}{\dsd{d}}.  
@@ -2281,7 +1139,7 @@ We write $\Delta := \F{\dsd{d}}{}$, $\Gamma := (\U{\dsd d}{} \iso
 \F{\dsd n}{})$, and $\nabla := \U{\dsd{n}}{}$, so $\Flat{} =
 \Bx{\dsd{d}}{}$ and $\Sharp{} = \Crc{\dsd{n}}{}$.  Since in particular
 we still have an adjunction, this mode theory inherits all the theorems
-from the previous section; but it also has the following additional
+from the previous section; it also has the following additional
 properties:
 
 \begin{theorem}[Properties of the walking reflection]
@@ -2387,18 +1245,15 @@ However, because $\Delta$ and $\nabla$ are full and faithful, it is not
 strictly necessary to ever work in \dsd{s} itself---we could
 equivalently work in the image of $\Delta$ or $\nabla$ in \dsd{c}.  If
 we wish to restrict ourselves to constructions in \dsd{c}, we can
-simplify the mode theory to the (strictly) idempotent monad:
-\begin{itemize}
-\item object \dsd{c}
-\item 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
-  $\compo{\dsd{r}}{\dsd{r}} = 1$, so the only 1-cells are $1$ and \dsd{r}
-\item 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
-  t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$, so 
-  the only 2-cells are $1_1$, $1_{\dsd{r}}$, and  $\dsd{unit}$. 
-\end{itemize}
-This mode theory embeds in the walking reflection, with $\dsd{r} :=
-\compo{\dsd{n}}{\dsd{d}}$, so we could equivalently work in the
-\dsd{c}-types above.
+simplify the mode theory to the (strictly) idempotent monad, which has
+one object \dsd{c}, one generating 1-cell $\dsd{r} : \dsd{c} \ge
+\dsd{c}$ such that $\compo{\dsd{r}}{\dsd{r}} = 1$, and one generating
+2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
+  t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$.  Observe
+that the only 1-cells are $1$ and \dsd{r} and the only 2-cells are
+$1_1$, $1_{\dsd{r}}$, and $\dsd{unit}$.  This mode theory embeds in the
+walking reflection, with $\dsd{r} := \compo{\dsd{n}}{\dsd{d}}$, so we
+could equivalently work in the \dsd{c}-types above.
 
 For this mode theory, we define $\Flat{} := \F{\dsd{r}}{}$ and $\Sharp{}
 := \U{\dsd{r}}{}$.  In the walking reflection, we defined $\Flat{} :=
@@ -2418,429 +1273,15 @@ and $\Sharp{\Flat A} \iso \Sharp{A}$
 and $\Flat{\Sharp A} \iso \Flat{A}$ naturally in $A$.
 \end{theorem}
 \begin{proof}
-Because $\compo{\dsd r}{\dsd r} = {\dsd r}$, idempotence is just the composition
-isomorphisms $F^\circ$ and $U^\circ$ from
+Because $\compo{\dsd r}{\dsd r} = {\dsd r}$, idempotence is just the
+composition isomorphisms $F^\circ$ and $U^\circ$ from
 Theorem~\ref{thm:syntacticpseudofunctor}.  The absorption isomorphisms
-are constructed directly; see our Agda formalization.
+are constructed directly.
 \end{proof}
 
-In the extended version of this paper, we connect this mode theory to
-the rules for spatial type theory used in
-~\citet{shulman15realcohesion}.
-
-
-%% \subsubsection{Restricted Sequent Calculus I}
-
-%% The general sequent calculus rules allow choices of $\gamma$ and $e$ in
-%% \irl{FR} and \irl{UL}.  However, for this specific mode theory, no
-%% choices are necessary: we can without loss of generality use the
-%% following instances of the sequent calculus rules:
-%% \[
-%% \begin{array}{c}
-%% \infer[\hyp{1_{1}}]
-%%       {\seq{P}{\dsd{1}}{P}}
-%%       {}
-%% \quad
-%% \infer[\hyp{\dsd{unit}}]
-%%       {\seq{P}{\dsd{r}}{P}}
-%%       {}
-%% \\ \\
-%% \infer[\UR{-}]
-%%       {\seq{A}{\_}{\Sharp{B}}}
-%%       {\seq{A}{\dsd{r}}{B}}
-%% \quad
-%% \infer[\UL{\dsd{r}}{1}{-}]
-%%       {\seq{\Sharp A}{\dsd{r}}{B}}
-%%       {\seq{A}{\dsd{r}}{{B}}}
-%% \quad
-%% \infer[\FR{\dsd{r}}{1}{-}]
-%%       {\seq{A}{\dsd{r}}{\Flat B}}
-%%       {\seq{A}{\dsd{r}}{B}}
-%% \quad
-%% \infer[\FL{-}]
-%%       {\seq{\Flat A}{\dsd{\_}}{B}}
-%%       {\seq{A}{\dsd{r}}{B}}
-%% \\ \\
-%% \infer[\UR{-}]
-%%       {\seq{A}{\alpha}{\U{1}{B}}}
-%%       {\seq{A}{\alpha}{B}}
-%% \quad
-%% \infer[\UL{\alpha}{1}{-}]
-%%       {\seq{\U{1} A}{\dsd{\alpha}}{B}}
-%%       {\seq{A}{\dsd{\alpha}}{{B}}}
-%% \quad
-%% \infer[\FR{\alpha}{1}{-}]
-%%       {\seq{A}{\alpha}{\F{1} B}}
-%%       {\seq{A}{\alpha}{B}}
-%% \quad
-%% \infer[\FL{-}]
-%%       {\seq{\F{1} A}{\alpha}{B}}
-%%       {\seq{A}{\alpha}{B}}
-%% \end{array}
-%% \]
-%% The intuitive reading of the restricted rules is as
-%% follows.  We have two kinds of assumptions, cohesive ($A[1_\dsd{c}]$)
-%% and \emph{crisp} ($A[\dsd r]$, \dsd{r} for cRisp).  A crisp assumption
-%% is the judgemental analogue of \Flat{A}---i.e. it means we know $A$
-%% retopologized with the discrete cohesion.  The \Flat{} left rule says
-%% that if we know \Flat{A} either crisply or cohesively, then we know $A$
-%% crisply.  The \Flat{} right rule says that we can map into \Flat{B} by
-%% mapping into $B$, as long as the assumption is already crisp---this
-%% restriction prevents using a cohesive variable to map into a discrete
-%% type.  The \Sharp{} right rule says that if we are mapping into the
-%% codiscretization of $B$, then we can make the assumption crisp.  The
-%% \Sharp{} left rule says that knowing the codiscretization crisply is the
-%% same as knowing $A$ crisply, because in either case we know $A$ under
-%% the discrete retopologization.
-
-%% \begin{theorem}
-%% For all $D : \seq{A}{\alpha}{B}$, there is a derivation $D' :
-%% \seq{A}{\alpha}{B}$ that uses only the above rules and satisfies $\ap D {D'}$.  
-%% \end{theorem}
-
-%% \begin{proof}
-%% For this mode theory, the only mode is \dsd{c}, the only 1-cells are 
-%% 1 and \dsd{r}, and the only 2-cells are $1_1$ and $1_{\dsd r}$ and
-%% \dsd{unit}.  The case for \hyp{e} is immediate, since the only 2-cells
-%% from $1$ are $1_1$ and \dsd{unit}, and we have included both of those.  
-
-%% We have included rules for $F$ and $U$ for both 1-cells $1$ and \dsd{r};
-%% we discuss why the rules for $\Sharp{}$ are complete ($\Flat{}$ and
-%% $\F{1}{}$ and $\U{1}{}$ are analogous).  For \irl{UR}, a general
-%% instance of the rule will have some $\beta$ in the conclusion, and pass
-%% to $\compo{\dsd r}{\beta}$ in the premise.  But $\beta$ must be $1$ or
-%% \dsd{r}, and in either case the premise is \dsd{r}, so the IH gives the
-%% result.  For \irl{UL}, a general instance will have the form
-%% \[
-%% \infer[\irl{UL}]
-%%       {\seq {\U {\dsd{r}} A} {\beta} {C}}
-%%       { \tc{\compo{\dsd r}{\gamma}} {\beta} &
-%%         \seq{A}{\gamma}{C}}
-%% \]
-%% Here $\gamma$ can be $1$ or \dsd{r}, but in either case $\beta$ must
-%% have been \dsd{r}, because for either value of $\gamma$ we have
-%% $\compo{\dsd r}{\gamma} = \dsd{r}$ and there is no 2-cell \tc{\dsd
-%%   r}{1}.  Moreover, the only 2-cell \tc{\dsd{r}}{\dsd{r}} is 1, so the
-%% derivation must be of the form
-%% \[
-%% \infer[\UL{\gamma}{1}{-}]
-%%       {\seq {\U {\dsd{r}} A} {\dsd{r}} {C}}
-%%       {\seq{A}{\gamma}{C}}
-%% \]
-%% By the IH we have an equivalent derivation $D' : \seq{A}{\gamma}{C}$
-%% that uses only the specialized rules.  If $\gamma$ is \dsd{r}, this
-%% gives the result.  If $\gamma$ is 1, then we can make a derivation 
-%% \[
-%% \infer[\UL{\dsd{r}}{1}{-}]
-%%       {\seq {\U {\dsd{r}} A} {\dsd{r}} {C}}
-%%       {\infer[\tr{\dsd{unit}}{-}]
-%%              {\seq{A}{\dsd{r}}{C}}
-%%              {
-%%               D' : \seq{A}{1}{C}
-%%              }
-%%       }
-%% \]
-%% and show using the equational rules that
-%% \ap {\UL{\gamma}{1}{D'}} {\UL{\dsd r}{1}{\tr{\dsd{unit}}{D'}}}.
-%% It remains to show a lemma that \tr{\dsd{unit}}{D} is closed under the
-%% restricted rules, which can be proved by induction on $D$.  The complete
-%% proof of this theorem is about 250 lines of Agda.  
-%% \end{proof}
-
-%% \newcommand\addcrisp[1]{\ensuremath{#1\mathord{\uparrow}^{\dsd{crisp}}}}
-%% \newcommand\dropcoh[1]{\ensuremath{#1\mathord{\downarrow}_{\dsd{coh}}}}
-
-%% For the restricted rules, there is a natural generalization to a
-%% multiple assumption sequent, where each of the assumptions is either
-%% cohesive or crisp.  We write $\Gamma$ for a context consisting of
-%% assumptions $A[1]$ or $A[\dsd r]$. We write \addcrisp{\Gamma} for a
-%% context where each cohesive assumption $A[1]$ has been promoted into a
-%% crisp assumption $A[\dsd r]$, and each $A[\dsd{r}]$ has been kept the
-%% same. We write \dropcoh{\Gamma} for a context where each cohesive
-%% assumption $A[1]$ has been dropped, and each crisp assumption $A[r]$ has
-%% been kept the same.  Then the multi-assumptioned rules are as follows:
-%% \[
-%% \infer{{\Gamma} \vdash {P}}
-%%       {P[1] \in \Gamma}
-%% \quad
-%% \infer{{\Gamma} \vdash {P}}
-%%       {P[\dsd{r}] \in \Gamma}
-%% \quad
-%% \infer{\Gamma \vdash {\Sharp{B}}}
-%%       {\addcrisp {\Gamma} \vdash {B}}
-%% \quad
-%% \infer{\Gamma, {\Sharp A}[\dsd{r}] \vdash {B}}
-%%       {\Gamma, A[\dsd{r}] \vdash {{B}}}
-%% \quad
-%% \infer{\Gamma \vdash {\Flat B}}
-%%       {\dropcoh \Gamma \vdash {B}}
-%% \quad
-%% \infer{\Gamma, {\Flat A}[\dsd{\_}] \vdash {B}}
-%%       {\Gamma, {A}[\dsd{r}] \vdash {B}}
-%% \]
-%% The left rules are just the single-assumption left rules in context.
-%% The single-assumption \Sharp{} right rule promotes the one assumption to
-%% crisp; here, we promote all assumptions.  The single assumption \Flat{}
-%% right rule insists that the one assumption be crisp; here, we drop all
-%% non-crisp assumptions.  The rules for \Flat{} are reminiscent of the
-%% $\Bx{}{A}$ modality in \citet{pfenningdavies}, with crisp corresponding
-%% to the valid judgement, except here we can apply a left rule to a
-%% valid/crisp assumption of $\Bx{}{A}$, because \Flat{} is an $F$ which is
-%% a positive-to-positive connective.  The right rule for \Sharp{} is
-%% reminiscent of the right rule for the proof irrelevance/erasability
-%% modality $[A]$ in \citet{pfenning01proofirrel,pfenning08proofirrel},
-%% though the left rule is different.\footnote{The $[A]$ type in that work
-%%   is a product-preserving functor with no additional properties, so it
-%%   cannot be mapped into adjoint logic in a straightforward way, because
-%%   all of our functors have more properties.}  Like in
-%% Figure~\ref{fig:coprod}, the left rule for coproducts would allow
-%% elimination on a coproduct in either mode:
-%% \[
-%% \infer{\Gamma \vdash {\coprd{A}{B}}}
-%%       {\Gamma \vdash {A}}
-%% \quad
-%% \infer{\Gamma \vdash {\coprd{A}{B}}}
-%%       {\Gamma \vdash {B}}
-%% \quad
-%% \infer{\Gamma, {(\coprd{A}{B})} [\alpha] \vdash {C}}
-%%       {\Gamma, {(\coprd{A}{B})} [\alpha], A [\alpha] \vdash {C} & 
-%%        \Gamma, {(\coprd{A}{B})} [\alpha], B [\alpha] \vdash {C} & 
-%%       }
-%% \]
-
-%% \subsubsection{Restricted Sequent Calculus II}
-
-%% All of the sequent calculi that we have defined so far, including the
-%% above restricted sequent calculus for this mode theory, are well-behaved
-%% from a proof-theoretic point view, in that they have the subformula
-%% property and the identity and cut rules are admissible.  The cut
-%% admissibility algorithm takes certain left-commutative cuts as
-%% definitional equalities; e.g. we have
-%% \[
-%% \cut{(\Case{D_1}{D_2})}{E} =\Case{\cut{D_1}{E}}{\cut{D_2}{E}} \text{ if $E$ is not a right rule}\\
-%% \]
-%% However, these left-commutative cuts are not typically taken as
-%% definitional equalities in intensional dependent type theories, and
-%% adding them may actually be undesirable from a semantic point view,
-%% where we are interested in interpreting the type theory in as wide a
-%% class of models as possible.  From a sequent calculus point of view, a
-%% positive type in intensional type theory is treated more like a base
-%% type/atomic proposition that is equipped with an elimination constant of
-%% function type.  For example, for coproducts, the elimination constant is
-%% \[
-%% \dsd{case} : (A \to C) \to (B \to C) \to ((\coprd{A}{B}) \to C)
-%% \]  
-%% and this is often used via (iterated) implication-left:
-%% \[
-%% \infer{\Gamma \vdash D}
-%%       {\Gamma \vdash A \to C & 
-%%        \Gamma \vdash B \to C & 
-%%        \Gamma \vdash \coprd{A}{B} &
-%%        \Gamma, C \vdash D
-%%       }
-%% \]
-%% This builds in a cut from the result type of the case $C$ to the overall
-%% goal $D$, so the left-commutative cuts do not need to be commuted into
-%% the case branches.  However, because the elimination constant is
-%% polymorphic in $C$, the sequent calculus no longer has the subformula
-%% property, and identity and cut are no longer admissible rules.  
-
-%% \newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
-
-
-%% We can give a sequent calculus in this style for the current mode theory:
-%% \[
-%% \begin{array}{l}
-%% \infer{\rseq{A}{\dsd r}{A}}{}
-%% \quad
-%% \infer{\rseq{A}{1}{A}}{}
-%% \quad
-%% \infer{\rseq A { \compo {\beta} {\alpha}} C}
-%%       {\rseq A {\beta} B &
-%%        \rseq B {\alpha} C}
-%% \\ \\
-%% \infer{\rseq{A}{\alpha}{\Sharp B}}
-%%       {\rseq{A}{\dsd r} B}
-%% \quad
-%% \infer{\rseq{\sharp A}{\dsd r} B}
-%%       {\rseq{A}{\dsd r}{B}}
-%% \quad
-%% \infer{\rseq{A}{\dsd r}{\Flat B}}
-%%       {\rseq{A}{\dsd r}{B}}
-%% \quad
-%% \infer{\rseq{\Flat A}{1}{C}}
-%%       {\rseq{A}{\dsd r}{C}}
-%% \\ \\
-%% \infer{\rseq{C}{\alpha}{\coprd{A}{B}}}
-%%       {\rseq{C}{\alpha}{A}} 
-%% \quad
-%% \infer{\rseq{C}{\alpha}{\coprd{A}{B}}}
-%%       {\rseq{C}{\alpha}{B}} 
-%% \quad
-%% \infer{\rseq{(\coprd{A}{B})}{1}{C}}
-%%       {\rseq{A}{1}{C} &
-%%         \rseq{B}{1}{C}}
-%% \end{array}
-%% \]
-%% On the first line, we have identity (for both crisp and cohesive
-%% variables) and cut as derivable rules; the identity rules could be
-%% restricted to positives and atoms and made admissible for negatives in
-%% order to force $\eta$-expansion.  The rules for \Sharp{} and the right
-%% rules for \Flat{} and \coprd{}{} are the same as in the previous sequent
-%% calculus.  The left rules for positives are restricted to cohesive
-%% variables, and the left rule for coproducts binds cohesive variables in
-%% the branches.  
-
-%% These restrictions correspond to having an elimination constant of
-%% function type, and in the presence of cut and identity rules, suffice to
-%% derive the left rules for crisp assumptions.  For \Flat{A}, this is just
-%% precomposition with using a crisp variable:
-%% \[
-%% \infer{\rseq{\Flat{A}}{\dsd r}{C}}
-%%       {\rseq{\Flat{A}}{\dsd r}{\Flat A} &
-%%        \infer{\rseq{\Flat{A}}{1}{C}}
-%%              {\rseq{A}{\dsd r}{C}}}
-%% \] 
-%% The fact that this works is quite specific to this mode theory, where
-%% forgetting the {\dsd r}-ness of the assumption and then reintroducing it
-%% arrives at the same place, because of idempotence.  For \coprd{A}{B}, we
-%% need to use, \Sharp{} on the right to derive the more general rule:
-%% \[
-%% \infer{\rseq{\coprd{A}{B}}{\dsd r}{C}}
-%%       {\infer{\rseq{\coprd{A}{B}}{1}{\Sharp C}}
-%%              {\infer{\rseq{A}{1}{\Sharp{C}}}
-%%                     {\rseq{A}{\dsd r}{C}} &
-%%               \infer{\rseq{B}{1}{\Sharp{C}}}
-%%                     {\rseq{B}{\dsd r}{C}} &
-%%              } & 
-%%        \infer{\rseq{\Sharp C}{\dsd r}{C}}
-%%              {\infer{\rseq{C}{\dsd r}{C}}{}}
-%%       }
-%% \] 
-%% Because they are derivable, we could of course add these as additional
-%% rules, but this shows that it is not necessary to do so.  A motivation
-%% for not including them as primitives is that the analogous crisp
-%% elimination rules do not hold for all higher inductive types in cohesive
-%% homotopy type theory, so it is more uniform never to include them.
-
-%% This sequent calculus is sound and complete for the original one, and
-%% every \ap{}{}-equivalence-class of sequent derivations in our original
-%% calculus can be described using these rules:\footnote{ignoring or adding
-%%   rules for \F{1}{} and \U{1}{}}
-%% \begin{theorem}
-%% There are functions from \seq{A}{\alpha}{B} to \rseq{A}{\alpha}{B}
-%% and back, and the composite from \seq{A}{\alpha}{B} to itself is the
-%% identity up to \ap{}{}.  
-%% \end{theorem}
-
-%% \begin{proof}
-%% The proof is about 150 lines of Agda.  
-%% \end{proof}
-
-%% \newcommand\nd[3]{\ensuremath{#1 \, [ #2 ] \, \vdash^{\dsd{nd}} \, #3}}
-
-%% Next, we convert this sequent calculus to a single-variable natural
-%% deduction system:
-%% \[
-%% \begin{array}{c}
-%% \infer{\nd{A}{\dsd r}{A}}{}
-%% \quad
-%% \infer{\nd{A}{1}{A}}{}
-%% \\ \\
-%% \infer{\nd{A}{\alpha}{\Sharp B}}
-%%       {\nd{A}{\dsd r} B}
-%% \quad
-%% \infer{\nd{C}{\dsd r}{A}}
-%%       {\nd{C}{\dsd r}{\Sharp A}}
-%% \quad
-%% \infer{\nd{C}{\dsd r}{\Flat A}}
-%%       {\nd{C}{\dsd r}{A}}
-%% \quad
-%% \infer{\nd{C}{\alpha}{B}}
-%%       {\nd{C}{\alpha}{\Flat A} &
-%%         \nd{A}{r}{B}}
-%% \\ \\
-%% \infer{\nd{C}{\alpha}{\coprd{A}{B}}}
-%%       {\nd{C}{\alpha}{A}} 
-%% \quad
-%% \infer{\nd{C}{\alpha}{\coprd{A}{B}}}
-%%       {\nd{C}{\alpha}{B}} 
-%% \quad
-%% \infer{\nd{C}{\alpha}{D}}
-%%       {\nd{C}{\alpha}{\coprd{A}{B}} &
-%%        \nd{A}{1}{D} &
-%%        \nd{A}{1}{D}}
-%% \end{array}
-%% \]
-
-%% The cut/substitution rule
-%% \[
-%% \infer{\rseq A { \compo {\beta} {\alpha}} C}
-%%       {\rseq A {\beta} B &
-%%        \rseq B {\alpha} C}
-%% \]
-%% is not included, but it is admissible, because each rule allows for
-%% precomposition.  
-
-%% The natural deduction system is also sound and complete for the original
-%% one, and the the proof factors through the above sequent calculus:
-%% \begin{theorem}
-%% There are functions 
-%% $(\seq{A}{\alpha}{B}) \leftrightarrow (\rseq{A}{\alpha}{B}) \leftrightarrow (\nd{A}{\alpha}{B})$
-%% and back, and the composite from \seq{A}{\alpha}{B} to itself is the
-%% identity up to \ap{}{}.  
-%% \end{theorem}
-
-%% \begin{proof}
-%% The proof is about 150 lines of Agda.  
-%% \end{proof}
-
-%% We can generalize these natural deduction rules to multiple assumptions
-%% as follows, writing $\Delta$ for the crisp assumptions and $\Gamma$
-%% for the cohesive assumptions:
-%% \[
-%% \begin{array}{c}
-%% \infer{\Delta;\Gamma \vdash A}
-%%       {A \in \Gamma}
-%% \quad
-%% \infer{\Delta;\Gamma \vdash A}
-%%       {A \in \Delta}
-%% \\ \\
-%% \infer{\Delta;\Gamma \vdash {\Sharp B}}
-%%       {\Delta,\Gamma; \cdot \vdash B}
-%% \quad
-%% \infer{\Delta;\Gamma \vdash A}
-%%       {\Delta;\cdot \vdash {\Sharp A}}
-%% \quad
-%% \infer{\Delta; \Gamma \vdash {\Flat A}}
-%%       {\Delta; \cdot \vdash {A}}
-%% \quad
-%% \infer{\Delta; \Gamma \vdash B}
-%%       {\Delta; \Gamma \vdash {\Flat A} &
-%%         \Delta,A; \Gamma \vdash B}
-%% \\ \\
-%% \infer{\Delta;\Gamma \vdash {\coprd{A}{B}}}
-%%       {\Delta;\Gamma \vdash {A}} 
-%% \quad
-%% \infer{\Delta;\Gamma \vdash {\coprd{A}{B}}}
-%%       {\Delta;\Gamma \vdash {B}} 
-%% \quad
-%% \infer{\Delta;\Gamma \vdash {C}}
-%%       {\Delta;\Gamma \vdash {\coprd{A}{B}} &
-%%        \Delta;\Gamma,A \vdash {C} &
-%%        \Delta;\Gamma,B \vdash {C}}
-%% \end{array}
-%% \]
-%% These rules, generalized to dependent types, are exactly the rules used
-%% in an investigation of cohesive type theory in
-%% \citet{shulman15realcohesion}.  Here, we have given a proof theoretic
-%% explanation for them, by connecting them to a particular mode theory in
-%% adjoint logic.  The sequent calculus and natural deduction systems
-%% defined in this section allow arbitrary cuts/non-normal forms; a next
-%% step is to investigate normal forms for the equational theory given by
-%% only the $\beta$ rules for positives---the translation to the general
-%% adjoint logic sequent calculus normalizes too much, because it also
-%% performs left-commutative cuts.
+In the extended version of this paper, we connect adjoint logic for this
+mode theory to the rules for spatial type theory used
+in~\citet{shulman15realcohesion}.
 
 \section{Conclusion}
 
@@ -2848,40 +1289,38 @@ In this paper, we have defined an adjoint logic that allows multiple
 different adjunctions between the same categories, shown soundness and
 completeness of the logic in pseudofunctors $\M \to \Adj$, and used some
 specific mode theories to model adjoint triples and the $\Flat{}$ and
-$\Sharp{}$ modalities of axiomatic cohesion.
-%% While we have considered
-%% only a single-hypothesis sequent through most of the paper, we discussed
-%% a generalization to multiple hypotheses for the specific mode theory in
-%% Section~\ref{sec:idempotent}, and the generalization of these rules to
-%% dependent types is discussed in \citet{shulman15realcohesion}.  
-One area for future work is to extend this adjoint logic with multiple
-assumptions and dependent types (we discuss some special cases in the
-extended version).  This would provide a context for investigating the
-shape modality $\sh{} \la \Flat{}$.  We could certainly give a mode
-theory with one mode and $\sh{} \la \Flat{} \la \Sharp{}$, or with two
-modes and $\sh \la \Delta \la \Gamma \la \nabla$, but it remains to be
-investigated whether this can provide the right properties for \sh{}
-beyond adjointness.  On the one hand, too much might be true: \sh{} does
-not preserve identity types, and the general dependently typed rules for
-$F$ might force it to. On the other, too little might be true: for
-applications such as relating the shape of the topological circle to the
-homotopical circle, extra properties are needed, such as
-$\sh{\mathbb{R}} \cong 1$.  Both of these issues can be addressed as in
-\citep{shulman15realcohesion} by treating \sh{} not as an abstract
-adjoint, of the kind we can represent using the mode 2-category, but as
-a defined type (specifically, a higher inductive), which among other
-things has the property that it is adjoint to $\Flat{}$ (adjoint logic /
-is still essential for representing $\Flat{}$ and $\Sharp{}$
-themselves).  Another area for future work is to consider
-$\infty$-category semantics, rather than the 1-categorical semantics of
-derivations that we have considered here.  A final area for future work
-is to look for applications of other mode theories in our generalized
-adjoint logic beyond the motivating example of cohesive homotopy type
-theory.
+$\Sharp{}$ modalities of axiomatic cohesion.  One area for future work
+is to extend this adjoint logic with multiple assumptions and dependent
+types (we discuss some special cases in the extended version).  
+%% This would provide a context for investigating the shape modality
+%% $\sh{} \la \Flat{}$.  We could certainly give a mode theory with one
+%% mode and $\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh
+%% \la \Delta \la \Gamma \la \nabla$, but it remains to be investigated
+%% whether this can provide the right properties for \sh{} beyond
+%% adjointness.  On the one hand, too much might be true: \sh{} does not
+%% preserve identity types, and the general dependently typed rules for
+%% $F$ might force it to. On the other, too little might be true: for
+%% applications such as relating the shape of the topological circle to
+%% the homotopical circle, extra properties are needed, such as
+%% $\sh{\mathbb{R}} \cong 1$.  Both of these issues can be addressed as
+%% in \citep{shulman15realcohesion} by treating \sh{} not as an abstract
+%% adjoint, of the kind we can represent using the mode 2-category, but
+%% as a defined type (specifically, a higher inductive), which among
+%% other things has the property that it is adjoint to $\Flat{}$
+%% (adjoint logic / is still essential for representing $\Flat{}$ and
+%% $\Sharp{}$ themselves).
+Another area for future work is to consider $\infty$-category semantics,
+rather than the 1-categorical semantics of derivations that we have
+considered here.  A final area for future work is to look for
+applications of other mode theories in our generalized adjoint logic
+beyond the motivating example of cohesive homotopy type theory.
 
-\setlength{\bibsep}{-1.75pt} %% dirty trick: make this negative
+\paragraph{\textbf{Acknowledgments}} We thank Jason Reed for helpful
+discussions about this work.
+
+% \setlength{\bibsep}{-1.5pt} %% dirty trick: make this negative
 { \small
-\linespread{0.50}
+% \linespread{0.50}
 \bibliographystyle{abbrvnat}
 \bibliography{drl-common/cs}
 }
