@@ -241,11 +241,11 @@ generalizes from the connected components to the \emph{fundamental
   homotopy space} functor, which makes a homotopy space from the
 topological/cohesive paths, paths between paths, etc. of $A$.  This
 captures the process by which homotopy spaces arise from cohesive
-spaces; for example, one can prove (using some additional axioms) that
+spaces; for example, one can prove (using additional axioms) that
 the shape of the topological circle is the homotopy
 circle~\cite{shulman15realcohesion}.  This allows synthetic homotopy
 theory to be used in proofs about topological spaces, and opens up
-possibilities for using synthetic homotopy theory as a tool in other
+possibilities for applications to other
 areas of mathematics and theoretical physics.
 
 This paper begins an investigation into the structural proof theory of
@@ -276,14 +276,15 @@ and $\tc {\compo{\dsd{d}}{\dsd{n}}} {1_s}$ satisfying
 some equations
 \end{itemize}
 The 1-cells generate $F_{\dsd d} \la U_{\dsd d}$ and $F_{\dsd n} \la
-U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$ is
-naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
-F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong F_{\dsd n}$
-and have the desired adjoint triple.  Indeed, you may recognize this
-2-category as the ``walking adjunction'' with $\dsd d \la \dsd n$---that
-is, we give an adjoint triple by saying that the mode morphism generating
-the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
-adjunction $\Gamma\la\nabla$.
+U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$
+is naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
+F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong
+F_{\dsd n}$ and have the desired adjoint triple.  Indeed, you may
+recognize this 2-category as the ``walking adjunction'' with $\dsd d \la
+\dsd n$---that is, we give an adjoint triple by saying that the mode
+morphism generating the adjunction $\Delta\la \Gamma$ is itself left
+adjoint to the mode morphism generating the adjunction
+$\Gamma\la\nabla$.
 
 The main judgement of the logic is a ``mixed-category'' entailment
 judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
@@ -296,16 +297,15 @@ map $\arrow{}{\F \alpha A}{C}$ or $\arrow{}{A}{\U \alpha C}$.
 %   modes, or a pseudofunctor to the bicategory of profunctors that are
 %   both representable and corepresentable; these are equivalent to the
 %   structures used here.}
-However, taking the mixed-mode judgement as
-primitive makes for a nicer sequent calculus: $U$ and $F$ can be
-specified independently from each other, by left and right rules, in
-such a way that identity and cut (composition) are admissible, and the
-subformula property holds.  While we do not consider
-focusing~\cite{andreoli92focus}, we conjecture that the connectives can
-be given the same focusing behavior as in \cite{reed09adjoint}: $F$ is
-positive and $U$ is negative (which, because limits are negative and
-colimits are positive, and like-polarity connectives compose together
-well, matches what left and right adjoints should preserve).
+However, taking the mixed-mode judgement as primitive makes for a nicer
+sequent calculus: $U$ and $F$ can be specified independently from each
+other, by left and right rules, in such a way that identity and cut
+(composition) are admissible, and the subformula property holds.  While
+we do not consider focusing~\cite{andreoli92focus}, we conjecture that
+the connectives can be given the same focusing behavior as in
+\cite{reed09adjoint}: $F$ is positive and $U$ is negative (which,
+because limits are negative and colimits are positive, matches what left
+and right adjoints should preserve).
 
 The resulting logic has a good definition-to-theorem ratio: from 
 simple sequent calculus rules for $F$ and $U$, we can prove a variety of
@@ -424,7 +424,7 @@ constructor.
 The sequent calculus judgement has the form \seq A \alpha C where
 \wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  The judgement
 represents a map from an object of some category $q$ to an object of
-another category $p$ along some adjunction $\F \alpha {} \la \U \alpha
+another category $p$ along the adjunction $\F \alpha {} \la \U \alpha
 {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
   \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
@@ -478,7 +478,7 @@ for coproducts in Figure~\ref{fig:coprod}.
 \]
 
 \caption{Rules for coproducts; see the extended version for the
-  definition of the admissible identity and cut rules, and for the
+  definition of the admissible identity and cut principles, and for the
   equational theory extending the rules in
   Section~\ref{sec:rules:equations}}
 \label{fig:coprod}
@@ -505,8 +505,8 @@ connective with the mode morphism in the sequent.  Semantically, this
 corresponds to one direction of the composition isomorphism between
 $\F{\compo{\alpha}{\beta}}{A}$ and $\F{\beta}{\F{{\alpha}}{A}}$ and
 similarly for $U$; see the derivation in Example 2 in
-Figure~\ref{fig:examples}.  We conjecture that these two rules are
-invertible.
+Figure~\ref{fig:examples}.  Though we do not consider focusing formally,
+we conjecture that these two rules are invertible.
 
 Next, consider \irl{FR}.  The rule is a bit complex because it involves
 three different aspects of the pseudofunctor structure.  First, in the
@@ -1301,7 +1301,7 @@ these issues can be addressed as in \cite{shulman15realcohesion} by
 treating \sh{} not as an abstract adjoint, of the kind we can represent
 using the mode 2-category, but as a defined type (specifically, a higher
 inductive), which among other things has the property that it is adjoint
-to $\Flat{}$ (adjoint logic / is still essential for representing
+to $\Flat{}$ (adjoint logic is still essential for representing
 $\Flat{}$ and $\Sharp{}$ themselves).  Another is to consider
 $\infty$-category semantics, rather than the 1-categorical semantics of
 derivations that we have considered here.  A final direction for future
