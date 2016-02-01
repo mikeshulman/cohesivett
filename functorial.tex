@@ -1,0 +1,484 @@
+
+\documentclass[letter,11pt] {article}
+
+\usepackage{fullpage}
+
+\usepackage{pslatex} %Times font
+%\usepackage{apacite} %apa citation style
+%\bibliographystyle{apacite}
+%\usepackage[pdfborder={0 0 0}]{hyperref}%for hyperlinks without ugly boxes
+%\usepackage{graphicx} %for figures
+%\usepackage{enumerate} %for lists
+%% \fancyhf{}
+%% %% \fancyhead[l,lo]{\textit{Licata FY 2016 YIP Project Narrative}} %left top header
+%% \fancyhead[r,ro]{\thepage} %right top header
+\usepackage{pdfpages}
+\usepackage{url}
+\usepackage{tipa}
+\usepackage{xspace}
+\newcommand{\shape}{\ensuremath{\mathop{\text{\textesh}}}\xspace}
+\let\mysharp\sharp
+\renewcommand{\sharp}{\ensuremath{\mathop{\mysharp}}\xspace}
+\let\myflat\flat
+\renewcommand{\flat}{\ensuremath{\mathop{\myflat}}\xspace}
+\usepackage{latexsym,amsmath,amsthm,amssymb,amscd}
+\usepackage{tikz}
+\usepackage{drl-common/typesit}
+\usepackage[sort,round]{natbib}
+\usepackage{drl-common/lagdatotex}
+\usepackage{drl-common/proof}
+
+\newcommand{\transport}[3]{\ensuremath{\mathsf{transport}_{#1}(#2,#3)}}
+\newcommand{\ua}[1]{\mathsf{ua}(#1)}
+
+\renewcommand{\to}{\rightarrow}
+%
+\newcommand{\UU}{\ensuremath{\mathcal{U}}} 
+\newcommand{\MM}{\ensuremath{\mathcal{M}}} 
+\renewcommand{\L}{\ensuremath{\mathsf{L}}} 
+\newcommand{\R}{\ensuremath{\mathsf{R}}} 
+\newcommand{\W}{\ensuremath{\mathsf{W}}} 
+\newcommand{\C}{\ensuremath{\mathcal{C}}} 
+\newcommand{\sfC}{\ensuremath{\mathsf{C}}} 
+\newcommand{\T}{\ensuremath{\mathbb{T}}} 
+\newcommand{\NN}{\ensuremath{\mathbb{N}}} 
+\newcommand{\Co}{\ensuremath{\mathcal{C}_0}} 
+\newcommand{\Cs}{\ensuremath{\C^\sharp}}% C^sharp
+\newcommand{\Sm}{\ensuremath{\mathcal{S}}}% smallness
+\newcommand{\St}{\ensuremath{\mathsf{S}}}% set predicate
+\newcommand{\SQ}{\ensuremath{\S}}% set quantifier
+\newcommand{\SC}{\ensuremath{\mathcal{S}_\mathcal{C}}}% small objects
+\newcommand{\E}{\ensuremath{\mc{E}}}
+\newcommand{\Sets}{\ensuremath{\mathrm{Sets}}}
+\newcommand{\cat}{\ensuremath{\mathrm{Cat}}}
+\newcommand{\presh}[1]{\ensuremath{\Sets^{\op{#1}}}}
+%
+\newcommand{\down}[1]{\;\downarrow\!{(#1)}}
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
+\newcommand{\pr}[1]{\ensuremath{P_{r}(#1)}}
+\newcommand{\inc}{\ensuremath{\subseteq}} 
+\newcommand{\incl}{\ensuremath{\hookrightarrow}} 
+\newcommand{\mono}{\rightarrowtail}
+%\newcommand{\epi}{\twoheadrightarrow}
+%\newcommand{\iso}{\cong}
+\newcommand{\aar}{\rightrightarrows}
+\newcommand{\ccup}{\ensuremath{\cup}}
+%\newcommand{\Y}{\ensuremath{\mc{Y}}}
+\newcommand{\pow}{\ensuremath{\mc{P}}}
+\newcommand{\elem}{\ensuremath{\in}}
+\newcommand{\imp}{\ensuremath{\Rightarrow}}
+\newcommand{\To}{\ensuremath{\Rightarrow}}
+\newcommand{\iiff}{\quad\text{iff}\quad}
+\newcommand{\colim}{\varinjlim}
+%
+% scott brackets
+\newcommand{\sem}[1]{\ensuremath{[\![{#1}]\!]}}
+\newcommand{\csem}[2]{\ensuremath{[\![{#1}\ |\ {#2}]\!]}}% with
+%                                                         % context
+%
+% Operators
+%% \DeclareMathOperator{\im}{im}
+\newcommand{\sh}{\text{\textesh}}
+%% \DeclareMathOperator{\sub}{Sub}
+%% \DeclareMathOperator{\ssub}{SSub}
+%% \DeclareMathOperator{\srel}{SRel}
+\newcommand{\Hom}[3]{\ensuremath{\dsd{Hom}_{#1}(#2,#3)}}
+
+
+\newcommand\co{\ensuremath{{\text{\tiny +}}}}
+\newcommand\con{\ensuremath{{\text{\small -}}}}
+\newcommand\inv{\ensuremath{{\text{\tiny $\pm$}}}}
+\newcommand\flip[1]{\ensuremath{\overline{#1}}}
+
+\newcommand\Ob[1]{\ensuremath{Ob(#1)}}
+\newcommand\morphismtp[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
+
+\newcommand\optm[1]{\ensuremath{\dsd{op}(#1)}}
+\newcommand\letop[4]{\ensuremath{\dsd{letop}_{#1}^{#2}(#3,#4)}}
+
+\newcommand\coretm[1]{\ensuremath{\dsd{core}(#1)}}
+\newcommand\letc[3]{\ensuremath{\dsd{letc}_{#1}(#2,#3)}}
+
+\newcommand{\sset}{\dsd{set}}
+\newcommand{\set}{\dsd{set}}
+\newcommand{\lst}[1]{\ensuremath{\dsd{list}(#1)}}
+\newcommand{\comp}[2]{\ensuremath{#1 \circ #2}}
+
+\newcommand{\refls}[0]{\ensuremath{\dsd{id}}}                                             
+
+
+\newcommand\Id[3]{\ensuremath{\dsd{Id}_{#1}(#2,#3)}}
+\newcommand\op[1]{\ensuremath{#1 ^{\dsd{op}}}}
+\newcommand\invt[1]{\ensuremath{#1 ^{\dsd{core}}}}
+
+\newcommand{\la}{\ensuremath{\dashv}}
+
+
+\renewcommand{\sem}[1]{\ensuremath{ \llbracket #1 \rrbracket}}
+
+\newcommand{\D}{\ensuremath{\mathcal{D}}}
+\newcommand{\arrow}[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
+\newcommand{\tc}[2]{\ensuremath{#1 \Rightarrow #2}}
+\newcommand{\Adj}{\textbf{Adj}}
+
+\newcommand\compo[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+
+%% \newcommand\wftp[2]{\ensuremath{#1 \,\,\, \dsd{type}_{#2}}}
+\newcommand\F[2]{\ensuremath{\dsd{F}_{#1} \,\, #2}}
+\newcommand\U[2]{\ensuremath{U_{#1} \,\, #2}}
+\newcommand\coprd[2]{\ensuremath{#1 + #2}}
+\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
+\newcommand\irl[1]{\dsd{#1}}
+
+\newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
+\newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\cutsym{\ensuremath{\dsd{cut}}}
+\newcommand\cut[2]{\ensuremath{{\cutsym \,\, #1 \,\, #2}}}
+\newcommand\cuti{\ensuremath{\bullet}}
+
+\newcommand\hyp[1]{\ensuremath{\dsd{hyp} \, {#1}}}
+\newcommand\Inl[1]{\ensuremath{\dsd{Inl}(#1)}}
+\newcommand\Inr[1]{\ensuremath{\dsd{Inr}(#1)}}
+\newcommand\Case[2]{\ensuremath{\dsd{Case}(#1,#2)}}
+\newcommand\UL[3]{\ensuremath{\dsd{UL}^{#1}_{#2}(#3)}}
+\newcommand\FR[3]{\ensuremath{\dsd{FR}^{#1}_{#2}(#3)}}
+\newcommand\FL[1]{\ensuremath{\dsd{FL}(#1)}}
+\newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
+
+\newcommand\ap[2]{\ensuremath{#1 \approx #2}}
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
+
+\newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
+
+\newcommand\gm{\dsd{s}}
+\newcommand\cm{\dsd{d}}
+\newcommand\corem{\dsd{c}}
+\newcommand\opm{\dsd{op}}
+\newcommand\Forget[1]{\ensuremath{\dsd{Forget} \: #1}}
+\newcommand\Core[1]{\ensuremath{\dsd{Core} \: #1}}
+\newcommand\seqm[2]{\ensuremath{#1 \vdash #2}}
+
+\newcommand\uncorep[0]{\ensuremath{\dsd{uncore}^\co}}
+\newcommand\uncoren[0]{\ensuremath{\dsd{uncore}^\con}}
+
+\newcommand\ectx[5]{\ensuremath{#1 , #2 \,^{#3}{:} \, #5}} %%supress opfibs
+\newcommand\vtptm[4]{\ensuremath{\dcd{#1} \,^{#2}{:} \, \dcd{#4}}} %%supress opfibs
+\newcommand\vvoftp[5]{\ensuremath{#1 \vdash #2 \, {\,^{#3}{:}} \, \dcd{#5}}} %%supress opfibs
+\newcommand\wfsub[3]{\ensuremath{#1 \vdash #2 : #3}}
+\newcommand\tsubst[2]{\ensuremath{#1 [ #2 ]}}
+
+\newcommand{\forw}[1]{\ensuremath{\stackrel{\rightarrow}{#1}}}
+\newcommand{\backw}[1]{\ensuremath{\stackrel{\leftarrow}{#1}}}
+\newcommand\letfunc[4]{\ensuremath{\dsd{letfunc}^{#1}_{#2}(#3,#4)}}
+
+\newcommand\inF[2]{\ensuremath{\dsd{in}_{#1}(#2)}}
+\newcommand\outF[2]{\ensuremath{\dsd{out}_{#1}(#2)}}
+
+\newcommand\idm[1]{\ensuremath{\dsd{id}_{#1}}}
+\newcommand\morind[3]{\ensuremath{\dsd{hind}_{#1}(#2,#3)}}
+
+
+%
+% theorem styles
+%\newtheorem{theorem}{Theorem}
+%\newtheorem*{theorem*}{Theorem}
+%\newtheorem{proposition}[theorem]{Proposition} 
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{corollary}[theorem]{Corollary} 
+%\theoremstyle{remark}
+%\newtheorem{remark}[theorem]{Remark} 
+%\newtheorem{definition}[theorem]{Definition}
+
+\newtheorem*{conjecture*}{Conjecture}
+\newtheorem*{lemma}{Lemma}
+%
+%
+
+
+
+
+%%----------------------------------------------------------------------
+%% spacing hacks:
+
+%%\setlength{\parskip}{0pt}
+%% \setlength{\parsep}{0pt}
+%% \setlength{\headsep}{8pt}
+%% \setlength{\topskip}{0pt}
+%% \setlength{\topmargin}{0pt}
+%% \setlength{\topsep}{0pt}
+%% \setlength{\partopsep}{0pt}
+
+%% eliminate some of the whitespace around section titles
+\usepackage[compact]{titlesec}  
+%\linespread{0.97}
+
+
+\newcommand{\noagda}[0]{}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\DeclareUnicodeCharacter{8594}{$\shortrightarrow$}
+\DeclareUnicodeCharacter{9001}{$\langle$}
+\DeclareUnicodeCharacter{9002}{$\rangle$}
+\DeclareUnicodeCharacter{12314}{$\llbracket$}
+\DeclareUnicodeCharacter{12315}{$\rrbracket$}
+\DeclareUnicodeCharacter{8872}{$\vDash$}
+\DeclareUnicodeCharacter{9711}{\ensuremath{\bigcirc}}
+\DeclareUnicodeCharacter{9675}{$\circ$}
+\DeclareUnicodeCharacter{9671}{$\Diamond$}
+\DeclareUnicodeCharacter{9657}{$\triangleright$}
+\DeclareUnicodeCharacter{8640}{$\rightharpoonup$}
+\DeclareUnicodeCharacter{8659}{$\Downarrow$}
+\DeclareUnicodeCharacter{8984}{$\Shamrock$}
+\DeclareUnicodeCharacter{8596}{$\leftrightarrow$}
+\DeclareUnicodeCharacter{7522}{${}_i$}
+\DeclareUnicodeCharacter{11388}{$\!{}_j$}
+% Bullet and box, the heights are adjusted to make it look nice
+\DeclareUnicodeCharacter{8226}{\raisebox{-1.6pt}{$\bullet$}}
+\DeclareUnicodeCharacter{9726}{$\rule[-1pt]{3pt}{3pt}$}
+
+\newcommand\textPsi{$\Psi$}
+\newcommand\textpsi{$\psi$}
+\newcommand\textXi{$\Xi$}
+\newcommand\textxi{$\xi$}
+\newcommand\textDelta{$\Delta$}
+\newcommand\textGamma{$\Gamma$}
+\newcommand\textsigma{$\sigma$}
+\newcommand\textSigma{$\Sigma$}
+\newcommand\textPi{$\Pi$}
+\newcommand\textrho{$\rho$}
+\renewcommand\textphi{$\varphi$}
+\newcommand\texttau{$\tau$}
+\newcommand\texteta{$\eta$}
+\newcommand\textalpha{$\alpha$}
+\renewcommand\textbeta{$\beta$}
+\renewcommand\textepsilon{$\epsilon$}
+\newcommand\textkappa{$\kappa$}
+\newcommand\textOmega{$\Omega$}
+\newcommand\textmho{$\mho$}
+\renewcommand\textgamma{$\gamma$}
+\renewcommand\textlambda{$\lambda$}
+\newcommand\textpi{$\pi$}
+\renewcommand\texttheta{$\theta$}
+\newcommand\textdelta{$\delta$}
+
+\usepackage{fancyvrb}
+
+\usepackage{drl-common/code}
+\DefineVerbatimEnvironment{code}{Verbatim}{fontsize=\small,fontfamily=tt}
+
+\newcommand{\ignore}[1]{}
+
+%% small tightcode, with space around it
+\newenvironment{stcode}
+{\smallskip
+\begin{small}
+\begin{tightcode}}
+{\end{tightcode}
+\end{small}
+\smallskip}
+
+\title{Functor Logic}
+\author{Dan Licata}
+
+\begin{document}
+
+\maketitle
+
+\section{1-variable Sequent Calculus}
+
+Like in adjoint logic, we assume a mode 2-category, with objects $p,q$,
+1-cells $\alpha : p \le q$, and 2-cells \tc{\alpha}{\beta}.  For
+reference, here is the restriction of the one-variable adjoint logic
+sequent calculus that gives a pseudofunctor into Cat instead of Adj.
+Note that I flipped the variance relative to adjoint logic; here \F{}{}
+is covariant on both 1-cells and 2-cells.
+
+\[
+\begin{array}{c}
+\infer[\irl{hyp}]
+      {\seq P \alpha P}
+      {\tc \alpha 1}
+\quad
+\infer[\irl{FL}]
+      {\seq {\F {\alpha : p \le q} A_p} {\beta : q \le r}{C_r}}
+      {\seq {A_p} {\compo{\alpha}{\beta}} {C_r}
+      }
+\quad
+\infer[\irl{FR}]
+      {\seq {C_p} {\beta : p \le r} {\F {\alpha : q \le r} A_q}}
+      { \gamma : p \le q & \tc{\beta}{\compo{\gamma}{\alpha}} &
+        \seq {C_p} \gamma {A_q}}
+\end{array}
+\]
+
+The following rules are admissible:
+
+\[
+\infer[\irl{identity}]
+      {\seq {A} {1} {A}}{}
+\qquad
+\infer[\irl{cut}]
+      {\seq{A} {\compo{\alpha}{\beta}} {C}}
+      {\seq {A} {\alpha} {B} &
+        \seq{B} {\beta} {C}
+      }
+\qquad
+\infer[\irl{2cell}]
+      {\seq{A} {\alpha} {B}}
+      { \tc \alpha \beta &
+        \seq {A} {\beta} {B}
+      }
+\]
+
+\section{Natural Deduction with Modal Hypotheses Only}
+
+\newcommand\ndh[2]{\ensuremath{#1 \vdash #2}}
+
+This version is what you get if you pass the above sequent calculus
+through the usual translation to natural deduction, and add multiple
+assumptions (with full structural rules; for simplicity we consider
+contexts to be unordered, and will arrange for weakening and contraction
+to be admissible), with \F{\alpha}{} preserving products.  In this
+version, the judgement has the form \ndh{\Gamma}{A} where $\Gamma$
+consists of assumptions $A_1[\alpha_1],\ldots,A_n[\alpha_n]$.
+
+\[
+\begin{array}{c}
+\infer[\irl{hyp}]
+      {\ndh \Gamma A}
+      {A[\alpha] \in \Gamma & 
+       \tc \alpha 1
+      }
+\quad
+\infer[\irl{FE}]
+      {\ndh{\Gamma,\overline{A_i[\beta_i]}}{C}}
+      {\ndh{\overline{A_i[\alpha_i]}}{\F{\alpha}{A}} &
+        \ndh{\Gamma,\overline{A_i[\beta_i]},A[\compo{\alpha}{\beta}]}{C} &
+        \overline{\tc{\beta_i}{\compo{\alpha_i}{\beta}}}}
+\quad
+\infer[\irl{FI}]
+      {\ndh{\Gamma,\overline{A_i[\beta_i]}}{\F{\alpha}{A}}}
+      {\overline{\tc {\beta_i} {\compo{\gamma_i}{\alpha}}} &
+        \ndh{\overline{A_i[\gamma_i]}}{A}
+      }
+\end{array}
+\]
+
+The following rules are admissible:
+
+\[
+\infer[\irl{wkn}]
+      { \ndh{\Gamma,A[\alpha]}{C}}
+      { \ndh{\Gamma}{C}
+      }
+\qquad
+%% \infer[\irl{contr}]
+%%       { \ndh{\Gamma,A[\alpha]}{C}}
+%%       { \ndh{\Gamma,A[\alpha],A[\alpha]}{C}
+%%       }
+%% \qquad
+\infer[\irl{2cell}]
+      { \ndh{\Gamma,A[\alpha]}{C}}
+      { \tc{\alpha}{\beta} &
+        \ndh{\Gamma,A[\beta]}{C}
+      }
+\qquad
+\infer[\irl{subst}]
+      {\ndh{\Gamma,(\compo{\Delta}{\alpha})}{C}}
+      {\ndh{\Delta}{A} & 
+        \ndh{\Gamma,A[\alpha]}{C}
+      }
+\]
+
+where
+\[
+\compo{(A_1[\alpha_1],\ldots,A_n[\alpha_n])}{\alpha} := 
+{(A_1[\compo{\alpha_1}{\alpha}],\ldots,A_n[\compo{\alpha_n}{\alpha}])}
+\]
+Note that $\compo{\Delta}{1} = \Delta$
+
+\section{Natural Deduction with Modal Hypotheses and Conclusions}
+
+\newcommand\nd[3]{\ensuremath{#1 \vdash #2 [ #3 ]}}
+\newcommand\nds[2]{\ensuremath{#1 \vdash #2}}
+
+In this version, we have a judgemental notion of $A[\alpha]$ on the
+right.  The pseudofunctor operations show up more individually: the
+\F{\alpha}{} intro/elim rules are the composition isomorphisms, and the
+action of 2-cells and functoriality are each a separate rule acting on
+the judgements.  
+
+\[
+\begin{array}{c}
+\infer{\nd{\Gamma}{A}{\alpha}}
+      {A[\alpha] \in \Gamma}
+\quad
+\infer{\nd{\Gamma}{A}{\alpha'}}
+      {\nd{\Gamma}{A}{\alpha} & \tc{\alpha}{\alpha'}}
+\quad
+\infer{\nd{\Gamma}{\F{\alpha} A}{\beta}}
+      {\nd{\Gamma}{A}{\compo{\alpha}{\beta}}}
+\quad
+\infer{\nd{\Gamma}{A}{\compo{\alpha}{\beta}}}
+      {\nd{\Gamma}{\F{\alpha} A}{\beta}}
+\quad
+\infer{\nd{\Gamma}{C}{\compo{\gamma}{\alpha}}}
+      {\Gamma \vdash (\compo{\Gamma'}{\alpha}) &
+       \nd{\Gamma'}{C}{\gamma}}
+\\ \\
+\infer{\nds{\Gamma}{\Delta}}
+      {\forall (A[\alpha] \in \Delta): \nd{\Gamma}{A}{\alpha}  }
+\end{array}
+\]
+
+Substitution is admissible:
+
+\[
+\infer{\nd{\Gamma}{C}{\gamma}}
+      {\nds{\Gamma}{\Delta} &
+       \nd{\Delta}{C}{\gamma}}
+\]
+
+However, this relies on the explicit substitution in the functoriality
+rule.  To see why, suppose we had only the rule
+
+\[
+\infer{\nd{(\compo{\Gamma'}{\alpha})}{C}{\compo{\gamma}{\alpha}}}
+      {\nd{\Gamma'}{C}{\gamma}}
+\]
+and consider the special case
+\[
+\infer{\nd{A[\alpha]}{C}{{\alpha}}}
+      {\nd{A[1]}{C}{1}}
+\]
+Then a substitution
+\[
+\infer{{\nd{\Gamma}{C}{{\alpha}}}}
+      { \infer{\nd{\Gamma}{A}{\alpha}}
+              {\deduce{\nd{\Gamma}{\F{\alpha}{A}}{1}}{D}}
+        &
+        \infer{\nd{A[\alpha]}{C}{{\alpha}}}
+              {\deduce{\nd{A[1]}{C}{1}}{E}}}
+\]
+cannot necessarily be reduced because there is not necessarily a
+derivation whose conclusion is $A[1]$ in $D$ to compose with $E$.
+Semantically, a judgement \nd{\Gamma}{A}{\alpha} means an arbitrary map
+into \F{\alpha}{A}, not necessarily one given by functoriality of
+$\alpha$, and its only when the left-hand derivation is given by
+functoriality that the overall composition is an instance of
+functoriality.
+
+%% \addcontentsline{toc}{section}{References}
+%% \bibliographystyle{abbrvnat}
+%% \bibliography{drl-common/cs}
+
+\end{document}
