@@ -1,6 +1,5 @@
-%% FIXME: add schreiber cite
 
-\documentclass{drl-common/llncs}
+\documentclass[preprint,11pt,authoryear]{elsarticle}
 
 \usepackage{drl-common/diagrams}
 \usepackage{multicol}
@@ -8,12 +7,12 @@
 \usepackage{color}
 \usepackage[cmex10]{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{stmaryrd}
 \usepackage{drl-common/proof}
 \usepackage{drl-common/typesit}
 \usepackage{drl-common/typescommon}
-\usepackage[square,numbers,sort]{natbib}
-%% \usepackage{arydshln}
+\usepackage{drl-common/theorem-envs}
 \usepackage{graphics}
 \usepackage{url}
 \usepackage{relsize}
@@ -83,12 +82,22 @@
 
 \newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
 
+%% \newtheorem{\theorem}{Theorem}
 %% \newtheorem{\example}[theorem]{Example}
+
+\begin{document}
+
+\begin{frontmatter}
 
 \title{Adjoint Logic with a 2-Category of Modes}
 
-\author{Daniel R. Licata\inst{1} \and Michael Shulman\inst{2}
-\thanks{
+\author{Daniel R. Licata\fnref{thanks}}
+\address{Wesleyan University}
+
+\author{Michael Shulman\fnref{thanks}}
+\address{University of San Diego}
+
+\fntext[thanks]{
 This material is based on research sponsored by The United States Air
 Force Research Laboratory under agreement number FA9550-15-1-0053. The
 U.S. Government is authorized to reproduce and distribute reprints for
@@ -98,12 +107,7 @@ should not be interpreted as necessarily representing the official
 policies or endorsements, either expressed or implied, of the United
 States Air Force Research Laboratory, the U.S. Government, or Carnegie
 Mellon University.
-}}
-
-\institute{Wesleyan University \and University of San Diego}
-
-\begin{document}
-\maketitle
+}
 
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
@@ -125,6 +129,9 @@ pseudofunctors from the mode 2-category to the 2-category of
 adjunctions, and investigate some constructions in the example mode
 theories.
 \end{abstract}
+
+\end{frontmatter}
+
 
 \section{Introduction}
 
@@ -164,11 +171,35 @@ In Reed's logic, modes are specified by a preorder, which allows at most
 one adjunction between any two categories (more precisely, there can be
 two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
 it is sometimes useful to consider multiple different adjunctions
-between the same two categories.  A motivating example is Lawvere's
-axiomatic cohesion~\citep{lawvere07cohesion}, a general categorical
-interface that describes \emph{cohesive spaces}, such as topological
-spaces, or manifolds with differentiable or smooth structures.  The
-interface consists of two categories \C and $\mathcal{S}$, and a
+between the same two categories.  A motivating example is axiomatic
+cohesion~\citep{lawvere07cohesion}, which Lawvere proposed as a general
+categorical interface that describes \emph{cohesive spaces} where points
+may be ``stuck together'' in some way.  Models of axiomatic cohesion
+include topological spaces, manifolds with differentiable or smooth
+structures, and algebraic
+geometry~\citep{schreiber13dcct,johnstone11punctual}.  
+%% from email conversation about where models of cohesion have been
+%% constructed:
+%% 
+%% As Urs said, his own work is one.  The main other reference that comes
+%% to my mind is Peter Johnstone "Remarks on punctual local
+%% connectedness", TAC Vol. 25, No. 3, 2011.  From his Example 1.5:
+%% "Consider the ‘topological gros topos’ E = Sh(C,J), where C is a small
+%% full subcategory of topological spaces, closed under passage to open
+%% subspaces, and a sieve is J-covering iff it contains a jointly
+%% surjective family of open inclusions.... if we restrict C to contain
+%% only locally connected spaces... Sh(C, J)... is punctually locally
+%% connected.  Similar examples can be given on replacing C by the
+%% category of smooth manifolds... or by the category of affine schemes..."
+%% (At this point he's just shown that 'punctual local connectedness'
+%% implies most of the other axioms of axiomatic cohesion.)
+%% 
+%% other examples of cohesion:
+%% Well, there's Johnstone's third example: algebraic geometry.  There
+%% are also other "less expected" sorts of cohesion or almost-cohesion,
+%% like simplicial sets or (in the infinity-case) the tangent oo-topos.
+%% https://ncatlab.org/nlab/show/cohesive+(infinity,1)-topos#Examples
+The interface consists of two categories \C and $\mathcal{S}$, and a
 quadruple of adjoint functors $\Pi_0,\Gamma : \mathcal{C} \to
 \mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to \mathcal{C}$ where
 $\Pi_0 \la \Delta \la \Gamma \la \nabla$.  The idea is that
@@ -297,8 +328,8 @@ primitive makes for a nicer sequent calculus: $U$ and $F$ can be
 specified independently from each other, by left and right rules, in
 such a way that identity and cut (composition) are admissible, and the
 subformula property holds.  While we do not consider
-focusing~\cite{andreoli92focus}, we conjecture that the connectives can
-be given the same focusing behavior as in \cite{reed09adjoint}: $F$ is
+focusing~\citep{andreoli92focus}, we conjecture that the connectives can
+be given the same focusing behavior as in \citet{reed09adjoint}: $F$ is
 positive and $U$ is negative (which, because limits are negative and
 colimits are positive, matches what left and right adjoints should
 preserve).
@@ -310,7 +341,7 @@ $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
 F_\alpha$ is a monad; $F_\alpha$ preserves colimits and $U_\alpha$
 preserves limits), as well as facts specific to a particular theory
 (e.g. for the adjoint triple above, $\Gamma$ preserves both colimits and
-limits, because can be written either as $U_{\dsd d}$ and $F_{\dsd n}$;
+limits, because it can be written either as $U_{\dsd d}$ and $F_{\dsd n}$;
 the comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$
 are themselves adjoint).  Moreover, we can use different mode
 2-categories to add additional structure; for example, moving from the
@@ -368,9 +399,9 @@ families.\footnote{See
 A preliminary version of this work was published in the proceedings of
 Logical Foundations of Computer Science, 2016.  Relative to the
 conference version, this journal article contains additional examples
-and details througout, a full proof of soundness
+and details throughout, a full proof of soundness
 (Section~\ref{sec:semantics}), and specialized sequent calculi for a
-specific mode theory (\ref{sec:idempotent}), which clarify the
+specific mode theory (Section~\ref{sec:idempotent}), which clarify the
 relationship with \citet{shulman15realcohesion}.
 
 \section{Sequent Calculus and Equational Theory}
@@ -542,7 +573,7 @@ further in Section~\ref{sec:admissible} below.
 Consider the rules \irl{FL} and \irl{UR}.  When $\beta$ is 1, these
 rules pass from \seq{\F {\alpha}{A}}{1}{C} and \seq{A}{1}{\U{\alpha}{C}}
 to \seq{A}{\alpha}{C}, which makes sense because the judgement
-\seq{A}{\alpha}{C} is intended to mean either/both of these.  Wehn
+\seq{A}{\alpha}{C} is intended to mean either/both of these.  When
 $\beta$ is not 1, these rules compose the mode morphism in the
 connective with the mode morphism in the sequent.  Semantically, this
 corresponds to one direction of the composition isomorphism between
@@ -2352,7 +2383,7 @@ and
 $\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.  
 
 
-\begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple}
+\begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple} ~
 \begin{enumerate}
 \item $\Bx{\dsd{d}}{} \la \Crc{\dsd{n}}{}$ 
 \item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{B}}$
@@ -2422,7 +2453,7 @@ we still have an adjunction, this mode theory inherits all the theorems
 from the previous section; it also has the following additional
 properties:
 
-\begin{theorem}[Properties of the walking reflection]
+\begin{theorem}[Properties of the walking reflection]~
 \begin{enumerate}
 \item $\Flat{\Flat A} \iso \Flat A$ and $\Sharp{\Sharp A} \iso \Sharp A$
   naturally in $A$.
@@ -2748,31 +2779,32 @@ been kept the same.  Then the multi-assumptioned rules are as follows:
       {\addcrisp {\Gamma} \vdash {B}}
 \quad
 \infer{\Gamma, {\Sharp A}[\dsd{r}] \vdash {B}}
-      {\Gamma, A[\dsd{r}] \vdash {{B}}}
+      {\Gamma, {\Sharp A}[\dsd{r}], A[\dsd{r}] \vdash {{B}}}
 \quad
 \infer{\Gamma \vdash {\Flat B}}
       {\dropcoh \Gamma \vdash {B}}
 \quad
-\infer{\Gamma, {\Flat A}[\dsd{\_}] \vdash {B}}
-      {\Gamma, {A}[\dsd{r}] \vdash {B}}
+\infer{\Gamma, {\Flat A}[\dsd{\alpha}] \vdash {B}}
+      {\Gamma, {\Flat A}[\dsd{\alpha}], {A}[\dsd{r}] \vdash {B}}
 \]
-The left rules are just the single-assumption left rules in context.
-The single-assumption \Sharp{} right rule promotes the one assumption to
-crisp; here, we promote all assumptions.  The single-assumption \Flat{}
-right rule insists that the one assumption be crisp; here, we drop all
-non-crisp assumptions.  The rules for \Flat{} are reminiscent of the
-$\Bx{}{A}$ modality in \citet{pfenningdavies}, with crisp corresponding
-to the valid judgement, except here we can apply a left rule to a
-valid/crisp assumption of $\Bx{}{A}$, because \Flat{} is an $F$ which is
-a positive-to-positive connective.  The right rule for \Sharp{} is
-reminiscent of the right rule for the proof irrelevance/erasability
-modality $[A]$ in \citet{pfenning01proofirrel,pfenning08proofirrel},
-though the left rule is different.\footnote{The $[A]$ type in that work
-  is a product-preserving functor with no additional properties, so it
-  cannot be mapped into adjoint logic in a straightforward way, because
-  all of our functors have more properties.}  Like in
-Figure~\ref{fig:coprod}, the left rule for coproducts would allow
-elimination on a coproduct in either mode:
+The left rules are just the single-assumption left rules in context
+(with the principle formula preserved in the premise to make contraction
+admissible).  The single-assumption \Sharp{} right rule promotes the one
+assumption to crisp; here, we promote all assumptions.  The
+single-assumption \Flat{} right rule insists that the one assumption be
+crisp; here, we drop all non-crisp assumptions.  The rules for \Flat{}
+are reminiscent of the $\Bx{}{A}$ modality in \citet{pfenningdavies},
+with crisp corresponding to the valid judgement, except here we can
+apply a left rule to a valid/crisp assumption of $\Bx{}{A}$, because
+\Flat{} is an $F$ which is a positive-to-positive connective.  The right
+rule for \Sharp{} is reminiscent of the right rule for the proof
+irrelevance/erasability modality $[A]$ in
+\citet{pfenning01proofirrel,pfenning08proofirrel}, though the left rule
+is different.\footnote{The $[A]$ type in that work is an applicative
+  functor, so it cannot be mapped into adjoint logic in a
+  straightforward way, because it does not have an adjoint on either
+  side.}  Like in Figure~\ref{fig:coprod}, the left rule for coproducts
+would allow elimination on a coproduct in either mode:
 \[
 \infer{\Gamma \vdash {\coprd{A}{B}}}
       {\Gamma \vdash {A}}
@@ -3109,6 +3141,8 @@ theory.
 \paragraph{\textbf{Acknowledgments}} We thank Jason Reed, Urs Schreiber,
 and the LFCS 2016 reviewers and attendees for helpful discussions about
 this work and paper.
+
+\section*{References}
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { %% \small
