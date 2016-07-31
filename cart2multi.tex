@@ -114,7 +114,7 @@ The first three judgments present a cartesian 2-multicategory; the latter two or
     is a discrete fibration.
     We write $\D_f(A_1,\dots,A_n;B)$ for the fiber of this functor over $f\in \M(\pi A_1,\dots,\pi A_n;\pi B)$; the assumption ensures that this fiber is a discrete set.
   \item For each function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$, objects $A_1,\dots,A_n,B \in \D$, and $f\in\M(\pi A_{\sigma 1},\dots,\pi A_{\sigma m}; \pi B)$, the functor
-    \[\M_f(A_{\sigma 1},\dots,A_{\sigma m}; B) \to \M_{f\sigma^*}(A_1,\dots,A_n;B)\]
+    \[\D_f(A_{\sigma 1},\dots,A_{\sigma m}; B) \to \D_{f\sigma^*}(A_1,\dots,A_n;B)\]
     is an isomorphism.
     (By the previous point, it is actually a mere function between discrete sets.)
   \end{enumerate}
@@ -163,15 +163,15 @@ Finally, the connectives that ``internalize'' the judgmental structure are repre
 \begin{defn}
   If $\pi:\D\to\M$ is a local discrete fibration, then a morphism $\xi\in\D(A_1,\dots,A_n;B)$ is \textbf{opcartesian} if all diagrams of the following form are pullbacks of categories:
   \[ \xymatrix{
-    \D(\vec C,B,\vec D;E) \ar[r]^-{-\circ \xi} \ar[d] &
-    \D(\vec C,\vec A,\vec D;E) \ar[d] \\
+    \D(\vec C,B,\vec D;E) \ar[r]^-{-\circ \xi} \ar[d]_\pi &
+    \D(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
     \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{-\circ \pi\xi} &
     \M(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
   }\]
   Dually, a morphism $\xi\in\D(\vec C,B,\vec D;E)$ is \textbf{cartesian at $A$} if all diagrams of the following form are pullbacks of categories:
   \[ \xymatrix{
-    \D(\vec A;B) \ar[r]^-{\xi\circ -} \ar[d] &
-    \D(\vec C,\vec A,\vec D;E) \ar[d] \\
+    \D(\vec A;B) \ar[r]^-{\xi\circ -} \ar[d]_\pi &
+    \D(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
     \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ -} &
     \D(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
   }\]
