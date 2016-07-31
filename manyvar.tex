@@ -1,0 +1,221 @@
+
+\documentclass{article}
+
+\usepackage{drl-common/diagrams}
+\usepackage{multicol}
+\usepackage{mathptmx}
+\usepackage{color}
+\usepackage[cmex10]{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{drl-common/proof}
+\usepackage{drl-common/typesit}
+\usepackage{drl-common/typescommon}
+\usepackage[square,numbers,sort]{natbib}
+%% \usepackage{arydshln}
+\usepackage{graphics}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{fancyvrb}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{tipa}
+\usepackage{times}
+
+\usepackage{drl-common/code}
+\DefineVerbatimEnvironment{code}{Verbatim}{fontsize=\small,fontfamily=tt}
+
+%% small tightcode, with space around it
+\newenvironment{stcode}
+{\smallskip
+\begin{small}
+\begin{tightcode}}
+{\end{tightcode}
+\end{small}
+\smallskip}
+
+\renewcommand{\sem}[1]{\ensuremath{ \llbracket #1 \rrbracket}}
+
+\newcommand{\inv}[1]{\ensuremath{{#1}^{-1}}}
+
+\newcommand{\C}{\ensuremath{\mathcal{C}}}
+\newcommand{\D}{\ensuremath{\mathcal{D}}}
+\newcommand{\M}{\ensuremath{\mathcal{M}}}
+\newcommand{\la}{\ensuremath{\dashv}}
+\newcommand{\arrow}[3]{\ensuremath{#2 \longrightarrow_{#1} #3}}
+\newcommand{\tc}[2]{\ensuremath{#1 \Rightarrow #2}}
+\newcommand{\sh}{\text{\textesh}}
+\newcommand{\Adj}{\textbf{Adj}}
+
+\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+
+\renewcommand\wftp[2]{\ensuremath{#1 \,\,\, \dsd{type}_{#2}}}
+\newcommand\F[2]{\ensuremath{F_{#1} \,\, #2}}
+\newcommand\U[2]{\ensuremath{U_{#1} \,\, #2}}
+\newcommand\coprd[2]{\ensuremath{#1 + #2}}
+\renewcommand\irl[1]{\dsd{#1}}
+
+\newcommand\tr[2]{\ensuremath{{{#1}_{*}(#2)}}}
+\newcommand\ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\cutsym{\ensuremath{\dsd{cut}}}
+\newcommand\cut[2]{\ensuremath{{\cutsym \,\, #1 \,\, #2}}}
+\newcommand\cuti{\ensuremath{\bullet}}
+
+\newcommand\hyp[1]{\ensuremath{\dsd{hyp} \, {#1}}}
+\newcommand\Inl[1]{\ensuremath{\dsd{Inl}(#1)}}
+\newcommand\Inr[1]{\ensuremath{\dsd{Inr}(#1)}}
+\newcommand\Case[2]{\ensuremath{\dsd{Case}(#1,#2)}}
+\newcommand\UL[3]{\ensuremath{\dsd{UL}^{#1}_{#2}(#3)}}
+\newcommand\FR[3]{\ensuremath{\dsd{FR}^{#1}_{#2}(#3)}}
+\newcommand\FL[1]{\ensuremath{\dsd{FL}(#1)}}
+\newcommand\UR[1]{\ensuremath{\dsd{UR}(#1)}}
+
+\newcommand\ap[2]{\ensuremath{#1 \approx #2}}
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
+
+\newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
+
+\newcommand\cF[2]{\ensuremath{#1 [#2]}}
+\newcommand\cfill[2]{\ensuremath{#1\{ #2 \}}}
+\newcommand\seq[2]{\ensuremath{#1 \, \vdash \, #2}}
+\newcommand\deq[0]{\ensuremath{\equiv}}
+
+\newcommand\tensor[2]{\ensuremath{#1 \otimes #2}}
+
+%% \newtheorem{\example}[theorem]{Example}
+
+\title{Adjoint Type Theory}
+
+\author{Daniel R. Licata
+%\inst{1} 
+\and 
+Michael Shulman
+%\inst{2}
+%% \thanks{
+%% This material is based on research sponsored by The United States Air
+%% Force Research Laboratory under agreement number FA9550-15-1-0053. The
+%% U.S. Government is authorized to reproduce and distribute reprints for
+%% Governmental purposes notwithstanding any copyright notation thereon.
+%% The views and conclusions contained herein are those of the authors and
+%% should not be interpreted as necessarily representing the official
+%% policies or endorsements, either expressed or implied, of the United
+%% States Air Force Research Laboratory, the U.S. Government, or Carnegie
+%% Mellon University.
+%}
+}
+
+%% \institute{Wesleyan University \and University of San Diego}
+
+\begin{document}
+\maketitle
+
+\section{Linear Sequent Calculus}
+
+\[
+\Gamma_p ::= \cdot \mid \Gamma_p,\Delta_p \mid A_p \mid \cF {\Gamma_q} {\alpha : q \ge p}
+\]
+
+Contexts are considered up to the following definitional equalities
+(which are probably undecidable in general, but for specific mode
+theories should be OK?)
+\[
+\begin{array}{l}
+\cF{\cF{\Gamma}{\alpha}}{\beta} \deq \cF{\Gamma}{\compo{\alpha}{\beta}}\\
+{\cF{\Gamma}{1}} \deq {\Gamma}
+\end{array}
+\] 
+Not all $\F{\alpha}{}$'s are required to presrve $\otimes$, but for specific mode
+morphisms $\alpha$ that do, we add
+\[
+{\cF{(\Gamma,\Delta)}{\alpha}} \deq \cF{\Gamma}{\alpha},\cF{\Delta}{\alpha}
+\]
+
+We write $\Gamma \deq \cfill {\Gamma'}{\Delta}$ to mean that $\Gamma$ is
+equal to a context where $\Delta$ is a subtree, and $\Gamma'$ is the
+tree with a hole for that subtree.  
+
+Because it is the smallest $\delta$ from the 1-variable rules, here is a
+linear logic first:
+
+\[
+\begin{array}{c}
+\infer[\irl{hyp}]
+      {\seq {\cF{P}{\alpha}} {P}}
+      {\tc 1 \alpha}
+\\ \\
+\infer[\irl{FL}]
+      {\seq {\Gamma}{C}}
+      {\Gamma \deq \cfill{\Gamma'}{\F{\alpha}{A}} & 
+        \seq {\cfill{\Gamma'}{\cF{A}{\alpha}}} {C}}
+\quad
+\infer[\irl{FR}]
+      {\seq {\Gamma} {\F {\alpha} A}}
+      {\Gamma \deq \cF {\Delta} {\beta} &
+        \tc{\compo{\gamma}{\alpha}}{\beta} &
+        \seq {\cF{\Delta} \gamma} {A}}
+\\ \\
+\infer[\irl{UL}]
+      {\seq {\Gamma}{C}}
+      {\Gamma \deq \cfill{\Gamma'}{\cF{\U{\alpha}{A}}{\beta}} &
+       \tc{\compo{\alpha}{\gamma}} {\beta} &
+       \seq{\cfill{\Gamma'}{\cF{A}{\gamma}}}{C}}
+\quad
+\infer[\irl{UR}]
+      {\seq {\Gamma} {\U {\alpha} A}}
+      {\seq {\cF{\Gamma}{\alpha}} {A}}
+\\ \\
+\infer[\irl{TR}]
+      {\seq {\Gamma} {\tensor {A_1} {A_2}}}
+      {\Gamma \deq \Gamma_1,\Gamma_2 &
+        \seq{\Gamma_1} {A_1} &
+        \seq{\Gamma_2} {A_2}}
+\quad
+\infer[\irl{TL}]
+      {\seq {\Gamma} {C}}
+      {\Gamma \deq \cfill{\Gamma'}{\tensor{A_1}{A_2}} &
+        \seq{\cfill{\Gamma'}{A_1,A_2}} {C}}
+\end{array}
+\]
+
+Intended to be admissible (latter two probably need to be generalized?):
+
+\[
+\begin{array}{c}
+\infer[\irl{cut}]
+      {\seq {\Gamma} {C}}
+      {\Gamma \deq \cfill{\Gamma'}{\Delta} &
+        \seq {\cfill{\Gamma'}{A}} {C} &
+        \seq {\Delta}{A} &
+      }
+\quad
+\infer[\irl{identity}]
+      {\seq {A} {A}}
+      {}
+\quad
+\infer[\irl{2cell}]
+      {\seq {\cF{\Gamma}{\beta}}{C}}
+      {\seq {\cF{\Gamma}{\alpha}}{C} &
+       \tc {\alpha} {\beta}
+      }
+\end{array}
+\]
+
+
+\paragraph{Natural Deduction}
+
+%% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
+{ %% \small
+%% \linespread{0.70}
+\bibliographystyle{abbrvnat}
+\bibliography{drl-common/cs}
+}
+
+
+\end{document}

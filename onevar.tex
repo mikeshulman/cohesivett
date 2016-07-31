@@ -1,5 +1,5 @@
 
-\documentclass{drl-common/llncs}
+\documentclass[preprint,11pt,authoryear]{elsarticle}
 
 \usepackage{drl-common/diagrams}
 \usepackage{multicol}
@@ -7,12 +7,12 @@
 \usepackage{color}
 \usepackage[cmex10]{amsmath}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{stmaryrd}
 \usepackage{drl-common/proof}
 \usepackage{drl-common/typesit}
 \usepackage{drl-common/typescommon}
-\usepackage[square,numbers,sort]{natbib}
-%% \usepackage{arydshln}
+\usepackage{drl-common/theorem-envs}
 \usepackage{graphics}
 \usepackage{url}
 \usepackage{relsize}
@@ -82,12 +82,22 @@
 
 \newcommand\rseq[3]{\ensuremath{#1 \, [ #2 ] \, \Vdash \, #3}}
 
+%% \newtheorem{\theorem}{Theorem}
 %% \newtheorem{\example}[theorem]{Example}
+
+\begin{document}
+
+\begin{frontmatter}
 
 \title{Adjoint Logic with a 2-Category of Modes}
 
-\author{Daniel R. Licata\inst{1} \and Michael Shulman\inst{2}
-\thanks{
+\author{Daniel R. Licata\fnref{thanks}}
+\address{Wesleyan University}
+
+\author{Michael Shulman\fnref{thanks}}
+\address{University of San Diego}
+
+\fntext[thanks]{
 This material is based on research sponsored by The United States Air
 Force Research Laboratory under agreement number FA9550-15-1-0053. The
 U.S. Government is authorized to reproduce and distribute reprints for
@@ -97,12 +107,7 @@ should not be interpreted as necessarily representing the official
 policies or endorsements, either expressed or implied, of the United
 States Air Force Research Laboratory, the U.S. Government, or Carnegie
 Mellon University.
-}}
-
-\institute{Wesleyan University \and University of San Diego}
-
-\begin{document}
-\maketitle
+}
 
 \begin{abstract}
 We generalize the adjoint logics of Benton and Wadler (1996) and Reed
@@ -115,20 +120,18 @@ modes, where each mode determines a category, and there is an adjunction
 between categories that are related by the preorder.  Here, we consider
 a logic parametrized by a 2-category of modes, where each mode
 represents a category, each mode morphism represents an adjunction, and
-each mode 2-morphism represents a morphism of adjunctions.  For example,
-using this, we can give a mode theory for an adjoint triple $L \la M \la
-R$ by using two mode morphisms to generate two adjunctions between the
-same two categories, and then using mode 2-cells to identify the right
-adjoint of one with the left adjoint of the other.  Adding some
-additional structure to the mode 2-category gives an instance that is
-closely related to the rules for cohesive homotopy type theory in
-Shulman (2015).  In this paper, we give a sequent calculus, show that
-identity and cut are admissible, and define an equational theory on
-proofs.  We show that this syntax is sound and complete for
-pseudofunctors from the mode 2-category to the 2-category of categories,
-adjunctions, and adjunction morphisms.  Finally, we investigate some
-constructions in the example mode theories discussed above.
+each mode 2-morphism represents a pair of conjugate natural
+transformations.  Using this, we give mode theories that describe
+adjoint triples of the sort used in cohesive homotopy type theory.  We
+give a sequent calculus for this logic, show that identity and cut are
+admissible, show that this syntax is sound and complete for
+pseudofunctors from the mode 2-category to the 2-category of
+adjunctions, and investigate some constructions in the example mode
+theories.
 \end{abstract}
+
+\end{frontmatter}
+
 
 \section{Introduction}
 
@@ -139,25 +142,26 @@ prototypical adjunction, which provides a mnemonic for the notation, is
 where $U$ takes the underlying set of some algebraic structure such as a
 group, and $F$ is the free structure on a set---the adjunction property
 says that a structure-preserving map from $F C$ to $D$ corresponds to a
-a map of sets from $C$ to $U D$ (because the action on the structure is
+map of sets from $C$ to $U D$ (because the action on the structure is
 determined by being a homomorphism).  Adjunctions are important to the
 proof theories and $\lambda$-calculi of modal logics, because the
 composite $FU$ is a comonad on \D, while $UF$ is a monad on $\C$.
-\citet{bentonwadler96adjoint} describe an adjoint $\lambda$-calculus for
-mixing linear logic and structural/cartesian logic, with functors $U$
-from linear to cartesian and $F$ from cartesian to linear; the $! A$
-modality of linear logic arises as the comonad $FU$, while the monad of
-Moggi's metalanguage~\citep{moggi91monad} arises as $UF$.
-\citet{reed09adjoint} describes a generalization of this idea to
-situations involving more than one category: the logic is parametrized
-by a preorder of \emph{modes}, where every mode $p$ determines a
-category, and there is an adjunction $F \la U$ between categories $p$
-and $q$ (with $F : q \to p$) exactly when $q \ge p$.  For example, the
-intuitionistic modal logics of \citet{pfenningdavies} can be encoded as
-follows: the necessitation modality $\Box$ is the comonad $FU$ for an
-adjunction between ``truth'' and ``validity'' categories, the lax
-modality $\bigcirc$ is the monad $UF$ of an adjunction between ``truth''
-and ``lax truth'' categories, while the possibility modality $\diamond$
+\citet{benton94mixed,bentonwadler96adjoint} describe
+an adjoint $\lambda$-calculus for mixing linear logic and
+structural/cartesian logic, with functors $U$ from linear to cartesian
+and $F$ from cartesian to linear; the $! A$ modality of linear logic
+arises as the comonad $FU$, while the monad of Moggi's
+metalanguage~\citep{moggi91monad} arises as $UF$.  Reed~\citep{reed09adjoint}
+describes a generalization of this idea to situations involving more
+than one category: the logic is parametrized by a preorder of
+\emph{modes}, where every mode $p$ determines a category, and there is
+an adjunction $F \la U$ between categories $p$ and $q$ (with $F : q \to
+p$) exactly when $q \ge p$.  For example, the intuitionistic modal
+logics of Pfenning and Davies~\cite{pfenningdavies} can be encoded as follows: the
+necessitation modality $\Box$ is the comonad $FU$ for an adjunction
+between ``truth'' and ``validity'' categories, the lax modality
+$\bigcirc$ is the monad $UF$ of an adjunction between ``truth'' and
+``lax truth'' categories, while the possibility modality $\diamond$
 requires a more complicated encoding involving four adjunctions between
 four categories.  While specific adjunctions such as $(- \times A) \la
 (A \to -)$ arise in many logics, adjoint logic provides a formalism for
@@ -167,18 +171,42 @@ In Reed's logic, modes are specified by a preorder, which allows at most
 one adjunction between any two categories (more precisely, there can be
 two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
 it is sometimes useful to consider multiple different adjunctions
-between the same two categories.  A motivating example is Lawvere's
-axiomatic cohesion~\citep{lawvere07cohesion}, a general categorical
-interface that describes \emph{cohesive spaces}, such as topological
-spaces, or manifolds with differentiable or smooth structures.  The
-interface consists of two categories \C and $\mathcal{S}$, and a
+between the same two categories.  A motivating example is axiomatic
+cohesion~\citep{lawvere07cohesion}, which Lawvere proposed as a general
+categorical interface that describes \emph{cohesive spaces} where points
+may be ``stuck together'' in some way.  Models of axiomatic cohesion
+include topological spaces, manifolds with differentiable or smooth
+structures, and algebraic
+geometry~\citep{schreiber13dcct,johnstone11punctual}.  
+%% from email conversation about where models of cohesion have been
+%% constructed:
+%% 
+%% As Urs said, his own work is one.  The main other reference that comes
+%% to my mind is Peter Johnstone "Remarks on punctual local
+%% connectedness", TAC Vol. 25, No. 3, 2011.  From his Example 1.5:
+%% "Consider the ‘topological gros topos’ E = Sh(C,J), where C is a small
+%% full subcategory of topological spaces, closed under passage to open
+%% subspaces, and a sieve is J-covering iff it contains a jointly
+%% surjective family of open inclusions.... if we restrict C to contain
+%% only locally connected spaces... Sh(C, J)... is punctually locally
+%% connected.  Similar examples can be given on replacing C by the
+%% category of smooth manifolds... or by the category of affine schemes..."
+%% (At this point he's just shown that 'punctual local connectedness'
+%% implies most of the other axioms of axiomatic cohesion.)
+%% 
+%% other examples of cohesion:
+%% Well, there's Johnstone's third example: algebraic geometry.  There
+%% are also other "less expected" sorts of cohesion or almost-cohesion,
+%% like simplicial sets or (in the infinity-case) the tangent oo-topos.
+%% https://ncatlab.org/nlab/show/cohesive+(infinity,1)-topos#Examples
+The interface consists of two categories \C and $\mathcal{S}$, and a
 quadruple of adjoint functors $\Pi_0,\Gamma : \mathcal{C} \to
 \mathcal{S}$ and $\Delta,\nabla : \mathcal{S} \to \mathcal{C}$ where
 $\Pi_0 \la \Delta \la \Gamma \la \nabla$.  The idea is that
 $\mathcal{S}$ is some category of ``sets'' that provides a notion of
 ``point'', and \C\/ is some category of cohesive spaces built out of
 these sets, where points may be stuck together in some way (e.g. via
-topology).  $\Gamma$ takes the underlying set of points a cohesive
+topology).  $\Gamma$ takes the underlying set of points of a cohesive
 space, forgetting the cohesive structure.  This forgetful functor's
 right adjoint $\Gamma \la \nabla$ equips a set with codiscrete cohesion,
 where all points are stuck together; the adjunction says that a map
@@ -207,7 +235,7 @@ types~\citep{lumsdaine+13hits,shulman11hitsblog,lumsdaine11hitsblog}.
 Theorems from homotopy theory can be proved \emph{synthetically} in this
 logic~\citep{ls13pi1s1,lb13pinsn,lf14emspace,lb15cubical,favonia14covering,cavallo14mayervietoris},
 and these proofs can be interpreted in a variety of
-models~\citep{shulman13inversediag,voevodsky+12simpluniv,coquand+13cubical}.
+models~\citep{shulman15inversediag,voevodsky+12simpluniv,coquand+13cubical}.
 However, an important but subtle distinction is that there is no
 \emph{topology} in synthetic homotopy theory: the ``homotopical circle''
 is defined as a higher inductive type, essentially ``the free
@@ -221,31 +249,32 @@ topological spaces.
 
 Cohesive homotopy type theory combines the synthetic homotopy theory of
 homotopy type theory with the synthetic topology of axiomatic cohesion,
-using an adjoint quadruple $\sh \la \Delta \la \Gamma \la \nabla$.  In
-this higher categorical generalization, $\mathcal{S}$ is an
-$(\infty,1)$-category of homotopy spaces (e.g. $\infty$-groupoids), and
-$\C$ is an $(\infty,1)$-category of cohesive homotopy spaces, which are
-additionally equipped with a topological or other cohesive structure at
-each level.  The rules of type theory are now interpreted in \C, so that
-each type has an $\infty$-groupoid structure (given by the identity
-type) \emph{as well as} a separate cohesive structure on its objects,
-morphisms, morphisms between morphisms, etc.  For example, types have
-both morphisms, given by the identity type, and topological paths, given
-by maps that are continuous in the sense of the cohesion.  As in the
-1-categorical case, $\Gamma$ forgets the cohesive structure, yielding
-the underlying homotopy space, while $\Delta$ and $\nabla$ equip a
-homotopy space with the discrete and codiscrete cohesion.  But in the
-$\infty$-categorical case, $\Delta$'s left adjoint $\sh A$ (pronounced
-``shape of $A$'') generalizes from the connected components to the
-\emph{fundamental homotopy space} functor, which makes a homotopy space
-from the topological/cohesive paths, paths between paths, etc. of $A$.
-This captures the process by which homotopy spaces arise from cohesive
-spaces; for example, one can prove (using some additional axioms) that
-the shape of the topological circle is the homotopy
-circle~\citep{shulman15realcohesion}.  This allows synthetic
-homotopy theory to be used in proofs about topological spaces, and opens
-up possibilities for using synthetic homotopy theory as a tool in other
-areas of mathematics and theoretical physics.
+using an adjoint quadruple of $(\infty,1)$-functors $\sh \la \Delta \la
+\Gamma \la \nabla$.  In this higher categorical generalization,
+$\mathcal{S}$ is an $(\infty,1)$-category of homotopy spaces
+(e.g. $\infty$-groupoids), and $\C$ is an $(\infty,1)$-category of
+cohesive homotopy spaces, which are additionally equipped with a
+topological or other cohesive structure at each level.  The rules of
+type theory are now interpreted in \C, so that each type has an
+$\infty$-groupoid structure (given by the identity type) \emph{as well
+  as} a separate cohesive structure on its objects, morphisms, morphisms
+between morphisms, etc.  For example, types have both morphisms, given
+by the identity type, and topological paths, given by maps that are
+continuous in the sense of the cohesion.  As in the 1-categorical case,
+$\Gamma$ forgets the cohesive structure, yielding the underlying
+homotopy space, while $\Delta$ and $\nabla$ equip a homotopy space with
+the discrete and codiscrete cohesion.  In the $\infty$-categorical case,
+$\Delta$'s left adjoint $\sh A$ (pronounced ``shape of $A$'')
+generalizes from the connected components to the \emph{fundamental
+  homotopy space} functor, which makes a homotopy space from the
+topological/cohesive paths, paths between paths, etc. of $A$.  This
+captures the process by which homotopy spaces arise from cohesive
+spaces; for example, one can prove (using additional axioms) that the
+shape of the topological circle is the homotopy
+circle~\cite{shulman15realcohesion}.  This allows synthetic homotopy
+theory to be used in proofs about topological spaces, and opens up
+possibilities for applications to other areas of mathematics and
+theoretical physics.
 
 This paper begins an investigation into the structural proof theory of
 cohesive homotopy type theory, as a special case of generalizing Reed's
@@ -257,12 +286,16 @@ but unrelated adjunctions between two categories.  However, in order to
 describe an adjoint triple such as $\Delta \la \Gamma \la \nabla$, we
 need to know that the same functor $\Gamma$ is both a left and right
 adjoint.  To describe such a situation, we generalize to a 2-category of
-modes, where each mode $p$ determines a category, each morphism $\alpha
-: p \ge q$ determines adjoint functors $F_\alpha : p \to q$ and
-$U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$, and each 2-cell $e :
-\tc \alpha  \beta : q \ge p$ determines a morphism of adjunctions between 
-$F_\beta \la U_\beta$ and $F_\alpha \la U_\alpha$.  Using this logic, an
-adjoint triple is specified by the mode 2-category with
+modes, and arrange the syntax of the logic to capture the following
+semantics.  Each mode $p$ determines a category (also denoted by $p$).
+Each morphism $\alpha : p \ge q$ determines adjoint functors $F_\alpha :
+p \to q$ and $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$.  Each
+2-cell $\tc \alpha \beta$ determines a morphism of adjunctions between
+$F_\alpha \la U_\alpha$ and $F_\beta \la U_\beta$, which consists of
+natural transformations ${F_\beta} \to {F_\alpha}$ and ${U_\alpha} \to
+{U_\beta}$ that are conjugate under the adjunction structure~\cite[\S
+  IV.7]{maclane98working}.  For example, an adjoint triple is specified
+by the mode 2-category with
 \begin{itemize}
 \item objects $c$ and $s$
 \item 1-cells $\dsd{d} : s \ge c$ and $\dsd{n} : c \ge s$
@@ -271,20 +304,21 @@ and $\tc {\compo{\dsd{d}}{\dsd{n}}} {1_s}$ satisfying
 some equations
 \end{itemize}
 The 1-cells generate $F_{\dsd d} \la U_{\dsd d}$ and $F_{\dsd n} \la
-U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$ is
-naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
-F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong F_{\dsd n}$
-and have the desired adjoint triple.  Indeed, you may recognize this
-2-category as the ``walking adjunction'' with $\dsd d \la \dsd n$---that
-is, we give an adjoint triple by saying that the mode morphism generating
-the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
-adjunction $\Gamma\la\nabla$.
+U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$
+is naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
+F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong
+F_{\dsd n}$ and have the desired adjoint triple.  Indeed, you may
+recognize this 2-category as the ``walking adjunction'' with $\dsd d \la
+\dsd n$---that is, we give an adjoint triple by saying that the mode
+morphism generating the adjunction $\Delta\la \Gamma$ is itself left
+adjoint to the mode morphism generating the adjunction
+$\Gamma\la\nabla$.
 
 The main judgement of the logic is a ``mixed-category'' entailment
-\seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
-and $\alpha : q \ge p$.  Semantically, this judgement means a morphism
-from $A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a
-map $\F \alpha A \to C$ or $A \to \U \alpha C$.\footnote{We could instead
+\seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$ and
+$\alpha : q \ge p$.  Semantically, this judgement means a morphism from
+$A$ to $C$ ``along'' the adjunction determined by $\alpha$---i.e. a map
+$\F \alpha A \to C$ or $A \to \U \alpha C$.\footnote{We could instead
   use a structure that includes a basic notion of ``morphisms along
   $\alpha$,' such as a Grothendieck bifibration over the 2-category of
   modes, or a pseudofunctor to the bicategory of profunctors that are
@@ -295,25 +329,25 @@ specified independently from each other, by left and right rules, in
 such a way that identity and cut (composition) are admissible, and the
 subformula property holds.  While we do not consider
 focusing~\citep{andreoli92focus}, we conjecture that the connectives can
-be given the same focusing behavior as in \citep{reed09adjoint}: $F$ is
+be given the same focusing behavior as in \citet{reed09adjoint}: $F$ is
 positive and $U$ is negative (which, because limits are negative and
-colimits are positive, and like-polarity connectives compose together
-well, matches what left and right adjoints should preserve).
+colimits are positive, matches what left and right adjoints should
+preserve).
 
-The resulting logic has a good definition-to-theorem ratio: from 
-simple sequent calculus rules for $F$ and $U$, we can prove a variety of
+The resulting logic has a good definition-to-theorem ratio: from simple
+sequent calculus rules for $F$ and $U$, we can prove a variety of
 general facts that are true for any mode 2-category ($F_\alpha$ and
 $U_\alpha$ are functors; $F_\alpha U_\alpha$ is a comonad and $U_\alpha
 F_\alpha$ is a monad; $F_\alpha$ preserves colimits and $U_\alpha$
 preserves limits), as well as facts specific to a particular theory
-(e.g. for the adjoint triple above, $\Gamma$ preserves both colimits
-and limits, because it is an equivalent $U_\Delta$ and $F_\nabla$; the
-comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$ are
-themselves adjoint).  Moreover, we can use different mode 2-categories
-to add additional structure; for example, moving from the walking
-adjunction to the walking reflection (taking $\Delta \nabla = 1$)
-additionally gives that $\Delta$ and $\nabla$ are full and faithful and
-that $\flat$ and $\sharp$ are idempotent, which are some of the
+(e.g. for the adjoint triple above, $\Gamma$ preserves both colimits and
+limits, because it can be written either as $U_{\dsd d}$ and $F_{\dsd n}$;
+the comonad $\flat := \Delta\Gamma$ and monad $\sharp := \nabla\Gamma$
+are themselves adjoint).  Moreover, we can use different mode
+2-categories to add additional structure; for example, moving from the
+walking adjunction to the walking reflection (taking $\Delta \nabla =
+1$) additionally gives that $\Delta$ and $\nabla$ are full and faithful
+and that $\flat$ and $\sharp$ are idempotent, which are some of the
 additional conditions for axiomatic cohesion.
 
 We make a few simplifying restrictions for this paper. First, we
@@ -321,7 +355,7 @@ consider only single-hypothesis, single-conclusion sequents, deferring
 an investigation of products and exponentials to future work.
 
 Second, on the semantic side, we consider only 1-categorical semantics
-of the derivations of the logic, rather than the $\infty$-groupoid/$\infty$-topos
+of the derivations of the logic, rather than the $\infty$-groupoid
 semantics that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
@@ -336,14 +370,14 @@ pseudofunctors, but have not yet tried to make this precise.
 Third, we consider only a logic of simple-types, rather than a dependent
 type theory.  Consequently, we do not have an identity type available
 for proving equalities of proof terms.  However, we need an equational
-theory to make many of the statements we would like to make (e.g. ``$UF$ is a monad''
-requires proving some equational laws), and the definitional equalities
-arising from admissibility of cut and identity are not sufficient.
-Thus, in addition to the sequent calculus itself, we give an equality
-judgement on sequent calculus derivations.  This judgement is
-interpreted by actual equality of morphisms in the semantics above, but
-we intend some of these rules to be propositional equalities in an eventual
-adjoint type theory.
+theory to make many of the statements we would like to make (e.g. ``$UF$
+is a monad'' requires proving some equational laws), and the
+definitional equalities arising from admissibility of cut and identity
+are not sufficient.  Thus, in addition to the sequent calculus itself,
+we give an equality judgement on sequent calculus derivations.  This
+judgement is interpreted by actual equality of morphisms in the
+semantics above, but we intend some of these rules to be propositional
+equalities in an eventual adjoint type theory.
 
 In Section~\ref{sec:rules}, we define the rules of the logic, prove
 admissibility of identity and cut, and define an equational theory on
@@ -362,16 +396,30 @@ sequent calculus and the equational theory as inductive
 families.\footnote{See
   \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}.}
 
+A preliminary version of this work was published in the proceedings of
+Logical Foundations of Computer Science, 2016.  Relative to the
+conference version, this journal article contains additional examples
+and details throughout, a full proof of soundness
+(Section~\ref{sec:semantics}), and specialized sequent calculi for a
+specific mode theory (Section~\ref{sec:idempotent}), which clarify the
+relationship with \citet{shulman15realcohesion}.
+
 \section{Sequent Calculus and Equational Theory}
 \label{sec:rules}
 
 \subsection{Sequent Calculus}
 
-The logic is parametrized by a strict 2-category of modes.  We write
-$p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p \ge q$
-for the 1-cells, and $e : \tc \alpha \beta$ for the 2-cells.  We write
-\compo{\beta}{\alpha} for 1-cell composition in function composition
-order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
+The logic is parametrized by a strict 2-category $\M$ of modes.  We
+write $p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p \ge
+q$ for the 1-cells from $q$ to $p$, and $e : \tc \alpha \beta$ for the
+2-cells.  The notation $p\ge q$ for the 1-cells follows
+\cite{reed09adjoint}, but in our case $\M$ is a general category, so
+there can be more than one morphism $p \ge q$.  We use the notation $p
+\ge q$ for an arrow from $q$ to $p$ (an arrow points ``lesser to
+greater'') to match the sequent calculus, where the $p$-mode is on the
+left and the $q$-mode on the right (``validity is greater than truth'').
+We write \compo{\beta}{\alpha} for 1-cell composition in function
+composition order (i.e. if $\beta : r \ge q$ and $\alpha : q \ge p$ then
 $\compo{\beta}{\alpha} : r \ge p$), \compv{e_1}{e_2} for vertical
 composition of 2-cells in diagrammatic order, and \comph{e_1}{e_2} for
 horizontal composition of 2-cells in ``congruence of \compo{}{}'' order
@@ -391,23 +439,37 @@ give a syntax and explicit equality judgement for the mode category,
 which would be helpful if we needed a mode theory where equality of
 morphisms or 2-morphisms were undecidable.
 
-Each object $p$ of the mode category determines a category, and objects
-of that category are types; the syntactic judgement \wftp{A}{p} will
-mean that $A$ is an object of the category $p$.  A morphism $\alpha : q
-\ge p$ in the mode category determines an adjunction between categories
-$p$ and $q$, with $\F \alpha {} : q \to p$ and $\U \alpha {} : p \to q$;
-syntactically, the action on objects is given by $\wftp{\F \alpha A}{p}$
-when $\wftp{A}{q}$ and $\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  We
-write $P$ for atomic propositions, each of which has a designated mode.
-To add additional structure to a category or to all categories, we can
-add rules for additional connectives; for example, a rule
-\wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p} (parametric in
-$p$) says that any category $p$ has a coproduct type constructor.
+In the pseudofunctor semantics, each object $p$ of the mode category
+$\M$ will determine a category (also denoted by $p$). Syntactically, the
+judgement \wftp{A}{p} will mean that $A$ determines an object of the
+category $p$.  A morphism $\alpha : q \ge p$ in $\M$ determines an
+adjunction $\F\alpha{} \la \U\alpha{}$, with $\F \alpha {} : q \to p$
+and $\U \alpha {} : p \to q$; note that the right adjoints are covariant
+and the left adjoints contravariant.  Syntactically, the action on
+objects is given by $\wftp{\F \alpha A}{p}$ when $\wftp{A}{q}$ and
+$\wftp{\U \alpha A}{q}$ when $\wftp{A}{p}$.  The ``pseudo'' of the
+pseudofunctor means that, for example, the types \F{\beta}{(\F \alpha
+  A)} and {\F {\compo{\alpha}{\beta}} A} will be isomorphic but not
+definitionally equal.  Finally, a 2-cell $e:\tc\alpha\beta$ in $\M$
+determines natural transformations $\U\alpha{} \to \U\beta{}$ and
+$\F\beta{}\to \F\alpha{}$ which are ``conjugate''~\cite[\S
+  IV.7]{maclane98working}; again, the right adjoints are covariant and
+the left adjoints are contravariant.  Syntactically, these natural
+transformations will be definable using the sequent calculus rules.
+
+In addition to the connectives \F{\alpha}{A} and \U{\alpha}{A}, we allow
+an arbitrary collection of atomic propositions (denoted $P$), each of
+which has a designated mode; these represent arbitrary objects of the
+corresponding categories.  To add additional structure to a category or
+to all categories, we can add rules for additional connectives; for
+example, a rule \wftp{\coprd{A}{B}}{p} if \wftp{A}{p} and \wftp{B}{p}
+(parametric in $p$) says that any category $p$ has a coproduct type
+constructor.
 
 The sequent calculus judgement has the form \seq A \alpha C where
 \wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  This
 judgement represents a map from an object of some category $q$ to an
-object of another category $p$ along some adjunction $\F \alpha {} \la
+object of another category $p$ along the adjunction $\F \alpha {} \la
 \U \alpha {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
   \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
@@ -496,35 +558,52 @@ Equational theory:
 \label{fig:coprod}
 \end{figure}
 
-To understand the rules for $F$ and $U$, it is helpful to begin with
-\irl{FL} and \irl{UR}.  In the special case where $\beta$ is 1, these
+These rules are guided by the usual design goals for sequent calculi:
+the only rules are the left and right rules for each connective, the
+rules have the subformula property (the premises only involve
+subformulas of the conclusion), and the identity and cut rules are
+admissible.  To achieve these goals, it is necessary to treat the
+natural transformations $\F{\beta}{} \to \F{\alpha}{}$ and $\U{\alpha}{}
+\to \U{\beta}{}$ induced by a mode 2-cell $\tc{\alpha}{\beta}$ as an
+additional admissible structural rule: composing with such a natural
+transformation transforms a derivation of \seq{A}{\alpha}{C} into a
+derivation of \seq{A}{\beta}{C}.  The admissible rules are discussed
+further in Section~\ref{sec:admissible} below.  
+
+Consider the rules \irl{FL} and \irl{UR}.  When $\beta$ is 1, these
 rules pass from \seq{\F {\alpha}{A}}{1}{C} and \seq{A}{1}{\U{\alpha}{C}}
 to \seq{A}{\alpha}{C}, which makes sense because the judgement
 \seq{A}{\alpha}{C} is intended to mean either/both of these.  When
-$\beta$ is not 1, these rules also express how
-$\F{\compo{\alpha}{\beta}}{}$ and $\U{\compo{\beta}{\alpha}}$ distribute
-over compositions (see below).  While we do not formally give a focused
-sequent calculus, we conjecture that these two rules are
+$\beta$ is not 1, these rules compose the mode morphism in the
+connective with the mode morphism in the sequent.  Semantically, this
+corresponds to one direction of the composition isomorphism between
+$\F{\compo{\alpha}{\beta}}{A}$ and $\F{\beta}{\F{{\alpha}}{A}}$ and
+similarly for $U$ (see the Example below).  While we do not formally
+give a focused sequent calculus, we conjecture that these two rules are
 \emph{invertible}: whenever you have \F{\alpha}{A} on the left or
 \U{\alpha}{A} on the right, you can immediately apply the rule, no
 matter what is on the other side of the sequent.
 
-On the other hand, the other two rules \irl{UL} and \irl{FR} cannot be
-applied at any time, because they involve some constraints that may not
-be satisfied.  Consider \irl{FR}: we have $\alpha : q \ge p$ and $\beta
-: r \ge p$ and want to reduce proving \F{\alpha}{A} from $C$ to proving
-$A$ from $C$.  However, there is not necessarily any relationship
-between $C$'s mode $r$ and $A$'s mode $q$, because all we know is that
-both of these are bigger than $p$.  Thus, to form a premise sequent, we
-need to choose a $\gamma : r \ge q$.  To make adjunctions generated by
-different morphisms be different, it is important that we choose not
-just any $\gamma$, but one where the triangle that it forms with
-$\alpha$ and $\beta$ is filled by a 2-cell, which is the second premise
-of the rule.  
-%% The direction of the 2-cell, and the fact that it may not
-%% be invertible, are chosen to match the intended semantics and permit the
-%% proofs of the desired admissible rules.  
-The case for \irl{UR} is dual.
+Next, consider \irl{FR}.  The rule is a bit complex because it involves
+three different aspects of the pseudofunctor structure.  First, in the
+case where $\gamma$ is the identity 1-cell and $\beta = \alpha$ and the
+2-cell is the identity, the rule gives functoriality of $F$ (see the
+Example below).  In the case where $\gamma = \beta$ and the 2-cell is
+the identity, the rule gives the other direction of the composition
+isomorphism between $\F{\compo{\alpha}{\beta}}{A}$ and
+$\F{\beta}{\F{{\alpha}}{A}}$ (see Example 2).  In the case where
+$\gamma$ is 1 and the rightmost premise is the identity sequent
+\seq{A}{1}{A}, the rule gives a natural transformation $\F{\beta}{} \to
+\F{\alpha}{}$ induced by $e : \tc{\alpha}{\beta}$ (see Example 3).  This
+is necessary because composition with such a natural transformation
+cannot always be pushed inside an application of functoriality, because
+a morphism from $\compo{\gamma}{\alpha}$ might not be constructed from a
+morphism from $\gamma$.  In the general form of the rule, we combine
+these three ingredients: given $\alpha : q \ge p$ and $\beta : r \ge p$,
+to prove \F{\alpha}{A} from $C$, choose a natural transformation that
+splits $\beta$ as $\compo{\gamma}{\alpha}$ for some $\gamma : r \ge q$,
+and apply functoriality of $\alpha$, which leaves proving
+\seq{C}{\gamma}{A}.  The \irl{UL} rule is dual.
 
 Because we are interested not only in provability, but also in the
 equational theory of proofs in this logic, one might think the next step
@@ -555,10 +634,12 @@ $\alpha : q \ge p$ and $D : \seq{A}{1_q}{B}$, we have
 Because \M\/ is a strict 2-category, the identity 2-cell has type 
 \tc{\compo{1_q} \alpha}{\compo {\alpha} {1_p}}.    
 
-\paragraph{Example: Comonad} Define $\Bx \alpha A := \F \alpha (\U \alpha A)$
-where $\alpha : q \ge p$.
-The comonad operations are defined as follows:
-
+\paragraph{Example: Comonad} 
+The
+composites $FU$ and $UF$ should be a comonad and a monad respectively;
+define $\Bx \alpha A := \F \alpha (\U \alpha A)$ and $\Crc{\alpha}A :=
+\U{\alpha}{(\F{\alpha}{A})}$ for any $\alpha : q \ge p$.
+The comonad operations on \Bx \alpha A are defined as follows:
 \[
 \begin{small}
 \begin{array}{c}
@@ -600,6 +681,8 @@ some non-provabilities: for example, there is not in general a map
 \seq{P}{1_p}{\Bx{\alpha}{P}}. By inversion, a derivation must begin with
 \irl{FR}, but to apply this rule, we need a $\gamma : p \ge q$ and a
 2-cell $\tc{\compo{\gamma}{\alpha}}{1}$, which may not exist.
+
+The monad operations on \Crc \alpha A are dual.
 
 \paragraph{Example: $F$ preserves coproducts} As another example, we show a map
 from \F \alpha {(\coprd{P}{Q})} to \coprd{\F \alpha P}{\F \alpha Q},
@@ -695,16 +778,14 @@ U_\beta$ and $F_\alpha \la U_\alpha$.  The other directions
 (e.g. $\seq{\F \alpha P}{1}{\F \beta P}$) are not provable in general.
 
 \subsection{Admissible Rules}
+\label{sec:admissible}
 
 \paragraph{Adjunction morphisms}
 
-The following rule provides the action of a 2-cell $e : \tc \alpha
-\beta$ on a derivation $D : \seq{A}{\alpha}{B}$, yielding a new
-derivation which we write as $\tr{e}{D} : \seq{A}{\beta}{B}$.
-Semantically, $D$ is interpreted as a map \arrow{}{\F \alpha A}{B}
-(say), so to get a map \arrow{}{\F \beta A}{B} we can precompose with
-the $F$ part of the morphism of adjunctions determined by $e$.
-
+As discussed above, composition with the natural transformations
+$\F{\beta}{} \to \F{\alpha}{}$ and $\U{\alpha}{} \to \U{\beta}{}$
+induced by a 2-cell $e : \tc \alpha \beta$ is an admissible rule, which
+we write as $\tr{e}{D} : \seq{A}{\beta}{B}$:
 \[
 \infer[\irl{\tr{-}{-}}]
       {\seq A {\beta} C}
@@ -712,9 +793,9 @@ the $F$ part of the morphism of adjunctions determined by $e$.
        \seq A {\alpha} {C}}
 \]
 
-Because we will care about the equational properties of this operation,
-we give its definition as a transformation on derivations.    
-
+The definition of this operation pushes the natural transformation into
+the premises of a derivation until it reaches a rule that builds in a
+transformation (\irl{FR},\irl{UL},\irl{hyp}):
 \[
 \begin{array}{rcl}
   \tr {e}{\hyp e'} & := & \hyp {(\compv{e'}{e})}\\
@@ -833,19 +914,18 @@ p$ we can transform $D : \seq { \F \alpha A}{1}{B}$ into {\seq{A}{1}{\U
 
 When we construct proofs using the admissible rules \tr{e}{D} and
 \ident{A} and \cut{D}{E}, there is a natural notion of definitional
-equality induced by the above definitions of these operations (e.g.
-$\ident{\U \alpha A}$ is definitionally equal to $\UR {\UL 1 1 {\ident
-    A}}$)---the cut- and identity-free proofs are normal forms, and a
-proof using cut or identity is equal to its normal form.  However, to
-prove the desired equations in the examples below, we will need some
-additional ``propositional'' equations, which, because we are using
-derivations as proof terms, we represent by a judgement \ap{D}{D'} on
-two derivations $D,D' : \seq{A}{\alpha}{C}$.  This judgement is the
-least congruence closed under the following rules.  First, we have
-uniqueness/$\eta$ rules.  The rule for $F$ says that any map from
-\F{\alpha}{A} is equal to a derivation that begins with an application
-of the left rule and then cuts the original derivation with the right
-rule; the rule for $U$ is dual.
+equality induced by the above definitions of these operations---the cut-
+and identity-free proofs are normal forms, and a proof using cut or
+identity is equal to its normal form.  However, to prove the desired
+equations in the examples below, we will need some additional
+``propositional'' equations, which, because we are using derivations as
+proof terms, we represent by a judgement \ap{D}{D'} on two derivations
+$D,D' : \seq{A}{\alpha}{C}$.  This judgement is the least congruence
+closed under the following rules.  First, we have uniqueness/$\eta$
+rules.  The rule for $F$ says that any map from \F{\alpha}{A} is equal
+to a derivation that begins with an application of the left rule and
+then cuts the original derivation with the right rule; the rule for $U$
+is dual.
 
 \[
 \begin{array}{l}
@@ -896,12 +976,11 @@ of the conclusion type check.
 
 \subsubsection{Admissible rules}
 
-The following equality rules are admissible for logic containing the
-$U/F$ rules described above and the coproduct rules in
-Figure~\ref{fig:coprod}.  The proofs have a lot of cases (about 800
-lines of Agda total) but are not difficult, except for somewhat subtle
-staging.  The rules in each of the following groups (except the first)
-are proved by mutual induction, and use the preceding groups:
+The following additional equality rules are admissible for logic
+containing the $U/F$ rules described above and the coproduct rules in
+Figure~\ref{fig:coprod}.  The rules in each line (except the first) are
+proved by mutual induction, and use the preceding lines:
+
 
 \begin{enumerate}
 \item 
@@ -994,7 +1073,7 @@ a category whose objects are \wftp{A}{p} and whose morphisms are
 derivations of \seq{A}{1_p}{B} quotiented by $\ap{}{}$, with identities
 given by \ident{} and composition given by \cutsym.  We write $D \cuti
 E$ as an infix notation for \cut{D}{E}; this corresponds to writing
-composition in this category in diagrammatic notation. Some standard
+composition in this category in diagrammatic order. Some standard
 category-theoretic terminology applied to categories of this form
 unpacks as follows:
 \begin{enumerate}
@@ -1064,15 +1143,18 @@ associativity and identity of cut) from the previous section.
 
 A pseudofunctor is a map between 2-categories that preserves identity
 and composition of 1-cells up to coherent isomorphism, rather than on
-the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} In this
-case, we have a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$ and
-similarly for composition, but these are not equalities of types.
+the nose.\footnote{http://ncatlab.org/nlab/show/pseudofunctor} 
+The rules describe a pseudofunctor because $\F 1 A \iso A \iso \U 1 A$
+and $\F{\compo{\beta}{\alpha}}{A} \iso \F{\alpha}{\F{\beta}{A}}$ and
+$\U{\compo{\beta}{\alpha}}{A} \iso \U{\beta}{\U{\alpha}{A}}$, but these
+are not equalities of types.
 
 \begin{theorem}[Syntax Determines a Pseudofunctor] \label{thm:syntacticpseudofunctor}
 The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
 \begin{enumerate}
 \item An object $p$ of \M is sent to the category whose objects are
-  \wftp{A}{p} and morphisms are $(\seq{A}{1_p}{B})/\ap{}{}$.
+  \wftp{A}{p} and morphisms are derivations of $(\seq{A}{1_p}{B})$
+  quotiented by $\ap{}{}$.
 \item For each $q,p$, there is a functor from the category of morphisms
   $q \ge p$ to the category of adjoint functors between $q$ and $p$.
   \begin{itemize}
@@ -1080,9 +1162,9 @@ The syntax of adjoint logic determines a pseudofunctor $\M \to \Adj$:
   Each $\alpha : q \ge p$ is sent to $F_\alpha \la U_\alpha$ in
   \Adj---$F_\alpha$ and $U_\alpha$ are functors and they are adjoint.
 
-  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to an adjunction
-    morphism $(F(e),U(e)) : (F_\beta \la U_\beta) \to (F_\alpha \la
-    U_\alpha)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
+  \item Each 2-cell $e : \tc{\alpha}{\beta}$ is sent to a conjugate pair of transformations
+     $(F(e),U(e)) : (F_\alpha \la U_\alpha) \to (F_\beta \la
+    U_\beta)$, and this preserves $1$ and $\compv{e_1}{e_2}$.
   \end{itemize}
 
 \item $\F 1 A \iso A$ and $\U 1 A \iso A$ naturally in $A$, and these
@@ -2231,16 +2313,17 @@ $\compv{(\comph{\dsd{unit}}{1_{\dsd{n}}})}{(\comph{1_{\dsd n}}{\dsd{counit}})} =
 \end{itemize}
 \noindent
 The 1-cells specify two adjunctions $\F{\dsd d}{} \la \U{\dsd d}{}$ and
-$\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the functoriality of $\F{}{}$
-and $\U{}{}$ on 2-cells also yields adjunctions $\F{\dsd d}{} \la
-\F{\dsd n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$.  Since a right or
-left adjoint of a given functor is unique up to isomorphism, it follows
-that the two functors $\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$
-are isomorphic, resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd
-  d}{} \iso \F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than
-proving $\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd
-  n}{}$ and then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from
-uniqueness of adjoints, we can construct the isomorphism directly:
+$\F{\dsd n}{} \la \U{\dsd n}{}$.  However, the natural transformations
+specified by the 2-cells also give adjunctions $\F{\dsd d}{} \la \F{\dsd
+  n}{}$ and $\U{\dsd d}{} \la \U{\dsd n}{}$ (using the unit/counit
+definition of adjunction).  Since a right or left adjoint of a given
+functor is unique up to isomorphism, it follows that the two functors
+$\U{\dsd d}{},\F{\dsd n}{} : \dsd c \to \dsd s$ are isomorphic,
+resulting in an adjoint triple $\F{\dsd d}{} \la (\U{\dsd d}{} \iso
+\F{\dsd{n}}{}) \la \U{\dsd{n}}{}$.  However, rather than proving
+$\F{\dsd d}{} \la \F{\dsd n}{}$ or $\U{\dsd d}{} \la \U{\dsd n}{}$ and
+then concluding $\U{\dsd d}{} \iso \F{\dsd n}{}$ from uniqueness of
+adjoints, we can construct the isomorphism directly:
 
 \begin{lemma} \label{lem:mergeFU}
 $\U{\dsd d}{A} \iso \F{\dsd n}{A}$ naturally in $A$.
@@ -2300,7 +2383,7 @@ and
 $\Crc{\dsd{n}}{A} := \U{\dsd{n}}{\F{\dsd{n}}{A}}$.  
 
 
-\begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple}
+\begin{theorem}[Properties of an adjoint triple] \label{thm:adjointtriple} ~
 \begin{enumerate}
 \item $\Bx{\dsd{d}}{} \la \Crc{\dsd{n}}{}$ 
 \item $\Bx{\dsd{d}}{(\coprd A B)} \iso \coprd{\Bx{\dsd{d}}{A}}{\Bx{\dsd{d}}{B}}$
@@ -2332,7 +2415,7 @@ $\F{}{\U{}{A}}$ to preserve positives, because the negative connective
 $\U{}{}$ interrupts focus/inversion phases.  Here, this behavior is
 explained by the fact that $\F{\dsd{d}}{\U{\dsd{d}}{A}}$ is isomorphic
 to a single positive connective $\F{\compo{\dsd n}{\dsd d}}{A}$.  The
-ambipolar middle connective in an adjoint triple thus \emph{emerges}
+ambipolar middle connective in an adjoint triple thus emerges
 from the presence of two isomorphic connectives, one positive and one
 negative.
 
@@ -2352,23 +2435,25 @@ $\Sharp{\Flat{A}} \iso \Sharp A$.  Moreover, $\Delta$ and $\nabla$ should
 be full and faithful, because a map between discrete or codiscrete
 spaces is exactly a map of sets.
 
-We can capture these properties by considering a different mode
-2-category, the ``walking reflection''.  This has the same objects and generating
-morphisms as the walking adjunction, but we now take $\compo{\dsd d}{\dsd n} = 1$, with
-the counit being just the identity 2-cell, and the equations for
-$\dsd{unit} : \tc {1} {\compo{\dsd n}{\dsd d}}$ simplify to
+Recalling that a right (resp.\ left) adjoint is full and faithful
+exactly when the counit (resp.\ unit) of the adjunction is an
+isomorphism, we can capture these properties by considering a different
+mode 2-category, the ``walking reflection''. This has the same objects
+and This has the same objects and generating morphisms as the walking
+adjunction, but we now take $\compo{\dsd d}{\dsd n} = 1$, with the
+counit being just the identity 2-cell, and the equations simplify to
 $\comph{\dsd{unit}}{1_{\dsd n}} = 1$ and $\comph{1_{\dsd d}}{\dsd{unit}}
 = 1$.  Note that the only non-identity morphisms of this mode category
-are \dsd{d}, \dsd{n}, and \compo{\dsd{n}}{\dsd{d}}.  
+are \dsd{d}, \dsd{n}, and \compo{\dsd{n}}{\dsd{d}}.
 
 We write $\Delta := \F{\dsd{d}}{}$, $\Gamma := (\U{\dsd d}{} \iso
 \F{\dsd n}{})$, and $\nabla := \U{\dsd{n}}{}$, so $\Flat{} =
 \Bx{\dsd{d}}{}$ and $\Sharp{} = \Crc{\dsd{n}}{}$.  Since in particular
 we still have an adjunction, this mode theory inherits all the theorems
-from the previous section; but it also has the following additional
+from the previous section; it also has the following additional
 properties:
 
-\begin{theorem}[Properties of the walking reflection]
+\begin{theorem}[Properties of the walking reflection]~
 \begin{enumerate}
 \item $\Flat{\Flat A} \iso \Flat A$ and $\Sharp{\Sharp A} \iso \Sharp A$
   naturally in $A$.
@@ -2484,15 +2569,15 @@ constructions in \dsd{c}, we can simplify the mode theory to the
 (strictly) idempotent monad:
 \begin{itemize}
 \item object \dsd{c}
-\item 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
-  $\compo{\dsd{r}}{\dsd{r}} = \dsd{r}$, so the only 1-cells are $1$ and \dsd{r}
-\item 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
-  t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$, so 
-  the only 2-cells are $1_1$, $1_{\dsd{r}}$, and  $\dsd{unit}$. 
+\item one generating 1-cell $\dsd{r} : \dsd{c} \ge \dsd{c}$ such that
+  $\compo{\dsd{r}}{\dsd{r}} = \dsd{r}$.
+\item one generating 2-cell $\dsd{unit} : \tc{1}{\dsd{r}}$ satisfying $\comph{\dsd
+  t}{\dsd{unit}} = 1$ and $\comph{\dsd{unit}}{\dsd{r}} = 1$. 
 \end{itemize}
-This mode theory embeds in the walking reflection, with $\dsd{r} :=
-\compo{\dsd{n}}{\dsd{d}}$, so we could equivalently work in the
-\dsd{c}-types above.
+Observe that the only 1-cells are $1$ and \dsd{r}, and the only 2-cells
+are $1_1$, $1_{\dsd{r}}$, and $\dsd{unit}$.  This mode theory embeds in
+the walking reflection, with $\dsd{r} := \compo{\dsd{n}}{\dsd{d}}$, so
+we could equivalently work in the \dsd{c}-types above.
 
 For this mode theory, we define $\Flat{} := \F{\dsd{r}}{}$ and $\Sharp{}
 := \U{\dsd{r}}{}$.  In the walking reflection, we defined $\Flat{} :=
@@ -2694,31 +2779,32 @@ been kept the same.  Then the multi-assumptioned rules are as follows:
       {\addcrisp {\Gamma} \vdash {B}}
 \quad
 \infer{\Gamma, {\Sharp A}[\dsd{r}] \vdash {B}}
-      {\Gamma, A[\dsd{r}] \vdash {{B}}}
+      {\Gamma, {\Sharp A}[\dsd{r}], A[\dsd{r}] \vdash {{B}}}
 \quad
 \infer{\Gamma \vdash {\Flat B}}
       {\dropcoh \Gamma \vdash {B}}
 \quad
-\infer{\Gamma, {\Flat A}[\dsd{\_}] \vdash {B}}
-      {\Gamma, {A}[\dsd{r}] \vdash {B}}
+\infer{\Gamma, {\Flat A}[\dsd{\alpha}] \vdash {B}}
+      {\Gamma, {\Flat A}[\dsd{\alpha}], {A}[\dsd{r}] \vdash {B}}
 \]
-The left rules are just the single-assumption left rules in context.
-The single-assumption \Sharp{} right rule promotes the one assumption to
-crisp; here, we promote all assumptions.  The single-assumption \Flat{}
-right rule insists that the one assumption be crisp; here, we drop all
-non-crisp assumptions.  The rules for \Flat{} are reminiscent of the
-$\Bx{}{A}$ modality in \citet{pfenningdavies}, with crisp corresponding
-to the valid judgement, except here we can apply a left rule to a
-valid/crisp assumption of $\Bx{}{A}$, because \Flat{} is an $F$ which is
-a positive-to-positive connective.  The right rule for \Sharp{} is
-reminiscent of the right rule for the proof irrelevance/erasability
-modality $[A]$ in \citet{pfenning01proofirrel,pfenning08proofirrel},
-though the left rule is different.\footnote{The $[A]$ type in that work
-  is a product-preserving functor with no additional properties, so it
-  cannot be mapped into adjoint logic in a straightforward way, because
-  all of our functors have more properties.}  Like in
-Figure~\ref{fig:coprod}, the left rule for coproducts would allow
-elimination on a coproduct in either mode:
+The left rules are just the single-assumption left rules in context
+(with the principle formula preserved in the premise to make contraction
+admissible).  The single-assumption \Sharp{} right rule promotes the one
+assumption to crisp; here, we promote all assumptions.  The
+single-assumption \Flat{} right rule insists that the one assumption be
+crisp; here, we drop all non-crisp assumptions.  The rules for \Flat{}
+are reminiscent of the $\Bx{}{A}$ modality in \citet{pfenningdavies},
+with crisp corresponding to the valid judgement, except here we can
+apply a left rule to a valid/crisp assumption of $\Bx{}{A}$, because
+\Flat{} is an $F$ which is a positive-to-positive connective.  The right
+rule for \Sharp{} is reminiscent of the right rule for the proof
+irrelevance/erasability modality $[A]$ in
+\citet{pfenning01proofirrel,pfenning08proofirrel}, though the left rule
+is different.\footnote{The $[A]$ type in that work is an applicative
+  functor, so it cannot be mapped into adjoint logic in a
+  straightforward way, because it does not have an adjoint on either
+  side.}  Like in Figure~\ref{fig:coprod}, the left rule for coproducts
+would allow elimination on a coproduct in either mode:
 \[
 \infer{\Gamma \vdash {\coprd{A}{B}}}
       {\Gamma \vdash {A}}
@@ -3026,33 +3112,37 @@ cohesion.  While we have considered only a single-hypothesis sequent
 through most of the paper, we discussed a generalization to multiple
 hypotheses for the specific mode theory in
 Sections~\ref{sec:idempotent}, and the generalization of these rules to
-dependent types is discussed in \citet{shulman15realcohesion}.  One area
-for future work is to extend the general adjoint logic with multiple
-assumptions and dependent types.  This would provide a context for
-investigating the shape modality $\sh{} \la \Flat{}$.  Using the present
-theory, we could certainly give a mode theory with one mode and $\sh{}
-\la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta \la
-\Gamma \la \nabla$, but it remains to be investigated whether this can
-provide the right properties for \sh{} beyond adjointness.  On the one
-hand, too much might be true: \sh{} does not preserve identity types,
-but the general dependently typed rules for $F$ might force it to do
-so. On the other, too little might be true: for applications such as
-relating the shape of the topological circle to the homotopical circle,
-extra properties are needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of
-these issues can be addressed as in \citep{shulman15realcohesion} by
-treating \sh{} not as an abstract adjoint, of the kind we can represent
-using the mode 2-category, but as a defined type (specifically, a higher
-inductive), which among other things has the property that it is adjoint
-to $\Flat{}$ (adjoint logic / spatial type theory is still essential for
-representing $\Flat{}$ and $\Sharp{}$ themselves).  Another area for
-future work is to consider $\infty$-category semantics, rather than the
-1-categorical semantics of derivations that we have considered here.  A
-final area for future work is to investigate applications of other mode
-theories in our generalized adjoint logic, beyond the motivating example
-of cohesive homotopy type theory.
+dependent types is discussed in \citet{shulman15realcohesion}.
 
-\paragraph{Acknowledgments}  We thank Jason Reed for discussions about
-this work.  
+One area for future work is to extend the general adjoint logic with
+multiple assumptions and dependent types.  This would provide a context
+for investigating the shape modality $\sh{} \la \Flat{}$.  We could
+certainly give a mode theory with one mode and $\sh{} \la \Flat{} \la
+\Sharp{}$, or with two modes and $\sh \la \Delta \la \Gamma \la \nabla$,
+but it remains to be investigated whether this can provide the right
+properties for \sh{} beyond adjointness.  On the one hand, too much
+might be true: \sh{} does not preserve identity types, and the general
+dependently typed rules for $F$ might force it to. On the other, too
+little might be true: for applications such as relating the shape of the
+topological circle to the homotopical circle, extra properties are
+needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of these issues can be
+addressed as in \cite{shulman15realcohesion} by treating \sh{} not as an
+abstract adjoint, of the kind we can represent using the mode
+2-category, but as a defined type (specifically, a higher inductive),
+which among other things has the property that it is adjoint to
+$\Flat{}$ (adjoint logic is still essential for representing $\Flat{}$
+and $\Sharp{}$ themselves).  Another area for future work is to consider
+$\infty$-category semantics, rather than the 1-categorical semantics of
+derivations that we have considered here.  A final area for future work
+is to investigate applications of other mode theories in our generalized
+adjoint logic, beyond the motivating example of cohesive homotopy type
+theory.
+
+\paragraph{\textbf{Acknowledgments}} We thank Jason Reed, Urs Schreiber,
+and the LFCS 2016 reviewers and attendees for helpful discussions about
+this work and paper.
+
+\section*{References}
 
 %% \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { %% \small

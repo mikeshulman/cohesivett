@@ -11,7 +11,6 @@
 \usepackage{drl-common/proof}
 \usepackage{drl-common/typesit}
 \usepackage{drl-common/typescommon}
-\usepackage[square,numbers,sort]{natbib}
 %% \usepackage{arydshln}
 \usepackage{graphics}
 \usepackage{url}
@@ -23,14 +22,6 @@
 
 \usepackage{drl-common/code}
 \DefineVerbatimEnvironment{code}{Verbatim}{fontsize=\small,fontfamily=tt}
-
-\makeatletter
-\renewcommand\bibsection%
-{
-  \section*{\refname
-    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
-}
-\makeatother
 
 %% small tightcode, with space around it
 \newenvironment{stcode}
@@ -109,14 +100,17 @@ States Air Force Research Laboratory, the U.S. Government, or Carnegie
 Mellon University.
 }}
 
-\institute{Wesleyan University \and University of San Diego}
+\institute{Wesleyan University, Middletown, CT, USA \\
+           \email{dlicata@wesleyan.edu} \and
+           University of San Diego, San Diego, CA, USA \\
+           \email{shulman@sandiego.edu}}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We generalize the adjoint logics of Benton and Wadler (1994, 1996) and
-Reed (2009) to allow multiple different adjunctions between the same
+We generalize the adjoint logics of Benton and Wadler [1994, 1996] and
+Reed [2009] to allow multiple different adjunctions between the same
 categories.  This provides insight into the structural proof theory of
 cohesive homotopy type theory, which integrates the synthetic homotopy
 theory of homotopy type theory with the synthetic topology of Lawvere's
@@ -148,32 +142,33 @@ map of sets from $C$ to $U D$ (because the action on the structure is
 determined by being a homomorphism).  Adjunctions are important to the
 proof theories and $\lambda$-calculi of modal logics, because the
 composite $FU$ is a comonad on \D, while $UF$ is a monad on $\C$.
-\citet{benton94mixed,bentonwadler96adjoint} describe an adjoint
-$\lambda$-calculus for mixing linear logic and structural/cartesian
-logic, with functors $U$ from linear to cartesian and $F$ from cartesian
-to linear; the $! A$ modality of linear logic arises as the comonad
-$FU$, while the monad of Moggi's metalanguage~\citep{moggi91monad}
-arises as $UF$.  \citet{reed09adjoint} describes a generalization of
-this idea to situations involving more than one category: the logic is
-parametrized by a preorder of \emph{modes}, where every mode $p$
-determines a category, and there is an adjunction $F \la U$ between
-categories $p$ and $q$ (with $F : q \to p$) exactly when $q \ge p$.  For
-example, the intuitionistic modal logics of \citet{pfenningdavies} can
-be encoded as follows: the necessitation modality $\Box$ is the comonad
-$FU$ for an adjunction between ``truth'' and ``validity'' categories,
-the lax modality $\bigcirc$ is the monad $UF$ of an adjunction between
-``truth'' and ``lax truth'' categories, while the possibility modality
-$\diamond$ requires a more complicated encoding involving four
-adjunctions between four categories.  While specific adjunctions such as
-$(- \times A) \la (A \to -)$ arise in many logics, adjoint logic
-provides a formalism for abstract/uninterpreted adjunctions.
+Benton and Wadler~\cite{benton94mixed,bentonwadler96adjoint} describe
+an adjoint $\lambda$-calculus for mixing linear logic and
+structural/cartesian logic, with functors $U$ from linear to cartesian
+and $F$ from cartesian to linear; the $! A$ modality of linear logic
+arises as the comonad $FU$, while the monad of Moggi's
+metalanguage~\cite{moggi91monad} arises as $UF$.  Reed~\cite{reed09adjoint}
+describes a generalization of this idea to situations involving more
+than one category: the logic is parametrized by a preorder of
+\emph{modes}, where every mode $p$ determines a category, and there is
+an adjunction $F \la U$ between categories $p$ and $q$ (with $F : q \to
+p$) exactly when $q \ge p$.  For example, the intuitionistic modal
+logics of Pfenning and Davies~\cite{pfenningdavies} can be encoded as follows: the
+necessitation modality $\Box$ is the comonad $FU$ for an adjunction
+between ``truth'' and ``validity'' categories, the lax modality
+$\bigcirc$ is the monad $UF$ of an adjunction between ``truth'' and
+``lax truth'' categories, while the possibility modality $\diamond$
+requires a more complicated encoding involving four adjunctions between
+four categories.  While specific adjunctions such as $(- \times A) \la
+(A \to -)$ arise in many logics, adjoint logic provides a formalism for
+abstract/uninterpreted adjunctions.
 
 In Reed's logic, modes are specified by a preorder, which allows at most
 one adjunction between any two categories (more precisely, there can be
 two isomorphic adjunctions if both $p \ge q$ and $q \ge p$).  However,
 it is sometimes useful to consider multiple different adjunctions
 between the same two categories.  A motivating example is Lawvere's
-axiomatic cohesion~\citep{lawvere07cohesion}, a general categorical
+axiomatic cohesion~\cite{lawvere07cohesion}, a general categorical
 interface that describes \emph{cohesive spaces}, such as topological
 spaces, or manifolds with differentiable or smooth structures.  The
 interface consists of two categories \C and $\mathcal{S}$, and a
@@ -201,18 +196,18 @@ $\nabla$ being fully faithful (maps between discrete or codiscrete
 cohesive spaces should be the same as maps of sets).
 
 A variation on axiomatic cohesion called \emph{cohesive homotopy type
-  theory}~\citep{schreiber13dcct,schreibershulman12cohesive,shulman15realcohesion}
+  theory}~\cite{schreiber13dcct,schreibershulman12cohesive,shulman15realcohesion}
 is currently being explored in the setting of homotopy type theory and
-univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
+univalent foundations~\cite{voevodsky06homotopy,uf13hott-book}.
 Homotopy type theory uses Martin-L\"of's intensional type theory as a
 logic of \emph{homotopy spaces}: the identity type provides an
 $\infty$-groupoid structure on each type, and spaces such as the spheres
 can be defined by their universal properties using higher inductive
-types~\citep{lumsdaine+13hits,shulman11hitsblog,lumsdaine11hitsblog}.
+types~\cite{lumsdaine+13hits,shulman11hitsblog,lumsdaine11hitsblog}.
 Theorems from homotopy theory can be proved \emph{synthetically} in this
-logic~\citep{ls13pi1s1,lb13pinsn,lf14emspace,lb15cubical,favonia14covering,cavallo14mayervietoris},
+logic~\cite{ls13pi1s1,lb13pinsn,lf14emspace,lb15cubical,favonia14covering,cavallo14mayervietoris},
 and these proofs can be interpreted in a variety of
-models~\citep{shulman15inversediag,voevodsky+12simpluniv,coquand+13cubical}.
+models~\cite{shulman15inversediag,voevodsky+12simpluniv,coquand+13cubical}.
 However, an important but subtle distinction is that there is no
 \emph{topology} in synthetic homotopy theory: the ``homotopical circle''
 is defined as a higher inductive type, essentially ``the free
@@ -222,36 +217,36 @@ do with the ``topological circle,'' $\{ (x,y) \in \mathbb{R}^2 \mid x^2
 a blessing and a curse: on the one hand, proofs are not encumbered by
 topological details; but on the other, internally to homotopy type
 theory, we cannot use synthetic theorems to prove facts about
-topological spaces.  Cohesive homotopy type theory combines the
-synthetic homotopy theory of homotopy type theory with the synthetic
-topology of axiomatic cohesion, using an adjoint quadruple of
-$(\infty,1)$-functors $\sh \la \Delta \la \Gamma \la \nabla$.  In the
-$\infty$-categorical case, $\Delta$'s left adjoint $\sh A$ (pronounced
-``shape of $A$'') generalizes from the connected components to the
-\emph{fundamental homotopy space} functor, which makes a homotopy space
-from the topological/cohesive paths, paths between paths, etc. of $A$.
-This captures the process by which homotopy spaces arise from cohesive
-spaces; for example, one can prove (using some additional axioms) that
+topological spaces.  
+
+Cohesive homotopy type theory combines the synthetic homotopy theory of
+homotopy type theory with the synthetic topology of axiomatic cohesion,
+using an adjoint quadruple of $(\infty,1)$-functors $\sh \la \Delta \la
+\Gamma \la \nabla$.  In this higher categorical generalization,
+$\mathcal{S}$ is an $(\infty,1)$-category of homotopy spaces
+(e.g. $\infty$-groupoids), and $\C$ is an $(\infty,1)$-category of
+cohesive homotopy spaces, which are additionally equipped with a
+topological or other cohesive structure at each level.  The rules of
+type theory are now interpreted in \C, so that each type has an
+$\infty$-groupoid structure (given by the identity type) \emph{as well
+  as} a separate cohesive structure on its objects, morphisms, morphisms
+between morphisms, etc.  For example, types have both morphisms, given
+by the identity type, and topological paths, given by maps that are
+continuous in the sense of the cohesion.  As in the 1-categorical case,
+$\Gamma$ forgets the cohesive structure, yielding the underlying
+homotopy space, while $\Delta$ and $\nabla$ equip a homotopy space with
+the discrete and codiscrete cohesion.  In the $\infty$-categorical case,
+$\Delta$'s left adjoint $\sh A$ (pronounced ``shape of $A$'')
+generalizes from the connected components to the \emph{fundamental
+  homotopy space} functor, which makes a homotopy space from the
+topological/cohesive paths, paths between paths, etc. of $A$.  This
+captures the process by which homotopy spaces arise from cohesive
+spaces; for example, one can prove (using additional axioms) that
 the shape of the topological circle is the homotopy
-circle~\citep{shulman15realcohesion}.  This allows synthetic homotopy
+circle~\cite{shulman15realcohesion}.  This allows synthetic homotopy
 theory to be used in proofs about topological spaces, and opens up
-possibilities for using synthetic homotopy theory as a tool in other
+possibilities for applications to other
 areas of mathematics and theoretical physics.
-
-%% In this higher categorical generalization, $\mathcal{S}$ is an
-%% $(\infty,1)$-category of homotopy spaces (e.g. $\infty$-groupoids), and
-%% $\C$ is an $(\infty,1)$-category of cohesive homotopy spaces, which are
-%% additionally equipped with a topological or other cohesive structure at
-%% each level.  The rules of type theory are now interpreted in \C, so that
-%% each type has an $\infty$-groupoid structure (given by the identity
-%% type) \emph{as well as} a separate cohesive structure on its objects,
-%% morphisms, morphisms between morphisms, etc.  For example, types have
-%% both morphisms, given by the identity type, and topological paths, given
-%% by maps that are continuous in the sense of the cohesion.  As in the
-%% 1-categorical case, $\Gamma$ forgets the cohesive structure, yielding
-%% the underlying homotopy space, while $\Delta$ and $\nabla$ equip a
-%% homotopy space with the discrete and codiscrete cohesion.  
-
 
 This paper begins an investigation into the structural proof theory of
 cohesive homotopy type theory, as a special case of generalizing Reed's
@@ -270,7 +265,7 @@ p \to q$ and $U_\alpha : q \to p$ where $F_\alpha \la U_\alpha$.  Each
 2-cell $\tc \alpha \beta$ determines a morphism of adjunctions between
 $F_\alpha \la U_\alpha$ and $F_\beta \la U_\beta$, which consists of
 natural transformations ${F_\beta} \to {F_\alpha}$ and ${U_\alpha} \to
-{U_\beta}$ that are conjugate under the adjunction structure~\citep[\S
+{U_\beta}$ that are conjugate under the adjunction structure~\cite[\S
   IV.7]{maclane98working}.  For example, an adjoint triple is specified
 by the mode 2-category with
 \begin{itemize}
@@ -281,14 +276,15 @@ and $\tc {\compo{\dsd{d}}{\dsd{n}}} {1_s}$ satisfying
 some equations
 \end{itemize}
 The 1-cells generate $F_{\dsd d} \la U_{\dsd d}$ and $F_{\dsd n} \la
-U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$ is
-naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
-F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong F_{\dsd n}$
-and have the desired adjoint triple.  Indeed, you may recognize this
-2-category as the ``walking adjunction'' with $\dsd d \la \dsd n$---that
-is, we give an adjoint triple by saying that the mode morphism generating
-the adjunction $\Delta\la \Gamma$ is itself left adjoint to the mode morphism generating the
-adjunction $\Gamma\la\nabla$.
+U_{\dsd n}$, while the 2-cells are sufficient to prove that $U_{\dsd d}$
+is naturally isomorphic to $F_{\dsd n}$, so we can define $\Delta :=
+F_{\dsd n}$, $\nabla := U_{\dsd n}$, and $\Gamma := U_{\dsd d} \cong
+F_{\dsd n}$ and have the desired adjoint triple.  Indeed, you may
+recognize this 2-category as the ``walking adjunction'' with $\dsd d \la
+\dsd n$---that is, we give an adjoint triple by saying that the mode
+morphism generating the adjunction $\Delta\la \Gamma$ is itself left
+adjoint to the mode morphism generating the adjunction
+$\Gamma\la\nabla$.
 
 The main judgement of the logic is a ``mixed-category'' entailment
 judgement \seq{A}{\alpha}{C} where $A$ has mode $q$ and $C$ has mode $p$
@@ -301,16 +297,15 @@ map $\arrow{}{\F \alpha A}{C}$ or $\arrow{}{A}{\U \alpha C}$.
 %   modes, or a pseudofunctor to the bicategory of profunctors that are
 %   both representable and corepresentable; these are equivalent to the
 %   structures used here.}
-However, taking the mixed-mode judgement as
-primitive makes for a nicer sequent calculus: $U$ and $F$ can be
-specified independently from each other, by left and right rules, in
-such a way that identity and cut (composition) are admissible, and the
-subformula property holds.  While we do not consider
-focusing~\citep{andreoli92focus}, we conjecture that the connectives can
-be given the same focusing behavior as in \citep{reed09adjoint}: $F$ is
-positive and $U$ is negative (which, because limits are negative and
-colimits are positive, and like-polarity connectives compose together
-well, matches what left and right adjoints should preserve).
+However, taking the mixed-mode judgement as primitive makes for a nicer
+sequent calculus: $U$ and $F$ can be specified independently from each
+other, by left and right rules, in such a way that identity and cut
+(composition) are admissible, and the subformula property holds.  While
+we do not consider focusing~\cite{andreoli92focus}, we conjecture that
+the connectives can be given the same focusing behavior as in
+\cite{reed09adjoint}: $F$ is positive and $U$ is negative (which,
+because limits are negative and colimits are positive, matches what left
+and right adjoints should preserve).
 
 The resulting logic has a good definition-to-theorem ratio: from 
 simple sequent calculus rules for $F$ and $U$, we can prove a variety of
@@ -337,7 +332,7 @@ that we are ultimately interested in.  More precisely, for any
 2-category \M\/ of modes, we can interpret the logic using a
 pseudofunctor $S : \M \to \Adj$, where $\Adj$ is the 2-category of
 categories, adjunctions, and conjugate pairs of natural
-transformations~\citep[\S IV.7]{maclane98working}.  We show that the
+transformations~\cite[\S IV.7]{maclane98working}.  We show that the
 syntax forms such a pseudofunctor, and conjecture that the syntax is
 initial in some category or 2-category of pseudofunctors, but have not
 yet tried to make this precise.  Third, we consider only a logic of
@@ -355,9 +350,9 @@ derivations.  In Section~\ref{sec:semantics}, we discuss the semantics
 of the logic in pseudofunctors $\M \to \Adj$.  Finally, in
 Section~\ref{sec:triple}, we examine some specific mode specifications
 for adjoint triples, which are related to the rules for spatial type
-theory used in \citep{shulman15realcohesion}.  All of the syntactic
+theory used in \cite{shulman15realcohesion}.  All of the syntactic
 metatheory of the logic and the examples have been formalized in
-Agda~\citep{norell07thesis}.\footnote{See
+Agda~\cite{norell07thesis}.\footnote{See
   \url{github.com/dlicata335/hott-agda/tree/master/metatheory/adjointlogic}}
 An extended version of this paper, available from the authors' web
 sites, contains more discussion of the examples, definitions, and proofs.
@@ -371,7 +366,7 @@ The logic is parametrized by a strict 2-category $\M$ of modes.  We
 write $p,q$ for the 0-cells (modes), $\alpha,\beta,\gamma,\delta : p \ge
 q$ for the 1-cells from $q$ to $p$, and $e : \tc \alpha \beta$ for the
 2-cells.  The notation $p\ge q$ for the 1-cells follows
-\citep{reed09adjoint}, but in our case $\M$ is a general category, so
+\cite{reed09adjoint}, but in our case $\M$ is a general category, so
 there can be more than one morphism $p \ge q$.  We use the notation $p
 \ge q$ for an arrow from $q$ to $p$ (an arrow points ``lesser to
 greater'') to match the sequent calculus, where the $p$-mode is on the
@@ -412,7 +407,7 @@ pseudofunctor means that, for example, the types \F{\beta}{(\F \alpha
   A)} and {\F {\compo{\alpha}{\beta}} A} will be isomorphic but not
 definitionally equal.  Finally, a 2-cell $e:\tc\alpha\beta$ in $\M$
 determines natural transformations $\U\alpha{} \to \U\beta{}$ and
-$\F\beta{}\to \F\alpha{}$ which are ``conjugate''~\citep[\S
+$\F\beta{}\to \F\alpha{}$ which are ``conjugate''~\cite[\S
   IV.7]{maclane98working}; again, the right adjoints are covariant and
 the left adjoints are contravariant.  Syntactically, these natural
 transformations will be definable using the sequent calculus rules.
@@ -429,7 +424,7 @@ constructor.
 The sequent calculus judgement has the form \seq A \alpha C where
 \wftp{A}{q} and \wftp{C}{p} and $\alpha : q \ge p$.  The judgement
 represents a map from an object of some category $q$ to an object of
-another category $p$ along some adjunction $\F \alpha {} \la \U \alpha
+another category $p$ along the adjunction $\F \alpha {} \la \U \alpha
 {}$.  Semantically, this mixed-category map can be interpreted
 equivalently as an arrow \arrow{p}{\F \alpha A}{C} or \arrow{q}{A}{\U
   \alpha C}.  In the rules, we write $A_p$ to indicate an elided premise
@@ -483,7 +478,7 @@ for coproducts in Figure~\ref{fig:coprod}.
 \]
 
 \caption{Rules for coproducts; see the extended version for the
-  definition of the admissible identity and cut rules, and for the
+  definition of the admissible identity and cut principles, and for the
   equational theory extending the rules in
   Section~\ref{sec:rules:equations}}
 \label{fig:coprod}
@@ -510,8 +505,8 @@ connective with the mode morphism in the sequent.  Semantically, this
 corresponds to one direction of the composition isomorphism between
 $\F{\compo{\alpha}{\beta}}{A}$ and $\F{\beta}{\F{{\alpha}}{A}}$ and
 similarly for $U$; see the derivation in Example 2 in
-Figure~\ref{fig:examples}.  We conjecture that these two rules are
-invertible.
+Figure~\ref{fig:examples}.  Though we do not consider focusing formally,
+we conjecture that these two rules are invertible.
 
 Next, consider \irl{FR}.  The rule is a bit complex because it involves
 three different aspects of the pseudofunctor structure.  First, in the
@@ -1281,7 +1276,7 @@ are constructed directly.
 
 In the extended version of this paper, we connect adjoint logic for this
 mode theory to the rules for spatial type theory used
-in~\citet{shulman15realcohesion}.
+in Shulman~\cite{shulman15realcohesion}.
 
 \section{Conclusion}
 
@@ -1289,42 +1284,36 @@ In this paper, we have defined an adjoint logic that allows multiple
 different adjunctions between the same categories, shown soundness and
 completeness of the logic in pseudofunctors $\M \to \Adj$, and used some
 specific mode theories to model adjoint triples and the $\Flat{}$ and
-$\Sharp{}$ modalities of axiomatic cohesion.  One direction for future work
-is to extend this adjoint logic with multiple assumptions and dependent
-types (we discuss some special cases in the extended version).  
-%% This would provide a context for investigating the shape modality
-%% $\sh{} \la \Flat{}$.  We could certainly give a mode theory with one
-%% mode and $\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh
-%% \la \Delta \la \Gamma \la \nabla$, but it remains to be investigated
-%% whether this can provide the right properties for \sh{} beyond
-%% adjointness.  On the one hand, too much might be true: \sh{} does not
-%% preserve identity types, and the general dependently typed rules for
-%% $F$ might force it to. On the other, too little might be true: for
-%% applications such as relating the shape of the topological circle to
-%% the homotopical circle, extra properties are needed, such as
-%% $\sh{\mathbb{R}} \cong 1$.  Both of these issues can be addressed as
-%% in \citep{shulman15realcohesion} by treating \sh{} not as an abstract
-%% adjoint, of the kind we can represent using the mode 2-category, but
-%% as a defined type (specifically, a higher inductive), which among
-%% other things has the property that it is adjoint to $\Flat{}$
-%% (adjoint logic / is still essential for representing $\Flat{}$ and
-%% $\Sharp{}$ themselves).
-Another is to consider $\infty$-category semantics, rather than the
-1-categorical semantics of derivations that we have considered here.  A
-final direction for future work is to look for applications of other
-mode theories in our generalized adjoint logic beyond the motivating
-example of triple adjunctions and cohesive homotopy type theory.
+$\Sharp{}$ modalities of axiomatic cohesion.  One direction for future
+work is to extend this adjoint logic with multiple assumptions and
+dependent types (we discuss some special cases in the extended version).
+This would provide a context for investigating the shape modality $\sh{}
+\la \Flat{}$.  We could certainly give a mode theory with one mode and
+$\sh{} \la \Flat{} \la \Sharp{}$, or with two modes and $\sh \la \Delta
+\la \Gamma \la \nabla$, but it remains to be investigated whether this
+can provide the right properties for \sh{} beyond adjointness.  On the
+one hand, too much might be true: \sh{} does not preserve identity
+types, and the general dependently typed rules for $F$ might force it
+to. On the other, too little might be true: for applications such as
+relating the shape of the topological circle to the homotopical circle,
+extra properties are needed, such as $\sh{\mathbb{R}} \cong 1$.  Both of
+these issues can be addressed as in \cite{shulman15realcohesion} by
+treating \sh{} not as an abstract adjoint, of the kind we can represent
+using the mode 2-category, but as a defined type (specifically, a higher
+inductive), which among other things has the property that it is adjoint
+to $\Flat{}$ (adjoint logic is still essential for representing
+$\Flat{}$ and $\Sharp{}$ themselves).  Another is to consider
+$\infty$-category semantics, rather than the 1-categorical semantics of
+derivations that we have considered here.  A final direction for future
+work is to look for applications of other mode theories in our
+generalized adjoint logic beyond the motivating example of triple
+adjunctions and cohesive homotopy type theory.
 
 \paragraph{\textbf{Acknowledgments}} We thank Jason Reed for helpful
 discussions about this paper and work, and we thank the anonymous
 reviewers for helpful feedback on a previous draft.
 
-% \setlength{\bibsep}{-1.5pt} %% dirty trick: make this negative
-{ \small
-% \linespread{0.50}
-\bibliographystyle{abbrvnat}
+\bibliographystyle{drl-common/splncs03}
 \bibliography{drl-common/cs}
-}
-
 
 \end{document}
