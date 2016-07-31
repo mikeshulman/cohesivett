@@ -1,0 +1,230 @@
+\documentclass{amsart}
+\usepackage{mathpartir,latexsym,amssymb,stmaryrd,mathtools}
+\usepackage[all]{xy}
+\title{Something involving bifibrations of cartesian 2-multicategories and generalized substructural type theories}
+\author{Daniel R. Licata \and Michael Shulman}
+\thanks{
+This material is based on research sponsored by The United States Air
+Force Research Laboratory under agreement number FA9550-15-1-0053. The
+U.S. Government is authorized to reproduce and distribute reprints for
+Governmental purposes notwithstanding any copyright notation thereon.
+The views and conclusions contained herein are those of the authors and
+should not be interpreted as necessarily representing the official
+policies or endorsements, either expressed or implied, of the United
+States Air Force Research Laboratory, the U.S. Government, or Carnegie
+Mellon University.
+}
+\newtheorem{thm}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\def\M{\mathcal{M}}
+\def\D{\mathcal{D}}
+\def\toiso{\xrightarrow{\sim}}
+\let\To\Rightarrow
+%\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+\newcommand\wftp[2]{\ensuremath{#1 \,\,\, \mathsf{type}_{#2}}}
+\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
+\begin{document}
+\maketitle
+
+\section{Bifibrations of cartesian 2-multicategories}
+\label{sec:bifib-cart-2multi}
+
+\begin{defn}
+  A \textbf{(strict) cartesian 2-multicategory} consists of
+  \begin{enumerate}
+  \item A set $\M_0$ of \emph{objects}.
+  \item For every object $B$ and every finite list of objects $(A_1,\dots,A_n)$, a category $\M(A_1,\dots,A_n;B)$.
+    The objects of this category are \emph{1-morphisms} and its morphisms are \emph{2-morphisms}; we write composition of 2-morphisms as $\compv{e_1}{e_2}$.
+  \item For each object $A$, an identity arrow $1_A\in\M(A;A)$.
+  \item For any object $C$ and lists of objects $(B_1,\dots,B_m)$ and $(A_{i1},\dots,A_{in_i})$ for $1\le i\le m$, a composition functor
+    \begin{align*}
+      \M(B_1,\dots,B_m;C) \times \prod_{i=1}^m \M(A_{i1},\dots,A_{in_i};B_i) &\longrightarrow \M(A_{11},\dots,A_{mn_m};C)\\
+      (g,(f_1,\dots,f_m)) &\mapsto g\circ (f_1,\dots,f_m)
+    \end{align*}
+    We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
+  \item For any $f\in\M(A_1,\dots,A_n;B)$ we have natural equalities (i.e.\ natural transformations whose components are identities)
+    \begin{mathpar}
+      1_B \circ (f) = f\and
+      f\circ (1_{A_1},\dots,1_{A_n}) = f.
+    \end{mathpar}
+  \item For any $h,g_i,f_{ij}$ we have natural equalities
+    \begin{multline*}
+      (h\circ (g_1,\dots,g_m))\circ (f_{11},\dots,f_{mn_m}) =\\
+      h \circ (g_1\circ (f_{11},\dots,f_{1n_1}), \dots, g_m \circ (f_{m1},\dots,f_{mn_m}))
+    \end{multline*}
+  \item For any function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$ and objects $A_1,\dots,A_n,B$, a functor
+    \begin{align*}
+      \M(A_{\sigma 1},\dots,A_{\sigma m}; B) &\to \M(A_1,\dots,A_n;B)\\
+      f &\mapsto f\sigma^*
+    \end{align*}
+  \item The functors $\sigma^*$ satisfy the following natural equalities:
+    \begin{gather*}
+      f \sigma^* \tau^* = f(\tau\sigma)^*\\
+      f (1_n)^* = f\\
+      g\circ (f_1 \sigma_1^* ,\dots, f_n \sigma_n^*) = (g \circ (f_1,\dots,f_n))(\sigma_1\sqcup \cdots \sqcup \sigma_n)^*\\
+      g\sigma^* \circ (f_1,\dots,f_n) = (g\circ (f_{\sigma 1},\dots, f_{\sigma m}))(\sigma \wr (k_1,\dots,k_n))^*
+    \end{gather*}
+    In the last equation, $k_i$ is the arity of $f_i$, and $\sigma \wr (k_1,\dots,k_n)$ denotes the composite function
+    \begin{equation*}
+      \{1,\dots,\textstyle\sum_{i=1}^m k_{\sigma i} \}
+      \toiso \bigsqcup_{i=1}^m \{1,\dots,k_{\sigma i}\}
+      \xrightarrow{\widehat{\sigma}} \bigsqcup_{j=1}^n \{1,\dots,k_{j}\}
+      \toiso \{1,\dots,\textstyle\sum_{j=1}^n k_j \}
+    \end{equation*}
+    where $\widehat{\sigma}$ acts as the identity from the $i^{\mathrm{th}}$ summand to the $(\sigma i)^{\mathrm{th}}$ summand.
+  \end{enumerate}
+\end{defn}
+
+A cartesian 2-multicategory encodes the structure of the modes.
+We will generally be interested in cartesian 2-multicategories given by \emph{presentations} consisting of some objects (``modes''), some generating 1-morphisms, some equalities and some 2-cells between composites of those (possibly including $\sigma$-actions), and some equalities between composites of the generating 2-cells.
+For example:
+\begin{itemize}
+\item Suppose we have one mode $p$, generating morphisms $\mu:(p,p)\to p$ and $\eta:()\to p$, and equations $\mu\circ (1,\eta) = 1 = \mu\circ (\eta,1)$ and $\mu\circ (1,\mu) = \mu \circ (\mu,1)$.
+  This is the free cartesian 2-multicategory containing a monoid, and the type theory it generates is noncommutative intuitionistic linear logic.
+\item Suppose we add the additional axiom $\mu\sigma^* = \mu$, where $\sigma$ is the nonidentity automorphism of $\{1,2\}$.
+  This is the free cartesian 2-multicategory containing a commutative monoid, and the type theory it generates is (commutative) intuitionistic linear logic.
+\item Suppose we also add a generating 2-cell $t:1_p \To \eta\tau^*$, where $\tau:\emptyset \to \{1\}$ is the unique function, so that $\tau^* : \M(;p) \to \M(p;p)$, and also an axiom $\comph{t}{1_\eta} = 1_\eta$.
+  This is the free cartesian 2-multicategory containing a commutative ``semicartesian'' monoid (whose unit is a ``terminal object''), and the type theory it generates is intuitionistic affine logic.
+\item Suppose we also add a generating 2-cell $d:1_p \to \mu\delta^*$, where $\delta:\{1,2\} \to \{1\}$, is the unique function, so that $\delta^* : \M(p,p;p) \to \M(p;p)$, and also some axioms.
+  Then we get the free cartesian 2-multicategory containing a cartesian object, and the type theory it generates is ordinary intuitionistic logic.
+\item Starting over, suppose the same mode $p$ has both a commutative monoid structure and an unrelated cartesian monoid structure.
+  This should generate Bunched Implication.
+\item With two modes $p,q$, where $p$ is a cartesian monoid and $q$ a commutative monoid, and a morphism $p\to q$ respecting the monoid structures, we should get the adjoint decomposition of the linear exponential.
+\item In a similar case but where both $p$ and $q$ are cartesian, we should get the adjoint decomposition of Pfenning--Davies $\Box$.
+\item With one mode $p$ having a cartesian monoid structure, and an idempotent monad on it respecting the monoid structure, we should get a simply-typed multi-variable version of spatial type theory.
+\end{itemize}
+
+Now, as a matter of fact, type theory itself excels at presenting categorical structures by generators and relations, especially those of the cartesian multicategory sort!
+Ordinary simple type theory with no type operations (but with generators and axioms) yields presentations of ordinary cartesian multicategories.
+Thus, we only need to enhance this with some judgments for 2-cells in order to give convenient presentations of cartesian 2-multicategories.
+[I'm not sure exactly what those judgments should look like, but you were using something like them on your slides, so maybe you have a better idea.]
+
+In any case, if we wrap up the entire type theory into one, it will have judgments for modes, mode terms, mode 2-cells, types, and type terms/sequents (and perhaps equalities of those).
+The first three judgments present a cartesian 2-multicategory; the latter two or three give the following structure over it.
+
+\begin{defn}
+  A \textbf{local discrete fibration} over a cartesian 2-multicategory $\M$ consists of
+  \begin{enumerate}
+  \item A functor of cartesian 2-multicategories $\pi:\D\to\M$.
+  \item Each induced functor of ordinary categories
+    \[\D(A_1,\dots,A_n;B)\to\M(\pi A_1,\dots,\pi A_n;\pi B)\]
+    is a discrete fibration.
+    We write $\D_f(A_1,\dots,A_n;B)$ for the fiber of this functor over $f\in \M(\pi A_1,\dots,\pi A_n;\pi B)$; the assumption ensures that this fiber is a discrete set.
+  \item For each function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$, objects $A_1,\dots,A_n,B \in \D$, and $f\in\M(\pi A_{\sigma 1},\dots,\pi A_{\sigma m}; \pi B)$, the functor
+    \[\M_f(A_{\sigma 1},\dots,A_{\sigma m}; B) \to \M_{f\sigma^*}(A_1,\dots,A_n;B)\]
+    is an isomorphism.
+    (By the previous point, it is actually a mere function between discrete sets.)
+  \end{enumerate}
+\end{defn}
+
+Local discrete fibrations over a fixed $\M$ are the categorical structure corresponding to the \emph{judgmental structure} of the type theory generated by $\M$, as follows:
+\begin{itemize}
+\item Each type of the type theory is assigned an object of $\M$ as its mode, written $\wftp{A}{p}$; these correspond to objects of $\D$ living over $p$ via $\pi$.
+\item Each sequent
+  \[ \seq{A_1,\dots,A_n}{\alpha}{B}\]
+  is labeled by a morphism $\alpha:(p_1,\dots,p_n) \to q$ of $\M$, where $\wftp{A_i}{p_i}$ and $\wftp{B}{q}$; these correspond to the elements of $\D_\alpha(A_1,\dots,A_n;B)$.
+\item Composition in $\D$ corresponds to a cut rule as usual for multicategories, and functoriality of $\pi$ means that the cut rule is annotated by composition of morphisms in $\M$;
+  \begin{mathpar}
+    \inferrule{\seq{A_1,\dots,A_n}{\alpha}{B} \\ \seq{\Gamma_i}{\beta_i}{A_i}}{\seq{\Gamma_1,\dots\Gamma_n}{\alpha\circ(\beta_1,\dots,\beta_n)}{B}}
+  \end{mathpar}
+  Similarly, identities in $\D$ correspond to the variable rule $\seq{A}{1_p}{A}$, where \wftp{A}{p}.
+\item The local fibration structure of $\pi$ corresponds to the pull-back rule
+  \begin{mathpar}
+    \inferrule{\seq{A_1,\dots,A_n}{\beta}{B} \\ e:\alpha\To\beta}{\seq{A_1,\dots,A_n}{\alpha}{B}}
+  \end{mathpar}
+  (As in one-variable adjoint logic, to make this admissible, one has to build it into some of the rules, including the variable rule.
+  Note that the variance of this is reversed from the one-variable adjoint logic paper.
+  Categorically, the reason for this is that when representing a fully \emph{covariant} 2-functor $\M\to\mathit{Cat}$ by its Grothendieck construction, the latter is nevertheless an opfibration on 1-cells but a \emph{fibration} on 2-cells.)
+\item Finally, the $\sigma^*$ actions on $\D$ correspond to the structural rules of exchange, contraction, and weakening ``with resource-usage labels''.
+  The assumption that each $\sigma^*$ acts isomorphically on the local fibers of $\D$ ensures that these resource labels are honest, and the ``actual'' structural rules (when permitted by the mode theory) are implemented by the action of certain 2-cells via the pull-back rule.
+\end{itemize}
+
+This last point deserves more explanation.
+Suppose $p\in\M$ has a monoid structure $\mu:(p,p)\to p$, and we have $\wftp{A}{p}$ and $\wftp{B}{p}$ and a sequent $\seq{A,A}{\mu}{B}$.
+Since $\M$ is a cartesian multicategory, we can act on $\mu$ by $\delta:\{1,2\} \to \{1\}$ to get $\mu\delta^*:p \to p$, which (without further assumptions on $p$) is unrelated to $1_p:p\to p$.
+
+Similarly, we can act by $\delta$ on our sequent $\seq{A,A}{\mu}{B}$ to get $\seq{A}{\mu\delta^*}{B}$.
+Since $\mu\delta^*$ is not the same as $1_p$, this is different from asserting $\seq{A}{1_p}{B}$; the mode morphism $\mu\delta^*$ is still ``recording the fact that $A$ is used twice''.
+The assumption that $\delta^*$ acts isomorphically on the local fibers of $\pi$ ensures that to say $\seq{A}{\mu\delta^*}{B}$ is really exactly the same as saying $\seq{A,A}{\mu}{B}$, i.e.\ whenever we have the first we also have the second.
+Type-theoretically, I expect that this would be an \emph{invertible} admissible rule
+\begin{mathpar}
+  \mprset{fraction={===}}
+  \inferrule*{\seq{A_{\sigma 1},\dots,A_{\sigma m}}{\alpha}{B}}{\seq{A_1,\dots,A_n}{\alpha\sigma^*}{B}}
+\end{mathpar}
+
+But if it should happen that $p$ has a \emph{cartesian} monoid structure, with a 2-cell $d:1_p \to \mu\delta^*$, then we can apply the pull-back rule to $\seq{A}{\mu\delta^*}{B}$ to get $\seq{A}{1_p}{B}$.
+This is the ``real'' contraction rule that is only allowed when $p$ is cartesian.
+
+Finally, the connectives that ``internalize'' the judgmental structure are represented categorically by cartesian and opcartesian arrows.
+
+\begin{defn}
+  If $\pi:\D\to\M$ is a local discrete fibration, then a morphism $\xi\in\D(A_1,\dots,A_n;B)$ is \textbf{opcartesian} if all diagrams of the following form are pullbacks of categories:
+  \[ \xymatrix{
+    \D(\vec C,B,\vec D;E) \ar[r]^-{-\circ \xi} \ar[d] &
+    \D(\vec C,\vec A,\vec D;E) \ar[d] \\
+    \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{-\circ \pi\xi} &
+    \M(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
+  }\]
+  Dually, a morphism $\xi\in\D(\vec C,B,\vec D;E)$ is \textbf{cartesian at $A$} if all diagrams of the following form are pullbacks of categories:
+  \[ \xymatrix{
+    \D(\vec A;B) \ar[r]^-{\xi\circ -} \ar[d] &
+    \D(\vec C,\vec A,\vec D;E) \ar[d] \\
+    \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ -} &
+    \D(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
+  }\]
+  Given $\mu:(p_1,\dots,p_n) \to q$ in $\M$, we say that $\pi$ \textbf{has $\mu$-products} if for any $A_i$ with $\pi A_i = p_i$, there exists a $B$ with $\pi B = q$ and an opcartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+  Dually, we say $\pi$ \textbf{has $\mu$-homs} if for any $i$, any $B$ with $\pi B = q$, and any $A_j$ with $\pi A_j = p_j$ for $j\neq i$, there exists an $A_i$ with $\pi A_i = p_i$ and a cartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+\end{defn}
+
+References: Hermida, H\"{o}rmann.
+
+For example:
+\begin{itemize}
+\item The intuitionistic linear logic $A \otimes B$ is a $\mu$-product for the multiplication $\mu:(p,p)\to p$ of a (commutative) monoid mode.
+  Its adjoint $A\multimap B$ is a $\mu$-hom for the same $\mu$.
+  Similarly, the linear unit $\mathbf{1}$ is an $\eta$-product for the unit $\eta :()\to p$.
+\item The cartesian product $A\times B$ is a $\mu$-product for the multiplication of a cartesian monoid mode, and its right adjoint $A\to B$ is similarly a $\mu$-hom.
+\item If the linear logic $!$ is written as $F U$, then $F$ and $U$ are the $\alpha$-product and $\alpha$-hom for the (unary!)\ mode morphism $p\to q$ from the cartesian to the linear mode.
+  The situation with Pfenning--Davies $\Box$ is similar.
+\item The spatial type theory $\flat$ is an $\alpha$-product where $\alpha$ is an idempotent monad, and similarly $\sharp$ is an $\alpha$-hom for the same $\alpha$.
+\end{itemize}
+
+
+\section{Generalized multicategories}
+\label{sec:genmulti}
+
+Let $\M$ be a cartesian 2-multicategory, with object set $\M_0$.
+Then it induces a 2-monad $T_\M$ on $\mathit{Cat}^{\M_0}$ whose algebras are a sort of ``strong pseudofunctor'' $\M\to \mathit{Cat}$, where $\mathit{Cat}$ has a cartesian 2-multicategory structure arising from its finite products, that preserve composition strictly but the $\sigma^*$ actions only up to coherent isomorphism.
+The latter condition is necessary to get from a (strict) commutative monoid object in $\M$ to a non-strict symmetric monoidal category in the $T_\M$-algebras.
+Similarly, we can check that a cartesian monoid in $\M$ yields a cartesian monoidal category, and so on.
+
+A bit more explicitly, $T_\M$ is defined by starting with
+\begin{equation*}
+  \left(\coprod_{p_1,\dots,p_n} \left(\M(p_1,\dots,p_n;q) \times \prod_{i=1}^n X_{p_i} \right)\right)
+\end{equation*}
+and adding natural isomorphisms
+\[ (f\sigma^*,(x_1,\dots,x_n))\cong (f,(x_{\sigma 1},\dots,x_{\sigma m})) \]
+satisfying some natural coherence axioms.
+
+We extend $T_\M$ to act on profunctors in the usual way.
+I then claim that \emph{virtual $T_\M$-algebras} (the sort of ``generalized multicategory'' corresponding to $T_\M$) are equivalent to \emph{local discrete fibrations} over $\M$.
+By Theorem~8.6 of Cruttwell--Shulman, a virtual $T_\M$-algebras can be described by a discrete family of \emph{sets} $D\in \mathit{Set}^{\M_0}$ together with a family of profunctors $\D_q:(T_\M D)_q^{\mathrm{op}} \times D_q \to \mathit{Set}$, with composition and unit structure.
+
+The sets $D_p$ will be the objects of $\D$ with $\pi A = p$.
+If we ignore the extra isomorphisms in $T_\M D$ for a moment, we see that the profunctor $\D$ is determined by functors
+\[ \M(p_1,\dots,p_n;q)^{\mathrm{op}} \times D_{p_1}\times\cdots\times D_{p_n} \times D_q \to \mathit{Set} \]
+for all $p_1,\dots, p_n$.
+In other words, for each $p_1,\dots, p_n,q$ we have a family of hom-sets $\D_\alpha(A_1,\dots,A_n;B)$ indexed by objects $A_i$ and $B$ with $\pi A_i = p_i$ and $\pi B = q$ and also by a mode morphism $\alpha:(p_1,\dots,p_n)\to q$, and these sets depend contravariantly functorially on $\alpha$, just as required by the local discrete fibration condition.
+The composition and identities of a generalized multicategory give these hom-sets multicategorical structure.
+Finally, the extra isomorphisms in the definition of $T_\M D$ yield the bijective $\sigma^*$ actions on $\D$.
+
+It is now straightforward to check that a virtual $T_\M$-algebra is representable, i.e.\ is a $T_\M$-algebra, exactly when its corresponding local discrete fibration is an opfibration (has $\mu$-products for all $\mu$).
+Thus, the present type theory (assuming it works) provides some fairly general evidence for the correspondence between type theories and generalized multicategories.
+Of course, not every 2-monad on a power of $\mathit{Cat}$ can be obtained in this way from a cartesian 2-multicategory, and not even every finitary one can (consider the 2-monad for categories with equalizers).
+However, many important ones can, and this seems to be particularly true of those that extend ``canonically'' to profunctors.
+
+
+\end{document}
