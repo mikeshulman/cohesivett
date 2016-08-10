@@ -1,0 +1,227 @@
+\documentclass{amsart}
+\usepackage{mathpartir,latexsym,amssymb,stmaryrd,mathtools}
+\usepackage[all]{xy}
+\title{Something involving cartesian cluboids and generalized substructural type theories}
+\author{Daniel R. Licata \and Michael Shulman}
+\thanks{
+This material is based on research sponsored by The United States Air
+Force Research Laboratory under agreement number FA9550-15-1-0053. The
+U.S. Government is authorized to reproduce and distribute reprints for
+Governmental purposes notwithstanding any copyright notation thereon.
+The views and conclusions contained herein are those of the authors and
+should not be interpreted as necessarily representing the official
+policies or endorsements, either expressed or implied, of the United
+States Air Force Research Laboratory, the U.S. Government, or Carnegie
+Mellon University.
+}
+\newtheorem{thm}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\def\M{\mathcal{M}}
+\def\C{\mathcal{C}}
+\def\D{\mathcal{D}}
+\def\toiso{\xrightarrow{\sim}}
+\let\To\Rightarrow
+\let\types\vdash
+\let\ttypes\Vdash
+\newcommand{\forget}[1]{|#1|}
+%\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+\newcommand\wftp[2]{\ensuremath{#1 \,\,\, \mathsf{type}_{#2}}}
+\newcommand\seq[3]{\ensuremath{#1 \, [ #2 ] \, \vdash \, #3}}
+\begin{document}
+\maketitle
+
+\section{Cartesian cluboids}
+\label{sec:cluboids}
+
+Let $S$ denote the free cartesian strict monoidal category monad on $\mathbf{Cat}$.
+Explicitly, the objects of $S\C$ are finite lists of objects of $\C$, and a morphism $(A_1,\dots,A_n) \to (B_1,\dots,B_m)$ consists of a function $\sigma:\{1,\dots,m\} \to \{1,\dots,n\}$ together with a tuple of functions $(f_1,\dots,f_m)$ where $f_i : A_{\sigma i}\to B_i$.
+This $S$ is a cartesian monad (it preserves pullbacks, and its unit and multiplication naturality squares are pullbacks), so we can make the following definition.
+
+\begin{defn}
+  A \textbf{cartesian cluboid} is an $S$-multicategory, in the sense of Burroni--Leinster, with a discrete set of objects.
+\end{defn}
+
+Explicitly, a cartesian cluboid has a set $\M_0$ of objects and a category of morphisms $\M_1$ that fits into a span
+\[ \M_0 \xleftarrow{\mathrm{cod}} \M_1 \xrightarrow{\mathrm{dom}} S\M_0. \]
+Thus, each morphism (object of $\M_1$) is assigned a finite list of objects as a domain and a single object as a codomain.
+Each 2-cell (morphism of $\M_1$) has a morphism $\alpha$ as a domain and another morphism $\beta$ as codomain, where the codomains of $\alpha$ and $\beta$ must be the same, but rather than their domains being the same there is a specified morphism from one to the other in $S\C$.
+Explicitly, this means that if $\alpha:(A_1,\dots,A_n) \to C$ and $\beta:(B_1,\dots,B_m)\to C$, there is a specified function $\sigma:\{1,\dots,m\} \to \{1,\dots,n\}$ such that $A_{\sigma i} = B_i$ (since $\M_0$ is a discrete set).
+
+In addition to this basic data, there are identities and composition.
+The identities are assigned by a map of spans
+\[ \xymatrix{ & \M_0 \ar@{=}[dl] \ar[dr]^{\eta} \ar[dd] \\ \M_0 && S\M_0 \\ & \M_1 \ar[ul] \ar[ur] } \]
+where $\eta:\C \to S\C$ is the unit of the monad $S$, sending each object $A$ to the 1-element list $(A)$.
+Thus, each object $A$ of $\M$ has an identity morphism $1_A : (A) \to A$.
+
+Composition is a map $\M_1 \times_{S\M_0} S\M_1 \to \M_1$, where the domain is the pullback
+\[ \xymatrix { && \M_1 \times_{S\M_0} S\M_1 \ar[dl]_p \ar[dr]^q\\
+  & \M_1 \ar[dl]_{\mathrm{cod}} \ar[dr]^{\mathrm{dom}} &&
+  S\M_1  \ar[dl]_{S\mathrm{cod}} \ar[dr]^{S\mathrm{dom}} \\
+  \M_0 && S\M_0 && SS\M_0} \]
+and the following diagrams commute:
+\[ \xymatrix@C=3pc{ & \M_1 \times_{S\M_0} S\M_1 \ar[dl]_{\mathrm{cod} \circ p} \ar[r]^-{S\mathrm{dom} \circ q} \ar[dd]&
+  SS\M_0 \ar[dd]^{\mathrm{mult}} \\
+  \M_0 \\
+  & \M_1 \ar[ul]^{\mathrm{cod}} \ar[r]_-{\mathrm{dom}} & S \M_0} \]
+Explicitly, this means that morphisms compose as in a multicategory, while 2-cells compose in a somewhat more complicated way.
+Associativity is straightforward to write down.
+
+The name ``cluboid'' is a coinage based on Kelly's ``club'' that refers to the case when $\M_0=1$, based on the convention used occasionally that ``-oid'' denotes a ``horizontal categorification'' such as group $\leadsto$ groupoid or algebra $\leadsto$ algebroid.
+
+A cartesian cluboid encodes the structure of the modes.
+We will generally be interested in cartesian cluboids given by \emph{presentations} consisting of some objects (``modes''), some generating 1-morphisms, some equalities and some 2-cells between composites of those, and some equalities between composites of the generating 2-cells.
+For example:
+\begin{itemize}
+\item Suppose we have one mode $p$, generating morphisms $\mu:(p,p)\to p$ and $\eta:()\to p$, and equations $\mu\circ (1,\eta) = 1 = \mu\circ (\eta,1)$ and $\mu\circ (1,\mu) = \mu \circ (\mu,1)$.
+  This is the free cartesian cluboid containing a monoid, and the type theory it generates is noncommutative intuitionistic linear logic.
+\item Suppose we add a 2-cell isomorphism $\mu \cong \mu$ living over the switch isomorphism $\sigma:(p,p) \cong (p,p)$ in $S1$.
+  This is the free cartesian cluboid containing a symmetric monoid, and the type theory it generates is (commutative) intuitionistic linear logic.
+\item Suppose we also add a generating 2-cell $t:1_p \To \eta$ living over the unique map $(p) \to ()$ in $S1$, and also an axiom $\comph{t}{1_\eta} = 1_\eta$.
+  This is the free cartesian cluboid containing a symmetric ``semicartesian'' monoid (whose unit is a ``terminal object''), and the type theory it generates is intuitionistic affine logic.
+\item Suppose we also add a generating 2-cell $d:1_p \to \mu$, living over the diagonal map $(p) \to (p,p)$ in $S1$, and also some axioms.
+  Then we get the free cartesian cluboid containing a cartesian object, and the type theory it generates is ordinary intuitionistic logic.
+\item Starting over, suppose the same mode $p$ has both a symmetric monoid structure and an unrelated cartesian monoid structure.
+  This should generate Bunched Implication.
+\item With two modes $p,q$, where $p$ is a cartesian monoid and $q$ a symmetric monoid, and a morphism $p\to q$ respecting the monoid structures, we should get the adjoint decomposition of the linear exponential.
+\item In a similar case but where both $p$ and $q$ are cartesian, we should get the adjoint decomposition of Pfenning--Davies $\Box$.
+\item With one mode $p$ having a cartesian monoid structure, and an idempotent monad on it respecting the monoid structure, we should get a simply-typed multi-variable version of spatial type theory.
+\end{itemize}
+
+Now, as a matter of fact, type theory itself excels at presenting categorical structures by generators and relations.
+
+
+\section{Type theory of cartesian cluboids}
+\label{sec:tt-cluboid}
+
+To describe the modes and their morphisms as a cartesian cluboid, we consider a type theory with two term judgments, $\Gamma\types M:p$ and $\Gamma\ttypes M:p$.
+The first is a cartesian type theory; the second is an ordered linear type theory.
+There are no type operations.
+The identity/variable rules are
+\begin{mathpar}
+  \inferrule{(x:p) \in \Gamma}{\Gamma\types x:p}\and
+  \inferrule{ }{x:p \ttypes x:p}
+\end{mathpar}
+For a generating morphism $f:(p_1,\dots,p_n) \to q$, the generator rules are
+\begin{mathpar}
+  \inferrule{\Gamma\types M_1:p_1 \\\dots\\\Gamma \types M_n:p_n}{\Gamma\types f(M_1,\dots,M_n):q}\and
+  \inferrule{\Gamma_1\types M_1:p_1 \\\dots\\\Gamma_n \types M_n:p_n}{\Gamma_1,\dots,\Gamma_n\ttypes f(M_1,\dots,M_n):q}
+\end{mathpar}
+Exchange, contraction, and weakening are admissible for $\types$, for the usual reasons.
+We should also have the following admissible rules:
+\begin{mathpar}
+  \inferrule{\Gamma\ttypes M:p}{\Gamma\types M:p}\and
+  \inferrule{\Gamma\types M:p}{\Gamma\types \theta:\Delta \\ \Delta \ttypes N:p \\ M=N[\theta]}
+\end{mathpar}
+where $\theta$ is a variable-for-variable substitution.
+We allow generating equalities between ordered-linear terms only, although the equalities they generate apply also to nonlinear terms.
+That is, we allow ourselves to assert as an axiom something like $m(x,m(y,z)) \equiv m(m(x,y),z)$, which implies that also $m(x,m(x,x)) \equiv m(m(x,x),x)$, but we don't allow ourselves to assert as an axiom something like $m(x,x) \equiv x$.
+
+Now we have a 2-cell judgment
+\[ \Gamma \ttypes e : M \To N : p \]
+which implies as preconditions that $\Gamma\ttypes M:p$ and $\Gamma\types N:p$.
+That is, the domain of a 2-cell is always an ordered-linear term, whereas the codomain can be nonlinear.
+The rules (maybe some of them are admissible) include:
+\begin{itemize}
+\item Generating 2-cells, as before with ordered-linear domain.
+\item ``Whiskering'' of 2-cells on both sides by ordered-linear terms:
+  \begin{mathpar}
+    \inferrule{\Gamma\ttypes M:p \\ \Delta,x:p,\Psi \ttypes e:N\To P:q}{\Delta,\Gamma,\Psi \ttypes e[M/x] : N[M/x] \To P[M/x] : q}\and
+    \inferrule{\Gamma\ttypes e:M\To N:p \\ \Delta,x:p,\Psi\ttypes P:q}{\Delta,\Gamma,\Psi \ttypes ``P[e/x]'' : P[M/x] \To P[N/x] : q}
+  \end{mathpar}
+  The term $``P[e/x]''$ is in quotes because I'm not sure what the syntax for it should be.
+\item ``Vertical'' composition of 2-cells:
+  \begin{mathpar}
+    \inferrule{\Gamma\types \theta:\Delta \\ \Gamma\ttypes e:M\To N[\theta]:p \\ \Delta\ttypes f:N\To P:p}{\Gamma\ttypes (f\cdot_\theta e) : M \To P[\theta] : p}
+  \end{mathpar}
+\item Identity 2-cells:
+  \begin{mathpar}
+    \inferrule{\Gamma\ttypes M:p} {\Gamma\ttypes 1_M : M \To M :p}
+  \end{mathpar}
+\end{itemize}
+I think that this sort of vertical composition and whiskering ought to be enough to generate all the cluboid compositions.
+Some more thought will be required to write down equations on these compositions that are equivalent to the cluboid associativity.
+We also want generating equations between composites of 2-cells.
+
+
+\section{Type theory over cartesian cluboids}
+\label{sec:tt-club}
+
+The type theory in a given mode theory represents semantically the following notion.
+
+\begin{defn}
+  Let $\M$ be a cartesian cluboid.
+  A \textbf{local discrete fibration} over $\M$ is a cartesian cluboid $\D$ together with a map $\pi:\D\to\M$ of cartesian cluboids such that the induced functor
+  \[ \D_1 \to S\D_0 \times_{S\M_0} \M_1 \]
+  is a discrete fibration.
+\end{defn}
+
+Explicitly, this means that given any 2-cell $e:\alpha\To\beta$ in $\M$, and a lift of $\beta$ to a morphism $g$ in $\D$, and a lift of \emph{the domain of} $\alpha$ to a list $\vec A$ of objects of $\D$, there is a unique lift of $e$ itself to a 2-cell $f\To g$ where $f$ has domain $\vec A$.
+
+The corresponding type theory has a judgment
+\[\wftp A p\]
+for types in mode $p$ (where $p$ is a mode, i.e.\ a type in the type theory of cartesian cluboids from \S\ref{sec:tt-cluboid}).
+If $\wftp A p$ we write $\forget A = p$, and similarly for contexts.
+Now there is also a judgment
+\[ \seq{\Gamma}{\alpha}{A} \]
+where $\forget\Gamma\ttypes \alpha:\forget A$ in the ordered-linear part of the mode type theory.
+The crucial rule satisfied by this judgment is the following representation of the ``local discrete fibration'' condition:
+\begin{mathpar}
+  \inferrule{\Gamma\;\mathsf{ctx} \\ \seq{\Delta}{\beta}{A} \\ \forget\Gamma \types \theta:\forget\Delta \\ \forget\Delta \ttypes e:\alpha \To \beta[\theta]}{\seq\Gamma\alpha A}
+\end{mathpar}
+This can perhaps be built into enough rules to become admissible in general.
+Note that its variance is reversed from the one-variable adjoint logic paper.
+Categorically, the reason for this is that when representing a fully \emph{covariant} 2-functor $\M\to\mathit{Cat}$ by its Grothendieck construction, the latter is nevertheless an opfibration on 1-cells but a \emph{fibration} on 2-cells.)
+
+The type operations correspond to further fibrational conditions on $\pi$.
+I'm having trouble formulating the 2-cell conditions in a nice categorical way though.
+
+\begin{defn}
+  If $\pi:\D\to\M$ is a local discrete fibration, then a morphism $\xi:(A_1,\dots,A_n)\to B$ in $\D$ is \textbf{opcartesian} if
+  \begin{enumerate}
+  \item Given $\phi:(\vec C,\vec A,\vec D)\to E$ in $\D$ and $\beta : (\vec \pi C,\pi B, \vec\pi D)\to \pi E$ in $\M$ such that $\beta \circ (\vec 1,\pi \xi,\vec 1) = \pi\phi$, there is a unique $\zeta:(\vec C, B,\vec D) \to E$ in $\D$ such that $\pi\zeta = \beta$ and $\zeta\circ(\vec 1,\xi,\vec 1) = \phi$.
+  \item (Some condition on 2-cells)
+  \end{enumerate}
+  Dually, a morphism $\xi:(\vec C,B,\vec D)\to E$ in $\D$ is \textbf{cartesian at $B$} if
+  \begin{enumerate}
+  \item Given $\phi:(\vec C,\vec A,\vec D)\to E$ in $\D$ and $\alpha : \vec \pi A\to \pi B$ in $\M$ such that $\pi \xi \circ (\vec 1,\alpha,\vec 1) = \pi \phi$, there exists a unique $\zeta:\vec A \to B$ in $\D$ such that $\pi \zeta = \alpha$ and $\xi\circ (\vec 1,\zeta,\vec 1) = \phi$.
+  \item (Some condition on 2-cells)
+  \end{enumerate}
+  Given $\mu:(p_1,\dots,p_n) \to q$ in $\M$, we say that $\pi$ \textbf{has $\mu$-products} if for any $A_i$ with $\pi A_i = p_i$, there exists a $B$ with $\pi B = q$ and an opcartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+  Dually, we say $\pi$ \textbf{has $\mu$-homs} if for any $i$, any $B$ with $\pi B = q$, and any $A_j$ with $\pi A_j = p_j$ for $j\neq i$, there exists an $A_i$ with $\pi A_i = p_i$ and a cartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+\end{defn}
+
+References: Hermida, H\"{o}rmann.
+
+For example:
+\begin{itemize}
+\item The intuitionistic linear logic $A \otimes B$ is a $\mu$-product for the multiplication $\mu:(p,p)\to p$ of a (symmetric) monoid mode.
+  Its adjoint $A\multimap B$ is a $\mu$-hom for the same $\mu$.
+  Similarly, the linear unit $\mathbf{1}$ is an $\eta$-product for the unit $\eta :()\to p$.
+\item The cartesian product $A\times B$ is a $\mu$-product for the multiplication of a cartesian monoid mode, and its right adjoint $A\to B$ is similarly a $\mu$-hom.
+\item If the linear logic $!$ is written as $F U$, then $F$ and $U$ are the $\alpha$-product and $\alpha$-hom for the (unary!)\ mode morphism $p\to q$ from the cartesian to the linear mode.
+  The situation with Pfenning--Davies $\Box$ is similar.
+\item The spatial type theory $\flat$ is an $\alpha$-product where $\alpha$ is an idempotent monad, and similarly $\sharp$ is an $\alpha$-hom for the same $\alpha$.
+\end{itemize}
+
+
+\section{Generalized multicategories}
+\label{sec:genmulti}
+
+Let $\M$ be a cartesian cluboid, with object set $\M_0$.
+Then, like any Burroni--Leinster generalized multicategory, it induces a monad $S_\M$ on $\mathbf{Cat}/{\M_0}$ defined by
+\[ S_\M(X\to \M_0) = SX \times_{S\M_0} \M_1 \]
+where the pullback is over $\mathrm{dom}:\M_1 \to S\M_0$, and $S_\M(X)$  is an object of $\mathbf{Cat}/{\M_0}$ via $\mathrm{cod}:\M_1 \to \M_0$.
+In fact, $S_\M$ extends to the double category (or ``equipment'') $\mathbb{C}\mathsf{at}/{\M_0}$ of categories and profunctors over $\M_0$, in a straightforward way.
+
+One can then verify, via the equivalence between presheaves and discrete fibrations, that local discrete fibrations over $\M$ are precisely generalized multicategories relative to this $S_\M$ on $\mathbb{C}\mathsf{at}/{\M_0}$ with a discrete set of objects (or, equivalently, by Cruttwell--Shulman, a normalized category of objects).
+In Cruttwell--Shulman this is called a \emph{virtual $S_\M$-algebra}.
+
+It is now straightforward to check that a virtual $S_\M$-algebra is representable, i.e.\ is a pseudo $S_\M$-algebra, exactly when its corresponding local discrete fibration is an opfibration (has $\mu$-products for all $\mu$).
+Thus, the present type theory (assuming it works) provides some fairly general evidence for the correspondence between type theories and generalized multicategories.
+Of course, not every monad on an equipment of this sort can be obtained in this way from a cartesian cluboid, but many important ones can.
+
+
+\end{document}
