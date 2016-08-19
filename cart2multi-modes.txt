@@ -1,0 +1,234 @@
+== Judgements ==
+
+Γ ⊢ M : A
+Γ ⊢ e : M ⇒_A N for Γ ⊢ M,N : A
+Γ ⊢ M ≡ N : A
+Γ ⊢ e ≡ e' : M ⇒_A N for Γ ⊢ e,e' : M ⇒ N
+
+and substitutions pointwise as usual
+
+== Typing Rules ==
+
+Γ ⊢ M ≡ N
+-----------------
+Γ ⊢ refl : M ⇒ N
+
+k : Δ ⊢ N' ⇒ P' ∈ G 
+Γ ⊢ θ : Δ 
+Γ ⊢ e : M ⇒ N'[θ]
+Γ ⊢ P'[θ] ≡ P
+---------------------
+Γ ⊢ e . k[θ] : M ⇒ P
+
+Γ ⊢ e : M ⇒ f(M1,...) 
+Γ ⊢ ei : Mi ⇒ Ni
+Γ ⊢ f(N1,...) ≡ P
+--------------------------
+Γ ⊢ e . ap f (e1,...) : M ⇒ P
+
+(note: formally this should probably have Mi and Ni in the term, 
+ which means we'd need equality premises for them 
+ in the equality rule, too)
+
+== Admissible Operations ==
+
+Γ ⊢ e : M' ⇒ N'
+Γ ⊢ M ≡ M'
+Γ ⊢ N' ≡ N
+----------------
+Γ ⊢ e : M ⇒ N
+
+pre: induct into first premise, transitivity with the equality on refl
+post: case-split, transitivity with equality on each rule
+
+== Vertical composition ==
+
+Γ ⊢ e1 : M ⇒ N
+Γ ⊢ e2 : N ⇒ P
+--------------------
+Γ ⊢ e1 . e2 : M ⇒ P
+
+induct on e2, go into first premise, at refl use conversion on e1
+
+== Pre-whiskering ==
+
+Γ ⊢ M : A
+Γ, x:A ⊢ e : N1 ⇒ N2
+-------------------------------
+Γ ⊢ e[M/x] : N1[M/x] ⇒ N2[M/x]
+
+normal subst
+
+== Post-whiskering ==
+
+Γ,x:A ⊢ M : B
+Γ ⊢ e : N1 ⇒ N2
+------------------------------------
+Γ ⊢ ap (x.M) e : M[N1/x] ⇒ M[N2/x]
+
+ap (x.x) e = e
+ap (x.y) e = refl
+ap (x.f(M1,...,Mn)) e = refl . f(ap (x.M1) e, ...)
+
+
+---------------------------------------------------------------------
+
+I think the general spec for equality should be that it's a congruence, i.e.
+(1) it's an equivalence relation
+(2) all term constructors and all meta-operations respect equality in
+    all positions
+
+== Equality for 1-cells ==
+
+Congruence: 
+
+----------
+Γ ⊢ M ≡ M
+
+Γ ⊢ N ≡ M
+----------
+Γ ⊢ M ≡ N
+
+Γ ⊢ M1 ≡ M2
+Γ ⊢ M2 ≡ M3
+-----------
+Γ ⊢ M1 ≡ N3
+
+Γ ⊢ Mi ≡ Ni
+-------------------------
+Γ ⊢ f(M1,...) ≡ f(N1,...)
+
+Axioms:
+
+Δ ⊢ M ≡ N ∈ G
+Γ ⊢ θ : Δ 
+---------------
+Γ ⊢ M[θ] ≡ N[θ] 
+
+Now we want to show that it's admissible that substitution respects
+equality:
+
+Γ, x:A ⊢ N1 ≡ N2 : B
+Γ ⊢ M1 ≡ M2 : A
+------------------------------
+Γ ⊢ N1[M1/x] ≡ N2[M2/x] : A
+
+Because transitivity is derivable, it suffices to show each position
+separately:
+
+Γ, x:A ⊢ N1 ≡ N2 : B
+Γ ⊢ M : A
+------------------------------
+Γ ⊢ N1[M/x] ≡ N2[M/x] : A
+
+Proof: induction on equality, need that every rule can be substituted
+into.  This would break without the θ in the axion rule.
+
+Does not inspect M at all.
+
+Γ ⊢ M1 ≡ M2 : A
+Γ, x : A ⊢ N : B
+--------------------------
+Γ ⊢ N[M1/x] ≡ N[M2/x] : A
+
+Proof: induction on N, doesn't look at equality at all.  
+Just need that there are enough congruence rules to turn N into a series
+of congruences.  
+
+== Equality for 2-cells ==
+
+Congruence: 
+
+------------------
+Γ ⊢ e ≡ e : M ⇒ N
+
+Γ ⊢ e1 ≡ e2
+------------
+Γ ⊢ e2 ≡ e1
+
+Γ ⊢ e1 ≡ e2
+Γ ⊢ e2 ≡ e3
+-----------
+Γ ⊢ e1 ≡ e3
+
+k : Δ ⊢ N' ⇒ P' ∈ G 
+Γ ⊢ θ ≡ θ' : Δ 
+Γ ⊢ e ≡ e' : M ⇒ N'[θ]
+Γ ⊢ P'[θ] ≡ P
+----------------------------------
+Γ ⊢ e . k[θ] ≡ e' . k[θ'] : M ⇒ P
+
+Γ ⊢ e ≡ e' : M ⇒ f(M1,...) 
+Γ ⊢ ei ≡ e' : Mi ⇒ Ni
+Γ ⊢ f(N1,...) ≡ P
+--------------------------------------------
+Γ ⊢ e . ap f (e1,...) ≡ e' . ap f (e1',...) : M ⇒ P
+
+Axioms: 
+
+Δ ⊢ e ≡ e' : N' ⇒ P' ∈ G
+Γ ⊢ θ : Δ 
+Γ ⊢ e0 : M ⇒ N'[θ] 
+Γ ⊢ P'[θ] ≡ P
+------------------------------------- Ax1
+Γ ⊢ e0 . e[θ] ≡ e0 . e'[θ] : M ⇒ P
+
+Δ,x:A ⊢ M ≡ M' ∈ G
+Γ ⊢ e : N ⇒_A N' 
+Γ ⊢ θ : Δ
+Γ ⊢ e0 : P ⇒ M[θ,N/x] 
+------------------------------------------------------------ Ax2
+Γ ⊢ e0 . ap (x.M[θ]) e ≡ e0 . ap (x.M'[θ]) e : P ⇒ M[θ,N'/x]
+
+Again, because transitivity is a rule, it suffices if each
+meta-operation respects equality in each position separately, so we get
+6 things to prove.  In general, probably need unit/associativity
+properties that hold definitionally for things to be well-typed.
+
+Γ ⊢ e1 ≡ e1' : M ⇒ N
+Γ ⊢ e2 : N ⇒ P
+-------------------------------
+Γ ⊢ e1 . e2 ≡ e1' . e2 : M ⇒ P
+
+Induct on e2 and use congruence rules; doesn't look at equality premise.
+
+Γ ⊢ e1 : M ⇒ N
+Γ ⊢ e2 ≡ e2' : N ⇒ P
+-------------------------------
+Γ ⊢ e1 . e2 ≡ e1 . e2' : M ⇒ P
+
+Induct on equality, this is where precomposition in axiom rule is needed. 
+
+Γ,x:A ⊢ M ≡ M' : B
+Γ ⊢ e : N1 ⇒ N2
+-------------------------------------------------
+Γ ⊢ ap (x.M) e ≡ ap (x.M') e : M[N1/x] ⇒ M[N2/x]
+
+Note: there is a choice of which of M/M' to use in the conclusion
+(i.e. which subject of the equality we apply conversion to).
+
+Induct on M≡M', need to transitivity together a bunch of uses of 
+Ax2 if x occurs more than once in θ; might be better to have
+simultaneous ap as primitive?
+
+Γ,x:A ⊢ M : B
+Γ ⊢ e ≡ e' : N1 ⇒ N2
+-------------------------------------------------
+Γ ⊢ ap (x.M) e ≡ ap (x.M) e' : M[N1/x] ⇒ M[N2/x]
+
+induct on M, apply congruences, doesn't look at equality
+
+Γ ⊢ M ≡ M' : A
+Γ, x:A ⊢ e : N1 ⇒ N2
+-----------------------------------------
+Γ ⊢ e[M/x] ≡ e[M'/x] : N1[M/x] ⇒ N2[M/x]
+
+seems OK
+
+Γ ⊢ M : A
+Γ, x:A ⊢ e ≡ e' : N1 ⇒ N2
+-----------------------------------------
+Γ ⊢ e[M/x] ≡ e'[M/x] : N1[M/x] ⇒ N2[M/x]
+
+seems OK
+

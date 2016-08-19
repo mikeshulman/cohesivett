@@ -1,0 +1,105 @@
+
+v related: http://chaudhuri.info/papers/lpar08synstra.pdf
+
+why map into pullbacks not just from 1:
+
+``Such pullbacks are detected by mapping out of the 1-point category and
+the ``interval category'', so the only other interesting case is the
+latter, which says that the arrows in the top-left corner are also
+determined by arrows in the other three corners.  That means essentially
+that this factorization respects the action of 2-cells in M on arrows of
+D.  I'm not sure whether or not that extra condition is necessary to
+postulate; Hormann says it in the opcartesian case but not the cartesian
+case, which confuses me.''
+
+----------------------------------------------------------------------
+
+check focalization: U_\alpha that doesn't mention c is weird?
+
+----------------------------------------------------------------------
+
+Just noticed that there is some study here for symmetric
+multicategories: http://arxiv.org/abs/1505.00974 (Appendix A) In
+particular, the definition of ``cartesian morphism at the i-th slot''
+(A.2.5) looks kind of like a categorical analogue of your generalized
+U-functors.
+
+----------------------------------------------------------------------
+
+applications:
+fluet substructural
+subexponentials
+resource counting F_(x * x * x * x)
+fractional permissions?
+
+----------------------------------------------------------------------
+
+This setup is especially cool because it unifies a lot of different
+kinds of generalized multicategories, including most of the ones that
+seem relevant to type theory, but in a setting that is noticeably less
+abstract than the full-blown theory of generalized multicategories
+over 2-monads.  I didn't realize before that you can get bunched
+implication this way too, but now I see it.  In fact, I bet there is a
+general theorem like: given any cartesian 2-multicategory, it
+generates a 2-monad on Cat with the same algebras, and generalized
+multicategories for that 2-monad are equivalent to multicategories
+over the 2-multicategory, with representability etc. corresponding.
+
+----------------------------------------------------------------------
+
+Coming back to this old thread, I'm not sure why it took me this long to
+see clearly that this is clearly the right way to generalize adjoint
+logic to allow multiple formulas in the context.  Maybe it's that I'm
+only now really internalizing the general picture I mentioned to you in
+Toronto that the judgmental structure of a type theory corresponds to a
+kind of generalized multicategory.  Or maybe it's because I was still
+too focused on the dependently typed case.
+
+We noticed for one-variable adjoint logic (and mentioned in a footnote)
+that the judgmental structure would be more directly modeled
+categorically by a structure with a basic notion of ``morphism along
+\alpha'', like a Grothendieck bifibration.  In fact (although this isn't
+really necessary to know) a ``category over M'' is a kind of generalized
+multicategory, and it is ``representable'' (the property of generalized
+multicategories that corresponds to an ordinary multicategory being a
+monoidal category) just when it is an opfibration.  So clearly a natural
+way to generalize to multiple-formula contexts would be to consider
+(bi)fibrations of multicategories.
+
+Opfibrations of multicategories are defined here:
+http://sqig.math.ist.utl.pt/pub/HermidaC/fib-mul.pdf
+In general, if M is a multicategory of modes, then multicategories over
+M should be the natural semantics of this theory with sequents
+(i.e. morphisms) parametrized by (i.e. living over) a morphism in M.
+Being an opfibration then corresponds to having the F connectives for
+all morphisms in M (we want the version of the definition remarked on in
+2.2.1 in the paper above).  An opfibration over the terminal
+multicategory is the same as a representable multicategory, which just
+means that if there is only one mode and a unique morphism of every
+arity, we just have an ordinary type theory with a tensor product and
+unit (which is symmetric or cartesian according as our multicategories
+are symmetric or cartesian).
+
+(Non-op) fibrations of multicategories aren't defined in that note, but
+I think the right definition has cartesian morphisms over unary
+morphisms only but with a universal property relating to morphisms of
+arbitrary arity; this should correspond to having U connectives.  And
+the generalization to 2-multicategories ought to be reasonably
+straightforward.
+
+And as you said in the first email, this also explains from a different
+point of view why we were seeing that the F's seem to have to preserve
+the product, and gives a way to talk about functors that don't.  The
+most obvious way to have ``two modes, each with products, and a functor
+from one to the other'' is to have modes p and q and unique morphisms
+that look like (p,p,...,p) -> p (giving p a product) and (q,q,...,q) ->
+q) (giving q a product) and also (p,q,p,...,q) -> q (an arbitrary domain
+of p's and q's with q as codomain, giving the action of F).  The
+resulting judgmental structure looks like Pfenning-Davies and spatial
+TT, with p=valid/crisp and q=true/cohesive, and no label on the
+turnstile needed because all morphisms are uniquely determined by their
+domain and codomain.  The latter fact also implies that the composites
+(p,p) -> p -> q   and    (p,p) -> (q,q) -> q
+are equal, which means exactly that F : p -> q preserves products; but
+we could also consider a mode theory in which those two morphisms are
+different (or, perhaps, related by a 2-cell).
