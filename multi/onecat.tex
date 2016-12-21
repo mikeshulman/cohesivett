@@ -1,0 +1,168 @@
+
+\newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
+\newcommand\C{\ensuremath{\mathcal{C}}}
+\newcommand\deq{\ensuremath{\equiv}}
+\newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
+\newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \multimap #3)}}
+\newcommand\tsubst[2]{\ensuremath{#1[#2]}}
+\renewcommand\subst[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\wftype[2]{\ensuremath{#1 \: \dsd{type}_{#2}}}
+\renewcommand\wfctx[2]{\ensuremath{#1 \: \dsd{ctx}_{#2}}}
+
+\section{1-Multicategories}
+
+\subsection{Syntax for Cartesian Multicategories}
+In an ordinary category, each morphism has a single object as both its
+domain and its range.  In a \emph{multicategory}, each morphism has a
+list of objects as its domain, and a single object as its range.  In a
+\emph{cartesian multicategory}, these multiple objects in the domain are
+treated like cartesian (structural) variables. So for a cartesian
+multicategory \C\/ we will write a morphism
+\[
+\alpha \in \mor{\C}{p_1,\ldots,p_n}{q}
+\]
+as a term with variables $x_i:p_i$ free, built from generating constants
+\dsd{c}:
+\[
+\begin{array}{llll}
+\text{modes} & p & & (constants) \\
+\text{mode contexts} & \psi & ::= & \cdot \mid \psi,\tptm{x}{p} \\
+\text{mode morphisms} & \alpha,\beta & ::= & x \mid \dsd{c}(\alpha_1,\ldots,\alpha_n) \\
+\text{mode substitutions} & \gamma,\delta & ::= & \cdot \mid \gamma,\alpha/x\\
+\end{array}
+\]
+We write $\oftp{\psi}{\gamma}{\psi'}$ for a familiar structural
+substitution in the mode multicategory, which consists of a term
+$\alpha_i/x_i$ for each variable $\tptm{x_i}{p_i}$ in $\psi'$, where
+each $\alpha_i$ satisfies $\oftp{\psi}{\alpha_i}{p_i}$.  Simultaneous
+substitution is defined in the standard way.  
+
+The multicategories needed for this section can be presented by giving a
+signature for the constants \dsd{c}, together with some generating
+equations on morphisms. The set of morphisms is defined to be the
+quotient of the above terms by the least congruence containing these
+generating equations, and we write $\alpha \deq \beta$ for equality of
+morphisms.
+
+\subsection{Logic over a Multicategory}
+
+\begin{figure}
+\[
+\begin{array}{c}
+\begin{array}{llll}
+\text{Types} & A & ::= & P \mid \F{\alpha}{\Delta} \mid \U{\alpha}{\Delta}{A} \\
+\end{array}
+\\ \\
+\framebox{\wftype{A}{p}}
+\\ \\
+\infer{\wftype{P}{p}}{\text{(declared in signature)}}
+\qquad
+\infer{\wftype{\F{\alpha}{\Delta}}{q}}
+      {\oftp{\psi}{\alpha}{q} &
+        \wfctx{\Delta}{\psi}}
+\\ \\
+\infer{\wftype{\U{\alpha}{\Delta}{A}}{q}}
+      {\oftp{\psi,c:q}{\alpha}{p} &
+        \wfctx{\Delta}{\psi} &
+        \wftype{A}{p}
+      }
+\\ \\
+\framebox{\wfctx{\Gamma}{\psi}}
+\\ \\
+\infer{\wfctx{\cdot}{\cdot}}{}
+\qquad
+\infer{\wfctx{\Delta,x:A}{\psi,x:p}}
+      {\wfctx{\Delta}{\psi} &
+        \wftype{A}{p}}
+\\ \\
+\framebox{\seq{\Gamma}{\alpha}{A}}
+\\ \\
+\infer{\seq{\Gamma}{x}{P}}
+      {x:P \in \Gamma}
+\qquad
+\infer{\seq{\Gamma_\psi}{\beta}{\F{\alpha}{\Delta_\phi}}}
+      {\psi \vdash \gamma : \phi & 
+        \beta \deq \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+\\ \\
+\infer{\seq{\Gamma_\psi}{\beta}{C_r}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
+        \oftp{\psi,\tptm{x'}{q}}{\beta'}{r} &
+        \beta \deq \tsubst{\beta'}{x/x'} &
+        \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
+\\ \\
+\infer{\seq{\Gamma}{\beta}{\U{\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{c}}{A}}
+\end{array}
+\]    
+\caption{1-Multicategorical Logic}
+\hrule
+\end{figure}
+
+Derivable: 
+\[
+\infer{\seq{\Gamma, {x}:{\F{\alpha}{\Delta}}}{\beta}{C}}
+      {\seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
+\]
+
+\subsection{Examples}
+
+\subsubsection{Non-associative Logic}
+
+\subsubsection{Ordered Logic}
+
+\subsubsection{Linear Logic}
+
+\subsubsection{Relevant Logic}
+
+\subsubsection{``Non-cartesian BI''} Two monoids
+
+\subsubsection{Adjoint Logic} Non-tensor-preserving left adjoint
+
+\subsubsection{Multi-use variables}
+
+\subsection{Properties}
+
+\begin{theorem}[Weakening]
+If $\oftp{\psi,\psi'}{\alpha}{q}$ and 
+\seq{\Gamma_\psi,\Gamma'_{\psi'}}{\alpha}{C_q}
+then 
+\seq{\Gamma,\tptm{x}{A_p},\Gamma'}{\alpha}{C}.  
+\end{theorem}
+
+\begin{theorem}[Exchange]
+If $\oftp{\psi,x:p,y:q,\psi'}{\alpha}{r}$ and 
+\seq{\Gamma_\psi,x:A_p,y:B_q,\Gamma'_{\psi'}}{\alpha}{C}
+then 
+\seq{\Gamma,y:B,x:A,\Gamma}{\alpha}{C}
+\end{theorem}
+
+\begin{theorem}[Contraction]
+\item If $\oftp{\psi,x:p,y:p,\psi'}{\alpha}{r}$ and 
+\seq{\Gamma_\psi,x:A_p,y:A,\Gamma'_{\psi'}}{\alpha}{C}
+then
+\seq{\Gamma_\psi,z:A,\Gamma'_{\psi'}}{\alpha[z/x,z/y]}{C}
+\end{theorem}
+
+\begin{theorem}[Identity]
+If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$
+\end{theorem}
+
+\begin{theorem}[Cut]
+If $\seq{\Gamma}{\alpha}{A}$ and $\seq{\Gamma,x:A}{\beta}{B}$ 
+then $\seq{\Gamma}{\beta[\alpha/x]}{B}$ 
+\end{theorem}
+
+\begin{theorem}[Fusion] ~
+\begin{enumerate} 
+\item F
+\item U
+\end{enumerate}
+\end{theorem}
+
+\subsection{Equational Theory}
+
+\subsection{Categorical Semantics}
+
