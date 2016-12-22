@@ -55,6 +55,9 @@ quotient of the above terms by the least congruence containing these
 generating equations, and we write $\alpha \deq \beta$ for equality of
 morphisms.
 
+FIXME: Think of the $\alpha$ as semantic things/quotients, so no
+congruence rule is needed?  Or define it?  
+
 \subsection{Logic over a Multicategory}
 
 \begin{figure}
@@ -88,8 +91,8 @@ morphisms.
 \\ \\
 \framebox{\seq{\Gamma}{\alpha}{A}}
 \\ \\
-\infer[\dsd{v}]{\seq{\Gamma}{x}{P}}
-      {x:P \in \Gamma}
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+      {x:P \in \Gamma & \beta \equiv x}
 \\ \\
 \infer[\Fsymb R]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
       {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
@@ -163,20 +166,47 @@ context and the evidence for equations does not contribute to the size).
 Sizes are necessary for the cut proof, where we sometimes weaken or
 invert a derivation before applying the inductive hypothesis.
 
-\begin{theorem}[Weakening over weakening] \label{thm:weakening}
-If \seq{\Gamma,\Gamma'}{\alpha}{C} then
+\begin{lemma}[Respect for Equality] ~
+\begin{enumerate}
+\item If \seq{\Gamma}{\alpha}{A} and $\alpha \deq \alpha'$ then
+\seq{\Gamma}{\alpha'}{A}, and the resulting derivation has the same size
+as the given one.
+\item If \seq{\Gamma}{\gamma}{\Delta} and $\gamma \deq \gamma'$ then
+  \seq{\Gamma}{\gamma'}{\Delta}, and the resulting derivation has the
+  same size as the given one.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Mutual induction on the given derivation.  
+
+FIXME write out
+\end{proof}
+
+\begin{lemma}[Weakening over weakening] \label{thm:weakening} ~
+\begin{enumerate}
+\item If \seq{\Gamma,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
 derivation has the same size as the given one.  
-\end{theorem}
+\item If \seq{\Gamma,\Gamma'}{\gamma}{\Delta} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\gamma}{\Delta}, and the resulting
+derivation has the same size as the given one.  
+\item If \seq{\Gamma,\Gamma''}{\alpha}{C} then
+\seq{\Gamma,\Gamma',\Gamma''}{\alpha}{C}, and the resulting
+derivation has the same size as the given one.  
+\end{enumerate}
+\end{lemma}
 \begin{proof}
 It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
 the conclusion.  Intuitively, weakening holds because the contexts
 $\Gamma$ are treated like ordinary structural contexts in all of the
 rules---they are fully general in every conclusion, and the premises
 check membership or extend them---and because weakening holds for mode
-morphisms and equalities of mode morphisms.  Formally, each case is
-either immediate or follows from weakening for the mode morphisms,
-equality of mode morphisms, and the inductive hypotheses.
+morphisms and equalities of mode morphisms.  Formally, the first two
+parts are proved by mutually inducation; each case is either immediate
+or follows from weakening for the mode morphisms, weakening for
+equalities of mode morphisms, and the inductive hypotheses.  The third
+part is proved by induction over $\Gamma'$, repeatedly applying the
+first part.  
 %% The case for the hypothesis rule is immediate, because
 %% $\Gamma$ may contain variables other than $x$.  The case for
 %% \Fsymb-right follows from weakening for the mode morphisms, and
@@ -185,12 +215,12 @@ equality of mode morphisms, and the inductive hypotheses.
 %% hypothesis, as does the case for \Usymb-right.  
 \end{proof}
 
-\begin{theorem}[Exchange over exchange]
-If 
-\seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C}
-then 
-\seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}
-\end{theorem}
+\begin{lemma}[Exchange over exchange]
+If \seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}, and the resulting derivation
+has the same size as the given one.  (And similarly for substitutions,
+and exchange can be iterated).  
+\end{lemma}
 \begin{proof} Analogous to weakening.  
 \end{proof}
 
@@ -231,10 +261,10 @@ The case for \Usymb\/ is similar
                         }}
 \]
 
-For the second part, the hypothesis of the theorem asks that every
+For the second part, the hypothesis of the lemma asks that every
 variable in $\Delta$ is associated by $\rho$ with a variable of the same
 type in $\Gamma$; this is enough to iterate the first part of the
-theorem for each position in $\Delta$.  Specifically, the case where
+lemma for each position in $\Delta$.  Specifically, the case where
 $\Delta$ is the empty context $\cdot$ is a rule. In the case for a cons
 $\Delta,y:A$, we have
 \oftp{\modeof{\Gamma}}{\rho}{(\modeof{\Delta},y:\modeof{A})} which means
@@ -250,12 +280,12 @@ we obtain the result from the inductive hypotheses as follows:
 \]
 \end{proof}
 
-\begin{theorem}[Left-invertibility of \Fsymb]
+\begin{lemma}[Left-invertibility of \Fsymb]
 If $\D :: \seq{\Gamma}{\beta}{C}$ and $x_0:\F{\alpha_0}{\Delta_0} \in
 \Gamma$, then there is a derivation $D' ::
 \seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and $size(\D')
 \le size(\D)$ (and analogously for substitutions).  
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
 By induction on \D.  
@@ -289,33 +319,104 @@ Both the input and the output have size 1 more than the size of their
 subderivations, and the output subderivation is no bigger by the
 inductive hypothesis.  
 
-In the case for $\Fsymb L$, 
+In the case for $\Fsymb L$
+\[
+\infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
+        \deduce{\seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}{\D}}
+\]
+with $x_0 : \F{\alpha_0}{\Delta_0}$ also in $\Gamma$, we distinguish
+cases on whether $x = x_0$ or not.  If they are the same, then $\alpha_0
+= \alpha$ and $\Delta_0 = \Delta$ and \D is the result, and the size is
+1 less than the size of the input.  If they are different, then 
+by the inductive hypothesis we have a derivation 
+\[
+\D' :: {\seq{\Gamma,\Delta,\Delta_0}{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}}{C}}
+\]
+that is no bigger than \D.  Because $x_0$ is from $\Gamma$ and not
+$\Delta$, it does not occur in $\alpha$, so 
+\[
+{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}} = 
+{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}
+\]
+By (iterating) exchange, we get a derivation 
+\[
+\D'' :: {\seq{\Gamma,\Delta_0,\Delta}{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}{C}}
+\]
+whose size is the same as $\D'$ and so no bigger than $\D$.  Applying
+$\Fsymb L$ to $\D''$ derives
+$\seq{\Gamma}{\subst{\beta}{\alpha_0}{x_0}}{C}$, and the size is no
+bigger than the size of the input.  
 
+In the case for $\Usymb R$,
+\[
+\infer{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\]
+the inductive hypothesis gives a
+$\D' :: \seq{\Gamma,\Delta,\Delta_0}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$
+and (iterated) exchange gives 
+$\D'' ::
+\seq{\Gamma,\Delta_0,\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$,
+both no bigger than \D.  Because $x_0$ is in $\Gamma$ and not $\Delta$,
+it is not free in $\alpha$, so 
+\[
+{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}} = {\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}
+\]
+Thus, we can derive
+\[
+\infer{\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma,\Delta_0,\Delta}{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}{A}}{\D''}}
+\]
 
-%% \[
-%% \infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
-%%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
-%%         \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
+In the case for $\Usymb L$, 
+\[
+\infer{\seq{\Gamma}{\beta}{C}}
+      {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
+        \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+        \seq{\Gamma}{\gamma}{\Delta} &
+        \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+      }
+\]
+we know that $x$ is different that $x_0$ because the types conflict.
+The inductive hypotheses give no-bigger derivations of
+\[
+\seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \qquad \seq{\Gamma,\tptm{z}{A},\Delta_0}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+and the latter can be exchanged to
+\[
+\seq{\Gamma,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+again without increasing the size.  Thus, we can produce
+\[
+\infer{\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x}}{C}}
+      {\begin{array}{l}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma,\Delta_0 \\
+          {\subst{\beta}{\alpha_0}{x}} \deq \subst{{\subst{\beta'}{\alpha_0}{x_0}}}{\tsubst{\alpha}{{\subst{\gamma}{\alpha_0}{x_0}}}}{z}\\
+          \seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
+          \seq{\Gamma,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+        \end{array}
+      }
+\]
+where equality is the composition of the \subst{-}{\alpha_0}{x_0}
+substitution into the given equality, and rearranging the substitution
+(note that $x_0$ does not occur in $\alpha$):
+\[
+\begin{array}{ll}
+\subst{\beta}{\alpha_0}{x_0} & \deq
+\subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0} 
+= 
+\subst{\subst{\beta'}{\alpha_0}{x_0}}{\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x_0}}{z}
+\\
+& =
+\subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z} 
+\end{array}
+\]
 
-%% \infer[\Usymb R]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
-%%       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
-
-%% \infer[\Usymb L]{\seq{\Gamma}{\beta}{C}}
-%%       {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
-%%         \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
-%%         \seq{\Gamma}{\gamma}{\Delta} &
-%%         \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
-%%       }
-
-%% \infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
-%%       {}
-
-%% \infer[\_,\_]{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
-%%       {\seq{\Gamma}{\gamma}{\Delta} &
-%%        \seq{\Gamma}{\alpha}{A}
-%%       }
-%% \]
-
+The case for $\cdot$ is immediate.  The case for $\_,\_$ follows from
+the two inductive hypotheses, because
+$\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
+{(\subst{\gamma}{\alpha_0}{x_0},\subst{\alpha}{\alpha_0}{x_0}/x)}$.
 \end{proof}
 
 
