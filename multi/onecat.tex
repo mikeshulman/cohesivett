@@ -155,9 +155,22 @@ Derivable:
 
 \subsection{Properties}
 
-\begin{theorem}[Weakening over weakening]
+Define the \emph{shape} of a derivation of \seq{\Gamma}{\alpha}{A} or
+\seq{\Gamma}{\gamma}{\Delta} to be the corresponding term built from the
+grammar
+\[
+s :: \dsd{var} \mid \F L(s) \mid \F R(s) \mid \U L(s) \mid \U R(s) \mid \cdot \mid (s_1,s_2)
+\]
+(i.e., write the proof term corresponding to the derivation, and then
+discard the evidence that variables are in a context and the evidence
+for equations).  Shapes are technically necessary for the cut proof,
+where we sometimes weaken a derivation before applying the inductive
+hypothesis.
+
+\begin{theorem}[Weakening over weakening] \label{thm:weakening}
 If \seq{\Gamma,\Gamma'}{\alpha}{C} then
-\seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}.
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
+derivation has the same shape as the given one.  
 \end{theorem}
 \begin{proof}
 It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
@@ -251,8 +264,8 @@ then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{B}$
 \end{theorem}
 
 \begin{proof}
-Induction ordering: Part 1 and 2: cut formula, then simultaneous on \D\/
-and \E\/.  Part 3: 
+Induction ordering: Part 1 and 2: cut formula, then simultaneous on the
+shape of \D\/ and \E\/.  Part 3:
 
 Part 1: There are 5 rules, so 25 pairs of final rules.  
 
@@ -290,8 +303,8 @@ $\Fsymb R$ rule to get
 \item (5 pairs) Anything and $\Usymb R$ (right-commutative).    
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
-\infer{\seq{\Gamma,x:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
-      {\deduce{\seq{\Gamma,x:A_0,\Gamma',\Delta}{\subst{\alpha}{\beta}{x}}{A}}{\E}}
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma,x_0:A_0,\Gamma',\Delta}{\subst{\alpha}{\beta}{x}}{A}}{\E}}
 \]
 The inductive cut of \D\/ into \E\/ gives 
 \[
@@ -306,7 +319,37 @@ derives
 
 \item (2 additional pairs, plus 3 overlapping with above) $\Fsymb L$ and anything (left commutative)
 
+\[
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
+        \deduce{\seq{\Gamma,\Gamma',\Delta}{\subst {\alpha_0} {\alpha}{x}}{A_0}}{\D}}
+\qquad
+\deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}{\E}
+\]
+
+By (iterating) weakening-over-weakening (Theorem~\ref{thm:weakening}) on
+\E, we obtain a derivation $\E'$ of {\seq{\Gamma,x:A_0,\Gamma',\Delta}{\beta}{C}}.
+Because $\E'$ has the same shape as \E\/, but \D\/ is smaller
+than the given derivation of $A_0$, we can apply the inductive hypothesis to cut $\D$ and
+$\E'$ to get
+{\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
+Because FIXME,
+\[
+{\subst{\beta}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
+\]
+then reapply $\Fsymb L$ 
+\[
+\infer{\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{C}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
+        {\seq{\Gamma,\Gamma',\Delta}{\subst {(\beta[\alpha_0/x_0])} {\alpha}{x}}{C}}}
+\]
+
+
 \item (2 additional pairs, plus 3 overlapping with above) $\Usymb L$ and anything (left commutative)
+
+\item (3 additional pairs) Right/identity and $\Fsymb L$.
+
+\item (3 additional pairs) Right/identity and $\Usymb L$.
 
 \end{itemize}
 \end{proof}
