@@ -88,16 +88,16 @@ morphisms.
 \\ \\
 \framebox{\seq{\Gamma}{\alpha}{A}}
 \\ \\
-\infer{\seq{\Gamma}{x}{P}}
+\infer[\dsd{v}]{\seq{\Gamma}{x}{P}}
       {x:P \in \Gamma}
-\quad
-\infer{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+\\ \\
+\infer[\Fsymb R]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
       {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
         \beta \deq \tsubst{\alpha}{\gamma} &
         \seq{\Gamma}{\gamma}{\Delta} 
       }
 \quad
-\infer{\seq{\Gamma}{\beta}{C}}
+\infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
         \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
 %% \infer{\seq{\Gamma}{\beta}{C}}
@@ -106,10 +106,10 @@ morphisms.
 %%         \beta \deq \tsubst{\beta'}{x/x'} &
 %%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
 \\ \\
-\infer{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+\infer[\Usymb R]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \\ \\
-\infer{\seq{\Gamma}{\beta}{C}}
+\infer[\Usymb L]{\seq{\Gamma}{\beta}{C}}
       {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
         \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
         \seq{\Gamma}{\gamma}{\Delta} &
@@ -118,10 +118,10 @@ morphisms.
 \\ \\
 \framebox{\seq{\Gamma}{\gamma}{\Delta}}
 \\ \\
-\infer{\seq{\Gamma}{\cdot}{\cdot}}
+\infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
       {}
 \qquad
-\infer{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+\infer[\_,\_]{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
       {\seq{\Gamma}{\gamma}{\Delta} &
        \seq{\Gamma}{\alpha}{A}
       }
@@ -155,22 +155,18 @@ Derivable:
 
 \subsection{Properties}
 
-Define the \emph{shape} of a derivation of \seq{\Gamma}{\alpha}{A} or
-\seq{\Gamma}{\gamma}{\Delta} to be the corresponding term built from the
-grammar
-\[
-s :: \dsd{var} \mid \F L(s) \mid \F R(s) \mid \U L(s) \mid \U R(s) \mid \cdot \mid (s_1,s_2)
-\]
-(i.e., write the proof term corresponding to the derivation, and then
-discard the evidence that variables are in a context and the evidence
-for equations).  Shapes are technically necessary for the cut proof,
-where we sometimes weaken a derivation before applying the inductive
-hypothesis.
+Define the \emph{size} of a derivation of \seq{\Gamma}{\alpha}{A} or
+\seq{\Gamma}{\gamma}{\Delta} to be the number of inference rules for
+these judgements $(\dsd{v},\Fsymb L, \Fsymb R, \Usymb L, \Usymb R,
+\cdot, \_,\_)$ used in it (i.e., the evidence that variables are in a
+context and the evidence for equations does not contribute to the size).
+Sizes are necessary for the cut proof, where we sometimes weaken or
+invert a derivation before applying the inductive hypothesis.
 
 \begin{theorem}[Weakening over weakening] \label{thm:weakening}
 If \seq{\Gamma,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
-derivation has the same shape as the given one.  
+derivation has the same size as the given one.  
 \end{theorem}
 \begin{proof}
 It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
@@ -253,6 +249,75 @@ we obtain the result from the inductive hypotheses as follows:
       }
 \]
 \end{proof}
+
+\begin{theorem}[Left-invertibility of \Fsymb]
+If $\D :: \seq{\Gamma}{\beta}{C}$ and $x_0:\F{\alpha_0}{\Delta_0} \in
+\Gamma$, then there is a derivation $D' ::
+\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and $size(\D')
+\le size(\D)$ (and analogously for substitutions).  
+\end{theorem}
+
+\begin{proof}
+By induction on \D.  
+
+In the case for \dsd{v}, $x : P \in \Gamma$ cannot be equal to $x_0 :
+\F{\alpha_0}{\Delta_0}$ because the types conflict, so we can reapply
+the \dsd{v} rule to conclude \seq{\Gamma,\Delta}{x =
+  \subst{x}{\alpha}{x_0}}{C} as needed.
+
+In the case for $\Fsymb R$, we have
+\[
+\infer{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {\beta \deq \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+\]
+with $x_0 : \F{\alpha_0}{\Delta_0} \in \Gamma$.  By the inductive
+hypothesis we get
+\seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}.  Because
+$x_0$ is not free in $\alpha$,
+$\subst{(\tsubst{\alpha}{\gamma})}{\alpha_0}{x_0} =
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$, so we can reapply the
+rule
+\[
+\infer{\seq{\Gamma}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}}
+      {{\subst{\beta}{\alpha_0}{x_0}} \deq \tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}} &
+        \seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}
+      }
+\]
+Both the input and the output have size 1 more than the size of their
+subderivations, and the output subderivation is no bigger by the
+inductive hypothesis.  
+
+In the case for $\Fsymb L$, 
+
+
+%% \[
+%% \infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
+%%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
+%%         \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
+
+%% \infer[\Usymb R]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+%%       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+
+%% \infer[\Usymb L]{\seq{\Gamma}{\beta}{C}}
+%%       {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
+%%         \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+%%         \seq{\Gamma}{\gamma}{\Delta} &
+%%         \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+%%       }
+
+%% \infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
+%%       {}
+
+%% \infer[\_,\_]{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+%%       {\seq{\Gamma}{\gamma}{\Delta} &
+%%        \seq{\Gamma}{\alpha}{A}
+%%       }
+%% \]
+
+\end{proof}
+
 
 \begin{theorem}[Cut]
 \begin{enumerate}
