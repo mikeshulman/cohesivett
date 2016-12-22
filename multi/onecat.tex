@@ -1,14 +1,22 @@
 
 \newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
 \newcommand\C{\ensuremath{\mathcal{C}}}
+\newcommand\D{\ensuremath{\mathcal{D}}}
+\newcommand\E{\ensuremath{\mathcal{E}}}
 \newcommand\deq{\ensuremath{\equiv}}
 \newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
 \newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
-\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \multimap #3)}}
+\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \mid #3)}}
+\newcommand\Fsymb[0]{\dsd{F}}
+\newcommand\Usymb[0]{\dsd{U}}
 \newcommand\tsubst[2]{\ensuremath{#1[#2]}}
 \renewcommand\subst[3]{\ensuremath{#1[#2/#3]}}
 \newcommand\wftype[2]{\ensuremath{#1 \: \dsd{type}_{#2}}}
 \renewcommand\wfctx[2]{\ensuremath{#1 \: \dsd{ctx}_{#2}}}
+\newcommand\modeof[1]{\ensuremath{\hat{#1}}}
+\newcommand\many[1]{\ensuremath{\overline{#1}}}
+\renewcommand{\oftp}[3]{\ensuremath{#1 \, \vdash #2 \, \dcd{:} \, #3}}
+
 
 \section{1-Multicategories}
 
@@ -32,11 +40,13 @@ as a term with variables $x_i:p_i$ free, built from generating constants
 \text{mode substitutions} & \gamma,\delta & ::= & \cdot \mid \gamma,\alpha/x\\
 \end{array}
 \]
-We write $\oftp{\psi}{\gamma}{\psi'}$ for a familiar structural
-substitution in the mode multicategory, which consists of a term
-$\alpha_i/x_i$ for each variable $\tptm{x_i}{p_i}$ in $\psi'$, where
-each $\alpha_i$ satisfies $\oftp{\psi}{\alpha_i}{p_i}$.  Simultaneous
-substitution is defined in the standard way.  
+We write $\oftp{\psi}{\alpha}{q}$ for mode morphism well-formedness;
+$\psi$ here enjoys the (cartesian) structural properties (weakening,
+exchange, contraction).  We write $\oftp{\psi}{\gamma}{\psi'}$ for a
+familiar structural substitution in the mode multicategory, which
+consists of a term $\alpha_i/x_i$ for each variable $\tptm{x_i}{p_i}$ in
+$\psi'$, where each $\alpha_i$ satisfies $\oftp{\psi}{\alpha_i}{p_i}$.
+Simultaneous substitution is defined in the standard way.
 
 The multicategories needed for this section can be presented by giving a
 signature for the constants \dsd{c}, together with some generating
@@ -62,8 +72,8 @@ morphisms.
       {\oftp{\psi}{\alpha}{q} &
         \wfctx{\Delta}{\psi}}
 \\ \\
-\infer{\wftype{\U{\alpha}{\Delta}{A}}{q}}
-      {\oftp{\psi,c:q}{\alpha}{p} &
+\infer{\wftype{\U{x.\alpha}{\Delta}{A}}{q}}
+      {\oftp{\psi,x:q}{\alpha}{p} &
         \wfctx{\Delta}{\psi} &
         \wftype{A}{p}
       }
@@ -80,27 +90,40 @@ morphisms.
 \\ \\
 \infer{\seq{\Gamma}{x}{P}}
       {x:P \in \Gamma}
-\qquad
-\infer{\seq{\Gamma_\psi}{\beta}{\F{\alpha}{\Delta_\phi}}}
-      {\psi \vdash \gamma : \phi & 
+\quad
+\infer{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
         \beta \deq \tsubst{\alpha}{\gamma} &
         \seq{\Gamma}{\gamma}{\Delta} 
       }
+\quad
+\infer{\seq{\Gamma}{\beta}{C}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
+        \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
+%% \infer{\seq{\Gamma}{\beta}{C}}
+%%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
+%%         \oftp{\modeof{\Gamma},{x'} : {\modeof{\F{\alpha}{\Delta}}}}{\beta'}{\modeof{C}} &
+%%         \beta \deq \tsubst{\beta'}{x/x'} &
+%%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
 \\ \\
-\infer{\seq{\Gamma_\psi}{\beta}{C_r}}
-      {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
-        \oftp{\psi,\tptm{x'}{q}}{\beta'}{r} &
-        \beta \deq \tsubst{\beta'}{x/x'} &
-        \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
-\\ \\
-\infer{\seq{\Gamma}{\beta}{\U{\alpha}{\Delta}{A}}}
-      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{c}}{A}}
+\infer{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \\ \\
 \infer{\seq{\Gamma}{\beta}{C}}
-      {x:\U{\alpha}{\Delta}{A} \in \Gamma & 
-        \beta \deq \subst{\beta'}{?}{c} &
+      {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
+        \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
         \seq{\Gamma}{\gamma}{\Delta} &
-        \seq{\Gamma,\tptm{c}{A}}{\beta'}{C}
+        \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+      }
+\\ \\
+\framebox{\seq{\Gamma}{\gamma}{\Delta}}
+\\ \\
+\infer{\seq{\Gamma}{\cdot}{\cdot}}
+      {}
+\qquad
+\infer{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\seq{\Gamma}{\gamma}{\Delta} &
+       \seq{\Gamma}{\alpha}{A}
       }
 \end{array}
 \]    
@@ -132,35 +155,177 @@ Derivable:
 
 \subsection{Properties}
 
-\begin{theorem}[Weakening]
-If $\oftp{\psi,\psi'}{\alpha}{q}$ and 
-\seq{\Gamma_\psi,\Gamma'_{\psi'}}{\alpha}{C_q}
+\begin{theorem}[Weakening over weakening]
+If \seq{\Gamma,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}.
+\end{theorem}
+\begin{proof}
+It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
+the conclusion.  Intuitively, weakening holds because the contexts
+$\Gamma$ are treated like ordinary structural contexts in all of the
+rules---they are fully general in every conclusion, and the premises
+check membership or extend them---and because weakening holds for mode
+morphisms and equalities of mode morphisms.  Formally, each case is
+either immediate or follows from weakening for the mode morphisms,
+equality of mode morphisms, and the inductive hypotheses.
+%% The case for the hypothesis rule is immediate, because
+%% $\Gamma$ may contain variables other than $x$.  The case for
+%% \Fsymb-right follows from weakening for the mode morphisms, and
+%% equations between mode morphisms, and the inductive hypothesis for
+%% substitutions.  The case for \Fsymb-left follows from the inductive
+%% hypothesis, as does the case for \Usymb-right.  
+\end{proof}
+
+\begin{theorem}[Exchange over exchange]
+If 
+\seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C}
 then 
-\seq{\Gamma,\tptm{x}{A_p},\Gamma'}{\alpha}{C}.  
+\seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}
+\end{theorem}
+\begin{proof} Analogous to weakening.  
+\end{proof}
+
+\begin{theorem}[Identity] ~
+\begin{enumerate}
+\item If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$.
+\item If $\oftp{\modeof{\Gamma}}{\rho}{\modeof{\Delta}}$ is a
+  variable-for-variable mode substitution such that $x:A \in \Delta$
+  implies $\rho(x) : A \in \Gamma$, then $\seq{\Gamma}{\rho}{\Delta}$.
+\end{enumerate}
 \end{theorem}
 
-\begin{theorem}[Exchange]
-If $\oftp{\psi,x:p,y:q,\psi'}{\alpha}{r}$ and 
-\seq{\Gamma_\psi,x:A_p,y:B_q,\Gamma'_{\psi'}}{\alpha}{C}
-then 
-\seq{\Gamma,y:B,x:A,\Gamma}{\alpha}{C}
-\end{theorem}
+\begin{proof}
+The standard proof by induction on $A$ (mutually with $\Delta$) applies:
+the case for atomic propositions is a rule, and for the other
+connectives, apply the invertible and then non-invertible rule to reduce
+the problem to the inductive hypotheses.  More specifically, identity
+for $P$ is a rule.  In the case for \F{\alpha}{\Delta}, we reduce it to
+the inductive hypothesis as follows:
+\[
+\infer[\Fsymb L]{\seq{\Gamma}{x}{\F{\alpha}{\Delta}}}
+      {x:\F{\alpha}{\Delta} \in \Gamma &
+        \infer[\Fsymb R]{\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+                        {\alpha \deq \tsubst{\alpha}{\vec{x/x}} &
+                        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta}
+                        }}
+\]
+In the second premise, the $\vec{x/x}$ substitution for each $x \in
+\Delta$ is a variable-for-variable substitution, so the second part of
+the inductive hypothesis applies.  
+The case for \Usymb\/ is similar
+\[
+\infer[\Usymb R]{\seq{\Gamma}{x}{\U{\alpha}{\Delta}{A}}}
+      {\infer[\Usymb L]{\seq{\Gamma,\Delta}{\alpha}{A}}
+                        {\alpha \deq \subst{x}{\tsubst{\alpha}{\vec{x/x}}}{x} &
+                        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta} &
+                        \seq{\Gamma,x:A}{x}{A}
+                        }}
+\]
 
-\begin{theorem}[Contraction]
-\item If $\oftp{\psi,x:p,y:p,\psi'}{\alpha}{r}$ and 
-\seq{\Gamma_\psi,x:A_p,y:A,\Gamma'_{\psi'}}{\alpha}{C}
-then
-\seq{\Gamma_\psi,z:A,\Gamma'_{\psi'}}{\alpha[z/x,z/y]}{C}
-\end{theorem}
-
-\begin{theorem}[Identity]
-If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$
-\end{theorem}
+For the second part, the hypothesis of the theorem asks that every
+variable in $\Delta$ is associated by $\rho$ with a variable of the same
+type in $\Gamma$; this is enough to iterate the first part of the
+theorem for each position in $\Delta$.  Specifically, the case where
+$\Delta$ is the empty context $\cdot$ is a rule. In the case for a cons
+$\Delta,y:A$, we have
+\oftp{\modeof{\Gamma}}{\rho}{(\modeof{\Delta},y:\modeof{A})} which means
+$\rho$ must be of the form $\rho',x/y$ where $x \in \modeof{\Gamma}$ and
+$\rho'$ is a variable-for-variable substitution.  Because $\rho$ was
+type-preserving, $x : A \in \Gamma$ and $\rho'$ is type-preserving, so
+we obtain the result from the inductive hypotheses as follows:
+\[
+\infer{\seq{\Gamma}{\rho,x/y}{\Delta,y:A}}
+      {\seq{\Gamma}{\rho}{\Delta} & 
+       \seq{\Gamma}{x}{A}
+      }
+\]
+\end{proof}
 
 \begin{theorem}[Cut]
-If $\seq{\Gamma}{\alpha}{A}$ and $\seq{\Gamma,x:A}{\beta}{B}$ 
-then $\seq{\Gamma}{\beta[\alpha/x]}{B}$ 
+\begin{enumerate}
+\item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
+then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
+\item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
+then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{B}$ 
+\end{enumerate}
 \end{theorem}
+
+\begin{proof}
+Induction ordering: Part 1 and 2: cut formula, then simultaneous on \D\/
+and \E\/.  Part 3: 
+
+Part 1: There are 5 rules, so 25 pairs of final rules.  
+
+\begin{itemize}
+\item (5 pairs) Anything and identity
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad \infer{\seq{\Gamma,x:A,\Gamma'}{z}{Q}}{z:Q \in (\Gamma,x:A,\Gamma')}
+\]
+There two subcases, depending on whether the variable being cut for is
+$z$ or not.  If $z$ is $x_0$ and $A_0$ is $Q$, then \D\/ has the desired
+conclusion \seq{\Gamma}{\alpha}{Q}.  If not, then $z:Q \in \Gamma,\Gamma'$, so
+the hypothesis rule applies to give \seq{\Gamma,\Gamma'}{z}{Q}.  
+
+\item (5 pairs) Anything and $\Fsymb R$ (right-commutative)
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
+        \beta \deq \tsubst{\alpha}{\gamma} &
+        \deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}}{\E}
+      }
+\]
+By the inductive hypothesis, cutting into \D\/ into \E\/ gives
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}.  By
+congruence, $\subst{\beta}{\alpha_0}{x_0} \deq
+\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x_0}$.  Since $\gamma$ is a
+total substitution for all variables in \modeof{\Delta},
+$\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x} =
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}$, so
+\subst{\beta}{\alpha_0}{x_0} \deq
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}.  Thus we can reapply the
+$\Fsymb R$ rule to get
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}.
+
+\item (5 pairs) Anything and $\Usymb R$ (right-commutative).    
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
+\infer{\seq{\Gamma,x:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma,x:A_0,\Gamma',\Delta}{\subst{\alpha}{\beta}{x}}{A}}{\E}}
+\]
+The inductive cut of \D\/ into \E\/ gives 
+\[
+\seq{\Gamma,\Gamma',\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}
+\]
+Because the variables from $\modeof{\Gamma},\modeof{\Gamma'}$ occur only
+in $\beta$, not in $\alpha$, this substitution equals 
+{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}} so reapplying the
+$\Usymb R$ rule
+derives 
+{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}.   
+
+\item (2 additional pairs, plus 3 overlapping with above) $\Fsymb L$ and anything (left commutative)
+
+\item (2 additional pairs, plus 3 overlapping with above) $\Usymb L$ and anything (left commutative)
+
+\end{itemize}
+\end{proof}
+
+
+\begin{theorem}[Contraction over contraction]
+\item If
+\seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
+then
+\seq{\Gamma,z:A,\Gamma'}{\tsubst \alpha {z/x,z/y}}{C}
+\end{theorem}
+
+\begin{proof}  Contraction can be shown by cutting with an identity substitution.
+The mode substitution $z/x,z/y$ is a variable-for-variable substitution,
+and is type-preserving between ${x:A,y:A}$ and ${\Gamma,z:A,\Gamma'}$.
+Therefore, by identity (part 2),
+\seq{\Gamma,z:A,\Gamma'}{z/x,z/y}{x:A,y:A}.  Thus, by cut (part 2), we
+obtain the result.
+\end{proof}
 
 \begin{theorem}[Fusion] ~
 \begin{enumerate} 
