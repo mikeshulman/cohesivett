@@ -16,7 +16,10 @@
 \newcommand\modeof[1]{\ensuremath{\hat{#1}}}
 \newcommand\many[1]{\ensuremath{\overline{#1}}}
 \renewcommand{\oftp}[3]{\ensuremath{#1 \, \vdash #2 \, \dcd{:} \, #3}}
-
+\newcommand\FL{\dsd{FL}}
+\newcommand\FR{\dsd{FR}}
+\newcommand\UL{\dsd{UL}}
+\newcommand\UR{\dsd{UR}}
 
 \section{1-Multicategories}
 
@@ -59,6 +62,18 @@ generating equations.
 
 The rules for the logic are given in Figure~\ref{fig:1logic}.  
 
+explain intended structural properties
+
+For $\FL$, there are two competing principles: making the rules
+obviously structural, and reducing inessential non-determinism.  Here,
+we choose the later, and treat the assumption of \F{\alpha}{\Delta}
+affinely, removing it from the context when it is used.  It will turn
+out that the judgement nonetheless enjoys contraction (over
+contraction), because contraction for negatives is built in, and
+contraction for positives follows from this and the fact that we can
+always reconstruct a positive from what it decays to on the left
+(c.f. how purely positive formulas have contraction in linear logic).  
+
 \begin{figure}
 \[
 \begin{array}{c}
@@ -93,13 +108,13 @@ The rules for the logic are given in Figure~\ref{fig:1logic}.
 \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
       {x:P \in \Gamma & \beta \equiv x}
 \\ \\
-\infer[\Fsymb R]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+\infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
       {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
         \beta \deq \tsubst{\alpha}{\gamma} &
         \seq{\Gamma}{\gamma}{\Delta} 
       }
 \quad
-\infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
+\infer[\FL]{\seq{\Gamma}{\beta}{C}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
         \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
 %% \infer{\seq{\Gamma}{\beta}{C}}
@@ -108,10 +123,10 @@ The rules for the logic are given in Figure~\ref{fig:1logic}.
 %%         \beta \deq \tsubst{\beta'}{x/x'} &
 %%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
 \\ \\
-\infer[\Usymb R]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \\ \\
-\infer[\Usymb L]{\seq{\Gamma}{\beta}{C}}
+\infer[\UL]{\seq{\Gamma}{\beta}{C}}
       {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
         \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
         \seq{\Gamma}{\gamma}{\Delta} &
@@ -156,7 +171,7 @@ The rules for the logic are given in Figure~\ref{fig:1logic}.
 
 Define the \emph{size} of a derivation of \seq{\Gamma}{\alpha}{A} or
 \seq{\Gamma}{\gamma}{\Delta} to be the number of inference rules for
-these judgements $(\dsd{v},\Fsymb L, \Fsymb R, \Usymb L, \Usymb R,
+these judgements $(\dsd{v},\FL, \FR, \UL, \UR,
 \cdot, \_,\_)$ used in it (i.e., the evidence that variables are in a
 context and the evidence for equations does not contribute to the size).
 Sizes are necessary for the cut proof, where we sometimes weaken or
@@ -174,9 +189,9 @@ as the given one.
 \end{lemma}
 \begin{proof}
 Mutual induction on the given derivation.  The cases for \dsd{v} and
-$\Fsymb R$ and $\Usymb L$ are immediate (with no use of the inductive
+$\FR$ and $\UL$ are immediate (with no use of the inductive
 hypothesis) by composing with the equality in the premise of the rule.
-The cases for $\Fsymb L$ and $\Usymb R$ use the inductive hypothesis,
+The cases for $\FL$ and $\UR$ use the inductive hypothesis,
 along with congruence for equality of mode morphism to show that
 $\subst{\beta}{\alpha}{x} \deq \subst{\beta'}{\alpha}{x}$ or
 $\subst{\alpha}{\beta}{x} \deq \subst{\alpha}{\beta'}{x}$.  The cases
@@ -208,7 +223,7 @@ $\Gamma$ are treated like ordinary structural contexts in all of the
 rules---they are fully general in every conclusion, and the premises
 check membership or extend them---and because weakening holds for mode
 morphisms and equalities of mode morphisms.  Formally, the first two
-parts are proved by mutually inducation; each case is either immediate
+parts are proved by mutual induction; each case is either immediate
 or follows from weakening for the mode morphisms, weakening for
 equalities of mode morphisms, and the inductive hypotheses.  The third
 part is proved by induction over $\Gamma'$, repeatedly applying the
@@ -247,9 +262,9 @@ the problem to the inductive hypotheses.  More specifically, identity
 for $P$ is a rule.  In the case for \F{\alpha}{\Delta}, we reduce it to
 the inductive hypothesis as follows:
 \[
-\infer[\Fsymb L]{\seq{\Gamma}{x}{\F{\alpha}{\Delta}}}
+\infer[\FL]{\seq{\Gamma}{x}{\F{\alpha}{\Delta}}}
       {x:\F{\alpha}{\Delta} \in \Gamma &
-        \infer[\Fsymb R]{\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+        \infer[\FR]{\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
                         {\alpha \deq \tsubst{\alpha}{\vec{x/x}} &
                         \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta}
                         }}
@@ -259,8 +274,8 @@ In the second premise, the $\vec{x/x}$ substitution for each $x \in
 the inductive hypothesis applies.  
 The case for \Usymb\/ is similar
 \[
-\infer[\Usymb R]{\seq{\Gamma}{x}{\U{\alpha}{\Delta}{A}}}
-      {\infer[\Usymb L]{\seq{\Gamma,\Delta}{\alpha}{A}}
+\infer[\UR]{\seq{\Gamma}{x}{\U{\alpha}{\Delta}{A}}}
+      {\infer[\UL]{\seq{\Gamma,\Delta}{\alpha}{A}}
                         {\alpha \deq \subst{x}{\tsubst{\alpha}{\vec{x/x}}}{x} &
                         \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta} &
                         \seq{\Gamma,x:A}{x}{A}
@@ -300,7 +315,7 @@ In the case for \dsd{v}, $x : P \in \Gamma$ cannot be equal to $x_0 :
 \F{\alpha_0}{\Delta_0}$ because the types conflict, so we can reapply
 the \dsd{v} rule.  
 
-In the case for $\Fsymb R$, we have
+In the case for $\FR$, we have
 \[
 \infer{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
       {\beta \deq \tsubst{\alpha}{\gamma} &
@@ -324,9 +339,9 @@ Both the input and the output have size 1 more than the size of their
 subderivations, and the output subderivation is no bigger by the
 inductive hypothesis.  
 
-In the case for $\Fsymb L$
+In the case for $\FL$
 \[
-\infer[\Fsymb L]{\seq{\Gamma}{\beta}{C}}
+\infer[\FL]{\seq{\Gamma}{\beta}{C}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
         \deduce{\seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}{\D}}
 \]
@@ -349,11 +364,11 @@ By (iterating) exchange, we get a derivation
 \D'' :: {\seq{\Gamma,\Delta_0,\Delta}{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}{C}}
 \]
 whose size is the same as $\D'$ and so no bigger than $\D$.  Applying
-$\Fsymb L$ to $\D''$ derives
+$\FL$ to $\D''$ derives
 $\seq{\Gamma}{\subst{\beta}{\alpha_0}{x_0}}{C}$, and the size is no
 bigger than the size of the input.  
 
-In the case for $\Usymb R$,
+In the case for $\UR$,
 \[
 \infer{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
@@ -374,7 +389,7 @@ Thus, we can derive
       {\deduce{\seq{\Gamma,\Delta_0,\Delta}{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}{A}}{\D''}}
 \]
 
-In the case for $\Usymb L$, 
+In the case for $\UL$, 
 \[
 \infer{\seq{\Gamma}{\beta}{C}}
       {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
@@ -450,7 +465,7 @@ $z$ or not.  If $z$ is $x_0$ and $A_0$ is $Q$, then \D\/ has the desired
 conclusion \seq{\Gamma}{\alpha}{Q}.  If not, then $z:Q \in \Gamma,\Gamma'$, so
 the hypothesis rule applies to give \seq{\Gamma,\Gamma'}{z}{Q}.  
 
-\item (5 pairs) Anything and $\Fsymb R$ (right-commutative)
+\item (5 pairs) Anything and $\FR$ (right-commutative)
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
 \infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\F{\alpha}{\Delta}}}
@@ -468,10 +483,10 @@ $\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x} =
 \tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}$, so
 \subst{\beta}{\alpha_0}{x_0} \deq
 \tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}.  Thus we can reapply the
-$\Fsymb R$ rule to get
+$\FR$ rule to get
 \seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}.
 
-\item (5 pairs) Anything and $\Usymb R$ (right-commutative).    
+\item (5 pairs) Anything and $\UR$ (right-commutative).    
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
 \infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
@@ -484,11 +499,11 @@ The inductive cut of \D\/ into \E\/ gives
 Because the variables from $\modeof{\Gamma},\modeof{\Gamma'}$ occur only
 in $\beta$, not in $\alpha$, this substitution equals 
 {\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}} so reapplying the
-$\Usymb R$ rule
+$\UR$ rule
 derives 
 {\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}.   
 
-\item (2 additional pairs, plus 3 overlapping with above) $\Fsymb L$ and
+\item (2 additional pairs, plus 3 overlapping with above) $\FL$ and
   anything (left commutative).  There is one subtlety in this case.  The
   usual strategy for a left rule against an arbitrary \E is to push $\E$
   into the ``continuation'' of the \Fsymb-left on $x$.  However, as
@@ -500,7 +515,7 @@ derives
   corresponds to making all references to $x$ in \E instead refer to the
   results of the case-analysis at the bottom of $\D$, rather than
   redoing the case-analysis of $x$.  This subtlety could be avoided by
-  building the contraction discussed above into $\Fsymb L$.
+  building the contraction discussed above into $\FL$.
 
 Formally, we have
 \[
@@ -522,7 +537,7 @@ Commuting substitutions gives
 \[
 {\subst{{\subst{\beta}{\alpha}{x}}}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
 \]
-so we can reapply $\Fsymb L$ to get
+so we can reapply $\FL$ to get
 \[
 \infer{\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{C}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
@@ -530,7 +545,7 @@ so we can reapply $\Fsymb L$ to get
 \]
 
 
-\item (2 additional pairs, plus 3 overlapping with above) $\Usymb L$ and anything (left commutative)
+\item (2 additional pairs, plus 3 overlapping with above) $\UL$ and anything (left commutative)
 In this case, $x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma'$ and
 we have
 \[
@@ -571,9 +586,9 @@ where the first step is by congruence with $\beta$ on the
 equality about $\alpha_0$ assumed for the case, and the second is by
 properties of substitution ($z$ is not free in $\beta$).  
 
-\item (3 pairs) Right/identity and $\Fsymb L$.
+\item (3 pairs) Right/identity and $\FL$.  
 
-\item (3 pairs) Right/identity and $\Usymb L$.
+\item (3 pairs) Right/identity and $\UL$.
 
 \end{itemize}
 \end{proof}
@@ -600,7 +615,7 @@ If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then
 \end{lemma}
 
 \begin{proof}
-The ``direct'' use of $\Usymb L$ with identities in both premises gives
+The ``direct'' use of $\UL$ with identities in both premises gives
 a derivation
 \[
 \infer{\seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}}
