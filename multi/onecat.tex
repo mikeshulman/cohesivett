@@ -26,11 +26,11 @@ domain and its range.  In a \emph{multicategory}, each morphism has a
 list of objects as its domain, and a single object as its range.  In a
 \emph{cartesian multicategory}, these multiple objects in the domain are
 treated like cartesian (structural) variables. So for a cartesian
-multicategory \C\/ we will write a morphism
+multicategory \C\/ we will describe a morphism
 \[
 \alpha \in \mor{\C}{p_1,\ldots,p_n}{q}
 \]
-as a term with variables $x_i:p_i$ free, built from generating constants
+by a term with variables $x_i:p_i$ free, built from generating constants
 \dsd{c}:
 \[
 \begin{array}{llll}
@@ -41,24 +41,23 @@ as a term with variables $x_i:p_i$ free, built from generating constants
 \end{array}
 \]
 We write $\oftp{\psi}{\alpha}{q}$ for mode morphism well-formedness;
-$\psi$ here enjoys the (cartesian) structural properties (weakening,
+$\psi$ here enjoys (cartesian) structural properties (weakening,
 exchange, contraction).  We write $\oftp{\psi}{\gamma}{\psi'}$ for a
 familiar structural substitution in the mode multicategory, which
 consists of a term $\alpha_i/x_i$ for each variable $\tptm{x_i}{p_i}$ in
 $\psi'$, where each $\alpha_i$ satisfies $\oftp{\psi}{\alpha_i}{p_i}$.
-Simultaneous substitution is defined in the standard way.
+Simultaneous substitution into terms is defined in the standard way.
 
 The multicategories needed for this section can be presented by giving a
 signature for the constants \dsd{c}, together with some generating
-equations on morphisms. The set of morphisms is defined to be the
+axioms $\deqtm{\psi}{\alpha}{\beta}{q}$ for two mode morphisms
+\oftp{\psi}{\alpha,\beta}{q}.  The set of morphisms is defined to be the
 quotient of the above terms by the least congruence containing these
-generating equations, and we write $\alpha \deq \beta$ for equality of
-morphisms.
-
-FIXME: Think of the $\alpha$ as semantic things/quotients, so no
-congruence rule is needed?  Or define it?  
+generating equations.
 
 \subsection{Logic over a Multicategory}
+
+The rules for the logic are given in Figure~\ref{fig:1logic}.  
 
 \begin{figure}
 \[
@@ -131,14 +130,9 @@ congruence rule is needed?  Or define it?
 \end{array}
 \]    
 \caption{1-Multicategorical Logic}
+\label{fig:1logic}
 \hrule
 \end{figure}
-
-Derivable: 
-\[
-\infer{\seq{\Gamma, {x}:{\F{\alpha}{\Delta}}}{\beta}{C}}
-      {\seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
-\]
 
 \subsection{Examples}
 
@@ -154,6 +148,8 @@ Derivable:
 
 \subsubsection{Adjoint Logic} Non-tensor-preserving left adjoint
 
+\subsubsection{Zero-use variables}
+
 \subsubsection{Multi-use variables}
 
 \subsection{Properties}
@@ -168,18 +164,28 @@ invert a derivation before applying the inductive hypothesis.
 
 \begin{lemma}[Respect for Equality] ~
 \begin{enumerate}
-\item If \seq{\Gamma}{\alpha}{A} and $\alpha \deq \alpha'$ then
-\seq{\Gamma}{\alpha'}{A}, and the resulting derivation has the same size
+\item If \seq{\Gamma}{\beta}{A} and $\beta' \deq \beta$ then
+\seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same size
 as the given one.
-\item If \seq{\Gamma}{\gamma}{\Delta} and $\gamma \deq \gamma'$ then
+\item If \seq{\Gamma}{\gamma}{\Delta} and $\gamma' \deq \gamma$ then
   \seq{\Gamma}{\gamma'}{\Delta}, and the resulting derivation has the
   same size as the given one.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
-Mutual induction on the given derivation.  
-
-FIXME write out
+Mutual induction on the given derivation.  The cases for \dsd{v} and
+$\Fsymb R$ and $\Usymb L$ are immediate (with no use of the inductive
+hypothesis) by composing with the equality in the premise of the rule.
+The cases for $\Fsymb L$ and $\Usymb R$ use the inductive hypothesis,
+along with congruence for equality of mode morphism to show that
+$\subst{\beta}{\alpha}{x} \deq \subst{\beta'}{\alpha}{x}$ or
+$\subst{\alpha}{\beta}{x} \deq \subst{\alpha}{\beta'}{x}$.  The cases
+for substitutions rely on the fact that no generating equalities for
+mode substitutions are allowed, so if $\gamma' \deq \cdot$ then
+$\gamma'$ is literally $\cdot$, and $(-,-)$ is injective (if $\gamma'
+\deq (\gamma_1,\alpha_2/x)$, then $\gamma'$ is $(\gamma_1',\alpha_2'/x)$
+with $\gamma_1' \deq \gamma_1$ and $\alpha_2' = \alpha_2$); this is
+enough to use the inductive hypotheses in the cons case.  
 \end{proof}
 
 \begin{lemma}[Weakening over weakening] \label{thm:weakening} ~
@@ -280,7 +286,7 @@ we obtain the result from the inductive hypotheses as follows:
 \]
 \end{proof}
 
-\begin{lemma}[Left-invertibility of \Fsymb]
+\begin{lemma}[Left-invertibility of \Fsymb] \label{lemma:Finv}
 If $\D :: \seq{\Gamma}{\beta}{C}$ and $x_0:\F{\alpha_0}{\Delta_0} \in
 \Gamma$, then there is a derivation $D' ::
 \seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and $size(\D')
@@ -292,8 +298,7 @@ By induction on \D.
 
 In the case for \dsd{v}, $x : P \in \Gamma$ cannot be equal to $x_0 :
 \F{\alpha_0}{\Delta_0}$ because the types conflict, so we can reapply
-the \dsd{v} rule to conclude \seq{\Gamma,\Delta}{x =
-  \subst{x}{\alpha}{x_0}}{C} as needed.
+the \dsd{v} rule.  
 
 In the case for $\Fsymb R$, we have
 \[
@@ -420,12 +425,12 @@ $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
 \end{proof}
 
 
-\begin{theorem}[Cut]
-\begin{enumerate}
+\begin{theorem}[Cut] ~
+\begin{enumerate} 
 \item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
 then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
 \item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
-then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{B}$ 
+then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{\Delta}$ 
 \end{enumerate}
 \end{theorem}
 
@@ -483,8 +488,21 @@ $\Usymb R$ rule
 derives 
 {\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}.   
 
-\item (2 additional pairs, plus 3 overlapping with above) $\Fsymb L$ and anything (left commutative)
+\item (2 additional pairs, plus 3 overlapping with above) $\Fsymb L$ and
+  anything (left commutative).  There is one subtlety in this case.  The
+  usual strategy for a left rule against an arbitrary \E is to push $\E$
+  into the ``continuation'' of the \Fsymb-left on $x$.  However, as
+  discussed above, our left rule for \Fsymb eagerly inverts \emph{all}
+  occurences of $x$, replacing them with $\alpha$, while $\E$ itself,
+  which also has $x$ in scope, might also apply \Fsymb-left to it.
+  Thus, we use Lemma~\ref{lemma:Finv} to pull the left-inversion to the
+  bottom of \E, and then push that into \D.  On proof terms, this
+  corresponds to making all references to $x$ in \E instead refer to the
+  results of the case-analysis at the bottom of $\D$, rather than
+  redoing the case-analysis of $x$.  This subtlety could be avoided by
+  building the contraction discussed above into $\Fsymb L$.
 
+Formally, we have
 \[
 \infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
@@ -493,17 +511,18 @@ derives
 \deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}{\E}
 \]
 
-By (iterating) weakening-over-weakening (Theorem~\ref{thm:weakening}) on
-\E, we obtain a derivation $\E'$ of {\seq{\Gamma,x:A_0,\Gamma',\Delta}{\beta}{C}}.
-Because $\E'$ has the same shape as \E\/, but \D\/ is smaller
+By left invertibility on \E, we obtain a derivation $\E'$ of
+{\seq{\Gamma,x:A_0,\Gamma',\Delta}{\subst{\beta}{\alpha}{x}}{C}}
+that is no bigger than $\E$.  
+Because the cut formula is the same, and $\E'$ has the same size as \E\/, and \D\/ is smaller
 than the given derivation of $A_0$, we can apply the inductive hypothesis to cut $\D$ and
 $\E'$ to get
-{\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
-Because FIXME,
+{\seq{\Gamma,\Gamma',\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
+Commuting substitutions gives
 \[
-{\subst{\beta}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
+{\subst{{\subst{\beta}{\alpha}{x}}}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
 \]
-then reapply $\Fsymb L$ 
+so we can reapply $\Fsymb L$ to get
 \[
 \infer{\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{C}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
@@ -512,21 +531,60 @@ then reapply $\Fsymb L$
 
 
 \item (2 additional pairs, plus 3 overlapping with above) $\Usymb L$ and anything (left commutative)
+In this case, $x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma'$ and
+we have
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+      {\alpha_0 \deq \subst{\alpha_0'}{\tsubst{\alpha}{\gamma}}{z} &
+       \deduce{\seq{\Gamma,\Gamma'}{\gamma}{\Delta}}{\D_1} &
+       \deduce{\seq{\Gamma,\Gamma',z:A}{\alpha_0'}{A_0}}{\D_2}
+      }
+\\ \\
+\deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}}{\E}
+\end{array}
+\]
 
-\item (3 additional pairs) Right/identity and $\Fsymb L$.
+Weakening \E with $z$ and then cutting $\D_2$ and $\E$ by the inductive
+hypothesis (which applies because $\D_2$ is smaller and weakening does
+not change the size) gives
+\[
+\deduce{\seq{\Gamma,\Gamma',z:A}{\subst{\beta}{\alpha_0'}{x_0}}{B}}{\D_2'}
+\]
+Thus, we have the first, third, and fourth premises of
+\[
+\infer{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{A_0}}
+      {\begin{array}{l}
+          x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          {\subst{\beta}{\alpha_0}{x_0}} \deq \subst{\subst{\beta}{\alpha_0'}{x_0}}{\tsubst{\alpha}{\gamma}}{z} \\
+       {\seq{\Gamma,\Gamma'}{\gamma}{\Delta}} \\
+       {\seq{\Gamma,\Gamma',z:A}{\subst{\beta}{\alpha_0'}{x_0}}{B}}
+        \end{array}
+      }
+\]
+The equation is proved by
+\[
+     {\subst{\beta}{\alpha_0}{x_0}} 
+\deq \subst{\beta}{\subst{\alpha_0'}{\tsubst{\alpha}{\gamma}}{z}}{x0} = \subst{\subst{\beta}{\alpha_0'}{x_0}}{\tsubst{\alpha}{\gamma}}{z}
+\]
+where the first step is by congruence with $\beta$ on the 
+equality about $\alpha_0$ assumed for the case, and the second is by
+properties of substitution ($z$ is not free in $\beta$).  
 
-\item (3 additional pairs) Right/identity and $\Usymb L$.
+\item (3 pairs) Right/identity and $\Fsymb L$.
+
+\item (3 pairs) Right/identity and $\Usymb L$.
 
 \end{itemize}
 \end{proof}
 
 
-\begin{theorem}[Contraction over contraction]
+\begin{lemma}[Contraction over contraction]
 \item If
 \seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
 then
 \seq{\Gamma,z:A,\Gamma'}{\tsubst \alpha {z/x,z/y}}{C}
-\end{theorem}
+\end{lemma}
 
 \begin{proof}  Contraction can be shown by cutting with an identity substitution.
 The mode substitution $z/x,z/y$ is a variable-for-variable substitution,
@@ -536,14 +594,45 @@ Therefore, by identity (part 2),
 obtain the result.
 \end{proof}
 
+\begin{lemma}[Right-invertibility of \Usymb] \label{lemma:Uinv}
+If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
+{\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
+\end{lemma}
+
+\begin{proof}
+The ``direct'' use of $\Usymb L$ with identities in both premises gives
+a derivation
+\[
+\infer{\seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}}
+      {
+        \alpha = z[\alpha[\vec{x/x}]/z] & 
+        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta} &
+        \seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}},z:A}{z}{A}
+      }
+\]
+Weakening the assumed derivation to 
+\seq{\Gamma,\Delta}{\beta}{\U{x.\alpha}{\Delta}{A}}
+and then cutting for $x$ in the above gives the result.  
+
+\[
+\infer{\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+      {\seq{\Gamma,\Delta}{\beta}{\U{x.\alpha}{\Delta}{A}} & 
+       \seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}
+      }
+\]
+
+\end{proof}
+
 \begin{theorem}[Fusion] ~
 \begin{enumerate} 
 \item F
-\item U
+\item UU
+\item UF
 \end{enumerate}
 \end{theorem}
 
-\subsection{Equational Theory}
+\subsection{Equational Theory of Proofs}
 
 \subsection{Categorical Semantics}
 
+TODO: Mitchell
