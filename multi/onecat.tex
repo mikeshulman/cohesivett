@@ -114,9 +114,8 @@ always reconstruct a positive from what it decays to on the left
         \seq{\Gamma}{\gamma}{\Delta} 
       }
 \quad
-\infer[\FL]{\seq{\Gamma}{\beta}{C}}
-      {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
-        \seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}
+\infer[\FL]{\seq{\Gamma,x:\F{\Delta}{A},\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
 %% \infer{\seq{\Gamma}{\beta}{C}}
 %%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
 %%         \oftp{\modeof{\Gamma},{x'} : {\modeof{\F{\alpha}{\Delta}}}}{\beta'}{\modeof{C}} &
@@ -259,14 +258,14 @@ The standard proof by induction on $A$ (mutually with $\Delta$) applies:
 the case for atomic propositions is a rule, and for the other
 connectives, apply the invertible and then non-invertible rule to reduce
 the problem to the inductive hypotheses.  More specifically, identity
-for $P$ is a rule.  In the case for \F{\alpha}{\Delta}, we reduce it to
-the inductive hypothesis as follows:
+for $P$ is a rule.  In the case for \F{\alpha}{\Delta}, with $\Gamma =
+\Gamma_1,x:\F{\alpha}{\Delta},\Gamma_2$, we reduce it to the inductive
+hypothesis as follows:
 \[
-\infer[\FL]{\seq{\Gamma}{x}{\F{\alpha}{\Delta}}}
-      {x:\F{\alpha}{\Delta} \in \Gamma &
-        \infer[\FR]{\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+\infer[\FL]{\seq{\Gamma_1,x:\F{\alpha}{\Delta},\Gamma_2}{x}{\F{\alpha}{\Delta}}}
+      {\infer[\FR]{\seq{\Gamma_1,\Gamma_2,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
                         {\alpha \deq \tsubst{\alpha}{\vec{x/x}} &
-                        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta}
+                        \seq{\Gamma_1,\Gamma_2,\Delta}{\vec{x/x}}{\Delta}
                         }}
 \]
 In the second premise, the $\vec{x/x}$ substitution for each $x \in
@@ -302,18 +301,20 @@ we obtain the result from the inductive hypotheses as follows:
 \end{proof}
 
 \begin{lemma}[Left-invertibility of \Fsymb] \label{lemma:Finv}
-If $\D :: \seq{\Gamma}{\beta}{C}$ and $x_0:\F{\alpha_0}{\Delta_0} \in
-\Gamma$, then there is a derivation $D' ::
-\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and $size(\D')
-\le size(\D)$ (and analogously for substitutions).  
+If $\D :: \seq{\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2}{\beta}{C}$
+and then there is a derivation $D' ::
+\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and
+$size(\D') \le size(\D)$ (and analogously for substitutions).
 \end{lemma}
 
 \begin{proof}
-By induction on \D.  
+By induction on \D.  We write $\Gamma$ for
+the whole context $\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2$.
 
-In the case for \dsd{v}, $x : P \in \Gamma$ cannot be equal to $x_0 :
+In the case for \dsd{v}, $x : P \in
+\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2$ cannot be equal to $x_0 :
 \F{\alpha_0}{\Delta_0}$ because the types conflict, so we can reapply
-the \dsd{v} rule.  
+the \dsd{v} rule in $\Gamma_1,\Gamma_2,\Delta$.
 
 In the case for $\FR$, we have
 \[
@@ -324,34 +325,34 @@ In the case for $\FR$, we have
 \]
 with $x_0 : \F{\alpha_0}{\Delta_0} \in \Gamma$.  By the inductive
 hypothesis we get
-\seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}.  Because
+\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}.  Because
 $x_0$ is not free in $\alpha$,
 $\subst{(\tsubst{\alpha}{\gamma})}{\alpha_0}{x_0} =
-\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$, so we can reapply the
-rule
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$, so we can reapply \FR:
 \[
-\infer{\seq{\Gamma}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}}
+\infer{\seq{\Gamma_1,\Gamma_2}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}}
       {{\subst{\beta}{\alpha_0}{x_0}} \deq \tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}} &
-        \seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}
+        \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}
       }
 \]
 Both the input and the output have size 1 more than the size of their
-subderivations, and the output subderivation is no bigger by the
-inductive hypothesis.  
+subderivations, and the output subderivation is no bigger than the input
+by the inductive hypothesis.
 
 In the case for $\FL$
 \[
-\infer[\FL]{\seq{\Gamma}{\beta}{C}}
-      {{x}:{\F{\alpha}{\Delta}} \in \Gamma &
-        \deduce{\seq{\Gamma,\Delta}{\subst \beta {\alpha}{x}}{C}}{\D}}
+\infer[\FL]{\seq{\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2'}{\beta}{C}}
+      {\deduce{\seq{\Gamma_1',\Gamma_2',\Delta}{\subst \beta {\alpha}{x}}{C}}{\D}}
 \]
-with $x_0 : \F{\alpha_0}{\Delta_0}$ also in $\Gamma$, we distinguish
-cases on whether $x = x_0$ or not.  If they are the same, then $\alpha_0
-= \alpha$ and $\Delta_0 = \Delta$ and \D is the result, and the size is
-1 less than the size of the input.  If they are different, then 
-by the inductive hypothesis we have a derivation 
+with $\Gamma_1,x_0 : \F{\alpha_0}{\Delta_0},\Gamma_2 =
+\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2'$, we distinguish cases on
+whether $x = x_0$ or not.  If they are the same (i.e. we have hit a left
+rule on $x_0$), then $\alpha_0 = \alpha$ and $\Delta_0 = \Delta$ and
+\D\/ is the result, and the size is 1 less than the size of the input.
+If they are different, then (because $x_0$ is somewhere in
+$\Gamma_1',\Gamma_2'$) by the inductive hypothesis we have a derivation
 \[
-\D' :: {\seq{\Gamma,\Delta,\Delta_0}{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}}{C}}
+\D' :: {\seq{(\Gamma_1',\Gamma_2')-x_0,\Delta,\Delta_0}{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}}{C}}
 \]
 that is no bigger than \D.  Because $x_0$ is from $\Gamma$ and not
 $\Delta$, it does not occur in $\alpha$, so 
@@ -361,12 +362,13 @@ $\Delta$, it does not occur in $\alpha$, so
 \]
 By (iterating) exchange, we get a derivation 
 \[
-\D'' :: {\seq{\Gamma,\Delta_0,\Delta}{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}{C}}
+\D'' :: {\seq{(\Gamma_1',\Gamma_2')-x_0,\Delta_0,\Delta}{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}{C}}
 \]
 whose size is the same as $\D'$ and so no bigger than $\D$.  Applying
-$\FL$ to $\D''$ derives
-$\seq{\Gamma}{\subst{\beta}{\alpha_0}{x_0}}{C}$, and the size is no
-bigger than the size of the input.  
+$\FL$ to $\D''$ (using the fact that
+$(\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2')-x_0 = \Gamma_1,\Gamma_2$)
+derives $\seq{\Gamma_1,\Gamma_2}{\subst{\beta}{\alpha_0}{x_0}}{C}$, and
+the size is no bigger than the size of the input.
 
 In the case for $\UR$,
 \[
@@ -374,10 +376,10 @@ In the case for $\UR$,
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \]
 the inductive hypothesis gives a
-$\D' :: \seq{\Gamma,\Delta,\Delta_0}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$
+$\D' :: \seq{\Gamma_1,\Gamma_2,\Delta,\Delta_0}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$
 and (iterated) exchange gives 
 $\D'' ::
-\seq{\Gamma,\Delta_0,\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$,
+\seq{\Gamma_1,\Gamma_2,\Delta_0,\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$,
 both no bigger than \D.  Because $x_0$ is in $\Gamma$ and not $\Delta$,
 it is not free in $\alpha$, so 
 \[
@@ -385,8 +387,8 @@ it is not free in $\alpha$, so
 \]
 Thus, we can derive
 \[
-\infer{\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}
-      {\deduce{\seq{\Gamma,\Delta_0,\Delta}{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}{A}}{\D''}}
+\infer{\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma_1,\Gamma_2,\Delta_0,\Delta}{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}{A}}{\D''}}
 \]
 
 In the case for $\UL$, 
@@ -401,20 +403,20 @@ In the case for $\UL$,
 we know that $x$ is different that $x_0$ because the types conflict.
 The inductive hypotheses give no-bigger derivations of
 \[
-\seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \qquad \seq{\Gamma,\tptm{z}{A},\Delta_0}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\seq{\Gamma_1,\Gamma_2\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \qquad \seq{\Gamma_1,\Gamma_2,\tptm{z}{A},\Delta_0}{\subst{\beta'}{\alpha_0}{x_0}}{C}
 \]
 and the latter can be exchanged to
 \[
-\seq{\Gamma,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\seq{\Gamma_1,\Gamma_2,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
 \]
 again without increasing the size.  Thus, we can produce
 \[
-\infer{\seq{\Gamma,\Delta_0}{\subst{\beta}{\alpha_0}{x}}{C}}
+\infer{\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x}}{C}}
       {\begin{array}{l}
-          x:\U{x.\alpha}{\Delta}{A} \in \Gamma,\Delta_0 \\
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma_1,\Gamma_2,\Delta_0 \\
           {\subst{\beta}{\alpha_0}{x}} \deq \subst{{\subst{\beta'}{\alpha_0}{x_0}}}{\tsubst{\alpha}{{\subst{\gamma}{\alpha_0}{x_0}}}}{z}\\
-          \seq{\Gamma,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
-          \seq{\Gamma,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+          \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
+          \seq{\Gamma_1,\Gamma_2,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
         \end{array}
       }
 \]
@@ -446,12 +448,13 @@ $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
 then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
 \item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
 then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{\Delta}$ 
+\item iterated needed for principal cuts
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
 Induction ordering: Part 1 and 2: cut formula, then simultaneous on the
-shape of \D\/ and \E\/.  Part 3:
+size of \D\/ and \E\/.  Part 3:
 
 Part 1: There are 5 rules, so 25 pairs of final rules.  
 
@@ -508,31 +511,35 @@ derives
   usual strategy for a left rule against an arbitrary \E is to push $\E$
   into the ``continuation'' of the \Fsymb-left on $x$.  However, as
   discussed above, our left rule for \Fsymb eagerly inverts \emph{all}
-  occurences of $x$, replacing them with $\alpha$, while $\E$ itself,
-  which also has $x$ in scope, might also apply \Fsymb-left to it.
-  Thus, we use Lemma~\ref{lemma:Finv} to pull the left-inversion to the
-  bottom of \E, and then push that into \D.  On proof terms, this
-  corresponds to making all references to $x$ in \E instead refer to the
-  results of the case-analysis at the bottom of $\D$, rather than
-  redoing the case-analysis of $x$.  This subtlety could be avoided by
-  building the contraction discussed above into $\FL$.
+  occurences of $x$, while $\E$ itself also has $x$ in scope.  Thus, we
+  use Lemma~\ref{lemma:Finv} to pull the left-inversion to the bottom of
+  \E, and then push that into \D.  On proof terms, this corresponds to
+  making all references to $x$ in \E instead refer to the results of the
+  case-analysis at the bottom of $\D$.  This subtlety could be avoided
+  by building contraction into $\FL$, as discussed above.
 
 Formally, we have
 \[
+\begin{array}{c}
 \infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
       {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
-        \deduce{\seq{\Gamma,\Gamma',\Delta}{\subst {\alpha_0} {\alpha}{x}}{A_0}}{\D}}
-\qquad
+        \deduce{\seq{((\Gamma,\Gamma')-x),\Delta}{\subst {\alpha_0} {\alpha}{x}}{A_0}}{\D}}
+\\ \\
 \deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}{\E}
+\end{array}
 \]
 
-By left invertibility on \E, we obtain a derivation $\E'$ of
-{\seq{\Gamma,x:A_0,\Gamma',\Delta}{\subst{\beta}{\alpha}{x}}{C}}
-that is no bigger than $\E$.  
-Because the cut formula is the same, and $\E'$ has the same size as \E\/, and \D\/ is smaller
-than the given derivation of $A_0$, we can apply the inductive hypothesis to cut $\D$ and
-$\E'$ to get
-{\seq{\Gamma,\Gamma',\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
+By left invertibility on \E, we obtain (note that $x \neq x_0$ because
+$x_0$ is added to the context in the right-hand derivation) a derivation
+$\E'$ of
+{\seq{(\Gamma,x:A_0,\Gamma')-x,\Delta}{\subst{\beta}{\alpha}{x}}{C}} that is
+no bigger than $\E$.  Because the cut formula is the same, and $\E'$ has
+the same size as \E\/, and \D\/ is smaller than the given derivation of
+$A_0$, we can apply the inductive hypothesis to cut $\D$ and $\E'$ to
+get
+\[
+{\seq{(\Gamma,\Gamma')-x,\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
+\]
 Commuting substitutions gives
 \[
 {\subst{{\subst{\beta}{\alpha}{x}}}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
@@ -540,8 +547,7 @@ Commuting substitutions gives
 so we can reapply $\FL$ to get
 \[
 \infer{\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{C}}
-      {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
-        {\seq{\Gamma,\Gamma',\Delta}{\subst {(\beta[\alpha_0/x_0])} {\alpha}{x}}{C}}}
+      {\seq{((\Gamma,\Gamma')-x),\Delta}{\subst {(\beta[\alpha_0/x_0])} {\alpha}{x}}{C}}
 \]
 
 
@@ -615,8 +621,7 @@ If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then
 \end{lemma}
 
 \begin{proof}
-The ``direct'' use of $\UL$ with identities in both premises gives
-a derivation
+$\UL$ with identities in both premises gives a derivation
 \[
 \infer{\seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}}
       {
