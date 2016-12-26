@@ -757,22 +757,77 @@ For the equation, we get
 \]
 by congruence on the assumed equation, and then commute substitutions.  
 
-Part 2:
-
 Part 3: 
 
 \end{itemize}
+
+For part 2, there are just two right-commutative cases: For
+\[
+\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}
+\qquad
+\seq{\Gamma,x_0:A_0,\Gamma'}{\cdot}{\cdot}
+\]
+we also have $\subst \cdot {\alpha_0}{x_0} \deq \cdot$ and
+\seq{\Gamma,\Gamma'}{\cdot}{\cdot}.  For
+\[
+\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}
+\qquad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta} &
+        \seq{\Gamma,x_0:A_0,\Gamma'}{\alpha}{A}
+      }
+\]
+we have $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} 
+= (\subst{\gamma}{\alpha_0}{x_0},\subst{\alpha}{\alpha_0}{x_0})$, and
+ \[
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \quad
+\seq{\Gamma,\Gamma'}{\subst{\alpha}{\alpha_0}{x_0}}{A}
+\]
+by the inductive hypotheses, so we can reapply the rule to conclude
+\seq{\Gamma,\Gamma'}{\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0}}{\Delta,x:A}.
+
+For part 3, we induct on $\Delta$, reducing a simulatenous cut to
+iterated single-variable cuts.  If $\Delta$ is empty, then we have
+\[
+\seq{\Gamma}{\cdot}{\cdot}
+\qquad
+\deduce{\seq{\Gamma,\cdot}{\beta}{C}}{\E}
+\]
+and we return \E, noting that $\subst{\beta}{\cdot} = \beta$.  Otherwise
+we have
+\[
+\infer{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\deduce{\seq{\Gamma}{\gamma}{\Delta}}{\D_1} &
+        \deduce{\seq{\Gamma}{\alpha}{A}}{\D_2}}
+\qquad
+\deduce{\seq{\Gamma,\Delta,x:A}{\beta}{C}}{\E}
+\]
+Using the inductive hypothesis to cut $\D_2$ into $\E$ ($A$ is smaller
+than $\Delta,x:A$) gives
+\[
+\deduce{\seq{\Gamma,\Delta}{\subst{\beta}{\alpha}{x}}{C}}
+       {\E'}
+\]
+Using the inductive hypothesis to cut $\D_1$ into $\E'$ ($\Delta$ is
+smaller than $\Delta$) gives
+\[
+\seq{\Gamma}{\tsubst{\subst{\beta}{\alpha}{x}}{\gamma}}{C}
+\]
+Because $\gamma$ substitutes for $\Delta$ and not $\Gamma$,
+\[
+\tsubst{\beta}{\gamma,\alpha/x}
+= {\tsubst{\subst{\beta}{\alpha}{x}}{\gamma}}
+\]
 \end{proof}
 
-
-\begin{lemma}[Contraction over contraction]
+\begin{corollary}[Contraction over contraction]
 \item If
 \seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
 then
 \seq{\Gamma,z:A,\Gamma'}{\tsubst \alpha {z/x,z/y}}{C}
-\end{lemma}
+\end{corollary}
 
-\begin{proof}  Contraction can be shown by cutting with an identity substitution.
+\begin{proof}  Contraction can be shown by cutting with a renaming substitution.
 The mode substitution $z/x,z/y$ is a variable-for-variable substitution,
 and is type-preserving between ${x:A,y:A}$ and ${\Gamma,z:A,\Gamma'}$.
 Therefore, by identity (part 2),
@@ -780,10 +835,10 @@ Therefore, by identity (part 2),
 obtain the result.
 \end{proof}
 
-\begin{lemma}[Right-invertibility of \Usymb] \label{lemma:Uinv}
+\begin{corollary}[Right-invertibility of \Usymb] \label{lemma:Uinv}
 If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
 {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
-\end{lemma}
+\end{corollary}
 
 \begin{proof}
 $\UL$ with identities in both premises gives a derivation
