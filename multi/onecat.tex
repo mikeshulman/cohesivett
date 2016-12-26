@@ -176,7 +176,7 @@ context and the evidence for equations does not contribute to the size).
 Sizes are necessary for the cut proof, where we sometimes weaken or
 invert a derivation before applying the inductive hypothesis.
 
-\begin{lemma}[Respect for Equality] ~
+\begin{lemma}[Respect for Equality] ~ \label{lemma:respecteq}
 \begin{enumerate}
 \item If \seq{\Gamma}{\beta}{A} and $\beta' \deq \beta$ then
 \seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same size
@@ -448,7 +448,9 @@ $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
 then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
 \item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
 then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{\Delta}$ 
-\item iterated needed for principal cuts
+\item If $\seq{\Gamma}{\gamma}{\Delta}$ and 
+\seq{\Gamma,\Delta}{\beta}{C}
+then \seq{\Gamma}{\tsubst{\beta}{\gamma}}{C}.  
 \end{enumerate}
 \end{theorem}
 
@@ -459,7 +461,7 @@ size of \D\/ and \E\/.  Part 3:
 Part 1: There are 5 rules, so 25 pairs of final rules.  
 
 \begin{itemize}
-\item (5 pairs) Anything and identity
+\item (5 pairs) Any rule and identity
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad \infer{\seq{\Gamma,x:A,\Gamma'}{z}{Q}}{z:Q \in (\Gamma,x:A,\Gamma')}
 \]
@@ -468,7 +470,7 @@ $z$ or not.  If $z$ is $x_0$ and $A_0$ is $Q$, then \D\/ has the desired
 conclusion \seq{\Gamma}{\alpha}{Q}.  If not, then $z:Q \in \Gamma,\Gamma'$, so
 the hypothesis rule applies to give \seq{\Gamma,\Gamma'}{z}{Q}.  
 
-\item (5 pairs) Anything and $\FR$ (right-commutative)
+\item (5 pairs) Any rule and $\FR$ (right-commutative)
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
 \infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\F{\alpha}{\Delta}}}
@@ -489,7 +491,7 @@ $\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x} =
 $\FR$ rule to get
 \seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}.
 
-\item (5 pairs) Anything and $\UR$ (right-commutative).    
+\item (5 pairs) Any rule and $\UR$ (right-commutative).    
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
 \infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
@@ -507,16 +509,18 @@ derives
 {\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}.   
 
 \item (2 additional pairs, plus 3 overlapping with above) $\FL$ and
-  anything (left commutative).  There is one subtlety in this case.  The
-  usual strategy for a left rule against an arbitrary \E is to push $\E$
-  into the ``continuation'' of the \Fsymb-left on $x$.  However, as
-  discussed above, our left rule for \Fsymb eagerly inverts \emph{all}
-  occurences of $x$, while $\E$ itself also has $x$ in scope.  Thus, we
-  use Lemma~\ref{lemma:Finv} to pull the left-inversion to the bottom of
-  \E, and then push that into \D.  On proof terms, this corresponds to
-  making all references to $x$ in \E instead refer to the results of the
-  case-analysis at the bottom of $\D$.  This subtlety could be avoided
-  by building contraction into $\FL$, as discussed above.
+  any rule (left commutative).  
+
+There is one subtlety in this case.  The usual strategy for a left rule
+against an arbitrary \E is to push $\E$ into the ``continuation'' of the
+\Fsymb-left on $x$.  However, as discussed above, our left rule for
+\Fsymb eagerly inverts \emph{all} occurences of $x$, while $\E$ itself
+also has $x$ in scope.  Thus, we use Lemma~\ref{lemma:Finv} to pull the
+left-inversion to the bottom of \E, and then push that into \D.  On
+proof terms, this corresponds to making all references to $x$ in \E
+instead refer to the results of the case-analysis at the bottom of $\D$.
+This subtlety could be avoided by building contraction into $\FL$, as
+discussed above.
 
 Formally, we have
 \[
@@ -551,7 +555,7 @@ so we can reapply $\FL$ to get
 \]
 
 
-\item (2 additional pairs, plus 3 overlapping with above) $\UL$ and anything (left commutative)
+\item (2 additional pairs, plus 3 overlapping with above) $\UL$ and any rule (left commutative)
 In this case, $x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma'$ and
 we have
 \[
@@ -592,7 +596,7 @@ where the first step is by congruence with $\beta$ on the
 equality about $\alpha_0$ assumed for the case, and the second is by
 properties of substitution ($z$ is not free in $\beta$).  
 
-\item (3 pairs) Right/identity and $\FL$ (principal or
+\item (3 pairs) Right rule or identity and $\FL$ (principal or
   right-commutative).  
 
 Suppose the right-hand derivation ends with $\FL$, and the left-hand
@@ -600,19 +604,33 @@ derivation is either a right rule or identity (\dsd{v}) (the cases for
 left-rules were covered above).  
 
 We distinguish cases on whether the \FL\/ case-analyzes $x_0$ or not.  If
-it is, then, because $A_0 is \F{\alpha}{\Delta}$, the left-hand
+it does, then, because $A_0 is \F{\alpha}{\Delta}$, the left-hand
 derivation must be \FR, and we have a principal cut
 \[
 \infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\F{\alpha}{\Delta}}}
       {  
         \alpha_0 \deq \tsubst{\alpha}{\gamma} &
-        \seq{\Gamma,\Gamma'}{\gamma}{\Delta}
+        \deduce{\seq{\Gamma,\Gamma'}{\gamma}{\Delta}}{\D}
       }
 \qquad
 \infer{\seq{\Gamma,x_0:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
-      {\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\alpha}{x_0}}{C}}
+      {\deduce{\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\alpha}{x_0}}{C}}
+              {\E}}
 \]
-TODO
+Using the inductive hypothesis part 3 to cut \D and \E ($\Delta$ is a
+subformula of the original cut formula \F{\alpha}{\Delta}) gives
+\[
+\seq{\Gamma,\Gamma'}{\tsubst{\subst{\beta}{\alpha}{x_0}}{\gamma}}{C}
+\]
+By congruence with $\beta$ and because $\gamma$ substitutes only for
+variables in $\modeof {\Delta}$,
+\[
+\subst{\beta}{\alpha_0}{x_0} \deq 
+{\subst{\beta}{\tsubst \alpha \gamma}{x_0}} =
+{\tsubst{\subst{\beta}{\alpha}{x_0}}{\gamma}} 
+\]
+So applying Lemma~\ref{lemma:respecteq} gives 
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}.  
 
 If not, then we have
 \[
@@ -647,20 +665,56 @@ so we can apply \FL
 %% \seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\alpha_0}{x_0}}{C}
 %% \]
 
-\item (3 pairs) Right/identity and $\UL$.
+\item (3 pairs) Right rule or identity and $\UL$ (principal or
+  right-commutative).
 
-Principal:
+If $x_0$ is the variable used in the left rule in the right-hand
+derivation, then the left-hand derivation must have been derived by
+$\UR$, and we have
 \[
-\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\U{x.\alpha}{\Delta}{A}}}
-      {  
-        \seq{\Gamma,\Gamma',\Delta}{\subst \alpha {\alpha_0}{x}}{A}
+\begin{array}{l}
+\D \quad = \quad \infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\U{x_0.\alpha}{\Delta}{A}}}
+   {  
+     \deduce{\seq{\Gamma,\Gamma',\Delta}{\subst \alpha {\alpha_0}{x_0}}{A}}{\D'}
+   }
+\\ \\
+\infer{\seq{\Gamma,x_0:\U{x_0.\alpha}{\Delta}{A},\Gamma'}{\beta}{C}}
+      {
+        \begin{array}{l}
+        \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+        {\E_1 :: \seq{\Gamma,x_0:{\U{x_0.\alpha}{\Delta}{A}},\Gamma'}{\gamma}{\Delta}}\\
+        {\E_2 :: \seq{\Gamma,x_0:{\U{x_0.\alpha}{\Delta}{A}},\Gamma',\tptm{z}{A}}{\beta'}{C}}
+        \end{array}
       }
-\qquad
-\infer{\seq{\Gamma,x_0:\U{x.\alpha}{\Delta}{A},\Gamma'}{\beta}{C}}
-      {\ldots}
+\end{array}
 \]
+First, cutting the original \D and the smaller $\E_1$ and $\E_2$ gives 
+\[
+\deduce{{\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}}}{\E_1'}
+\qquad 
+\deduce{{\seq{\Gamma,\Gamma',\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}}}{\E_2'}
+\]
+Cutting $\E_1'$ \emph{into} $\D'$ (the cut formula $\Delta$ is a
+subformula of $\U{x_0.\alpha}{\Delta}{A}$, so it is okay that the derivations are
+not known to be smaller) gives
+\[
+\deduce
+{\seq{\Gamma,\Gamma'}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}}{A}} {\D_1'}
+\]
+Cutting $\D_1'$ into $\E_2'$ gives 
+\[
+\seq{\Gamma,\Gamma'}{\subst{\subst{\beta'}{\alpha_0}{x_0}}{\subst{\alpha}{\alpha_0}{x_0}}{z}}{A}
+\]
+But we have 
+\[
+\subst{\beta}{\alpha_0}{x_0} \deq 
+\subst{(\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z})}{\alpha_0}{x_0} = 
+{\subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z}}
+\]
+by commuting substitutions, which gives the result.  
 
-If the subject of the left rule $x$ is not equal to $x_0$, then we have
+On the other hand, if the subject of the left rule $x$ is not equal to
+$x_0$, then we have
 \[
 \deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
        {
@@ -702,6 +756,10 @@ For the equation, we get
 \subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0}
 \]
 by congruence on the assumed equation, and then commute substitutions.  
+
+Part 2:
+
+Part 3: 
 
 \end{itemize}
 \end{proof}
