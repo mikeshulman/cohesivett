@@ -592,9 +592,116 @@ where the first step is by congruence with $\beta$ on the
 equality about $\alpha_0$ assumed for the case, and the second is by
 properties of substitution ($z$ is not free in $\beta$).  
 
-\item (3 pairs) Right/identity and $\FL$.  
+\item (3 pairs) Right/identity and $\FL$ (principal or
+  right-commutative).  
+
+Suppose the right-hand derivation ends with $\FL$, and the left-hand
+derivation is either a right rule or identity (\dsd{v}) (the cases for
+left-rules were covered above).  
+
+We distinguish cases on whether the \FL\/ case-analyzes $x_0$ or not.  If
+it is, then, because $A_0 is \F{\alpha}{\Delta}$, the left-hand
+derivation must be \FR, and we have a principal cut
+\[
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\F{\alpha}{\Delta}}}
+      {  
+        \alpha_0 \deq \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma,\Gamma'}{\gamma}{\Delta}
+      }
+\qquad
+\infer{\seq{\Gamma,x_0:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\alpha}{x_0}}{C}}
+\]
+TODO
+
+If not, then we have
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D}
+\quad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}
+      { x : \F{\alpha}{\Delta} \in \Gamma,\Gamma' &
+        \deduce{\seq{((\Gamma,x_0:A_0,\Gamma')-x),\Delta}{\subst{\beta}{\alpha}{x}}{C}}{\E}}
+\]
+
+We are going to commute $\D$ under \FL on $x$, so need to reroute uses
+of $x$ to here by the left-inversion lemma
+\[
+\D' :: {\seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\alpha_0}{\alpha}{x}}{A_0}}
+\]
+and $\D'$ is no bigger than \D.
+
+Cutting $\D'$ and $\E$ by the inductive hypothesis gives
+\[
+\seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}
+\]
+Because $x_0$ is not free in $\alpha$, 
+\[
+  {\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}
+= {\subst{\subst{\beta}{\alpha_0}{x_0}}{\alpha}{x}}
+\]
+so we can apply \FL
+\[
+\infer{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}}
+      {\seq{(\Gamma,\Gamma'-x)}{\subst{\subst{\beta}{\alpha_0}{x_0}}{\alpha}{x}}{C}}
+\]
+%% \seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\alpha_0}{x_0}}{C}
+%% \]
 
 \item (3 pairs) Right/identity and $\UL$.
+
+Principal:
+\[
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\U{x.\alpha}{\Delta}{A}}}
+      {  
+        \seq{\Gamma,\Gamma',\Delta}{\subst \alpha {\alpha_0}{x}}{A}
+      }
+\qquad
+\infer{\seq{\Gamma,x_0:\U{x.\alpha}{\Delta}{A},\Gamma'}{\beta}{C}}
+      {\ldots}
+\]
+
+If the subject of the left rule $x$ is not equal to $x_0$, then we have
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+       {
+         \D
+       }
+\quad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}
+      {
+        \begin{array}{l}
+          x : \U{x.\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          \beta \deq \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+          \seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta} \\
+          \seq{\Gamma,x_0:A_0,\Gamma',\tptm{z}{A}}{\beta'}{C}
+        \end{array}
+      }
+\]
+
+By the inductive hypotheses we get 
+\[
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}
+\qquad
+\seq{\Gamma,\Gamma',z:A}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+so we can derive
+\[
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}}
+      {
+        \begin{array}{l}
+          x : \U{x.\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          {\subst{\beta}{\alpha_0}{x_0}} \deq \subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z} \\
+          \seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
+          \seq{\Gamma,\Gamma',\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+        \end{array}
+      }
+\]
+For the equation, we get
+\[
+\subst{\beta}{\alpha_0}{x_0} \deq
+\subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0}
+\]
+by congruence on the assumed equation, and then commute substitutions.  
 
 \end{itemize}
 \end{proof}
