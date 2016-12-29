@@ -64,6 +64,10 @@ The rules for the logic are given in Figure~\ref{fig:1logic}.
 
 explain intended structural properties
 
+explain $\alpha$-conversion
+
+\emph{context descriptor} 
+
 For $\FL$, there are two competing principles: making the rules
 obviously structural, and reducing inessential non-determinism.  Here,
 we choose the later, and treat the assumption of \F{\alpha}{\Delta}
@@ -152,19 +156,196 @@ always reconstruct a positive from what it decays to on the left
 
 \subsubsection{Non-associative Logic}
 
+For a mode theory with one mode \dsd{m}, constants
+\[
+\begin{array}{c}
+\oftp{x : \dsd{m}, y : \dsd{m}}{x \odot y}{\dsd{m}}\\
+\oftp{\cdot}{1}{\dsd{m}}
+\end{array}
+\]
+and no equations, we get a non-associative context.  Writing $A \odot B$
+for \F{x \odot y}{x:A,y:B}, we \emph{cannot}, for example, derive
+\[
+A \odot (B \odot C) \vdash (A \odot B) \odot C
+\]
+To derive 
+\begin{footnotesize}
+\[{\seq{a:\F{x \odot p}{x:A,p:\F{y \odot z}{y:B,z:C}}}
+  {a}
+  {\F{q \odot z}{q:\F{x \odot y}{x:A,y:B},z:C}}}
+\]
+\end{footnotesize}
+we can start by apply \FL\/ twice to reduce the sequent to
+\[
+\seq{x:A,y:B,z:C}{x \times (y \odot z)}{{\F{q \odot z}{q:\F{x \odot y}{x:A,y:B},z:C}}}
+\]
+To apply \FR, we need to find a $\gamma$ such that ${x \times (y \odot
+  z)} \deq (q \odot z)[\gamma]$.  In the absence of any equational
+axioms, the only possible choice is $x/q, (y \odot z)/z$, so we need
+to show
+\[
+\seq{x:A,y:B,z:C}{x}{A \odot B}
+\qquad
+\seq{x:A,y:B,z:C}{y \odot z}{C}
+\]
+which is not possible because the context is not divded correctly.  
+
 \subsubsection{Ordered Logic}
 
+If we add the axioms
+\[
+\begin{array}{c}
+x \odot (y \odot z) \deq (x \odot y) \odot z\\
+x \odot 1 \deq x \deq 1 \odot x
+\end{array}
+\]
+then we get ordered logic (which has none of exchange, weakening, and
+contraction---a monoidal but not symmetric monoidal product).  In
+ordered logic, we can complete the above proof of associativity of
+$\odot$: we need to find a $\gamma$ such that ${x \times (y \odot z)}
+\deq (q \odot z)[\gamma]$, we can now choose $(x \odot y)/q, z/z)$, so
+the subgoals are
+\[
+\seq{x:A,y:B,z:C}{x \odot y}{A \odot B}
+\qquad
+\seq{x:A,y:B,z:C}{z}{C}
+\]
+The latter is identity, and the former is a further \FR\/ and then
+identities: 
+\[
+\infer{\seq{x:A,y:B,z:C}{x \odot y}{\F{x' \odot y'}{x':A,y':B}}}
+      { \begin{array}{l}
+          x \otimes y \deq (x' \odot y')[x/x',y/y'] \\
+          \seq{x:A,y:B,z:C}{x}{A} \\
+          \seq{x:A,y:B,z:C}{y}{B} 
+        \end{array}
+      }
+\]
+
+The expected rules for the left and right implications of ordered logic are
+\[
+\begin{array}{l}
+\infer{\Gamma \vdash A \rightharpoonup B}
+      {\Gamma,A \vdash B}
+\qquad
+\infer{\Gamma,A \rightharpoonup B,\Delta,\Gamma' \vdash C}
+      {\Delta \vdash A &
+       \Gamma,B,\Gamma' \vdash C
+      }
+\\ \\
+\infer{\Gamma \vdash A \leftharpoonup B}
+      {A,\Gamma \vdash B}
+\qquad
+\infer{\Gamma,\Delta,A \leftharpoonup B,\Gamma' \vdash C}
+      {\Delta \vdash A &
+       \Gamma,B,\Gamma' \vdash C
+      }
+\end{array}
+\]
+
+We can define these by 
+\[
+\begin{array}{l}
+A \rightharpoonup B := \U{c.c \odot x}{x:A}{B}\\
+A \leftharpoonup B := \U{c.x \odot c}{x:A}{B}
+\end{array}
+\]
+which have the expected right rules, putting $x$ on the left or right of
+the context descriptor:
+\[
+\infer{\seq{\Gamma}{\beta}{\U{c.c \odot x}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{\beta \odot x}{B}}
+\qquad
+\infer{\seq{\Gamma}{\beta}{\U{c.c \odot x}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{x \odot \beta}{B}}
+\]
+The left rules are
+\[
+\begin{array}{l}
+\infer{\seq{\Gamma} {\beta} {C}}
+      {c:\U{c.c \odot x}{x:A}{B} \in \Gamma &
+       \beta \deq \beta'[c \odot \alpha/z] &
+       \seq{\Gamma}{\alpha}{A} &
+       \seq{\Gamma,z:A}{\beta'}{C}
+      }
+\\ \\ 
+\infer{\seq{\Gamma} {\beta} {C}}
+      {c:\U{c.x \odot c}{x:A}{B} \in \Gamma &
+       \beta \deq \beta'[\alpha \odot c/z] &
+       \seq{\Gamma}{\alpha}{A} &
+       \seq{\Gamma,z:A}{\beta'}{C}
+      }
+\end{array}
+\]
+
+Suppose that $\beta$ is (up to associativity and unit) of the form $x_1
+\odot \ldots \odot x_n$ for distinct variables $x_i$.  Then the
+equality premise for the $\rightharpoonup$ rule will reassociate $\beta$
+as $\beta_1 \odot (c \odot \alpha) \odot \beta_2$, where $\alpha$
+plays the role of $\Delta$ in the ordered logic rule---the resources
+used to prove $A$, which occur to the right of the implication being
+eliminated.  The resources $\beta'$ used for the continuation are
+``$\beta$ with $c \otimes \alpha$ replaced by the result of the
+implication,'' as desired.  While $c$ and any variables used in $\alpha$
+are still in $\Gamma$, permission to use them has been removed from
+$\beta'$---and there is no way to restore such permissions in this mode
+theory.  The rule for $\leftharpoonup$ is the same, but with $\alpha$ on
+the opposite side of $c$.
+
+FIXME: get more formal?
+
+FIXME: comment on non-linear $\beta$?
+
 \subsubsection{Linear Logic}
+
+If extend the mode theory with the equation
+\[
+x \otimes y \deq y \otimes x
+\]
+(and switich notation from $\odot$ to $\otimes$) then we get linear
+logic.  
+For example, we can derive 
+{\seq{p : A \otimes B}{p}{B \otimes A}} in the expected way:
+\[
+\infer[\FL]
+      {\seq{p : \F{x \otimes y}{x:A,y:B}}{p}{\F{x \otimes y}{x:B,y:A}}}
+      {\infer[\FR]
+        {\seq{x:A,y:B}{x \otimes y}{\F{x' \otimes y'}{x':B,y':A}}}
+        {x \otimes y \deq (x' \otimes y')[y/x',x/y'] &
+         \seq{x:A,y:B}{y}{B} &
+         \seq{x:A,y:B}{x}{A}
+        }}
+\]
+
+For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.c \odot
+  x}{x:A}{B} are isomorphic, and both represent $A \multimap B$.
+
+%% The linear logic $\multimap$-left rule (where contexts are implicitly
+%% treated modulo exchange) is
+%% \[
+%% \infer{\Gamma,\Delta,A \multimap B \vdash C}
+%%       {\Delta \vdash A &
+%%        \Gamma,B \vdash C}
+%% \]
+%% We have
+%% \[
+%% \infer{\seq{\Gamma} {\beta} {C}}
+%%       {c:\U{c.c \otimes x}{x:A}{B} \in \Gamma &
+%%        \beta \deq \beta'[c \odot \alpha/z] &
+%%        \seq{\Gamma}{\alpha}{A} &
+%%        \seq{\Gamma,z:A}{\beta'}{C}
+%%       }
+%% \]
+
+\subsubsection{Zero-use variables}
+
+\subsubsection{Multi-use variables}
 
 \subsubsection{Relevant Logic}
 
 \subsubsection{``Non-cartesian BI''} Two monoids
 
 \subsubsection{Adjoint Logic} Non-tensor-preserving left adjoint
-
-\subsubsection{Zero-use variables}
-
-\subsubsection{Multi-use variables}
 
 \subsection{Properties}
 
@@ -865,13 +1046,66 @@ and then cutting for $x$ in the above gives the result.
 
 \begin{theorem}[Fusion] ~
 \begin{enumerate} 
-\item F
-\item UU
-\item UF
+
+\item $\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash
+  \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}$
+
+\item $\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} \dashv \vdash
+  \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}$
+
+\item 
+$\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
+ \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}$
+
 \end{enumerate}
 \end{theorem}
 
+\begin{proof}
+
+\[
+\infer{
+  \seq{z:\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+      {z}
+      {\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}
+}
+{
+  \infer{\seq{\Delta,x:\F{\beta}{\Delta'},\Delta''}{\alpha}{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+        {
+          \infer{\seq{\Delta,\Delta'',\Delta'}{\subst{\alpha}{\beta}{x}}{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+                {\subst{\alpha}{\beta}{x} \deq \tsubst{\subst{\alpha}{\beta}{x}}{\vec{z/z}} & 
+                 \seq{\Delta,\Delta'',\Delta'}{\vec{z/z}}{\Delta,\Delta',\Delta''}
+                }
+        }
+}
+\]
+
+FIXME: obvious append lemma for substitutions
+
+\[
+\infer{
+  \seq{z:{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+      {z}
+      {\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+}
+{  
+\infer{\seq{\Delta,\Delta',\Delta''}
+           {\subst{\alpha}{\beta}{x}}
+           {\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}}
+      {\alpha[\beta/x] = \alpha[\vec{y/y},\beta/x,\vec{z/z}] &
+        \infer{\seq{\Delta,\Delta',\Delta''}{\vec{y/y},\beta/x,\vec{z/z}} {\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+              {\seq{\Delta,\Delta',\Delta''}{\vec{y/y}}{\Delta} & 
+               \infer{\seq{\Delta,\Delta',\Delta''}{\beta}{\F{\beta}{\Delta'}}}
+                     {\beta = \beta[\vec{w/w}] & \seq{\Delta,\Delta',\Delta''}{\vec{w/w}}{\Delta'}} &
+               \seq{\Delta,\Delta',\Delta''}{\vec{z/z}}{\Delta''} }
+      }
+}
+\]
+
+\end{proof}
+
 \subsection{Equational Theory of Proofs}
+
+
 
 \subsection{Categorical Semantics}
 
