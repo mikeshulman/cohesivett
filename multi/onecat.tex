@@ -1,4 +1,5 @@
-
+{
+\newcommand\magicwand{\mathrel{-\mkern-6mu*}}
 \newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
 \newcommand\C{\ensuremath{\mathcal{C}}}
 \newcommand\D{\ensuremath{\mathcal{D}}}
@@ -20,6 +21,8 @@
 \newcommand\FR{\dsd{FR}}
 \newcommand\UL{\dsd{UL}}
 \newcommand\UR{\dsd{UR}}
+\newcommand\lolli\multimap
+\newcommand\la\dashv
 
 \section{1-Multicategories}
 
@@ -337,15 +340,273 @@ For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.c \odot
 %%       }
 %% \]
 
-\subsubsection{Zero-use variables}
-
 \subsubsection{Multi-use variables}
+
+Jcreed names and substructurality, and related work cited there
+Abel relevance tracking
+Channels? 
+
+\[
+\infer{\Gamma \vdash A \to^n B}
+      {{\Gamma, x :^n A} \vdash {B}}
+\qquad
+\infer{\Gamma + f: A \to^n B + (n \cdot \Delta) \vdash C}
+      {\Delta \vdash A &
+       {\Gamma, B} \vdash {C}}
+\]
+where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m} A = x
+:^{n+m} A$ and $n \cdot \Delta$ act pointwise by $n \cdot x^{m} A = x
+:^{nm} A$.
+
+In the linear logic mode theory, we use
+\[
+\begin{array}{c}
+\mathord{\otimes}^0(x) = 1 \\
+\mathord{\otimes}^{1+n}(x) = \otimes^{n}(x) \otimes x \\
+A \to^n B := \U{c.c \otimes (\otimes^n x)}{x:A}{B} \\
+\end{array}
+\]
+
+\[
+\infer{\seq{\Gamma}{\beta}{A \to^n B}}
+      {\seq{\Gamma, x:A}{\beta \otimes \mathord{\otimes}\otimes^n(x)}{B}}
+\]
+
+\[
+\infer{\seq{\Gamma}{\beta}{C}}
+      {\begin{array}{l}
+          f : \U{f.f \otimes \mathord{\otimes}^n(x)}{x : A}{B} \in \Gamma \\
+          \beta \deq \beta'[f \otimes \mathord{\otimes}^n(\alpha)/z] \\
+          \seq{\Gamma}{\alpha}{A} \\
+          \seq{\Gamma, z:B}{\beta'}{C} 
+       \end{array}
+      }
+\]
+
+We can also consider an $n$-use product 
+\[
+A^n := \F{\mathord{\otimes}^n(x)}{x:A}
+\]
+as a positive type, which will decompose $A \to^n B$ as $A^n \lolli B$
+(by Theorem~\ref{thm:fusion}).
+
+This has 
+\[
+\seq{p:A^n}{p}{A \otimes \ldots \otimes A}
+\]
+but not
+\[
+\seq{A \otimes \ldots \otimes A}{p}{p:A^n}
+\]
+
+For example,
+\[
+\infer {\seq{p:\F{x \otimes x}{x:A}}{p}{\F{x \otimes y}{x:A,y:A}}}
+       {\infer {\seq {x:A}{x \otimes x}{\F{x \otimes y}{x:A,y:A}}}
+               {x \otimes x \deq (y \otimes z)[x/y,x/z] &
+                \seq{x:A}{x}{A} &
+                \seq{x:A}{x}{A}}
+       }
+\]
+but
+\[
+\infer {\seq{p:\F{y \otimes z}{y:A,z:A}}{p}{\F{x \otimes x}{x:A}}}
+       {\infer {\seq {y:A,z:A}{y \otimes z}{\F{x \otimes x}{x:A}}}
+               {y \otimes z \deq (x \otimes x)[?/x] &
+                \ldots
+               }
+       }
+\]
+is not derivable, because there is no substitution into $x \otimes x$
+that makes it equal to $y \otimes z$ for distinct $y$ and $z$.  
+
+Conceptually, we think of $A^2$ as expressing a notion of identity: it is
+a \emph{single} $A$ that can be used twice, which is a restriction on
+having two potentially different $A$'s.  
 
 \subsubsection{Relevant Logic}
 
-\subsubsection{``Non-cartesian BI''} Two monoids
+If we start from the mode theory for linear logic and make the context
+operation idempotent, in the sense that for all $x$,
+\[
+x \deq x \otimes x 
+\]
+(two uses of $x$ are the same as one) then we get relevant logic,
+i.e. exchange and contraction but not weakening.
 
-\subsubsection{Adjoint Logic} Non-tensor-preserving left adjoint
+Given (with $x$ and $y$ not occuring in $\alpha$), we can prove
+contraction as follows:
+\[
+\infer[Lemma~\ref{lemma:respecteq}]
+      {\seq{\Gamma,z:A}{\alpha \otimes z}{C}}
+      {\infer[Corollary~\ref{cor:controver}]{\seq{\Gamma,z:A}{\alpha \otimes z \otimes z}{C}}
+                                    {\seq{\Gamma,x:A,y:A}{\alpha \otimes x \otimes y}{C}}}
+\]
+
+We discuss weakening in Section~\ref{sec:?} below.  
+
+\subsubsection{``Relevant BI''} Bunched implication~\citep{ohearnpym}
+has two context-forming operations $\Gamma,\Gamma'$ and
+$\Gamma;\Gamma'$, along with corresponding products and implications.
+Both are associative, unitial, and commutative, but $;$ has weakening
+and contraction while $,$ does not.  A context is represented by a tree
+such as $(x:A, y:B);(z : C, w : D)$ (considered modulo the laws), and
+the notation $\Gamma[\Delta]$ is used to refer to a tree with a hole
+$\Gamma[-]$ that has $\Delta$ as a subtree at the hole.  In sequent
+calculus style, the rules for the product and implication corresponding
+to $,$ --- written $*$ and $\magicwand$ --- are
+\[
+\begin{array}{l}
+\infer{\Gamma[A * B] \vdash C}
+      {\Gamma[A , B] \vdash C}
+\qquad
+\infer{\Gamma,\Delta \vdash A * B}
+      {\Gamma \vdash A &
+       \Delta \vdash B}
+\\ \\
+\infer{\Gamma \vdash A \magicwand B}
+      {\Gamma, A \vdash B}
+\qquad
+\infer{\Gamma[A \magicwand B, \Delta] \vdash C}
+      {\Delta \vdash A &
+       \Gamma[B] \vdash C}
+\end{array}
+\]
+There are similar rules for a product and implication based on $;$, and 
+structural rules of weakening and contraction for $;$.  
+
+To model the basic structure of two context-forming operations, we can
+consider a mode theory with two commutative monoids
+\[
+\begin{array}{l}
+x  : \dsd{m}, y  : \dsd{m} \vdash x \otimes y : \dsd{m} \\
+\cdot \vdash 1 : m \\
+x \otimes (y \otimes z) \deq (x \otimes y) \otimes z\\
+x \otimes 1 \deq x \deq 1 \otimes x\\
+x \otimes y \deq y \otimes x \\
+x  : \dsd{m}, y  : \dsd{m} \vdash x * y : \dsd{m} \\
+\cdot \vdash \dsd{I} : \dsd{m} \\
+x * (y * z) \deq (x * y) * z\\
+x * \dsd{I} \deq x \deq \dsd{I} * x\\
+x * y \deq y * x \\
+\end{array}
+\]
+and define products and implications using the monoids:
+\[
+\begin{array}{l}
+A * B := \F{x * y}{x : A, y : B} \\
+A \magicwand B := \U{c.c * x}{x : A}{B} \\
+A \otimes B := \F{x \otimes y}{x : A, y : B}\\
+A \lolli B := \U{c.c \otimes x}{x : A}{B}\\
+\end{array}
+\]
+A context descriptor such as $(x \otimes y) * (z \otimes w)$ captures
+the ``bunched'' structure of a BI context, and substitution for a
+variable models the hole-filling operation $\Gamma[\Delta]$.  The left
+rules act on a leaf or subtree: the left rule for $*$
+\[
+\infer{\seq{\Gamma,z:A*B,\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',x:A,y:B}{\subst{\beta}{x * y}{z}}{C}}
+\]
+replaces the leaf where $z$ occurs in the tree $\beta$ with $x*y$, while
+the left rule for $\magicwand$
+\[
+\infer{\seq{\Gamma}{\beta}{C}}
+      {
+        c : A \magicwand B \in \Gamma &
+        \beta \deq \beta'[ c * \alpha / z] & 
+        \seq{\Gamma}{\alpha}{A} &
+        \seq{\Gamma,z:B}{\beta'}{C} 
+      }
+\]
+isolates a subtree containing the implication $c$ and resources $*$'ed
+with it, uses those resources to prove $A$, and then replaces the
+subtree with the variable $z$ standing for the result of the
+implication.
+
+If we additionally make $\otimes$ idempotent ($x \otimes x \deq x$),
+this encodes the contraction for $;$ that is present in BI; we discuss
+weakening below.
+
+\subsubsection{Exponentials}  As an example of a mode theory with more
+than one mode, we can consider a pair of adjoint functors between two
+symmetric monoidal categories.  First, we have
+\[
+x  : \dsd{m}, y  : \dsd{m} \vdash x \otimes y : \dsd{m} \\
+\cdot \vdash 1_{\dsd m} : m \\
+x  : \dsd{n}, y  : \dsd{n} \vdash x \odot y : \dsd{n} \\
+\cdot \vdash 1_{\dsd n} : \dsd{n} \\
+\]
+with associativity, unit, and commutativity equations for both.  
+Next, we have
+\[
+x : \dsd{m} \vdash \dsd{f}(x) : \dsd{n}
+\]
+This creates types 
+\[
+\wftype {\F{f(x)}{x : A_{\dsd{m}}}}{\dsd{n}}
+\qquad
+\wftype {\U{x.f(x)}{\cdot}{A_{\dsd{n}}}}{\dsd{m}}
+\]
+which satisfy
+\[
+\F{f(x)}{x:-} \la {\U{x.f(x)}{\cdot}{-}}
+\]
+In terms of provability (deferring discussion of equality of proofs
+until below), this follows from \FL\/ and \FR\/ and their invertibility
+(Corollary~\ref{cor:Uinvertibility}, Lemma~\ref{lemma:finvert}):
+\[
+\infer={\seq{p:\F{f(x)}{x:A}}{p}{B}}
+       {\infer={\seq{x:A}{f(x)}{B}}
+               {\seq{x:A}{x}{\U{x.f(x)}{\cdot}{B}}}}
+\]
+
+Analogously to the adjoint decomposition of linear
+logic~\citep{bentonwadler96adjoint}, we will view \dsd{m} as a mode of
+linear propositions, and \dsd{n} as a mode of relevant proposition, and
+add contraction for $\odot$:
+\[
+(x \odot x) \deq x
+\]
+The comonad of the adjunction
+\[
+!^{\dsd{c}} A := \F{\dsd{f(x)}}{x:\U{c.\dsd{f}(c)}{\cdot}{A}}
+\]
+both takes and produces a linear proposition, which should be
+contractibile, in the same way that \citet{bentonwadler96adjoint} obtain
+both weakening and contraction for $!$ from cartesianness the analogous
+mode in their system.  
+The derivation begins
+\[
+\infer{\seq{p : !^{\dsd{c}} A}{p}{!^{\dsd{c}} A \otimes !^{\dsd{c}} A}}
+      {\infer{\seq{{x:\U{c.\dsd{f}(c)}{\cdot}{A}}}{f(x)}{{!^{\dsd{c}} A \otimes !^{\dsd{c}} A}}}
+             {\begin{array}{l}
+                 f(x) \deq (x' \otimes y') [f(x) / x' , f(x) / y'] \\
+                 \seq{x:\U{c.\dsd{f}(c)}{\cdot}{A}}{f(x)}{!^{\dsd c} A} \\
+                 \seq{x:\U{c.\dsd{f}(c)}{\cdot}{A}}{f(x)}{!^{\dsd c} A} 
+               \end{array}
+             }}
+\]
+and we can derive \seq{x:\U{c.\dsd{f}(c)}{\cdot}{A}}{f(x)}{!^{\dsd c} A}
+by \FR\/ with identity in the premise (it is of the form
+$\seq{x:C}{f(x)}{\F{f(x)}{x:C}}$).  The key point is that the first
+premise, which reduces to
+\[
+\dsd{f}(x) \deq \dsd{f}(x) \otimes \dsd{f}(x)
+\]
+can be deduced from 
+\[
+\dsd{f}(x) \deq \dsd{f}(x \odot x) \deq \dsd{f}(x) \otimes \dsd{f}(x)
+\]
+by contraction for $\odot$ \emph{if we have an axiom that \dsd{f}
+  preserves the monoidal product}
+\[
+\dsd{f}(x \odot y) \deq \dsd{f}(x) \otimes \dsd{f}(y)
+\]
+The fact that \dsd{F} preserves the context ``comma'' is implicit in the
+treatment of the context in \citep{bentonwadler96adjoint,reed09adjoint},
+but an explicit choice here, to allow mode theories with non-monoidal
+left adjoints.  
 
 \subsection{Properties}
 
@@ -1001,7 +1262,7 @@ Because $\gamma$ substitutes for $\Delta$ and not $\Gamma$,
 \]
 \end{proof}
 
-\begin{corollary}[Contraction over contraction]
+\begin{corollary}[Contraction over contraction] \label{cor:controver}
 \item If
 \seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
 then
@@ -1110,3 +1371,6 @@ FIXME: obvious append lemma for substitutions
 \subsection{Categorical Semantics}
 
 TODO: Mitchell
+
+
+}
