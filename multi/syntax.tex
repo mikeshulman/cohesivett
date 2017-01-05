@@ -1,0 +1,314 @@
+\newcommand\wfsp[4]{\ensuremath{#1 \vdash #2 \spr_{#4} #3}}
+
+\section{Sequent Calculus}
+
+\subsection{Mode Theories}
+
+\begin{figure}
+\[
+\begin{array}{llll}
+\text{modes} & p & & (constants) \\
+\text{mode contexts} & \psi & ::= & \cdot \mid \psi,\tptm{x}{p} \\
+%% \text{context descriptors} & \alpha,\beta & ::= & x \mid \dsd{c}(\alpha_1,\ldots,\alpha_n) \\
+%% \text{substitutions} & \gamma,\delta & ::= & \cdot \mid \gamma,\alpha/x\\
+\end{array}
+\]
+
+\framebox{Context descriptors/mode morphisms \oftp{\psi}{\alpha}{p}}
+
+\[
+\infer{\oftp{\psi}{x}{p}}
+      {x:p \in \psi}
+\quad
+\infer{\oftp{\psi}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
+      {\dsd{c} : p_1,\ldots,p_n \to q \in \Sigma &
+       \oftp{\psi}{\alpha_i}{p_i}
+      }
+\quad
+\infer{\oftp{\psi}{\alpha_i/x_i}{\overline{x_i:q_i}}}
+      {\oftp{\psi}{\alpha_i}{q_i}}
+\]
+
+\framebox{Structural properties/mode transformations \wfsp{\psi}{\alpha}{\alpha'}{p}}
+
+\[
+\begin{array}{c}
+\infer{\wfsp{\psi}{\alpha}{\alpha}{p}}{}
+\qquad
+\infer{\wfsp{\psi}{\alpha_1}{\alpha_3}{p}}
+      {\wfsp{\psi}{\alpha_1}{\alpha_2}{p} &
+       \wfsp{\psi}{\alpha_2}{\alpha_3}{p} &
+      }
+\\ \\
+\infer{\wfsp{\psi,\psi'}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
+      {\wfsp{\psi,x:p,\psi'}{\beta}{\beta'}{q} &
+       \wfsp{\psi,\psi'}{\alpha}{\alpha'}{p}}
+\qquad
+\infer{\wfsp{\psi}{\alpha}{\alpha'}{p}}
+      {\alpha \spr \alpha' \in \Sigma}
+\end{array}
+\]
+
+\label{fig:2multicategory}
+\caption{Syntax for mode theories}
+\end{figure}
+
+The first layer of the logic is a type theory whose types we will call
+\emph{modes}, and whose terms we will call \emph{context descriptors} or
+\emph{mode morphisms}.  We begin with a simple type theory with
+variables and constants, as described in
+Figure~\ref{fig:2multicategory}.  We assume a fixed signature $\Sigma$
+of constants \dsd{c}, and we write $\oftp{\psi}{\alpha}{q}$ for mode
+morphism well-formedness and $\oftp{\psi}{\gamma}{\psi'}$ for
+substitution well-formedness.  The context $\psi$ here enjoys
+(cartesian) structural properties (weakening, exchange, contraction).
+Simultaneous substitution into terms is defined as usual.
+
+Next, we need a notation for presenting object-logic structural
+properties, which, as described above, will in general be directed
+transformations between context descriptors.  For
+\oftp{\psi}{\alpha,\alpha'}{p}, we define a judgement
+     {\wfsp{\psi}{\alpha}{\alpha'}{p}} representing such
+     transformations; it is the least precongruence closed under some
+     axioms in the signature $\Sigma$.  For example, to say that a mode
+     $p$ with a context monoid $(\odot,1)$ is affine, we would specify
+     in $\Sigma$ a structural property \wfsp{x:p}{x}{1}{p}.  Then, using
+     the rules in the figure, we can for example derive a transformation
+     $(x \odot y) \spr (1 \odot y) \spr y$ that, when applied
+     (contravariantly) to a sequent, will allow weakening $y$ to $x
+     \odot y$.
+
+In Section~\ref{sec:equalityofderiv}, where we discuss equality of
+sequent calculus derivations, we will need an equational theory between
+two structural property derivations $s \deq s' ::
+\wfsp{\psi}{\alpha}{\alpha'}{q}$.  Because this equational theory does
+not influence provability in the sequent calculus, only identity of
+proofs, we defer the details.
+
+One choice in the design of this language of context descriptors is how
+to handle symmetric structural properties.  One possibility is to
+present a desired equation $\alpha = \alpha'$ as an isomorphism, with
+axioms $s : \alpha \spr \alpha'$ and $s' : \alpha' \spr \alpha$ (and,
+writing $s_1;s_2$ for derivations by the above transitivity rule,
+equations $s;s' = 1_{\alpha}$ and $s';s = 1_{\alpha'}$).  While this is
+conceptually and technically sufficient, we have found it helpful in
+examples to also use a ``strict'' equality of context descriptors which
+is implicitly respected by all types and judgements.  This simplifies
+the description of some situations, but the difference is important
+mainly at the level of identity of derivations rather than
+provability---for example, we can make a binary operation $\odot$ into a
+strict monoid, rather than adding associator and unitor isomorphisms,
+which requires more equations between structural properties.  To support
+this, we allow $\Sigma$ to contain axioms for equations $\alpha \deq
+\beta$ and define a judgement $\psi \vdash \alpha \deq \beta : p$ as the
+least congruence containing these axioms (i.e. add symmetry to the rules
+for transformations).  Because the context descriptors and their
+equality are defined independently of any subsequent judgements, we take
+the liberty of suppressing this equality using $\alpha$ to refer to a
+context-descriptor-modulo-\deq---that is, we assume a metatheory with
+quotient sets/types, and use meta-level equality for object-level
+equality, as recently advocated by \citet{altenkirchkaposiXXpopl}.  For
+example, because the judgement \wfsp{\psi}{\alpha}{\beta}{p} is indexed
+by equivalence classes of context descriptions, the reflexivity rule
+above implicitly means $\alpha \deq \beta$ implies $\alpha \spr \beta$.  
+
+A signature $\Sigma$ consisting of some number of constants $c$,
+equations $\alpha \deq \beta$, transformations $\alpha \spr \beta$ (and
+equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
+
+\subsection{Sequent Calculus}
+
+\begin{figure}
+\[
+\begin{array}{l}
+%% \begin{array}{llll}
+%% \text{Types} & A & ::= & P \mid \F{\alpha}{\Delta} \mid \U{\alpha}{\Delta}{A} \\
+%% \end{array}
+%% \\ \\
+\framebox{Types $A,B,C$ \quad \wftype{A}{p}}
+\qquad
+\infer{\wftype{P}{p}}{}
+\\ \\
+\infer{\wftype{\F{\alpha}{\Delta}}{q}}
+      {\oftp{\psi}{\alpha}{q} &
+        \wfctx{\Delta}{\psi}}
+\qquad
+\infer{\wftype{\U{x.\alpha}{\Delta}{A}}{q}}
+      {\oftp{\psi,x:q}{\alpha}{p} &
+        \wfctx{\Delta}{\psi} &
+        \wftype{A}{p}
+      }
+\\ \\
+\framebox{Contexts $\Gamma,\Delta$ \quad \wfctx{\Gamma}{\psi}}
+\qquad
+\infer{\wfctx{\cdot}{\cdot}}{}
+\qquad
+\infer{\wfctx{\Gamma,x:A}{\psi,x:p}}
+      {\wfctx{\Gamma}{\psi} &
+        \wftype{A}{p}}
+\\ \\
+\framebox{\seq{\Gamma}{\alpha}{A}}
+\qquad
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+      {x:P \in \Gamma & \beta \spr x}
+\\ \\
+\infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
+        \beta \spr \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+\quad
+\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+%% \infer{\seq{\Gamma}{\beta}{C}}
+%%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
+%%         \oftp{\modeof{\Gamma},{x'} : {\modeof{\F{\alpha}{\Delta}}}}{\beta'}{\modeof{C}} &
+%%         \beta \deq \tsubst{\beta'}{x/x'} &
+%%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
+\\ \\
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\qquad
+\infer[\UL]{\seq{\Gamma}{\beta}{C}}
+      {\begin{array}{l}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
+          \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+          \seq{\Gamma}{\gamma}{\Delta} \\
+          \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+       \end{array}
+      }
+\\ \\
+\framebox{\seq{\Gamma}{\gamma}{\Delta}}
+\qquad
+\infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
+      {}
+\qquad
+\infer[\_,\_]{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\seq{\Gamma}{\gamma}{\Delta} &
+       \seq{\Gamma}{\alpha}{A}
+      }
+\end{array}
+\]    
+\caption{Sequent Calculus}
+\label{fig:sequent}
+\hrule
+\end{figure}
+
+The whole sequent calculus is parametrized by a mode theory $\Sigma$,
+which is an implicit argument to all of the definitions in
+Figure~\ref{fig:sequent}.  The judgement assigns each proposition/type
+$A$ a mode $p$.  Encodings of non-modal logics will generally only make
+use of one mode, while modal logics use different modes to represent
+different notions of truth, such as the linear and cartesian categories
+in \citet{bentonwadler96adjoint} and the true/valid/lax judgements in
+\citet{pfenningdavies}.  The next judgement assigns each context
+$\Gamma$ a mode context $\psi$ pointwise.  Formally, we think of
+contexts as ordered: we do not regard $x:A,y:B$ and $y:B,x:A$ and the
+same context, though we will have an admissible exchange rule that
+passes between derivations of one and the other.
+
+The sequent judgement \seq{\Gamma}{\alpha}{A} relates a context
+$\wfctx{\Gamma}{\psi}$ and a type $\wftype{A}{p}$ and context descriptor
+\oftp{\psi}{\alpha}{p}.  Because $\wfctx{\Gamma}{\psi}$ means that each
+variable in $\Gamma$ is in $\psi$, where $x : A_i \in \Gamma$ implies $x
+: p_i$ in $\psi$ with \wftype{A_i}{p_i}, we think of $\Gamma$ as binding
+variable names both in $\alpha$ and for use in the derivation.
+
+As discussed in the introduction, a guiding principle is to make the
+following rules admissible (see Section~\ref{sec:synmeta} for details),
+which express respect for object-logic structural properties and
+structurality-over-structurality:
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma}{\alpha}{A}}
+      {\alpha \spr \beta &
+       \seq{\Gamma}{\beta}{A}}
+\qquad
+\infer{\seq{\Gamma,x:A}{x}{A}}{}
+\qquad
+\infer{\seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}
+    {\seq{\Gamma,x:A}{\beta}{B} &
+     \seq{\Gamma}{\alpha}{A}}
+\\ \\
+\infer{\seq{\Gamma,y:A}{\alpha}{C}}
+      {\seq{\Gamma}{\alpha}{C}}
+\quad
+\infer{\seq{\Gamma,y:B,x:A}{\alpha}{C}}
+      {\seq{\Gamma,x:A,y:B}{\alpha}{C}}
+\qquad
+\infer{\seq{\Gamma,x:A}{\subst \alpha x y}{C}}
+      {\seq{\Gamma,x:A,y:A}{\alpha}{C}}
+\end{array}
+\]
+
+We now explain the rules for the sequent calculus; the reader may wish
+to refer to the examples in Section~\ref{sec:exampleencodings} in
+parallel with this high-level description.
+
+We assume atomic propositions $P$ are given a specified mode $p$, and
+state the identity rule only for atoms, to check that the other
+instances are admissible.  If we had states the identity rule as
+\seq{\Gamma,x:P}{x}{P}, then respect for object-logic structural
+properties would not be admissible, so we allow a $\beta \spr x$ premise
+here.  Using a structural property at a leaf of a derivation is common
+in e.g. affine logic, where the derivation of $\beta \spr x$ would use
+weakening to forget any additional resources.  
+
+Next, we consider the \F{\alpha}{\Delta} type.  Syntactically, we view
+the context $\Delta = x_1:A_1,\ldots,x_n:A_n$ where \wftype{A_i}{p_i} as
+binding the variables $x_i:p_i$ in $\alpha$, so for example
+\F{\alpha}{x:A,y:B} and \F{\alpha[x \leftrightarrow x']}{x':A,y:B} are
+$\alpha$-equivalent types (in de Bruijn form we would write
+\F{\alpha}{A_1,\ldots,A_n} and use indices in $\alpha$).  The type
+formation rule says that \dsd{F} moves covariantly along a mode morphism
+$\alpha$, representing a combination of the types in $\Delta$ according
+to the context descriptor $\alpha$.  A typical binary instance of
+\dsd{F} is a multiplicative product ($A \otimes B$ in linear logic),
+which, given a binary context descriptor $\odot$ as in the introduction,
+is written \F{x \odot y}{x:A,y:B}.  A typical nullary instance is a unit
+(1 in linear logic), written \F{1}{}.  A typical unary instance is the
+\dsd{F} connective of adjoint logic, which for a unary context
+descriptor $\dsd{f} : \dsd{p} \to \dsd{q}$ is written
+\F{\dsd{f}(x)}{x:A}.
+
+The rules for our \dsd{F} connective capture the common pattern between
+all of these examples.  On the left, \F{\alpha}{\Delta} ``decays'' into
+$\Delta$, but \emph{marking the uses of resources in $\Delta$ with
+  $\alpha$ by the substitution \subst{\beta}{\alpha}{x}}.  We assume
+that $\Delta$ is $\alpha$-renamed to avoid collision with $\Gamma$ (the
+proof term here would be a ``\dsd{split}'' that binds variables for each
+position in $\Delta$).  On the right, the \FR rule says that you must
+rewrite (using structural properties) the context descriptor to have an
+$\alpha$ at the outside, with a mode substitution $\gamma$ that divides
+the exisitng resources up between the positions in $\Delta$, and then
+prove each formula in $\Delta$ using the specified resources.  We leave
+the typing of $\gamma$ implicit, though there is officially a
+requirement $\oftp{\psi}{\gamma}{\psi'}$ where $\wfctx{\Gamma}{\psi}$
+and $\wfctx{\Delta}{\psi'}$, as required for the second premise to be
+well-formed.  Another way to understand this rule is to begin with
+the ``axiomatic \FR'' 
+\[
+{\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+\]
+which says that there is a map from $\Delta$ to \F{\alpha}{\Delta} along
+$\alpha$.  Then, in the same way that a typical injection rule for
+coproducts builds a precomposition into an ``axiomatic injection'' such
+as $\dsd{inl} :: A \vdash A + B$, the \FR\/ rule builds a precomposition
+with $\seq{\Gamma}{\gamma}{\Delta}$ and then a structural rule $\beta
+\spr \alpha[\gamma]$ into the ``axiomatic'' version.  
+
+
+Finally, the rules for substitutions are pointwise.
+
+One subtle point about $\FL$ is that there are two competing principles:
+making the rules ``obviously'' structural-over-structural, and reducing
+inessential non-determinism.  Here, we choose the later, and treat the
+assumption of \F{\alpha}{\Delta} affinely, removing it from the context
+when it is used.  It will turn out that the judgement nonetheless enjoys
+contraction-over-contraction
+(Corollary~\ref{thm:contraction-over-contraction}), because contraction
+for negatives is built into the \UL-rule, and contraction for positives
+follows from this and the fact that we can always reconstruct a positive
+from what it decays to on the left (c.f. how purely positive formulas
+have contraction in linear logic).
+
