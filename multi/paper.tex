@@ -12,18 +12,52 @@
 \usepackage{../drl-common/typesit}
 \usepackage{../drl-common/typescommon}
 \usepackage{../drl-common/theorem-envs}
-\usepackage[square,numbers,sort]{natbib}
+\usepackage[square,sort]{natbib}
 %% \usepackage{arydshln}
 \usepackage{graphics}
 \usepackage{natbib}
 \usepackage{url}
 \usepackage{relsize}
+\usepackage{tipa}
 
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathmorphing}
 
 \usepackage{fancyvrb}
 \newcommand{\ttt}[1]{\texttt{#1}}
+
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
+\newcommand{\sh}{\text{\textesh}}
+
+\newcommand\magicwand{\mathrel{-\mkern-6mu*}}
+\newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
+\newcommand\C{\ensuremath{\mathcal{C}}}
+\newcommand\D{\ensuremath{\mathcal{D}}}
+\newcommand\E{\ensuremath{\mathcal{E}}}
+\newcommand\deq{\ensuremath{\equiv}}
+\newcommand\spr{\ensuremath{\Rightarrow}} %% structural property/2-cell
+\newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
+\newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \mid #3)}}
+\newcommand\Fsymb[0]{\dsd{F}}
+\newcommand\Usymb[0]{\dsd{U}}
+\newcommand\tsubst[2]{\ensuremath{#1[#2]}}
+\renewcommand\subst[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\wftype[2]{\ensuremath{#1 \,\, \dsd{type}_{#2}}}
+\renewcommand\wfctx[2]{\ensuremath{#1 \,\, \dsd{ctx}_{#2}}}
+\newcommand\modeof[1]{\ensuremath{\hat{#1}}}
+\newcommand\many[1]{\ensuremath{\overline{#1}}}
+\renewcommand{\oftp}[3]{\ensuremath{#1 \, \vdash #2 \, \dcd{:} \, #3}}
+\newcommand\FL{\dsd{FL}}
+\newcommand\FR{\dsd{FR}}
+\newcommand\UL{\dsd{UL}}
+\newcommand\UR{\dsd{UR}}
+\newcommand\lolli\multimap
+\newcommand\la\dashv
 
 \newcommand{\ignore}[1]{}
 
@@ -51,10 +85,34 @@
 \maketitle
 
 \begin{abstract}
+Many intuitionistic linear logics, affine logics, relevant logics,
+ordered logics, and modal logics can be seen as a restriction on the
+allowed proofs in a basic structural logic/lambda-calculus.  For
+example, substructural logics remove structural properties such as
+weakening, exchange, and/or contraction, while modal logics place
+restrictions on positions in which certain kinds of variables can be
+used.  We give a new sequent calculus that makes this idea precise,
+describing a substructural or modal logic as a structural proof that
+obeys some constraints on the use of the context.  Because the sequent
+calculus is parametrized by a \emph{mode theory} describing the
+  constraints, a single generic proof of cut admissibility can be
+  instantiated to all of the above logics, as well as more complex
+  variants, including n-linear variables, bunched implications, and
+  subexponentials.  This codifies the common patterns in cut proofs as
+  an abstraction.  Semantically, the new sequent calculus corresponds to
+  a functor between cartesian multicategories, and the logical
+  connectives make this function into a bifibration.  We first describe
+  this idea in the context of fibrations of 1-dimensional
+  multicategories, which covers many of the examples above where all
+  structural properties are equalities between constraints
+  (e.g. associativity or exchange).  Next, we generalize to fibrations
+  between 2-dimensional multicategories, which additionally allows
+  directed structural properties (e.g. weakening).  The resulting
+  framework can be used both to understand logics from the literature
+  and to design new substructural and modal logics.
 \end{abstract}
 
-\section{Introduction}
-
+\input{intro}
 \input{onecat}
 
 \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
