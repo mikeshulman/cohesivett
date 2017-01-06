@@ -578,7 +578,7 @@ derivations.\footnote{Because the context monoids are cartesian
 
 \subsection{Subexponentials}
 
-Subexponential~\citep{danos,nigam} extends linear logic with a family of
+Subexponentials~\citep{danos,nigam} extend linear logic with a family of
 comonads $!_a A$.  All of the comonads are monoidal ($!_a A \otimes !_a
 B \vdash !_a(A \otimes B)$ and $1 \vdash !_a A$), and there is a
 preorder $a \le b$ such that $!_b A \vdash !_a A$.  Each $!_a$ is
@@ -642,7 +642,98 @@ $\dsd{F}_{al}(C)$, which has whatever structural properties mode $a$ has.
 %% A$ is defined to be $\F{\alpha} {x : \U{x.\alpha}{\cdot}{A}}$ for the
 %% $\oftp{x : i}{\alpha}{\dsd{l}}$.
 
-
 \subsection{Monads}
 
+When we have two modes \dsd{t} and \dsd{p} with a context descriptor
+\oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}, the type $\Dia{\dsd{g}}{A} :=
+\U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$ will be a monad.  It does
+not automatically have a tensorial strength: if we have a commutative
+monoid $(\otimes_\dsd{t},1_{\dsd t})$ and try to derive
+\[
+\infer[\UR]
+      {\seq{x : A, y : \Dia{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Dia{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
+      {\infer[\UL]
+        {\seq{x : A, y : \Dia{\dsd{g}}{B}}{\dsd{g}(x \otimes_{\dsd t} y)}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+        {\dsd{g}(x \otimes_{\dsd t} y) \spr \subst{\beta'}{\dsd{g}(y)}{z} &
+          \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}
+        }}
+\]
+we are stuck, because there is no way to rewrite $\dsd{g}(x
+\otimes_{\dsd t} y)$ as a term containing $\dsd{g}(y)$.  If
+$(\otimes_t,1_t)$ is affine, then we can weaken away $x$ and take
+$\beta' = z$---the \UL\/ rule thus captures the context-clearing of the
+\Dia{}{}-left rule in \citep{pfenningdavies}---but then in the
+right-hand premise we will only have access to $z$, not $x$, and cannot
+complete the derivation.  
 
+\newcommand\ttp[2]{#1 \otimes_{\dsd {tp}} #2}
+\newcommand\tvp[2]{#1 \otimes_{\dsd {vp}} #2}
+
+One way to add the strength is to add an asymmtric product of a
+\dsd{t}-mode and \dsd{p}-mode context:
+\[
+\begin{array}{ll}
+\oftp{x : \dsd{t}, y : \dsd{p}}{\ttp x y}{\dsd{p}}
+& \dsd{g}(x \otimes_{\dsd t} y) \deq \ttp x {\dsd{g}(y)}\\\\
+\ttp {x \otimes_{\dsd t} y} z \deq \ttp x {\ttp y z}
+& \ttp {\dsd{1}} y \deq y
+\end{array}
+\]
+The equations make this into a monoid action of the \dsd{t}-contexts on
+the \dsd{p}-contexts, and allow for ``isolating'' any one $x_i$ in
+$\dsd{g}(x_1 \otimes_{\dsd t} \ldots \otimes_{\dsd t} x_n)$ as the
+designated variable under a \dsd{g}.  Using this (and switching notation
+from \Dia{\dsd{g}}{A} to the \Crc{\dsd{g}}{A} that is typically used for
+strong monads), we can prove
+\[
+\infer[\UR]
+      {\seq{x : A, y : \Crc{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Crc{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
+      {\infer[\UL]
+        {\seq{x : A, y : \Crc{\dsd{g}}{B}}{\dsd{g}(x \otimes_{\dsd t} y)}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+        {\dsd{g}(x \otimes_{\dsd t} y) \spr \subst{(\ttp x z)}{\dsd{g}(y)}{z} &
+          \infer[\FL]
+                {\seq{x:A,y : \Crc{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\ttp x z}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+                {\infer[\UL]
+                       {\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{\ttp{x}{\dsd{g}(z')}}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+                       {{\ttp{x}{\dsd{g}(z')}} \spr \dsd{g}(x \otimes_{\dsd t} z') &
+                         \infer[\FR]{\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{x \otimes_{\dsd t} z'}{{A \otimes_{\dsd t} B}}}{}
+                       }
+        }}}
+\]
+
+An advantage of this description is that it scales to the
+``$\Box$-strong
+$\Diamond$''~\citep{pfenningdavies,alechina+01categoricals4}, which has
+a strength only for boxed formulas ($\Bx{} A \otimes \Dia{} B \vdash
+\Dia{}(\Bx{} A \otimes B)$).  We use 3 modes \dsd{v},\dsd{t},\dsd{p} and
+represent the $\Box$ as the comonad of a context descriptor
+\oftp{x:\dsd{v}}{\dsd{f}(x)}{\dsd{t}} (with idempotent cartesian monoids
+on \dsd{v} and \dsd{t} and \dsd{f} laxly monoidal as above), and the
+$\Diamond$ as the monad of a \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}.  We
+have a mixed-mode product between \dsd{v} and \dsd{p}
+\[
+\begin{array}{ll}
+\oftp{x : \dsd{v}, y : \dsd{p}}{\tvp x y}{\dsd{p}}
+& \dsd{g}(\dsd{f}(x) \times_{\dsd t} y) \deq \tvp x {\dsd{g}(y)}\\
+\ttp {(x \times_{\dsd v} y)} z \deq \ttp x {\tvp y z}
+& \tvp {\dsd{1}} y \deq y
+\end{array}
+\]
+Thus, if we have a \dsd{t}-context 
+\[
+\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots \times_{\dsd t})
+\]
+(representing a context with valid/boxed $x$'s and true $y$'s) we can
+rewrite it to
+\[
+\tvp {(x_1 \times_{\dsd v} \ldots \times_{\dsd v} x_n)} \dsd{g}(y)
+\]
+by monoidalness of \dsd{f}, weakening away the other $y$'s, and the
+isolation equation.  Then we can apply \UL to $y_i$, as in the
+$\Diamond$-left rule~\citep{pfenningdavies}.  
+
+FIXME: probably should show, not tell
+
+\subsection{Spatial Type Theory}
+
+FIXME introduce F/U abbrevations
