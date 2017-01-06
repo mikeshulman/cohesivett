@@ -209,10 +209,13 @@ passes between derivations of one and the other.
 
 The sequent judgement \seq{\Gamma}{\alpha}{A} relates a context
 $\wfctx{\Gamma}{\psi}$ and a type $\wftype{A}{p}$ and context descriptor
-\oftp{\psi}{\alpha}{p}.  Because $\wfctx{\Gamma}{\psi}$ means that each
-variable in $\Gamma$ is in $\psi$, where $x : A_i \in \Gamma$ implies $x
-: p_i$ in $\psi$ with \wftype{A_i}{p_i}, we think of $\Gamma$ as binding
-variable names both in $\alpha$ and for use in the derivation.
+\oftp{\psi}{\alpha}{p}, while the substitution relates
+$\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and
+$\oftp{\psi}{\gamma}{\psi'}$. Because $\wfctx{\Gamma}{\psi}$ means that
+each variable in $\Gamma$ is in $\psi$, where $x : A_i \in \Gamma$
+implies $x : p_i$ in $\psi$ with \wftype{A_i}{p_i}, we think of $\Gamma$
+as binding variable names both in $\alpha$ and for use in the
+derivation.
 
 As discussed in the introduction, a guiding principle is to make the
 following rules admissible (see Section~\ref{sec:synmeta} for details),
@@ -243,16 +246,15 @@ structurality-over-structurality:
 
 We now explain the rules for the sequent calculus; the reader may wish
 to refer to the examples in Section~\ref{sec:exampleencodings} in
-parallel with this high-level description.
+parallel with this abstract description.
 
 We assume atomic propositions $P$ are given a specified mode $p$, and
-state the identity rule only for atoms, to check that the other
-instances are admissible.  If we had states the identity rule as
-\seq{\Gamma,x:P}{x}{P}, then respect for object-logic structural
-properties would not be admissible, so we allow a $\beta \spr x$ premise
-here.  Using a structural property at a leaf of a derivation is common
-in e.g. affine logic, where the derivation of $\beta \spr x$ would use
-weakening to forget any additional resources.  
+state identity as a primitive rule only for atoms.  If we had instead
+stated the identity rule as \seq{\Gamma,x:P}{x}{P}, then respect for
+object-logic structural properties would not be admissible, so we allow
+a $\beta \spr x$ premise here.  Using a structural property at a leaf of
+a derivation is common in e.g. affine logic, where the derivation of
+$\beta \spr x$ would use weakening to forget any additional resources.
 
 Next, we consider the \F{\alpha}{\Delta} type.  Syntactically, we view
 the context $\Delta = x_1:A_1,\ldots,x_n:A_n$ where \wftype{A_i}{p_i} as
@@ -271,44 +273,103 @@ is written \F{x \odot y}{x:A,y:B}.  A typical nullary instance is a unit
 descriptor $\dsd{f} : \dsd{p} \to \dsd{q}$ is written
 \F{\dsd{f}(x)}{x:A}.
 
-The rules for our \dsd{F} connective capture the common pattern between
-all of these examples.  On the left, \F{\alpha}{\Delta} ``decays'' into
-$\Delta$, but \emph{marking the uses of resources in $\Delta$ with
+The rules for our \dsd{F} connective capture a pattern common to all of
+these examples.  On the left, \F{\alpha}{\Delta} ``decays'' into
+$\Delta$, but \emph{structuring the uses of resources in $\Delta$ with
   $\alpha$ by the substitution \subst{\beta}{\alpha}{x}}.  We assume
 that $\Delta$ is $\alpha$-renamed to avoid collision with $\Gamma$ (the
 proof term here would be a ``\dsd{split}'' that binds variables for each
-position in $\Delta$).  On the right, the \FR rule says that you must
+position in $\Delta$).  On the right, the \FR\/ rule says that you must
 rewrite (using structural properties) the context descriptor to have an
 $\alpha$ at the outside, with a mode substitution $\gamma$ that divides
 the exisitng resources up between the positions in $\Delta$, and then
 prove each formula in $\Delta$ using the specified resources.  We leave
 the typing of $\gamma$ implicit, though there is officially a
 requirement $\oftp{\psi}{\gamma}{\psi'}$ where $\wfctx{\Gamma}{\psi}$
-and $\wfctx{\Delta}{\psi'}$, as required for the second premise to be
-well-formed.  Another way to understand this rule is to begin with
-the ``axiomatic \FR'' 
+and $\wfctx{\Delta}{\psi'}$, as required for the second premise to be a
+well-formed sequent.  Another way to understand this rule is to begin
+with the ``axiomatic \FR''
 \[
-{\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+\infer{\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}{}
 \]
 which says that there is a map from $\Delta$ to \F{\alpha}{\Delta} along
 $\alpha$.  Then, in the same way that a typical injection rule for
 coproducts builds a precomposition into an ``axiomatic injection'' such
 as $\dsd{inl} :: A \vdash A + B$, the \FR\/ rule builds a precomposition
-with $\seq{\Gamma}{\gamma}{\Delta}$ and then a structural rule $\beta
-\spr \alpha[\gamma]$ into the ``axiomatic'' version.  
+with $\seq{\Gamma}{\gamma}{\Delta}$ and then an application of a
+structural rule $\beta \spr \alpha[\gamma]$ into the ``axiomatic''
+version, in order to make cut and respect for structural properties
+admissible.
 
+Next, we turn to $\U{x.\alpha}{\Delta}{A}$.  As a first approximation,
+if we ignore the context descriptors and structural properties,
+\U{-}{\Delta}{A} behaves like $\Delta \to A$, and the \UL\/ and \UR\/
+rules are an annotation of the usual structural/cartesian rules for
+implication.  In a formula \U{x.\alpha}{\Delta}{A}, the context
+descriptor $\alpha$ has access to the variables from $\Delta$ as well as
+an extra variable $x$, whose mode is the same as the \emph{overall mode
+  of \U{x.\alpha}{\Delta}{A}}, while the mode of $A$ itself is the mode
+of the conclusion of $\alpha$---\dsd{U} is contravariant where \dsd{F}
+is covariant.  It is helpful to think of $x$ as standing for the context
+that will be used to prove \U{x.\alpha}{\Delta}{A}.  For example, a
+typical function type is of the form \U{x.x \otimes y}{y:A}{B}, which
+says to extend the ``current context'' $x$ with a resource $y$.  In \UR,
+the context descriptor $\beta$ being used to prove the \dsd{U} is
+substituted \emph{for $x$} in $\alpha$ (dual to \FL, which substituted
+$\alpha$ into $\beta$).  The ``axiomatic'' \UL\/ instance 
+\[
+\infer{\seq{\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}{}
+\]
+says that \U{x.\alpha}{\Delta}{A} together with $\Delta$ has a map to
+$A$ along $\alpha$.  (The bound $x$ in $x.\alpha$ subscript is tacitly
+renamed to match the name of the assumption in the context, in the same
+way that the typing rule for $\lambda x.e : \Pi x:A.B$ requires
+coordination between two variables in different scopes).  The full rule
+builds in precomposition with \seq{\Gamma}{\gamma}{\Delta},
+postcomposition with \seq{\Gamma,z:A}{\beta'}{C}, and precomposition
+with a structural rule $\beta \spr \beta'[\alpha[\gamma]/z]$.
 
 Finally, the rules for substitutions are pointwise.
 
-One subtle point about $\FL$ is that there are two competing principles:
-making the rules ``obviously'' structural-over-structural, and reducing
-inessential non-determinism.  Here, we choose the later, and treat the
-assumption of \F{\alpha}{\Delta} affinely, removing it from the context
-when it is used.  It will turn out that the judgement nonetheless enjoys
-contraction-over-contraction
+One subtle point about the $\FL$ rule is that there are two competing
+principles: making the rules ``obviously'' structural-over-structural,
+and reducing inessential non-determinism.  Here, we choose the later,
+and treat the assumption of \F{\alpha}{\Delta} affinely, removing it
+from the context when it is used.  It will turn out that the judgement
+nonetheless enjoys contraction-over-contraction
 (Corollary~\ref{thm:contraction-over-contraction}), because contraction
 for negatives is built into the \UL-rule, and contraction for positives
 follows from this and the fact that we can always reconstruct a positive
 from what it decays to on the left (c.f. how purely positive formulas
 have contraction in linear logic).
+
+Additives can be added to this sequent calculus; e.g. a mode $p$ has
+sums if
+\[
+\begin{array}{c}
+\infer{\wftype{A+B}{p}}
+      {\wftype{A}{p} &
+       \wftype{B}{p}}
+\quad
+\infer{\seq{\Gamma}{\alpha}{A + B}}
+      {\seq{\Gamma}{\alpha}{A}}
+\quad
+\infer{\seq{\Gamma}{\alpha}{A + B}}
+      {\seq{\Gamma}{\alpha}{B}}
+\\ \\
+\infer{\seq{\Gamma,x:A+B,\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',y:A}{\subst \beta y x}{C} &
+       \seq{\Gamma,\Gamma',z:B}{\subst \beta z x}{C} 
+      }
+%% \infer{\wftype{A \& B}{p}}
+%%       {\wftype{A}{p} &
+%%        \wftype{B}{p}}
+%% \qquad
+%% \infer{\seq{\Gamma,x:A \& B}{\alpha}{C}}
+%%       {\seq{\Gamma,y:A}{\alpha[y/x]}{C}}
+%% \quad
+%% \infer{\seq{\Gamma}{\alpha}{A + B}}
+%%       {\seq{\Gamma}{\alpha}{B}}
+\end{array}
+\]
 
