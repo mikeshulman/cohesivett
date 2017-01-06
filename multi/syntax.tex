@@ -256,22 +256,23 @@ a $\beta \spr x$ premise here.  Using a structural property at a leaf of
 a derivation is common in e.g. affine logic, where the derivation of
 $\beta \spr x$ would use weakening to forget any additional resources.
 
-Next, we consider the \F{\alpha}{\Delta} type.  Syntactically, we view
-the context $\Delta = x_1:A_1,\ldots,x_n:A_n$ where \wftype{A_i}{p_i} as
-binding the variables $x_i:p_i$ in $\alpha$, so for example
-\F{\alpha}{x:A,y:B} and \F{\alpha[x \leftrightarrow x']}{x':A,y:B} are
-$\alpha$-equivalent types (in de Bruijn form we would write
-\F{\alpha}{A_1,\ldots,A_n} and use indices in $\alpha$).  The type
-formation rule says that \dsd{F} moves covariantly along a mode morphism
-$\alpha$, representing a combination of the types in $\Delta$ according
-to the context descriptor $\alpha$.  A typical binary instance of
-\dsd{F} is a multiplicative product ($A \otimes B$ in linear logic),
-which, given a binary context descriptor $\odot$ as in the introduction,
-is written \F{x \odot y}{x:A,y:B}.  A typical nullary instance is a unit
-(1 in linear logic), written \F{1}{}.  A typical unary instance is the
-\dsd{F} connective of adjoint logic, which for a unary context
-descriptor $\dsd{f} : \dsd{p} \to \dsd{q}$ is written
-\F{\dsd{f}(x)}{x:A}.
+Next, we consider the \F{\alpha}{\Delta} type, which ``internalizes''
+the context operation $\alpha$ as a type/proposition.  Syntactically, we
+view the context $\Delta = x_1:A_1,\ldots,x_n:A_n$ where
+\wftype{A_i}{p_i} as binding the variables $x_i:p_i$ in $\alpha$, so for
+example \F{\alpha}{x:A,y:B} and \F{\alpha[x \leftrightarrow
+    x']}{x':A,y:B} are $\alpha$-equivalent types (in de Bruijn form we
+would write \F{\alpha}{A_1,\ldots,A_n} and use indices in $\alpha$).
+The type formation rule says that \dsd{F} moves covariantly along a mode
+morphism $\alpha$, representing a ``product'' (in a loose sense) of
+types in $\Delta$ structured according to the context descriptor
+$\alpha$. A typical binary instance of \dsd{F} is a multiplicative
+product ($A \otimes B$ in linear logic), which, given a binary context
+descriptor $\odot$ as in the introduction, is written \F{x \odot
+  y}{x:A,y:B}.  A typical nullary instance is a unit (1 in linear
+logic), written \F{1}{}.  A typical unary instance is the \dsd{F}
+connective of adjoint logic, which for a unary context descriptor
+$\dsd{f} : \dsd{p} \to \dsd{q}$ is written \F{\dsd{f}(x)}{x:A}.
 
 The rules for our \dsd{F} connective capture a pattern common to all of
 these examples.  On the left, \F{\alpha}{\Delta} ``decays'' into
