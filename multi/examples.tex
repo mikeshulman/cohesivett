@@ -1,6 +1,8 @@
 \section{Examples}
 \label{sec:exampleencodings}
 
+FIXME introduce F/U abbrevations
+
 In this section, we give some examples of logical connectives that can
 be represented by mode theories in this framework, and explain
 informally why they have the desired behavior with respect to
@@ -685,21 +687,26 @@ $\dsd{g}(x_1 \otimes_{\dsd t} \ldots \otimes_{\dsd t} x_n)$ as the
 designated variable under a \dsd{g}.  Using this (and switching notation
 from \Dia{\dsd{g}}{A} to the \Crc{\dsd{g}}{A} that is typically used for
 strong monads), we can prove
+\begin{footnotesize}
 \[
-\infer[\UR]
-      {\seq{x : A, y : \Crc{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Crc{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
-      {\infer[\UL]
-        {\seq{x : A, y : \Crc{\dsd{g}}{B}}{\dsd{g}(x \otimes_{\dsd t} y)}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
-        {\dsd{g}(x \otimes_{\dsd t} y) \spr \subst{(\ttp x z)}{\dsd{g}(y)}{z} &
-          \infer[\FL]
+\D = \infer[\FL]
                 {\seq{x:A,y : \Crc{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\ttp x z}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
                 {\infer[\UL]
                        {\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{\ttp{x}{\dsd{g}(z')}}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
                        {{\ttp{x}{\dsd{g}(z')}} \spr \dsd{g}(x \otimes_{\dsd t} z') &
                          \infer[\FR]{\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{x \otimes_{\dsd t} z'}{{A \otimes_{\dsd t} B}}}{}
                        }
-        }}}
+        }
 \]
+\[
+\infer[\UR]
+      {\seq{x : A, y : \Crc{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Crc{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
+      {\infer[\UL]
+        {\seq{x : A, y : \Crc{\dsd{g}}{B}}{\dsd{g}(x \otimes_{\dsd t} y)}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+        {\dsd{g}(x \otimes_{\dsd t} y) \spr \subst{(\ttp x z)}{\dsd{g}(y)}{z} &
+          \D}}
+\]
+\end{footnotesize}
 
 An advantage of this description is that it scales to the
 ``$\Box$-strong
@@ -721,7 +728,7 @@ have a mixed-mode product between \dsd{v} and \dsd{p}
 \]
 Thus, if we have a \dsd{t}-context 
 \[
-\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots \times_{\dsd t})
+\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots )
 \]
 (representing a context with valid/boxed $x$'s and true $y$'s) we can
 rewrite it to
@@ -729,11 +736,11 @@ rewrite it to
 \tvp {(x_1 \times_{\dsd v} \ldots \times_{\dsd v} x_n)} \dsd{g}(y)
 \]
 by monoidalness of \dsd{f}, weakening away the other $y$'s, and the
-isolation equation.  Then we can apply \UL to $y_i$, as in the
+isolation equation.  Then we can apply \UL\/ to $y_i$, as in the
 $\Diamond$-left rule~\citep{pfenningdavies}.  
 
 FIXME: probably should show, not tell
 
 \subsection{Spatial Type Theory}
 
-FIXME introduce F/U abbrevations
+

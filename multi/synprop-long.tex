@@ -1,0 +1,842 @@
+
+{
+
+\appendix[Syntactic Properties]
+
+Here, we include proofs of the results claimed in
+Section~\ref{sec:synprop-short}.  We show the cases for the rules in
+Figure~\ref{fig:sequent}, though the results readily extend to additive
+sums and products.
+
+Define the \emph{size} of a derivation of \seq{\Gamma}{\alpha}{A} or
+\seq{\Gamma}{\gamma}{\Delta} to be the number of inference rules for
+these judgements $(\dsd{v},\FL, \FR, \UL, \UR, \cdot, \_,\_)$ used in it
+(i.e., the evidence that variables are in a context and the evidence for
+structural properties does not contribute to the size).  Sizes are
+necessary for the cut proof, where we sometimes weaken or invert a
+derivation before applying the inductive hypothesis.
+
+\begin{lemma}[Respect for Transformations] ~ \label{lemma:respectspr}
+\begin{enumerate}
+\item If \seq{\Gamma}{\beta}{A} and $\beta' \spr \beta$ then
+  \seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same
+  size as the given one.
+\item If \seq{\Gamma}{\gamma}{\Delta} and $\gamma' \spr \gamma$ then
+  \seq{\Gamma}{\gamma'}{\Delta}, and the resulting derivation has the
+  same size as the given one.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Mutual induction on the given derivation.  The cases for \dsd{v} and
+$\FR$ and $\UL$ are immediate (with no use of the inductive hypothesis)
+by composing with the equality in the premise of the rule.  This does
+not change the size of the derivation because the derivations of
+structural properties are ignored by the size.  The cases for $\FL$ and
+$\UR$ use the inductive hypothesis, along with congruence for structural
+properties to show that $\subst{\beta}{\alpha}{x} \spr
+\subst{\beta'}{\alpha}{x}$ or $\subst{\alpha}{\beta}{x} \spr
+\subst{\alpha}{\beta'}{x}$.  The cases for substitutions rely on the
+fact that no generating structural properties for mode substitutions are
+allowed, so if $\gamma' \spr \cdot$ then $\gamma'$ is literally $\cdot$,
+and $(-,-)$ is injective (if $\gamma' \spr (\gamma_1,\alpha_2/x)$, then
+$\gamma'$ is $(\gamma_1',\alpha_2'/x)$ with $\gamma_1' \spr \gamma_1$
+and $\alpha_2' \spr \alpha_2$); this is enough to use the inductive
+hypotheses in the cons case.
+\end{proof}
+
+\begin{lemma}[Weakening over weakening] \label{thm:weakening} ~
+\begin{enumerate}
+\item If \seq{\Gamma,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
+derivation has the same size as the given one.  
+\item If \seq{\Gamma,\Gamma'}{\gamma}{\Delta} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\gamma}{\Delta}, and the resulting
+derivation has the same size as the given one.  
+\item If \seq{\Gamma,\Gamma''}{\alpha}{C} then
+\seq{\Gamma,\Gamma',\Gamma''}{\alpha}{C}, and the resulting
+derivation has the same size as the given one.  
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
+the conclusion.  Intuitively, weakening holds because the contexts
+$\Gamma$ are treated like ordinary structural contexts in all of the
+rules---they are fully general in every conclusion, and the premises
+check membership or extend them---and because weakening holds for mode
+morphisms and equalities of mode morphisms.  Formally, the first two
+parts are proved by mutual induction; each case is either immediate
+or follows from weakening for the mode morphisms, weakening for
+structural properties, and the inductive hypotheses.  The third
+part is proved by induction over $\Gamma'$, repeatedly applying the
+first part.  
+%% The case for the hypothesis rule is immediate, because
+%% $\Gamma$ may contain variables other than $x$.  The case for
+%% \Fsymb-right follows from weakening for the mode morphisms, and
+%% equations between mode morphisms, and the inductive hypothesis for
+%% substitutions.  The case for \Fsymb-left follows from the inductive
+%% hypothesis, as does the case for \Usymb-right.  
+\end{proof}
+
+\begin{lemma}[Exchange over exchange]
+If \seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}, and the resulting derivation
+has the same size as the given one.  (And similarly for substitutions,
+and exchange can be iterated).  
+\end{lemma}
+\begin{proof} Analogous to weakening.  
+\end{proof}
+
+We sometimes write $\modeof{\Gamma}$ for the $\psi$ such that
+\wfctx{\Gamma}{\psi} and similarly for $\modeof{A}$.
+
+\begin{theorem}[Identity] ~ \label{thm:identity}
+\begin{enumerate}
+\item If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$.
+\item If $\oftp{\modeof{\Gamma}}{\rho}{\modeof{\Delta}}$ is a
+  variable-for-variable mode substitution such that $x:A \in \Delta$
+  implies $\rho(x) : A \in \Gamma$, then $\seq{\Gamma}{\rho}{\Delta}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The standard proof by induction on $A$ (mutually with $\Delta$) applies:
+the case for atomic propositions is a rule, and for the other
+connectives, apply the invertible and then non-invertible rule to reduce
+the problem to the inductive hypotheses.  More specifically, identity
+for $P$ is a rule.  In the case for \F{\alpha}{\Delta}, with $\Gamma =
+\Gamma_1,x:\F{\alpha}{\Delta},\Gamma_2$, we reduce it to the inductive
+hypothesis as follows:
+\[
+\infer[\FL]{\seq{\Gamma_1,x:\F{\alpha}{\Delta},\Gamma_2}{x}{\F{\alpha}{\Delta}}}
+      {\infer[\FR]{\seq{\Gamma_1,\Gamma_2,\Delta}{\alpha}{\F{\alpha}{\Delta}}}
+                        {\alpha \spr \tsubst{\alpha}{\vec{x/x}} &
+                        \seq{\Gamma_1,\Gamma_2,\Delta}{\vec{x/x}}{\Delta}
+                        }}
+\]
+In the second premise, the $\vec{x/x}$ substitution for each $x \in
+\Delta$ is a variable-for-variable substitution, so the second part of
+the inductive hypothesis applies.  
+The case for \Usymb\/ is similar
+\[
+\infer[\UR]{\seq{\Gamma}{x}{\U{\alpha}{\Delta}{A}}}
+      {\infer[\UL]{\seq{\Gamma,\Delta}{\alpha}{A}}
+                        {\alpha \spr \subst{x}{\tsubst{\alpha}{\vec{x/x}}}{x} &
+                        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta} &
+                        \seq{\Gamma,x:A}{x}{A}
+                        }}
+\]
+
+For the second part, the hypothesis of the lemma asks that every
+variable in $\Delta$ is associated by $\rho$ with a variable of the same
+type in $\Gamma$; this is enough to iterate the first part of the
+lemma for each position in $\Delta$.  Specifically, the case where
+$\Delta$ is the empty context $\cdot$ is a rule. In the case for a cons
+$\Delta,y:A$, we have
+\oftp{\modeof{\Gamma}}{\rho}{(\modeof{\Delta},y:\modeof{A})} which means
+$\rho$ must be of the form $\rho',x/y$ where $x \in \modeof{\Gamma}$ and
+$\rho'$ is a variable-for-variable substitution.  Because $\rho$ was
+type-preserving, $x : A \in \Gamma$ and $\rho'$ is type-preserving, so
+we obtain the result from the inductive hypotheses as follows:
+\[
+\infer{\seq{\Gamma}{\rho,x/y}{\Delta,y:A}}
+      {\seq{\Gamma}{\rho}{\Delta} & 
+       \seq{\Gamma}{x}{A}
+      }
+\]
+\end{proof}
+
+\begin{lemma}[Left-invertibility of \Fsymb] \label{lemma:Finv}
+If $\D :: \seq{\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2}{\beta}{C}$
+and then there is a derivation $D' ::
+\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and
+$size(\D') \le size(\D)$ (and analogously for substitutions).
+\end{lemma}
+
+\begin{proof}
+Intuitively, we find all of the places where \D ``splits'' $x_0$, delete
+the \FL used to do the split, and reroute the variables to the ones in
+the context of the result.  
+
+Formally, we proceed by induction on \D.  We write $\Gamma$ for the
+whole context $\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2$.
+
+In the case for \dsd{v}, $x : P \in
+\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2$ cannot be equal to $x_0 :
+\F{\alpha_0}{\Delta_0}$ because the types conflict, so we can reapply
+the \dsd{v} rule in $\Gamma_1,\Gamma_2,\Delta$.
+
+In the case for $\FR$, we have
+\[
+\infer{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {\beta \spr \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+\]
+with $x_0 : \F{\alpha_0}{\Delta_0} \in \Gamma$.  By the inductive
+hypothesis we get
+\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}.  Because
+$x_0$ is not free in $\alpha$,
+$\subst{(\tsubst{\alpha}{\gamma})}{\alpha_0}{x_0} =
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$, so we can reapply \FR:
+\[
+\infer{\seq{\Gamma_1,\Gamma_2}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}}
+      {{\subst{\beta}{\alpha_0}{x_0}} \spr \tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}} &
+        \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x}}{\Delta}
+      }
+\]
+Both the input and the output have size 1 more than the size of their
+subderivations, and the output subderivation is no bigger than the input
+by the inductive hypothesis.
+
+In the case for $\FL$
+\[
+\infer[\FL]{\seq{\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2'}{\beta}{C}}
+      {\deduce{\seq{\Gamma_1',\Gamma_2',\Delta}{\subst \beta {\alpha}{x}}{C}}{\D}}
+\]
+with $\Gamma_1,x_0 : \F{\alpha_0}{\Delta_0},\Gamma_2 =
+\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2'$, we distinguish cases on
+whether $x = x_0$ or not.  If they are the same (i.e. we have hit a left
+rule on $x_0$), then $\alpha_0 = \alpha$ and $\Delta_0 = \Delta$ and
+\D\/ is the result, and the size is 1 less than the size of the input.
+If they are different, then (because $x_0$ is somewhere in
+$\Gamma_1',\Gamma_2'$) by the inductive hypothesis we have a derivation
+\[
+\D' :: {\seq{(\Gamma_1',\Gamma_2')-x_0,\Delta,\Delta_0}{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}}{C}}
+\]
+that is no bigger than \D.  Because $x_0$ is from $\Gamma$ and not
+$\Delta$, it does not occur in $\alpha$, so 
+\[
+{\subst{\subst \beta {\alpha}{x}}{\alpha_0}{x_0}} = 
+{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}
+\]
+By (iterating) exchange, we get a derivation 
+\[
+\D'' :: {\seq{(\Gamma_1',\Gamma_2')-x_0,\Delta_0,\Delta}{\subst{\subst \beta {\alpha_0}{x_0}}{\alpha}{x}}{C}}
+\]
+whose size is the same as $\D'$ and so no bigger than $\D$.  Applying
+$\FL$ to $\D''$ (using the fact that
+$(\Gamma_1',x:\F{\alpha}{\Delta},\Gamma_2')-x_0 = \Gamma_1,\Gamma_2$)
+derives $\seq{\Gamma_1,\Gamma_2}{\subst{\beta}{\alpha_0}{x_0}}{C}$, and
+the size is no bigger than the size of the input.
+
+In the case for $\UR$,
+\[
+\infer{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\]
+the inductive hypothesis gives a
+$\D' :: \seq{\Gamma_1,\Gamma_2,\Delta,\Delta_0}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$
+and (iterated) exchange gives 
+$\D'' ::
+\seq{\Gamma_1,\Gamma_2,\Delta_0,\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}$,
+both no bigger than \D.  Because $x_0$ is in $\Gamma$ and not $\Delta$,
+it is not free in $\alpha$, so 
+\[
+{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}} = {\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}
+\]
+Thus, we can derive
+\[
+\infer{\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma_1,\Gamma_2,\Delta_0,\Delta}{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}}{A}}{\D''}}
+\]
+
+In the case for $\UL$, 
+\[
+\infer{\seq{\Gamma}{\beta}{C}}
+      {x:\U{x.\alpha}{\Delta}{A} \in \Gamma & 
+        \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+        \seq{\Gamma}{\gamma}{\Delta} &
+        \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+      }
+\]
+we know that $x$ is different than $x_0$ because the types conflict.
+The inductive hypotheses give no-bigger derivations of
+\[
+\seq{\Gamma_1,\Gamma_2\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \qquad \seq{\Gamma_1,\Gamma_2,\tptm{z}{A},\Delta_0}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+and the latter can be exchanged to
+\[
+\seq{\Gamma_1,\Gamma_2,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+again without increasing the size.  Thus, we can produce
+\[
+\infer{\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x}}{C}}
+      {\begin{array}{l}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma_1,\Gamma_2,\Delta_0 \\
+          {\subst{\beta}{\alpha_0}{x}} \spr \subst{{\subst{\beta'}{\alpha_0}{x_0}}}{\tsubst{\alpha}{{\subst{\gamma}{\alpha_0}{x_0}}}}{z}\\
+          \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
+          \seq{\Gamma_1,\Gamma_2,\Delta_0,\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+        \end{array}
+      }
+\]
+where the structural property is the composition of the
+\subst{-}{\alpha_0}{x_0} substitution into the given structural
+property, and rearranging the substitution (note that $x_0$ does not
+occur in $\alpha$):
+\[
+\begin{array}{ll}
+\subst{\beta}{\alpha_0}{x_0} & \spr
+\subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0} 
+= 
+\subst{\subst{\beta'}{\alpha_0}{x_0}}{\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x_0}}{z}
+\\
+& =
+\subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z} 
+\end{array}
+\]
+
+The case for $\cdot$ is immediate.  The case for $\_,\_$ follows from
+the two inductive hypotheses, because
+$\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
+{(\subst{\gamma}{\alpha_0}{x_0},\subst{\alpha}{\alpha_0}{x_0}/x)}$.
+\end{proof}
+
+
+\begin{theorem}[Cut] ~
+\begin{enumerate} 
+\item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
+then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
+\item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
+then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{\Delta}$ 
+\item If $\seq{\Gamma}{\gamma}{\Delta}$ and 
+\seq{\Gamma,\Delta}{\beta}{C}
+then \seq{\Gamma}{\tsubst{\beta}{\gamma}}{C}.  
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The induction ordering is the usual one: First the cut formula, and then
+the sizes of size of the two derivations.  More specifically, any part
+can call another with a smaller cut formula ($A_0$ for part 1 and part
+2, $\Delta$ for part 3).  Additionally, part 1 and part 2 call
+themselves and each other with the same cut formula and smaller $\D$ or
+$\E$.
+
+For part part 1, there are 5 rules in the sequent calculus, so 25 pairs
+of final rules.
+
+\begin{itemize}
+\item (5 pairs) Any rule and identity
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} 
+\qquad
+\infer{\seq{\Gamma,x:A,\Gamma'}{\beta}{Q}}
+      {z:Q \in (\Gamma,x_0:A_0,\Gamma') &
+        \deduce{\beta \spr z}{s}}
+\]
+There two subcases, depending on whether the cut variable is $z$ or not.
+If $z$ is $x_0$ and $A_0$ is $Q$, then \D\/ derives
+\seq{\Gamma,\Gamma'}{\alpha_0}{Q} and we want a derivation of
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{z}}{Q}.  By congruence on
+$s$, $\subst{\beta}{\alpha_0}{z} \spr \subst{z}{\alpha_0}{z}$, so
+Lemma~\ref{lemma:respectspr} gives the result.  If $z$ is not $x_0$,
+then $z:Q \in \Gamma,\Gamma'$.  We want a derivation of
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{Q}, and substituting
+into $s$ gives $\subst{\beta}{\alpha_0}{x_0} \spr z$ (because $z \neq
+x_0$), so we can derive
+\[
+\infer{\seq{\Gamma,\Gamma'}{\subst \beta {\alpha_0}{x_0}}{Q}}
+      {z:Q \in (\Gamma,\Gamma') &
+        {\subst{\beta}{\alpha_0}{x_0} \spr z}}
+\]
+
+\item (5 pairs) Any rule and $\FR$ (right-commutative)
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\F{\alpha}{\Delta}}}
+      {\beta \spr \tsubst{\alpha}{\gamma} &
+        \deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}}{\E}
+      }
+\]
+By the inductive hypothesis, cutting into \D\/ into \E\/ gives
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}.  By
+congruence, $\subst{\beta}{\alpha_0}{x_0} \spr
+\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x_0}$.  Since $\gamma$ is a
+total substitution for all variables in \modeof{\Delta},
+$\subst{\tsubst{\alpha}{\gamma}}{\alpha_0}{x_0} =
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$, so
+$\subst{\beta}{\alpha_0}{x_0} \spr
+\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}$.  Thus we can reapply
+the $\FR$ rule to get
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\F{\alpha}{\Delta}}.
+
+\item (5 pairs) Any rule and $\UR$ (right-commutative).    
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D} \qquad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\deduce{\seq{\Gamma,x_0:A_0,\Gamma',\Delta}{\subst{\alpha}{\beta}{x}}{A}}{\E}}
+\]
+The inductive cut of \D\/ into \E\/ gives 
+\[
+\seq{\Gamma,\Gamma',\Delta}{\subst{\subst{\alpha}{\beta}{x}}{\alpha_0}{x_0}}{A}
+\]
+Because the variables from $\modeof{\Gamma},\modeof{\Gamma'}$ occur only
+in $\beta$, not in $\alpha$, this substitution equals 
+{\subst{\alpha}{\subst{\beta}{\alpha_0}{x_0}}{x}} so reapplying the
+$\UR$ rule
+derives 
+{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{\U{x.\alpha}{\Delta}{A}}}.   
+
+\item (2 additional pairs, plus 3 overlapping with above) $\FL$ and
+  any rule (left commutative).  
+
+There is one subtlety in this case.  The usual strategy for a left rule
+against an arbitrary \E\/ is to push $\E$ into the ``continuation'' of
+the left rule.  However, as discussed above, our left rule for \Fsymb\/
+eagerly inverts \emph{all} occurences of $x$, while $\E$ itself also has
+$x$ in scope.  Thus, we use Lemma~\ref{lemma:Finv} to pull the
+left-inversion to the bottom of \E, and then push that into \D.  On
+proof terms, this corresponds to making all references to $x$ in \E\/
+instead refer to the results of the ``split'' at the bottom of $\D$.
+%% This subtlety could be avoided by building contraction into $\FL$, as
+%% discussed above.
+
+Formally, we have
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+      {{x}:{\F{\alpha}{\Delta}} \in \Gamma,\Gamma' &
+        \deduce{\seq{((\Gamma,\Gamma')-x),\Delta}{\subst {\alpha_0} {\alpha}{x}}{A_0}}{\D}}
+\\ \\
+\deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}{\E}
+\end{array}
+\]
+
+By left invertibility on \E, we obtain (note that $x \neq x_0$ because
+$x_0$ only in scope in \E\/, not \D) a derivation $\E'$ of
+{\seq{(\Gamma,x:A_0,\Gamma')-x,\Delta}{\subst{\beta}{\alpha}{x}}{C}}
+that is no bigger than $\E$.  Because the cut formula is the same, and
+$\E'$ is no bigger than \E\/, and \D\/ is smaller than the given
+derivation of $A_0$, we can apply the inductive hypothesis to cut $\D$
+and $\E'$ to get
+\[
+{\seq{(\Gamma,\Gamma')-x,\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}}.
+\]
+Commuting substitutions gives
+\[
+{\subst{{\subst{\beta}{\alpha}{x}}}{\subst{\alpha_0}{\alpha}{x}}{x_0}} = \subst {\beta[\alpha_0/x_0]}{\alpha}{x}
+\]
+so we can reapply $\FL$ 
+\[
+\infer{\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{C}}
+      {\seq{((\Gamma,\Gamma')-x),\Delta}{\subst {(\beta[\alpha_0/x_0])} {\alpha}{x}}{C}}
+\]
+
+\item (2 additional pairs, plus 3 overlapping with above) $\UL$ and any rule (left commutative)
+In this case, $x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma'$ and
+we have
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+      {\deduce{\alpha_0 \spr \subst{\alpha_0'}{\tsubst{\alpha}{\gamma}}{z}}{s} &
+       \deduce{\seq{\Gamma,\Gamma'}{\gamma}{\Delta}}{\D_1} &
+       \deduce{\seq{\Gamma,\Gamma',z:A}{\alpha_0'}{A_0}}{\D_2}
+      }
+\\ \\
+\deduce{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}}{\E}
+\end{array}
+\]
+
+Weakening \E\/ with $z$ and then cutting $\D_2$ and $\E$ by the inductive
+hypothesis (which applies because $\D_2$ is smaller and weakening does
+not change the size) gives
+\[
+\deduce{\seq{\Gamma,\Gamma',z:A}{\subst{\beta}{\alpha_0'}{x_0}}{B}}{\D_2'}
+\]
+Thus, we have the first, third, and fourth premises of
+\[
+\infer{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{A_0}}
+      {\begin{array}{l}
+          x:\U{\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          {\subst{\beta}{\alpha_0}{x_0}} \spr \subst{\subst{\beta}{\alpha_0'}{x_0}}{\tsubst{\alpha}{\gamma}}{z} \\
+       {\seq{\Gamma,\Gamma'}{\gamma}{\Delta}} \\
+       {\seq{\Gamma,\Gamma',z:A}{\subst{\beta}{\alpha_0'}{x_0}}{B}}
+        \end{array}
+      }
+\]
+The structural property premise is
+\[
+     {\subst{\beta}{\alpha_0}{x_0}} 
+\spr \subst{\beta}{\subst{\alpha_0'}{\tsubst{\alpha}{\gamma}}{z}}{x0} = \subst{\subst{\beta}{\alpha_0'}{x_0}}{\tsubst{\alpha}{\gamma}}{z}
+\]
+where the first step is by congruence with $\beta$ on $s$, and the
+second is by properties of substitution ($z$ is not free in $\beta$).
+
+\item (3 pairs) Right rule or identity and $\FL$ (principal or
+  right-commutative).  
+
+Suppose the right-hand derivation ends with $\FL$, and the left-hand
+derivation is either a right rule or identity (\dsd{v}) (the cases for
+left-rules were covered above).  
+
+We distinguish cases on whether the \FL\/ case-analyzes $x_0$ or not.
+If it does, then, because $A_0$ is $\F{\alpha}{\Delta}$, the left-hand
+derivation must be \FR, and we have a principal cut
+\[
+\infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\F{\alpha}{\Delta}}}
+      {  
+        \deduce{\alpha_0 \spr \tsubst{\alpha}{\gamma}}{s} &
+        \deduce{\seq{\Gamma,\Gamma'}{\gamma}{\Delta}}{\D}
+      }
+\qquad
+\infer{\seq{\Gamma,x_0:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\deduce{\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\alpha}{x_0}}{C}}
+              {\E}}
+\]
+Using the inductive hypothesis part 3 to cut $\D$ and $\E$ ($\Delta$ is
+a subformula of the original cut formula \F{\alpha}{\Delta}) gives
+\[
+\seq{\Gamma,\Gamma'}{\tsubst{\subst{\beta}{\alpha}{x_0}}{\gamma}}{C}
+\]
+By congruence on $s$ and because $\gamma$ substitutes only for
+variables in $\modeof {\Delta}$,
+\[
+\subst{\beta}{\alpha_0}{x_0} \spr
+{\subst{\beta}{\tsubst \alpha \gamma}{x_0}} =
+{\tsubst{\subst{\beta}{\alpha}{x_0}}{\gamma}} 
+\]
+So applying Lemma~\ref{lemma:respectspr} gives 
+\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}.  
+
+If the left rule is not on the cut variable, then we have
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}{\D}
+\quad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}
+      { x : \F{\alpha}{\Delta} \in \Gamma,\Gamma' &
+        \deduce{\seq{((\Gamma,x_0:A_0,\Gamma')-x),\Delta}{\subst{\beta}{\alpha}{x}}{C}}{\E}}
+\]
+
+We are going to commute $\D$ under \FL\/ on $x$, so need to reroute uses
+of $x$ to the bottom by the left-inversion lemma, which gives
+\[
+\D' :: {\seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\alpha_0}{\alpha}{x}}{A_0}}
+\]
+and $\D'$ is no bigger than \D.
+
+Cutting $\D'$ and $\E$ by the inductive hypothesis gives
+\[
+\seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}{C}
+\]
+Because $x_0$ is not free in $\alpha$, 
+\[
+  {\subst{\subst{\beta}{\alpha}{x}}{\subst{\alpha_0}{\alpha}{x}}{x_0}}
+= {\subst{\subst{\beta}{\alpha_0}{x_0}}{\alpha}{x}}
+\]
+so we can apply \FL
+\[
+\infer{\seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}}
+      {\seq{(\Gamma,\Gamma'-x)}{\subst{\subst{\beta}{\alpha_0}{x_0}}{\alpha}{x}}{C}}
+\]
+%% \seq{((\Gamma,\Gamma')-x),\Delta}{\subst{\subst{\beta}{\alpha}{x}}{\alpha_0}{x_0}}{C}
+%% \]
+
+\item (3 pairs) Right rule or identity and $\UL$ (principal or
+  right-commutative).
+
+If $x_0$ is the variable used by \UL\/ in the right-hand derivation, then
+the left-hand derivation must have been derived by $\UR$, and we have
+\[
+\begin{array}{l}
+\D \quad = \quad \infer{\seq{\Gamma,\Gamma'}{\alpha_0}{\U{x_0.\alpha}{\Delta}{A}}}
+   {  
+     \deduce{\seq{\Gamma,\Gamma',\Delta}{\subst \alpha {\alpha_0}{x_0}}{A}}{\D'}
+   }
+\\ \\
+\infer{\seq{\Gamma,x_0:\U{x_0.\alpha}{\Delta}{A},\Gamma'}{\beta}{C}}
+      {
+        \begin{array}{l}
+        s :: \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+        {\E_1 :: \seq{\Gamma,x_0:{\U{x_0.\alpha}{\Delta}{A}},\Gamma'}{\gamma}{\Delta}}\\
+        {\E_2 :: \seq{\Gamma,x_0:{\U{x_0.\alpha}{\Delta}{A}},\Gamma',\tptm{z}{A}}{\beta'}{C}}
+        \end{array}
+      }
+\end{array}
+\]
+First, cutting the original \D\/ and the smaller $\E_1$ and $\E_2$ gives 
+\[
+\deduce{{\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}}}{\E_1'}
+\qquad 
+\deduce{{\seq{\Gamma,\Gamma',\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}}}{\E_2'}
+\]
+Cutting $\E_1'$ \emph{into} $\D'$ (the derivations have switched places,
+so are not necessarily smaller, but the cut formula $\Delta$ is a
+subformula of $\U{x_0.\alpha}{\Delta}{A}$) gives
+\[
+\deduce
+{\seq{\Gamma,\Gamma'}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x}}}{A}} {\D_1'}
+\]
+Cutting $\D_1'$ into $\E_2'$ gives 
+\[
+\seq{\Gamma,\Gamma'}{\subst{\subst{\beta'}{\alpha_0}{x_0}}{\subst{\alpha}{\alpha_0}{x_0}}{z}}{A}
+\]
+But by using $s$ and commuting substitutions we have 
+\[
+\subst{\beta}{\alpha_0}{x_0} \spr
+\subst{(\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z})}{\alpha_0}{x_0} = 
+{\subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z}}
+\]
+so Lemma~\ref{lemma:respectspr} gives the result.  
+
+On the other hand, if the \UL\/ is not on $x_0$, then we have
+\[
+\deduce{\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}}
+       {
+         \D
+       }
+\quad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{C}}
+      {
+        \begin{array}{l}
+          x : \U{x.\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+          \seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta} \\
+          \seq{\Gamma,x_0:A_0,\Gamma',\tptm{z}{A}}{\beta'}{C}
+        \end{array}
+      }
+\]
+
+By the inductive hypotheses we get 
+\[
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta}
+\qquad
+\seq{\Gamma,\Gamma',z:A}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+\]
+so we can derive
+\[
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}}
+      {
+        \begin{array}{l}
+          x : \U{x.\alpha}{\Delta}{A} \in \Gamma,\Gamma' \\
+          {\subst{\beta}{\alpha_0}{x_0}} \spr \subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z} \\
+          \seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \\
+          \seq{\Gamma,\Gamma',\tptm{z}{A}}{\subst{\beta'}{\alpha_0}{x_0}}{C}
+        \end{array}
+      }
+\]
+For the second premise, we get
+\[
+\subst{\beta}{\alpha_0}{x_0} \spr
+\subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0}
+\]
+by congruence on the assumed structural property, and then commute substitutions.  
+
+\end{itemize}
+
+For part 2, there are just two right-commutative cases: For
+\[
+\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}
+\qquad
+\seq{\Gamma,x_0:A_0,\Gamma'}{\cdot}{\cdot}
+\]
+we also have $\subst \cdot {\alpha_0}{x_0} = \cdot$ and
+\seq{\Gamma,\Gamma'}{\cdot}{\cdot}.  For
+\[
+\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}
+\qquad
+\infer{\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta} &
+        \seq{\Gamma,x_0:A_0,\Gamma'}{\alpha}{A}
+      }
+\]
+we have $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} 
+= (\subst{\gamma}{\alpha_0}{x_0},\subst{\alpha}{\alpha_0}{x_0})$, and
+ \[
+\seq{\Gamma,\Gamma'}{\subst{\gamma}{\alpha_0}{x_0}}{\Delta} \quad
+\seq{\Gamma,\Gamma'}{\subst{\alpha}{\alpha_0}{x_0}}{A}
+\]
+by the inductive hypotheses, so we can reapply the rule to conclude
+\seq{\Gamma,\Gamma'}{\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0}}{\Delta,x:A}.
+
+For part 3, we induct on $\Delta$, reducing a simulatenous cut to
+iterated single-variable cuts.  If $\Delta$ is empty, then we have
+\[
+\seq{\Gamma}{\cdot}{\cdot}
+\qquad
+\deduce{\seq{\Gamma,\cdot}{\beta}{C}}{\E}
+\]
+and we return \E, noting that $\tsubst{\beta}{\cdot} = \beta$.  Otherwise
+we have
+\[
+\infer{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\deduce{\seq{\Gamma}{\gamma}{\Delta}}{\D_1} &
+        \deduce{\seq{\Gamma}{\alpha}{A}}{\D_2}}
+\qquad
+\deduce{\seq{\Gamma,\Delta,x:A}{\beta}{C}}{\E}
+\]
+Using the inductive hypothesis to cut $\D_2$ into $\E$ ($A$ is smaller
+than $\Delta,x:A$) gives
+\[
+\deduce{\seq{\Gamma,\Delta}{\subst{\beta}{\alpha}{x}}{C}}
+       {\E'}
+\]
+Using the inductive hypothesis to cut $\D_1$ into $\E'$ ($\Delta$ is
+smaller than $\Delta,x:A$) gives
+\[
+\seq{\Gamma}{\tsubst{\subst{\beta}{\alpha}{x}}{\gamma}}{C}
+\]
+Because $\gamma$ substitutes for $\hat \Delta$ (and not $\hat \Gamma$,
+the free variables of $\alpha$),
+\[
+\tsubst{\beta}{\gamma,\alpha/x}
+= {\tsubst{\subst{\beta}{\alpha}{x}}{\gamma}}
+\]
+\end{proof}
+
+\begin{corollary}[Contraction over contraction] \label{cor:controver}
+\item If
+\seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
+then
+\seq{\Gamma,z:A,\Gamma'}{\tsubst \alpha {z/x,z/y}}{C}
+\end{corollary}
+
+\begin{proof}  Contraction can be shown by cutting with a renaming substitution.
+The mode substitution $z/x,z/y$ is a variable-for-variable substitution,
+and is type-preserving between ${x:A,y:A}$ and ${\Gamma,z:A,\Gamma'}$.
+Therefore, by identity (part 2),
+\seq{\Gamma,z:A,\Gamma'}{z/x,z/y}{x:A,y:A}.  Thus, by cut (part 2), we
+obtain the result.
+\end{proof}
+
+\begin{corollary}[Right-invertibility of \Usymb] \label{lemma:Uinv}
+If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
+{\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
+\end{corollary}
+
+\begin{proof}
+$\UL$ with identities in both premises gives a derivation
+\[
+\infer{\seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}}
+      {
+        \alpha = z[\alpha[\vec{x/x}]/z] & 
+        \seq{\Gamma,\Delta}{\vec{x/x}}{\Delta} &
+        \seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}},z:A}{z}{A}
+      }
+\]
+Weakening the assumed derivation to 
+\seq{\Gamma,\Delta}{\beta}{\U{x.\alpha}{\Delta}{A}}
+and then cutting for $x$ in the above gives the result:
+
+\[
+\infer{\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+      {\seq{\Gamma,\Delta}{\beta}{\U{x.\alpha}{\Delta}{A}} & 
+       \seq{\Gamma,\Delta,x:{\U{x.\alpha}{\Delta}{A}}}{\alpha}{A}
+      }
+\]
+\end{proof}
+
+The following ``fusion'' lemmas (which are isomorphisms, not just
+interprovabilities) relate $\Fsymb$ and $\Usymb$.  Special cases
+include: $A \times (B \times C)$ is isomorphic to a primitive triple
+product $\{x:A,y:B,z:C\}$; currying; and associativity of $n$-ary
+functions ($A_1,\ldots,A_n \to (B_1,\ldots,B_m \to C)$ is isomorphic to
+$A_1,\ldots,A_n,B_1,\ldots,B_m \to C$).  The derivations are in
+Figure~\ref{fig:fusion}.  We adopt the convention that an unlabled leaf
+$\alpha \spr \beta$ is proved by equality of context descriptors, and an
+unlabeled sequent leaf is proved by identity
+(Theorem~\ref{thm:identity}).  
+
+\begin{lemma}[Fusion] ~
+\begin{enumerate} 
+
+\item $\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash
+  \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}$
+
+\item $\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} \dashv \vdash
+  \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}$
+
+\item 
+$\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
+ \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}$
+
+\end{enumerate}
+\end{lemma}
+
+\begin{figure*}
+\begin{footnotesize}
+\[
+\infer[\FL]{
+  \seq{z:\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+      {z}
+      {\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}
+}
+{
+  \infer[\FL]{\seq{\Delta,x:\F{\beta}{\Delta'},\Delta''}{\alpha}{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+        {
+          \infer[\FL]{\seq{\Delta,\Delta'',\Delta'}{\subst{\alpha}{\beta}{x}}{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+                {\subst{\alpha}{\beta}{x} \spr \tsubst{\subst{\alpha}{\beta}{x}}{\vec{z/z}} &
+                 \seq{\Delta,\Delta'',\Delta'}{\vec{z/z}}{\Delta,\Delta',\Delta''}
+                }
+        }
+}
+\]
+
+\[
+\infer{
+  \seq{z:{\F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}}}
+      {z}
+      {\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+}
+{  
+\infer[\FL]{\seq{\Delta,\Delta',\Delta''}
+           {\subst{\alpha}{\beta}{x}}
+           {\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}}
+      {\alpha[\beta/x] \spr \alpha[\vec{y/y},\beta/x,\vec{z/z}] &
+        \infer[\FR]{\seq{\Delta,\Delta',\Delta''}{\vec{y/y},\beta/x,\vec{z/z}} {\Delta,x:\F{\beta}{\Delta'},\Delta''}}
+              {\seq{\Delta,\Delta',\Delta''}{\vec{y/y}}{\Delta} & 
+               \infer[\FR]{\seq{\Delta,\Delta',\Delta''}{\beta}{\F{\beta}{\Delta'}}}
+                     {\beta \spr \beta[\vec{w/w}] & \seq{\Delta,\Delta',\Delta''}{\vec{w/w}}{\Delta'}} &
+               \seq{\Delta,\Delta',\Delta''}{\vec{z/z}}{\Delta''} }
+      }
+}
+\]
+
+\[
+\infer[\UR]{\seq{x:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}}{x}{\U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}}}
+      {\infer[\UL, \text { with } \Gamma = {p:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}, {\Delta,\Delta',\Delta''}}]
+        {\seq{x:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}, {\Delta,\Delta',\Delta''}}{{\subst{\alpha}{\beta}{y}}}{A}} 
+        {\subst{\alpha}{\beta}{y} \spr z[\tsubst{\alpha}{\vec{w/w},\beta/y}/z] &
+          \seq{\Gamma}{\vec{w/w}}{\Delta,\Delta''} &
+          \infer[\FR]{\seq{\Gamma}{\beta}{\F{\beta}{\Delta'}}}{} &
+          \seq{\Gamma,z:A}{z}{A}
+        }
+      }
+\]
+
+\[
+\infer[\UR]{\seq{x:\U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}}{x}{\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}}}
+      {\infer[\FL]
+        {\seq{x:\U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}, \Delta,y:\F{\beta}{\Delta'},\Delta''}{\alpha}{A}} 
+        {\infer[\UL]{\seq{x:\U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}, \Delta,\Delta'',\Delta'}{\subst{\alpha}{\beta}{y}}{A}}
+          {\subst{\alpha}{\beta}{y} \spr z[\tsubst{\subst{\alpha}{\beta}{y}}{\vec{w/w}}] &
+            \seq{\Delta,\Delta',\Delta''}{\vec{w/w}}{\Delta,\Delta',\Delta''} &
+            \seq{\Delta,\Delta',\Delta'',z:A}{z}{A}
+          }
+        }}
+\]
+
+\[
+\infer[\UR]
+      {\seq{x:\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}}}{x} {\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}}}
+      {\infer[\UL]
+        {\seq{x:\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}},\Delta,\Delta'}{\subst{\beta}{\alpha}{y}}{A}}
+        {\subst{\beta}{\alpha}{y} \spr \beta[\alpha[\vec{w/w}]/y] &
+          \seq{x:\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}},\Delta,\Delta'}{\vec{w/w}}{\Delta} &
+          \infer[\UL]{\seq{x:\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}},\Delta,\Delta',y:\U{y.\beta}{\Delta'}{A}}{\beta}{A}}{}
+        }}
+\]
+
+\[
+\infer[\UR]
+      {\seq{x:{\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}}}{x}{\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}}}}
+      {\infer[\UR]
+        {\seq{x:{\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}},\Delta}{\alpha}{{\U{y.\beta}{\Delta'}{A}}}}
+        {\infer[\UL]{\seq{x:{\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}},\Delta,\Delta'}{\subst{\beta}{\alpha}{y}}{A}}
+          {}}}
+\]
+
+\end{footnotesize}
+\caption{Derivations of fusion lemmas}
+\end{figure*}
+
+}
