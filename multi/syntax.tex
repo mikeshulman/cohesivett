@@ -58,10 +58,10 @@ The first layer of the logic is a type theory whose types we will call
 \emph{mode morphisms}.  We begin with a simple type theory with
 variables and constants, as described in
 Figure~\ref{fig:2multicategory}.  We assume a fixed signature $\Sigma$
-of constants \dsd{c}, and we write $\oftp{\psi}{\alpha}{q}$ for mode
-morphism well-formedness and $\oftp{\psi}{\gamma}{\psi'}$ for
-substitution well-formedness.  The context $\psi$ here enjoys
-(cartesian) structural properties (weakening, exchange, contraction).
+of constants \dsd{c}, and we write $\oftp{\psi}{\alpha}{q}$ for context
+descriptor well-formedness and $\oftp{\psi}{\gamma}{\psi'}$ for
+substitution well-formedness.  The context $\psi$ here enjoys the
+cartesian structural properties (weakening, exchange, contraction).
 Simultaneous substitution into terms is defined as usual.
 
 Next, we need a notation for presenting object-logic structural
@@ -69,12 +69,12 @@ properties, which, as described above, will in general be directed
 transformations between context descriptors.  For
 \oftp{\psi}{\alpha,\alpha'}{p}, we define a judgement
      {\wfsp{\psi}{\alpha}{\alpha'}{p}} representing such
-     transformations; it is the least precongruence closed under some
-     axioms in the signature $\Sigma$.  For example, to say that a mode
+     transformations; it is the least precongruence closed under axioms
+     specified in a signature $\Sigma$.  For example, to say that a mode
      $p$ with a context monoid $(\odot,1)$ is affine, we would specify
-     in $\Sigma$ a structural property \wfsp{x:p}{x}{1}{p}.  Then, using
-     the rules in the figure, we can for example derive a transformation
-     $(x \odot y) \spr (1 \odot y) \spr y$ that, when applied
+     in $\Sigma$ a transformation \wfsp{x:p}{x}{1}{p}.  Then, using the
+     rules in the figure, we can for example derive a transformation $(x
+     \odot y) \spr (1 \odot y) \spr y$ that, when applied
      (contravariantly) to a sequent, will allow weakening $y$ to $x
      \odot y$.
 
@@ -94,29 +94,30 @@ equations $s;s' = 1_{\alpha}$ and $s';s = 1_{\alpha'}$).  While this is
 conceptually and technically sufficient, we have found it helpful in
 examples to also use a ``strict'' equality of context descriptors which
 is implicitly respected by all types and judgements.  This simplifies
-the description of some situations, but the difference is important
+the description of some situations, though the difference is important
 mainly at the level of identity of derivations rather than
 provability---for example, we can make a binary operation $\odot$ into a
 strict monoid, rather than adding associator and unitor isomorphisms,
-which requires more equations between structural properties.  To support
-this, we allow $\Sigma$ to contain axioms for equations $\alpha \deq
-\beta$ and define a judgement $\psi \vdash \alpha \deq \beta : p$ as the
-least congruence containing these axioms (i.e. add symmetry to the rules
-for transformations).  Because the context descriptors and their
-equality are defined independently of any subsequent judgements, we take
-the liberty of suppressing this equality using $\alpha$ to refer to a
-context-descriptor-modulo-\deq---that is, we assume a metatheory with
-quotient sets/types, and use meta-level equality for object-level
-equality, as recently advocated by \citet{altenkirchkaposiXXpopl}.  For
-example, because the judgement \wfsp{\psi}{\alpha}{\beta}{p} is indexed
-by equivalence classes of context descriptions, the reflexivity rule
-above implicitly means $\alpha \deq \beta$ implies $\alpha \spr \beta$.  
+which requires more equations between structural transformations.  To
+support this, we allow $\Sigma$ to contain axioms for equations $\alpha
+\deq \beta$ and define a judgement $\psi \vdash \alpha \deq \beta : p$
+as the least congruence containing these axioms (i.e. add symmetry to
+the rules for transformations).  Because the context descriptors and
+their equality are defined independently of any subsequent judgements,
+we take the liberty of suppressing this equality by using $\alpha$ to
+refer to a context-descriptor-modulo-\deq---that is, we assume a
+metatheory with quotient sets/types, and use meta-level equality for
+object-level equality, as recently advocated by
+\citet{altenkirchkaposi16qit}.  For example, because the judgement
+\wfsp{\psi}{\alpha}{\beta}{p} is indexed by equivalence classes of
+context descriptions, the reflexivity rule above implicitly means
+$\alpha \deq \beta$ implies $\alpha \spr \beta$.
 
 A signature $\Sigma$ consisting of some number of constants $c$,
 equations $\alpha \deq \beta$, transformations $\alpha \spr \beta$ (and
 equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
 
-\subsection{Sequent Calculus}
+\subsection{Sequent Calculus Rules}
 
 \begin{figure}
 \[
@@ -147,8 +148,8 @@ equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
       {\wfctx{\Gamma}{\psi} &
         \wftype{A}{p}}
 \\ \\
-\framebox{\seq{\Gamma}{\alpha}{A}}
-\qquad
+\framebox{\seq{\Gamma}{\alpha}{A} where $\wfctx{\Gamma}{\psi}$ and $\wftype{A}{q}$ and  $\oftp{\psi}{\alpha}{q}$}
+\\ \\
 \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
       {x:P \in \Gamma & \beta \spr x}
 \\ \\
@@ -178,8 +179,8 @@ equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
        \end{array}
       }
 \\ \\
-\framebox{\seq{\Gamma}{\gamma}{\Delta}}
-\qquad
+\framebox{\seq{\Gamma}{\gamma}{\Delta} where $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and  $\oftp{\psi}{\gamma}{\psi'}$}
+\\ \\
 \infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
       {}
 \qquad
@@ -196,16 +197,16 @@ equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
 
 The whole sequent calculus is parametrized by a mode theory $\Sigma$,
 which is an implicit argument to all of the definitions in
-Figure~\ref{fig:sequent}.  The judgement assigns each proposition/type
-$A$ a mode $p$.  Encodings of non-modal logics will generally only make
-use of one mode, while modal logics use different modes to represent
-different notions of truth, such as the linear and cartesian categories
-in \citet{bentonwadler96adjoint} and the true/valid/lax judgements in
-\citet{pfenningdavies}.  The next judgement assigns each context
-$\Gamma$ a mode context $\psi$ pointwise.  Formally, we think of
-contexts as ordered: we do not regard $x:A,y:B$ and $y:B,x:A$ and the
+Figure~\ref{fig:sequent}.  The first judgement assigns each
+proposition/type $A$ a mode $p$.  Encodings of non-modal logics will
+generally only make use of one mode, while modal logics use different
+modes to represent different notions of truth, such as the linear and
+cartesian categories in \citet{bentonwadler96adjoint} and the
+true/valid/lax judgements in \citet{pfenningdavies}.  The next judgement
+assigns each context $\Gamma$ a mode context $\psi$.  Formally, we think
+of contexts as ordered: we do not regard $x:A,y:B$ and $y:B,x:A$ and the
 same context, though we will have an admissible exchange rule that
-passes between derivations of one and the other.
+passes between derivations in one and the other.
 
 The sequent judgement \seq{\Gamma}{\alpha}{A} relates a context
 $\wfctx{\Gamma}{\psi}$ and a type $\wftype{A}{p}$ and context descriptor
@@ -218,8 +219,8 @@ as binding variable names both in $\alpha$ and for use in the
 derivation.
 
 As discussed in the introduction, a guiding principle is to make the
-following rules admissible (see Section~\ref{sec:synmeta} for details),
-which express respect for object-logic structural properties and
+following rules admissible (see Section~\ref{sec:synprop-long} for
+details), which express respect for structural transformations and
 structurality-over-structurality:
 \[
 \begin{array}{c}
@@ -249,11 +250,11 @@ to refer to the examples in Section~\ref{sec:exampleencodings} in
 parallel with this abstract description.
 
 We assume atomic propositions $P$ are given a specified mode $p$, and
-state identity as a primitive rule only for atoms.  If we had instead
+state identity as a primitive rule only for them.  If we had instead
 stated the identity rule as \seq{\Gamma,x:P}{x}{P}, then respect for
-object-logic structural properties would not be admissible, so we allow
-a $\beta \spr x$ premise here.  Using a structural property at a leaf of
-a derivation is common in e.g. affine logic, where the derivation of
+structural transformation would not be admissible, so we allow a $\beta
+\spr x$ premise here.  Using a structural property at a leaf of a
+derivation is common in e.g. affine logic, where the derivation of
 $\beta \spr x$ would use weakening to forget any additional resources.
 
 Next, we consider the \F{\alpha}{\Delta} type, which ``internalizes''
@@ -272,7 +273,9 @@ descriptor $\odot$ as in the introduction, is written \F{x \odot
   y}{x:A,y:B}.  A typical nullary instance is a unit (1 in linear
 logic), written \F{1}{}.  A typical unary instance is the \dsd{F}
 connective of adjoint logic, which for a unary context descriptor
-$\dsd{f} : \dsd{p} \to \dsd{q}$ is written \F{\dsd{f}(x)}{x:A}.
+constant $\dsd{f} : \dsd{p} \to \dsd{q}$ is written \F{\dsd{f}(x)}{x:A}.
+We sometimes write \F{\dsd{f}}{A} in this case, eliding the variable
+name, and similarly for a unary \dsd{U}.
 
 The rules for our \dsd{F} connective capture a pattern common to all of
 these examples.  On the left, \F{\alpha}{\Delta} ``decays'' into
@@ -281,11 +284,11 @@ $\Delta$, but \emph{structuring the uses of resources in $\Delta$ with
 that $\Delta$ is $\alpha$-renamed to avoid collision with $\Gamma$ (the
 proof term here would be a ``\dsd{split}'' that binds variables for each
 position in $\Delta$).  On the right, the \FR\/ rule says that you must
-rewrite (using structural properties) the context descriptor to have an
-$\alpha$ at the outside, with a mode substitution $\gamma$ that divides
-the exisitng resources up between the positions in $\Delta$, and then
-prove each formula in $\Delta$ using the specified resources.  We leave
-the typing of $\gamma$ implicit, though there is officially a
+rewrite (using structural transformations) the context descriptor to
+have an $\alpha$ at the outside, with a mode substitution $\gamma$ that
+divides the exisitng resources up between the positions in $\Delta$, and
+then prove each formula in $\Delta$ using the specified resources.  We
+leave the typing of $\gamma$ implicit, though there is officially a
 requirement $\oftp{\psi}{\gamma}{\psi'}$ where $\wfctx{\Gamma}{\psi}$
 and $\wfctx{\Delta}{\psi'}$, as required for the second premise to be a
 well-formed sequent.  Another way to understand this rule is to begin
@@ -299,7 +302,7 @@ coproducts builds a precomposition into an ``axiomatic injection'' such
 as $\dsd{inl} :: A \vdash A + B$, the \FR\/ rule builds a precomposition
 with $\seq{\Gamma}{\gamma}{\Delta}$ and then an application of a
 structural rule $\beta \spr \alpha[\gamma]$ into the ``axiomatic''
-version, in order to make cut and respect for structural properties
+version, in order to make cut and respect for transformations
 admissible.
 
 Next, we turn to $\U{x.\alpha}{\Delta}{A}$.  As a first approximation,
@@ -310,14 +313,15 @@ implication.  In a formula \U{x.\alpha}{\Delta}{A}, the context
 descriptor $\alpha$ has access to the variables from $\Delta$ as well as
 an extra variable $x$, whose mode is the same as the \emph{overall mode
   of \U{x.\alpha}{\Delta}{A}}, while the mode of $A$ itself is the mode
-of the conclusion of $\alpha$---\dsd{U} is contravariant where \dsd{F}
-is covariant.  It is helpful to think of $x$ as standing for the context
-that will be used to prove \U{x.\alpha}{\Delta}{A}.  For example, a
-typical function type is of the form \U{x.x \otimes y}{y:A}{B}, which
-says to extend the ``current context'' $x$ with a resource $y$.  In \UR,
-the context descriptor $\beta$ being used to prove the \dsd{U} is
-substituted \emph{for $x$} in $\alpha$ (dual to \FL, which substituted
-$\alpha$ into $\beta$).  The ``axiomatic'' \UL\/ instance 
+of the conclusion of $\alpha$---in terms of typing, \dsd{U} is
+contravariant where \dsd{F} is covariant.  It is helpful to think of $x$
+as standing for the context that will be used to prove
+\U{x.\alpha}{\Delta}{A}.  For example, a typical function type $A \lolli
+B$ represented by \U{x.x \otimes y}{y:A}{B}, which says to extend the
+``current context'' $x$ with a resource $y$.  In \UR, the context
+descriptor $\beta$ being used to prove the \dsd{U} is substituted
+\emph{for $x$} in $\alpha$ (dual to \FL, which substituted $\alpha$ into
+$\beta$).  The ``axiomatic'' \UL\/ instance
 \[
 \infer{\seq{\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}{}
 \]
@@ -328,7 +332,7 @@ way that the typing rule for $\lambda x.e : \Pi x:A.B$ requires
 coordination between two variables in different scopes).  The full rule
 builds in precomposition with \seq{\Gamma}{\gamma}{\Delta},
 postcomposition with \seq{\Gamma,z:A}{\beta'}{C}, and precomposition
-with a structural rule $\beta \spr \beta'[\alpha[\gamma]/z]$.
+with a structural transformation $\beta \spr \beta'[\alpha[\gamma]/z]$.
 
 Finally, the rules for substitutions are pointwise.  In examples, we
 often will write the components of a substitution directly as multiple
