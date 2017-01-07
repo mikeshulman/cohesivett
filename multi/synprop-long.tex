@@ -2,8 +2,6 @@
 \appendix[Syntactic Properties]
 \label{sec:synprop-long}
 
-{ %% scope labels to this file
-
 Here, we include proofs of the results from
 Section~\ref{sec:synprop-short}.  We show the cases for the rules in
 Figure~\ref{fig:sequent}, though the results readily extend to additive
@@ -17,7 +15,7 @@ structural properties does not contribute to the size).  Sizes are
 necessary for the cut proof, where we sometimes weaken or invert a
 derivation before applying the inductive hypothesis.
 
-\begin{lemma}[Respect for Transformations] ~ \label{lemma:respectspr}
+\begin{lemma}[Respect for Transformations] ~ %% \label{lem:respectspr}
 \begin{enumerate}
 \item If \seq{\Gamma}{\beta}{A} and $\beta' \spr \beta$ then
   \seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same
@@ -45,7 +43,7 @@ and $\alpha_2' \spr \alpha_2$); this is enough to use the inductive
 hypotheses in the cons case.
 \end{proof}
 
-\begin{lemma}[Weakening over weakening] \label{thm:weakening} ~
+\begin{lemma}[Weakening over weakening] ~ %% \label{lem:weakening} ~
 \begin{enumerate}
 \item If \seq{\Gamma,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
@@ -78,7 +76,7 @@ first part.
 %% hypothesis, as does the case for \Usymb-right.  
 \end{proof}
 
-\begin{lemma}[Exchange over exchange]
+\begin{lemma}[Exchange over exchange] %% \label{lem:exchange}
 If \seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}, and the resulting derivation
 has the same size as the given one.  (And similarly for substitutions,
@@ -90,7 +88,7 @@ and exchange can be iterated).
 We sometimes write $\modeof{\Gamma}$ for the $\psi$ such that
 \wfctx{\Gamma}{\psi} and similarly for $\modeof{A}$.
 
-\begin{theorem}[Identity] ~ \label{thm:identity}
+\begin{theorem}[Identity] ~ %% \label{thm:identity}
 \begin{enumerate}
 \item If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$.
 \item If $\oftp{\modeof{\Gamma}}{\rho}{\modeof{\Delta}}$ is a
@@ -146,7 +144,7 @@ we obtain the result from the inductive hypotheses as follows:
 \]
 \end{proof}
 
-\begin{lemma}[Left-invertibility of \Fsymb] \label{lemma:Finv}
+\begin{lemma}[Left-invertibility of \Fsymb] %% \label{lem:Finv}
 If $\D :: \seq{\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2}{\beta}{C}$
 and then there is a derivation $D' ::
 \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and
@@ -293,7 +291,7 @@ $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
 \end{proof}
 
 
-\begin{theorem}[Cut] ~
+\begin{theorem}[Cut] ~ %% \label{thm:cut}
 \begin{enumerate} 
 \item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
 then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
@@ -330,7 +328,7 @@ If $z$ is $x_0$ and $A_0$ is $Q$, then \D\/ derives
 \seq{\Gamma,\Gamma'}{\alpha_0}{Q} and we want a derivation of
 \seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{z}}{Q}.  By congruence on
 $s$, $\subst{\beta}{\alpha_0}{z} \spr \subst{z}{\alpha_0}{z}$, so
-Lemma~\ref{lemma:respectspr} gives the result.  If $z$ is not $x_0$,
+Lemma~\ref{lem:respectspr} gives the result.  If $z$ is not $x_0$,
 then $z:Q \in \Gamma,\Gamma'$.  We want a derivation of
 \seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{Q}, and substituting
 into $s$ gives $\subst{\beta}{\alpha_0}{x_0} \spr z$ (because $z \neq
@@ -385,7 +383,7 @@ There is one subtlety in this case.  The usual strategy for a left rule
 against an arbitrary \E\/ is to push $\E$ into the ``continuation'' of
 the left rule.  However, as discussed above, our left rule for \Fsymb\/
 eagerly inverts \emph{all} occurences of $x$, while $\E$ itself also has
-$x$ in scope.  Thus, we use Lemma~\ref{lemma:Finv} to pull the
+$x$ in scope.  Thus, we use Lemma~\ref{lem:Finv} to pull the
 left-inversion to the bottom of \E, and then push that into \D.  On
 proof terms, this corresponds to making all references to $x$ in \E\/
 instead refer to the results of the ``split'' at the bottom of $\D$.
@@ -496,7 +494,7 @@ variables in $\modeof {\Delta}$,
 {\subst{\beta}{\tsubst \alpha \gamma}{x_0}} =
 {\tsubst{\subst{\beta}{\alpha}{x_0}}{\gamma}} 
 \]
-So applying Lemma~\ref{lemma:respectspr} gives 
+So applying Lemma~\ref{lem:respectspr} gives 
 \seq{\Gamma,\Gamma'}{\subst{\beta}{\alpha_0}{x_0}}{C}.  
 
 If the left rule is not on the cut variable, then we have
@@ -577,7 +575,7 @@ But by using $s$ and commuting substitutions we have
 \subst{(\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z})}{\alpha_0}{x_0} = 
 {\subst{\subst{\beta'}{\alpha_0}{x_0}}{\tsubst{\alpha}{\subst{\gamma}{\alpha_0}{x_0}}}{z}}
 \]
-so Lemma~\ref{lemma:respectspr} gives the result.  
+so Lemma~\ref{lem:respectspr} gives the result.  
 
 On the other hand, if the \UL\/ is not on $x_0$, then we have
 \[
@@ -684,7 +682,7 @@ the free variables of $\alpha$),
 \]
 \end{proof}
 
-\begin{corollary}[Contraction over contraction] \label{cor:controver}
+\begin{corollary}[Contraction over contraction] %% \label{cor:contraction}
 \item If
 \seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
 then
@@ -699,7 +697,7 @@ Therefore, by identity (part 2),
 obtain the result.
 \end{proof}
 
-\begin{corollary}[Right-invertibility of \Usymb] \label{lemma:Uinv}
+\begin{corollary}[Right-invertibility of \Usymb] %% \label{cor:Uinv}
 If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
 {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
 \end{corollary}
@@ -737,7 +735,7 @@ $\alpha \spr \beta$ is proved by equality of context descriptors, and an
 unlabeled sequent leaf is proved by identity
 (Theorem~\ref{thm:identity}).  
 
-\begin{lemma}[Fusion] ~
+\begin{lemma}[Fusion] ~ %% \label{lem:fusion}
 \begin{enumerate} 
 
 \item $\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash
@@ -844,7 +842,7 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 The types respect the structural properties, covariantly for \Fsymb\/
 and contravariantly for \Usymb\/.
 
-\begin{lemma}[Types Respect Structural Properties] ~ \label{lem:}
+\begin{lemma}[Types Respect Structural Properties] ~ %% \label{lem:typespr}
 \begin{enumerate}
 \item 
  If $\alpha \spr \beta$ then $\F{\alpha}{\Delta} \vdash
@@ -873,4 +871,4 @@ and contravariantly for \Usymb\/.
       }}
 \]        
 \end{proof}
-}
+

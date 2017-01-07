@@ -1,12 +1,10 @@
 \section{Examples}
 \label{sec:exampleencodings}
 
-FIXME introduce F/U abbrevations
-
 In this section, we give some examples of logical connectives that can
 be represented by mode theories in this framework, and explain
 informally why they have the desired behavior with respect to
-provability.  An additional level to these encodings is making the
+provability.  An additional level to these embeddings is making the
 equational theory of derivations of \seq{\Gamma}{\alpha}{A} match a
 desired notion of equality of maps/morphisms, and for this it is often
 necessary to add some additional equations between structural properties
@@ -28,7 +26,7 @@ contraction, associtivity).  If we write $A \odot B$ for \F{x \odot
 \odot (B \odot C) \vdash (A \odot B) \odot C$.
 
 To attempt a derivation, we can (without loss of generality) begin by
-applying the invertible (Lemma~\ref{lemma:Finv}) \FL\/ rule twice, at
+applying the invertible (Lemma~\ref{lem:Finv}) \FL\/ rule twice, at
 which point no further left rules are possible, so we must try to apply
 \FR:
 
@@ -53,7 +51,7 @@ which point no further left rules are possible, so we must try to apply
 \]
 \end{footnotesize}
 
-To apply \FR, we need to find a substitution for $\alpha_1/q$ and
+\noindent To apply \FR, we need to find a substitution for $\alpha_1/q$ and
 $\alpha_2/z$ with a structural property as above.  In the absence of any
 equations or transformations, the only possible choice is $x/q, (y \odot
 z)/z$, so we need to show
@@ -91,9 +89,8 @@ Thus, the subgoals are
 \qquad
 \seq{x:A,y:B,z:C}{z}{C}
 \]
-The latter is identity-over-identity
-(Theorem~\ref{thm:identity-over-identity}), and the former is a further
-\FR\/ and then identities:
+The latter is identity-over-identity (Theorem~\ref{thm:identity}), and
+the former is a further \FR\/ and then identities:
 \[
 \infer{\seq{x:A,y:B,z:C}{x \odot y}{\F{x' \odot y'}{x':A,y':B}}}
       { \begin{array}{l}
@@ -103,7 +100,7 @@ The latter is identity-over-identity
         \end{array}
       }
 \]
-However, we get stuck trying to prove commutativity:
+However, we cannot prove commutativity:
 \[
 \infer[\FL]{\seq{p:\F{x\odot y}{x:A,y:B}}{p}{\F{z\odot w}{z:B,w:A}}}
       {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
@@ -123,15 +120,15 @@ of the context, and one that adds to the right; the expected rules are
 \begin{array}{l}
 \infer{\Gamma \vdash A \rightharpoonup B}
       {\Gamma,A \vdash B}
-\qquad
+\quad
 \infer{\Gamma,A \rightharpoonup B,\Delta,\Gamma' \vdash C}
       {\Delta \vdash A &
        \Gamma,B,\Gamma' \vdash C
       }
-\\ \\
+\quad
 \infer{\Gamma \vdash A \leftharpoonup B}
       {A,\Gamma \vdash B}
-\qquad
+\quad
 \infer{\Gamma,\Delta,A \leftharpoonup B,\Gamma' \vdash C}
       {\Delta \vdash A &
        \Gamma,B,\Gamma' \vdash C
@@ -140,13 +137,13 @@ of the context, and one that adds to the right; the expected rules are
 \]
 We represent these by 
 \[
-\begin{array}{l}
-A \rightharpoonup B := \U{c.c \odot x}{x:A}{B}\\
+\begin{array}{ll}
+A \rightharpoonup B := \U{c.c \odot x}{x:A}{B} &
 A \leftharpoonup B := \U{c.x \odot c}{x:A}{B}
 \end{array}
 \]
 These have the expected right rules, putting $x$ on the left or right of
-the context descriptor, by the substitution $\beta/c$ in \UR:
+the current context descriptor, by the substitution $\beta/c$ in \UR:
 \[
 \infer{\seq{\Gamma}{\beta}{\U{c.c \odot x}{x:A}{B}}}
       {\seq{\Gamma,x:A}{\beta \odot x}{B}}
@@ -177,20 +174,20 @@ The instances of \UL\/ are
 \end{array}
 \]
 Suppose that $\beta$ is of the form $x_1 \odot \ldots c \ldots \odot
-x_n$ for distinct variables $x_i$.  Because the only structural rules
-are the associativity and unit equations, the structural rule for the
-$\rightharpoonup$ rule can only reassociate $\beta$ as $\beta_1 \odot (c
-\odot \alpha) \odot \beta_2$, with $\beta' = \beta_1 \odot z \odot
-\beta_2$.  Here $\alpha$ plays the role of $\Delta$ in the ordered logic
-rule---the resources used to prove $A$, which occur to the right of the
-implication being eliminated.  Reading the substitution backwards, the
-resources $\beta'$ used for the continuation are ``$\beta$ with $c
-\otimes \alpha$ replaced by the result of the implication,'' as desired.
-While $c$ and any variables used in $\alpha$ are still in $\Gamma$,
-permission to use them has been removed from $\beta'$---and there is no
-way to restore such permissions in this mode theory.  The rule for
-$\leftharpoonup$ is the same, but with $\alpha$ on the opposite side of
-$c$.
+x_n$ for distinct variables $x_i$.  Because the only structural
+transformations are the associativity and unit equations, the
+transformation for the $\rightharpoonup$ rule can only reassociate
+$\beta$ as $\beta_1 \odot (c \odot \alpha) \odot \beta_2$, with $\beta'
+= \beta_1 \odot z \odot \beta_2$, for some $\beta_1$ and $\beta_2$.
+Here $\alpha$ plays the role of $\Delta$ in the ordered logic rule---the
+resources used to prove $A$, which occur to the right of the implication
+being eliminated.  Reading the substitution backwards, the resources
+$\beta'$ used for the continuation are ``$\beta$ with $c \odot \alpha$
+replaced by the result of the implication,'' as desired.  While $c$ and
+any variables used in $\alpha$ are still in $\Gamma$, permission to use
+them has been removed from $\beta'$---and there is no way to restore
+such permissions in this mode theory.  The rule for $\leftharpoonup$ is
+the same, but with $\alpha$ on the opposite side of $c$.
 
 \subsection{Linear products and implication}
 
@@ -301,8 +298,8 @@ We can also consider an $n$-use product
 A^n := \F{\mathord{\otimes}^n(x)}{x:A}
 \]
 as a positive type, which will decompose $A \to^n B$ as $A^n \lolli B$
-(by Theorem~\ref{thm:fusion}).  This has a map \seq{p:A^n}{p}{A \otimes
-  \ldots \otimes A} but not a converse \seq{A \otimes \ldots \otimes
+(by Lemma~\ref{lem:fusion}).  This has a map \seq{p:A^n}{p}{A \otimes
+  \ldots \otimes A} but not a converse map \seq{A \otimes \ldots \otimes
   A}{p}{p:A^n}.  For example,
 \[
 \infer {\seq{p:\F{x \otimes x}{x:A}}{p}{\F{x \otimes y}{x:A,y:A}}}
@@ -341,12 +338,12 @@ of the chain
 A & \cong & \F{x}{x:A}  & \vdash^? & \F{x \otimes x}{x:A} & \vdash & \F{x \otimes y}{x:A, y : A}
 \end{array}
 \]
-(the left isomorphism is just \FL/\FR, while the right map was discussed
-in the previous section), so we would like to add a middle map
-$\F{x}{x:A} \vdash \F{x \otimes x}{x:A}$.  Since \dsd{F} is covariant on
-structural properties (Lemma~\ref{lem:respectspr-types}), it suffices to
-add a directed structural rule $\dsd{c} :: x \spr x \otimes x$.  Then we
-have $A \vdash A^2 \vdash (A \otimes A)$ but neither of the converses.
+The left isomorphism is just \FL/\FR, while the right map was discussed
+in the previous section.  So it suffices to give $\F{x}{x:A} \vdash \F{x
+  \otimes x}{x:A}$.  Since \dsd{F} is covariant on structural properties
+(Lemma~\ref{lem:typespr}), it suffices to add a structura transformation
+$\dsd{c} :: x \spr x \otimes x$.  Then we have $A \vdash A^2 \vdash (A
+\otimes A)$ but neither of the converses.
 
 %% Given {\seq{\Gamma,x:A,y:A}{\alpha \otimes x \otimes y}{C}} (with $x$
 %% and $y$ not occuring in $\alpha$), by contraction over contraction
@@ -356,12 +353,12 @@ have $A \vdash A^2 \vdash (A \otimes A)$ but neither of the converses.
 
 \subsection{Affine products and implications}
 
-Alternatively, if we extend the linear logic mode theory with a directed
-structural rule $\dsd{w} :: x \spr 1$ then we get weakening.  For
-example, we can define a projection
+Alternatively, if we extend the linear logic mode theory with a
+structural transformation $\dsd{w} :: x \spr 1$ then we get weakening.
+For example, we can define a projection
 \[
 \infer[\FL]{\seq{p : A \otimes B}{p}{A}}
-           {\infer[Lemma~\ref{lemma:respectsp}]
+           {\infer[Lemma~\ref{lem:respectspr}]
              {\seq{x:A,y:B}{x \otimes y}{A}}
              {\infer{x \otimes y \spr x}
                     {y \spr 1}
@@ -379,8 +376,8 @@ provability---recall that we are deferring discussion of equality of
 structural properties to Section~\ref{sec:adequacy}), and $\U{c.c
   \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
 
-In this setting, we have both $A \vdash \F{x \times x}{x:A}$ (by
-contraction) and $\F{x \times x}{x:A} \vdash A$ (by projection).  It
+In this setting, we have both $A \vdash \F{x \otimes x}{x:A}$ (by
+contraction) and $\F{x \otimes x}{x:A} \vdash A$ (by projection).  It
 seems reasonable to make this an isomorphism, rather than just an
 interprovability, expressing the idea that in a cartesian setting, a
 one-use $A$ is exactly the same as a two-use $A$.  (On the other hand,
@@ -392,7 +389,7 @@ A^2 \dashv\vdash A \times A$.  We refer to the mode of theory for an
 idempotent commutative monoid with a weakening transformation as an
 \emph{idempotent cartesian monoid} and write $(\times,\top)$ for it.
 
-\subsection{BI} Bunched implication~\citep{ohearnpym}
+\subsection{BI} Bunched implication~\citep{ohearnpym99bunched}
 has two context-forming operations $\Gamma,\Gamma'$ and
 $\Gamma;\Gamma'$, along with corresponding products and implications.
 Both are associative, unitial, and commutative, but $;$ has weakening
@@ -490,7 +487,7 @@ This generates types
 which are adjoint $\F{\dsd{f}(x)}{x:-} \la
 {\U{x.\dsd{f}(x)}{\cdot}{-}}$.  The bijection on hom-sets is defined
 using \FL\/ and \FR\/ and their invertibility
-(Corollary~\ref{cor:Uinvertibility}, Lemma~\ref{lemma:finvert}):
+(Corollary~\ref{cor:Uinv}, Lemma~\ref{lem:Finv}):
 \[
 \infer={\seq{p:\F{\dsd{f}(x)}{x:A}}{p}{B}}
        {\infer={\seq{x:A}{\dsd{f}(x)}{B}}
@@ -506,12 +503,12 @@ add to the mode theory by equations
 \dsd{f}(x \times y) \deq \dsd{f}(x) \otimes \dsd{f}(y)
 \qquad \dsd{f}(\top) \deq 1
 \]
-These equations then extend to isomorphism using
-Theorem~\ref{thm:fusion}.  These equations are used to prove that $! A$
-has weakening and contraction (with respect to $\otimes$) and $!A
-\otimes !B \vdash !(A \otimes B)$, for example.  Omitting these
-equations allows us to describe non-monoidal (or lax monoidal, if we add
-only one direction) left adjoints.
+These equations then extend to isomorphisms using
+Lemma~\ref{lem:fusion}.  These properties of \dsd{f} are necessary to
+prove that $! A$ has weakening and contraction (with respect to
+$\otimes$) and $!A \otimes !B \vdash !(A \otimes B)$, for example.
+Omitting these equations allows us to describe non-monoidal (or lax
+monoidal, if we add only one direction) left adjoints.
 
 %% The $ \dsd{f}(x) \otimes \dsd{f}(y) \spr \dsd{f}(x \times y)$
 %% direction is used to prove the purely linear logic entailment $!A
@@ -580,33 +577,34 @@ derivations.\footnote{Because the context monoids are cartesian
 
 \subsection{Subexponentials}
 
-Subexponentials~\citep{danos,nigam} extend linear logic with a family of
+Subexponentials~\citep{danos+93subexponentials,nigammiller09subexponentials} extend linear logic with a family of
 comonads $!_a A$.  All of the comonads are monoidal ($!_a A \otimes !_a
 B \vdash !_a(A \otimes B)$ and $1 \vdash !_a A$), and there is a
 preorder $a \le b$ such that $!_b A \vdash !_a A$.  Each $!_a$ is
 allowed to have weakening and/or contraction, subject to the constraint
 that when $a \le b$, $b$ must be at least as structural as $a$.
 
-We illustrate the encoding on a specific example of the diamond preorder
-generated by $\dsd i < \dsd j,\dsd k < \dsd m$.  Following
+We illustrate the embedding on a specific example of the diamond
+preorder generated by $\dsd i < \dsd j,\dsd k < \dsd m$.  Following
 \citep[Example 4.3]{reed09adjoint}, we identify each subexponential $a$
 with a mode, and have an additional mode \dsd{l} for basic linear truth,
-all with commutative monoids $(\otimes_a,1_a)$.  We generate context
-descriptors \oftp{x : b}{\dsd{ba}(x)}{a} for each $a < b$ (so, \dsd{mk},
-\dsd{mj}, \dsd{ji}, \dsd{ki}), with an additional \oftp{x:\dsd
-  i}{\dsd{il}(x)}{\dsd l}.  These include each ``higher'' mode into the
-immediately ``lower'' ones.  We add an equation $\dsd{ji}(\dsd{mj}(x))
-\deq \dsd{ki}(\dsd{mk}(x))$ that the diamond commutes.  Then $!_b A$ is
-$\F{b{\dsd l}(x)} {x : \U{x.b\dsd{l}(x)}{\cdot}{A}}$ for the unique
-$\oftp{x : b}{b{\dsd l}}{\dsd{l}}$ generated by these constants.  For
-example, $!_k$ is the comonad of $\oftp{x :
+all with commutative monoids $(\otimes_a,1_a)$.  We add context
+descriptor constants \oftp{x : b}{ba(x)}{a} for each $a < b$ (so, in
+this example, \dsd{mk}, \dsd{mj}, \dsd{ji}, \dsd{ki}), with an
+additional \oftp{x:\dsd i}{\dsd{il}(x)}{\dsd l}.  These include each
+``higher'' mode into the immediately ``lower'' ones, and the lowest ones
+into \dsd{l}.  We add an equation $\dsd{ji}(\dsd{mj}(x)) \deq
+\dsd{ki}(\dsd{mk}(x))$ that the diamond commutes.  Then $!_b A$ is the
+comonad $\F{b{\dsd l}(x)} {x : \U{x.b\dsd{l}(x)}{\cdot}{A}}$ for the
+unique $\oftp{x : b}{b{\dsd l}}{\dsd{l}}$ generated by these constants.
+For example, $!_k$ is the comonad of $\oftp{x :
   \dsd{k}}{\dsd{il}(\dsd{ki}(x))}{\dsd{l}}$.
 
 This mode theory is constructed so that \dsd{l} is final, and when $a
 \le b$, we have a morphism \oftp{x:b}{ab(x)}{a} and the morphism
 \oftp{x:b}{b\dsd{l}(x)}{\dsd{l}} is equal to
-\oftp{x:b}{a\dsd{l}(ba(x))}{\dsd{l}}.  Thus, by
-Theorem~\ref{thm:fusion}, we have
+\oftp{x:b}{a\dsd{l}(ba(x))}{\dsd{l}}.  Thus, by Lemma~\ref{lem:fusion},
+we have
 \[
 !_b A = \dsd{F}_{{b\dsd{l}}}(\dsd{U}_{{b\dsd{l}}} A) \cong \dsd{F}_{{a\dsd{l}}}\dsd{F}_{{ba}} \dsd{U}_{{ba}} \dsd{U}_{{a\dsd{l}}} A
 \]
@@ -630,7 +628,7 @@ Interestingly, when $a \le b$, it does not seem that we need a condition
 that $(\otimes_b,1_b)$ has whatever structural properties
 $(\otimes_a,1_a)$ has in order to get that $!_b A$ is at least as
 structural as $!_a A$.  As argued above $!_b A$ factors into the form
-$\dsd{F}_{al}(C)$, which has whatever structural properties mode $a$ has.
+$\dsd{F}_{a{\dsd l}}(C)$, which has whatever structural properties mode $a$ has.
 
 %% Following \citep[Example 4.3]{reed09adjoint}, we identify each
 %% subexponential $i$ with a mode.  We put a commutative monoid
@@ -676,8 +674,8 @@ One way to add the strength is to add an asymmtric product of a
 \[
 \begin{array}{ll}
 \oftp{x : \dsd{t}, y : \dsd{p}}{\ttp x y}{\dsd{p}}
-& \dsd{g}(x \otimes_{\dsd t} y) \deq \ttp x {\dsd{g}(y)}\\\\
-\ttp {x \otimes_{\dsd t} y} z \deq \ttp x {\ttp y z}
+& \dsd{g}(x \otimes_{\dsd t} y) \deq \ttp x {\dsd{g}(y)}\\
+\ttp {(x \otimes_{\dsd t} y)} z \deq \ttp x {\ttp y z}
 & \ttp {\dsd{1}} y \deq y
 \end{array}
 \]
@@ -687,29 +685,26 @@ $\dsd{g}(x_1 \otimes_{\dsd t} \ldots \otimes_{\dsd t} x_n)$ as the
 designated variable under a \dsd{g}.  Using this (and switching notation
 from \Dia{\dsd{g}}{A} to the \Crc{\dsd{g}}{A} that is typically used for
 strong monads), we can prove
+
 \begin{footnotesize}
-\[
-\D = \infer[\FL]
-                {\seq{x:A,y : \Crc{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\ttp x z}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
-                {\infer[\UL]
-                       {\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{\ttp{x}{\dsd{g}(z')}}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
-                       {{\ttp{x}{\dsd{g}(z')}} \spr \dsd{g}(x \otimes_{\dsd t} z') &
-                         \infer[\FR]{\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{x \otimes_{\dsd t} z'}{{A \otimes_{\dsd t} B}}}{}
-                       }
-        }
-\]
 \[
 \infer[\UR]
       {\seq{x : A, y : \Crc{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Crc{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
       {\infer[\UL]
         {\seq{x : A, y : \Crc{\dsd{g}}{B}}{\dsd{g}(x \otimes_{\dsd t} y)}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
         {\dsd{g}(x \otimes_{\dsd t} y) \spr \subst{(\ttp x z)}{\dsd{g}(y)}{z} &
-          \D}}
+          \infer[\FL]
+                {\seq{x:A,y : \Crc{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\ttp x z}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+                {\infer[\UL]
+                       {\seq{x:A,y : \Crc{\dsd{g}}{B},z':B}{\ttp{x}{\dsd{g}(z')}}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}}
+                       { {\ttp{x}{\dsd{g}(z')}} \spr \dsd{g}(x \otimes_{\dsd t} z') & 
+                         \infer[\FR]{\seq{\ldots}{x \otimes_{\dsd t} z'}{{A \otimes_{\dsd t} B}}}{}
+                       }
+        }}}
 \]
 \end{footnotesize}
 
-An advantage of this description is that it scales to the
-``$\Box$-strong
+An analogous description can be given for the ``$\Box$-strong
 $\Diamond$''~\citep{pfenningdavies,alechina+01categoricals4}, which has
 a strength only for boxed formulas ($\Bx{} A \otimes \Dia{} B \vdash
 \Dia{}(\Bx{} A \otimes B)$).  We use 3 modes \dsd{v},\dsd{t},\dsd{p} and
@@ -726,20 +721,47 @@ have a mixed-mode product between \dsd{v} and \dsd{p}
 & \tvp {\dsd{1}} y \deq y
 \end{array}
 \]
-Thus, if we have a \dsd{t}-context 
-\[
-\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots )
-\]
-(representing a context with valid/boxed $x$'s and true $y$'s) we can
-rewrite it to
-\[
-\tvp {(x_1 \times_{\dsd v} \ldots \times_{\dsd v} x_n)} \dsd{g}(y)
-\]
-by monoidalness of \dsd{f}, weakening away the other $y$'s, and the
-isolation equation.  Then we can apply \UL\/ to $y_i$, as in the
-$\Diamond$-left rule~\citep{pfenningdavies}.  
 
-FIXME: probably should show, not tell
+A judgement $x_1:A_1 \dsd{valid},\ldots,y_1:B_1 \dsd{true},\ldots \vdash
+C \, \dsd{poss}$ is represented by the sequent
+\[
+\seq{x_1:\Uempty{\dsd{f}}{A_1},\ldots,y_1:B_1,\ldots}
+    {\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots )}
+    {\F{\dsd{g}}{C}}
+\]
+The left rule
+\[
+\infer{\Delta \, \dsd{valid}, (\Gamma, z:\Dia{}{A}) \dsd{true} \vdash C \,\dsd{poss}}
+      {\Delta \, \dsd{valid}, w':A \dsd{true} \vdash C \, \dsd{poss}}
+\]
+that keeps the valid assumptions and discards the true ones is derivable
+by
+\begin{footnotesize}
+\[
+\infer%[\UL]
+      {\seq{x_i:\Uempty{\dsd{f}}{A_i},y_i:B_i,z:\Dia{\dsd{g}}{A}}{\dsd{g}(\dsd{f}{(x_i)} \times y_i \times z)}{C}}
+      {
+        \dsd{g}(\dsd{f}{(x_i)} \times y_i \times z) \spr \tvp{(x_1 \times_v \ldots \times_v x_n)} {\dsd{g}(z)} & 
+        \infer%[\FL]
+            {\seq{\ldots,w:\F{\dsd{g}}{A}}{(\tvp{(x_1 \times_v \ldots_v \times x_n)} {w})}{C}}
+            {\seq{\ldots,w':A}{(\tvp{(x_1 \times_v \ldots \times_v x_n)} {\dsd{g}(w')})}{C}}
+      }
+\]
+\end{footnotesize}
+\noindent The transformation is given by weakening away $y_i$ and
+using the monoidalness of \dsd{f} and the isolation equation:
+\[
+\begin{array}{ll}
+& \dsd{g}(\dsd{f}(x_1) \times \ldots \times \dsd{f}(x_n) \times y_1 \times \ldots \times z)\\
+\spr & \dsd{g}(\dsd{f}(x_1) \times \ldots \times \dsd{f}(x_n) \times z)\\
+\deq & \dsd{g}(\dsd{f}(x_1 \times_v x_n) \times z)\\
+\deq & \tvp {(x_1 \times_v x_n)} z
+\end{array}
+\]
+The right-hand premise is the encoding of the premise of the rule, using
+the isolation equation and monoidalness of \dsd{f} in the other
+direction.  The restriction of the isolation equation to \dsd{f}
+prevents keeping any additional \dsd{true}\/ variables in the premise.
 
 \subsection{Spatial Type Theory}
 

@@ -345,7 +345,7 @@ and reducing inessential non-determinism.  Here, we choose the later,
 and treat the assumption of \F{\alpha}{\Delta} affinely, removing it
 from the context when it is used.  It will turn out that the judgement
 nonetheless enjoys contraction-over-contraction
-(Corollary~\ref{thm:contraction-over-contraction}), because contraction
+(Corollary~\ref{cor:contraction}), because contraction
 for negatives is built into the \UL-rule, and contraction for positives
 follows from this and the fact that we can always reconstruct a positive
 from what it decays to on the left (c.f. how purely positive formulas
@@ -381,3 +381,128 @@ sums if
 \end{array}
 \]
 
+\subsection{Syntactic Metatheory}
+\label{sec:synprop-short}
+
+We summarize some syntactic properties; see
+Appendix~\ref{sec:synprop-long} for proofs.  Define the \emph{size} of a
+derivation of \seq{\Gamma}{\alpha}{A} or \seq{\Gamma}{\gamma}{\Delta} to
+be the number of inference rules for these judgements $(\dsd{v},\FL,
+\FR, \UL, \UR, \cdot, \_,\_)$ used in it (i.e., the evidence that
+variables are in a context and derivations of structural transformations
+do not contribute to the size).  Sizes are necessary for the cut proof,
+where we sometimes weaken or invert a derivation before applying the
+inductive hypothesis.
+
+\begin{lemma}[Respect for Transformations] ~ \label{lem:respectspr}
+\begin{enumerate}
+\item If \seq{\Gamma}{\beta}{A} and $\beta' \spr \beta$ then
+  \seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same
+  size as the given one.
+\item If \seq{\Gamma}{\gamma}{\Delta} and $\gamma' \spr \gamma$ then
+  \seq{\Gamma}{\gamma'}{\Delta}, and the resulting derivation has the
+  same size as the given one.
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Weakening over weakening] \label{lem:weakening} ~
+\begin{enumerate}
+\item If \seq{\Gamma,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
+derivation has the same size as the given one.  
+\item If \seq{\Gamma,\Gamma'}{\gamma}{\Delta} then
+\seq{\Gamma,\tptm{z}{A},\Gamma'}{\gamma}{\Delta}, and the resulting
+derivation has the same size as the given one.  
+\item If \seq{\Gamma,\Gamma''}{\alpha}{C} then
+\seq{\Gamma,\Gamma',\Gamma''}{\alpha}{C}, and the resulting
+derivation has the same size as the given one.  
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Exchange over exchange] \label{lem:exchange}
+If \seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C} then
+\seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}, and the resulting derivation
+has the same size as the given one.  (And similarly for substitutions,
+and exchange can be iterated).  
+\end{lemma}
+
+\begin{theorem}[Identity] ~ \label{thm:identity}
+\begin{enumerate}
+\item If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$.
+\item If $\oftp{\modeof{\Gamma}}{\rho}{\modeof{\Delta}}$ is a
+  variable-for-variable mode substitution such that $x:A \in \Delta$
+  implies $\rho(x) : A \in \Gamma$, then $\seq{\Gamma}{\rho}{\Delta}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}[Left-invertibility of \Fsymb] \label{lem:Finv}
+If $\D :: \seq{\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2}{\beta}{C}$
+and then there is a derivation $D' ::
+\seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and
+$size(\D') \le size(\D)$ (and analogously for substitutions).
+\end{lemma}
+
+\begin{theorem}[Cut] ~ \label{thm:cut}
+\begin{enumerate} 
+\item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
+then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
+\item If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\gamma}{\Delta}$ 
+then $\seq{\Gamma,\Gamma'}{\gamma[\alpha_0/x_0]}{\Delta}$ 
+\item If $\seq{\Gamma}{\gamma}{\Delta}$ and 
+\seq{\Gamma,\Delta}{\beta}{C}
+then \seq{\Gamma}{\tsubst{\beta}{\gamma}}{C}.  
+\end{enumerate}
+\end{theorem}
+
+\begin{corollary}[Contraction over contraction] \label{cor:contraction}
+\item If
+\seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
+then
+\seq{\Gamma,z:A,\Gamma'}{\tsubst \alpha {z/x,z/y}}{C}
+\end{corollary}
+
+\begin{corollary}[Right-invertibility of \Usymb] \label{cor:Uinv}
+If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
+{\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
+\end{corollary}
+
+\subsection{General Constructions}
+
+Next, we give a couple of general constructions inside the logic that
+are helpful in many examples.  The following ``fusion'' lemmas (which
+are additionally type isomorphisms, not just interprovabilities) relate
+$\Fsymb$ and $\Usymb$.  Special cases include: $A \times (B \times C)$
+is isomorphic to a primitive triple product $\{x:A,y:B,z:C\}$; currying;
+and associativity of $n$-ary functions ($A_1,\ldots,A_n \to
+(B_1,\ldots,B_m \to C)$ is isomorphic to $A_1,\ldots,A_n,B_1,\ldots,B_m
+\to C$).  The derivations are in Appendix~\ref{sec:synprop-long}.
+
+\begin{lemma}[Fusion] ~ \label{lem:fusion}
+\begin{enumerate} 
+
+\item $\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash
+  \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}$
+
+\item $\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} \dashv \vdash
+  \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}$
+
+\item 
+$\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
+ \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}$
+
+\end{enumerate}
+\end{lemma}
+
+The types respect the structural transformations, covariantly for
+\Fsymb\/ and contravariantly for \Usymb\/.
+
+\begin{lemma}[Types Respect Structural Transformations] ~ \label{lem:typespr}
+\begin{enumerate}
+\item 
+ If $\alpha \spr \beta$ then $\F{\alpha}{\Delta} \vdash
+ \F{\beta}{\Delta}$
+
+\item If $\alpha \spr \beta$ then $\U{x.\beta}{\Delta}{A} \vdash
+  \U{x.\alpha}{\Delta}{A}$
+\end{enumerate}
+\end{lemma}
