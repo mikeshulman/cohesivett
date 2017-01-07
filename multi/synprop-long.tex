@@ -3,7 +3,7 @@
 
 \appendix[Syntactic Properties]
 
-Here, we include proofs of the results claimed in
+Here, we include proofs of the results from
 Section~\ref{sec:synprop-short}.  We show the cases for the rules in
 Figure~\ref{fig:sequent}, though the results readily extend to additive
 sums and products.
@@ -837,6 +837,39 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 
 \end{footnotesize}
 \caption{Derivations of fusion lemmas}
+\label{fig:fusion}
 \end{figure*}
 
+The types respect the structural properties, covariantly for \Fsymb\/
+and contravariantly for \Usymb\/.
+
+\begin{lemma}[Types Respect Structural Properties] ~ \label{lem:}
+\begin{enumerate}
+\item 
+ If $\alpha \spr \beta$ then $\F{\alpha}{\Delta} \vdash
+  \F{\beta}{\Delta}$
+
+\item If $\alpha \spr \beta$ then $\U{x.\beta}{\Delta}{A} \vdash
+  \U{x.\alpha}{\Delta}{A}$
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\[
+\infer[\FL]{\seq{x:\F{\alpha}{\Delta}}{x}{\F{\beta}{\Delta}}}
+      {\infer[\FR]{\seq{\Delta}{\alpha}{\F{\beta}{\Delta}}}
+        {\alpha \spr \beta[\vec{w/w}] &
+          \seq{\Delta}{\vec{w/w}}{\Delta}
+      }}
+\]        
+\[
+\infer[\UR]
+      {\seq{x:\U{x.\beta}{\Delta}{A}}{\U{x.\alpha}{\Delta}{A}}}
+      {\infer[\UL]{ \seq{x:\U{x.\beta}{\Delta}{A},\Delta}{\alpha}{A}}
+        {\alpha \spr z[\beta[\vec{w/w}]/z] &
+          \seq{x:\U{x.\beta}{\Delta}{A},\Delta}{\vec{w/w}}{\Delta} &
+          \seq{\ldots,z:A}{z}{A}
+      }}
+\]        
+\end{proof}
 }
