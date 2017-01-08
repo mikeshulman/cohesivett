@@ -8,9 +8,7 @@ provability.  An additional level to these embeddings is making the
 equational theory of derivations of \seq{\Gamma}{\alpha}{A} match a
 desired notion of equality of maps/morphisms, and for this it is often
 necessary to add some additional equations between structural properties
-$s \deq s' : \alpha \spr \beta$, but we defer discussion about identity
-of structural properties and adequacy proofs to
-Section~\ref{sec:adequacy}.
+$s \deq s' : \alpha \spr \beta$.
 
 \subsection{Magma products}
 
@@ -76,10 +74,10 @@ making $(\odot,1)$ into a monoid.  This makes the context behave like
 ordered logic, which has associativity but none of exchange, weakening,
 and contraction---a monoidal but not symmetric monoidal product.
 
-We can complete the above proof of associativity of $\odot$: where ne
-needed we need to find a substitution such that ${x \odot (y \odot z)}
-\spr (q \odot z)[\alpha_1/q,\alpha_2/z]$, we can now choose $(x \odot
-y)/q, z/z)$ because
+We can complete the above proof of associativity of $\odot$: where we
+need to find a substitution such that ${x \odot (y \odot z)} \spr (q
+\odot z)[\alpha_1/q,\alpha_2/z]$, we can now choose $(x \odot y)/q,
+z/z$ because
 \[
 {x \odot (y \odot z)} \deq {(x \odot y) \odot z} = (q \odot z)[x \odot y/q, z/z]
 \]
@@ -101,17 +99,20 @@ the former is a further \FR\/ and then identities:
       }
 \]
 However, we cannot prove commutativity:
+
+\begin{footnotesize}
 \[
 \infer[\FL]{\seq{p:\F{x\odot y}{x:A,y:B}}{p}{\F{z\odot w}{z:B,w:A}}}
       {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
-        {\begin{array}{l}
-            x \odot y \spr (z \odot w) [\alpha_1/z,\alpha_2/w] \\
-            \seq{x:A,y:B}{\alpha_1}{B} \qquad 
+        {
+            x \odot y \spr (z \odot w) [\alpha_1/z,\alpha_2/w] &
+            \seq{x:A,y:B}{\alpha_1}{B} &
             \seq{x:A,y:B}{\alpha_2}{A} 
-          \end{array}
       }}
 \]
-because the only choice is $\alpha_1 = x$ and $\alpha_2 = y$, which
+\end{footnotesize}
+
+\noindent because the only choice is $\alpha_1 = x$ and $\alpha_2 = y$, which
 sends the wrong resource to each branch.  
 
 Ordered logic has two different implications, one that adds to the left
@@ -120,15 +121,15 @@ of the context, and one that adds to the right; the expected rules are
 \begin{array}{l}
 \infer{\Gamma \vdash A \rightharpoonup B}
       {\Gamma,A \vdash B}
-\quad
+~~
 \infer{\Gamma,A \rightharpoonup B,\Delta,\Gamma' \vdash C}
       {\Delta \vdash A &
        \Gamma,B,\Gamma' \vdash C
       }
-\quad
+~~
 \infer{\Gamma \vdash A \leftharpoonup B}
       {A,\Gamma \vdash B}
-\quad
+~~
 \infer{\Gamma,\Delta,A \leftharpoonup B,\Gamma' \vdash C}
       {\Delta \vdash A &
        \Gamma,B,\Gamma' \vdash C
@@ -174,20 +175,21 @@ The instances of \UL\/ are
 \end{array}
 \]
 Suppose that $\beta$ is of the form $x_1 \odot \ldots c \ldots \odot
-x_n$ for distinct variables $x_i$.  Because the only structural
-transformations are the associativity and unit equations, the
-transformation for the $\rightharpoonup$ rule can only reassociate
-$\beta$ as $\beta_1 \odot (c \odot \alpha) \odot \beta_2$, with $\beta'
-= \beta_1 \odot z \odot \beta_2$, for some $\beta_1$ and $\beta_2$.
-Here $\alpha$ plays the role of $\Delta$ in the ordered logic rule---the
-resources used to prove $A$, which occur to the right of the implication
-being eliminated.  Reading the substitution backwards, the resources
-$\beta'$ used for the continuation are ``$\beta$ with $c \odot \alpha$
-replaced by the result of the implication,'' as desired.  While $c$ and
-any variables used in $\alpha$ are still in $\Gamma$, permission to use
-them has been removed from $\beta'$---and there is no way to restore
-such permissions in this mode theory.  The rule for $\leftharpoonup$ is
-the same, but with $\alpha$ on the opposite side of $c$.
+x_n$ for distinct variables $x_i$, and consider the rule on the left,
+for $\rightharpoonup$.  Because the only structural transformations are
+the associativity and unit equations, the transformation must
+reassociate $\beta$ as $\beta_1 \odot (c \odot \alpha) \odot \beta_2$,
+with $\beta' = \beta_1 \odot z \odot \beta_2$, for some $\beta_1$ and
+$\beta_2$.  Here $\alpha$ plays the role of $\Delta$ in the ordered
+logic rule---the resources used to prove $A$, which occur to the right
+of the implication being eliminated.  Reading the substitution
+backwards, the resources $\beta'$ used for the continuation are
+``$\beta$ with $c \odot \alpha$ replaced by the result of the
+implication,'' as desired.  While $c$ and any variables used in $\alpha$
+are still in $\Gamma$, permission to use them has been removed from
+$\beta'$---and there is no way to restore such permissions in this mode
+theory.  The rule for $\leftharpoonup$ is the same, but with $\alpha$ on
+the opposite side of $c$.
 
 \subsection{Linear products and implication}
 
@@ -202,11 +204,10 @@ derive {\seq{p : A \otimes B}{p}{B \otimes A}}:
 \infer[\FL]
       {\seq{p:\F{x\otimes y}{x:A,y:B}}{p}{\F{z\otimes w}{z:B,w:A}}}
       {\infer[\FR]{\seq{x:A,y:B}{x \otimes y}{\F{z\otimes w}{z:B,w:A}}}
-        {\begin{array}{l}
-            x \otimes y \spr (z \otimes w) [y/z,x/w] \\
-            \seq{x:A,y:B}{y}{B} \qquad 
+        {
+            x \otimes y \spr (z \otimes w) [y/z,x/w] &
+            \seq{x:A,y:B}{y}{B} &
             \seq{x:A,y:B}{x}{A} 
-          \end{array}
       }}
 \]
 where the first premise is exactly $x \otimes y = y \otimes x$
@@ -252,8 +253,7 @@ will be efficient to unfold a substitution).
 %% – Does n-linear Πs above, and more (e.g. some of BI)
 %% – Prototype implementation
 
-The rules in \citet{reed08namessubstructural} for an $n$-linear
-functions are
+The rules for $n$-linear functions are
 \[
 \infer{\Gamma \vdash A \to^n B}
       {{\Gamma, x :^n A} \vdash {B}}
@@ -341,7 +341,7 @@ A & \cong & \F{x}{x:A}  & \vdash^? & \F{x \otimes x}{x:A} & \vdash & \F{x \otime
 The left isomorphism is just \FL/\FR, while the right map was discussed
 in the previous section.  So it suffices to give $\F{x}{x:A} \vdash \F{x
   \otimes x}{x:A}$.  Since \dsd{F} is covariant on structural properties
-(Lemma~\ref{lem:typespr}), it suffices to add a structura transformation
+(Lemma~\ref{lem:typespr}), it suffices to add a structural transformation
 $\dsd{c} :: x \spr x \otimes x$.  Then we have $A \vdash A^2 \vdash (A
 \otimes A)$ but neither of the converses.
 
@@ -371,10 +371,11 @@ For example, we can define a projection
 
 If we take $(\otimes,1)$ to be a commutative monoid (as in ordered
 logic) with both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x \otimes
-x$, then $A \otimes B$ will behave like a cartesian product (in terms of
-provability---recall that we are deferring discussion of equality of
-structural properties to Section~\ref{sec:adequacy}), and $\U{c.c
-  \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
+x$, then $x \otimes y$ will behave like a cartesian product in the mode
+theory, and consequently $A \otimes B$ will behave like a cartesian
+product type (in terms of provability---we are deferring discussion of
+equality of structural properties to Section~\ref{sec:equational}), and
+$\U{c.c \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
 
 In this setting, we have both $A \vdash \F{x \otimes x}{x:A}$ (by
 contraction) and $\F{x \otimes x}{x:A} \vdash A$ (by projection).  It
@@ -503,12 +504,13 @@ add to the mode theory by equations
 \dsd{f}(x \times y) \deq \dsd{f}(x) \otimes \dsd{f}(y)
 \qquad \dsd{f}(\top) \deq 1
 \]
-These equations then extend to isomorphisms using
-Lemma~\ref{lem:fusion}.  These properties of \dsd{f} are necessary to
-prove that $! A$ has weakening and contraction (with respect to
-$\otimes$) and $!A \otimes !B \vdash !(A \otimes B)$, for example.
-Omitting these equations allows us to describe non-monoidal (or lax
-monoidal, if we add only one direction) left adjoints.
+These equations then extend to isomorphisms using Lemma~\ref{lem:fusion}
+because all of $F,\otimes,\times$ are represented by \Fsymb-types in our
+framework.  These properties of \dsd{f} are necessary to prove that $!
+A$ has weakening and contraction (with respect to $\otimes$) and $!A
+\otimes !B \vdash !(A \otimes B)$, for example.  Omitting these
+equations allows us to describe non-monoidal (or lax monoidal, if we add
+only one direction) left adjoints.
 
 %% The $ \dsd{f}(x) \otimes \dsd{f}(y) \spr \dsd{f}(x \times y)$
 %% direction is used to prove the purely linear logic entailment $!A
@@ -600,24 +602,24 @@ unique $\oftp{x : b}{b{\dsd l}}{\dsd{l}}$ generated by these constants.
 For example, $!_k$ is the comonad of $\oftp{x :
   \dsd{k}}{\dsd{il}(\dsd{ki}(x))}{\dsd{l}}$.
 
-This mode theory is constructed so that \dsd{l} is final, and when $a
-\le b$, we have a morphism \oftp{x:b}{ab(x)}{a} and the morphism
-\oftp{x:b}{b\dsd{l}(x)}{\dsd{l}} is equal to
+This mode theory is constructed so that every mode has a unique map to
+\dsd{l}.  When $a \le b$, we have a morphism \oftp{x:b}{ab(x)}{a}, so
+the morphism \oftp{x:b}{b\dsd{l}(x)}{\dsd{l}} is equal to
 \oftp{x:b}{a\dsd{l}(ba(x))}{\dsd{l}}.  Thus, by Lemma~\ref{lem:fusion},
 we have
 \[
 !_b A = \dsd{F}_{{b\dsd{l}}}(\dsd{U}_{{b\dsd{l}}} A) \cong \dsd{F}_{{a\dsd{l}}}\dsd{F}_{{ba}} \dsd{U}_{{ba}} \dsd{U}_{{a\dsd{l}}} A
 \]
 The map $!_b A \vdash !_a A$ can thus be defined as the conunit for the
-$\dsd{F}_{{ba}} \dsd{U}_{{ba}}$ comonad in the middle.
+$\dsd{F}_{{ba}} \dsd{U}_{{ba}} A \vdash A$ for the comonad in the middle.
 
 We add equations $ba(x \otimes_b y) \deq ba(x) \otimes_a ba(y)$ and
 $ba(1_b) \deq 1_a$ making each generator strictly monoidal.  This
 ensures that each $!_b$ is monoidal and that $!_b A$ can be weakned or
 contracted if $(\otimes_b,1_b)$ has weakening or contraction (and more
 generally that \F{ba}{B} can be weakened or contracted for any $B$, not
-just $\dsd{U}_{ba}{(A)}$).  Thus, we give a particular subexponential
-$a$ weakening or contraction by adding it to $(\times_a,1_a)$.  
+just $\dsd{U}_{ba}{(A)}$).  Thus, we add weakening or contraction to
+particular subexponential $a$ by adding them to $(\otimes_a,1_a)$.
 %% assuming only monoid axioms (not that one is cartesian), 
 %% - !_b A \otimes !_b B \vdash !_b(A \otimes B) uses both directions of ba(x \otimes_b y) <=> ba(x) \otimes_a ba(y)
 %% - 1 \vdash !_b(1) uses both directions of ba(1_b) \deq 1_a
@@ -647,7 +649,7 @@ $\dsd{F}_{a{\dsd l}}(C)$, which has whatever structural properties mode $a$ has.
 When we have two modes \dsd{t} and \dsd{p} with a context descriptor
 \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}, the type $\Dia{\dsd{g}}{A} :=
 \U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$ will be a monad.  It does
-not automatically have a tensorial strength: if we have a commutative
+not automatically have a tensorial strength: if we have a 
 monoid $(\otimes_\dsd{t},1_{\dsd t})$ and try to derive
 \[
 \infer[\UR]

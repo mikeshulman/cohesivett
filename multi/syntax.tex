@@ -78,9 +78,9 @@ transformations between context descriptors.  For
      (contravariantly) to a sequent, will allow weakening $y$ to $x
      \odot y$.
 
-In Section~\ref{sec:equalityofderiv}, where we discuss equality of
-sequent calculus derivations, we will need an equational theory between
-two structural property derivations $s \deq s' ::
+In Section~\ref{sec:equational}, where we discuss equality of sequent
+calculus derivations, we will need an equational theory between two
+structural property derivations $s \deq s' ::
 \wfsp{\psi}{\alpha}{\alpha'}{q}$.  Because this equational theory does
 not influence provability in the sequent calculus, only identity of
 proofs, we defer the details.
@@ -101,17 +101,16 @@ strict monoid, rather than adding associator and unitor isomorphisms,
 which requires more equations between structural transformations.  To
 support this, we allow $\Sigma$ to contain axioms for equations $\alpha
 \deq \beta$ and define a judgement $\psi \vdash \alpha \deq \beta : p$
-as the least congruence containing these axioms (i.e. add symmetry to
-the rules for transformations).  Because the context descriptors and
-their equality are defined independently of any subsequent judgements,
-we take the liberty of suppressing this equality by using $\alpha$ to
-refer to a context-descriptor-modulo-\deq---that is, we assume a
-metatheory with quotient sets/types, and use meta-level equality for
-object-level equality, as recently advocated by
-\citet{altenkirchkaposi16qit}.  For example, because the judgement
-\wfsp{\psi}{\alpha}{\beta}{p} is indexed by equivalence classes of
-context descriptions, the reflexivity rule above implicitly means
-$\alpha \deq \beta$ implies $\alpha \spr \beta$.
+as the least congruence containing these axioms (i.e. the rules for
+$\spr$ plus symmetry).  Because the context descriptors and their
+equality are defined independently of any subsequent judgements, we take
+the liberty of suppressing this equality by using $\alpha$ to refer to a
+context-descriptor-modulo-\deq---that is, we assume a metatheory with
+quotient sets/types, and use meta-level equality for object-level
+equality, as recently advocated by \citet{altenkirchkaposi16qit}.  For
+example, because the judgement \wfsp{\psi}{\alpha}{\beta}{p} is indexed
+by equivalence classes of context descriptions, the reflexivity rule
+above implicitly means $\alpha \deq \beta$ implies $\alpha \spr \beta$.
 
 A signature $\Sigma$ consisting of some number of constants $c$,
 equations $\alpha \deq \beta$, transformations $\alpha \spr \beta$ (and
@@ -153,23 +152,20 @@ equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
 \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
       {x:P \in \Gamma & \beta \spr x}
 \\ \\
+\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+\quad
 \infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
       {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
         \beta \spr \tsubst{\alpha}{\gamma} &
         \seq{\Gamma}{\gamma}{\Delta} 
       }
-\quad
-\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
-      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
 %% \infer{\seq{\Gamma}{\beta}{C}}
 %%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
 %%         \oftp{\modeof{\Gamma},{x'} : {\modeof{\F{\alpha}{\Delta}}}}{\beta'}{\modeof{C}} &
 %%         \beta \deq \tsubst{\beta'}{x/x'} &
 %%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
 \\ \\
-\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
-      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
-\qquad
 \infer[\UL]{\seq{\Gamma}{\beta}{C}}
       {\begin{array}{l}
           x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
@@ -178,6 +174,9 @@ equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
           \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
        \end{array}
       }
+\quad
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \\ \\
 \framebox{\seq{\Gamma}{\gamma}{\Delta} where $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and  $\oftp{\psi}{\gamma}{\psi'}$}
 \\ \\
@@ -201,8 +200,9 @@ Figure~\ref{fig:sequent}.  The first judgement assigns each
 proposition/type $A$ a mode $p$.  Encodings of non-modal logics will
 generally only make use of one mode, while modal logics use different
 modes to represent different notions of truth, such as the linear and
-cartesian categories in \citet{bentonwadler96adjoint} and the
-true/valid/lax judgements in \citet{pfenningdavies}.  The next judgement
+cartesian categories in the adjoint decomposition of linear
+logic~\citep{benton94mixed,bentonwadler96adjoint} and the true/valid/lax
+judgements in modal logic~\citep{pfenningdavies}.  The next judgement
 assigns each context $\Gamma$ a mode context $\psi$.  Formally, we think
 of contexts as ordered: we do not regard $x:A,y:B$ and $y:B,x:A$ and the
 same context, though we will have an admissible exchange rule that
@@ -265,7 +265,7 @@ example \F{\alpha}{x:A,y:B} and \F{\alpha[x \leftrightarrow
     x']}{x':A,y:B} are $\alpha$-equivalent types (in de Bruijn form we
 would write \F{\alpha}{A_1,\ldots,A_n} and use indices in $\alpha$).
 The type formation rule says that \dsd{F} moves covariantly along a mode
-morphism $\alpha$, representing a ``product'' (in a loose sense) of
+morphism $\alpha$, representing a ``product'' (in a loose sense) of the
 types in $\Delta$ structured according to the context descriptor
 $\alpha$. A typical binary instance of \dsd{F} is a multiplicative
 product ($A \otimes B$ in linear logic), which, given a binary context
@@ -297,7 +297,7 @@ with the ``axiomatic \FR''
 \infer[\FR^*]{\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}{}
 \]
 which says that there is a map from $\Delta$ to \F{\alpha}{\Delta} along
-$\alpha$.  Then, in the same way that a typical injection rule for
+$\alpha$.  Then, in the same way that a typical right rule for
 coproducts builds a precomposition into an ``axiomatic injection'' such
 as $\dsd{inl} :: A \vdash A + B$, the \FR\/ rule builds a precomposition
 with $\seq{\Gamma}{\gamma}{\Delta}$ and then an application of a
@@ -317,7 +317,7 @@ of the conclusion of $\alpha$---in terms of typing, \dsd{U} is
 contravariant where \dsd{F} is covariant.  It is helpful to think of $x$
 as standing for the context that will be used to prove
 \U{x.\alpha}{\Delta}{A}.  For example, a typical function type $A \lolli
-B$ represented by \U{x.x \otimes y}{y:A}{B}, which says to extend the
+B$ is represented by \U{x.x \otimes y}{y:A}{B}, which says to extend the
 ``current context'' $x$ with a resource $y$.  In \UR, the context
 descriptor $\beta$ being used to prove the \dsd{U} is substituted
 \emph{for $x$} in $\alpha$ (dual to \FL, which substituted $\alpha$ into

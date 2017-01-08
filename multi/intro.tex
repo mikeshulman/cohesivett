@@ -5,22 +5,21 @@ In ordinary intuitionistic logic or $\lambda$-calculus, assumptions or
 variables can go unused (weakening), be used in any order (exchange), be
 used more than once (contraction), and be used in any position in a
 term.  \emph{Substructural} logics, such as linear logic, ordered logic,
-relevant logic, and affine logic, drop some of these structural
+relevant logic, and affine logic, omit some of these structural
 properties of weakening, exchange, and contraction, while \emph{modal
   logics} place restrictions on where variables may be used---e.g. a
 formula $\Bx{} C$ can only be proved using assumptions of $\Bx{} A$,
 while an assumption of $\Dia{}{A}$ can only be used when the conclusion
 is $\Dia{}{C}$.  Substructural and modal logics have had many
 applications to both functional and logic programming (modeling concepts
-such state, staged computation, distribution, and concurrency, to name
-just a few).
+such state, staging, distribution, and concurrency, to name just a few).
 
 Substructural and modal logics can also be used as \emph{internal
-  languages} of categories, where one uses an appropriate logical
+  languages} of categories, which means using an appropriate logical
 language to do constructions ``inside'' a particular mathematical
-setting, which often leads to shorter statements than working
+setting.  This often leads to shorter statements than working
 ``externally''.  For example, to define a function when working
-``externally'' in domains, one must first define the underlying
+externally in domains, one must first define the underlying
 set-theoretic function, and then prove that it is continuous.  But when
 using untyped $\lambda$-calculus as an internal language of domains,
 there is no need to prove that a function described by a $\lambda$-term
@@ -42,11 +41,11 @@ theory.
 
 Because other similar applications would have different monads and
 comonads with different properties, we would like general tools for
-going from a semantic situation of interest to a ``nice'' type
-theory/logic for it, e.g. one with cut and identity admissibility and
-the subformula property. In previous work~\citep{ls16adjoint}, we
-considered the special case of a single-assumption logic, building most
-directly on the adjoint logics of
+going from a semantic situation of interest to a well-behaved logic/type
+theory for it, e.g. one with cut and identity admissibility and the
+subformula property. In previous work~\citep{ls16adjoint}, we considered
+the special case of a single-assumption logic, building most directly on
+the adjoint logics of
 \citet{benton94mixed,bentonwadler96adjoint,reed09adjoint}.  Here we
 extend this previous work to the multi-assumption case.  The resulting
 framework is quite general and covers many existing intuitionistic
@@ -60,10 +59,11 @@ monadic $\Diamond$ and $\bigcirc$ modalities; and adjoint logic $F$ and
 $G$~\citep{benton94mixed,bentonwadler96adjoint,reed09adjoint}, including
 the single-assumption 2-categorical version from our previous
 work~\citep{ls16adjoint}.  It also supports variations on these, such as
-non-monoidal comonads and non-strong monads.  We show that a single,
-simple structural~\citep{pfenning94cut} proof of cut (and identity)
-admissibility applies to all of these logics, as well as any new logics
-that can be described in the framework.
+non-monoidal comonads and non-strong monads.  We prove cut (and
+identity) admissibility for the general framework by a simple
+structural~\citep{pfenning94cut} proof; this implies cut admissibility
+for any logic that can be described in the framework, including all of
+the above, as well as any new logics that one designs using it.
 %% While it is not too surprising
 %% that this is possible, given that cut proofs for these logics all follow
 %% a similar template, it is nonetheless satisfying to codify this pattern
@@ -88,12 +88,12 @@ while the substructural and modal aspects are enforced by the
 \emph{term} $\alpha$, which describes how the resources from $\Gamma$
 are allowed to be used.  For example, in linear logic/ordered logic/BI,
 the context is usually taken to be a multiset/list/tree (respectively).
-We represent the multiset or list or tree using a pair of an ordinary
-structural context $\Gamma$, together with a term $\alpha$ that
-describes the multiset or list or tree structure, labeled with variables
-from the ordinary context at the leaves.  We pronounce a sequent
-\seq{\Gamma}{\alpha}{A} as ``$\Gamma$ proves $A$ {along,over} $\alpha$''
-or ``$\Gamma$ structured according to $\alpha$ proves $A$''.
+We represent this by a pair of an ordinary structural context $\Gamma$,
+together with a term $\alpha$ that describes the multiset or list or
+tree structure, labeled with variables from the ordinary context at the
+leaves.  We pronounce a sequent \seq{\Gamma}{\alpha}{A} as ``$\Gamma$
+proves $A$ \{along,over\} $\alpha$'' or ``$\Gamma$ structured according to
+$\alpha$ proves $A$''.
 
 For example, suppose we have one mode $\dsd{n}$, together with a context
 descriptor constant
@@ -140,19 +140,18 @@ describing the tree.  Because the context descriptors are themselves
 ordinary structural/cartesian terms, the same variable can occur more
 than once or not at all.  A descriptor such as $x \odot x$ captures the
 idea that we can use the \emph{same} variable $x$ twice, expressing
-$n$-linear types~\citep{reed08namessubstructural}.  Thus, we can express
-contraction for a particular context descriptor $\odot$ as an equation
-$x = x \odot x$ (one use of $x$ is the same as two, or $\odot$ is an
-idempotent binary operation).  However, weakening cannot be represented
-as an equation between context descriptors: an equation $x = 1$ would
-trivialize the logic to ordinary intuitionistic logic.  Instead, to
-express weakening, we use a directed transformation $x \spr 1$, which is
-oriented to allow throwing away an allowed use of $x$, but not creating
-an allowed use from nothing.  We refer to these as \emph{structural
-  transformations}, to evoke their use in representing the structural
-properties of object logics that are embedded in our framework.
-Structural transformations are also used to describe relationships
-between adjunctions~\citep{ls16adjoint}.
+$n$-linear types.  Thus, we can express contraction for a particular
+context descriptor $\odot$ as an equation $x = x \odot x$ (one use of
+$x$ is the same as two, or $\odot$ is an idempotent binary operation).
+However, weakening cannot be represented as an equation between context
+descriptors: an equation $x = 1$ trivializes the frameworks to ordinary
+intuitionistic logic.  Instead, to express weakening, we use a directed
+transformation $x \spr 1$, which is oriented to allow throwing away an
+allowed use of $x$, but not creating an allowed use from nothing.  We
+refer to these as \emph{structural transformations}, to evoke their use
+in representing the structural properties of object logics that are
+embedded in our framework.  Structural transformations are also used to
+describe relationships between adjunctions~\citep{ls16adjoint}.
 
 In summary, to specify a particular substructural or modal logic, one
 gives constants generating context descriptors $\alpha$, with equations
@@ -208,20 +207,20 @@ insert the resources used to prove the cut formula in the correct place
 in the tree.
 
 The framework has two main logical connectives.  The first,
-\F{\alpha}{\Delta}, generalizes the \dsd{F} of adjoint
-logic~\citep{bentonwadler96adjoint,reed09adjoint} and the tensor
-($\otimes$) of linear logic.  The second, \U{x.\alpha}{\Delta}{A},
-generalizes the $\dsd{G}/\dsd{U}$ of adjoint logic and the implication
-$A \lolli B$ of linear logic.  Here $\Delta$ is a context of assumptions
-$x_i:A_i$, and trivializing the context descriptors (i.e. adding an
-equation $\alpha = \beta$ for all $\alpha$ and $\beta$) degenerates
-$\F{\alpha}{\Delta}$ into the ordinary intuititionistic product $A_1
-\times \ldots \times A_n$, while \U{x.\alpha}{\Delta}{A} becomes $A_1
-\to \ldots \to A_n \to A$.  Though we do not give a full
-polarized/focused proof theory in this paper, we do prove that \dsd{F}
-is left-invertible and \dsd{U} is right-invertible, and we conjecture
-that focusing works with the polarization that one would expect based on
-these degeneracies ($\F{\alpha}{\Delta^{\mathord{+}}}^{\mathord{+}}$ and
+\F{\alpha}{\Delta}, generalizes the \dsd{F} of adjoint logic and the
+tensor ($\otimes$) of linear logic.  The second,
+\U{x.\alpha}{\Delta}{A}, generalizes the $\dsd{G}/\dsd{U}$ of adjoint
+logic and the implication $A \lolli B$ of linear logic.  Here $\Delta$
+is a context of assumptions $x_i:A_i$, and trivializing the context
+descriptors (i.e. adding an equation $\alpha = \beta$ for all $\alpha$
+and $\beta$) degenerates $\F{\alpha}{\Delta}$ into the ordinary
+intuititionistic product $A_1 \times \ldots \times A_n$, while
+\U{x.\alpha}{\Delta}{A} becomes $A_1 \to \ldots \to A_n \to A$.  Though
+we do not give a full polarized/focused proof theory in this paper, we
+do prove that \dsd{F} is left-invertible and \dsd{U} is
+right-invertible, and we conjecture that focusing works with the
+polarization that one would expect based on these degeneracies
+($\F{\alpha}{\Delta^{\mathord{+}}}^{\mathord{+}}$ and
 $\U{x.\alpha}{\Delta^{\mathord{+}}}{A^{\mathord{-}}}^{\mathord{-}}$).
 In linear logic terms, our \dsd{F} and \dsd{U} cover both the
 multiplicatives and exponentials; additives can be added separately by
