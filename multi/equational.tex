@@ -1,0 +1,124 @@
+\section{Equational Theory}
+
+\subsection{Equations on Structural Transformations}
+
+First, we need a notation for derivations of the $\alpha \spr \beta$
+judgement in Figure~\ref{fig:2multicategory}.  We assume names for
+constants are given in the signature $\Sigma$, and write $1_\alpha$ for
+reflexivity, $s_1;s_2$ for transitivity (in diagramatic order), and
+$s_1[s_2/x]$ for congruence.  We allow the signature $\Sigma$ to provide
+some axioms for equality of transformations $s_1 \deq s_2$ (for two
+derivations of the same judgement $s_1,s_2 ::
+\wfsp{\psi}{\alpha}{\beta}{p}$), and define equality to be the least
+congruence closed under those axioms and the following associativity,
+unit, and interchange laws:
+
+\begin{itemize}
+\item $1_\alpha;s \deq s \deq s;1_\beta \text{ for } s :: \alpha \spr \beta$
+\item $(s_1;s_2);s_3 \deq s_1;(s_2;s_3)$
+\item $s[1_x/x] \deq s \deq 1_x[s/x] \text{ for } s :: \wfsp{\psi,x,\psi'}{\alpha}{\beta}{r}$
+\item $\subst{\subst{s_1}{s_2}{x}}{s_3}{y} \deq
+\subst{\subst{s_1}{s_3}{y}}{\subst{s_2}{s_3}{y}}{x}$ as transformations
+${\subst{\subst{\alpha_1}{\alpha_2}{x}}{\alpha_3}{y}} \spr
+{\subst{\subst{\beta_1}{\beta_2}{x}}{\beta_3}{y}}$ for $s_1 :: (\wfsp{\psi,x:p,y:q}{\alpha_1}{\beta_1}{r}), 
+ s_2 :: (\wfsp{\psi,y:q}{\alpha_2}{\beta_2}{p}), 
+ s_3 :: (\wfsp{\psi}{\alpha_3}{\beta_3}{q})$ 
+\item $s_1[t_1/x];s_2[t_2/x] \deq (s_1;s_2)[(t_1;t_2)/x]$
+as morphisms $\alpha_1[\beta_1/x] \spr \alpha_3[\beta_3/x]$
+for $s_1 :: (\wfsp{\psi,x:p,\psi'}{\alpha_1}{\alpha_2}{r})$,
+ $s_2 :: (\wfsp{\psi,x:p,\psi'}{\alpha_2}{\alpha_3}{r})$
+ $t_1 :: (\wfsp{\psi,\psi'}{\beta_1}{\beta_2}{p})$
+ $t_2 :: (\wfsp{\psi,\psi'}{\beta_2}{\beta_3}{p})$
+\item $1_y[s/x] \deq 1_y$ if $x \neq y$
+\item $\subst{1_\alpha}{1_\beta}{x} \deq 1_{\subst{\alpha}{\beta}{x}}$
+  FIXME follows from others?
+\end{itemize}
+
+\noindent These are the 2-category axioms extended to the
+multicategorical case.  The associativity and unit laws for
+congruence/horizontal composition $(s[s'/x])$ require the analogous
+associativity for $(\alpha[\alpha'/x])$ to type check.
+
+As we did with equality of context descriptors, we think of all
+definitions as being parametrized by \deq-equivalence-classes of
+transformations, not raw syntax.
+
+\subsection{Equations on Derivations}
+
+\newcommand\FLd[2]{\ensuremath{\FL_{#1}(#2)}}
+\newcommand\FRd[2]{\ensuremath{\FR(#1,#2)}}
+\newcommand\ULd[4]{\ensuremath{\UL_{#1}(#2,#3,#4)}}
+\newcommand\URd[1]{\ensuremath{\UR(#1)}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+\newcommand\Ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\Cut[3]{\ensuremath{#1[#2/#3]}}
+
+We use the following notation for derivations:
+\[
+\begin{array}{rcl}
+\D & ::= & x \mid \FLd{x}{\Delta.\D} \mid \FRd{s}{\D} \mid
+\ULd{x}{s}{\D_1}{\D_2} \mid \URd{\Delta.\D} \\ 
+& & \mid \Trd{s}{\D} \mid \Ident{x} \mid \Cut{\D_1}{\D_2}{x}
+\end{array}
+\]
+where \Trd{s}{\D} is Lemma~\ref{lem:respectspr}, \Ident{x} is
+Theorem~\ref{thm:identity}, and \Cut{\D_1}{\D_2}{x} is
+Theorem~\ref{thm:cut}.
+
+The equational theory of derivations is the least congruence (on all of
+the above derivation formers) containing the definitions of
+$\Trd{s}{\D}$ and $\Ident{x}$ and $\Cut{\D_1}{\D_2}{x}$ given by the
+proofs in Appendix~\ref{sec:synprop-long} as well as
+\begin{itemize}
+\item The unit laws $\Cut{\D}{\Ident{x}}{x} \deq \D$ and $\Cut{\Ident{x}}{\D}{x} \deq \D$.  
+\item A projection law $\Cut{\Ident{y}}{\D}{x} \deq \Ident{y}$ if $x
+  \neq y$.
+\item Associativity of cut (in a multicategorical sense):
+  $\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y} \deq
+  \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}$
+\item Functoriality of the action of structural transformations:
+  $\Trd{1}{\D} \deq \D$ and $\Trd{(s_1;s_2)}{\D} \deq
+  \Trd{{s_1}}{\Trd{{s_2}}{\D}}$
+
+\item The action of a transformation commutes with cut: if
+$\D_1 :: \seq{\Gamma}{\alpha'}{A}$ and
+$\D_2 :: \seq{\Gamma,x:A}{\beta'}{C}$
+and $s_1 :: \alpha \spr \alpha'$ 
+and $s_2 :: \beta \spr \beta'$, then
+$\Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \deq \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}}$
+
+\item An $\eta$ law for \Usymb: $\D ::
+  \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ is equal to
+\[
+\infer[\UR]
+      {\seq{\Gamma}{\alpha}{\U{x.\alpha}{\Delta}{A}}}
+      {\infer[\dsd{cut}]
+             {\seq{\Gamma,\Delta}{\subst{\beta}{\alpha}{x}}{\U{x.\alpha}{\Delta}{A}}}
+             {\deduce{\seq{\Gamma,\Delta}{\beta}{\U{x.\alpha}{\Delta}{A}}}{\D} &
+               \infer[\UL*]{\seq{\Gamma,\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}
+                           {}
+      }}
+\]
+(or $\URd{\Delta.\Cut{\ULd{x}{1}{\Ident{\Delta}}{z.z}}{\D}{x}}$).  
+The $\beta$ law is a defining equation of cut.
+
+\item An $\eta$ law for \Fsymb: $\D ::
+  \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}$ is equal to
+\[
+\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\infer[\dsd{cut}]
+        {\seq{\Gamma,\Gamma',\Delta}{\subst{\beta}{\alpha}{x}}{C}}
+        {\infer[\FR^*]{\seq{\Gamma,\Gamma',\Delta}{\alpha}{\F{\alpha}{\Delta}}}{} &
+          \D}}
+\]
+(or $\FLd{x}{\Delta.\Cut{\D}{\FRd{1}{\Ident \Delta}}{x}}$).  
+The $\beta$ law is a defining equation of cut.
+\end{itemize}
+In the one-variable case~\citep{ls16adjoint}, we reduced these laws to
+some more specific axioms, which bridge the gap between the defining
+equations of identity, cut, and respect for transformations and these
+abstract properties, but we have not yet attempted such a reduction
+here.
+
+\subsection{Applications}
+

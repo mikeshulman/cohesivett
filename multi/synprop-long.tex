@@ -11,7 +11,7 @@ Define the \emph{size} of a derivation of \seq{\Gamma}{\alpha}{A} or
 \seq{\Gamma}{\gamma}{\Delta} to be the number of inference rules for
 these judgements $(\dsd{v},\FL, \FR, \UL, \UR, \cdot, \_,\_)$ used in it
 (i.e., the evidence that variables are in a context and the evidence for
-structural properties does not contribute to the size).  Sizes are
+structural transformations do not contribute to the size).  Sizes are
 necessary for the cut proof, where we sometimes weaken or invert a
 derivation before applying the inductive hypothesis.
 
@@ -30,12 +30,12 @@ Mutual induction on the given derivation.  The cases for \dsd{v} and
 $\FR$ and $\UL$ are immediate (with no use of the inductive hypothesis)
 by composing with the equality in the premise of the rule.  This does
 not change the size of the derivation because the derivations of
-structural properties are ignored by the size.  The cases for $\FL$ and
+structural transformations are ignored by the size.  The cases for $\FL$ and
 $\UR$ use the inductive hypothesis, along with congruence for structural
-properties to show that $\subst{\beta}{\alpha}{x} \spr
+transformations to show that $\subst{\beta}{\alpha}{x} \spr
 \subst{\beta'}{\alpha}{x}$ or $\subst{\alpha}{\beta}{x} \spr
 \subst{\alpha}{\beta'}{x}$.  The cases for substitutions rely on the
-fact that no generating structural properties for mode substitutions are
+fact that no generating structural transformations for mode substitutions are
 allowed, so if $\gamma' \spr \cdot$ then $\gamma'$ is literally $\cdot$,
 and $(-,-)$ is injective (if $\gamma' \spr (\gamma_1,\alpha_2/x)$, then
 $\gamma'$ is $(\gamma_1',\alpha_2'/x)$ with $\gamma_1' \spr \gamma_1$
@@ -65,7 +65,7 @@ check membership or extend them---and because weakening holds for mode
 morphisms and equalities of mode morphisms.  Formally, the first two
 parts are proved by mutual induction; each case is either immediate
 or follows from weakening for the mode morphisms, weakening for
-structural properties, and the inductive hypotheses.  The third
+transformations, and the inductive hypotheses.  The third
 part is proved by induction over $\Gamma'$, repeatedly applying the
 first part.  
 %% The case for the hypothesis rule is immediate, because
@@ -268,10 +268,10 @@ again without increasing the size.  Thus, we can produce
         \end{array}
       }
 \]
-where the structural property is the composition of the
-\subst{-}{\alpha_0}{x_0} substitution into the given structural
-property, and rearranging the substitution (note that $x_0$ does not
-occur in $\alpha$):
+where the transformation is the composition of the
+\subst{-}{\alpha_0}{x_0} substitution into the given transformation, and
+rearranging the substitution (note that $x_0$ does not occur in
+$\alpha$):
 \[
 \begin{array}{ll}
 \subst{\beta}{\alpha_0}{x_0} & \spr
@@ -453,7 +453,7 @@ Thus, we have the first, third, and fourth premises of
         \end{array}
       }
 \]
-The structural property premise is
+The transformation premise is
 \[
      {\subst{\beta}{\alpha_0}{x_0}} 
 \spr \subst{\beta}{\subst{\alpha_0'}{\tsubst{\alpha}{\gamma}}{z}}{x0} = \subst{\subst{\beta}{\alpha_0'}{x_0}}{\tsubst{\alpha}{\gamma}}{z}
@@ -618,7 +618,7 @@ For the second premise, we get
 \subst{\beta}{\alpha_0}{x_0} \spr
 \subst{\subst{\beta'}{\tsubst{\alpha}{\gamma}}{z}}{\alpha_0}{x_0}
 \]
-by congruence on the assumed structural property, and then commute substitutions.  
+by congruence on the assumed transformation, and then commute substitutions.  
 
 \end{itemize}
 
@@ -839,10 +839,10 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 \label{fig:fusion}
 \end{figure*}
 
-The types respect the structural properties, covariantly for \Fsymb\/
+The types respect the structural transformations, covariantly for \Fsymb\/
 and contravariantly for \Usymb\/.
 
-\begin{lemma}[Types Respect Structural Properties] ~ %% \label{lem:typespr}
+\begin{lemma}[Types Respect Structural Transformations] ~ %% \label{lem:typespr}
 \begin{enumerate}
 \item 
  If $\alpha \spr \beta$ then $\F{\alpha}{\Delta} \vdash
