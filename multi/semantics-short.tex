@@ -1,0 +1,258 @@
+\section{Categorical Semantics}
+
+In this section, we give a category-theoretic structure corresponding to
+the above syntax.  First, we define a cartesian 2-multicategory as a
+semantic analogue the syntax in Figure~\ref{fig:2multicategory}. The
+semantics uses total substitutions (for the entire context at once)
+instead of single-variable substitutions, and explicit weakening and
+exchange instead of named variables.
+
+\begin{definition}
+  A \textbf{(strict) cartesian 2-multicategory} consists of
+  \begin{enumerate}
+  \item A set $\M_0$ of \emph{objects}.
+  \item For every object $B$ and every finite list of objects $(A_1,\dots,A_n)$, a category $\M(A_1,\dots,A_n;B)$.
+    The objects of this category are \emph{1-morphisms} and its morphisms are \emph{2-morphisms}; we write composition of 2-morphisms as $\compv{s_1}{s_2}$.
+  \item For each object $A$, an identity arrow $1_A\in\M(A;A)$.
+  \item For any object $C$ and lists of objects $(B_1,\dots,B_m)$ and $(A_{i1},\dots,A_{in_i})$ for $1\le i\le m$, a composition functor
+    \begin{footnotesize}
+    \begin{align*}
+      \M(B_1,\dots,B_m;C) \times \prod_{i=1}^m \M(A_{i1},\dots,A_{in_i};B_i) &\longrightarrow \M(A_{11},\dots,A_{mn_m};C)\\
+      (g,(f_1,\dots,f_m)) &\mapsto g\circ (f_1,\dots,f_m)
+    \end{align*}
+    \end{footnotesize}
+    We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
+  %% \item For any $f\in\M(A_1,\dots,A_n;B)$ we have natural equalities (i.e.\ natural transformations whose components are identities)
+  %%   \[
+  %%     1_B \circ (f) = f \qquad
+  %%     f\circ (1_{A_1},\dots,1_{A_n}) = f.
+  %%     \]
+  %% \item For any $h,g_i,f_{ij}$ we have natural equalities
+  %%   \begin{multline*}
+  %%     (h\circ (g_1,\dots,g_m))\circ (f_{11},\dots,f_{mn_m}) =\\
+  %%     h \circ (g_1\circ (f_{11},\dots,f_{1n_1}), \dots, g_m \circ (f_{m1},\dots,f_{mn_m}))
+  %%   \end{multline*}
+  \item For any function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$ and
+    objects $A_1,\dots,A_n,B$, a \emph{renaming} functor
+    \begin{align*}
+      \M(A_{\sigma 1},\dots,A_{\sigma m}; B) &\to \M(A_1,\dots,A_n;B)\\
+      f &\mapsto f\sigma^*
+    \end{align*}
+  %% \item The functors $\sigma^*$ satisfy the following natural equalities:
+  %%   \begin{gather*}
+  %%     f \sigma^* \tau^* = f(\tau\sigma)^*\\
+  %%     f (1_n)^* = f\\
+  %%     g\circ (f_1 \sigma_1^* ,\dots, f_n \sigma_n^*) = (g \circ (f_1,\dots,f_n))(\sigma_1\sqcup \cdots \sqcup \sigma_n)^*\\
+  %%     g\sigma^* \circ (f_1,\dots,f_n) = (g\circ (f_{\sigma 1},\dots, f_{\sigma m}))(\sigma \wr (k_1,\dots,k_n))^*
+  %%   \end{gather*}
+  %%   In the last equation, $k_i$ is the arity of $f_i$, and $\sigma \wr (k_1,\dots,k_n)$ denotes the composite function
+  %%   \begin{footnotesize}
+  %%   \begin{equation*}
+  %%     \{1,\dots,\textstyle\sum_{i=1}^m k_{\sigma i} \}
+  %%     \toiso \bigsqcup_{i=1}^m \{1,\dots,k_{\sigma i}\}
+  %%     \xrightarrow{\widehat{\sigma}} \bigsqcup_{j=1}^n \{1,\dots,k_{j}\}
+  %%     \toiso \{1,\dots,\textstyle\sum_{j=1}^n k_j \}
+  %%   \end{equation*}
+  %%   \end{footnotesize}
+  %%   where $\widehat{\sigma}$ acts as the identity from the $i^{\mathrm{th}}$ summand to the $(\sigma i)^{\mathrm{th}}$ summand.
+  \end{enumerate}
+satisfying some equations that we elide here.  
+\end{definition}
+
+The next three definitions will be used to describe the
+\seq{\Gamma}{\alpha}{A} judgement.  
+
+\begin{definition}
+  A \textbf{functor of cartesian 2-multicategories} $F:\D\to\M$ consists
+  of a function $F_0 : \D_0 \to \M_0$ and functors $\D(A_1,\ldots,A_n;B)
+  \to \M(F_0(A_1),\ldots,F_0(A_n);F_0(B))$ such that the chosen
+  identities, compositions, and renamings are preserved (strictly).
+\end{definition}
+
+\begin{definition}
+  A functor of cartesian 2-multicategories $\pi:\D\to\M$ is a \textbf{local discrete fibration} if each induced functor of ordinary categories
+  \[\D(A_1,\dots,A_n;B)\to\M(\pi A_1,\dots,\pi A_n;\pi B)\]
+  is a discrete fibration.
+\end{definition}
+
+We write $\D_f(A_1,\dots,A_n;B)$ for the fiber of this functor over
+$f\in \M(\pi A_1,\dots,\pi A_n;\pi B)$; when $f$ is a local discrete
+fibration, this fiber is a discrete set.
+
+\begin{definition}
+  If $\pi:\D\to\M$ is a local discrete fibration, then a morphism $\xi\in\D(A_1,\dots,A_n;B)$ is \textbf{opcartesian} if all diagrams of the following form are pullbacks of categories:
+  \[ \xymatrix{
+    \D(\vec C,B,\vec D;E) \ar[r]^-{-\circ \xi} \ar[d]_\pi &
+    \D(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
+    \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{-\circ \pi\xi} &
+    \M(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
+  }\]
+  Dually, a morphism $\xi\in\D(\vec C,B,\vec D;E)$ is \textbf{cartesian at $B$} if all diagrams of the following form are pullbacks of categories:
+  \[ \xymatrix{
+    \D(\vec A;B) \ar[r]^-{\xi\circ -} \ar[d]_\pi &
+    \D(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
+    \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ -} &
+    \D(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
+  }\]
+  Given $\mu:(p_1,\dots,p_n) \to q$ in $\M$, we say that $\pi$ \textbf{has $\mu$-products} if for any $A_i$ with $\pi A_i = p_i$, there exists a $B$ with $\pi B = q$ and an opcartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+  Dually, we say $\pi$ \textbf{has $\mu$-homs} if for any $i$, any $B$ with $\pi B = q$, and any $A_j$ with $\pi A_j = p_j$ for $j\neq i$, there exists an $A_i$ with $\pi A_i = p_i$ and a cartesian morphism in $\D_\mu(A_1,\dots,A_n;B)$.
+
+  We say that $\pi$ is a \textbf{bifibration} if it has $\mu$-products
+  and $\mu$-homs for all $\mu$.
+\end{definition}
+
+\subsection{Correspondence} 
+
+A mode theory $\Sigma$ presents a cartesian 2-multicategory, where
+$\M_0$ is the set of modes, an object of $\M(p_1,\ldots,p_n;q)$ is a
+term $\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ modulo the \deq-axioms
+from the signature, and a morphism of $\M(p_1,\ldots,p_n;q)$ is a
+structural transformation $s :: \wfsp{\psi}{\alpha}{\beta}{q}$ modulo
+the equational theory of Section~\ref{sec:equational-transformations}.
+We fix a mode theory $\Sigma$ and write $\M$ for the 2-multicategory it
+presents.
+
+The overall conjecture is that the syntax is the initial bifibration
+over $\M$.  The correspondence between the syntax and a bifibration $\pi
+: \D \to \M$ is as follows.  A type \wftype{A}{p} corresponds to an
+element $A \in \D_0$ with $\pi(A) = p$.  A sequent
+\seq{\Gamma}{\alpha}{A} corresponds to an element $d \in \D(\Gamma;A)$
+with $\pi(d) = \alpha$.  Identity \seq{\Gamma,x:A}{x}{A} corresponds to
+identity in $\D(A;A)$ composed with a projection renaming.  Cut (part 3,
+for the whole context at once) corresponds to composition in $\D$.
+Weakening, exchange, and contraction correspond to the $\sigma$-actions.
+Structurality-over-stucturality corresponds to functoriality and
+renaming-preservation of $\pi$, which for example says that composition
+in $\D$ lives over composition in $\M$.  The absence of any notion of
+morphism between derivations of \seq{\Gamma}{\alpha}{A} corresponds to
+local discreteness.  The type \F{\alpha}{\Delta} is an $\alpha$-product,
+while the type \U{x.\alpha}{\Delta}{A} is an $\alpha$-hom.
+
+We checked the first step of this correspondence with the following:
+
+\begin{theorem}[Soundness of sequent calculus rules]
+Fix a bifibration $\pi : \D \to \M$.  Then there is a function $\llb -
+\rrb$ from types \wftype{A}{p} to $\llb A \rrb \in \D_0$ with $\pi(\llb
+A \rrb) = p$ and from derivations $\seq{x:A_1, \ldots,
+  x_n:A_n}{\alpha}{C}$ to morphisms $d \in \D(\llb A_1 \rrb, \dots, \llb
+A_n \rrb) \to \llb C \rrb$, such that $\pi(d) = \alpha$.
+\end{theorem}
+
+\begin{proof}
+We begin by unpacking some of the structure given by the bifibration.
+
+If $\pi$ is a local discrete fibration, the 2-cells of $\M$ act on the
+fibers. Suppose $\alpha, \beta : \psi \to p$ and $s : \alpha \spr
+\beta$. We write $s_*$ for the induced function (of sets):
+$\D_\beta(\Gamma; A) \to \D_\alpha(\Gamma; A)$.  
+
+The definition of a opfibration of 2-multicategories guarantees that,
+given a morphism in the mode category $\alpha : \psi \to q$ and a
+context $\wfctx{\Delta}{\psi}$ that lies over $\psi$, there is an
+opcartesian morphism over $\alpha$ with multidomain $\Delta$. For each
+$\alpha$ we choose one such lift and take the codomain of this morphism
+as our interpretation of $\F{\alpha}{\Delta}$. Let us name this
+opcartesian lift $\zeta_{\alpha, \Delta} : \Delta \to
+\F{\alpha}{\Delta}$ and note that $\pi(\zeta_{\alpha, \Delta}) =
+\alpha$, so $\zeta$ models the axiomatic \FR.
+
+Similarly, the fibration structure gives us, for every morphism $\alpha
+: (\psi,x) \to p$, context $\Delta$ over $\psi$ and type $A$ over $p$, a
+cartesian morphism over $\alpha$ with codomain $A$, where the position
+in the domain marked by $x$ has been filled by an object over $q$. We
+take this object as the interpretation of $\U{x.\alpha}{\Delta}{A}$.
+Let us name this cartesian lift $\xi_{\alpha, \Delta,A} :
+\Delta,\U{x.\alpha}{\Delta}{A} \to A$, which lives over $\alpha$.
+
+We assume an interpretation $\llb \wftype{P}{p} \rrb$ is given for each
+atomic proposition as an object of $\D$ that lies over $p$.  
+
+The sequent calculus rules are then interpreted as follows (we elide the
+semantic brackets on objects):
+
+\begin{itemize}
+\item For the hypothesis rule
+%% \[
+%% \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+%%       {x:P \in \Gamma & s : \beta \spr x}
+%% \]
+we need a morphism in $\D_\beta(\Gamma; P)$, which take to be $s_*(1_x)$.
+\item For $\FL$
+%% \[
+%% \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{M : C}}
+%%       {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+%% \]
+the inductive hypothesis (after an exchange, which preserves the size of
+the derivations) gives a morphism $\llb M \rrb \in \D_{\subst \beta
+  {\alpha}{x}}(\Gamma, \Delta, \Gamma'; C)$ and we must produce a morphism
+$\D_{\beta}(\Gamma, \F{\alpha}{\Delta},\Gamma'; C)$. By the
+opcartesian-ness of $\zeta_{\alpha, \Delta}$, the following square is a
+pullback:
+\[ \xymatrix{
+    \D(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{-\circ \zeta_{\alpha, \Delta}} \ar[d]_S &
+    \D(\Gamma,\Delta,\Gamma';C) \ar[d]^S \\
+    \M(\pi\Gamma,\pi \F{\alpha}{\Delta}, \pi\Gamma'; \pi C) \ar[r]_-{-\circ \alpha} &
+    \M(\pi\Gamma,\pi\Delta,\pi\Gamma'; \pi C)
+}\]
+We are given an object of the bottom left ($\beta$) and the top right
+($\llb M \rrb$), with $\pi\llb M \rrb = \beta \circ \alpha$. By the
+construction of pullbacks in $Cat$, there is an object $f \in
+\D(\Gamma,\F{\alpha}{\Delta},\Gamma';C)$ so that $\pi(f) = \beta$. We take
+this $f$ to be our interpretation.
+
+\item For $\FR$
+%% \[
+%% \infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+%%       {
+%%         s : \beta \spr \tsubst{\alpha}{\gamma} &
+%%         \seq{\Gamma}{\gamma}{M : \Delta} 
+%%       }
+%% \]
+where $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, the premises are interpreted as a set of morphisms $\llb M_i \rrb \in \D_{\gamma_i}(\Gamma; C_i)$. We take the interpretation of the conclusion to be $s_*(\zeta_{\alpha, \Delta} \circ (\llb M_1 \rrb, \dots, \llb M_n \rrb))$
+
+\item For $\UL$
+\[\infer[\UL]{\seq{\Gamma}{\beta}{C}}
+      {\begin{array}{l}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
+          s : \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+          \seq{\Gamma}{\gamma}{M:\Delta} \\
+          \seq{\Gamma,\tptm{z}{A}}{\beta'}{D:C}
+       \end{array}
+      }
+\]
+let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb M_i \rrb \in \D_{\gamma_i}(\Gamma; C_i)$ and $\llb D \rrb \in \D_{\beta'}(\Gamma, A; C)$. Our interpretation is then
+$s_*(\llb D \rrb \circ_z \xi_{\alpha, \Delta,A} \circ (\llb M_1 \rrb, \dots, \llb M_n \rrb, id_x))$
+\item For $\UR$
+\[
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{M:A}}
+\]
+we are given a morphism $\llb M \rrb \in \D_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\D_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
+\[ \xymatrix{
+    \D(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ -} \ar[d]_S &
+    \D(\Gamma,\Delta;A) \ar[d]^S \\
+    \M(S\Gamma;S \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ -} &
+    \M(S\Gamma,S\Delta;S A)
+  }\]
+Again we have objects $\beta$ and $\llb M \rrb$ that agree in the bottom right, so an induced object in the top left which we take as our interpretation.
+\end{itemize}
+\end{proof}
+
+\begin{theorem}
+Given a mode theory $\M$, the syntax determines a 2-multicategory $\D$ and a bifibration $S : \D \to \M$.
+\end{theorem}
+\begin{proof}
+As the objects of $\D$, we take all derivations of the form $\wftype{A}{p}$. Given objects $A_1, \dots, A_n$ and $B$, the 1-morphisms $\D(A_1, \dots, A_n; B)$ are derivations $\seq{A_1, \dots, A_n}{\alpha}{B}$, quotiented by the $\equiv$ of the previous section. Compositions and identities for 1-morphisms are again given by Theorem~\ref{thm:identity} and Theorem~\ref{thm:cut}.
+
+FIXME: there are of course one billion things to check. 
+
+As for 2-morphisms, FIXME
+
+We construct a functor $S : \D \to \M$ as follows. On objects, $S(\wftype{A}{p}) = p$ and on 1-morphisms, $S(\seq{A_1, \dots, A_n}{\alpha}{B}) = \alpha$.
+\end{proof}
+
+We now show that we can interpret the rules of the sequent calculus in
+any bifibration of 2-multicategories $S : \D \to \M$, into our mode
+2-multicategory $\M$. 
+
+

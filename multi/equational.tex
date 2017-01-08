@@ -2,6 +2,7 @@
 \label{sec:equational}
 
 \subsection{Equations on Structural Transformations}
+\label{sec:equational-transformations}
 
 First, we need a notation for derivations of the $\alpha \spr \beta$
 judgement in Figure~\ref{fig:2multicategory}.  We assume names for
@@ -30,7 +31,7 @@ for $s_1 :: (\wfsp{\psi,x:p,\psi'}{\alpha_1}{\alpha_2}{r})$,
  $s_2 :: (\wfsp{\psi,x:p,\psi'}{\alpha_2}{\alpha_3}{r})$
  $t_1 :: (\wfsp{\psi,\psi'}{\beta_1}{\beta_2}{p})$
  $t_2 :: (\wfsp{\psi,\psi'}{\beta_2}{\beta_3}{p})$
-\item $1_y[s/x] \deq 1_y$ if $x \neq y$
+\item $1_\alpha[s/x] \deq 1_\alpha$ if $y \# \alpha$
 \item $\subst{1_\alpha}{1_\beta}{x} \deq 1_{\subst{\alpha}{\beta}{x}}$
   FIXME follows from others?
 \end{itemize}
@@ -57,9 +58,9 @@ transformations, not raw syntax.
 We use the following notation for derivations:
 \[
 \begin{array}{rcl}
-\D & ::= & x \mid \FLd{x}{\Delta.\D} \mid \FRd{s}{\D} \mid
-\ULd{x}{s}{\D_1}{\D_2} \mid \URd{\Delta.\D} \\ 
-& & \mid \Trd{s}{\D} \mid \Ident{x} \mid \Cut{\D_1}{\D_2}{x}
+\D & ::= & \Trd{s}{x} \mid \FLd{x}{\Delta.\D} \mid \FRd{s}{\vec{\D_i/x_i}} \\
+& & \ULd{x}{s}{\vec{\D_i/x_i}}{\D} \mid \URd{\Delta.\D} \mid \Trd{s}{\D} \mid
+\Ident{x} \mid \Cut{\D_1}{\D_2}{x}
 \end{array}
 \]
 where \Trd{s}{\D} is Lemma~\ref{lem:respectspr}, \Ident{x} is
@@ -72,8 +73,10 @@ $\Trd{s}{\D}$ and $\Ident{x}$ and $\Cut{\D_1}{\D_2}{x}$ given by the
 proofs in Appendix~\ref{sec:synprop-long} as well as
 \begin{itemize}
 \item The unit laws $\Cut{\D}{\Ident{x}}{x} \deq \D$ and $\Cut{\Ident{x}}{\D}{x} \deq \D$.  
-\item A projection law $\Cut{\Ident{y}}{\D}{x} \deq \Ident{y}$ if $x
-  \neq y$.
+\item A projection law $\Cut{\D_1}{\D_2}{x} \deq D_1$ if $x$ is not used
+  in $\D_1$ (in the usual sense that it does not occur in a free
+  position, i.e. the hypothesis rule or the principal argument of a left
+  rule).
 \item Associativity of cut (in a multicategorical sense):
   $\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y} \deq
   \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}$
@@ -87,6 +90,7 @@ $\D_2 :: \seq{\Gamma,x:A}{\beta'}{C}$
 and $s_1 :: \alpha \spr \alpha'$ 
 and $s_2 :: \beta \spr \beta'$, then
 $\Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \deq \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}}$
+as derivations of \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{C}.  
 
 \item An $\eta$ law for \Usymb: $\D ::
   \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ is equal to
@@ -100,8 +104,9 @@ $\Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \deq \Trd{(\subst{s_2}{s_1}{x})}{
                            {}
       }}
 \]
-(or $\URd{\Delta.\Cut{\ULd{x}{1}{\Ident{\Delta}}{z.z}}{\D}{x}}$).  
-The $\beta$ law is a defining equation of cut.
+(or $\URd{\Delta.\Cut{\ULd{x}{1}{\Ident{\Delta}}{z.z}}{\D}{x}}$).  The
+$\beta$ law for \Usymb\/ is a defining equation of cut (the principal
+case).
 
 \item An $\eta$ law for \Fsymb: $\D ::
   \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}$ is equal to
@@ -121,6 +126,92 @@ equations of identity, cut, and respect for transformations and these
 abstract properties, but we have not yet attempted such a reduction
 here.
 
-\subsection{Applications}
+\paragraph{Example}
 
-One application of the above equational theory is that 
+Consider an affine product (commutative monoid $(\otimes,1)$ with
+$\dsd{w} :: x \spr 1$) and the following two derivations of $P,Q,R
+\vdash P \otimes R$:
+
+\begin{footnotesize}
+\[
+\infer[\FR]
+      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+      {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
+              {(x \otimes y) \spr x} &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{z}{C}}
+              {z \spr z}
+      }
+\]
+\end{footnotesize}
+\begin{footnotesize}
+\[
+\infer[\FR]
+      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+      {x \otimes y \otimes z \spr (x \otimes z) &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{x}{C}}
+              {x \spr x} &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{z}{C}}
+              {z \spr z}
+      }
+\]
+\end{footnotesize}
+
+These differ by the placement of weakening: our rules allow us to weaken
+away $y$ either at a leaf (there is a third derivation that weakens in
+the $z$ leaf instead), as is typical in affine logic, or at the context
+division in $\FR$.  However, these two derivations are equal in the
+above equational theory:
+\[
+\FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}}
+\deq
+\FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}}
+\]
+By associativity, unit and projection laws, we have that a general
+instance of \FR\/ is equal to an iterated cut (in any order) and then a
+structural transformation on the ``axiomatic'' $\FR^* ::
+\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}$
+\[
+\FRd{\alpha}{\vec{\D_i/x_i}} \deq \Trd{\alpha}{\FR^*[\vec{\D_i/x_i}]}
+\]
+So applying this to both sides it suffices to show
+\[
+\begin{array}{rcl}
+& &  \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
+& \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} 
+\end{array}
+\]
+Here we have
+\[
+\begin{array}{rcl}
+\FR^*[\Trd{1}{z}/z'] & :: & \seq{x:P,y:Q,z:R,x':P}{x' \otimes z}{P \otimes R}\\
+\Trd{1}{x} & :: & \seq{x:P,y:Q,z:R}{x}{P}\\
+{(1_{x \otimes y}[\dsd{w}/y])} & :: & x \otimes y \spr y\\
+1_{x'\otimes z} & :: & x' \otimes z
+\end{array}
+\]
+so the transformation-on-cut equation gives
+\[
+\begin{array}{rl}
+     & \Cut{(\Trd{({1_{x'\otimes z}})}{\FR^*[\Trd{1}{z}/z']})}{\Trd{{(1_{x \otimes y}[\dsd{w}/y])}}{\Trd{1}{x}}}{x'}\\
+ \deq & \Trd{ (\subst{({1_{x'\otimes z}})}{(1_{x \otimes y}[\dsd{w}/y])}{x'})  }{\Cut{\FR^*[\Trd{1}{z}/z']}{\Trd{1}{x}}{x'}}
+\end{array}
+\]
+The left-hand side is equal to the left-hand side of the goal by
+functoriality of \Trd{-}{-}, and the right-hand side is equal to the
+right-hand side of the goal by associativity of horizontal composition
+and $1_{x' \otimes z}[1_{x \otimes y/x'}] \deq 1_{x \otimes y \otimes
+  z}$.  
+
+%% \begin{array}{rcll}
+%% & &  \FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}} \\
+%% & \deq & \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
+%% & \deq & ? \\
+%% & \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} \\
+%% & \deq & \FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}} \\
+%% \end{array}
+%% \]
