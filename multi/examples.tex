@@ -72,7 +72,7 @@ x \odot 1 \deq x \deq 1 \odot x
 \]
 making $(\odot,1)$ into a monoid.  This makes the context behave like
 ordered logic, which has associativity but none of exchange, weakening,
-and contraction---a monoidal but not symmetric monoidal product.
+and contraction---a monoidal product that is not symmetric monoidal.
 
 We can complete the above proof of associativity of $\odot$: where we
 need to find a substitution such that ${x \odot (y \odot z)} \spr (q
@@ -210,7 +210,7 @@ derive {\seq{p : A \otimes B}{p}{B \otimes A}}:
             \seq{x:A,y:B}{x}{A} 
       }}
 \]
-where the first premise is exactly $x \otimes y = y \otimes x$
+where the first premise is exactly $x \otimes y = y \otimes x$.
 
 For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.x \odot
   c}{x:A}{B} are equal types (because comutativity is an equation, and
@@ -263,7 +263,7 @@ The rules for $n$-linear functions are
        {\Gamma, B} \vdash {C}}
 \]
 where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m} A = x
-:^{n+m} A$ and $n \cdot \Delta$ act pointwise by $n \cdot x^{m} A = x
+:^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A = x
 :^{nm} A$.
 
 We can model this in the linear mode theory by using context descriptors
@@ -299,8 +299,8 @@ A^n := \F{\mathord{\otimes}^n(x)}{x:A}
 \]
 as a positive type, which will decompose $A \to^n B$ as $A^n \lolli B$
 (by Lemma~\ref{lem:fusion}).  This has a map \seq{p:A^n}{p}{A \otimes
-  \ldots \otimes A} but not a converse map \seq{A \otimes \ldots \otimes
-  A}{p}{p:A^n}.  For example,
+  \ldots \otimes A} but not a converse map \seq{p:A \otimes \ldots \otimes
+  A}{p}{A^n}.  For example,
 \[
 \infer {\seq{p:\F{x \otimes x}{x:A}}{p}{\F{x \otimes y}{x:A,y:A}}}
        {\infer {\seq {x:A}{x \otimes x}{\F{x \otimes y}{x:A,y:A}}}
@@ -391,7 +391,7 @@ A^2 \dashv\vdash A \times A$.  We refer to the mode of theory for an
 idempotent commutative monoid with a weakening transformation as an
 \emph{idempotent cartesian monoid} and write $(\times,\top)$ for it.
 
-\subsection{BI} Bunched implication~\citep{ohearnpym99bunched}
+\subsection{Bunched Implication (BI)} Bunched implication~\citep{ohearnpym99bunched}
 has two context-forming operations $\Gamma,\Gamma'$ and
 $\Gamma;\Gamma'$, along with corresponding products and implications.
 Both are associative, unitial, and commutative, but $;$ has weakening
@@ -620,7 +620,7 @@ ensures that each $!_b$ is monoidal and that $!_b A$ can be weakned or
 contracted if $(\otimes_b,1_b)$ has weakening or contraction (and more
 generally that \F{ba}{B} can be weakened or contracted for any $B$, not
 just $\dsd{U}_{ba}{(A)}$).  Thus, we add weakening or contraction to
-particular subexponential $a$ by adding them to $(\otimes_a,1_a)$.
+a particular subexponential $a$ by adding them to $(\otimes_a,1_a)$.
 %% assuming only monoid axioms (not that one is cartesian), 
 %% - !_b A \otimes !_b B \vdash !_b(A \otimes B) uses both directions of ba(x \otimes_b y) <=> ba(x) \otimes_a ba(y)
 %% - 1 \vdash !_b(1) uses both directions of ba(1_b) \deq 1_a
@@ -672,13 +672,13 @@ complete the derivation.
 \newcommand\ttp[2]{#1 \otimes_{\dsd {tp}} #2}
 \newcommand\tvp[2]{#1 \otimes_{\dsd {vp}} #2}
 
-One way to add the strength is to add an asymmtric product of a
+One way to add the strength is to add an asymmetric product of a
 \dsd{t}-mode and \dsd{p}-mode context:
 \[
 \begin{array}{ll}
 \oftp{x : \dsd{t}, y : \dsd{p}}{\ttp x y}{\dsd{p}}
 & \dsd{g}(x \otimes_{\dsd t} y) \deq \ttp x {\dsd{g}(y)}\\
-\ttp {(x \otimes_{\dsd t} y)} z \deq \ttp x {\ttp y z}
+\ttp {(x \otimes_{\dsd t} y)} z \deq \ttp x {(\ttp y z)}
 & \ttp {\dsd{1}} y \deq y
 \end{array}
 \]
