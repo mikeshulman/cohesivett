@@ -1,7 +1,7 @@
 
-\newcommand\seqa[2]{#1 \vdash^{\dsd a} #2}
+\newcommand\seqa[2]{\ensuremath{#1 \vdash^{\dsd a} #2}}
 \newcommand\splits{\rightrightarrows}
-\newcommand\vars[1]{\overline{#1}}
+\newcommand\vars[1]{\ensuremath{\overline{#1}}}
 
 \appendix[Adequacy Proofs]
 
@@ -33,6 +33,7 @@ in some order equals $\Gamma$.
       }
 \end{array}
 \]
+Weakening and exchange are admissible for these rules.  
 
 Using the mode theory from Section~\ref{sec:ex:affine}, we translate the
 propositions and contexts of adjoint logic as follows:
@@ -132,7 +133,129 @@ Thus, we only need to show the transformation premise of
 \]
 This follows from $\Gamma \splits \Delta_1,\Delta_2$, using associativity and commutativity
 of $\otimes$.  
-
 \end{itemize}
 
+In the converse direction, we generalize slightly and prove 
+\begin{quote}
+If $\Gamma_0 \ge \Gamma$ and $\seq{\Gamma_0^*}{\vars{\Gamma}}{A^*}$ then
+$\seqa{\Gamma}{A}$
+\end{quote}
+where $\Gamma_0 \ge \Gamma$ means that $\Gamma_0$ contains every
+assumption $x:A$ that $\Gamma$ does and possibly more (i.e. $\Gamma_0$
+is a weakening of an exchange of $\Gamma$).  That is, we allow the
+actual context of the encoding to contain more assumptions than the
+context descriptor, but all of those assumptions will be of a type that
+is in the image of the translation of affine logic.  This is necessary
+because of the contraction in \UL, where the function is removed from
+the context descriptor but not from the context itself.
+
+We need the following facts about the mode theory.  
+
+First, every context descriptor is equal to one of the form $x_1 \otimes
+\ldots \otimes x_n$ (for not necessarily distinct $x_i$), which we
+abbreviate as $\vec{x_i}$.  This is by definition (the only constants
+are $\otimes,1$) and the associativity/unit laws.
+
+\begin{lemma} \label{lem:affine-mode-1}
+If $\vec{x_i} \spr \vec{y_i}$ then $\vec{x_i} \deq \vec{z_i} \otimes
+\vec{y_i}$---i.e. $\vec{y_i}$ is a sub-multiset of $\vec{x_i}$
+\end{lemma}
+\begin{proof}
+In the case for weakening $\vec{x_i} \spr 1$ (the only axiom), take
+$\vec{z_i} = \vec{x_i}$.  In the case for reflexivity take $\vec{z_i} =
+1$.  In the case for transitivity, we have $\vec{x_i} \spr \vec{x_i'}
+\spr \vec{y_i}$.  By the second inductive hypothesis, we have
+$\vec{x_i'} \deq \vec{z_i'} \otimes \vec{y_i}$, so by the first we have
+$\vec{x_i} \deq \vec{z_i''} \otimes (\vec{z_i'} \otimes \vec{y_i})$, so
+take $\vec{z_i}$ to be $\vec{z_i'} \otimes \vec{z_i''}$.  In the case
+for congruence, we have $\vec{x_i} \spr \vec{y_i}$, and $\vec{x_i'} \spr
+\vec{y_i'}$, and we want to show that $\subst{\vec{x_i}}{\vec{x_i}'}{x}
+\deq \vec{z_i} \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$ for some
+$\vec{z_i''}$. By the inductive hypotheses $x_i = \vec{z_i} \otimes
+\vec{y_i}$ and $x_i' \deq \vec{z_i}' \otimes \vec{y_i'}$.  So $x_i[x_i'/x]
+\deq (\vec{z_i} \otimes y_i)[\vec{z_i}' \otimes y_i'/x]$ and it remains to
+show that $(\vec{z_i} \otimes \vec{y_i})[\vec{z_i}' \otimes
+  \vec{y_i}'/x] = \vec{z_i}'' \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$,
+which is true by commuting any $\vec{z_i}'s$ in $(\vec{y_i})[\vec{z_i}'
+  \otimes \vec{y_i}'/x]$ to the left.
+\end{proof}
+
+\begin{lemma} \label{lem:affine-mode-2}
+If $\vars{\Gamma} \spr \alpha_1 \otimes \alpha_2$ then there exist
+contexts $\Gamma_1$ and $\Gamma_2$ such that $\vars{\Gamma_1} \deq
+\alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$ and $\Gamma \ge
+\Gamma_1,\Gamma_2$.
+\end{lemma}
+
+\begin{proof}  TODO
+\end{proof}
+
+Moving on to the proof of the converse,
+
+\begin{itemize}
+\item In the case for the assumption rule, we have
+\[
+\infer{\seq{\Gamma_0^*}{\vars{\Gamma}}{P}}
+      {x:P \in \Gamma_0 &
+       \vars{\Gamma} \spr x}
+\]
+
+First, by Lemma~\ref{lem:affine-mode-1}, $\vars{\Gamma} \spr x$ implies
+$\vars{\Gamma} \deq \vec{z} \otimes x$.  This in turn implies that $x$
+is in $\Gamma$ (because the ACU equations do not change the elements, so
+it is in $\vars{\Gamma}$, which only consists of variables from
+$\Gamma$).  Because $\Gamma$ is a subcontext of $\Gamma_0$ and $x:P$ is
+in $\Gamma_0$ and $x$ is also in $\Gamma$, $x$ must have type $P$ in
+$\Gamma$, so we can apply the hypothesis rule of affine logic.
+
+\item In the case where \UR\/ was used to derive
+  \seq{\Gamma_0^*}{\vars{\Gamma}}{A^*}, $A$ must be $A_1 \lolli A_2$
+  (because no other types encode to \Usymb), and the premise is
+  \seq{\Gamma_0^*,x:A_1^*}{\vars{\Gamma}\otimes x}{A_2^*}.  Since
+  ${\Gamma_0,x:A_1} \ge {\Gamma,x:A_1}$, the inductive hypothesis gives
+  $\seqa{\Gamma,x:A_1}{A_2}$, and we can apply $\lolli$-right.
+
+\item In the case where \FR\/ was used, the conclusion must be $(A_1
+  \otimes A_2)$, and we have $\vars{\Gamma} \spr (\alpha_1 \otimes
+  \alpha_2)$ with \seq{\Gamma_0^*}{\alpha_1}{A_1^*} and
+  \seq{\Gamma_0^*}{\alpha_2}{A_1^*}.  Using
+  Lemma~\ref{lem:affine-mode-2}, we have $\Gamma_0 \ge \Gamma \ge
+  \Gamma_1,\Gamma_2$ and \seq{\Gamma_0^*}{\vars{\Gamma_1}}{A_1^*}
+  \seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_2^*}.  Thus, by the inductive
+  hypotheses we get $\seqa{\Gamma_1}{A_1}$ and $\seqa{\Gamma_2}{A_2}$,
+  so $\seqa{\Gamma_1,\Gamma_2}{A_1 \otimes A_2}$.  Then weakening and
+  exchange on $\Gamma \ge \Gamma_1,\Gamma_2$ gives the result.  
+
+\item In the case where \FL\/ was used, we know that every assumption even
+  in the larger context $\Gamma_0$ is of the form $A^*$ for some $A$, so
+  the formula under elimination must be $z:(A_1 \otimes A_2)^* \in \Gamma_0$. The
+  premise is
+  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}[(x \otimes y)/z]}{C^*},
+  and we want 
+  \seqa{\Gamma}{C}.  
+
+  We distinguish cases on whether $z$ (which is only known to be in
+  $\Gamma_0$) is bound in $\Gamma$ or not.  
+
+  If it is, then $\vars{\Gamma}[(x \otimes y)/z] \deq
+  (\vars{\Gamma}-z)\otimes x \otimes y$, and since
+  $\Gamma_0^*-z,x:A_1,y:A_2 \ge \Gamma-z,x:A_1,y:A_2$, we get
+  \seqa{\Gamma-z,x:A_1,y:A_2}{C} by the inductive hypothesis, and can
+  apply $\otimes$-left.
+
+  If it is not, then $\vars{\Gamma}[(x \otimes y)/z] \deq
+  \vars{\Gamma}$.  Because $\Gamma_0 \ge \Gamma$ by assumption,
+  ${\Gamma_0-z,x:A_1,y:A_2} \ge \Gamma$ (it removes something not in
+  $\Gamma$, and adds two things, and the premise is 
+  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}}{C^*},
+  we get \seqa{\Gamma}{C} directly by the inductive hypothesis.  
+  In this case, the given proof does a left rule on a ``0-use''
+  variable that does not occur in the context descriptor, which adds
+  some additional 0-use assumptions to the context.  The inductive
+  hypothesis is compatible with this, and returning its result
+  drops this step.    
+
+\item In the case for \UL 
+
+\end{itemize}
 \end{proof}
