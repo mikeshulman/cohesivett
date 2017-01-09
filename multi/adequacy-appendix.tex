@@ -1,0 +1,138 @@
+
+\newcommand\seqa[2]{#1 \vdash^{\dsd a} #2}
+\newcommand\splits{\rightrightarrows}
+\newcommand\vars[1]{\overline{#1}}
+
+\appendix[Adequacy Proofs]
+
+\subsection{Affine Logic}
+
+Consider the following rules for affine logic, where the context is
+represented by a list of assumptions labeled with variables, and $\Gamma
+\splits \Delta_1,\Delta_2$ means interleaving $\Delta_1$ and $\Delta_2$
+in some order equals $\Gamma$.
+\[
+\begin{array}{c}
+\infer{\seqa{\Gamma}{P}}{P \in \Gamma}
+\qquad
+\infer{\seqa{\Gamma,z:A\otimes B,\Gamma'}{C}}
+      {\seqa{\Gamma,\Gamma',x:A,y:B}{C}}
+\qquad
+\infer{\seqa{\Gamma}{A \otimes B}}
+      {\Gamma \splits \Delta_1,\Delta_2 &
+        \seqa{\Delta_1}{A} &
+        \seqa{\Delta_2}{B}}
+\\\\
+\infer{\seqa{\Gamma}{A \lolli B}}
+      {\seqa{\Gamma,x:A}{B}}
+\qquad
+\infer{\seqa{\Gamma,f:A \lolli B,\Gamma'}{C}}
+      {\Gamma,\Gamma' \splits \Delta_1,\Delta_2 &
+        \seqa{\Delta_1}{A} &
+        \seqa{\Delta_2,z:B}{C}
+      }
+\end{array}
+\]
+
+Using the mode theory from Section~\ref{sec:ex:affine}, we translate the
+propositions and contexts of adjoint logic as follows:
+\[
+\begin{array}{rcl}
+P^* & = & P \\
+(A\otimes B)^* & = & \F{x \otimes y}{x:A^*,y:B^*} \\
+(A\lolli B)^* & = & \U{c.c \otimes x}{x:A^*}{B^*} \\
+\\
+\cdot^* & = & \cdot\\
+(\Gamma,x:A)^* & = & \Gamma^*,x:A^*\\
+\end{array}
+\]
+We also define a function that collects the variables from $\Gamma$ as a
+context descriptor:
+\[
+\begin{array}{rcl}
+\vars{\cdot} & = & 1\\
+\vars{(\Gamma,x:A)} & = & \vars{\Gamma} \otimes x\\
+\end{array}
+\]
+
+Overall, we have
+\begin{theorem}[Adequacy of provability for $\seqa{}{}$] ~\\
+$\seqa{\Gamma}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$
+\end{theorem}
+
+\begin{proof}
+
+The forward direction is by induction on $\seqa{\Gamma}{A}$:
+\begin{itemize}
+\item For the hypothesis rule, we need to show
+  \seq{\Gamma^*}{\vars{\Gamma}}{P}.  Because $x$ is in $\Gamma$, we can
+  prove by induction on $\Gamma$ that $x:P$ is in $\Gamma^*$ and that
+  $\vars{\Gamma} \deq \alpha \otimes x$.  Thus, the weakening
+  transformation gives $\alpha \otimes x \spr 1 \otimes x \deq
+  x$. Therefore we can derive
+\[
+\infer[\dsd{v}]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{P}}
+      {x:P \in \Gamma & 
+        {\vars{\Gamma}} \spr x}
+\]
+
+\item For $\otimes$-left, the inductive hypothesis gives
+\seq{\Gamma^*,\Gamma'^*,x:A^*,y:B^*}{\vars{\Gamma} \otimes \vars{\Gamma'} \otimes x \otimes y}{C^*}
+and we want 
+\seq{\Gamma^*,z:\F{x\otimes y}{x:A^*,y:B^*},\Gamma'^*}{\vars{\Gamma} \otimes z \otimes \vars{\Gamma'}}{C^*}.
+This is \FL on the inductive hypothesis, with using associativity and commutativity of
+$\otimes$ from the mode theory to move $x \otimes y$ to the end.  
+
+\item 
+For $\otimes$-right, we 
+have \seq{\Delta_1^*}{\vars{\Delta_1}}{A^*}
+and \seq{\Delta_2^*}{\vars{\Delta_2}}{B^*} by the inductive hypotheses,
+which we can weaken to
+ \seq{\Delta_1^*,\Delta_2^*}{\vars{\Delta_1}}{A^*}
+and 
+ \seq{\Delta_1^*,\Delta_2^*}{\vars{\Delta_2}}{B^*}, 
+and then exchange to 
+ \seq{\Gamma^*}{\vars{\Delta_1}}{A^*}
+and 
+ \seq{\Gamma^*}{\vars{\Delta_2}}{B^*} (using a lemma that when $\Gamma \splits \Delta_1,\Delta_2$,
+$\Gamma$ and $(\Delta_1,\Delta_2)$ differ only in order, and that
+ reordering is preserved by the mapped application of $*$).  
+To apply \FR to derive \seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A,y:B}}, it thus suffices to show that 
+$\vars{\Gamma} \spr \vars{\Delta_1}\otimes\vars{\Delta_2}$, which we can
+prove by induction on $\Gamma \splits \Delta_1,\Delta_2$ using the
+commutative monoids laws.  
+
+\item For $\lolli$-right, we have
+  \seq{\Gamma^*,x:A^*}{\vars{\Gamma}\otimes x}{B^*}
+by the inductive hypothesis, which is exactly the premise of using \UR
+to prove
+  \seq{\Gamma^*}{\vars{\Gamma}}{\U{c.c\otimes x}{x:A^*}{B^*}}.  
+
+\item For $\lolli$-left, we have \seq{\Delta_1^*}{\vars{\Delta_1}}{A}
+  and \seq{\Delta_2^*,z:B^*}{\vars{\Delta_2}\otimes z}{C^*} by the
+  inductive hypothesis, and by similar reasoning to the $\otimes R$
+  case, we can weaken and exchange to
+  \seq{\Gamma^*,\Gamma'^*}{\vars{\Delta_1}}{A} and
+  \seq{\Gamma^*,\Gamma'^*,z:B^*}{\vars{\Delta_2}\otimes z}{C^*} and then
+  finally weaken to \seq{\Gamma^*,f:(A\lolli
+    B)^*,\Gamma'^*}{\vars{\Delta_1}}{A} and \seq{\Gamma^*,f:(A\lolli
+    B)^*,\Gamma'^*,z:B^*}{\vars{\Delta_2}\otimes z}{C^*}.
+Thus, we only need to show the transformation premise of
+\[
+\infer[\UL]{\seq{\Gamma^*,f:(A\lolli B)^*,\Gamma'^*}{\vars{\Gamma}\otimes f \otimes \vars{\Gamma'}}{C^*}}
+      {  
+        \begin{array}{l}
+        {\vars{\Gamma}\otimes f \otimes \vars{\Gamma'}} \spr
+        (\vars{\Delta_2} \otimes z)[f \otimes \vars{\Delta_1} /z] \\
+        \seq{\Gamma^*,f:(A\lolli B)^*,\Gamma'^*}{\vars{\Delta_1}}{A} \\
+        \seq{\Gamma^*,f:(A\lolli B)^*,\Gamma'^*,z:B^*}{\vars{\Delta_2}\otimes z}{C^*}
+        \end{array}
+      }
+\]
+This follows from $\Gamma \splits \Delta_1,\Delta_2$, using associativity and commutativity
+of $\otimes$.  
+
+\end{itemize}
+
+\end{proof}
