@@ -161,88 +161,110 @@ exchange of it.
 
 We need the following facts about the mode theory.  
 
-%% Every context descriptor in this mode theory is equal to one of the
-%% form $x_1 \otimes \ldots \otimes x_n$ (for not necessarily distinct
-%% $x_i$), which we abbreviate as $\vec{x_i}$.  This is by definition
-%% (the only constants are $\otimes,1$) and the associativity/unit laws.
+\begin{lemma} \label{lem:affine-mode-1}
+If $\alpha \spr \beta$ then $\alpha \deq \beta \otimes \beta'$
+\end{lemma}
+\begin{proof}
 
-%% \begin{lemma} \label{lem:affine-mode-1}
-%% If $\vec{x_i} \spr \vec{y_i}$ then $\vec{x_i} \deq \vec{z_i} \otimes
-%% \vec{y_i}$---i.e. $\vec{y_i}$ is a sub-multiset of $\vec{x_i}$.
-%% \end{lemma}
-%% \begin{proof}
-%% In the case for weakening $\vec{x_i} \spr 1$ (the only axiom), take
-%% $\vec{z_i} = \vec{x_i}$.  In the case for reflexivity take $\vec{z_i} =
-%% 1$.  In the case for transitivity, we have $\vec{x_i} \spr \vec{x_i'}
-%% \spr \vec{y_i}$.  By the second inductive hypothesis, we have
-%% $\vec{x_i'} \deq \vec{z_i'} \otimes \vec{y_i}$, so by the first we have
-%% $\vec{x_i} \deq \vec{z_i''} \otimes (\vec{z_i'} \otimes \vec{y_i})$, so
-%% take $\vec{z_i}$ to be $\vec{z_i'} \otimes \vec{z_i''}$.  In the case
-%% for congruence, we have $\vec{x_i} \spr \vec{y_i}$, and $\vec{x_i'} \spr
-%% \vec{y_i'}$, and we want to show that $\subst{\vec{x_i}}{\vec{x_i}'}{x}
-%% \deq \vec{z_i} \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$ for some
-%% $\vec{z_i''}$. By the inductive hypotheses $x_i = \vec{z_i} \otimes
-%% \vec{y_i}$ and $x_i' \deq \vec{z_i}' \otimes \vec{y_i'}$.  So $x_i[x_i'/x]
-%% \deq (\vec{z_i} \otimes y_i)[\vec{z_i}' \otimes y_i'/x]$ and it remains to
-%% show that $(\vec{z_i} \otimes \vec{y_i})[\vec{z_i}' \otimes
-%%   \vec{y_i}'/x] = \vec{z_i}'' \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$,
-%% which is true by commuting any $\vec{z_i}'s$ in $(\vec{y_i})[\vec{z_i}'
-%%   \otimes \vec{y_i}'/x]$ to the left.
-%% \end{proof}
+In the case for weakening $\alpha \spr 1$ (the only axiom), take
+$\beta' = \beta$.  In the case for reflexivity take $\beta' =
+1$.  In the case for transitivity, we have $\alpha \spr \beta_1
+\spr \beta_2$.  By the second inductive hypothesis, we have
+$\beta_1 \deq \beta_2 \otimes \beta_2'$, and by the first we have
+$\alpha \deq \beta_1 \otimes \beta_1'$, so 
+$\alpha \deq \beta_2 \otimes (\beta_2' \otimes \beta_1')$.  
+In the case for congruence, we have
+$\alpha_1[\alpha_2/x] \spr \beta_1[\beta_2/x]$
+and the inductive hypotheses give
+    $\alpha_1 \deq \beta_1 \otimes \beta_1'$
+and $\alpha_2 \deq \beta_2 \otimes \beta_2'$.  
+Thus, 
+$\alpha_1[\alpha_2] \deq \beta_1[\beta_2 \otimes \beta_2'/x] \otimes \beta_1'[\beta_2 \otimes \beta_2'/x]$,
+and then the right-hand side equals 
+$\beta_1[\beta_2/x] \otimes \beta_2^n \otimes \beta_1'[\beta_2 \otimes \beta_2'/x]$
+for some $n$.  
+This is because, 
+for this mode theory, we can rewrite any $\alpha$ as $\alpha' \otimes (x
+\otimes \ldots \otimes x)$ where $\alpha'$ does not contain $x$ (because
+any context descriptor is equal to a ``polynomial'' giving the
+multiplicity of each variable), so in general we have $\alpha[\beta_1
+  \otimes \beta_2/x] \deq \alpha' \otimes (\beta_1 \otimes \beta_2)^n
+\deq \alpha' \otimes \beta_1^n \otimes \beta_2^n \deq \alpha[\beta_1/x]
+\otimes \beta_2^n$.
+\end{proof}
 
-%% \begin{lemma} \label{lem:affine-mode-2}
-%% If $\vars{\Gamma} \spr \alpha_1 \otimes \alpha_2$ then there exist
-%% contexts $\Gamma_1$ and $\Gamma_2$ such that $\vars{\Gamma_1} \deq
-%% \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$ and $\Gamma \ge
-%% \Gamma_1,\Gamma_2$.
-%% \end{lemma}
+\begin{lemma} \label{lem:affine-mode-5}
+If $\vars{\Gamma} \deq \alpha_1 \otimes \alpha_2$, 
+then $\Gamma \splits \Gamma_1,\Gamma_2$ with 
+$\vars{\Gamma_1} \deq \alpha_1$ 
+and $\vars{\Gamma_2} \deq \alpha_2$.  
+\end{lemma}
+\begin{proof}
+We define the splitting $\Gamma \splits \Gamma_1,\Gamma_2$ adding each
+variable in $\Gamma$ to $\Gamma_1$ if it occurs in $\alpha_1$, or
+$\Gamma_2$ if it occurs in $\alpha_2$ and not $\alpha_1$ (occurence
+respects \deq).  Because $\deq$ is associativity, commutativity, unit,
+$\alpha_1$ and $\alpha_2$, $\alpha_1$ and $\alpha_2$ have no duplicates
+and every variable from \vars{\Gamma} occurs exactly once in one or the
+other, which gives $\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2}
+\deq \alpha_1$.
+%% FIXME: last sentence is a little sketchy
+\end{proof}
 
-%% \begin{proof}  TODO
-%% \end{proof}
+\begin{lemma} \label{lem:affine-mode-3}
+If $\vars{\Gamma} \deq \alpha_1[\alpha_2/x]$, 
+then 
+either $x$ does not occur in $\alpha_1$, or 
+$\Gamma \splits \Gamma_1,\Gamma_2$ with 
+$\vars{\Gamma_1} \otimes x \deq \alpha_1$ 
+and $\vars{\Gamma_2} \deq \alpha_2$.  
+\end{lemma}
+\begin{proof}
+If $x$ occurs once, then because all terms are products of variables, we
+can commute $\alpha_1 \deq \alpha_1' \otimes x$, so
+$\alpha_1[\alpha_2/x] \deq \alpha_1' \otimes \alpha_2$ and use
+Lemma~\ref{lem:affine-mode-5} to get $\Gamma \splits \Gamma_1,\Gamma_2$
+with $\vars{\Gamma_1} \deq \alpha_1'$ and $\vars{\Gamma_2} \deq
+\alpha_2$.
 
-%% \begin{lemma} \label{lem:affine-mode-3}
-%% If $\vec{x_i}$ has no dupicate variables and $\vec{x_i} \spr \vec{y_i}$
-%% then $\vec{y_i}$ has no dupicate variables.
-%% \end{lemma}
-%% \begin{proof}
-%% First, the ``has no duplicate variables'' predicate is well-defined on
-%% \deq-equivalence-classes because it is preserved by the associativity,
-%% commutativity, unit axioms.  
-
-%% The cases for the weakening axiom (the right-hand side has no variables)
-%% and reflexivity (by assumption) are immediate.  In the case for
-%% transitivity, we have $\vec{x_i} \spr \vec{x_i'} \spr \vec \vec{y_i}$,
-%% and $\vec{x_i}'$ has no duplicates by the first inductive hypothesis, so
-%% $\vec{y_i}$ does by the second.  Finally, for congruence we have
-%% $\subst{\vec{x_i}}{\vec{x_i'}}{x} \spr \subst{\vec{y_i}}{\vec{y_i'}}{x}$
-%% because $\vec{x_i} \spr \vec{y_i}$ and $\vec{x_i'} \spr \vec{y_i'}$, and
-%% $\subst{\vec{x_i}}{\vec{x_i'}}{x}$ has no duplicates.  By the inductive
-%% hypotheses, $\vec{y_i}$ and $\vec{y_i'}$ have no duplicates, so
-%% $\subst{\vec{y_i}}{\vec{y_i'}}{x}$ does as well (a substitution can only
-%% create duplicates if $x$ occurs more than once in $\vec{y_i}$, which is
-%% forbidden by the inductive hypothesis).  
-%% \end{proof}           
+If $x$ occurs more than once, then $\alpha_2 \deq 1$, because
+otherwise any variable $y$ in $\alpha_2$ will occur more than once in 
+$\alpha_1[\alpha_2/x] \deq \vars{\Gamma}$, which is impossible.  
+Therefore we can take $\Gamma_1 = \Gamma$ and $\Gamma_2 = \cdot$ and we
+have $\Gamma \splits \Gamma,\cdot$ and 
+and $\vars{\cdot} \deq \alpha_2$ and
+??? $\vars{\Gamma} \otimes x \deq \alpha$.
+\end{proof}
 
 \begin{lemma} \label{lem:affine-mode-4}
 If $\vars{\Gamma} \spr \alpha$, then there is a $\Gamma'$ such that
 $\Gamma \ge \Gamma'$ and $\alpha \deq \vars{\Gamma'}$.
 \end{lemma}
 
-%% \begin{proof}
-%% Write $\vec{x}$ for $\alpha$.  \vars{\Gamma} has no duplicates, so by
-%% Lemma~\ref{lem:affine-mode-3}, $\vec{x}$ has no duplicates.  Take
-%% $\Gamma'$ to be the subcontext of $\Gamma$ consisting of the variables
-%% in $\vec{x}$ (in their original order, say).  Then we have $\Gamma \ge
-%% \Gamma'$ by construction and $\vars{\Gamma'} \deq \vec{x}$ (because
-%% $\vec{x}$ has no duplicates).  
-%% \end{proof}
+\begin{proof}
+The case for reflexivity is immediate $(\Gamma' = \Gamma)$ as is the
+case for the weakening axiom $(\Gamma' = \cdot)$.  In the case for a
+transitivity $\vars{\Gamma} \spr \alpha \spr \beta$, we get $\Gamma \ge
+\Gamma'$ and $\vars{\Gamma''} \deq \alpha$ by the first inductive
+hypothesis, and then $\Gamma'' \ge \Gamma'$ and $\vars{\Gamma'} \deq
+\beta$ by the second, so transitivity of $\ge$ gives the result.  
 
-\begin{lemma} \label{lem:affine-mode-5}
-If $\vars{\Gamma} \deq \alpha_1 \otimes \alpha_2$, 
-then $\Gamma \splits \Gamma_1,\Gamma_2$ with 
-$\vars{\Gamma_1} \deq \alpha_1$ 
-and $\vars{\Gamma_2} \deq \alpha_1$.  
-\end{lemma}
+For the congruence case, suppose $\vars{\Gamma} \deq
+\alpha_1[\alpha_2/x] \spr \alpha_1'[\alpha_2'/x]$ because $\alpha_1 \spr
+\alpha_1'$ and $\alpha_2 \spr \alpha_2'$.  By Lemma~\ref{?},
+$\vars{\Gamma} \deq \alpha_1[\alpha_2/x]$ implies $\Gamma \splits
+\Gamma_1,\Gamma_2$ with $\vars{\Gamma_1} \deq \alpha_1$ and
+$\vars{\Gamma_2} = \alpha_2$.  So the inductive hypotheses give
+$\Gamma_i \ge \Gamma_i'$ with $\vars{\Gamma_i'} \deq \alpha_i'$.  Since
+$\alpha_1' \deq \vars{\Gamma_1'}$, the variable $x$ occurs at most once
+(occurence count is preserved by $\deq$).  If it occurs zero times, we
+have $\Gamma \ge \Gamma_1 \ge \Gamma_1'$ and $\alpha_1'[\alpha_2'/x]
+\deq \alpha_1' \deq \vars{\Gamma_1'}$.  If it occurs once, we have
+$\alpha_1'[\alpha_2'/x] \deq \alpha_1' \otimes \alpha_2'$ (because all
+terms are products of variables, and using commutativity), and $\Gamma
+\ge \Gamma_1,\Gamma_2 \ge \Gamma_1',\Gamma_2'$ and and
+$\vars{\Gamma_1',\Gamma_2'} \deq {\alpha_1'} \otimes {\alpha_2'}$.
+\end{proof}
 
 Moving on to the proof of the converse,
 
