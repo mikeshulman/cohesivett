@@ -163,6 +163,7 @@ We need the following facts about the mode theory.
 
 \begin{lemma} \label{lem:affine-mode-1}
 If $\alpha \spr \beta$ then $\alpha \deq \beta \otimes \beta'$
+for some $\beta'$.
 \end{lemma}
 \begin{proof}
 
@@ -173,13 +174,14 @@ $\beta' = \beta$.  In the case for reflexivity take $\beta' =
 $\beta_1 \deq \beta_2 \otimes \beta_2'$, and by the first we have
 $\alpha \deq \beta_1 \otimes \beta_1'$, so 
 $\alpha \deq \beta_2 \otimes (\beta_2' \otimes \beta_1')$.  
+
 In the case for congruence, we have
 $\alpha_1[\alpha_2/x] \spr \beta_1[\beta_2/x]$
 and the inductive hypotheses give
     $\alpha_1 \deq \beta_1 \otimes \beta_1'$
 and $\alpha_2 \deq \beta_2 \otimes \beta_2'$.  
 Thus, 
-$\alpha_1[\alpha_2] \deq \beta_1[\beta_2 \otimes \beta_2'/x] \otimes \beta_1'[\beta_2 \otimes \beta_2'/x]$,
+$\alpha_1[\alpha_2/x] \deq \beta_1[\beta_2 \otimes \beta_2'/x] \otimes \beta_1'[\beta_2 \otimes \beta_2'/x]$,
 and then the right-hand side equals 
 $\beta_1[\beta_2/x] \otimes \beta_2^n \otimes \beta_1'[\beta_2 \otimes \beta_2'/x]$
 for some $n$.  
@@ -203,37 +205,11 @@ and $\vars{\Gamma_2} \deq \alpha_2$.
 We define the splitting $\Gamma \splits \Gamma_1,\Gamma_2$ adding each
 variable in $\Gamma$ to $\Gamma_1$ if it occurs in $\alpha_1$, or
 $\Gamma_2$ if it occurs in $\alpha_2$ and not $\alpha_1$ (occurence
-respects \deq).  Because $\deq$ is associativity, commutativity, unit,
-$\alpha_1$ and $\alpha_2$, $\alpha_1$ and $\alpha_2$ have no duplicates
-and every variable from \vars{\Gamma} occurs exactly once in one or the
-other, which gives $\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2}
-\deq \alpha_1$.
+respects \deq).  Because $\deq$ is associativity, commutativity, and
+unit, $\alpha_1$ and $\alpha_2$ have no duplicates and every variable
+from \vars{\Gamma} occurs exactly once in one or the other, which gives
+$\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_1$.
 %% FIXME: last sentence is a little sketchy
-\end{proof}
-
-\begin{lemma} \label{lem:affine-mode-3}
-If $\vars{\Gamma} \deq \alpha_1[\alpha_2/x]$, 
-then 
-either $x$ does not occur in $\alpha_1$, or 
-$\Gamma \splits \Gamma_1,\Gamma_2$ with 
-$\vars{\Gamma_1} \otimes x \deq \alpha_1$ 
-and $\vars{\Gamma_2} \deq \alpha_2$.  
-\end{lemma}
-\begin{proof}
-If $x$ occurs once, then because all terms are products of variables, we
-can commute $\alpha_1 \deq \alpha_1' \otimes x$, so
-$\alpha_1[\alpha_2/x] \deq \alpha_1' \otimes \alpha_2$ and use
-Lemma~\ref{lem:affine-mode-5} to get $\Gamma \splits \Gamma_1,\Gamma_2$
-with $\vars{\Gamma_1} \deq \alpha_1'$ and $\vars{\Gamma_2} \deq
-\alpha_2$.
-
-If $x$ occurs more than once, then $\alpha_2 \deq 1$, because
-otherwise any variable $y$ in $\alpha_2$ will occur more than once in 
-$\alpha_1[\alpha_2/x] \deq \vars{\Gamma}$, which is impossible.  
-Therefore we can take $\Gamma_1 = \Gamma$ and $\Gamma_2 = \cdot$ and we
-have $\Gamma \splits \Gamma,\cdot$ and 
-and $\vars{\cdot} \deq \alpha_2$ and
-??? $\vars{\Gamma} \otimes x \deq \alpha$.
 \end{proof}
 
 \begin{lemma} \label{lem:affine-mode-4}
@@ -242,28 +218,11 @@ $\Gamma \ge \Gamma'$ and $\alpha \deq \vars{\Gamma'}$.
 \end{lemma}
 
 \begin{proof}
-The case for reflexivity is immediate $(\Gamma' = \Gamma)$ as is the
-case for the weakening axiom $(\Gamma' = \cdot)$.  In the case for a
-transitivity $\vars{\Gamma} \spr \alpha \spr \beta$, we get $\Gamma \ge
-\Gamma'$ and $\vars{\Gamma''} \deq \alpha$ by the first inductive
-hypothesis, and then $\Gamma'' \ge \Gamma'$ and $\vars{\Gamma'} \deq
-\beta$ by the second, so transitivity of $\ge$ gives the result.  
-
-For the congruence case, suppose $\vars{\Gamma} \deq
-\alpha_1[\alpha_2/x] \spr \alpha_1'[\alpha_2'/x]$ because $\alpha_1 \spr
-\alpha_1'$ and $\alpha_2 \spr \alpha_2'$.  By Lemma~\ref{?},
-$\vars{\Gamma} \deq \alpha_1[\alpha_2/x]$ implies $\Gamma \splits
-\Gamma_1,\Gamma_2$ with $\vars{\Gamma_1} \deq \alpha_1$ and
-$\vars{\Gamma_2} = \alpha_2$.  So the inductive hypotheses give
-$\Gamma_i \ge \Gamma_i'$ with $\vars{\Gamma_i'} \deq \alpha_i'$.  Since
-$\alpha_1' \deq \vars{\Gamma_1'}$, the variable $x$ occurs at most once
-(occurence count is preserved by $\deq$).  If it occurs zero times, we
-have $\Gamma \ge \Gamma_1 \ge \Gamma_1'$ and $\alpha_1'[\alpha_2'/x]
-\deq \alpha_1' \deq \vars{\Gamma_1'}$.  If it occurs once, we have
-$\alpha_1'[\alpha_2'/x] \deq \alpha_1' \otimes \alpha_2'$ (because all
-terms are products of variables, and using commutativity), and $\Gamma
-\ge \Gamma_1,\Gamma_2 \ge \Gamma_1',\Gamma_2'$ and and
-$\vars{\Gamma_1',\Gamma_2'} \deq {\alpha_1'} \otimes {\alpha_2'}$.
+By Lemma~\ref{lem:affine-mode-1}, $\vars{\Gamma} \deq \alpha \otimes
+\beta$ for some $\beta$.  By Lemma~\ref{lem:affine-mode-5}, this means
+$\Gamma \splits \Gamma_1,\Gamma_2$ with $\vars{\Gamma_1} \deq \alpha$.
+Then the fact that $\Gamma \splits \Gamma_1,\Gamma_2$ implies $\Gamma
+\ge \Gamma_1$ gives the result.
 \end{proof}
 
 Moving on to the proof of the converse,
