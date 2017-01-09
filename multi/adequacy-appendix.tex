@@ -19,15 +19,15 @@ in some order equals $\Gamma$.
       {\seqa{\Gamma,\Gamma',x:A,y:B}{C}}
 \qquad
 \infer{\seqa{\Gamma}{A \otimes B}}
-      {\Gamma \splits \Delta_1,\Delta_2 &
+      {\Gamma \splits \Delta_1;\Delta_2 &
         \seqa{\Delta_1}{A} &
         \seqa{\Delta_2}{B}}
 \\\\
 \infer{\seqa{\Gamma}{A \lolli B}}
       {\seqa{\Gamma,x:A}{B}}
 \qquad
-\infer{\seqa{\Gamma,f:A \lolli B,\Gamma'}{C}}
-      {\Gamma,\Gamma' \splits \Delta_1,\Delta_2 &
+\infer{\seqa{\Gamma}{C}}
+      {\Gamma \splits \Delta_1;\Delta_2;(f:A \lolli B) &
         \seqa{\Delta_1}{A} &
         \seqa{\Delta_2,z:B}{C}
       }
@@ -82,7 +82,7 @@ The forward direction is by induction on $\seqa{\Gamma}{A}$:
 \seq{\Gamma^*,\Gamma'^*,x:A^*,y:B^*}{\vars{\Gamma} \otimes \vars{\Gamma'} \otimes x \otimes y}{C^*}
 and we want 
 \seq{\Gamma^*,z:\F{x\otimes y}{x:A^*,y:B^*},\Gamma'^*}{\vars{\Gamma} \otimes z \otimes \vars{\Gamma'}}{C^*}.
-This is \FL on the inductive hypothesis, with using associativity and commutativity of
+This is \FL\/ on the inductive hypothesis, with using associativity and commutativity of
 $\otimes$ from the mode theory to move $x \otimes y$ to the end.  
 
 \item 
@@ -99,14 +99,15 @@ and
  \seq{\Gamma^*}{\vars{\Delta_2}}{B^*} (using a lemma that when $\Gamma \splits \Delta_1,\Delta_2$,
 $\Gamma$ and $(\Delta_1,\Delta_2)$ differ only in order, and that
  reordering is preserved by the mapped application of $*$).  
-To apply \FR to derive \seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A,y:B}}, it thus suffices to show that 
-$\vars{\Gamma} \spr \vars{\Delta_1}\otimes\vars{\Delta_2}$, which we can
+To apply \FR\/ to derive \seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A,y:B}}, it thus suffices to show that 
+$\vars{\Gamma} \spr \vars{\Delta_1}\otimes\vars{\Delta_2}$.  In fact
+they are $\deq$,  which we can
 prove by induction on $\Gamma \splits \Delta_1,\Delta_2$ using the
 commutative monoids laws.  
 
 \item For $\lolli$-right, we have
   \seq{\Gamma^*,x:A^*}{\vars{\Gamma}\otimes x}{B^*}
-by the inductive hypothesis, which is exactly the premise of using \UR
+by the inductive hypothesis, which is exactly the premise of using \UR\/
 to prove
   \seq{\Gamma^*}{\vars{\Gamma}}{\U{c.c\otimes x}{x:A^*}{B^*}}.  
 
@@ -131,9 +132,14 @@ Thus, we only need to show the transformation premise of
         \end{array}
       }
 \]
-This follows from $\Gamma \splits \Delta_1,\Delta_2$, using associativity and commutativity
+In fact 
+${\vars{\Gamma}\otimes f \otimes \vars{\Gamma'}} \deq (\vars{\Delta_2} \otimes f \otimes \vars{\Delta_1})$,
+which again follows from $\Gamma \splits \Delta_1,\Delta_2$, using associativity and commutativity
 of $\otimes$.  
 \end{itemize}
+In terms of structural property placement, observe that the above proof
+uses only identity transformations on \FR\/ and \UL, and uses the
+\dsd{w} axiom only at the leaves.  
 
 In the converse direction, we generalize slightly and prove 
 \begin{quote}
@@ -142,53 +148,101 @@ $\seqa{\Gamma}{A}$
 \end{quote}
 where $\Gamma_0 \ge \Gamma$ means that $\Gamma_0$ contains every
 assumption $x:A$ that $\Gamma$ does and possibly more (i.e. $\Gamma_0$
-is a weakening of an exchange of $\Gamma$).  That is, we allow the
-actual context of the encoding to contain more assumptions than the
-context descriptor, but all of those assumptions will be of a type that
-is in the image of the translation of affine logic.  This is necessary
-because of the contraction in \UL, where the function is removed from
-the context descriptor but not from the context itself.
+is a weakening of an exchange of $\Gamma$); this is a preorder.  That
+is, we allow the actual context of the encoding to contain more
+assumptions than the context descriptor, but all of those assumptions
+will be of a type that is in the image of the translation of affine
+logic.  This is necessary because of the contraction in \UL, where the
+function is removed from the descriptor but not from the context itself.
+The reason exchange is needed here is that commutativity can be applied
+at any point in a derivation so if we start with a derivation with
+context descriptor ${\vars{\Gamma}}$, the premises might always be some
+exchange of it.
 
 We need the following facts about the mode theory.  
 
-First, every context descriptor is equal to one of the form $x_1 \otimes
-\ldots \otimes x_n$ (for not necessarily distinct $x_i$), which we
-abbreviate as $\vec{x_i}$.  This is by definition (the only constants
-are $\otimes,1$) and the associativity/unit laws.
+%% Every context descriptor in this mode theory is equal to one of the
+%% form $x_1 \otimes \ldots \otimes x_n$ (for not necessarily distinct
+%% $x_i$), which we abbreviate as $\vec{x_i}$.  This is by definition
+%% (the only constants are $\otimes,1$) and the associativity/unit laws.
 
-\begin{lemma} \label{lem:affine-mode-1}
-If $\vec{x_i} \spr \vec{y_i}$ then $\vec{x_i} \deq \vec{z_i} \otimes
-\vec{y_i}$---i.e. $\vec{y_i}$ is a sub-multiset of $\vec{x_i}$
+%% \begin{lemma} \label{lem:affine-mode-1}
+%% If $\vec{x_i} \spr \vec{y_i}$ then $\vec{x_i} \deq \vec{z_i} \otimes
+%% \vec{y_i}$---i.e. $\vec{y_i}$ is a sub-multiset of $\vec{x_i}$.
+%% \end{lemma}
+%% \begin{proof}
+%% In the case for weakening $\vec{x_i} \spr 1$ (the only axiom), take
+%% $\vec{z_i} = \vec{x_i}$.  In the case for reflexivity take $\vec{z_i} =
+%% 1$.  In the case for transitivity, we have $\vec{x_i} \spr \vec{x_i'}
+%% \spr \vec{y_i}$.  By the second inductive hypothesis, we have
+%% $\vec{x_i'} \deq \vec{z_i'} \otimes \vec{y_i}$, so by the first we have
+%% $\vec{x_i} \deq \vec{z_i''} \otimes (\vec{z_i'} \otimes \vec{y_i})$, so
+%% take $\vec{z_i}$ to be $\vec{z_i'} \otimes \vec{z_i''}$.  In the case
+%% for congruence, we have $\vec{x_i} \spr \vec{y_i}$, and $\vec{x_i'} \spr
+%% \vec{y_i'}$, and we want to show that $\subst{\vec{x_i}}{\vec{x_i}'}{x}
+%% \deq \vec{z_i} \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$ for some
+%% $\vec{z_i''}$. By the inductive hypotheses $x_i = \vec{z_i} \otimes
+%% \vec{y_i}$ and $x_i' \deq \vec{z_i}' \otimes \vec{y_i'}$.  So $x_i[x_i'/x]
+%% \deq (\vec{z_i} \otimes y_i)[\vec{z_i}' \otimes y_i'/x]$ and it remains to
+%% show that $(\vec{z_i} \otimes \vec{y_i})[\vec{z_i}' \otimes
+%%   \vec{y_i}'/x] = \vec{z_i}'' \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$,
+%% which is true by commuting any $\vec{z_i}'s$ in $(\vec{y_i})[\vec{z_i}'
+%%   \otimes \vec{y_i}'/x]$ to the left.
+%% \end{proof}
+
+%% \begin{lemma} \label{lem:affine-mode-2}
+%% If $\vars{\Gamma} \spr \alpha_1 \otimes \alpha_2$ then there exist
+%% contexts $\Gamma_1$ and $\Gamma_2$ such that $\vars{\Gamma_1} \deq
+%% \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$ and $\Gamma \ge
+%% \Gamma_1,\Gamma_2$.
+%% \end{lemma}
+
+%% \begin{proof}  TODO
+%% \end{proof}
+
+%% \begin{lemma} \label{lem:affine-mode-3}
+%% If $\vec{x_i}$ has no dupicate variables and $\vec{x_i} \spr \vec{y_i}$
+%% then $\vec{y_i}$ has no dupicate variables.
+%% \end{lemma}
+%% \begin{proof}
+%% First, the ``has no duplicate variables'' predicate is well-defined on
+%% \deq-equivalence-classes because it is preserved by the associativity,
+%% commutativity, unit axioms.  
+
+%% The cases for the weakening axiom (the right-hand side has no variables)
+%% and reflexivity (by assumption) are immediate.  In the case for
+%% transitivity, we have $\vec{x_i} \spr \vec{x_i'} \spr \vec \vec{y_i}$,
+%% and $\vec{x_i}'$ has no duplicates by the first inductive hypothesis, so
+%% $\vec{y_i}$ does by the second.  Finally, for congruence we have
+%% $\subst{\vec{x_i}}{\vec{x_i'}}{x} \spr \subst{\vec{y_i}}{\vec{y_i'}}{x}$
+%% because $\vec{x_i} \spr \vec{y_i}$ and $\vec{x_i'} \spr \vec{y_i'}$, and
+%% $\subst{\vec{x_i}}{\vec{x_i'}}{x}$ has no duplicates.  By the inductive
+%% hypotheses, $\vec{y_i}$ and $\vec{y_i'}$ have no duplicates, so
+%% $\subst{\vec{y_i}}{\vec{y_i'}}{x}$ does as well (a substitution can only
+%% create duplicates if $x$ occurs more than once in $\vec{y_i}$, which is
+%% forbidden by the inductive hypothesis).  
+%% \end{proof}           
+
+\begin{lemma} \label{lem:affine-mode-4}
+If $\vars{\Gamma} \spr \alpha$, then there is a $\Gamma'$ such that
+$\Gamma \ge \Gamma'$ and $\alpha \deq \vars{\Gamma'}$.
 \end{lemma}
-\begin{proof}
-In the case for weakening $\vec{x_i} \spr 1$ (the only axiom), take
-$\vec{z_i} = \vec{x_i}$.  In the case for reflexivity take $\vec{z_i} =
-1$.  In the case for transitivity, we have $\vec{x_i} \spr \vec{x_i'}
-\spr \vec{y_i}$.  By the second inductive hypothesis, we have
-$\vec{x_i'} \deq \vec{z_i'} \otimes \vec{y_i}$, so by the first we have
-$\vec{x_i} \deq \vec{z_i''} \otimes (\vec{z_i'} \otimes \vec{y_i})$, so
-take $\vec{z_i}$ to be $\vec{z_i'} \otimes \vec{z_i''}$.  In the case
-for congruence, we have $\vec{x_i} \spr \vec{y_i}$, and $\vec{x_i'} \spr
-\vec{y_i'}$, and we want to show that $\subst{\vec{x_i}}{\vec{x_i}'}{x}
-\deq \vec{z_i} \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$ for some
-$\vec{z_i''}$. By the inductive hypotheses $x_i = \vec{z_i} \otimes
-\vec{y_i}$ and $x_i' \deq \vec{z_i}' \otimes \vec{y_i'}$.  So $x_i[x_i'/x]
-\deq (\vec{z_i} \otimes y_i)[\vec{z_i}' \otimes y_i'/x]$ and it remains to
-show that $(\vec{z_i} \otimes \vec{y_i})[\vec{z_i}' \otimes
-  \vec{y_i}'/x] = \vec{z_i}'' \otimes \subst{\vec{y_i}}{\vec{y_i'}}{x}$,
-which is true by commuting any $\vec{z_i}'s$ in $(\vec{y_i})[\vec{z_i}'
-  \otimes \vec{y_i}'/x]$ to the left.
-\end{proof}
 
-\begin{lemma} \label{lem:affine-mode-2}
-If $\vars{\Gamma} \spr \alpha_1 \otimes \alpha_2$ then there exist
-contexts $\Gamma_1$ and $\Gamma_2$ such that $\vars{\Gamma_1} \deq
-\alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$ and $\Gamma \ge
-\Gamma_1,\Gamma_2$.
+%% \begin{proof}
+%% Write $\vec{x}$ for $\alpha$.  \vars{\Gamma} has no duplicates, so by
+%% Lemma~\ref{lem:affine-mode-3}, $\vec{x}$ has no duplicates.  Take
+%% $\Gamma'$ to be the subcontext of $\Gamma$ consisting of the variables
+%% in $\vec{x}$ (in their original order, say).  Then we have $\Gamma \ge
+%% \Gamma'$ by construction and $\vars{\Gamma'} \deq \vec{x}$ (because
+%% $\vec{x}$ has no duplicates).  
+%% \end{proof}
+
+\begin{lemma} \label{lem:affine-mode-5}
+If $\vars{\Gamma} \deq \alpha_1 \otimes \alpha_2$, 
+then $\Gamma \splits \Gamma_1,\Gamma_2$ with 
+$\vars{\Gamma_1} \deq \alpha_1$ 
+and $\vars{\Gamma_2} \deq \alpha_1$.  
 \end{lemma}
-
-\begin{proof}  TODO
-\end{proof}
 
 Moving on to the proof of the converse,
 
@@ -199,14 +253,13 @@ Moving on to the proof of the converse,
       {x:P \in \Gamma_0 &
        \vars{\Gamma} \spr x}
 \]
-
-First, by Lemma~\ref{lem:affine-mode-1}, $\vars{\Gamma} \spr x$ implies
-$\vars{\Gamma} \deq \vec{z} \otimes x$.  This in turn implies that $x$
-is in $\Gamma$ (because the ACU equations do not change the elements, so
-it is in $\vars{\Gamma}$, which only consists of variables from
-$\Gamma$).  Because $\Gamma$ is a subcontext of $\Gamma_0$ and $x:P$ is
-in $\Gamma_0$ and $x$ is also in $\Gamma$, $x$ must have type $P$ in
-$\Gamma$, so we can apply the hypothesis rule of affine logic.
+First, by Lemma~\ref{lem:affine-mode-4}, $\vars{\Gamma} \spr x$ implies
+there is a $\Gamma'$ such that $\Gamma \ge \Gamma'$ and $\vars{\Gamma'}
+\deq x$.  By inversion, this means, $\Gamma'$ is $x:Q$ for some $Q$.
+Because $\Gamma_0 \ge \Gamma \ge x:Q$ and $x:P$ is in $\Gamma_0$, $x$
+must have type $P$ in $\Gamma$ ($\ge$ implies that any variable in both
+has the same type in both), so we can apply the hypothesis rule of
+affine logic.
 
 \item In the case where \UR\/ was used to derive
   \seq{\Gamma_0^*}{\vars{\Gamma}}{A^*}, $A$ must be $A_1 \lolli A_2$
@@ -218,44 +271,93 @@ $\Gamma$, so we can apply the hypothesis rule of affine logic.
 \item In the case where \FR\/ was used, the conclusion must be $(A_1
   \otimes A_2)$, and we have $\vars{\Gamma} \spr (\alpha_1 \otimes
   \alpha_2)$ with \seq{\Gamma_0^*}{\alpha_1}{A_1^*} and
-  \seq{\Gamma_0^*}{\alpha_2}{A_1^*}.  Using
-  Lemma~\ref{lem:affine-mode-2}, we have $\Gamma_0 \ge \Gamma \ge
-  \Gamma_1,\Gamma_2$ and \seq{\Gamma_0^*}{\vars{\Gamma_1}}{A_1^*}
-  \seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_2^*}.  Thus, by the inductive
-  hypotheses we get $\seqa{\Gamma_1}{A_1}$ and $\seqa{\Gamma_2}{A_2}$,
-  so $\seqa{\Gamma_1,\Gamma_2}{A_1 \otimes A_2}$.  Then weakening and
-  exchange on $\Gamma \ge \Gamma_1,\Gamma_2$ gives the result.  
+  \seq{\Gamma_0^*}{\alpha_2}{A_1^*}.  By Lemma~\ref{lem:affine-mode-4},
+  this means there is a $\Gamma \ge \Gamma'$ with $\vars{\Gamma'} \deq
+  (\alpha_1 \otimes \alpha_2)$.  By Lemma~\ref{lem:affine-mode-5}, we
+  have $\Gamma' \splits \Gamma_1,\Gamma_2$ with $\vars{\Gamma_1} \deq
+  \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$. So the premises are
+  \seq{\Gamma_0^*}{\vars{\Gamma_1}}{A_1^*} and
+  \seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_2^*}, with $\Gamma_0 \ge \Gamma
+  \ge \Gamma' \ge \Gamma_i$.  Thus, by the inductive hypotheses we get
+  $\seqa{\Gamma_1}{A_1}$ and $\seqa{\Gamma_2}{A_2}$, so
+  $\seqa{\Gamma'}{A_1 \otimes A_2}$.  Then weakening and exchange on
+  $\Gamma \ge \Gamma'$ gives the result.
 
-\item In the case where \FL\/ was used, we know that every assumption even
-  in the larger context $\Gamma_0$ is of the form $A^*$ for some $A$, so
-  the formula under elimination must be $z:(A_1 \otimes A_2)^* \in \Gamma_0$. The
-  premise is
-  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}[(x \otimes y)/z]}{C^*},
-  and we want 
-  \seqa{\Gamma}{C}.  
+\item In the case where \FL\/ was used, we know that every assumption
+  even in the larger context $\Gamma_0$ is of the form $A^*$ for some
+  $A$, so the formula under elimination must be $z:(A_1 \otimes A_2)^*
+  \in \Gamma_0$. The premise is
+  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}[(x \otimes
+      y)/z]}{C^*}, and we want \seqa{\Gamma}{C}.
 
   We distinguish cases on whether $z$ (which is only known to be in
   $\Gamma_0$) is bound in $\Gamma$ or not.  
 
   If it is, then $\vars{\Gamma}[(x \otimes y)/z] \deq
   (\vars{\Gamma}-z)\otimes x \otimes y$, and since
-  $\Gamma_0^*-z,x:A_1,y:A_2 \ge \Gamma-z,x:A_1,y:A_2$, we get
+  $\Gamma_0^-z,x:A_1,y:A_2 \ge \Gamma-z,x:A_1,y:A_2$, we get
   \seqa{\Gamma-z,x:A_1,y:A_2}{C} by the inductive hypothesis, and can
   apply $\otimes$-left.
 
   If it is not, then $\vars{\Gamma}[(x \otimes y)/z] \deq
   \vars{\Gamma}$.  Because $\Gamma_0 \ge \Gamma$ by assumption,
   ${\Gamma_0-z,x:A_1,y:A_2} \ge \Gamma$ (it removes something not in
-  $\Gamma$, and adds two things, and the premise is 
+  $\Gamma$, and adds two things).  Using the equality, the premise derives
   \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}}{C^*},
-  we get \seqa{\Gamma}{C} directly by the inductive hypothesis.  
+  so we get \seqa{\Gamma}{C} directly by the inductive hypothesis.  
   In this case, the given proof does a left rule on a ``0-use''
   variable that does not occur in the context descriptor, which adds
   some additional 0-use assumptions to the context.  The inductive
   hypothesis is compatible with this, and returning its result
   drops this step.    
 
-\item In the case for \UL 
+\item In the case for \UL, the assumption $f$ that is eliminated must be
+  the translation of $f:(A_1 \lolli A_2) \in \Gamma_0$ , so the premises
+  are $\vars{\Gamma} \spr \beta'[f \otimes \alpha/z]$ with
+  $\seq{\Gamma_0^*}{\alpha}{A_1^*}$ and
+  $\seq{\Gamma_0^*,z:A_2^*}{\beta'}{C}$.
 
+  By Lemma~\ref{lem:affine-mode-4}, there is a $\Gamma'$ with $\Gamma_0
+  \ge \Gamma \ge \Gamma'$ and $\vars{\Gamma'} \deq \beta'[f \otimes
+    \alpha/z]$.  Since $\vars{\Gamma'}$ has no duplicates, $z$ occurs at
+  most once in $\beta'$ (or else $f$ would occur more than once in the
+  substitution).
+  
+  %% Since every context descriptor is equal to a product of variables, we
+  %% write $\vec{y} for \alpha$ and $\vec{z}$ for $\beta'$.  By
+  %% Lemma~\ref{lem:affine-mode-3}, $\vec{z}[f \otimes \vec{x}/z]$ has no
+  %% duplicate variable occurences, so $z$ occurs at most once in $\beta'$.
+
+  If $z$ occurs once in $\beta'$, then because all context descriptors
+  are products of variables, we can commute it to the end, writing
+  $\beta' \deq \vec{y} \otimes z$, so $\vars{\Gamma'} \deq \vec{y}
+  \otimes f \otimes \alpha$.  Since $f$ is in \vars{\Gamma'}, $f$ must
+  be declared with some type in $\Gamma'$, and since $\Gamma_0 \ge
+  \Gamma \ge \Gamma'$ and $f:A_1 \lolli A_2 \in \Gamma_0$, it must have
+  the same type.  By Lemma~\ref{lem:affine-mode-5}, we can split
+  $\Gamma' \splits \Gamma_1;\Gamma_2;f:A_1 \lolli A_2$ where
+  $\vars{\Gamma_1} \deq \vec{y}$ and $\vars{\Gamma_2} \deq \alpha$.
+  Since the splitting implies that $\Gamma' \ge \Gamma_1$ and $\Gamma'
+  \ge \Gamma_2$, we have $\Gamma_0,z:A_2 \ge \Gamma_1,z:A_2$ and
+  $\Gamma_0 \ge \Gamma_2$.  Moreover, we have $\beta' \deq \vec{y}
+  \otimes z \deq \vars{\Gamma_1} \otimes z$ and $\alpha \deq
+  \vars{\Gamma_2}$, so the premises are
+  $\seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_1^*}$ and
+  $\seq{\Gamma_0^*,z:A_2^*}{\vars{\Gamma_1,z:A_2}}{C^*}$.  Thus, the
+  inductive hypotheses give \seqa{\Gamma_2}{A_1} and
+  \seqa{\Gamma_1,z:A_2}{C}, which combined with the splitting gives
+  \seqa{\Gamma'}{C} by $\lolli$-left.  Finally, we have $\Gamma \ge
+  \Gamma'$, so we can weaken/exchange to get \seqa{\Gamma}{C}.
+
+  If $z$ occurs 0 times, then we have
+  \seq{\Gamma_0^*,z:A_2^*}{\beta'}{C} with $\vars{\Gamma} \spr \beta'$.
+  By Lemma~\ref{lem:affine-mode-4}, we get $\Gamma \ge \Gamma'$ with
+  $\vars{\Gamma'} \deq \beta'$. So because $\Gamma_0 \ge \Gamma \ge
+  \Gamma'$, we have $\Gamma_0,z:A_2 \ge \Gamma'$, and can use the
+  inductive hypothesis on the continuation to get \seqa{\Gamma'}{C}, and
+  then weaken/exchange to get \seqa{\Gamma}{C}. This part of the proof
+  corresponds to eliminating a \UL\/ on a 0-use $f$ from the affine
+  logic proof, which is possible because $z$ is 0-use, so the inductive
+  hypothesis will remove any uses of it.
 \end{itemize}
 \end{proof}
