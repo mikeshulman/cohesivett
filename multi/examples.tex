@@ -1,3 +1,7 @@
+\newcommand\truej[1]{#1 \,\, \dsd{true}}
+\newcommand\possj[1]{#1 \,\, \dsd{poss}}
+\newcommand\validj[1]{#1 \,\, \dsd{valid}}
+
 \section{Examples}
 \label{sec:exampleencodings}
 
@@ -422,14 +426,14 @@ the following two derivations of $P,Q,R \vdash P \otimes R$.
 \]
 \end{footnotesize}%
 
-\noindent The second is that a derivation may perform a left rule on a $0$-linear
-(in the sense of the previous section) variable, i.e. one that does not
-occur in the context descriptor.  Such variables arise because \UL\/
-``removes a variable from the context'' by marking it as 0-use, not by
-actually removing it.  For this mode theory (and the other ones we
-consider, besides the previous section), these left rules produce only
-other 0-use variables, which ultimately cannot be used, and can be
-strengthed away (see Lemma~\ref{lem:0-use-strengthening}).  
+\noindent The second is that a derivation may perform a left rule on a
+$0$-linear (in the sense of the previous section) variable, i.e. one
+that does not occur in the context descriptor.  Such variables arise
+because \UL\/ ``removes a variable from the context'' by marking it as
+0-use, not by actually removing it.  For this mode theory (and the other
+ones we consider, besides the previous section), these left rules
+produce only other 0-use variables, which ultimately cannot be used, and
+can be strengthed away (see Lemma~\ref{lem:0-use-strengthening}).
 
 \subsection{Relevant and Cartesian products and implications}
 \label{sec:ex:relevant-cartesian}
@@ -547,6 +551,18 @@ with it, uses those resources to prove $A$, and then replaces the
 subtree with the variable $z$ standing for the result of the
 implication.
 
+We assume the BI sequent is given as a judgement $\Gamma \vdash A$ where
+$\Gamma$ is a tree and there are explicit equality premises for the
+algebraic laws on bunches.  Then we define $\Gamma^*$ as an in-order
+flattening of the tree into one of our contexts (e.g.  $x:A^* = x:A$ and
+$(\Gamma,\Delta)^* = (\Gamma;\Delta)^*=\Gamma^*,\Delta^*$), while we
+define $\vars{\Gamma}$ as a context descriptor that preserves the tree
+structure (e.g. $x:A^* = x$ and $\vars{(\Gamma,\Delta)} =
+\vars{\Gamma}*\vars{\Delta}$ and
+$\vars{\Gamma;\Delta}=\vars{\Gamma}\times\vars{\Delta}$).  Then we have
+the usual adequacy statement $\Gamma \vdash A$ iff
+\seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
+
 \subsection{Adjoint decomposition of !}  
 
 Following \citet{benton94mixed,bentonwadler96adjoint}, we decompose the
@@ -593,6 +609,19 @@ A$ has weakening and contraction (with respect to $\otimes$) and $!A
 equations allows us to describe non-monoidal (or lax monoidal, if we add
 only one direction) left adjoints.
 
+In general, we translate $F(A)^* = \F{\dsd{f}(x)}{x:C^*}$ and $G(A)^* =
+\U{x.\dsd{f}(x)}{\cdot}{A}$ and products and functions as usual.
+Then a sequent $x_1:C_1,\ldots,x_n:C_n \vdash C$ in the cartesian
+category is represented by a sequent
+\seq{x_1:C_1^*,\ldots,x_n:C_n^*}{x_1 \times \ldots \times x_n}{C^*}, 
+and 
+a mixed sequent with cartesian and linear assumptions and a linear
+conclusion  $x_1:C_1,\ldots,x_n:C_n;y_1:A_1,\ldots,y_m:A_m \vdash A$ 
+by 
+\seq{x_1:C_1^*,\ldots,y_1:A_1^*,\ldots}{\dsd{f}(x_1) \otimes\ldots\otimes
+  \dsd{f}(x_n)  \otimes y_1 \otimes \ldots \otimes y_n}{A^*}.
+
+
 %% The $ \dsd{f}(x) \otimes \dsd{f}(y) \spr \dsd{f}(x \times y)$
 %% direction is used to prove the purely linear logic entailment $!A
 %% \otimes !B \vdash !(A \otimes B)$, for example.
@@ -628,6 +657,7 @@ only one direction) left adjoints.
 %% Similarly, to get weakening we take $\dsd{f}(\top) \deq 1$.  
 
 \subsection{Adjoint decomposition of $\Box$}  
+\label{sec:example:box}
 
 The modal S4 \Bx{}{} as in \citet{pfenningdavies} is similar to !.  We
 call the two modes \dsd{t}ruth and \dsd{v}alidity and have 
@@ -657,6 +687,16 @@ derivations.\footnote{Because the context monoids are cartesian
   a reasonable alternative to consider.
 %% I think it reduces to p : Box A =?= letbox x = p in letbox y = p in box(fst x, snd y)
 }
+We represent a sequent 
+\[
+ x_1:\validj{A_1},\ldots,x_n:\validj{A_n};y_1:\truej{B_1},\ldots \vdash \truej{C}
+\]
+by 
+\[
+\seq{x_1:\Uempty{\dsd{f}}{A_1^*},\ldots,x_n:\Uempty{\dsd{f}}{A_n^*};y_1:B_1^*,\ldots}
+    {\dsd{f}(x_1) \times\ldots\times \dsd{f}(x_n) \times y_1 \times \ldots \times y_n}{C^*}
+\]
+
 
 \subsection{Subexponentials}
 
@@ -727,11 +767,29 @@ $\dsd{F}_{a{\dsd l}}(C)$, which has whatever structural properties mode $a$ has.
 
 \subsection{Monads}
 
-When we have two modes \dsd{t} and \dsd{p} with a context descriptor
-\oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}, the type $\Dia{\dsd{g}}{A} :=
-\U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$ will be a monad.  It does
-not automatically have a tensorial strength: if we have a 
-monoid $(\otimes_\dsd{t},1_{\dsd t})$ and try to derive
+Consider a \Dia{}{A} modality with rules in the style of
+\citet{pfenningdavies}: 
+\[
+\infer{\Gamma \vdash \possj{A}}
+      {\Gamma \vdash \truej{A}}
+\qquad
+\infer{\Gamma \vdash \truej{\Dia{}{A}}}
+      {\Gamma \vdash \possj{A}}
+\qquad
+\infer{\Gamma,\truej{\Dia{}{A}} \vdash \possj{C}}
+      {\truej{A} \vdash \possj{C}}
+\]
+
+We can model this using a mode theory with two modes \dsd{t} and \dsd{p}
+and context descriptor \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}, defining
+the type $\Dia{}{A} :=
+\U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$.  This is always a monad,
+but it does not automatically have a tensorial strength, which
+corresponds to the context-clearing in the left rule.
+
+For example, if we have a monoid $(\otimes_\dsd{t},1_{\dsd t})$ on mode
+\dsd{t} and try to derive
+\begin{small}
 \[
 \infer[\UR]
       {\seq{x : A, y : \Dia{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Dia{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
@@ -741,18 +799,29 @@ monoid $(\otimes_\dsd{t},1_{\dsd t})$ and try to derive
           \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}
         }}
 \]
+\end{small}
 we are stuck, because there is no way to rewrite $\dsd{g}(x
 \otimes_{\dsd t} y)$ as a term containing $\dsd{g}(y)$.  If
 $(\otimes_t,1_t)$ is affine, then we can weaken away $x$ and take
-$\beta' = z$---the \UL\/ rule thus captures the context-clearing of the
-\Dia{}{}-left rule in \citep{pfenningdavies}---but then in the
-right-hand premise we will only have access to $z$, not $x$, and cannot
-complete the derivation.  
+$\beta' = z$---the context clearing of in the left rule---but then in
+the right-hand premise we will only have access to $z$, not $x$, and
+cannot complete the derivation.
+
+In general, we translate all formulas at mode \dsd{t} and represent
+\Dia{}{A} as above, and translate a sequent $\truej{A_1}, \ldots,
+\truej{A_1} \vdash \truej{C}$ by
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*} and a
+sequent $\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}$ by
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes
+  x_n)}{\F{\dsd{g}}{C^*}}.  Then the three ``native'' rules above are
+\FR, \UR, and a composite of \UL\/ followed by \FL, respectively.
 
 \newcommand\ttp[2]{#1 \otimes_{\dsd {tp}} #2}
 \newcommand\tvp[2]{#1 \otimes_{\dsd {vp}} #2}
 
-One way to add the strength is to add an asymmetric product of a
+Some monads, such as the \Crc{}{A} of \citep{pfenningdavies} and those
+used to encapsulate effects in functional programming are strong.  
+One way to axiomatize the strength is using an asymmetric product of a
 \dsd{t}-mode and \dsd{p}-mode context:
 \[
 \begin{array}{ll}
@@ -766,8 +835,7 @@ The equations make this into a monoid action of the \dsd{t}-contexts on
 the \dsd{p}-contexts, and allow for ``isolating'' any one $x_i$ in
 $\dsd{g}(x_1 \otimes_{\dsd t} \ldots \otimes_{\dsd t} x_n)$ as the
 designated variable under a \dsd{g}.  Using this (and switching notation
-from \Dia{\dsd{g}}{A} to the \Crc{\dsd{g}}{A} that is typically used for
-strong monads), we can prove
+from \Dia{\dsd{g}}{A} to \Crc{\dsd{g}}{A}), we can prove
 
 \begin{footnotesize}
 \[
@@ -785,7 +853,8 @@ strong monads), we can prove
                        }
         }}}
 \]
-\end{footnotesize}
+\end{footnotesize}%
+
 
 An analogous description can be given for the ``$\Box$-strong
 $\Diamond$''~\citep{pfenningdavies,alechina+01categoricals4}, which has
@@ -805,8 +874,9 @@ have a mixed-mode product between \dsd{v} and \dsd{p}
 \end{array}
 \]
 
-A judgement $x_1:A_1 \dsd{valid},\ldots,y_1:B_1 \dsd{true},\ldots \vdash
-C \, \dsd{poss}$ is represented by the sequent
+We represent the truth-conclused sequent as in
+Example~\ref{sec:example:box}, and $x_1:A_1 \dsd{valid},\ldots;y_1:B_1
+\dsd{true},\ldots \vdash C \, \dsd{poss}$ by
 \[
 \seq{x_1:\Uempty{\dsd{f}}{A_1},\ldots,y_1:B_1,\ldots}
     {\dsd{g}(\dsd{f}(x_1) \times_{\dsd t} \dsd{f}(x_2) \times_{\dsd t} \ldots y_1 \times_{\dsd t} \ldots )}
@@ -814,20 +884,20 @@ C \, \dsd{poss}$ is represented by the sequent
 \]
 The left rule
 \[
-\infer{\Delta \, \dsd{valid}, (\Gamma, z:\Dia{}{A}) \dsd{true} \vdash C \,\dsd{poss}}
-      {\Delta \, \dsd{valid}, w':A \dsd{true} \vdash C \, \dsd{poss}}
+\infer{\Delta ; \Gamma, \truej{z:\Dia{}{A}} \vdash \possj C}
+      {\Delta ; w':\truej A \vdash \possj C}
 \]
 that keeps the valid assumptions and discards the true ones is derivable
 by
 \begin{footnotesize}
 \[
 \infer%[\UL]
-      {\seq{x_i:\Uempty{\dsd{f}}{A_i},y_i:B_i,z:\Dia{\dsd{g}}{A}}{\dsd{g}(\dsd{f}{(x_i)} \times y_i \times z)}{C}}
+      {\seq{x_i:\Uempty{\dsd{f}}{A_i},y_i:B_i,z:\Dia{\dsd{g}}{A}}{\dsd{g}(\dsd{f}{(x_i)} \times y_i \times z)}{\F{\dsd{f}}{C}}}
       {
         \dsd{g}(\dsd{f}{(x_i)} \times y_i \times z) \spr \tvp{(x_1 \times_v \ldots x_n)} {\dsd{g}(z)} & 
         \infer%[\FL]
-            {\seq{\ldots,w:\F{\dsd{g}}{A}}{(\tvp{(x_1 \times_v \ldots_v \times x_n)} {w})}{C}}
-            {\seq{\ldots,w':A}{(\tvp{(x_1 \times_v \ldots \times_v x_n)} {\dsd{g}(w')})}{C}}
+            {\seq{\ldots,w:\F{\dsd{g}}{A}}{(\tvp{(x_1 \times_v \ldots_v \times x_n)} {w})}{{\F{\dsd{f}}{C}}}}
+            {\seq{\ldots,w':A}{(\tvp{(x_1 \times_v \ldots \times_v x_n)} {\dsd{g}(w')})}{{\F{\dsd{f}}{C}}}}
       }
 \]
 \end{footnotesize}
