@@ -136,6 +136,8 @@ Consider the following rules for affine logic, where the context is
 represented by a list of assumptions labeled with variables, and $\Gamma
 \splits \Delta_1,\Delta_2$ means interleaving $\Delta_1$ and $\Delta_2$
 in some order equals $\Gamma$.
+
+\begin{small}
 \[
 \begin{array}{c}
 \infer{\seqa{\Gamma}{P}}{P \in \Gamma}
@@ -158,7 +160,9 @@ in some order equals $\Gamma$.
       }
 \end{array}
 \]
-Weakening and exchange are admissible for these rules.  
+\end{small}
+
+\noindent Weakening and exchange are admissible for these rules.  
 
 Using the mode theory from Section~\ref{sec:ex:affine}, we translate the
 propositions and contexts of adjoint logic as follows:
@@ -466,24 +470,207 @@ logic rule.
   \seq{\Gamma'^*}{\vars{\Gamma'}}{C}.  Then the inductive hypothesis on
   this premise gives \seqa{\Gamma'}{C}, and weakening/exchanging with
   $\Gamma \ge \Gamma'$ gives the result.
+\end{itemize}
+
+\end{proof}
+
+\subsection{Cartesian Logic}
+
+We compare the cartesian monoid mode theory from
+Section~\ref{sec:ex:relevant-cartesian} with the following rules:
+\[
+\begin{array}{c}
+\infer{\seqc{\Gamma}{P}}{x:P \in \Gamma}
+\quad
+\infer{\seqc{\Gamma}{A \times B}}
+      {\seqc{\Gamma}{A} &
+        \seqc{\Gamma}{B}}
+\quad
+\infer{\seqc{\Gamma}{C}}
+      {p:A\times B \in \Gamma & 
+        \seqc{\Gamma,x:A,y:B}{C}}
+\\\\
+\infer{\seqc{\Gamma}{A \to B}}
+      {\seqc{\Gamma,x:A}{B}}
+\quad
+\infer{\seqc{\Gamma}{C}}
+      {f: A \to B \in \Gamma &
+        \seqc{\Gamma}{A} &
+        \seqc{\Gamma,z:B}{C}
+      }
+\end{array}
+\]
+In this case, neither round-trip will be the identity on derivations,
+though the one starting at these native rules will be the identity up to
+a (positive/left) $\eta$ law for $\times$.  The difference is that the
+above rules allow contraction for $A \times B$, whereas the framework
+reduces this to contraction at $A$ and $B$ separately.  We could instead
+compare against a native sequent calculus that does not allow
+contraction for positives, but the above is more standard.  
+
+The encoding of the rules is as follows:
+\begin{lemma}
+If $\seqc{\Gamma}{A}$ then \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.  
+\end{lemma}
+\begin{proof}
+The proof is by induction on the given derivation, using the 
+derivations of each rule:
+
+\[
+\infer[\dsd{v}]{\seq{\Gamma^*}{P^*}}
+      {x:P^* \in \Gamma^* &
+        1_{(\vars{\Gamma-x})\times x}[\dsd{w}/x] :: \vars{\Gamma-x} \times x \spr x}
+\]
+
+\[
+\infer[\FR]{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x\times y}{x:A^*,y:B^*}}}
+      {\dsd{c} :: \vars{\Gamma} \spr \vars{\Gamma} \times \vars{\Gamma} &
+       \seq{\Gamma^*}{\vars{\Gamma}}{A^*} & 
+       \seq{\Gamma^*}{\vars{\Gamma}}{B^*}}
+\]
+
+\[
+\infer[Lemma~\ref{lem:respectspr}]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{C^*}}
+      { %% 1_{\vars{\Gamma-p}\times p}[\dsd{c}/p] :: 
+        \vars{\Gamma} \spr \vars{\Gamma} \times p &
+        \infer[Cor.~\ref{cor:contraction}]
+              {\seq{\Gamma^*}{\vars{\Gamma}\times p}{C^*}}
+              {p : (A\times B)^* \in \Gamma^* &
+                \infer[\FL]
+                      {\seq{\Gamma^*,q:(A\times B)^*}{\vars{\Gamma}\times q}{C^*}}
+                      {\seq{\Gamma^*,x:A^*,y:B^*}{\vars{\Gamma}\times x \times y}{C^*}}}
+      }
+\]
+
+\[
+\infer[\UR]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{\U{f.f\times x}{x:A^*}{B^*}}}
+      {\seq{\Gamma^*,x:A^*}{\vars{\Gamma}\times x}{B^*}}
+\]
+
+\begin{small}
+\[
+\infer[\UL]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{C}}
+      {f:(A\to B)^* \in \Gamma^* &
+        \vars{\Gamma} \spr \vars{\Gamma} \times (f \times \vars{\Gamma}) &
+        \seq{\Gamma^*}{\vars{\Gamma}}{A^*} &
+        \seq{\Gamma^*,z:B^*}{\vars{\Gamma}\times z}{B^*}
+      }
+\]
+\end{small}
+
+This shows that the above sequent calculus uses structural rules in the
+following places: The hypothesis rule weakens away all other variables.
+The $\times$ right rule contracts the entire context.  The $\times$ left
+rule uses contraction for the mode theory ($p \spr p \times p$) and
+contraction-over-contraction to duplicate $p$ to $q$---if we did not
+have a contraction here in the native rule, then this would just be \FL,
+as the $\to$ right rule is just \UR.  The $\to$ left rule contracts
+everything in $\Gamma$ for use in both the argument and the
+continuation, and contracts the function an additional time for use
+here.
+\end{proof}
+
+Conversley, we have
+\begin{lemma}
+If \seq{\Gamma^*}{\vars{\Gamma}}{A^*} then $\seqc{\Gamma}{A}$ 
+\end{lemma}
+
+\begin{proof}
+The proof is by induction on the size of the given derivation, to allow
+uses of
+Lemma~\ref{lem:respectspr} before applying the inductive hypothesis.
+
+\begin{itemize}
+
+\item The hypothesis rule is immediate because $x:P^* \in \Gamma^*$
+  implies $x:P \in \Gamma$.  
+
+\item For a general use of \FR, the conclusion must be $(A \times B)^*$
+  because this is the only type that encodes to an $\Fsymb$:
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x\times y}{x:A,y:B}}}
+      {\vars{\Gamma} \spr \alpha \times \beta &
+        \seq{\Gamma^*}{\alpha}{A} &
+        \seq{\Gamma^*}{\beta}{B}}
+\]
+Because we have projections, we can compose $\vars{\Gamma} \spr \alpha
+\times \beta \spr \alpha$ and $\vars{\Gamma} \spr \alpha \times \beta
+\spr \beta$, and apply these to the premises by
+Lemma~\ref{lem:respectspr} to get no-bigger derivations of
+$\seq{\Gamma^*}{\vars{\Gamma}}{A}$ and $\seq{\Gamma^*}{\vars{\Gamma}}{B}$,
+and then the inductive hypotheses and $\times$-right give the result.
+
+This corresponds to treating this derivation as if it were 
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x\times y}{x:A,y:B}}}
+      {\vars{\Gamma} \spr \vars{\Gamma} \times \vars{\Gamma} &
+        \infer{\seq{\Gamma^*}{\vars{\Gamma}}{A}}
+              {\vars{\Gamma} \spr \alpha &
+                \seq{\Gamma^*}{\alpha}{A}} &
+        \infer{\seq{\Gamma^*}{\vars{\Gamma}}{B}}
+              {\vars{\Gamma} \spr \beta &
+                \seq{\Gamma^*}{\beta}{B}}
+      }
+\]
+where we contract all variables and weaken the premises with any that
+did not already occur in $\alpha/\beta$.  In our equational theory on
+derivations these two are indeed equal, assuming equations on
+transformations giving the universal property of a cartesian product in
+the mode theory.
+
+\item For a general use of \FL, which must be on the encoding of a $p: A
+  \times B \in \Gamma$, we have
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{C}}
+      {\seq{(\Gamma-p)^*,x:A^*,y:B^*}{\vars{\Gamma}[x \times y/p]}{C}}
+\]
+Because $\Gamma \deq (\Gamma-p)\times p$, the inductive hypothesis gives
+a derivation of \seqc{\Gamma-p,x:A,y:B}{C}.  Using the admissible
+weakening for cartesian logic, we have \seqc{\Gamma,x:A,y:B}{C}, so
+$\times$-left gives the result.  That is, our given derivation does not
+contract $p$, so we weaken with the extra occurence of $p$.
+
+\item For \UR, the inductive hypothesis applied to the premise gives
+  exactly the premise of $\to$-right.  
+
+\item For \UL\/ on $f:(A\to B)^*$, we have
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{C^*}}
+      {
+        {\vars{\Gamma}} \spr \beta'[(f \times \alpha)/z] &
+        \seq{\Gamma^*}{\alpha}{A^*} &
+        \seq{\Gamma^*,z:B^*}{\beta'}{B^*}
+      }
+\]
+Because all context descriptors are products of variables, we can
+rewrite $\beta' \deq \beta'' \times z^k$ for some $k$ and $\beta''$ not
+containing $z$.  Thus, we have 
+$\vars{\Gamma} \spr \beta'' \times (f \times \alpha)^k$
+so using
+projections we have
+$\vars{\Gamma} \spr \beta''$
+and 
+$\vars{\Gamma} \spr \alpha$.  
+Using contraction, we have 
+$\vars{\Gamma} \times z \spr \beta'' \times z^k$.
+Applying these to the premises with Lemma~\ref{lem:respectspr}
+gives derivations of 
+\seq{\Gamma^*}{\vars{\Gamma}}{A^*} 
+and 
+\seq{\Gamma^*,z:B^*}{\vars{\Gamma}\times z}{B^*}.
+Thus, the inductive hypotheses give the premises of $\to$-left.  
+
+Equationally, the only thing suspicious about this is projecting
+\emph{one} of the $\alpha$'s from $(f \times \alpha)^k$.   However,
+\vars{\Gamma} has no duplicate variables, and for this mode theory any
+map $x \spr x^k$ is the $k$-fold contraction of $x$.  Therefore, all
+projections are the same, and contracting-projecting-recontracting is
+the same as the original contraction.  
 
 \end{itemize}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \end{proof}
+
