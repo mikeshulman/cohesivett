@@ -1,6 +1,7 @@
 \newcommand\cD{\ensuremath{\mathcal{D}}}
 
 \section{Categorical Semantics}
+\label{sec:semantics}
 
 In this section, we give a category-theoretic structure corresponding to
 the above syntax.  First, we define a cartesian 2-multicategory as a
@@ -23,7 +24,7 @@ exchange instead of named variables.
       (g,(f_1,\dots,f_m)) &\mapsto g\circ (f_1,\dots,f_m)
     \end{align*}
     \end{footnotesize}
-    We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
+    %% We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
   %% \item For any $f\in\M(A_1,\dots,A_n;B)$ we have natural equalities (i.e.\ natural transformations whose components are identities)
   %%   \[
   %%     1_B \circ (f) = f \qquad
@@ -73,7 +74,7 @@ The next three definitions will be used to describe the
 
 \begin{definition}
   A functor of cartesian 2-multicategories $\pi:\cD\to\M$ is a \textbf{local discrete fibration} if each induced functor of ordinary categories
-  \[\cD(A_1,\dots,A_n;B)\to\M(\pi A_1,\dots,\pi A_n;\pi B)\]
+  $\cD(A_1,\dots,A_n;B)\to\M(\pi A_1,\dots,\pi A_n;\pi B)$
   is a discrete fibration.
 \end{definition}
 
@@ -103,15 +104,20 @@ fibration, this fiber is a discrete set.
   and $\mu$-homs for all $\mu$.
 \end{definition}
 
-We now describe how these definitions correspond to the syntax.  A mode
-theory $\Sigma$ presents a cartesian 2-multicategory, where $\M_0$ is
-the set of modes, an object of $\M(p_1,\ldots,p_n;q)$ is a term
-$\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ modulo the \deq-axioms from
-the signature, and a morphism of $\M(p_1,\ldots,p_n;q)$ is a structural
-transformation $s :: \wfsp{\psi}{\alpha}{\beta}{q}$ modulo the
-equational theory of Section~\ref{sec:equational-transformations}.  We
-fix a mode theory $\Sigma$ and write $\M$ for the 2-multicategory it
-presents.
+We now describe how these definitions correspond to the syntax, and
+sketch the beginnings of a soundness and completeness theorem.  To complete
+the correspondence, we will need an equational theory $s \deq s' :
+\alpha \spr \beta$ on syntactic transformations, as well as an equational
+theory on derivations of \seq{\Gamma}{\alpha}{A}, that match the
+semantic notions of equality of morphisms.  We have a candidate for such
+an equational theory, but have not yet checked the correspondence.  
+
+A mode theory $\Sigma$ presents a cartesian 2-multicategory, where
+$\M_0$ is the set of modes, an object of $\M(p_1,\ldots,p_n;q)$ is a
+term $\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ modulo the \deq-axioms,
+and a morphism of $\M(p_1,\ldots,p_n;q)$ is a structural transformation
+$s :: \wfsp{\psi}{\alpha}{\beta}{q}$ modulo some equations.  We fix a
+mode theory $\Sigma$ and write $\M$ for the 2-multicategory it presents.
 
 The overall conjecture is that the syntax is the initial bifibration
 over $\M$.  The correspondence between the syntax and a bifibration $\pi
@@ -122,7 +128,7 @@ with $\pi(d) = \alpha$.  Identity \seq{\Gamma,x:A}{x}{A} corresponds to
 identity in $\cD(A;A)$ composed with a projection renaming.  Cut (part 3,
 for the whole context at once) corresponds to composition in $\cD$.
 Weakening, exchange, and contraction correspond to the $\sigma$-actions.
-Structurality-over-stucturality corresponds to functoriality and
+Structurality-over-structurality corresponds to functoriality and
 renaming-preservation of $\pi$, which for example says that composition
 in $\cD$ lives over composition in $\M$.  The absence of any notion of
 morphism between derivations of \seq{\Gamma}{\alpha}{A} corresponds to
@@ -145,7 +151,7 @@ fibers. Suppose $\alpha, \beta : \psi \to p$ and $s : \alpha \spr
 \beta$. We write $s_*$ for the induced function (of sets):
 $\cD_\beta(\Gamma; A) \to \cD_\alpha(\Gamma; A)$.  
 
-The definition of a opfibration of 2-multicategories guarantees that,
+The definition of an opfibration of 2-multicategories guarantees that,
 given a morphism in the mode category $\alpha : \psi \to q$ and a
 context $\wfctx{\Delta}{\psi}$ that lies over $\psi$, there is an
 opcartesian morphism over $\alpha$ with multidomain $\Delta$. For each
@@ -243,24 +249,20 @@ the conclusion to be $s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb,
 The cases for \UL\/ and \UR\/ are similar.  
 \end{proof}
 
-The remainder of soundness, which we have not yet checked, is that the
-equational theory of Section~\ref{sec:equational} is modeled in any
-bifibration.
-
-For completeness, the syntactic bifibration should be defined as
-sketched above: an object of $\cD$ is a pair $(p,\wftype{A}{p})$, and
-the hom-category has objects pairs $(\alpha,d ::
-\seq{\Gamma}{\alpha}{A})$ (quotiented by $\deq$), and morphisms
-$(\alpha,d) \to (\alpha',d')$ structural transformations $s :: \alpha
-\spr \alpha'$ such that $\Trd{s}{d'} \deq d$ (the fact that there is no
-non-trivial second component of these morphisms corresponds to local
-discreteness).  The functor $\pi : \cD \to \M$ is then first projection.
-Identity, composition, and renamings for $\cD$ are defined by the
-corresponding syntactic lemmas, which lay over the appropriate context
-context descriptor to make $\pi$ functorial.  Cartesian and opcartesian
-lifts are defined to be \Fsymb{} and \Usymb{} types with $\FR^*$ and
-$\UL^*$.  What remains is to check that the equations from
-Section~\ref{sec:equational} imply the semantic equations.
+Conversely, the syntactic bifibration should be defined as
+follows: an object of $\cD$ is a pair $(p,\wftype{A}{p})$, and the
+hom-category has objects pairs $(\alpha,d :: \seq{\Gamma}{\alpha}{A})$
+(quotiented by some equations), and morphisms $(\alpha,d) \to (\alpha',d')$
+structural transformations $s :: \alpha \spr \alpha'$ such that
+$\Trd{s}{d'} \deq d$ (the equational second
+component of these morphisms corresponds to local discreteness).  The
+functor $\pi : \cD \to \M$ is then first projection.  Identity,
+composition, and renamings for $\cD$ are defined by the corresponding
+syntactic lemmas, which lay over the appropriate context context
+descriptor to make $\pi$ functorial.  Cartesian and opcartesian lifts
+are defined to be \Fsymb{} and \Usymb{} types with $\FR^*$ and $\UL^*$.
+%% What remains is to check that the equational theory
+%% implies the semantic equations.
 
 %% \begin{theorem}
 %% Given a mode theory $\M$, the syntax determines a 2-multicategory $\cD$ and a bifibration $S : \cD \to \M$.

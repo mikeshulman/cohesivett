@@ -29,7 +29,7 @@ forms of monoidal categories, while modal logics describe monads and
 comonads.  Recently,
 \citet{schreibershulman12cohesive,shulman15realcohesion} proposed using
 modal operators to add a notion of \emph{cohesion} to homotopy type
-theory/univalent foundations~\citep{,voevodsky06homotopy,uf13hott-book}.
+theory/univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
 Without going into the precise details of this application, the idea is
 to add a triple $\sh{} \la \Flat{} \la \Sharp{}$ of type operators,
 where for example $\Sharp{}$ is a monad (like a modal possibility
@@ -75,11 +75,11 @@ structural/cartesian proofs.  We express these restrictions using a
 first layer of the logic, which is a simple type theory for what we will
 call \emph{modes} and \emph{context descriptors}.  The modes are just a
 collection of base types, which we write as $p,q,r$, while a context
-descriptor is a term built from variables and constants.  The next layer
-is the main logic.  Each proposition of the logic is assigned a mode,
-and the basic sequent is \seq{x_1 : A_1, \ldots, x_n : A_n}{\alpha}{C},
-where if $A_i$ has mode $p_i$, and $C$ has mode $q$, then $\oftp{x_1 :
-  p_1,\ldots, x_n : p_n}{\alpha}{q}$.  
+descriptor $\alpha$ is a term built from variables and constants.  The
+next layer is the main logic.  Each proposition of the logic is assigned
+a mode, and the basic sequent is \seq{x_1 : A_1, \ldots, x_n :
+  A_n}{\alpha}{C}, where if $A_i$ has mode $p_i$, and $C$ has mode $q$,
+then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$.
 %% In a sequent
 %% \seq{\Gamma}{\alpha}{A}, the idea is that $\Gamma$ binds some variables
 %% for use both in $\alpha$ and in the derivation.  
@@ -97,9 +97,7 @@ $\alpha$ proves $A$''.
 
 For example, suppose we have one mode $\dsd{n}$, together with a context
 descriptor constant
-\[
-x : \dsd{n}, y:\dsd{n} \vdash x \odot y : \dsd{n}
-\]
+$x : \dsd{n}, y:\dsd{n} \vdash x \odot y : \dsd{n}$.  
 Then an example sequent
 \[
 \seq{x:A, y:B, z:C, w:D}{(y \odot x) \odot z}{E}
@@ -107,21 +105,21 @@ Then an example sequent
 should be read as saying that we must prove $E$ using the resources $y$
 and $x$ and $z$ (but not $w$) according to the particular tree structure
 ${(y \odot x) \odot z}$.  If we say nothing else, the framework will
-treat $\odot$ as describing a non-associative, linear, ordered context:
-if we have a product-like type $A \odot B$ internalizing this context
+treat $\odot$ as describing a non-associative, linear, ordered context
+as in Lambek calculus~\citep{lambek58calculus}: if we have a
+product-like type $A \odot B$ internalizing this context
 operation,\footnote{We overload binary operations to refer both to
   context descriptors and propositional connectives, because it is clear
   from whether it is applied to variables $x,y,z$ or propositions
   $A,B,C$ which we mean.}  then we will \emph{not} be able to prove
 associativity ($(A \odot B) \odot C \dashv\vdash A \odot (B \odot C)$)
-or contraction ($A \vdash A \odot A$) or exchange ($A \odot B \vdash B
-\odot A$) etc.
+or exchange ($A \odot B \vdash B \odot A$) etc.
 
 To get from this basic structure to linear or affine or relevant or
-cartesian logic, we need to add some structural properties to the
-context descriptor term $\alpha$.  We analyze structural properties as
-\emph{equations}, or more generally \emph{directed transformations}, on
-such terms.  For example, to specify linear logic, we will add a unit
+cartesian logic, we provide a way to add some structural properties governing
+the context descriptor term $\alpha$.  We analyze structural properties
+as \emph{equations}, or more generally \emph{directed transformations},
+on such terms.  For example, to specify linear logic, we will add a unit
 element $1 : \dsd{n}$ together with equations making $(\odot,1)$ into a
 commutative monoid:
 \[
@@ -141,17 +139,14 @@ ordinary structural/cartesian terms, the same variable can occur more
 than once or not at all.  A descriptor such as $x \odot x$ captures the
 idea that we can use the \emph{same} variable $x$ twice, expressing
 $n$-linear types.  Thus, we can express contraction for a particular
-context descriptor $\odot$ as an equation $x = x \odot x$ (one use of
-$x$ is the same as two, or $\odot$ is an idempotent binary operation).
-However, weakening cannot be represented as an equation between context
-descriptors: an equation $x = 1$ trivializes the frameworks to ordinary
-intuitionistic logic.  Instead, to express weakening, we use a directed
-transformation $x \spr 1$, which is oriented to allow throwing away an
+context descriptor $\odot$ as a transformation $x \spr x \odot x$ (one
+use of $x$ allows two).  Weakening, on the other hand, is represented by
+a transformation $x \spr 1$, which is oriented to allow throwing away an
 allowed use of $x$, but not creating an allowed use from nothing.  We
 refer to these as \emph{structural transformations}, to evoke their use
 in representing the structural properties of object logics that are
 embedded in our framework.  Structural transformations are also used to
-describe relationships between adjunctions~\citep{ls16adjoint}.
+describe relationships between adjunctions~\citep{ls16adjoint}.  
 
 In summary, to specify a particular substructural or modal logic, one
 gives constants generating context descriptors $\alpha$, with equations
@@ -191,12 +186,8 @@ cutting $\Gamma,x:A \vdash B$ and $\Delta \vdash A$ yields
 $\Gamma,\Delta \vdash B$.  If $\Gamma$ binds $x_1,\ldots,x_n$ and
 $\Delta$ binds $y_1,\ldots,y_n$, then we will represent the two
 derivations to be cut together by sequents with
-\[
-\begin{array}{l}
-\beta = x_1 \odot \ldots \odot x_n \odot x\\
-\alpha = y_1 \odot \ldots \odot y_n
-\end{array}
-\]
+$\beta = x_1 \odot \ldots \odot x_n \odot x$
+$\alpha = y_1 \odot \ldots \odot y_n$
 so
 \[
 \beta[\alpha/x] = x_1 \odot \ldots \odot x_n \odot y_1 \odot \ldots \odot y_n
@@ -208,20 +199,20 @@ in the tree.
 
 The framework has two main logical connectives.  The first,
 \F{\alpha}{\Delta}, generalizes the \dsd{F} of adjoint logic and the
-tensor ($\otimes$) of linear logic.  The second,
+multiplicative products (e.g. $\otimes$ of linear logic).  The second,
 \U{x.\alpha}{\Delta}{A}, generalizes the $\dsd{G}/\dsd{U}$ of adjoint
-logic and the implication $A \lolli B$ of linear logic.  Here $\Delta$
-is a context of assumptions $x_i:A_i$, and trivializing the context
-descriptors (i.e. adding an equation $\alpha = \beta$ for all $\alpha$
-and $\beta$) degenerates $\F{\alpha}{\Delta}$ into the ordinary
+logic and implication (e.g. $A \lolli B$ in linear logic).  Here
+$\Delta$ is a context of assumptions $x_i:A_i$, and trivializing the
+context descriptors (i.e. adding an equation $\alpha = \beta$ for all
+$\alpha$ and $\beta$) degenerates $\F{\alpha}{\Delta}$ into the ordinary
 intuititionistic product $A_1 \times \ldots \times A_n$, while
 \U{x.\alpha}{\Delta}{A} becomes $A_1 \to \ldots \to A_n \to A$.  Though
-we do not give a full polarized/focused proof theory in this paper, we
-do prove that \dsd{F} is left-invertible and \dsd{U} is
-right-invertible, and we conjecture that focusing works with the
-polarization that one would expect based on these degeneracies
-($\F{\alpha}{\Delta^{\mathord{+}}}^{\mathord{+}}$ and
-$\U{x.\alpha}{\Delta^{\mathord{+}}}{A^{\mathord{-}}}^{\mathord{-}}$).
+we do not give a polarized/focused proof theory in this paper, we do
+prove that \dsd{F} is left-invertible and \dsd{U} is right-invertible.
+%%  and we conjecture that focusing works with the
+%% polarization that one would expect based on these degeneracies
+%% ($\F{\alpha}{\Delta^{\mathord{+}}}^{\mathord{+}}$ and
+%% $\U{x.\alpha}{\Delta^{\mathord{+}}}{A^{\mathord{-}}}^{\mathord{-}}$).
 In linear logic terms, our \dsd{F} and \dsd{U} cover both the
 multiplicatives and exponentials; additives can be added separately by
 essentially the usual rules.
@@ -238,26 +229,46 @@ semantic situation such as the cohesion example mentioned above (``a
 comonad and a monad which are themselves adjoint'') and a proof theory:
 the framework gives \emph{some} proof theory for the semantics, and the
 placement of structural rules can then be optimized purely in syntax.
-To support this mode of use, we give an equational theory on sequent
-derivations that identifies different placements of the same structural
-rules.  This equational theory is used to prove correctness of such
-optimizations not just at the level of provability, but also identity of
-derivations---which matters for our intended applications to internal
-languages.
+%% To support this mode of use, we give an equational theory on sequent
+%% derivations that identifies different placements of the same structural
+%% rules.  This equational theory is used to prove correctness of such
+%% optimizations not just at the level of provability, but also identity of
+%% derivations---which matters for our intended applications to internal
+%% languages.
 
 Semantically, the logic corresponds to a functor between
 \emph{2-dimensional cartesian multicategories} which is a fibration in
 various senses.  Multicategories are a generalization of categories
 which allow more than one object in the domain, and cartesianness means
 that the multiple domain objects are treated structurally.  The
-2-dimensionality supplies a notion of morphism between (multi)morphisms,
-which correspond to the structural transformations.  The functor
-specifies the mode of each proposition and the context descriptor of a
-sequent.  The fibration conditions (similar to \citep{hermida,hormann})
-specify respect for the structural transformations and the presence of
-\dsd{F} and \dsd{U} types.
+2-dimensionality supplies a notion of morphism between (multi)morphisms.
+A \emph{mode theory} specifying context descriptors and structural
+properties is analyzed as a cartesian 2-multicategory, with the
+descriptors as 1-cells and the structural properties as 2-cells.  The
+functor relates the sequent judgement to the mode theory, specifying the
+mode of each proposition and the context descriptor of a sequent.  The
+fibration conditions (similar to
+\citep{hermida02fibrations,hormann15multicategories}) give respect for
+the structural transformations and the presence of \dsd{F} and \dsd{U}
+types.
 
-The remainder of this paper is organized as follows.  FIXME
+Our framework is very much in the spirit of the large body of work using
+Lambek calculus~\citep{lambek58calculus} and display
+logic~\citep{belnap82display}, though we are not aware of a calculus
+that is as parametrized as ours, including the ability to specify
+structural properties by 2-cells.  A point of contrast with
+substructural logical
+frameworks~\citep{cervesatopfenning02llf,watkins+03clf-tr} is that
+logics are ``embedded'' in our calculus (giving a type translation such
+that provability in the object logic corresponds to provability in
+ours), rather than ``encoding'' the structure of
+derivations as a type in the LF style~\citep{hhp93lf}.
 
-FIXME: comparison with display logic, L/CLF, what else?  
+In Section~\ref{sec:syntax}, we present the rules of the logic and
+overview its syntactic properties.  In
+Section~\ref{sec:exampleencodings}, we show how a number of logics are
+represented.  In Section~\ref{sec:semantics}, we discuss the logic's
+categorical semantics.  The appendix includes full proofs of cut and
+identity admissibility and other properties and a sample adequacy proof
+for an embedding of an object logic.
 

@@ -26,14 +26,14 @@ A mode theory with one mode \dsd{m} and a constant
 \end{array}
 \]
 specifies a completely astructural context (no weakening, exchange,
-contraction, associtivity).  If we write $A \odot B$ for \F{x \odot
-  y}{x:A,y:B} we \emph{cannot}, for example, derive associativity $A
-\odot (B \odot C) \vdash (A \odot B) \odot C$.
+contraction, associativity), as in non-associative Lambek
+calculus~\citep{lambek58calculus}.  
 
-To attempt a derivation, we can (without loss of generality) begin by
-applying the invertible (Lemma~\ref{lem:Finv}) \FL\/ rule twice, at
-which point no further left rules are possible, so we must try to apply
-\FR:
+If we write $A \odot B$ for \F{x \odot y}{x:A,y:B} we \emph{cannot}, for
+example, derive associativity $A \odot (B \odot C) \vdash (A \odot B)
+\odot C$.  To attempt a derivation, we can (without loss of generality)
+begin by applying the invertible (Lemma~\ref{lem:Finv}) \FL\/ rule
+twice, at which point no further left rules are possible, so we must apply \FR:
 
 \begin{footnotesize}
 \[
@@ -56,16 +56,17 @@ which point no further left rules are possible, so we must try to apply
 \]
 \end{footnotesize}
 
-\noindent To apply \FR, we need to find a substitution for $\alpha_1/q$ and
-$\alpha_2/z$ with a structural transformations as above.  In the absence of any
-equational or transformation axioms, the only possible choice is $x/q, (y \odot
-z)/z$, so we need to show
+\noindent To apply \FR, we need to find a substitution for $\alpha_1/q$
+and $\alpha_2/z$ with a structural transformations as above.  In the
+absence of any equational or transformation axioms, the only possible
+choice is reflexivity, which requires $x/q, (y \odot z)/z$.  Thus we
+need to show
 \[
 \seq{x:A,y:B,z:C}{x}{A \odot B}
 \qquad
 \seq{x:A,y:B,z:C}{y \odot z}{C}
 \]
-This is not possible because the context is not divded correctly.  
+This is not possible because the context is not divided correctly.  
 
 \subsection{Ordered Products and Implications}
 
@@ -237,7 +238,7 @@ derive {\seq{p : A \otimes B}{p}{B \otimes A}}:
 where the first premise is exactly $x \otimes y = y \otimes x$.
 
 For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.x \odot
-  c}{x:A}{B} are equal types (because comutativity is an equation, and
+  c}{x:A}{B} are equal types (because commutativity is an equation, and
 types are parametrized by equivalence-classes of context descriptors),
 and both represent $A \lolli B$.  
 
@@ -259,13 +260,16 @@ and both represent $A \lolli B$.
 %% \]
 
 \subsection{Multi-use variables}
+\label{sec:ex:nlinear}
 
 An $n$-use variable (see \citep{reed08namessubstructural} for example)
 is like a linear variable, but instead of being used ``exactly once''
 (modulo additives), it is used ``exactly $n$ times.''  In the above
 work, $0$-use variables were used in an encoding of nominal techniques;
 another application of $n$-use variables is static analysis of
-functional programs\footnote{Andreas Abel, personal communication}
+functional programs
+%% \footnote{Andreas Abel described a similar system
+%%   that is used in Agda}
 (e.g. counting how many times a variable occurs to decide whether it
 will be efficient to unfold a substitution).
 
@@ -297,9 +301,9 @@ A = x :^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A
 underlying variables and types (but potentially different counts), and
 $f:^kA \to^n B$ abbreviates a context with the same variables and types
 but $0$'s for all counts besides $f$'s.  The left rule says that if you
-spend $k$ occurences of a function that takes $n$ occurences of an
-argument, then you need $nk$ occurrences of whatever you use to
-construct the argument, in order to get $k$ occurneces of the result.  
+spend $k$ ``uses'' of a function that takes $n$ uses of an
+argument, then you need $nk$ uses of whatever you use to
+construct the argument, in order to get $k$ uses of the result.  
 
 We can model this in the linear mode theory by using context descriptors
 that are themselves non-linear:
@@ -327,25 +331,24 @@ This has the following instances of \UL{}{} and \UR{}:
 \]
 For this mode theory, the only transformations are the commutative
 monoid equations, and we can commute $\beta'$ to the form $\beta''
-\otimes z^k$ for some $\beta''$ not mentioning $z$ and $k$ because any context descriptor
-is a polynomial of variables. Thus the premise is really of form $\beta
-\deq (\beta'' \otimes z^k) [f \otimes (\alpha)^n/z]$, which is equal to
-$\beta'' \otimes f^k \otimes (\alpha)^{nk}$.  Here $\beta''$
-corresponds to the $\Gamma$ in the above left rule (the resources used
-in the continuation, besides $z^k$) and $\alpha$ corresponds to $\Delta$.
-Overall, we have $x_1:^{k_1} A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
+\otimes z^k$ for some $k$ and $\beta''$ not mentioning $z$ because any
+context descriptor is a polynomial of variables. Thus the premise is
+really of form $\beta \deq (\beta'' \otimes z^k) [f \otimes
+  (\alpha)^n/z]$, which is equal to $\beta'' \otimes f^k \otimes
+(\alpha)^{nk}$.  Here $\beta''$ corresponds to the $\Gamma$ in the above
+left rule (the resources used in the continuation, besides $z^k$) and
+$\alpha$ corresponds to $\Delta$.  Overall, we have $x_1:^{k_1}
+A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
 \seq{x_1:A_1^*,\ldots,x_n:A_n^*}{x_1^{k_1} \otimes \ldots \otimes
   x_n^{k_n}}{C^*} (where $A^*$ translates atoms to themselves and each
 $A \to^n B$ as indicated above).
 
 We can also consider an $n$-use product 
-\[
-A^n := \F{x^n}{x:A}
-\]
+$A^n := \F{x^n}{x:A}$
 as a positive type, which will decompose $A \to^n B$ as $A^n \lolli B$
 (by Lemma~\ref{lem:fusion}).  This has a map \seq{p:A^n}{p}{A \otimes
   \ldots \otimes A} but not a converse map \seq{p:A \otimes \ldots \otimes
-  A}{p}{A^n}.  For example,
+  A}{p}{A^n}.  For example, we have
 \[
 \infer {\seq{p:\F{x \otimes x}{x:A}}{p}{\F{x \otimes y}{x:A,y:A}}}
        {\infer {\seq {x:A}{x \otimes x}{\F{x \otimes y}{x:A,y:A}}}
@@ -435,12 +438,12 @@ because \UL\/ ``removes a variable from the context'' by marking it as
 0-use, not by actually removing it.  For this mode theory (and the other
 ones we consider, besides the previous section), these left rules
 produce only other 0-use variables, which ultimately cannot be used, and
-can be strengthed away (see Lemma~\ref{lem:0-use-strengthening}).
+can be strengthened away (see Lemma~\ref{lem:0-use-strengthening}).
 
 \subsection{Relevant and Cartesian products and implications}
 \label{sec:ex:relevant-cartesian}
 
-Next, we consider a logic with contraction, which should result in a map
+Next, we consider a logic with contraction, e.g. a map
 $A \vdash (A \otimes A)$.  We always have the left and right components
 of the chain
 \[
@@ -448,17 +451,17 @@ of the chain
 A & \cong & \F{x}{x:A}  & \vdash^? & \F{x \otimes x}{x:A} & \vdash & \F{x \otimes y}{x:A, y : A}
 \end{array}
 \]
-The left isomorphism is just \FL/\FR, while the right map was discussed
-above.  So it suffices to give $\F{x}{x:A} \vdash \F{x
-  \otimes x}{x:A}$.  Since \dsd{F} is covariant on structural properties
-(Lemma~\ref{lem:typespr}), it suffices to add a structural transformation
-$\dsd{c} :: x \spr x \otimes x$.  Then we have $A \vdash A^2 \vdash (A
-\otimes A)$ but neither of the converses.
+The left isomorphism is just \FL/\FR, while the right map was given in
+Example~\ref{sec:ex:nlinear}.  To give the middle map $\F{x}{x:A} \vdash
+\F{x \otimes x}{x:A}$, it suffices to add a structural transformation
+$\dsd{c} :: x \spr x \otimes x$.  because \dsd{F} is covariant on
+structural transformations (Lemma~\ref{lem:typespr}).  Then we have $A
+\vdash A^2 \vdash (A \otimes A)$ but neither of the converses.
 
 Moreover, if we have both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x
 \otimes x$, then $x \otimes y$ will behave like a cartesian product in
 the mode theory (with projections $x \otimes y \spr x$ and $x \otimes y
-\spr y$ and pairing of $z \spr x$ and $z \spr y$ ad $z \spr x \otimes
+\spr y$ and pairing of $z \spr x$ and $z \spr y$ to $z \spr x \otimes
 y$), and consequently $A \otimes B$ will behave like a cartesian product
 type, and $\U{c.c \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
 We refer to this mode theory as an
@@ -480,7 +483,7 @@ We refer to this mode theory as an
 \subsection{Bunched Implication (BI)} Bunched implication~\citep{ohearnpym99bunched}
 has two context-forming operations $\Gamma,\Gamma'$ and
 $\Gamma;\Gamma'$, along with corresponding products and implications.
-Both are associative, unitial, and commutative, but $;$ has weakening
+Both are associative, unital, and commutative, but $;$ has weakening
 and contraction while $,$ does not.  A context is represented by a tree
 such as $(x:A, y:B);(z : C, w : D)$ (considered modulo the laws), and
 the notation $\Gamma[\Delta]$ is used to refer to a tree with a hole
@@ -556,10 +559,10 @@ implication.
 We assume the BI sequent is given as a judgement $\Gamma \vdash A$ where
 $\Gamma$ is a tree and there are explicit equality premises for the
 algebraic laws on bunches.  Then we define $\Gamma^*$ as an in-order
-flattening of the tree into one of our contexts (e.g.  $x:A^* = x:A$ and
+flattening of the tree into one of our contexts (e.g.  $(x:A)^* = x:A^*$ and
 $(\Gamma,\Delta)^* = (\Gamma;\Delta)^*=\Gamma^*,\Delta^*$), while we
 define $\vars{\Gamma}$ as a context descriptor that preserves the tree
-structure (e.g. $x:A^* = x$ and $\vars{(\Gamma,\Delta)} =
+structure (e.g. $\vars{x:A} = x$ and $\vars{(\Gamma,\Delta)} =
 \vars{\Gamma}*\vars{\Delta}$ and
 $\vars{\Gamma;\Delta}=\vars{\Gamma}\times\vars{\Delta}$).  Then we have
 the usual adequacy statement $\Gamma \vdash A$ iff
@@ -574,10 +577,7 @@ adjunction between ``linear'' and ``cartesian'' categories.  We start
 with two modes \dsd{l} (linear) and \dsd{c} (cartesian), along with a
 commutative monoid $(\otimes,1)$ on \dsd{l} and a cartesian
 monoid $(\times,\top)$ on \dsd{c}.  Next, we add a context descriptor
-from \dsd{c} to \dsd{l}:
-\[
-x : \dsd{c} \vdash \dsd{f}(x) : \dsd{l}
-\]
+from \dsd{c} to \dsd{l} ($x : \dsd{c} \vdash \dsd{f}(x) : \dsd{l}$)
 that we think of as including a cartesian context in a linear context.
 This generates types 
 \[
@@ -734,12 +734,12 @@ we have
 \[
 !_b A = \dsd{F}_{{b\dsd{l}}}(\dsd{U}_{{b\dsd{l}}} A) \cong \dsd{F}_{{a\dsd{l}}}\dsd{F}_{{ba}} \dsd{U}_{{ba}} \dsd{U}_{{a\dsd{l}}} A
 \]
-The map $!_b A \vdash !_a A$ can thus be defined as the conunit for the
+The map $!_b A \vdash !_a A$ can thus be defined as the counit
 $\dsd{F}_{{ba}} \dsd{U}_{{ba}} A \vdash A$ for the comonad in the middle.
 
 We add equations $ba(x \otimes_b y) \deq ba(x) \otimes_a ba(y)$ and
 $ba(1_b) \deq 1_a$ making each generator strictly monoidal.  This
-ensures that each $!_b$ is monoidal and that $!_b A$ can be weakned or
+ensures that each $!_b$ is monoidal and that $!_b A$ can be weakened or
 contracted if $(\otimes_b,1_b)$ has weakening or contraction (and more
 generally that \F{ba}{B} can be weakened or contracted for any $B$, not
 just $\dsd{U}_{ba}{(A)}$).  Thus, we add weakening or contraction to
@@ -802,19 +802,21 @@ For example, if we have a monoid $(\otimes_\dsd{t},1_{\dsd t})$ on mode
           \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}
         }}
 \]
-\end{small}
-we are stuck, because there is no way to rewrite $\dsd{g}(x
+\end{small}%
+
+\noindent we are stuck, because there is no way to rewrite $\dsd{g}(x
 \otimes_{\dsd t} y)$ as a term containing $\dsd{g}(y)$.  If
 $(\otimes_t,1_t)$ is affine, then we can weaken away $x$ and take
-$\beta' = z$---the context clearing of in the left rule---but then in
-the right-hand premise we will only have access to $z$, not $x$, and
+$\beta' = z$---the context-clearing in the left rule---but then in
+the right-hand premise we will only have access to $z$, not $x$, so we
 cannot complete the derivation.
 
-In general, we translate all formulas at mode \dsd{t} and represent
-\Dia{}{A} as above, and translate a sequent $\truej{A_1}, \ldots,
-\truej{A_1} \vdash \truej{C}$ by
-\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*} and a
-sequent $\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}$ by
+In general, we translate all types at mode \dsd{t}, representing
+\Dia{}{A} as above. We translate $\truej{A_1}, \ldots,
+\truej{A_1} \vdash \truej{C}$ by our sequent
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*}, and the
+sequent $\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}$ by the
+\dsd{p}-conclusioned sequent
 \seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes
   x_n)}{\F{\dsd{g}}{C^*}}.  Then the three ``native'' rules above are
 \FR, \UR, and a composite of \UL\/ followed by \FL, respectively.
@@ -823,9 +825,9 @@ sequent $\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}$ by
 \newcommand\tvp[2]{#1 \otimes_{\dsd {vp}} #2}
 
 Some monads, such as the \Crc{}{A} of \citep{pfenningdavies} and those
-used to encapsulate effects in functional programming are strong.  
-One way to axiomatize the strength is using an asymmetric product of a
-\dsd{t}-mode and \dsd{p}-mode context:
+used to encapsulate effects in functional programming, do have a strength.  
+One way to axiomatize the strength is via an asymmetric product of a
+\dsd{t}- and \dsd{p}-mode context:
 \[
 \begin{array}{ll}
 \oftp{x : \dsd{t}, y : \dsd{p}}{\ttp x y}{\dsd{p}}
@@ -877,7 +879,7 @@ have a mixed-mode product between \dsd{v} and \dsd{p}
 \end{array}
 \]
 
-We represent the truth-conclused sequent as in
+We represent the truth-conclusioned sequent as in
 Example~\ref{sec:example:box}, and $x_1:A_1 \dsd{valid},\ldots;y_1:B_1
 \dsd{true},\ldots \vdash C \, \dsd{poss}$ by
 \[
@@ -936,13 +938,14 @@ x$.  Then we define $\flat A := \F{\dsd{r}}{A}$ and $\sharp A :=
 Example~\ref{sec:example:bang}, and the transformation gives the counit
 $\F{\dsd{r}}{A} \vdash A$ and the unit $A \vdash \Uempty{\dsd{r}}{A}$ by
 Lemma~\ref{lem:typespr}.  Now that we have a multi-assumptioned logic,
-we can model the fact that $\flat{A}$ preserves products by the equation
-equation $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.
+we can model the fact that $\flat{A}$ preserves products by the 
+equational axiom $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.
 Overall, we encode a simply-typed spatial type theory judgement $x_1 :
 \crispj{A_1},\ldots;y_1:\cohesivej{B_1} \vdash \cohesivej{C}$ as
 $\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
-  y_1\times\ldots}{C}$.  This corresponds to the following native rules:
+  y_1\times\ldots}{C}$.  
 
+As a sequent calculus, the rules from~\citep{shulman15realcohesion} are
 \begin{footnotesize}
 \[
 \begin{array}{c}
