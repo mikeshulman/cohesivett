@@ -58,7 +58,7 @@ derivation has the same size as the given one.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
-It is implicit that the mode morphism $\alpha$ is weakend with $z$ in
+It is implicit that the mode morphism $\alpha$ is weakened with $z$ in
 the conclusion.  Intuitively, weakening holds because the contexts
 $\Gamma$ are treated like ordinary structural contexts in all of the
 rules---they are fully general in every conclusion, and the premises
@@ -383,7 +383,7 @@ derives
 There is one subtlety in this case.  The usual strategy for a left rule
 against an arbitrary \E\/ is to push $\E$ into the ``continuation'' of
 the left rule.  However, as discussed above, our left rule for \Fsymb\/
-eagerly inverts \emph{all} occurences of $x$, while $\E$ itself also has
+eagerly inverts \emph{all} occurrences of $x$, while $\E$ itself also has
 $x$ in scope.  Thus, we use Lemma~\ref{lem:Finv} to pull the
 left-inversion to the bottom of \E, and then push that into \D.  On
 proof terms, this corresponds to making all references to $x$ in \E\/
@@ -648,7 +648,7 @@ we have $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0}
 by the inductive hypotheses, so we can reapply the rule to conclude
 \seq{\Gamma,\Gamma'}{\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0}}{\Delta,x:A}.
 
-For part 3, we induct on $\Delta$, reducing a simulatenous cut to
+For part 3, we induct on $\Delta$, reducing a simultaneous cut to
 iterated single-variable cuts.  If $\Delta$ is empty, then we have
 \[
 \seq{\Gamma}{\cdot}{\cdot}
@@ -731,7 +731,7 @@ include: $A \times (B \times C)$ is isomorphic to a primitive triple
 product $\{x:A,y:B,z:C\}$; currying; and associativity of $n$-ary
 functions ($A_1,\ldots,A_n \to (B_1,\ldots,B_m \to C)$ is isomorphic to
 $A_1,\ldots,A_n,B_1,\ldots,B_m \to C$).  The derivations are in
-Figure~\ref{fig:fusion}.  We adopt the convention that an unlabled leaf
+Figure~\ref{fig:fusion}.  We adopt the convention that an unlabeled leaf
 $\alpha \spr \beta$ is proved by equality of context descriptors, and an
 unlabeled sequent leaf is proved by identity
 (Theorem~\ref{thm:identity}).  
@@ -753,7 +753,6 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 \end{lemma}
 
 \begin{figure*}
-\begin{footnotesize}
 \[
 \infer[\FL]{
   \seq{z:\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
@@ -834,7 +833,6 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
         {\infer[\UL]{\seq{x:{\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}},\Delta,\Delta'}{\subst{\beta}{\alpha}{y}}{A}}
           {}}}
 \]
-\end{footnotesize}
 \caption{Derivations of fusion lemmas}
 \vspace{2in}
 \label{fig:fusion}
