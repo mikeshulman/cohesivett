@@ -4,13 +4,14 @@
 In this section, we give some examples of logical connectives that can
 be represented by mode theories in this framework, and explain
 informally why they have the desired behavior with respect to
-provability.  An additional level to these embeddings is making the
-equational theory of derivations of \seq{\Gamma}{\alpha}{A} match a
-desired notion of equality of maps/morphisms, and for this it is often
-necessary to add some additional equations between structural properties
-$s \deq s' : \alpha \spr \beta$.
+provability.
+%% An additional level to these embeddings is making the
+%% equational theory of derivations of \seq{\Gamma}{\alpha}{A} match a
+%% desired notion of equality of maps/morphisms, and for this it is often
+%% necessary to add some additional equations between structural properties
+%% $s \deq s' : \alpha \spr \beta$.
 
-\subsection{Magma products}
+\subsection{Non-associative products}
 
 A mode theory with one mode \dsd{m} and a constant
 \[
@@ -50,8 +51,8 @@ which point no further left rules are possible, so we must try to apply
 \end{footnotesize}
 
 \noindent To apply \FR, we need to find a substitution for $\alpha_1/q$ and
-$\alpha_2/z$ with a structural property as above.  In the absence of any
-equations or transformations, the only possible choice is $x/q, (y \odot
+$\alpha_2/z$ with a structural transformations as above.  In the absence of any
+equational or transformation axioms, the only possible choice is $x/q, (y \odot
 z)/z$, so we need to show
 \[
 \seq{x:A,y:B,z:C}{x}{A \odot B}
@@ -100,7 +101,7 @@ the former is a further \FR\/ and then identities:
 \]
 However, we cannot prove commutativity:
 
-\begin{footnotesize}
+\begin{small}
 \[
 \infer[\FL]{\seq{p:\F{x\odot y}{x:A,y:B}}{p}{\F{z\odot w}{z:B,w:A}}}
       {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
@@ -110,32 +111,36 @@ However, we cannot prove commutativity:
             \seq{x:A,y:B}{\alpha_2}{A} 
       }}
 \]
-\end{footnotesize}
+\end{small}
 
 \noindent because the only choice is $\alpha_1 = x$ and $\alpha_2 = y$, which
 sends the wrong resource to each branch.  
 
 Ordered logic has two different implications, one that adds to the left
 of the context, and one that adds to the right; the expected rules are
+
+\begin{small}
 \[
 \begin{array}{l}
-\infer{\Gamma \vdash A \rightharpoonup B}
-      {\Gamma,A \vdash B}
+\infer{\seql{\Gamma}{o}{ A \rightharpoonup B}}
+      {\seql{\Gamma,A}{o}B}
 ~~
-\infer{\Gamma,A \rightharpoonup B,\Delta,\Gamma' \vdash C}
-      {\Delta \vdash A &
-       \Gamma,B,\Gamma' \vdash C
+\infer{\seql{\Gamma,A \rightharpoonup B,\Delta,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+       \seql{\Gamma,B,\Gamma'}{o}{C}
       }
 ~~
-\infer{\Gamma \vdash A \leftharpoonup B}
-      {A,\Gamma \vdash B}
+\infer{\seql{\Gamma}{o}{A \leftharpoonup B}}
+      {\seql{A,\Gamma}{o}{B}}
 ~~
-\infer{\Gamma,\Delta,A \leftharpoonup B,\Gamma' \vdash C}
-      {\Delta \vdash A &
-       \Gamma,B,\Gamma' \vdash C
+\infer{\seql{\Gamma,\Delta,A \leftharpoonup B,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+        \seql{\Gamma,B,\Gamma'}{o}{C}
       }
 \end{array}
 \]
+\end{small}
+
 We represent these by 
 \[
 \begin{array}{ll}
@@ -191,7 +196,20 @@ $\beta'$---and there is no way to restore such permissions in this mode
 theory.  The rule for $\leftharpoonup$ is the same, but with $\alpha$ on
 the opposite side of $c$.
 
+More formally, for an ordered logic formula built from $\odot
+\leftharpoonup \rightharpoonup$ and atoms, write $A^*$ for the
+translation to the above encodings, and extend this pointwise to
+$\Gamma^*$ for an ordered logic context $\Gamma$.  Further, define
+$\vars{x_1:A_1,\ldots,x_n:A_n} = x_1 \odot \ldots \odot x_n$.  Then the
+encoding of ordered logic is adequate in the sense that
+$\seql{\Gamma}{o}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$.  The
+proof is very similar to the proof for affine logic discussed in
+Example~\ref{sec:ex:affine}.  The analogous translation of types and
+judgements and adequacy statement is used for
+Examples~\ref{sec:ex:linear},\ref{sec:ex:affine},\ref{sec:ex:relevant-cartesian}.
+
 \subsection{Linear products and implication}
+\label{sec:ex:linear}
 
 Linear logic is ordered logic with exchange, so to model this we add a
 commutativity equation
@@ -215,7 +233,7 @@ where the first premise is exactly $x \otimes y = y \otimes x$.
 For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.x \odot
   c}{x:A}{B} are equal types (because comutativity is an equation, and
 types are parametrized by equivalence-classes of context descriptors),
-and both represent $A \lolli B$.
+and both represent $A \lolli B$.  
 
 %% The linear logic $\multimap$-left rule (where contexts are implicitly
 %% treated modulo exchange) is
@@ -253,26 +271,37 @@ will be efficient to unfold a substitution).
 %% – Does n-linear Πs above, and more (e.g. some of BI)
 %% – Prototype implementation
 
-The rules for $n$-linear functions are
+We use the following sequent calculus rules for $n$-linear functions 
+\begin{small}
 \[
+\infer{{0\cdot \Gamma,x:^1 P} \vdash {P}}
+      {}
+\qquad
 \infer{\Gamma \vdash A \to^n B}
       {{\Gamma, x :^n A} \vdash {B}}
 \qquad
-\infer{\Gamma + f: A \to^n B + (n \cdot \Delta) \vdash C}
+\infer{\Gamma + f:^k A \to^n B + (nk \cdot \Delta) \vdash C}
       {\Delta \vdash A &
-       {\Gamma, B} \vdash {C}}
+       {\Gamma, z :^k B} \vdash {C}}
 \]
-where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m} A = x
-:^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A = x
-:^{nm} A$.
+\end{small}%
+\noindent where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m}
+A = x :^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A
+= x :^{nm} A$.  In the left rule, $\Gamma$ and $\Delta$ have the same
+underlying variables and types (but potentially different counts), and
+$f:^kA \to^n B$ abbreviates a context with the same variables and types
+but $0$'s for all counts besides $f$'s.  The left rule says that if you
+spend $k$ occurences of a function that takes $n$ occurences of an
+argument, then you need $nk$ occurrences of whatever you use to
+construct the argument, in order to get $k$ occurneces of the result.  
 
 We can model this in the linear mode theory by using context descriptors
 that are themselves non-linear:
 \[
-\begin{array}{c}
-x^0 = 1 \\
-x^{n+1} = x^n \otimes x \\
-A \to^n B := \U{c.c \otimes (x^n)}{x:A}{B} \\
+\begin{array}{rcl}
+x^0 & := & 1 \\
+x^{n+1} & := & x^n \otimes x \\
+A \to^n B & := & \U{c.c \otimes (x^n)}{x:A}{B} \\
 \end{array}
 \]
 
@@ -290,12 +319,22 @@ This has the following instances of \UL{}{} and \UR{}:
        \end{array}
       }
 \]
-That is, if we use resources $\alpha$ to prove $A$, we must have $n$
-copies of $\alpha$ in $\beta$.  
+For this mode theory, the only transformations are the commutative
+monoid equations, and we can commute $\beta'$ to the form $\beta''
+\otimes z^k$ for some $\beta''$ not mentioning $z$ and $k$ because any context descriptor
+is a polynomial of variables. Thus the premise is really of form $\beta
+\deq (\beta'' \otimes z^k) [f \otimes (\alpha)^n/z]$, which is equal to
+$\beta'' \otimes f^k \otimes (\alpha)^{nk}$.  Here $\beta''$
+corresponds to the $\Gamma$ in the above left rule (the resources used
+in the continuation, besides $z^k$) and $\alpha$ corresponds to $\Delta$.
+Overall, we have $x_1:^{k_1} A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
+\seq{x_1:A_1^*,\ldots,x_n:A_n^*}{x_1^{k_1} \otimes \ldots \otimes
+  x_n^{k_n}}{C^*} (where $A^*$ translates atoms to themselves and each
+$A \to^n B$ as indicated above).
 
 We can also consider an $n$-use product 
 \[
-A^n := \F{\mathord{\otimes}^n(x)}{x:A}
+A^n := \F{x^n}{x:A}
 \]
 as a positive type, which will decompose $A \to^n B$ as $A^n \lolli B$
 (by Lemma~\ref{lem:fusion}).  This has a map \seq{p:A^n}{p}{A \otimes
@@ -328,7 +367,72 @@ having two potentially different $A$'s.
 %% applications of linear logic to imperative or concurrent programming,
 %% where there is a notion of identity of memory cells or resources.  
 
-\subsection{Relevant products and implications}
+\subsection{Affine products and implications}
+\label{sec:ex:affine}
+
+If we extend the linear logic mode theory with our first directed
+structural transformation $\dsd{w} :: x \spr 1$ then we get weakening.
+For example, we can define a projection
+\[
+\infer[\FL]{\seq{p : A \otimes B}{p}{A}}
+           {\infer[Lemma~\ref{lem:respectspr}]
+             {\seq{x:A,y:B}{x \otimes y}{A}}
+             {\infer{x \otimes y \spr x}
+                    {y \spr 1}
+               &
+               \infer[Theorem~\ref{thm:identity}]{\seq{x:A,y:B}{x}{A}}{}
+             }}
+\]
+
+We give the full adequacy proof for this example in the appendix.
+Inspecting this proof, we can see that the translation from a ``native''
+sequent proof in affine logic to our framework and back is the identity
+on cut-free derivations.  The other round-trip is not the identity,
+because the framework allows two things that the native sequent calculus
+does not.  First, the framework allows weakening at the non-invertible
+rules, rather than pushing it to the leaves.  For example, we have
+the following two derivations of $P,Q,R \vdash P \otimes R$.
+
+\begin{footnotesize}
+\[
+\infer[\FR]
+      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+      {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
+              {(x \otimes y) \spr x} &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{z}{C}}
+              {z \spr z}
+      }
+\]
+\end{footnotesize}
+\begin{footnotesize}
+\[
+\infer[\FR]
+      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+      {x \otimes y \otimes z \spr (x \otimes z) &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{x}{C}}
+              {x \spr x} &
+        \infer[\dsd{v}]
+              {\seq{x:A,y:B,z:C}{z}{C}}
+              {z \spr z}
+      }
+\]
+\end{footnotesize}%
+
+\noindent The second is that a derivation may perform a left rule on a $0$-linear
+(in the sense of the previous section) variable, i.e. one that does not
+occur in the context descriptor.  Such variables arise because \UL\/
+``removes a variable from the context'' by marking it as 0-use, not by
+actually removing it.  For this mode theory (and the other ones we
+consider, besides the previous section), these left rules produce only
+other 0-use variables, which ultimately cannot be used, and can be
+strengthed away (see Lemma~\ref{lem:0-use-strengthening}).  
+
+\subsection{Relevant and Cartesian products and implications}
+\label{sec:ex:relevant-cartesian}
 
 Next, we consider a logic with contraction, which should result in a map
 $A \vdash (A \otimes A)$.  We always have the left and right components
@@ -339,57 +443,33 @@ A & \cong & \F{x}{x:A}  & \vdash^? & \F{x \otimes x}{x:A} & \vdash & \F{x \otime
 \end{array}
 \]
 The left isomorphism is just \FL/\FR, while the right map was discussed
-in the previous section.  So it suffices to give $\F{x}{x:A} \vdash \F{x
+above.  So it suffices to give $\F{x}{x:A} \vdash \F{x
   \otimes x}{x:A}$.  Since \dsd{F} is covariant on structural properties
 (Lemma~\ref{lem:typespr}), it suffices to add a structural transformation
 $\dsd{c} :: x \spr x \otimes x$.  Then we have $A \vdash A^2 \vdash (A
 \otimes A)$ but neither of the converses.
 
-%% Given {\seq{\Gamma,x:A,y:A}{\alpha \otimes x \otimes y}{C}} (with $x$
-%% and $y$ not occuring in $\alpha$), by contraction over contraction
-%% (Corollary~\ref{cor:controver}), we have
-%% {\seq{\Gamma,z:A}{\alpha \otimes z \otimes z}{C}}, which is equal to 
-%% {\seq{\Gamma,z:A}{\alpha z}{C}}
+Moreover, if we have both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x
+\otimes x$, then $x \otimes y$ will behave like a cartesian product in
+the mode theory (with projections $x \otimes y \spr x$ and $x \otimes y
+\spr y$ and pairing of $z \spr x$ and $z \spr y$ ad $z \spr x \otimes
+y$), and consequently $A \otimes B$ will behave like a cartesian product
+type, and $\U{c.c \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
+We refer to this mode theory as an
+\emph{cartesian monoid} and write $(\times,\top)$ for it.
 
-\subsection{Affine products and implications}
-\label{sec:ex:affine}
-
-Alternatively, if we extend the linear logic mode theory with a
-structural transformation $\dsd{w} :: x \spr 1$ then we get weakening.
-For example, we can define a projection
-\[
-\infer[\FL]{\seq{p : A \otimes B}{p}{A}}
-           {\infer[Lemma~\ref{lem:respectspr}]
-             {\seq{x:A,y:B}{x \otimes y}{A}}
-             {\infer{x \otimes y \spr x}
-                    {y \spr 1}
-               &
-               \seq{x:A,y:B}{x}{A}
-             }}
-\]
-
-\subsection{Cartesian products and implications}
-
-If we take $(\otimes,1)$ to be a commutative monoid (as in ordered
-logic) with both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x \otimes
-x$, then $x \otimes y$ will behave like a cartesian product in the mode
-theory, and consequently $A \otimes B$ will behave like a cartesian
-product type (in terms of provability---we are deferring discussion of
-equality of structural properties to Section~\ref{sec:equational}), and
-$\U{c.c \otimes x}{x:A}{B}$ like the usual structural $A \to B$.
-
-In this setting, we have both $A \vdash \F{x \otimes x}{x:A}$ (by
-contraction) and $\F{x \otimes x}{x:A} \vdash A$ (by projection).  It
-seems reasonable to make this an isomorphism, rather than just an
-interprovability, expressing the idea that in a cartesian setting, a
-one-use $A$ is exactly the same as a two-use $A$.  (On the other hand,
-we do not want $A \cong (A \times A)$, because a single $A$ is not the
-same as two potentially different $A$'s).  To accomplish this, we can
-take contraction to be an equation $x \deq x \otimes x$ (idempotence of
-$\otimes$) rather than a directed transformation.  This makes $A \cong
-A^2 \dashv\vdash A \times A$.  We refer to the mode of theory for an
-idempotent commutative monoid with a weakening transformation as an
-\emph{idempotent cartesian monoid} and write $(\times,\top)$ for it.
+%% In this setting, we have both $A \vdash \F{x \otimes x}{x:A}$ (by
+%% contraction) and $\F{x \otimes x}{x:A} \vdash A$ (by projection).  It
+%% seems reasonable to make this an isomorphism, rather than just an
+%% interprovability, expressing the idea that in a cartesian setting, a
+%% one-use $A$ is exactly the same as a two-use $A$.  (On the other hand,
+%% we do not want $A \cong (A \times A)$, because a single $A$ is not the
+%% same as two potentially different $A$'s).  To accomplish this, we can
+%% take contraction to be an equation $x \deq x \otimes x$ (idempotence of
+%% $\otimes$) rather than a directed transformation.  This makes $A \cong
+%% A^2 \dashv\vdash A \times A$.  We refer to the mode of theory for an
+%% idempotent commutative monoid with a weakening transformation as an
+%% \emph{idempotent cartesian monoid} and write $(\times,\top)$ for it.
 
 \subsection{Bunched Implication (BI)} Bunched implication~\citep{ohearnpym99bunched}
 has two context-forming operations $\Gamma,\Gamma'$ and
@@ -422,7 +502,7 @@ There are similar rules for a product and implication for $;$ as well as
 structural rules of weakening and contraction for it.
 
 We can model BI by a mode \dsd{m} with a commutative monoid $(*,I)$ and
-an idempotent cartesian monoid $(\times,\top)$.  
+a cartesian monoid $(\times,\top)$.  
 %% \[
 %% \begin{array}{l}
 %% x  : \dsd{m}, y  : \dsd{m} \vdash x \times y : \dsd{m} \\
@@ -473,7 +553,7 @@ Following \citet{benton94mixed,bentonwadler96adjoint}, we decompose the
 $!$ exponential of intuitionistic linear logic as the comonad of an
 adjunction between ``linear'' and ``cartesian'' categories.  We start
 with two modes \dsd{l} (linear) and \dsd{c} (cartesian), along with a
-commutative monoid $(\otimes,1)$ on \dsd{l} and an idempotent cartesian
+commutative monoid $(\otimes,1)$ on \dsd{l} and a cartesian
 monoid $(\times,\top)$ on \dsd{c}.  Next, we add a context descriptor
 from \dsd{c} to \dsd{l}:
 \[
@@ -550,7 +630,7 @@ only one direction) left adjoints.
 \subsection{Adjoint decomposition of $\Box$}  
 
 The modal S4 \Bx{}{} as in \citet{pfenningdavies} is similar to !.  We
-call the two modes \dsd{t}ruth and \dsd{v}alidity and have idempotent
+call the two modes \dsd{t}ruth and \dsd{v}alidity and have 
 cartesian monoids on both (we write $(\times,\top)$ for the \dsd{t} one
 and $(\times_v,\top_v)$ for the \dsd{v} one) along with $x : \dsd{v}
 \vdash \dsd{f}(x) : \dsd{t}$.  Here, following the analysis of \Bx{}{}
@@ -712,7 +792,7 @@ $\Diamond$''~\citep{pfenningdavies,alechina+01categoricals4}, which has
 a strength only for boxed formulas ($\Bx{} A \otimes \Dia{} B \vdash
 \Dia{}(\Bx{} A \otimes B)$).  We use 3 modes \dsd{v},\dsd{t},\dsd{p} and
 represent the $\Box$ as the comonad of a context descriptor
-\oftp{x:\dsd{v}}{\dsd{f}(x)}{\dsd{t}} (with idempotent cartesian monoids
+\oftp{x:\dsd{v}}{\dsd{f}(x)}{\dsd{t}} (with cartesian monoids
 on \dsd{v} and \dsd{t} and \dsd{f} laxly monoidal as above), and the
 $\Diamond$ as the monad of a \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}.  We
 have a mixed-mode product between \dsd{v} and \dsd{p}

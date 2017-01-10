@@ -44,6 +44,7 @@
 \newcommand\deq{\ensuremath{\equiv}}
 \newcommand\spr{\ensuremath{\Rightarrow}} %% structural property/2-cell
 \newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
+\newcommand\seql[3]{\ensuremath{#1 \vdash^{\dsd{#2}} #3}}
 \newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
 \newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \mid #3)}}
 \newcommand\Uempty[2]{\ensuremath{\dsd{U}_{#1}(#2)}}
@@ -73,7 +74,19 @@
 \def\llb{\llbracket}
 \def\rrb{\rrbracket}
 
+\newcommand\seqa[2]{\ensuremath{#1 \vdash^{\dsd a} #2}}
+\newcommand\splits{\rightrightarrows}
+\newcommand\vars[1]{\ensuremath{\overline{#1}}}
+
 \newcommand{\ignore}[1]{}
+
+\newcommand\FLd[2]{\ensuremath{\FL_{#1}(#2)}}
+\newcommand\FRd[2]{\ensuremath{\FR(#1,#2)}}
+\newcommand\ULd[4]{\ensuremath{\UL_{#1}(#2,#3,#4)}}
+\newcommand\URd[1]{\ensuremath{\UR(#1)}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+\newcommand\Ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\Cut[3]{\ensuremath{#1[#2/#3]}}
 
 \begin{document}
 
@@ -126,11 +139,9 @@ to design new substructural and modal logics.
 \input{intro}
 \input{syntax}
 \input{examples}
-\input{equational}
+%% \input{equational}
 \input{semantics-short}
 
-\newpage
-\clearpage
 \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
 { \small
 %% \linespread{0.70}
@@ -141,7 +152,10 @@ to design new substructural and modal logics.
 \newpage
 \clearpage
 
+\appendix
 \input{synprop-long}
+\newpage
+
 \input{adequacy-appendix}
 
 \end{document}
