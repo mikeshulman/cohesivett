@@ -1,6 +1,8 @@
 \newcommand\truej[1]{#1 \,\, \dsd{true}}
 \newcommand\possj[1]{#1 \,\, \dsd{poss}}
 \newcommand\validj[1]{#1 \,\, \dsd{valid}}
+\newcommand\crispj[1]{#1 \,\, \dsd{crisp}}
+\newcommand\cohesivej[1]{#1 \,\, \dsd{coh}}
 
 \section{Examples}
 \label{sec:exampleencodings}
@@ -564,6 +566,7 @@ the usual adequacy statement $\Gamma \vdash A$ iff
 \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
 
 \subsection{Adjoint decomposition of !}  
+\label{sec:example:bang}
 
 Following \citet{benton94mixed,bentonwadler96adjoint}, we decompose the
 $!$ exponential of intuitionistic linear logic as the comonad of an
@@ -918,4 +921,57 @@ prevents keeping any additional \dsd{true}\/ variables in the premise.
 
 \subsection{Spatial Type Theory}
 
+The spatial type theory for cohesion~\citep{shulman15realcohesion}
+(which motivated this work) has an adjoint pair $\flat \la \sharp$,
+where $\flat$ is a comonad and $\sharp$ is a monad, with some additional
+properties.  In the one-variable case~\citep{ls16adjoint}, we analyzed
+this as arising from an idempotent comonad\footnote{There it was an
+  idempotent monad; the variance of \dsd{F} and \dsd{U} has been flipped
+  in paper.} in the mode theory: we have a mode \dsd{c} with a cartesian
+monoid $(\times,\top)$ and a context descriptor
+\oftp{x:\dsd{c}}{\dsd{r}(x)}{\dsd{c}} such that $\dsd{r}(\dsd{r}(x))
+\deq \dsd{r}(x)$ and there is a directed transformation $\dsd{r}(x) \spr
+x$.  Then we define $\flat A := \F{\dsd{r}}{A}$ and $\sharp A :=
+\Uempty{\dsd{r}}{A}$. These are adjoint as discussed in
+Example~\ref{sec:example:bang}, and the transformation gives the counit
+$\F{\dsd{r}}{A} \vdash A$ and the unit $A \vdash \Uempty{\dsd{r}}{A}$ by
+Lemma~\ref{lem:typespr}.  Now that we have a multi-assumptioned logic,
+we can model the fact that $\flat{A}$ preserves products by the equation
+equation $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.
+Overall, we encode a simply-typed spatial type theory judgement $x_1 :
+\crispj{A_1},\ldots;y_1:\cohesivej{B_1} \vdash \cohesivej{C}$ as
+$\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
+  y_1\times\ldots}{C}$.  This corresponds to the following native rules:
 
+\begin{footnotesize}
+\[
+\begin{array}{c}
+\infer{\Delta;\Gamma \vdash C}
+      {A \in \Delta &
+       \Delta;\Gamma,A \vdash C}
+\quad
+\infer{\Delta; \Gamma \vdash {\Flat A}}
+      {\Delta; \cdot \vdash {A}}
+\quad
+\infer{\Delta; \Gamma,\Flat{A} \vdash C}
+      {\Delta,A; \Gamma \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash {\Sharp C}}
+      {\Delta,\Gamma; \cdot \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash C}
+      {\Sharp A \in \Delta &
+        \Delta;\Gamma,A \vdash {C}}
+\quad
+\end{array}
+\]
+\end{footnotesize}%
+
+\noindent In order, these correspond to (1) the action of the
+contraction and $\dsd{r}(x) \spr x$ transformations; (2) \FR\/ with
+weakening, using monoidalness of \dsd{r} in one direction; (3) \FL; (4)
+\UR, using monoidalness of \dsd{r} in the other direction and
+idempotence; (5) \UL, with contraction.  This provides a satisfying
+explanation for the unusual features of these rules, such as promoting
+all cohesive variables to crisp in \Sharp{}-right, and eliminating a
+crisp \Sharp{} in \Sharp{}-left.  
