@@ -656,3 +656,172 @@ the same as the original contraction.
 
 \end{proof}
 
+\subsection{Non-strong \Dia{}{}}
+
+We compare the mode theory for the non-strong \Dia{}{} (modes \dsd{t}
+and \dsd{p} with an affine (semicartesian) commutative monoid
+$(\otimes,1,\dsd{w} :: x \spr 1)$ on \dsd{t} and
+\oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}) against the rules at the
+beginning of Section~\ref{sec:example:monad}.
+
+Recall from above that $\Dia{}{A}^* =
+\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}$ and that the correspondence is:
+\begin{theorem}
+\[
+\begin{array}{c}
+\truej{A_1}, \ldots, \truej{A_1} \vdash \truej{C}\\
+\text{iff}\\
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*}
+\end{array}
+\]
+and 
+\[
+\begin{array}{c}
+\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}\\
+\text{iff}\\
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes x_n)}{\F{\dsd{g}}{C^*}}.
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+We write $\Gamma^*$ as usual and \vars{\Gamma} for
+$x_1\otimes\ldots\otimes x_n$.  
+
+The three rules are represented by
+\[
+\infer[\FR]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {\dsd{g}(\vars{\Gamma}) \spr \dsd{g}(\vars{\Gamma}) &
+        \seq{\Gamma^*}{\vars{\Gamma}}{A^*}}
+\]
+
+\[
+\infer[\UR]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{\Uempty{\dsd{g}}{\F{\dsd{g}}{C^*}}}}
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+\]
+
+\[
+\infer{\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {x : \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}} \in \Gamma^* &
+        \dsd{g}(\vars{\Gamma}) \spr \dsd{g}(x) &
+        \infer[\FL]
+              {\seq{y:\F{\dsd{g}}{A}^*}{\dsd{y}}{\F{\dsd{g}}{C^*}}}
+              {\seq{z:A^*}{\dsd{g}(z)}{\F{\dsd{g}}{C^*}}}
+      }
+\]
+(and an identity rule $\Gamma,\truej{P} \vdash \truej{P}$ would be
+translated as usual)
+
+Conversley, suppose we have a derivation of
+\seq{\Gamma^*}{\vars{\Gamma}}{C^*} or
+\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.
+Lemma~\ref{lem:0-use-strengthening} can be used on such derivations: the
+equational axioms preserve variables and \dsd{w} removes but does not
+add, so we use Lemma~\ref{lem:spr-doesnt-introduce}; and \F{\dsd{g}}{A}
+and \Uempty{\dsd{g}}{A} are both relevant, so by induction the encoding
+of any sequent is.
+
+Suppose we have \seq{\Gamma^*}{\vars{\Gamma}}{C^*}.  
+The hypothesis rule is translated back to itself as usual.  Since there
+are no types that encode to \Fsymb, any other final rule must be \UR\/ or \UL,
+and the type must be \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}.
+\begin{itemize}
+\item 
+If we have
+\[
+\infer[\UR]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}}}
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{A^*}}}
+\]
+then in the inductive hypothesis gives $\Gamma \vdash \possj{A}$, so we
+have $\Gamma \vdash \truej{\Dia{}{A}}$ by rule.  
+
+\item 
+Suppose we have 
+\[
+\infer[\UL]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{C^*}}
+      {x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma &
+        \vars{\Gamma} \spr \beta'[\dsd{g}(x)/z] &
+        \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\beta'}{C^*}}
+\]
+For this mode theory, 
+the constants do not allow embedding a \dsd{p}-mode term in a
+\dsd{t}-mode term.  Therefore, the subterm $\dsd{g}(x)$ cannot occur in
+a ``reduct'' of \vars{\Gamma}, which has mode \dsd{t}.  Thus, $z$ does
+not occur in $\beta'$, and $\vars{\Gamma} \spr \beta'$.  Applying
+Lemma~\ref{lem:respectspr} to the premise gives a no-bigger derivation
+of \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\vars{\Gamma}}{C^*}, and applying
+Lemma~\ref{lem:0-use-strengthening} to strengthen away $z$ gives a
+no-bigger derivation of \seq{\Gamma^*}{\vars{\Gamma}}{C^*}.
+Then the inductive hypothesis gives $\Gamma \vdash \truej{C}$ as
+desired.  
+\end{itemize}
+
+Suppose we have \seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}
+and want $\Gamma \vdash \possj{C}$.  Since there are no \Fsymb's in the
+context, the only possibilities are \UL\/ and \FR:
+\begin{itemize}
+
+\item Suppose we have
+\[
+\infer[\FR]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {{\dsd{g}(\vars{\Gamma})} \spr \dsd{g}(\alpha) &
+        {\seq{\Gamma^*}{\alpha}{C^*}}}
+\]
+For this mode theory, there are no there are no equalities or
+transformations between terms of the form $\dsd{g}(\alpha)$ and any
+other \dsd{p}-mode term besides congruence on $\alpha \spr \alpha'$, so
+we can extract a transformation $\vars{\Gamma} \spr \alpha$ (such that
+the given one is equal to congruence with \dsd{g} on it).  So we get
+$\vars{\Gamma} \spr \alpha$ and can use Lemma~\ref{lem:respectspr} to
+get a no-bigger derivation of {\seq{\Gamma^*}{\vars{\Gamma}}{C^*}}.  By
+the inductive hyptothesis on this premise we get $\Gamma \vdash
+\truej{A}$, which gives $\Gamma \vdash \possj{A}$ as desired.  
+%% : reflexivity
+%% goes to reflexivity, merge composites, and rewrite any congruence 
+%% $1_\dsd{g}(\alpha)$ as congruence with $\dsd{g}$
+
+\item Suppose we have 
+\[
+\infer[\UL]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {\begin{array}{l}
+          x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma \\
+          \dsd{g}(\vars{\Gamma}) \spr \beta'[\dsd{g}(x)/z] \\
+          \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\beta'}{\F{\dsd{g}}{C^*}}
+        \end{array}
+      }
+\]
+We have \oftp{x_i:\dsd{t},z:\dsd{p}}{\beta'}{\dsd{p}}, so by inversion
+the only possibilities are $z$ or $\dsd{g}(-)$, and in the latter case
+$z$ does not occur, as argued above.  
+
+If $\beta'$ is \dsd{z}, then we have 
+\seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{z}{\F{\dsd{g}}{C^*}}.  By
+Lemma~\ref{lem:0-use-strengthening} (strengthening away $\Gamma^*$) we
+have a no-bigger derivation of
+\seq{z:{\F{\dsd{g}}{A^*}}}{z}{\F{\dsd{g}}{C^*}}.
+By Lemma~\ref{lem:Finv}, we can left-invert to get a no-bigger
+derivation of 
+\seq{z':{A^*}}{\dsd{g}{(z')}}{\F{\dsd{g}}{C^*}}.  
+By the inductive hypothesis, this translates to a derivation of 
+$\truej{A} \vdash \possj{C}$, so 
+applying \Dia{}{}-left gives the result.
+
+If $z$ does not occur in $\beta'$ we have $\dsd{g}(\vars{\Gamma}) \spr
+\beta'$ so pushing this into the premise gives by
+Lemma~\ref{lem:respectspr} gives a no-bigger derivation of
+\seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.
+Then strengthening $z$ by Lemma~\ref{lem:0-use-strengthening} gives a
+no-bigger derivation of
+\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.  so the
+inductive hypothesis gives the result.  That is, we did an elimination
+to produce a 0-use variable, which we can strengthen away.  
+\end{itemize}
+
+\end{proof}
+
