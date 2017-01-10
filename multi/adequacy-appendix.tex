@@ -490,13 +490,14 @@ reduces this to contraction at $A$ and $B$ separately.  We could instead
 compare against a native sequent calculus that does not allow
 contraction for positives, but the above is more standard.  
 
-The encoding of the rules is as follows:
-\begin{lemma}
-If $\seqc{\Gamma}{A}$ then \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.  
-\end{lemma}
+Overall, we have
+\begin{theorem}
+$\seqc{\Gamma}{A}$ iff \seq{\Gamma^*}{\vars{\Gamma}}{A^*}
+\end{theorem}
+
 \begin{proof}
-The proof is by induction on the given derivation, using the 
-derivations of each rule:
+The proof of the forward direction is by induction on the given
+derivation, using the derivations of each rule:
 
 \[
 \infer[\dsd{v}]{\seq{\Gamma^*}{P^*}}
@@ -553,17 +554,11 @@ as the $\to$ right rule is just \UR.  The $\to$ left rule contracts
 everything in $\Gamma$ for use in both the argument and the
 continuation, and contracts the function an additional time for use
 here.
-\end{proof}
 
-Conversley, we have
-\begin{lemma}
-If \seq{\Gamma^*}{\vars{\Gamma}}{A^*} then $\seqc{\Gamma}{A}$ 
-\end{lemma}
-
-\begin{proof}
-The proof is by induction on the size of the given derivation, to allow
-uses of
-Lemma~\ref{lem:respectspr} before applying the inductive hypothesis.
+Conversely, we show \seq{\Gamma^*}{\vars{\Gamma}}{A^*} implies
+$\seqc{\Gamma}{A}$ The proof is by induction on the size of the given
+derivation, to allow uses of Lemma~\ref{lem:respectspr} before applying
+the inductive hypothesis.
 
 \begin{itemize}
 
@@ -654,6 +649,112 @@ the same as the original contraction.
 
 \end{itemize}
 
+\end{proof}
+
+\subsection{Constructive S4 \Bx{}{}}
+
+The native rules (writing $\seql{\Delta;\Gamma}{}{A}$ for 
+$\validj{\Delta};\truej{\Gamma} \vdash \truej{A}$ assumptions) are
+\[
+\infer{\seql{\Delta;\Gamma}{}{P}}
+      {P \in \Gamma}
+\quad
+\infer{\seql{\Delta;\Gamma}{}{C}}
+      {A \in \Delta & 
+       \seql{\Delta;\Gamma,A}{}{C}
+      }
+\quad
+\infer{\seql{\Delta;\Gamma,\Bx{}{A},\Gamma'}{}{C}}
+      {\seql{\Delta,A;\Gamma,\Gamma'}{}{C}}
+\quad
+\infer{\seql{\Delta;\Gamma}{}{\Bx{}{A}}}
+      {\seql{\Delta;\cdot}{}{A}}
+\]
+
+For the mode theory in Section~\ref{sec:example:box}, we have
+\begin{theorem}
+\[
+\begin{array}{c}
+ x_1:\validj{A_1},\ldots,x_n:\validj{A_n};y_1:\truej{B_1},\ldots \vdash \truej{C}\\
+\text{iff}\\
+\seq{x_1:\Uempty{\dsd{f}}{A_1^*},\ldots,x_n:\Uempty{\dsd{f}}{A_n^*};y_1:B_1^*,\ldots}
+    {\dsd{f}(x_1) \times\ldots\times \dsd{f}(x_n) \times y_1 \times \ldots \times y_n}{C^*}
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+We write $\Delta^*$ for $\vec{x_i : \Uempty{\dsd{f}}{A_i^*}}$ for each
+assumption in $x : A_i \in \Delta$ and $\Gamma^*$ as usual.  
+We write \vars{\Delta} for $\dsd{f}(x_1) \times \ldots \dsd{f}(x_n)$ for
+the variables in $\Delta$ 
+and \vars{\Gamma} as usual.  
+
+First we show that \seql{\Delta;\Gamma}{}{C} implies
+\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}
+by induction, using the following encodings:
+
+\[
+\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{P}}
+      { x:P \in \Gamma^* &
+        {\vars{\Delta}\times\vars{\Gamma}} \spr x
+      }
+\]
+where the transformation weakens everything else.  
+
+\[
+\infer[\UL]{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
+      {
+        \begin{array}{l}
+          x:\Uempty{\dsd{f}}{A^*} \in \Delta^* \\
+          {\vars{\Delta}\times\vars{\Gamma}} \spr
+          (\vars{\Delta}\times\vars{\Gamma}\times z)[\dsd{f}(x)/z] \\
+        \seq{\Delta^*,\Gamma^*,z:A^*}{\vars{\Delta}\times\vars{\Gamma}\times z}{C^*}
+        \end{array}
+      }
+\]
+where the transformation contracts the \dsd{f}(x) that must be in $\vars{\Delta}$.
+
+\[
+\infer[\FL]{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
+      {x:\F{\dsd{f}}{\Uempty{\dsd{f}}{A^*}} \in \Gamma^* &
+        \infer[\ref{lem:exchange}]
+              {\seq{\Delta^*,\Gamma^*-x,z:{\Uempty{\dsd{f}}{A^*}}}
+                   {\vars{\Delta}\times\vars{\Gamma-x}\times z}{C^*}}
+              {\seq{\Delta^*,z:{\Uempty{\dsd{f}}{A^*}},\Gamma^*-x}{\vars{\Delta}\times\vars{\Gamma-x}\times z}{C^*}}
+      }
+\]
+We took the liberty of making \Bx{}{}-left remove the \Bx{}{}-assumption
+(which as usual for positives is a choice), or else we could do a
+contraction here to match it.  We use commutativity of $\times$ and
+exchange to make the order match the native rule.  
+
+\begin{footnotesize}
+\[
+\infer[\FR]
+      {\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{\F{\dsd{f}}{\Uempty{\dsd{f}}{A^*}}}}
+      { {\vars{\Delta}\times\vars{\Gamma}} \spr 
+        \dsd{f}(x_1\times_v \ldots) &
+        \infer[\UR]
+              {\seq{\Delta^*,\Gamma^*}{(x_1\times_v \ldots)}{{\Uempty{\dsd{f}}{A^*}}}}
+              {\infer[\ref{lem:respectspr}]
+                {\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1\times_v \ldots)}{A^*}}
+                {{\dsd{f}(x_1\ldots x_n)} \spr {\dsd{f}(x_1) \times \ldots} &
+                  \infer[\ref{lem:weakening}]
+                        {\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1) \times \ldots }{A^*}}
+                        {\seq{\Delta^*}{\vars{\Delta}}{A^*}}
+                }
+              }}
+\]
+\end{footnotesize}
+We write $x_1 \ldots$ for the variables from $\Delta$.  The first
+transformation weakens away $\Gamma$ and uses the monoidalness
+transformation axioms for \dsd{f} to pull \dsd{f} outside the product.
+After the \UR, we uses the converse $\dsd{f}(\top_v) \spr \top$ and
+$\dsd{f}(x \times_v y) \spr \dsd{f}(x) \times \dsd{f}(y)$ that follow
+from the intro forms for the cartesian $(\times,\top)$ and congruence of
+\dsd{f}\/ on the projections.  Finally, we weaken-over-weaken the
+encoding of the premise with $\Gamma^*$
 \end{proof}
 
 \subsection{Non-strong \Dia{}{}}
