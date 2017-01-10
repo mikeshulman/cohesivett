@@ -1,0 +1,117 @@
+Moving on to the proof of the converse,
+
+\begin{itemize}
+\item In the case for the assumption rule, we have
+\[
+\infer{\seq{\Gamma_0^*}{\vars{\Gamma}}{P}}
+      {x:P \in \Gamma_0 &
+       \vars{\Gamma} \spr x}
+\]
+First, by Lemma~\ref{lem:affine-mode-4}, $\vars{\Gamma} \spr x$ implies
+there is a $\Gamma'$ such that $\Gamma \ge \Gamma'$ and $\vars{\Gamma'}
+\deq x$.  By inversion, this means, $\Gamma'$ is $x:Q$ for some $Q$.
+Because $\Gamma_0 \ge \Gamma \ge x:Q$ and $x:P$ is in $\Gamma_0$, $x$
+must have type $P$ in $\Gamma$ ($\ge$ implies that any variable in both
+has the same type in both), so we can apply the hypothesis rule of
+affine logic.
+
+\item In the case where \UR\/ was used to derive
+  \seq{\Gamma_0^*}{\vars{\Gamma}}{A^*}, $A$ must be $A_1 \lolli A_2$
+  (because no other types encode to \Usymb), and the premise is
+  \seq{\Gamma_0^*,x:A_1^*}{\vars{\Gamma}\otimes x}{A_2^*}.  Since
+  ${\Gamma_0,x:A_1} \ge {\Gamma,x:A_1}$, the inductive hypothesis gives
+  $\seqa{\Gamma,x:A_1}{A_2}$, and we can apply $\lolli$-right.
+
+\item In the case where \FR\/ was used, the conclusion must be $(A_1
+  \otimes A_2)$, and we have $\vars{\Gamma} \spr (\alpha_1 \otimes
+  \alpha_2)$ with \seq{\Gamma_0^*}{\alpha_1}{A_1^*} and
+  \seq{\Gamma_0^*}{\alpha_2}{A_1^*}.  By Lemma~\ref{lem:affine-mode-4},
+  this means there is a $\Gamma \ge \Gamma'$ with $\vars{\Gamma'} \deq
+  (\alpha_1 \otimes \alpha_2)$.  By Lemma~\ref{lem:affine-mode-5}, we
+  have $\Gamma' \splits \Gamma_1,\Gamma_2$ with $\vars{\Gamma_1} \deq
+  \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$. So the premises are
+  \seq{\Gamma_0^*}{\vars{\Gamma_1}}{A_1^*} and
+  \seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_2^*}, with $\Gamma_0 \ge \Gamma
+  \ge \Gamma' \ge \Gamma_i$.  Thus, by the inductive hypotheses we get
+  $\seqa{\Gamma_1}{A_1}$ and $\seqa{\Gamma_2}{A_2}$, so
+  $\seqa{\Gamma'}{A_1 \otimes A_2}$.  Then weakening and exchange on
+  $\Gamma \ge \Gamma'$ gives the result.
+
+\item In the case where \FL\/ was used, we know that every assumption
+  even in the larger context $\Gamma_0$ is of the form $A^*$ for some
+  $A$, so the formula under elimination must be $z:(A_1 \otimes A_2)^*
+  \in \Gamma_0$. The premise is
+  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}[(x \otimes
+      y)/z]}{C^*}, and we want \seqa{\Gamma}{C}.
+
+  We distinguish cases on whether $z$ (which is only known to be in
+  $\Gamma_0$) is bound in $\Gamma$ or not.  
+
+  If it is, then $\vars{\Gamma}[(x \otimes y)/z] \deq
+  (\vars{\Gamma}-z)\otimes x \otimes y$, and since
+  $\Gamma_0^-z,x:A_1,y:A_2 \ge \Gamma-z,x:A_1,y:A_2$, we get
+  \seqa{\Gamma-z,x:A_1,y:A_2}{C} by the inductive hypothesis, and can
+  apply $\otimes$-left.
+
+  If it is not, then $\vars{\Gamma}[(x \otimes y)/z] \deq
+  \vars{\Gamma}$.  Because $\Gamma_0 \ge \Gamma$ by assumption,
+  ${\Gamma_0-z,x:A_1,y:A_2} \ge \Gamma$ (it removes something not in
+  $\Gamma$, and adds two things).  Using the equality, the premise derives
+  \seq{\Gamma_0^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}}{C^*},
+  so we get \seqa{\Gamma}{C} directly by the inductive hypothesis.  
+  In this case, the given proof does a left rule on a ``0-use''
+  variable that does not occur in the context descriptor, which adds
+  some additional 0-use assumptions to the context.  The inductive
+  hypothesis is compatible with this, and returning its result
+  drops this step.    
+
+\item In the case for \UL, the assumption $f$ that is eliminated must be
+  the translation of $f:(A_1 \lolli A_2) \in \Gamma_0$ , so the premises
+  are $\vars{\Gamma} \spr \beta'[f \otimes \alpha/z]$ with
+  $\seq{\Gamma_0^*}{\alpha}{A_1^*}$ and
+  $\seq{\Gamma_0^*,z:A_2^*}{\beta'}{C}$.
+
+  By Lemma~\ref{lem:affine-mode-4}, there is a $\Gamma'$ with $\Gamma_0
+  \ge \Gamma \ge \Gamma'$ and $\vars{\Gamma'} \deq \beta'[f \otimes
+    \alpha/z]$.  Since $\vars{\Gamma'}$ has no duplicates, $z$ occurs at
+  most once in $\beta'$ (or else $f$ would occur more than once in the
+  substitution).
+  
+  %% Since every context descriptor is equal to a product of variables, we
+  %% write $\vec{y} for \alpha$ and $\vec{z}$ for $\beta'$.  By
+  %% Lemma~\ref{lem:affine-mode-3}, $\vec{z}[f \otimes \vec{x}/z]$ has no
+  %% duplicate variable occurences, so $z$ occurs at most once in $\beta'$.
+
+  If $z$ occurs once in $\beta'$, then because all context descriptors
+  are products of variables, we can commute it to the end, writing
+  $\beta' \deq \vec{y} \otimes z$, so $\vars{\Gamma'} \deq \vec{y}
+  \otimes f \otimes \alpha$.  Since $f$ is in \vars{\Gamma'}, $f$ must
+  be declared with some type in $\Gamma'$, and since $\Gamma_0 \ge
+  \Gamma \ge \Gamma'$ and $f:A_1 \lolli A_2 \in \Gamma_0$, it must have
+  the same type.  By Lemma~\ref{lem:affine-mode-5}, we can split
+  $\Gamma' \splits \Gamma_1;\Gamma_2;f:A_1 \lolli A_2$ where
+  $\vars{\Gamma_1} \deq \vec{y}$ and $\vars{\Gamma_2} \deq \alpha$.
+  Since the splitting implies that $\Gamma' \ge \Gamma_1$ and $\Gamma'
+  \ge \Gamma_2$, we have $\Gamma_0,z:A_2 \ge \Gamma_1,z:A_2$ and
+  $\Gamma_0 \ge \Gamma_2$.  Moreover, we have $\beta' \deq \vec{y}
+  \otimes z \deq \vars{\Gamma_1} \otimes z$ and $\alpha \deq
+  \vars{\Gamma_2}$, so the premises are
+  $\seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_1^*}$ and
+  $\seq{\Gamma_0^*,z:A_2^*}{\vars{\Gamma_1,z:A_2}}{C^*}$.  Thus, the
+  inductive hypotheses give \seqa{\Gamma_2}{A_1} and
+  \seqa{\Gamma_1,z:A_2}{C}, which combined with the splitting gives
+  \seqa{\Gamma'}{C} by $\lolli$-left.  Finally, we have $\Gamma \ge
+  \Gamma'$, so we can weaken/exchange to get \seqa{\Gamma}{C}.
+
+  If $z$ occurs 0 times, then we have
+  \seq{\Gamma_0^*,z:A_2^*}{\beta'}{C} with $\vars{\Gamma} \spr \beta'$.
+  By Lemma~\ref{lem:affine-mode-4}, we get $\Gamma \ge \Gamma'$ with
+  $\vars{\Gamma'} \deq \beta'$. So because $\Gamma_0 \ge \Gamma \ge
+  \Gamma'$, we have $\Gamma_0,z:A_2 \ge \Gamma'$, and can use the
+  inductive hypothesis on the continuation to get \seqa{\Gamma'}{C}, and
+  then weaken/exchange to get \seqa{\Gamma}{C}. This part of the proof
+  corresponds to eliminating a \UL\/ on a 0-use $f$ from the affine
+  logic proof, which is possible because $z$ is 0-use, so the inductive
+  hypothesis will remove any uses of it.
+\end{itemize}
+

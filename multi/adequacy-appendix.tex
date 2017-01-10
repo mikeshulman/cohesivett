@@ -9,11 +9,12 @@ for many mode theories 0-use variables can be strengthened away.
 
 \begin{lemma}[0-use Strengthing] \label{lem:0-use-strengthening}
 We say that a formula $\F{\alpha}{\Delta}$ and \U{c.\alpha}{\Delta}{A}
-is relevant if every variable from $\Delta$ occurs at least once in
-$\alpha$ (there is no condition on $c$ in \Usymb).
+is relevant if every variable from $\Delta$ (and $c$ for \Usymb) occurs
+at least once in $\alpha$.
 
 Suppose the mode theory has the property that for all $x$, $\alpha$,
-$\beta$, if $\alpha \spr \beta$ and $x \# \alpha$ then $x \# \beta$.
+$\beta$, if $\alpha \spr \beta$ and $x \# \alpha$ then $x \# \beta$ (in
+particular, equations must have the same variables on both sides).
 Suppose additionally a sequent \seq{\Gamma}{\alpha}{A} such that every
 \Fsymb/\Usymb\/ subformula of $\Gamma,A$ is relevant.
 
@@ -23,6 +24,89 @@ that $\vec{x} \# \alpha$ then there is a $\D' ::
 \end{lemma}
 
 \begin{proof}
+The proof is by induction on $\D$.  In all cases, the assumption that
+every formula is relevant is preserved for all premises of a rule by the
+subformula property.
+
+\begin{itemize}
+\item In the case for a variable $x:P$ with transformation $\beta \spr
+  x$, we need to show that the variable $x$ being used is not one of the
+  ones being strengthened away.  But if $x$ were in $\vec{x}$, then we
+  would have $x \# \beta$, and therefore by the assumption, $x \# x$, a
+  contradiction.  Therefore $x \in {\Gamma-\vec{x}}$, and we can reapply
+  the variable rule, which has the same size.
+
+\item In the case for \FR, we have $\vec{x} \# \beta$, so by the
+  reduction condition, $\vec{x} \# \alpha[\gamma]$.  By the relevance
+  condition, all variables that $\gamma$ substitutes occur in $\alpha$,
+  which means each component of $\gamma$ occurs in $\alpha[\gamma]$.
+  Therefore $\vec{x} \# \gamma$.  We can use the inductive hypothesis to
+  obtain a no-bigger derivation of \seq{\Gamma-\vec{x}}{\gamma}{\Delta},
+  and then reapply \FR.
+
+\item In the case for \FL, we distinguish cases on whether $x \in
+  \vec{x}$ or not.
+
+  If it is, then this is an elimination on a 0-use variable that we
+  would like to drop.  Because $x \# \beta$, $\beta[\alpha/x] = \beta$,
+  and note that $\Delta \# \beta$ because it occurs only in $\alpha$.
+  Thus, if we appeal to the inductive hypothesis on the premise with
+  $\vec{x}-x,\Delta$, we get
+  \seq{(\Gamma,\Gamma',\Delta)-(\vec{x}-x,\Delta)}{\beta}{C}, 
+  i.e.
+  \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma',-\vec{x}}{\beta}{C}
+  as desired.  That is, we recursively drop all variables that came from
+  the elimination, in addition to any others that we were trying to drop
+  besides $\vec{x}$.  
+
+  If it is not, then $\vec{x} \# \beta$ and $\vec{x} \# \alpha$ (by
+  scoping) implies $\vec{x} \# \beta[\alpha/x]$, so by the inductive
+  hypothesis we get a no-bigger derivation of
+  \seq{\Gamma,\Gamma'-\vec{x},\Delta}{\beta[\alpha/x]}{C}, and we can
+  reapply \FL (because the principal variable $x$ of the left rule is
+  not removed).
+
+\item In the case for \UR, we have $\vec{x}$ a collection of variables
+  bound in $\Gamma$, so $\vec{x} \# \alpha$ (since the domain of
+  $\alpha$ is not $\Gamma$) in addition to $\vec{x} \# \beta$.  Thus
+  $\vec{x} \# \alpha{\beta}{x}$, so the inductive hypothesis gives a
+  no-bigger derivation of
+  \seq{\Gamma-\vec{x},\Delta}{\alpha[\beta/x]}{A}, and we can reapply
+  the rule.
+
+\item In the case for \UL, we distinguish cases on whether $z$ occurs in
+  $\beta'$.  
+
+  If $z \# \beta'$, then this \UL is generating a 0-use assumption $z$, so
+  we can remove it and the \UL along with $\vec{x}$.  That is, we appeal
+  to the inductive hypothesis on the continuation with $\vec{x},z$,
+  which gives \seq{\Gamma,z:A-(\vec{x},z)}{\beta'}{C}, i.e.
+  \seq{\Gamma,\vec{x}}{\beta'}{C}.  We also have $\beta \spr \beta'$
+  because the $[\alpha[\gamma]/z]$ substitution cancels.  So we have
+  \seq{\Gamma,\vec{x}}{\beta}{C} by Lemma~\ref{lem:respectspr}.
+  
+  If $z$ occurs in $\beta'$, we further distinguish cases on whether $x
+  \in \vec{x}$ or not.  
+
+  If it is not, then we know $\vec{x} \# \beta$, so pushing this along
+  the transformation gives $\vec{x} \# \beta'[\alpha[\gamma]/z]$.  Thus
+  $\vec{x} \# \beta'$ (note that $z$ cannot be in $\vec{x}$ because it
+  is bound only in the continuation), and because $z$ occurs in
+  $\beta'$, $\alpha[\gamma/z]$ occurs in the substitution, so $\vec{x}
+  \# \alpha[\gamma]$.  By the relevance assumption, each term in
+  $\gamma$ also occurs after the substitution, so $\vec{x} \# \gamma$ as
+  well.  Thus, by the inductive hypotheses we get no-bigger derivations
+  of \seq{\Gamma-\vec{x}}{\gamma}{\Delta} and
+  \seq{\Gamma-\vec{x},z:A}{\beta'}{C}, and the principal $x$ survives in
+  $\Gamma-\vec{x}$, so we can reapply \UL.
+
+  Finally, if $x \in \vec{x}$ and $z \in \beta'$, then we have $x \#
+  \beta$, so $x \# \beta'[\alpha[\gamma]/z]$ by moving along the
+  transformation, and then $x \# \alpha[\gamma]$ by the fact that $z$
+  occurs.  However, this contradicts the relevance assumption on
+  $\U{x.\alpha}{\Delta}{A}$, which says that $x$ occurs in $\alpha$.  
+\end{itemize}
+
 \end{proof}
 
 \begin{lemma} \label{lem:spr-doesnt-introduce}
@@ -144,7 +228,7 @@ To apply \FR\/ to derive \seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A,y:B}}
 $\vars{\Gamma} \spr \vars{\Delta_1}\otimes\vars{\Delta_2}$.  In fact
 they are $\deq$,  which we can
 prove by induction on $\Gamma \splits \Delta_1,\Delta_2$ using the
-commutative monoids laws.  
+commutative monoid laws.  
 
 \item For $\lolli$-right, we have
   \seq{\Gamma^*,x:A^*}{\vars{\Gamma}\otimes x}{B^*}
@@ -245,7 +329,7 @@ and $\vars{\Gamma_2} \deq \alpha_2$.
 \begin{proof}
 We define the splitting $\Gamma \splits \Gamma_1,\Gamma_2$ adding each
 variable in $\Gamma$ to $\Gamma_1$ if it occurs in $\alpha_1$, or
-$\Gamma_2$ if it occurs in $\alpha_2$ and not $\alpha_1$ (occurence
+$\Gamma_2$ if it occurs in $\alpha_2$ and not $\alpha_1$ (occurrence
 respects \deq).  Because $\deq$ is associativity, commutativity, and
 unit, $\alpha_1$ and $\alpha_2$ have no duplicates and every variable
 from \vars{\Gamma} occurs exactly once in one or the other, which gives
@@ -324,7 +408,7 @@ logic rule.
   be the translation of $z:(A_1 \otimes A_2) \in \Gamma$. The premise is
   \seq{\Gamma^*-z,x:A_1^*,y:A_2^*}{\vars{\Gamma}[(x \otimes y)/z]}{C^*},
   and we want \seqa{\Gamma}{C}.  Since \vars{\Gamma} has exactly one
-  occurence of $z$, $\vars{\Gamma}[(x \otimes y)/z] \deq
+  occurrence of $z$, $\vars{\Gamma}[(x \otimes y)/z] \deq
   (\vars{\Gamma}-z)\otimes x \otimes y$, so by the inductive hypothesis
   we get \seqa{\Gamma-z,x:A_1,y:A_2}{C} by the inductive hypothesis, and
   can apply $\otimes$-left.
