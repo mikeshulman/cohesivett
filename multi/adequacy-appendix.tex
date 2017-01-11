@@ -69,7 +69,7 @@ subformula property.
 \item In the case for \UR, we have $\vec{x}$ a collection of variables
   bound in $\Gamma$, so $\vec{x} \# \alpha$ (since the domain of
   $\alpha$ is not $\Gamma$) in addition to $\vec{x} \# \beta$.  Thus
-  $\vec{x} \# \alpha{\beta}{x}$, so the inductive hypothesis gives a
+  $\vec{x} \# \subst\alpha{\beta}{x}$, so the inductive hypothesis gives a
   no-bigger derivation of
   \seq{\Gamma-\vec{x},\Delta}{\alpha[\beta/x]}{A}, and we can reapply
   the rule.
@@ -77,13 +77,13 @@ subformula property.
 \item In the case for \UL, we distinguish cases on whether $z$ occurs in
   $\beta'$.  
 
-  If $z \# \beta'$, then this \UL is generating a 0-use assumption $z$, so
-  we can remove it and the \UL along with $\vec{x}$.  That is, we appeal
+  If $z \# \beta'$, then this \UL\/ is generating a 0-use assumption $z$, so
+  we can remove it and the \UL\/ along with $\vec{x}$.  That is, we appeal
   to the inductive hypothesis on the continuation with $\vec{x},z$,
   which gives \seq{\Gamma,z:A-(\vec{x},z)}{\beta'}{C}, i.e.
-  \seq{\Gamma,\vec{x}}{\beta'}{C}.  We also have $\beta \spr \beta'$
+  \seq{\Gamma-\vec{x}}{\beta'}{C}.  We also have $\beta \spr \beta'$
   because the $[\alpha[\gamma]/z]$ substitution cancels.  So we have
-  \seq{\Gamma,\vec{x}}{\beta}{C} by Lemma~\ref{lem:respectspr}.
+  \seq{\Gamma-\vec{x}}{\beta}{C} by Lemma~\ref{lem:respectspr}.
   
   If $z$ occurs in $\beta'$, we further distinguish cases on whether $x
   \in \vec{x}$ or not.  
@@ -675,9 +675,9 @@ For the mode theory in Section~\ref{sec:example:box}, we have
 \begin{theorem}
 \[
 \begin{array}{c}
- x_1:\validj{A_1},\ldots,x_n:\validj{A_n};y_1:\truej{B_1},\ldots \vdash \truej{C}\\
+ x_1:\validj{A_1},\ldots;y_1:\truej{B_1},\ldots \vdash \truej{C}\\
 \text{iff}\\
-\seq{x_1:\Uempty{\dsd{f}}{A_1^*},\ldots,x_n:\Uempty{\dsd{f}}{A_n^*};y_1:B_1^*,\ldots}
+\seq{x_1:\Uempty{\dsd{f}}{A_1^*},\ldots;y_1:B_1^*,\ldots}
     {\dsd{f}(x_1) \times\ldots\times \dsd{f}(x_n) \times y_1 \times \ldots \times y_n}{C^*}
 \end{array}
 \]
@@ -694,6 +694,7 @@ First we show that \seql{\Delta;\Gamma}{}{C} implies
 \seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}
 by induction, using the following encodings:
 
+For the hyp rule:
 \[
 \infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{P}}
       { x:P \in \Gamma^* &
@@ -702,6 +703,7 @@ by induction, using the following encodings:
 \]
 where the transformation weakens everything else.  
 
+For the copy rule:
 \[
 \infer[\UL]{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
       {
@@ -715,6 +717,7 @@ where the transformation weakens everything else.
 \]
 where the transformation contracts the \dsd{f}(x) that must be in $\vars{\Delta}$.
 
+For \Bx{}{}-left:
 \[
 \infer[\FL]{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
       {x:\F{\dsd{f}}{\Uempty{\dsd{f}}{A^*}} \in \Gamma^* &
@@ -729,6 +732,7 @@ We took the liberty of making \Bx{}{}-left remove the \Bx{}{}-assumption
 contraction here to match it.  We use commutativity of $\times$ and
 exchange to make the order match the native rule.  
 
+For \Bx{}{}-right:
 \begin{footnotesize}
 \[
 \infer[\FR]
@@ -755,6 +759,16 @@ $\dsd{f}(x \times_v y) \spr \dsd{f}(x) \times \dsd{f}(y)$ that follow
 from the intro forms for the cartesian $(\times,\top)$ and congruence of
 \dsd{f}\/ on the projections.  Finally, we weaken-over-weaken the
 encoding of the premise with $\Gamma^*$
+
+Conversely, suppose we have
+\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}.
+\begin{itemize}
+\item For the axiom rule, we know $x:P$ is in $\Gamma^*$ not $\Delta^*$
+  because all $\Delta$-formulas are prefixed with a \Usymb.  
+
+\item FIXME TODO
+
+\end{itemize}
 \end{proof}
 
 \subsection{Non-strong \Dia{}{}}
