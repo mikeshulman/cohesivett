@@ -1,7 +1,5 @@
 
-\begin{center}
- \textsc{Adequacy Proofs}
-\end{center}
+\section{Adequacy Proofs}
 \label{sec:adequacy-long}
 
 The following lemma is helpful for many adequacy proofs.  It says that
@@ -455,6 +453,97 @@ logic rule.
 \end{itemize}
 
 \end{proof}
+
+%% FIXME: move to adequacy section
+%% \paragraph{Example}
+
+%% Consider an affine product (commutative monoid $(\otimes,1)$ with
+%% $\dsd{w} :: x \spr 1$) and the following two derivations of $P,Q,R
+%% \vdash P \otimes R$:
+
+%% \begin{footnotesize}
+%% \[
+%% \infer[\FR]
+%%       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+%%       {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
+%%         \infer[\dsd{v}]
+%%               {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
+%%               {(x \otimes y) \spr x} &
+%%         \infer[\dsd{v}]
+%%               {\seq{x:A,y:B,z:C}{z}{C}}
+%%               {z \spr z}
+%%       }
+%% \]
+%% \end{footnotesize}
+%% \begin{footnotesize}
+%% \[
+%% \infer[\FR]
+%%       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
+%%       {x \otimes y \otimes z \spr (x \otimes z) &
+%%         \infer[\dsd{v}]
+%%               {\seq{x:A,y:B,z:C}{x}{C}}
+%%               {x \spr x} &
+%%         \infer[\dsd{v}]
+%%               {\seq{x:A,y:B,z:C}{z}{C}}
+%%               {z \spr z}
+%%       }
+%% \]
+%% \end{footnotesize}
+
+%% These differ by the placement of weakening: our rules allow for
+%% weakening away $y$ either at a leaf (there is a third possible
+%% derivation that weakens in the $z$ leaf instead), as is typical in
+%% affine logic, or at the context division in $\FR$.  However, these two
+%% derivations are equal in the above equational theory:
+%% \[
+%% \FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}}
+%% \deq
+%% \FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}}
+%% \]
+%% By associativity, unit and projection laws, we have that a general
+%% instance of \FR\/ is equal to an iterated cut (in any order) and then a
+%% structural transformation on the ``axiomatic'' $\FR^* ::
+%% \seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}$
+%% \[
+%% \FRd{\alpha}{\vec{\D_i/x_i}} \deq \Trd{\alpha}{\FR^*[\vec{\D_i/x_i}]}
+%% \]
+%% So applying this to both sides it suffices to show
+%% \[
+%% \begin{array}{rcl}
+%% & &  \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
+%% & \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} 
+%% \end{array}
+%% \]
+%% Here we have
+%% \[
+%% \begin{array}{rcl}
+%% \FR^*[\Trd{1}{z}/z'] & :: & \seq{x:P,y:Q,z:R,x':P}{x' \otimes z}{P \otimes R}\\
+%% \Trd{1}{x} & :: & \seq{x:P,y:Q,z:R}{x}{P}\\
+%% {(1_{x \otimes y}[\dsd{w}/y])} & :: & x \otimes y \spr y\\
+%% 1_{x'\otimes z} & :: & x' \otimes z
+%% \end{array}
+%% \]
+%% so the transformation-on-cut equation gives
+%% \[
+%% \begin{array}{rl}
+%%      & \Cut{(\Trd{({1_{x'\otimes z}})}{\FR^*[\Trd{1}{z}/z']})}{\Trd{{(1_{x \otimes y}[\dsd{w}/y])}}{\Trd{1}{x}}}{x'}\\
+%%  \deq & \Trd{ (\subst{({1_{x'\otimes z}})}{(1_{x \otimes y}[\dsd{w}/y])}{x'})  }{\Cut{\FR^*[\Trd{1}{z}/z']}{\Trd{1}{x}}{x'}}
+%% \end{array}
+%% \]
+%% The left-hand side is equal to the left-hand side of the goal by
+%% functoriality of \Trd{-}{-}, and the right-hand side is equal to the
+%% right-hand side of the goal by associativity of horizontal composition
+%% and $1_{x' \otimes z}[1_{x \otimes y/x'}] \deq 1_{x \otimes y \otimes
+%%   z}$.  
+
+%% %% \begin{array}{rcll}
+%% %% & &  \FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}} \\
+%% %% & \deq & \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
+%% %% & \deq & ? \\
+%% %% & \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} \\
+%% %% & \deq & \FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}} \\
+%% %% \end{array}
+%% %% \]
 
 \subsection{Cartesian Logic}
 

@@ -41,7 +41,8 @@ for both kinds of compositions; the next two are interchange; the final
 is because terms with variables that do not occur are an implicit
 notation for product projections.  The associativity and unit laws for
 congruence/horizontal composition $(s[s'/x])$ require the analogous
-associativity for $(\alpha[\alpha'/x])$ to type check.
+associativity for composition $(\alpha[\alpha'/x])$ (which is true
+syntactically) to type check.
 
 As we did with equality of context descriptors, we think of all
 definitions as being parametrized by \deq-equivalence-classes of
@@ -49,45 +50,81 @@ transformations, not raw syntax.
 
 \subsection{Equations on Derivations}
 
+To simplify the axiomatic description of equality, we give a notation
+for derivations in a sequent calculus where the admissible
+transformation, identity, and cut rules are internalized as explicit
+rules---so the calculus has the flavor of an explicit substitution one.
 We use the following notation for derivations:
 \[
 \begin{array}{rcl}
-\D & ::= & \Trd{s}{x} \mid \FLd{x}{\Delta.\D} \mid \FRd{s}{\vec{\D_i/x_i}} \\
-& & \ULd{x}{s}{\vec{\D_i/x_i}}{\D} \mid \URd{\Delta.\D} \mid \Trd{s}{\D} \mid
-\Ident{x} \mid \Cut{\D_1}{\D_2}{x}
+\D & ::= & \Ident{x} \mid \Trd{s}{\D} \mid \Cut{\D_1}{\D_2}{x} \mid
+ \FLd{x}{\Delta.\D} \mid \FRd{\gamma}{s}{\vec{\D_i/x_i}} \mid \ULd{x}{\gamma}{s}{\vec{\D_i/x_i}}{\D} \mid \URd{\Delta.\D} 
 \end{array}
 \]
-where \Trd{s}{\D} is Lemma~\ref{lem:respectspr}, \Ident{x} is
-Theorem~\ref{thm:identity}, and \Cut{\D_1}{\D_2}{x} is
-Theorem~\ref{thm:cut}.
+We omit the primitive hypothesis rule for atoms (it will be derivable),
+write $x$ for identity (Theorem~\ref{thm:identity}), \Trd{s}{\D} for
+respect for transformations (Lemma~\ref{lem:respectspr}---identity for
+atoms combines this and identity) and \Cut{\D_1}{\D_2}{x} for cut
+(Theorem~\ref{thm:cut}).  The next 4 terms correspond to the 4
+\Usymb/\Fsymb rules.  from Figure~\ref{fig:sequent}.  
+We do not notate weakenings or exchanges in these terms.
 
-The equational theory of derivations is the least congruence (on all of
-the above derivation formers) containing the definitions of
-$\Trd{s}{\D}$ and $\Ident{x}$ and $\Cut{\D_1}{\D_2}{x}$ given by the
-proofs in Appendix~\ref{sec:synprop-long} as well as
-\begin{itemize}
-\item The unit laws $\Cut{\D}{\Ident{x}}{x} \deq \D$ and $\Cut{\Ident{x}}{\D}{x} \deq \D$.  
-\item A projection law $\Cut{\D_1}{\D_2}{x} \deq \D_1$ if $x$ is not used
-  in $\D_1$ (in the usual sense that it does not occur in a free
-  position, i.e. the hypothesis rule or the principal argument of a left
-  rule).
-\item Associativity of cut (in a multicategorical sense):
-  $\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y} \deq
-  \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}$
-\item Functoriality of the action of structural transformations:
-  $\Trd{1}{\D} \deq \D$ and $\Trd{(s_1;s_2)}{\D} \deq
-  \Trd{{s_1}}{\Trd{{s_2}}{\D}}$
+\newcommand\FRs{\ensuremath{\FR^*}}
+\newcommand\ULs[1]{\ensuremath{\UL^*_{#1}}}
 
-\item The action of a transformation commutes with cut: if
-$\D_1 :: \seq{\Gamma}{\alpha'}{A}$ and
-$\D_2 :: \seq{\Gamma,x:A}{\beta'}{C}$
-and $s_1 :: \alpha \spr \alpha'$ 
-and $s_2 :: \beta \spr \beta'$, then
-$\Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \deq \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}}$
-as derivations of \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{C}.  
+We write \FRs\/ for $\FRd{\vec{x/x}}{1}{\Ident{x}/x} ::
+\seq{\Gamma}{\alpha}{\F{\alpha}{\Delta}}$ when $\Delta \subseteq \Gamma$
+and we write and \ULs{x} for $\ULd{x}{\vec{x/x}}{1}{\Ident{x}/x}{z.z} ::
+\seq{\Gamma}{\alpha}{A}$ when $x:\U{x.\alpha}{\Delta}{A} \in \Gamma$ and
+$\Delta \subseteq \Gamma$.  
 
-\item An $\eta$ law for \Usymb: $\D ::
-  \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ is equal to
+The equational theory of derivations is the least congruence containing
+the equations in Figure~\ref{fig:equality-of-derivations}.
+
+\begin{figure}
+\[
+\begin{array}{rcll} 
+\Cut{\D}{\Ident{x}}{x} & \deq & \D \\
+\Cut{\Ident{x}}{\D}{x} & \deq & \D \\
+\Cut{\D_1}{\D_2}{x} & \deq & \D_1 & \text{if $x \# \D_1$}\\
+\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y} & \deq & \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}\\
+\\
+\Trd{1}{\D} & \deq & \D\\
+\Trd{(s_1;s_2)}{\D} & \deq & \Trd{{s_1}}{\Trd{{s_2}}{\D}} \\
+\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} & \deq & \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \\
+\\
+\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s_0/x])}{\D[{\D_i/x_i}]} \\
+%% special case \Cut{\FLd{x_0}{\D}}{\FRs}{x_0} & \deq & \D \\
+\Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} & \deq & \Trd{(s[1_{\alpha_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \\
+\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta.\Cut{\ULs x}{\D}{x}}\\
+\D :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C} & \deq & \FLd{x}{\Delta.\Cut{\D}{\FRs}{x}}\\
+\end{array}
+\]
+\caption{Equality of Derivations}
+\label{fig:equality-of-derivations}
+\end{figure}
+
+The first two equations say that identity is a unit for cut.  The third
+says that non-occurence of a variable is a projection (with more
+explicit weakening, the notation $x \# \D_1$ means that $\D_1$ is the
+weakening of some derivation $\seq{\Gamma,\Gamma'}{\alpha}{C}$ to
+$\seq{\Gamma,x:A,\Gamma'}{\alpha}{C}$, and the equation says that we
+return that original derivation).  The fourth is functoriality of cut
+(when phrased for single-variable substitutions, the equation
+$\D[\theta][\theta'] \deq \D[\theta[\theta']]$ becomes a rule for
+commuting substitutions).
+
+In the next group, the first two rules say that the action of a
+transformation is functorial, and commutes with cut.  The typing in the
+third rule is $\D_1 :: \seq{\Gamma}{\alpha'}{A}$ and $\D_2 ::
+\seq{\Gamma,x:A}{\beta'}{C}$ and $s_1 :: \alpha \spr \alpha'$ and $s_2
+:: \beta \spr \beta'$, so both sides are derivations of as derivations
+of \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{C}.
+
+In the next group, we have the $\beta\eta$-laws for \dsd{F} and \dsd{U}.  The $\beta$ laws are the
+principal cut cases given above.  By the composition law for cut, the
+simultaneous substitution can be defined as iterated substitution in any
+order.  The $\eta$ law for \Usymb\/ equates any derivation to
 \[
 \infer[\UR]
       {\seq{\Gamma}{\alpha}{\U{x.\alpha}{\Delta}{A}}}
@@ -98,12 +135,7 @@ as derivations of \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{C}.
                            {}
       }}
 \]
-(or $\URd{\Delta.\Cut{\ULd{x}{1}{\Ident{\Delta}}{z.z}}{\D}{x}}$).  The
-$\beta$ law for \Usymb\/ is a defining equation of cut (the principal
-case).
-
-\item An $\eta$ law for \Fsymb: $\D ::
-  \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}$ is equal to
+The $\eta$ law for \Fsymb\/ equations any derivation to 
 \[
 \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
       {\infer[\dsd{cut}]
@@ -111,101 +143,18 @@ case).
         {\infer[\FR^*]{\seq{\Gamma,\Gamma',\Delta}{\alpha}{\F{\alpha}{\Delta}}}{} &
           \D}}
 \]
-(or $\FLd{x}{\Delta.\Cut{\D}{\FRd{1}{\Ident \Delta}}{x}}$).  
-The $\beta$ law is a defining equation of cut.
-\end{itemize}
-In the one-variable case~\citep{ls16adjoint}, we reduced these laws to
-some more specific axioms, which bridge the gap between the defining
-equations of identity, cut, and respect for transformations and these
-abstract properties, but we have not yet attempted such a reduction
-here.
 
-\paragraph{Example}
+In these rules, we have prioritized a concise axiomatization over
+separating ``definitional'' and ``propositional'' equalities.  For
+example, rather than giving the defining equations of transformation,
+identity, and cut, we have stated their algebraic properties, including
+associativity, unit, functoriality and $\eta$ laws, and the definitions
+given in Section~\ref{sec:synprop-long} can be deduced from these.  In
+the one-variable case~\citep{ls16adjoint}, we took the opposite
+approach, using the defining equations plus to some more specific axioms
+to prove these algebraic laws; we have not yet attempted such a
+reduction here.
 
-Consider an affine product (commutative monoid $(\otimes,1)$ with
-$\dsd{w} :: x \spr 1$) and the following two derivations of $P,Q,R
-\vdash P \otimes R$:
+\subsection{Useful equations}
 
-\begin{footnotesize}
-\[
-\infer[\FR]
-      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
-              {(x \otimes y) \spr x} &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
-              {z \spr z}
-      }
-\]
-\end{footnotesize}
-\begin{footnotesize}
-\[
-\infer[\FR]
-      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr (x \otimes z) &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x}{C}}
-              {x \spr x} &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
-              {z \spr z}
-      }
-\]
-\end{footnotesize}
-
-These differ by the placement of weakening: our rules allow for
-weakening away $y$ either at a leaf (there is a third possible
-derivation that weakens in the $z$ leaf instead), as is typical in
-affine logic, or at the context division in $\FR$.  However, these two
-derivations are equal in the above equational theory:
-\[
-\FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}}
-\deq
-\FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}}
-\]
-By associativity, unit and projection laws, we have that a general
-instance of \FR\/ is equal to an iterated cut (in any order) and then a
-structural transformation on the ``axiomatic'' $\FR^* ::
-\seq{\Gamma,\Delta}{\alpha}{\F{\alpha}{\Delta}}$
-\[
-\FRd{\alpha}{\vec{\D_i/x_i}} \deq \Trd{\alpha}{\FR^*[\vec{\D_i/x_i}]}
-\]
-So applying this to both sides it suffices to show
-\[
-\begin{array}{rcl}
-& &  \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
-& \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} 
-\end{array}
-\]
-Here we have
-\[
-\begin{array}{rcl}
-\FR^*[\Trd{1}{z}/z'] & :: & \seq{x:P,y:Q,z:R,x':P}{x' \otimes z}{P \otimes R}\\
-\Trd{1}{x} & :: & \seq{x:P,y:Q,z:R}{x}{P}\\
-{(1_{x \otimes y}[\dsd{w}/y])} & :: & x \otimes y \spr y\\
-1_{x'\otimes z} & :: & x' \otimes z
-\end{array}
-\]
-so the transformation-on-cut equation gives
-\[
-\begin{array}{rl}
-     & \Cut{(\Trd{({1_{x'\otimes z}})}{\FR^*[\Trd{1}{z}/z']})}{\Trd{{(1_{x \otimes y}[\dsd{w}/y])}}{\Trd{1}{x}}}{x'}\\
- \deq & \Trd{ (\subst{({1_{x'\otimes z}})}{(1_{x \otimes y}[\dsd{w}/y])}{x'})  }{\Cut{\FR^*[\Trd{1}{z}/z']}{\Trd{1}{x}}{x'}}
-\end{array}
-\]
-The left-hand side is equal to the left-hand side of the goal by
-functoriality of \Trd{-}{-}, and the right-hand side is equal to the
-right-hand side of the goal by associativity of horizontal composition
-and $1_{x' \otimes z}[1_{x \otimes y/x'}] \deq 1_{x \otimes y \otimes
-  z}$.  
-
-%% \begin{array}{rcll}
-%% & &  \FRd{1}{\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x},\Trd{1}{z}} \\
-%% & \deq & \Trd{{(1_{x \otimes y \otimes z})}}{\FR^*[\Trd{1}{z}/z'][\Trd{(1_{x \otimes y}[\dsd{w}/y])}{x}/x']}\\
-%% & \deq & ? \\
-%% & \deq & \Trd{{(1_{x \otimes y \otimes z}[\dsd{w}/y])}}{\FR^*[\Trd{1}{z}/z'][\Trd{1}{x}/x']} \\
-%% & \deq & \FRd{1_{x \otimes y \otimes z}[\dsd{w}/y]}{\Trd{1}{x},\Trd{1}{z}} \\
-%% \end{array}
-%% \]
+FIXME: derive definitional clauses

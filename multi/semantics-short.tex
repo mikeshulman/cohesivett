@@ -24,40 +24,40 @@ exchange instead of named variables.
       (g,(f_1,\dots,f_m)) &\mapsto g\circ (f_1,\dots,f_m)
     \end{align*}
     \end{footnotesize}
-    %% We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
-  %% \item For any $f\in\M(A_1,\dots,A_n;B)$ we have natural equalities (i.e.\ natural transformations whose components are identities)
-  %%   \[
-  %%     1_B \circ (f) = f \qquad
-  %%     f\circ (1_{A_1},\dots,1_{A_n}) = f.
-  %%     \]
-  %% \item For any $h,g_i,f_{ij}$ we have natural equalities
-  %%   \begin{multline*}
-  %%     (h\circ (g_1,\dots,g_m))\circ (f_{11},\dots,f_{mn_m}) =\\
-  %%     h \circ (g_1\circ (f_{11},\dots,f_{1n_1}), \dots, g_m \circ (f_{m1},\dots,f_{mn_m}))
-  %%   \end{multline*}
+    We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
+   \item For any $f\in\M(A_1,\dots,A_n;B)$ we have natural equalities (i.e.\ natural transformations whose components are identities)
+     \[
+       1_B \circ (f) = f \qquad
+       f\circ (1_{A_1},\dots,1_{A_n}) = f.
+       \]
+   \item For any $h,g_i,f_{ij}$ we have natural equalities
+     \begin{multline*}
+       (h\circ (g_1,\dots,g_m))\circ (f_{11},\dots,f_{mn_m}) =\\
+       h \circ (g_1\circ (f_{11},\dots,f_{1n_1}), \dots, g_m \circ (f_{m1},\dots,f_{mn_m}))
+     \end{multline*}
   \item For any function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$ and
     objects $A_1,\dots,A_n,B$, a \emph{renaming} functor
     \begin{align*}
       \M(A_{\sigma 1},\dots,A_{\sigma m}; B) &\to \M(A_1,\dots,A_n;B)\\
       f &\mapsto f\sigma^*
     \end{align*}
-  %% \item The functors $\sigma^*$ satisfy the following natural equalities:
-  %%   \begin{gather*}
-  %%     f \sigma^* \tau^* = f(\tau\sigma)^*\\
-  %%     f (1_n)^* = f\\
-  %%     g\circ (f_1 \sigma_1^* ,\dots, f_n \sigma_n^*) = (g \circ (f_1,\dots,f_n))(\sigma_1\sqcup \cdots \sqcup \sigma_n)^*\\
-  %%     g\sigma^* \circ (f_1,\dots,f_n) = (g\circ (f_{\sigma 1},\dots, f_{\sigma m}))(\sigma \wr (k_1,\dots,k_n))^*
-  %%   \end{gather*}
-  %%   In the last equation, $k_i$ is the arity of $f_i$, and $\sigma \wr (k_1,\dots,k_n)$ denotes the composite function
-  %%   \begin{footnotesize}
-  %%   \begin{equation*}
-  %%     \{1,\dots,\textstyle\sum_{i=1}^m k_{\sigma i} \}
-  %%     \toiso \bigsqcup_{i=1}^m \{1,\dots,k_{\sigma i}\}
-  %%     \xrightarrow{\widehat{\sigma}} \bigsqcup_{j=1}^n \{1,\dots,k_{j}\}
-  %%     \toiso \{1,\dots,\textstyle\sum_{j=1}^n k_j \}
-  %%   \end{equation*}
-  %%   \end{footnotesize}
-  %%   where $\widehat{\sigma}$ acts as the identity from the $i^{\mathrm{th}}$ summand to the $(\sigma i)^{\mathrm{th}}$ summand.
+   \item The functors $\sigma^*$ satisfy the following natural equalities:
+     \begin{gather*}
+       f \sigma^* \tau^* = f(\tau\sigma)^*\\
+       f (1_n)^* = f\\
+       g\circ (f_1 \sigma_1^* ,\dots, f_n \sigma_n^*) = (g \circ (f_1,\dots,f_n))(\sigma_1\sqcup \cdots \sqcup \sigma_n)^*\\
+       g\sigma^* \circ (f_1,\dots,f_n) = (g\circ (f_{\sigma 1},\dots, f_{\sigma m}))(\sigma \wr (k_1,\dots,k_n))^*
+     \end{gather*}
+     In the last equation, $k_i$ is the arity of $f_i$, and $\sigma \wr (k_1,\dots,k_n)$ denotes the composite function
+     \begin{footnotesize}
+     \begin{equation*}
+       \{1,\dots,\textstyle\sum_{i=1}^m k_{\sigma i} \}
+       \toiso \bigsqcup_{i=1}^m \{1,\dots,k_{\sigma i}\}
+       \xrightarrow{\widehat{\sigma}} \bigsqcup_{j=1}^n \{1,\dots,k_{j}\}
+       \toiso \{1,\dots,\textstyle\sum_{j=1}^n k_j \}
+     \end{equation*}
+     \end{footnotesize}
+     where $\widehat{\sigma}$ acts as the identity from the $i^{\mathrm{th}}$ summand to the $(\sigma i)^{\mathrm{th}}$ summand.
   \end{enumerate}
 satisfying some equations that we elide here.  
 \end{definition}
@@ -178,16 +178,16 @@ semantic brackets on objects):
 
 \begin{itemize}
 \item For the hypothesis rule
-%% \[
-%% \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
-%%       {x:P \in \Gamma & s : \beta \spr x}
-%% \]
+\[
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+      {x:P \in \Gamma & s : \beta \spr x}
+\]
 we need a morphism in $\cD_\beta(\Gamma; P)$, which take to be $s_*(1_x)$.
 \item For $\FL$
-%% \[
-%% \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{M : C}}
-%%       {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
-%% \]
+\[
+\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{M : C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+\]
 the inductive hypothesis (after an exchange, which preserves the size of
 the derivations) gives a morphism $\llb \D \rrb \in \cD_{\subst \beta
   {\alpha}{x}}(\Gamma, \Delta, \Gamma'; C)$ and we must produce a morphism
@@ -207,13 +207,13 @@ construction of pullbacks in $Cat$, there is an object $f \in
 this $f$ to be our interpretation.
 
 \item For $\FR$
-%% \[
-%% \infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
-%%       {
-%%         s : \beta \spr \tsubst{\alpha}{\gamma} &
-%%         \seq{\Gamma}{\gamma}{M : \Delta} 
-%%       }
-%% \]
+\[
+\infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {
+        s : \beta \spr \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{M : \Delta} 
+      }
+\]
 where $\gamma = (\alpha_1, \dots, \alpha_n)$ and $\Delta = (C_1, \dots,
 C_n)$, the premises are interpreted as a 2-cell $s : \beta \spr
 {\alpha} \circ {(\alpha_1,\ldots,\alpha_n)}$ and a set of morphisms $\llb
@@ -221,50 +221,47 @@ d_i \rrb \in \cD_{\alpha_i}(\Gamma; C_i)$. We take the interpretation of
 the conclusion to be $s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb,
 \dots, \llb d_n \rrb))$
 
-%% \item For $\UL$
-%% \[\infer[\UL]{\seq{\Gamma}{\beta}{C}}
-%%       {\begin{array}{l}
-%%           x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
-%%           s : \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
-%%           \seq{\Gamma}{\gamma}{M:\Delta} \\
-%%           \seq{\Gamma,\tptm{z}{A}}{\beta'}{D:C}
-%%        \end{array}
-%%       }
-%% \]
-%% let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb M_i \rrb \in \cD_{\gamma_i}(\Gamma; C_i)$ and $\llb D \rrb \in \cD_{\beta'}(\Gamma, A; C)$. Our interpretation is then
-%% $s_*(\llb D \rrb \circ_z \xi_{\alpha, \Delta,A} \circ (\llb M_1 \rrb, \dots, \llb M_n \rrb, id_x))$
-%% \item For $\UR$
-%% \[
-%% \infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
-%%       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{M:A}}
-%% \]
-%% we are given a morphism $\llb M \rrb \in \cD_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\cD_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
-%% \[ \xymatrix{
-%%     \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ -} \ar[d]_S &
-%%     \cD(\Gamma,\Delta;A) \ar[d]^S \\
-%%     \M(S\Gamma;S \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ -} &
-%%     \M(S\Gamma,S\Delta;S A)
-%%   }\]
-%% Again we have objects $\beta$ and $\llb M \rrb$ that agree in the bottom right, so an induced object in the top left which we take as our interpretation.
+\item For $\UL$
+\[\infer[\UL]{\seq{\Gamma}{\beta}{C}}
+      {\begin{array}{l}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
+          s : \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
+          \seq{\Gamma}{\gamma}{M:\Delta} \\
+          \seq{\Gamma,\tptm{z}{A}}{\beta'}{D:C}
+       \end{array}
+      }
+\]
+let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb M_i \rrb \in \cD_{\gamma_i}(\Gamma; C_i)$ and $\llb D \rrb \in \cD_{\beta'}(\Gamma, A; C)$. Our interpretation is then
+$s_*(\llb D \rrb \circ_z \xi_{\alpha, \Delta,A} \circ (\llb M_1 \rrb, \dots, \llb M_n \rrb, id_x))$
+\item For $\UR$
+\[
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{M:A}}
+\]
+we are given a morphism $\llb M \rrb \in \cD_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\cD_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
+\[ \xymatrix{
+    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ -} \ar[d]_S &
+    \cD(\Gamma,\Delta;A) \ar[d]^S \\
+    \M(S\Gamma;S \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ -} &
+    \M(S\Gamma,S\Delta;S A)
+  }\]
+Again we have objects $\beta$ and $\llb M \rrb$ that agree in the bottom right, so an induced object in the top left which we take as our interpretation.
 \end{itemize}
-The cases for \UL\/ and \UR\/ are similar.  
 \end{proof}
 
-Conversely, the syntactic bifibration should be defined as
-follows: an object of $\cD$ is a pair $(p,\wftype{A}{p})$, and the
-hom-category has objects pairs $(\alpha,d :: \seq{\Gamma}{\alpha}{A})$
-(quotiented by some equations), and morphisms $(\alpha,d) \to (\alpha',d')$
-structural transformations $s :: \alpha \spr \alpha'$ such that
-$\Trd{s}{d'} \deq d$ .
-%% (the equational second
-%% component of these morphisms corresponds to local discreteness)
-The functor $\pi : \cD \to \M$ is then first projection.  Identity,
-composition, and renamings for $\cD$ are defined by the corresponding
-syntactic lemmas, which lay over the appropriate context context
-descriptor to make $\pi$ functorial.  Cartesian and opcartesian lifts
-are defined to be \Fsymb{} and \Usymb{} types with $\FR^*$ and $\UL^*$.
-%% What remains is to check that the equational theory
-%% implies the semantic equations.
+Conversely, the syntactic bifibration should be defined as follows: an
+object of $\cD$ is a pair $(p,\wftype{A}{p})$, and the hom-category has
+objects pairs $(\alpha,d :: \seq{\Gamma}{\alpha}{A})$ (quotiented by
+some equations), and morphisms $(\alpha,d) \to (\alpha',d')$ structural
+transformations $s :: \alpha \spr \alpha'$ such that $\Trd{s}{d'} \deq
+d$ (the equational second component of these morphisms corresponds to
+local discreteness).  The functor $\pi : \cD \to \M$ is then first
+projection.  Identity, composition, and renamings for $\cD$ are defined
+by the corresponding syntactic lemmas, which lay over the appropriate
+context context descriptor to make $\pi$ functorial.  Cartesian and
+opcartesian lifts are defined to be \Fsymb{} and \Usymb{} types with
+$\FR^*$ and $\UL^*$.  What remains is to check that the equational
+theory implies the semantic equations.
 
 %% \begin{theorem}
 %% Given a mode theory $\M$, the syntax determines a 2-multicategory $\cD$ and a bifibration $S : \cD \to \M$.

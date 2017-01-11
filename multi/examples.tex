@@ -35,7 +35,6 @@ example, derive associativity $A \odot (B \odot C) \vdash (A \odot B)
 begin by applying the invertible (Lemma~\ref{lem:Finv}) \FL\/ rule
 twice, at which point no further left rules are possible, so we must apply \FR:
 
-\begin{footnotesize}
 \[
 \infer[\FL]
 {\seq{a:\F{x \odot p}{x:A,p:\F{y \odot z}{y:B,z:C}}}
@@ -54,7 +53,6 @@ twice, at which point no further left rules are possible, so we must apply \FR:
         }}
 }
 \]
-\end{footnotesize}
 
 \noindent To apply \FR, we need to find a substitution for $\alpha_1/q$
 and $\alpha_2/z$ with a structural transformations as above.  In the
@@ -108,7 +106,6 @@ the former is a further \FR\/ and then identities:
 \]
 However, we cannot prove commutativity:
 
-\begin{small}
 \[
 \infer[\FL]{\seq{p:\F{x\odot y}{x:A,y:B}}{p}{\F{z\odot w}{z:B,w:A}}}
       {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
@@ -118,7 +115,6 @@ However, we cannot prove commutativity:
             \seq{x:A,y:B}{\alpha_2}{A} 
       }}
 \]
-\end{small}
 
 \noindent because the only choice is $\alpha_1 = x$ and $\alpha_2 = y$, which
 sends the wrong resource to each branch.  
@@ -126,7 +122,6 @@ sends the wrong resource to each branch.
 Ordered logic has two different implications, one that adds to the left
 of the context, and one that adds to the right; the expected rules are
 
-\begin{small}
 \[
 \begin{array}{l}
 \infer{\seql{\Gamma}{o}{ A \rightharpoonup B}}
@@ -146,7 +141,6 @@ of the context, and one that adds to the right; the expected rules are
       }
 \end{array}
 \]
-\end{small}
 
 We represent these by 
 \[
@@ -282,7 +276,6 @@ will be efficient to unfold a substitution).
 %% – Prototype implementation
 
 We use the following sequent calculus rules for $n$-linear functions 
-\begin{small}
 \[
 \infer{{0\cdot \Gamma,x:^1 P} \vdash {P}}
       {}
@@ -294,7 +287,6 @@ We use the following sequent calculus rules for $n$-linear functions
       {\Delta \vdash A &
        {\Gamma, z :^k B} \vdash {C}}
 \]
-\end{small}%
 \noindent where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m}
 A = x :^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A
 = x :^{nm} A$.  In the left rule, $\Gamma$ and $\Delta$ have the same
@@ -402,7 +394,6 @@ does not.  First, the framework allows weakening at the non-invertible
 rules, rather than pushing it to the leaves.  For example, we have
 the following two derivations of $P,Q,R \vdash P \otimes R$.
 
-\begin{footnotesize}
 \[
 \infer[\FR]
       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
@@ -415,8 +406,6 @@ the following two derivations of $P,Q,R \vdash P \otimes R$.
               {z \spr z}
       }
 \]
-\end{footnotesize}
-\begin{footnotesize}
 \[
 \infer[\FR]
       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
@@ -429,7 +418,6 @@ the following two derivations of $P,Q,R \vdash P \otimes R$.
               {z \spr z}
       }
 \]
-\end{footnotesize}%
 
 \noindent The second is that a derivation may perform a left rule on a
 $0$-linear (in the sense of the previous section) variable, i.e. one
@@ -802,7 +790,6 @@ corresponds to the context-clearing in the left rule.
 
 For example, if we have a monoid $(\otimes_\dsd{t},1_{\dsd t})$ on mode
 \dsd{t} and try to derive
-\begin{small}
 \[
 \infer[\UR]
       {\seq{x : A, y : \Dia{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Dia{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
@@ -812,7 +799,6 @@ For example, if we have a monoid $(\otimes_\dsd{t},1_{\dsd t})$ on mode
           \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes_{\dsd t} B}}
         }}
 \]
-\end{small}%
 
 \noindent we are stuck, because there is no way to rewrite $\dsd{g}(x
 \otimes_{\dsd t} y)$ as a term containing $\dsd{g}(y)$.  If
@@ -852,7 +838,6 @@ $\dsd{g}(x_1 \otimes_{\dsd t} \ldots \otimes_{\dsd t} x_n)$ as the
 designated variable under a \dsd{g}.  Using this (and switching notation
 from \Dia{\dsd{g}}{A} to \Crc{\dsd{g}}{A}), we can prove
 
-\begin{footnotesize}
 \[
 \infer[\UR]
       {\seq{x : A, y : \Crc{\dsd{g}}{B}}{x \otimes_{\dsd t} y}{\Crc{\dsd{g}}{(A \otimes_{\dsd t} B)}}}
@@ -868,8 +853,6 @@ from \Dia{\dsd{g}}{A} to \Crc{\dsd{g}}{A}), we can prove
                        }
         }}}
 \]
-\end{footnotesize}%
-
 
 An analogous description can be given for the ``$\Box$-strong
 $\Diamond$''~\citep{pfenningdavies,alechina+01categoricals4}, which has
@@ -904,7 +887,6 @@ The left rule
 \]
 that keeps the valid assumptions and discards the true ones is derivable
 by
-\begin{footnotesize}
 \[
 \infer%[\UL]
       {\seq{x_i:\Uempty{\dsd{f}}{A_i},y_i:B_i,z:\Dia{\dsd{g}}{A}}{\dsd{g}(\dsd{f}{(x_i)} \times y_i \times z)}{\F{\dsd{f}}{C}}}
@@ -915,7 +897,6 @@ by
             {\seq{\ldots,w':A}{(\tvp{(x_1 \times_v \ldots \times_v x_n)} {\dsd{g}(w')})}{{\F{\dsd{f}}{C}}}}
       }
 \]
-\end{footnotesize}
 \noindent The transformation is given by weakening away $y_i$ and
 using the monoidalness of \dsd{f} and the isolation equation:
 \[
@@ -956,7 +937,6 @@ $\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
   y_1\times\ldots}{C}$.  
 
 As a sequent calculus, the rules from~\citep{shulman15realcohesion} are
-\begin{footnotesize}
 \[
 \begin{array}{c}
 \infer{\Delta;\Gamma \vdash C}
@@ -978,7 +958,6 @@ As a sequent calculus, the rules from~\citep{shulman15realcohesion} are
 \quad
 \end{array}
 \]
-\end{footnotesize}%
 
 \noindent In order, these correspond to (1) the action of the
 contraction and $\dsd{r}(x) \spr x$ transformations; (2) \FR\/ with

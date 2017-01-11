@@ -1,12 +1,15 @@
 
-\begin{center} \textsc{Proofs of Syntactic Properties}
-\end{center}
+\section{Syntactic Properties}
 \label{sec:synprop-long}
 
-Here, we include proofs of the results from
-Section~\ref{sec:synprop-short}.  We show the cases for the rules in
-Figure~\ref{fig:sequent}, though the results readily extend to additive
-sums and products.
+%% Here, we include proofs of the results from
+%% Section~\ref{sec:synprop-short}.  
+
+\subsection{Admissible Structural Rules}
+We show that identity, cut, weakening, exchange, contraction, and
+respect for transformations, are admissible.  We give the cases for the
+rules in Figure~\ref{fig:sequent}, though the results readily extend to
+additive sums and products.
 
 Define the \emph{size} of a derivation of \seq{\Gamma}{\alpha}{A} or
 \seq{\Gamma}{\gamma}{\Delta} to be the number of inference rules for
@@ -16,7 +19,7 @@ structural transformations do not contribute to the size).  Sizes are
 necessary for the cut proof, where we sometimes weaken or invert a
 derivation before applying the inductive hypothesis.
 
-\begin{lemma}[Respect for Transformations] ~ %% \label{lem:respectspr}
+\begin{lemma}[Respect for Transformations] ~ \label{lem:respectspr}
 \begin{enumerate}
 \item If \seq{\Gamma}{\beta}{A} and $\beta' \spr \beta$ then
   \seq{\Gamma}{\beta'}{A}, and the resulting derivation has the same
@@ -44,7 +47,7 @@ and $\alpha_2' \spr \alpha_2$); this is enough to use the inductive
 hypotheses in the cons case.
 \end{proof}
 
-\begin{lemma}[Weakening over weakening] ~ %% \label{lem:weakening} ~
+\begin{lemma}[Weakening over weakening] ~ \label{lem:weakening} ~
 \begin{enumerate}
 \item If \seq{\Gamma,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,\tptm{z}{A},\Gamma'}{\alpha}{C}, and the resulting
@@ -77,7 +80,7 @@ first part.
 %% hypothesis, as does the case for \Usymb-right.  
 \end{proof}
 
-\begin{lemma}[Exchange over exchange] %% \label{lem:exchange}
+\begin{lemma}[Exchange over exchange] \label{lem:exchange}
 If \seq{\Gamma,x:A,y:B,\Gamma'}{\alpha}{C} then
 \seq{\Gamma,y:B,x:A,\Gamma'}{\alpha}{C}, and the resulting derivation
 has the same size as the given one.  (And similarly for substitutions,
@@ -89,7 +92,7 @@ and exchange can be iterated).
 We sometimes write $\modeof{\Gamma}$ for the $\psi$ such that
 \wfctx{\Gamma}{\psi} and similarly for $\modeof{A}$.
 
-\begin{theorem}[Identity] ~ %% \label{thm:identity}
+\begin{theorem}[Identity] ~ \label{thm:identity}
 \begin{enumerate}
 \item If $x:A \in \Gamma$ then $\seq{\Gamma}{x}{A}$.
 \item If $\oftp{\modeof{\Gamma}}{\rho}{\modeof{\Delta}}$ is a
@@ -145,7 +148,7 @@ we obtain the result from the inductive hypotheses as follows:
 \]
 \end{proof}
 
-\begin{lemma}[Left-invertibility of \Fsymb] %% \label{lem:Finv}
+\begin{lemma}[Left-invertibility of \Fsymb] \label{lem:Finv}
 If $\D :: \seq{\Gamma_1,x_0:\F{\alpha_0}{\Delta_0},\Gamma_2}{\beta}{C}$
 and then there is a derivation $\D' ::
 \seq{\Gamma_1,\Gamma_2,\Delta_0}{\subst{\beta}{\alpha_0}{x_0}}{C}$ and
@@ -292,7 +295,7 @@ $\subst{(\gamma,\alpha/x)}{\alpha_0}{x_0} =
 \end{proof}
 
 
-\begin{theorem}[Cut] ~ %% \label{thm:cut}
+\begin{theorem}[Cut] ~ \label{thm:cut}
 \begin{enumerate} 
 \item  If $\seq{\Gamma,\Gamma'}{\alpha_0}{A_0}$ and $\seq{\Gamma,x_0:A_0,\Gamma'}{\beta}{B}$ 
 then $\seq{\Gamma,\Gamma'}{\beta[\alpha_0/x_0]}{B}$ 
@@ -683,7 +686,8 @@ the free variables of $\alpha$),
 \]
 \end{proof}
 
-\begin{corollary}[Contraction over contraction] %% \label{cor:contraction}
+Using this, we have
+\begin{corollary}[Contraction over contraction] \label{cor:contraction}
 \item If
 \seq{\Gamma,x:A,y:A,\Gamma'}{\alpha}{C}
 then
@@ -698,7 +702,7 @@ Therefore, by identity (part 2),
 obtain the result.
 \end{proof}
 
-\begin{corollary}[Right-invertibility of \Usymb] %% \label{cor:Uinv}
+\begin{corollary}[Right-invertibility of \Usymb] \label{cor:Uinv}
 If $\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}$ then 
 {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}.
 \end{corollary}
@@ -725,6 +729,11 @@ and then cutting for $x$ in the above gives the result:
 \]
 \end{proof}
 
+\subsection{General Properties}
+
+We give a couple of general constructions that were used in several
+examples above.
+
 The following ``fusion'' lemmas (which are isomorphisms, not just
 interprovabilities) relate $\Fsymb$ and $\Usymb$.  Special cases
 include: $A \times (B \times C)$ is isomorphic to a primitive triple
@@ -736,7 +745,7 @@ $\alpha \spr \beta$ is proved by equality of context descriptors, and an
 unlabeled sequent leaf is proved by identity
 (Theorem~\ref{thm:identity}).  
 
-\begin{lemma}[Fusion] ~ %% \label{lem:fusion}
+\begin{lemma}[Fusion] ~ \label{lem:fusion}
 \begin{enumerate} 
 
 \item $\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash
@@ -752,7 +761,8 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 \end{enumerate}
 \end{lemma}
 
-\begin{figure*}
+\begin{figure}
+\begin{small}
 \[
 \infer[\FL]{
   \seq{z:\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''}}
@@ -792,8 +802,8 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
 
 \[
 \infer[\UR]{\seq{x:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}}{x}{\U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}}}
-      {\infer[\UL, \text { with } \Gamma = {p:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}, {\Delta,\Delta',\Delta''}}]
-        {\seq{x:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}, {\Delta,\Delta',\Delta''}}{{\subst{\alpha}{\beta}{y}}}{A}} 
+      {\infer[\UL]
+        {\seq{\Gamma := (x:\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A}, {\Delta,\Delta',\Delta''})}{{\subst{\alpha}{\beta}{y}}}{A}} 
         {\subst{\alpha}{\beta}{y} \spr z[\tsubst{\alpha}{\vec{w/w},\beta/y}/z] &
           \seq{\Gamma}{\vec{w/w}}{\Delta,\Delta''} &
           \infer[\FR]{\seq{\Gamma}{\beta}{\F{\beta}{\Delta'}}}{} &
@@ -833,15 +843,16 @@ $\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash
         {\infer[\UL]{\seq{x:{\U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}},\Delta,\Delta'}{\subst{\beta}{\alpha}{y}}{A}}
           {}}}
 \]
+\end{small}
 \caption{Derivations of fusion lemmas}
 \vspace{2in}
 \label{fig:fusion}
-\end{figure*}
+\end{figure}
 
 The types respect the structural transformations, covariantly for \Fsymb\/
 and contravariantly for \Usymb\/.
 
-\begin{lemma}[Types Respect Structural Transformations] ~ %% \label{lem:typespr}
+\begin{lemma}[Types Respect Structural Transformations] ~ \label{lem:typespr}
 \begin{enumerate}
 \item 
  If $\alpha \spr \beta$ then $\F{\alpha}{\Delta} \vdash

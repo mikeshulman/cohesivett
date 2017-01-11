@@ -30,7 +30,7 @@
       {\forall x_i:q_i \in\psi', \oftp{\psi}{\alpha_i}{q_i} }
 \]
 
-\framebox{Structural properties/mode transformations \wfsp{\psi}{\alpha}{\alpha'}{p}}
+\framebox{Structural transformations/mode 2-morphisms \wfsp{\psi}{\alpha}{\alpha'}{p}}
 
 \[
 \begin{array}{c}
@@ -225,23 +225,23 @@ details), which express respect for structural transformations and
 structurality-over-structurality:
 \[
 \begin{array}{c}
-\infer{\seq{\Gamma}{\alpha}{A}}
+\infer[Lem~\ref{lem:respectspr}]{\seq{\Gamma}{\alpha}{A}}
       {\alpha \spr \beta &
        \seq{\Gamma}{\beta}{A}}
 \qquad
-\infer{\seq{\Gamma,x:A}{x}{A}}{}
+\infer[Thm~\ref{thm:identity}]{\seq{\Gamma,x:A}{x}{A}}{}
 \qquad
-\infer{\seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}
+\infer[Thm~\ref{thm:cut}]{\seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}
     {\seq{\Gamma,x:A}{\beta}{B} &
      \seq{\Gamma}{\alpha}{A}}
 \\ \\
-\infer{\seq{\Gamma,y:A}{\alpha}{C}}
+\infer[Lem~\ref{lem:weakening}]{\seq{\Gamma,y:A}{\alpha}{C}}
       {\seq{\Gamma}{\alpha}{C}}
 \quad
-\infer{\seq{\Gamma,y:B,x:A}{\alpha}{C}}
+\infer[Lem~\ref{lem:exchange}]{\seq{\Gamma,y:B,x:A}{\alpha}{C}}
       {\seq{\Gamma,x:A,y:B}{\alpha}{C}}
 \qquad
-\infer{\seq{\Gamma,x:A}{\subst \alpha x y}{C}}
+\infer[Cor~\ref{cor:contraction}]{\seq{\Gamma,x:A}{\subst \alpha x y}{C}}
       {\seq{\Gamma,x:A,y:A}{\alpha}{C}}
 \end{array}
 \]
@@ -358,7 +358,6 @@ have contraction in linear logic).
 
 Additives can be added to this sequent calculus; e.g. a mode $p$ has
 sums $\wftype{A_p + B_p}{p}$ if
-\begin{small}
 \[
 \begin{array}{c}
 \infer{\seq{\Gamma}{\alpha}{A + B}}
@@ -382,5 +381,5 @@ sums $\wftype{A_p + B_p}{p}$ if
 %%       {\seq{\Gamma}{\alpha}{B}}
 \end{array}
 \]
-\end{small}
+
 

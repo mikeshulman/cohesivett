@@ -1,7 +1,9 @@
-\documentclass[conference,compsoconf]{../drl-common/IEEEtran}
-\IEEEoverridecommandlockouts
-%% \documentclass{article}
-%% \usepackage{times}
+%%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
+%%SHORT \IEEEoverridecommandlockouts
+
+\documentclass{article}
+\usepackage{times}
+\usepackage{authblk}
 
 \usepackage[all]{xy}
 \usepackage{multicol}
@@ -83,38 +85,43 @@
 
 \newcommand{\ignore}[1]{}
 
-\newcommand\FLd[2]{\ensuremath{\FL_{#1}(#2)}}
-\newcommand\FRd[2]{\ensuremath{\FR(#1,#2)}}
-\newcommand\ULd[4]{\ensuremath{\UL_{#1}(#2,#3,#4)}}
+\newcommand\FLd[2]{\ensuremath{\FL^{#1}(#2)}}
+\newcommand\FRd[3]{\ensuremath{\FR_{#1}(#2,#3)}}
+\newcommand\ULd[5]{\ensuremath{\UL^{#1}_{#2}(#3,#4,#5)}}
 \newcommand\URd[1]{\ensuremath{\UR(#1)}}
 \newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
-\newcommand\Ident[1]{\ensuremath{\dsd{ident}_{#1}}}
+\newcommand\Ident[1]{\ensuremath{{#1}}}
 \newcommand\Cut[3]{\ensuremath{#1[#2/#3]}}
 
 \begin{document}
 
 \title{A Fibrational Framework for \\ Substructural and Modal Logics}
 
+%% SHORT
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Daniel R. Licata}
-\IEEEauthorblockA{Wesleyan University\\
-\url{dlicata@wesleyan.edu}}
-\and
-\IEEEauthorblockN{Michael Shulman}
-\IEEEauthorblockA{University of San Diego \\
-  \url{shulman@sandiego.edu}}
-\and
-\IEEEauthorblockN{Mitchell Riley}
-\IEEEauthorblockA{Wesleyan University \\
-  \url{mvriley@wesleyan.edu}}
+%% \author{\IEEEauthorblockN{Daniel R. Licata}
+%% \IEEEauthorblockA{Wesleyan University\\
+%% \url{dlicata@wesleyan.edu}}
+%% \and
+%% \IEEEauthorblockN{Michael Shulman}
+%% \IEEEauthorblockA{University of San Diego \\
+%%   \url{shulman@sandiego.edu}}
+%% \and
+%% \IEEEauthorblockN{Mitchell Riley}
+%% \IEEEauthorblockA{Wesleyan University \\
+%%   \url{mvriley@wesleyan.edu}}
 
-%% \thanks{
-%%   ?
-%% }
+%% %% \thanks{
+%% %%   ?
+%% %% }
 
-}
+\author[1]{{Daniel R. Licata}}
+\author[2]{{Michael Shulman}}
+\author[1]{{Mitchell Riley}}
+\affil[1]{Wesleyan University}
+\affil[2]{University of San Diego}
 
 \maketitle
 
@@ -122,28 +129,36 @@
 Many intuitionistic substructural and modal logics can be seen as a
 restriction on the allowed proofs in a basic structural logic or
 $\lambda$-calculus.  For example, substructural logics remove structural
-properties such as weakening, exchange, and/or contraction, while modal
-logics place restrictions on positions in which certain kinds of
-variables can be used.  We give a new sequent calculus that makes this
-idea precise, describing a substructural or modal logic derivation as a
+properties such as associativity, weakening, exchange, and contraction,
+while modal logics place restrictions on positions in which certain
+variables can be used.  We give a new sequent calculus motivated by this
+idea, describing a substructural or modal logic derivation as a
 structural proof that obeys some constraints on the use of the context.
 Our sequent calculus is parametrized by a \emph{mode theory} describing
-the constraints, and a single generic proof of cut admissibility can be
-instantiated to all of the above logics, as well as more complex
-variants, including n-linear variables, bunched implications, and
-subexponentials.  Semantically, the new sequent calculus corresponds to
-a functor between 2-dimensional cartesian multicategories, and the
-logical connectives make this functor into a bifibration.  The resulting
-framework can be used both to understand logics from the literature and
-to design new substructural and modal logics.
+the constraints and their structural properties.  We give a generic
+proof of cut (and identity) admissibility that applies to all mode
+theories.  We show that particular mode theories can be used to describe
+the standard intuitionistic substructural and modal connectives, as well
+as some more complex variants, including n-linear variables, bunched
+implications, adjoints, and subexponentials.  We give an equational
+theory on derivations that, in addition to the usual universal
+properties for types, equates derivations that differ only by the
+placement of structural rules.  Semantically, a mode theory corresponds
+to a 2-dimensional cartesian multicategory, the new sequent calculus
+corresponds to another such multicategory with a functor to the mode
+theory. The logical connectives make this functor into a bifibration.
+The resulting framework can be used both to understand logics from the
+literature and to design new substructural and modal logics.
 \end{abstract}
 
 \input{intro}
 \input{syntax}
-   \input{synprop-short}
+%%SHORT   \input{synprop-short}
 \input{examples}
-%% \input{equational}
+\input{synprop-long}
+\input{equational}
 \input{semantics-short}
+\input{adequacy-appendix}
 \input{conclusion}
 
 \setlength{\bibsep}{-1pt} %% dirty trick: make this negative
@@ -152,16 +167,6 @@ to design new substructural and modal logics.
 \bibliographystyle{abbrvnat}
 \bibliography{../drl-common/cs}
 }
-
-\newpage
-\clearpage
-
-\appendix
-\input{synprop-long}
-\newpage
-
-\input{adequacy-appendix}
-\newpage
 
 \end{document}
 
