@@ -158,3 +158,15 @@ reduction here.
 \subsection{Useful equations}
 
 FIXME: derive definitional clauses
+
+\[
+\begin{array}{rcl}
+\Trd{s}{\FRd{}{s'}{\D}} & \deq & \FRd{}{s;s'}{\D}\\
+\Trd{s}{\FLd{x}{\Delta.\D}} & \deq & \FLd{x}{\Delta.\Trd{(s[1_\alpha/x])}{\D}}\\
+\Trd{s}{\ULd{x}{}{s'}{\vec{\D}}{z.\D'}} & \deq & {\ULd{x}{}{s;s'}{\vec{\D}}{z.\D'}}\\
+\Trd{s}{\URd{\Delta.\D}} & \deq & \URd{\Delta.\Trd{(1_\alpha[s/x])}{\D}} \\
+\\
+x :: \seq{\Gamma,x:\F{\alpha}{\Delta}}{x}{\Gamma,x:\F{\alpha}{\Delta}} & \deq & \FL{x}{\Delta.\FR{\vec{y/y}}{1}{\vec{y/y}}}\\
+\Cut{\FRd{}{s}{\E}}{\D}{x_0} & \deq & {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
+\end{array}
+\]

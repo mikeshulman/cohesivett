@@ -1,6 +1,132 @@
 
-\section{Adequacy Proofs}
+\section{Adequacy of Representations}
 \label{sec:adequacy-long}
+
+\subsection{Template}
+
+Suppose we are representing some object logic, like the examples from
+Section~\ref{sec:exampleencodings}, in our framework.  In general, for a
+specific mode theory, the framework will have more types than the object
+logic.  For example, if we represent a logic with a binary product by a
+product in the mode theory, then the framework will have not only \F{x
+  \otimes y}{x:A,y:B}, but also a primitive triple product \F{x \otimes
+  y \otimes z}{x:A,y:B,z:C}, and so on.  If we represent a modal logic
+with a monad by its adjoint decomposition, then the framework will have
+not only the $\Usymb \Fsymb$ composite, but also the \Usymb\/ and
+\Fsymb\/ types separately.
+
+Thus, what we will expect is something like a full and faithful functor
+from the object logic to the framework (FIXME: loosely, since it's not
+clear to me what kind of categories we're really talking about --- is
+there a sense which this can be made really true?).  Unpacking this, the
+object part of the functor means we want a translation $A^*$ from object
+language types to framework types---and an extension translating
+object-language sequents $J$ to framework sequents $J^*$.  The morphism
+part of the functor maps each object-logic derivation $d : J$ to a
+derivation $d^* : J^*$.  Functoriality means that the translation takes
+identities to identities and cuts to cuts.  Together, full and
+faithfullness say that for each sequent $J$, the object language
+derivations of $J$ are bijective with framework derivations of $J^*$.
+In particular, fullness says that for any sequent $J$, the translation
+on derivations of that sequent is surjective: for every derivation $e$
+of $J^*$, there (merely) exists an object language derivation $d : J$
+such that $d^* = e$.  In terms of provability, this says that no more
+sequents can be proved in the framework, and in terms of proof identity,
+it says that every derivation could have been written in the object
+language. Faithfullness says that the translation on derivations is
+injective---$d_1^* = d_2^*$ implies $d_1 = d_2$---so no more equalities
+can be proved in the framework.  The fact that a function is a bijection
+iff it is surjective and injective gives the overall result.
+
+In the above discussion, we would like equality of derivations to
+correspond to the categorical universal properties for the connectives,
+which generally equate more morphisms than syntactic equality of
+cut-free proofs (unless one uses more sophisticated sequent calculi than
+we consider here, e.g. focusing/multifocusing).  On the framework side,
+the equational theory of Section~\ref{sec:equational} already accounts
+for this.  On the source side, will define a logic by the usual sequent
+calculus rules that make cut and identity admissible, along with
+primitive cut and identity rules, and an equality judgement analogous to
+Section~\ref{sec:equational}, which is a concise description of
+$\beta\eta$ rules.  Cut elimination for the source will be a corollary
+of the adequacy theorem (we could simplify the source syntax by removing
+the built-in cuts in the non-invertible rules, using the general cut
+rule in their place, but including them is convenient for stating the
+cut elimination corollary).  Thus, we refine the discussion above by
+taking equality of derivations to be \deq-classes.
+
+We will generally focus on the following aspects of constructing such a
+full and faithful functor:
+\begin{definition}[The interesting part of an adequacy proof] ~
+\begin{enumerate}
+\item The translation from types to types ($A^*$) and sequents to
+  sequents ($J^*$).
+
+\item For each source inference rule for each connective, a
+  \emph{derivation} $d^*$ from the translated premises to the translated
+  conclusion (not just an admissibility: each rule will be defined by a
+  composition of framework inference rules).
+
+\item A proof that equality axioms are preserved: for each
+  connective-specific equality axiom (typically $\beta\eta$) $d_1 \deq
+  d_2$, $d_1^* \deq d_2^*$.
+
+\item A function from cut-free framework derivations $e : J^*$
+to source derivations of $J$
+
+\item ??? $d_1^* \deq d_2^*$ implies $d_1 \deq d_2$
+
+\end{enumerate}
+\end{definition}
+
+From this, the full construction is as follows:
+\begin{remark}[The routine part of an adequacy proof] ~
+\begin{enumerate}
+\item For the construction of the functor:
+\begin{enumerate}
+\item The translation of types and sequents was given in part 1 above.
+
+\item The cases of the translation of derivations $d^*$ given above are
+  extended by sending identity to identity and cut to cut (possibly with
+  some weakening-over-weakening and exchange-over-exchange), to
+  determine a function from cutfull source derivations to cutfull
+  framework derivations.  So functoriality is true by definition.  
+
+\item We extend the above function $d^*$ on derivations to
+  \deq-equivalence classes by proving $d_1 \deq d_2$ implies $d_1^* \deq
+  d_2^*$.  The type-specific cases are given by part 3 above.
+  Reflexivity, symmetry, and transitivity are sent to reflexivity,
+  symmetry, transitivity rules in the framework. The congruence rule for
+  each source derivation constructor is sent to a composition of
+  framework congruence rules, which works because because each inference
+  rule is shown derivable (not just admissible) in part 2 above. The
+  unit and associativity laws for cut will be modeled by the
+  corresponding laws in the framework.  This completes the functor 
+  %% application of a directed HIT?!
+\end{enumerate}
+
+\item For fullness, by Theorem~\ref{thm:cut-elim}, every $e$ is equal to
+  a cut-free derivation, and the proof for cut-free derivations is given
+  in part 4 above.  Even though we are constructing a bijection between
+  derivations modulo \deq, we do not need to show that this function
+  respects the quotient: because of the ``mere
+  existence''/$-1$-truncation in the definition of surjective, the
+  function on representives automatically extends to the quotient.  Even
+  constructively, this suffices to define a (untruncated) bijection betweeb
+  quotiented derivations---the fact that the framework-to-source
+  direction respects $\deq$ follows from injectivity.
+
+\item 
+
+\end{enumerate}
+\end{remark}
+
+We do not abstract this ``template'' as a lemma because the class of
+``native sequent calculi'' taken as input is not precisely
+defined.  
+
+
+\subsection{Metatheory}
 
 The following lemma is helpful for many adequacy proofs.  It says that
 for many mode theories 0-use variables can be strengthened away.  
