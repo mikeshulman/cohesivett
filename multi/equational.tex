@@ -93,7 +93,7 @@ the equations in Figure~\ref{fig:equality-of-derivations}.
 \Trd{(s_1;s_2)}{\D} & \deq & \Trd{{s_1}}{\Trd{{s_2}}{\D}} \\
 \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} & \deq & \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \\
 \\
-\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s_0/x])}{\D[{\D_i/x_i}]} \\
+\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x])}{\D[\vec{\D_i/x_i}]} \\
 %% special case \Cut{\FLd{x_0}{\D}}{\FRs}{x_0} & \deq & \D \\
 \Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} & \deq & \Trd{(s[1_{\alpha_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \\
 \D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta.\Cut{\ULs x}{\D}{x}}\\
@@ -155,18 +155,34 @@ approach, using the defining equations plus to some more specific axioms
 to prove these algebraic laws; we have not yet attempted such a
 reduction here.
 
-\subsection{Useful equations}
+\subsection{Alternative Presentation}
 
-FIXME: derive definitional clauses
-
+\newcommand\redto{\mapsto}
+\newcommand\Linv[2]{\Cut{#1}{\FR^*}{#2}}
 \[
-\begin{array}{rcl}
-\Trd{s}{\FRd{}{s'}{\D}} & \deq & \FRd{}{s;s'}{\D}\\
-\Trd{s}{\FLd{x}{\Delta.\D}} & \deq & \FLd{x}{\Delta.\Trd{(s[1_\alpha/x])}{\D}}\\
-\Trd{s}{\ULd{x}{}{s'}{\vec{\D}}{z.\D'}} & \deq & {\ULd{x}{}{s;s'}{\vec{\D}}{z.\D'}}\\
-\Trd{s}{\URd{\Delta.\D}} & \deq & \URd{\Delta.\Trd{(1_\alpha[s/x])}{\D}} \\
+\begin{array}{rcll}
+\Trd{s}{\FRd{}{s'}{\D}} & \redto & \FRd{}{s;s'}{\D}\\
+\Trd{s}{\FLd{x}{\Delta.\D}} & \redto & \FLd{x}{\Delta.\Trd{(s[1_\alpha/x])}{\D}}\\
+\Trd{s}{\ULd{x}{}{s'}{\vec{\D}}{z.\D'}} & \redto & {\ULd{x}{}{s;s'}{\vec{\D}}{z.\D'}}\\
+\Trd{s}{\URd{\Delta.\D}} & \redto & \URd{\Delta.\Trd{(1_\alpha[s/x])}{\D}} \\
 \\
-x :: \seq{\Gamma,x:\F{\alpha}{\Delta}}{x}{\Gamma,x:\F{\alpha}{\Delta}} & \deq & \FL{x}{\Delta.\FR{\vec{y/y}}{1}{\vec{y/y}}}\\
-\Cut{\FRd{}{s}{\E}}{\D}{x_0} & \deq & {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
+x :: (\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{x}{\F{\alpha}{\Delta}}) & \redto & \FLd{x}{\Delta.\FRd{\vec{y/y}}{1}{\vec{y/y}}}\\
+x :: (\seq{\Gamma,x:\U{\alpha}{\Delta}{A},\Gamma'}{x}{\U{\alpha}{\Delta}{A}}) & \redto & \URd{\Delta.\ULd{x}{}{\vec{y/y}}{1}{z.z}} \\
+\\
+\Cut{\Trd{s}{x_0}}{d}{x_0} & \redto & \Trd{s}{d} & (x_0 : Q)\\
+\Cut{\Trd{s}{y}}{d}{x_0} & \redto & \Trd{s}{y} & (x_0 \neq y)\\
+\\
+\Cut{\FLd{x_0}{\Delta.\E}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \redto & \Trd{(1_\beta[s/x])}{\E[\vec{\D_i/x_i}]} \\
+\Cut{\ULd{x_0}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\URd{\Delta.\D}}{x_0} & \redto & \Trd{(s[1_{\alpha_0}])}{\Cut{\E'}{(\D[{\vec{\E_i/x_i}}])}{z}} &  \\
+\\
+\Cut{\FRd{}{s}{\E}}{\D}{x_0} & \redto & {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
+\Cut{\URd{\Delta.\E}}{\D}{x_0} & \redto & \URd{\Delta.\subst{\E}{\D}{x_0}}\\
+\Cut{\FLd{x}{\Delta.\E}}{\D}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\E}{\Linv{\D}{x}}{x_0}} & (x \neq x_0) \\%% {(x \neq x_0, \text{($\D$ not a left rule)})}\\
+\Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} & \redto & {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} & (x \neq x_0)\\%%,\text{$\D$ not a left rule}) \
+\\
+\Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\Linv{\E}{x}}{\D}{x_0}} & \E = \FL^{x_0},\UL^{x_0}\\%%\text{($\E$ a left rule)}
+\Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} & \redto & \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x}} & \E = \FL^{x_0},\UL^{x_0} \\%%\text{($\E$ a left rule)}\\
 \end{array}
 \]
+
+FIXME how exactly to handle $\Linv{\D}{x}$ ?
