@@ -158,7 +158,11 @@ reduction here.
 \subsection{Alternative Presentation}
 
 \newcommand\redto{\mapsto}
-\newcommand\Linv[2]{\Cut{#1}{\FR^*}{#2}}
+\newcommand\deqp{\deq_{\dsd p}}
+\newcommand\Linv[2]{\ensuremath{#1\{\FRs/#2\}}}
+\newcommand\Rinv[1]{\ensuremath{\ULs{z}\{#1/z\}}}
+
+\begin{figure}
 \[
 \begin{array}{rcll}
 \Trd{s}{\FRd{}{s'}{\D}} & \redto & \FRd{}{s;s'}{\D}\\
@@ -177,12 +181,24 @@ x :: (\seq{\Gamma,x:\U{\alpha}{\Delta}{A},\Gamma'}{x}{\U{\alpha}{\Delta}{A}}) & 
 \\
 \Cut{\FRd{}{s}{\E}}{\D}{x_0} & \redto & {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
 \Cut{\URd{\Delta.\E}}{\D}{x_0} & \redto & \URd{\Delta.\subst{\E}{\D}{x_0}}\\
-\Cut{\FLd{x}{\Delta.\E}}{\D}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\E}{\Linv{\D}{x}}{x_0}} & (x \neq x_0) \\%% {(x \neq x_0, \text{($\D$ not a left rule)})}\\
-\Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} & \redto & {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} & (x \neq x_0)\\%%,\text{$\D$ not a left rule}) \
+\Cut{\FLd{x}{\Delta.\E}}{\D}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\E}{\Linv{\D}{x}}{x_0}} & (x \neq x_0) \\
+\Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} & \redto & {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} & (x \neq x_0)\\
 \\
-\Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\Linv{\E}{x}}{\D}{x_0}} & \E = \FL^{x_0},\UL^{x_0}\\%%\text{($\E$ a left rule)}
-\Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} & \redto & \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x}} & \E = \FL^{x_0},\UL^{x_0} \\%%\text{($\E$ a left rule)}\\
+\Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} & \redto & \FLd{x}{\Delta.\Cut{\Linv{\E}{x}}{\D}{x_0}} & (\E = \FL^{x_0},\UL^{x_0})\\
+\Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} & \redto & \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x}} & (\E = \FL^{x_0},\UL^{x_0}) \\
+\\
+\D :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C} & \deqp & \FLd{x}{\Delta.\Linv{\D}{x}}\\
+\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deqp & \URd{\Delta.\Rinv{\D}}\\
+\FRd{}{s}{\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots} & \deqp & \FRd{}{s;(1_{\alpha[\alpha_1/x_1,\ldots,\alpha_{i-1}/x_{i-1},\ldots]}[s_i/x_i])}{\vec{\D_j/x_j}}\\
+\ULd{x}{}{s}{(\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots)}{z.\D} & \deqp & \ULd{x}{}{s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots,\alpha_{i-1}/x_{i-1},\ldots]/z]}[s_i/x_i])}{\vec{\D_j/x_j}}{z.\D}\\
+\text{(permute rules)}
 \end{array}
 \]
+\caption{Alternate definition of equality}
+\end{figure}
 
 FIXME how exactly to handle $\Linv{\D}{x}$ ?
+
+\begin{theorem}{Soundness of Cut-Reduced Equality}
+If $\D \redto \D'$ then $\D \deq \D'$.
+\end{theorem}
