@@ -78,6 +78,8 @@ full and faithful functor:
   derivations of $J$.  It will usually (FIXME: always?) be the case that
   the output does not use the cut rule, or identity at non-base-types.  
 
+\item A proof that ${\backtrf{e}}^* \deq e$.  
+
 \item A proof that when $\Identa{x} : J^*$, $\backtrf{\Identa{x}} \deq
   x$.
 
@@ -121,13 +123,15 @@ From this, the full construction is as follows:
   %% application of a directed HIT?!
 \end{enumerate}
 
-\item For fullness, every $e$ is equal to a
+\item For fullness, every $e$ is equal (by
+  Theorem~\ref{thm:permutative-soundess}) to a
   cut/identity/transformation-free derivation $\elim{e}$, and the proof
-  for cut-free derivations is given by \backtrf{-}.  Even though we are
-  constructing a bijection between derivations modulo \deq, we do not
-  need to show that this function respects the quotient: because of the
-  ``mere existence''/$-1$-truncation in the definition of surjective,
-  the function on representives automatically extends to the quotient.
+  for cut-free derivations is given by \backtrf{-} (parts 4 and 5
+  above).  Even though we are constructing a bijection between
+  derivations modulo \deq, we do not need to show that this function
+  respects the quotient: because of the ``mere
+  existence''/$-1$-truncation in the definition of surjective, the
+  function on representives automatically extends to the quotient.
   %% Even constructively, this suffices to define a (untruncated) bijection
   %% betweeb quotiented derivations---the fact that the framework-to-source
   %% direction respects $\deq$ follows from injectivity.
@@ -137,12 +141,12 @@ From this, the full construction is as follows:
   witnesses cut/identity elimination for the source.  
 
 \item For faithfulness, we need to show that $d_1^* \deq d_2^*$ implies
-  $d_1 \deq d_2$.  By part 7 above, it suffices to show 
+  $d_1 \deq d_2$.  By part 8 above, it suffices to show 
   $\backtrf{\elim{d_1^*}} \deq \backtrf{\elim{d_2^*}}$.
   By completeness of permuatitive equality
   (Theorem~\ref{thm:permutative-completeness}), 
   $d_1^* \deq d_2^*$ implies $\elim{d_1^*} \deqp \elim{d_2^*}$,
-  so part 8 above gives the result.
+  so part 9 above gives the result.
 \end{enumerate}
 \end{remark}
 
