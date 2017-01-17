@@ -55,6 +55,9 @@ rule in their place, but including them is convenient for stating the
 cut elimination corollary).  Thus, we refine the discussion above by
 taking equality of derivations to be \deq-classes.
 
+\newcommand\backtrf[1]{\ensuremath{#1^{\leftarrow}}}
+\newcommand\backtr[1]{\ensuremath{#1^{\Leftarrow}}}
+
 We will generally focus on the following aspects of constructing such a
 full and faithful functor:
 \begin{definition}[The interesting part of an adequacy proof] ~
@@ -71,11 +74,24 @@ full and faithful functor:
   connective-specific equality axiom (typically $\beta\eta$) $d_1 \deq
   d_2$, $d_1^* \deq d_2^*$.
 
-\item A function from cut-free framework derivations $e : J^*$
-to source derivations of $J$
+\item A function \backtrf{-} from normal derivations $e : J^*$ to source
+  derivations of $J$.  It will usually (FIXME: always?) be the case that
+  the output does not use the cut rule, or identity at non-base-types.  
 
-\item ??? $d_1^* \deq d_2^*$ implies $d_1 \deq d_2$
+\item A proof that when $\Identa{x} : J^*$, $\backtrf{\Identa{x}} \deq
+  x$.
 
+\item A proof that for normal $e$ and $e'$ in the image of ``cutable''
+  sequents $J^*$ and $J'^*$, $\backtrf{(\Cuta{e}{e'}{x})} \deq
+  \backtrf{e}[\backtrf{e'}/x]$ (Note: could be stated for $d^*$ and
+  $d'^*$ if that's more convenient).  
+
+\item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
+  identity and cut will use the previous two bullets.
+
+\item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
+  $\backtrf{e} \deq \backtrf{e'}$.  (Note: could be stated for
+  $\elim{d^*}$ if that's convenient.)
 \end{enumerate}
 \end{definition}
 
@@ -101,23 +117,32 @@ From this, the full construction is as follows:
   framework congruence rules, which works because because each inference
   rule is shown derivable (not just admissible) in part 2 above. The
   unit and associativity laws for cut will be modeled by the
-  corresponding laws in the framework.  This completes the functor 
+  corresponding laws in the framework.  
   %% application of a directed HIT?!
 \end{enumerate}
 
-\item For fullness, by Theorem~\ref{thm:cut-elim}, every $e$ is equal to
-  a cut-free derivation, and the proof for cut-free derivations is given
-  in part 4 above.  Even though we are constructing a bijection between
-  derivations modulo \deq, we do not need to show that this function
-  respects the quotient: because of the ``mere
-  existence''/$-1$-truncation in the definition of surjective, the
-  function on representives automatically extends to the quotient.  Even
-  constructively, this suffices to define a (untruncated) bijection betweeb
-  quotiented derivations---the fact that the framework-to-source
-  direction respects $\deq$ follows from injectivity.
+\item For fullness, every $e$ is equal to a
+  cut/identity/transformation-free derivation $\elim{e}$, and the proof
+  for cut-free derivations is given by \backtrf{-}.  Even though we are
+  constructing a bijection between derivations modulo \deq, we do not
+  need to show that this function respects the quotient: because of the
+  ``mere existence''/$-1$-truncation in the definition of surjective,
+  the function on representives automatically extends to the quotient.
+  %% Even constructively, this suffices to define a (untruncated) bijection
+  %% betweeb quotiented derivations---the fact that the framework-to-source
+  %% direction respects $\deq$ follows from injectivity.
 
-\item 
+  If $\backtrf{-}$ does not use the cut rule in the source (or identity
+  at non-base-type), then the composite $\backtrf{\elim{d^*}}$ 
+  witnesses cut/identity elimination for the source.  
 
+\item For faithfulness, we need to show that $d_1^* \deq d_2^*$ implies
+  $d_1 \deq d_2$.  By part 7 above, it suffices to show 
+  $\backtrf{\elim{d_1^*}} \deq \backtrf{\elim{d_2^*}}$.
+  By completeness of permuatitive equality
+  (Theorem~\ref{thm:permutative-completeness}), 
+  $d_1^* \deq d_2^*$ implies $\elim{d_1^*} \deqp \elim{d_2^*}$,
+  so part 8 above gives the result.
 \end{enumerate}
 \end{remark}
 
