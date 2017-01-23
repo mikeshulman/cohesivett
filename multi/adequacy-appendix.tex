@@ -174,7 +174,7 @@ Suppose additionally a sequent \seq{\Gamma}{\alpha}{A} such that every
 Then if $\D :: \seq{\Gamma}{\alpha}{A}$ and $\vec{x}$ are variables such
 that $\vec{x} \# \alpha$ then there is a $\D' ::
 \seq{\Gamma-\vec{x}}{\alpha}{A}$ and $size(\D') \le size(\D)$ and
-(FIXME: PROVE) $\D' \deq D$ (when $\D'$ is weakened with $\vec{x}$).  
+(FIXME: PROVE) $\D' \deq \D$ (when $\D'$ is weakened to reintroduce $\vec{x}$).  
 \end{lemma}
 
 \begin{proof}
@@ -443,7 +443,7 @@ That is,
 \backtrf{\FLd{z}{x,y.e}} & := & \dotLd{z}{x,y.\backtrf{e}}\\
 \end{array}
 \]
-where $e_i'$ is the result of Lemma~\ref{lem:strengthen}.  
+where $e_i'$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
 
 \item Next, we show that for normal $e :
   \seq{\Gamma^*}{\vars{\Gamma}}{A^*}$, ${\backtrf{e}}^* \deq e$.
@@ -469,9 +469,9 @@ By the inductive hypothesis, we have
 ${\backtrf{e_i'}}^* \deq e_i'$, but we have $e_i' \deq e_i$ by
 Lemma~\ref{lem:0-use-strengthening}.  
 
-\item 
-\item 
-\item 
+\item identity 
+\item cut
+\item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.  
 \item 
 \end{enumerate}
 
