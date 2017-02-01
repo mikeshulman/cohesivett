@@ -90,9 +90,9 @@ the equations in Figure~\ref{fig:equality-of-derivations}.
 \Trd{(s_1;s_2)}{\D} & \deq & \Trd{{s_1}}{\Trd{{s_2}}{\D}} \\
 \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} & \deq & \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \\
 \\
-\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x])}{\D[\vec{\D_i/x_i}]} \\
+\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x_0])}{\D[\vec{\D_i/x_i}]} \\
 %% special case \Cut{\FLd{x_0}{\D}}{\FRs}{x_0} & \deq & \D \\
-\Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} & \deq & \Trd{(s[1_{\alpha_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \\
+\Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} & \deq & \Trd{(s[1_{\alpha}/{x_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \\
 \D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta.\Cut{\ULs x}{\D}{x}}\\
 \D :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C} & \deq & \FLd{x}{\Delta.\Cut{\D}{\FRs}{x}}\\
 \end{array}
