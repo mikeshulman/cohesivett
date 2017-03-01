@@ -1,0 +1,354 @@
+\section{Equational Adequacy}
+\label{sec:adequacy-equational}
+
+\subsection{Template}
+
+In addition to the adequacy of provability results above, we expect that
+the translation from an object logic into the framework extends to
+something like a full and faithful functor from the object logic to the
+framework.  Unpacking this, the object part of the functor means we want
+a translation $A^*$ from object language types to framework types---and
+an extension translating object-language sequents $J$ to framework
+sequents $J^*$.  The morphism part of the functor maps each object-logic
+derivation $d : J$ to a derivation $d^* : J^*$.  Functoriality means
+that the translation takes identities to identities and cuts to cuts.
+Together, full and faithfullness say that for each sequent $J$, the
+object language derivations of $J$ are bijective with framework
+derivations of $J^*$.  In particular, fullness says that for any sequent
+$J$, the translation on derivations of that sequent is surjective: for
+every derivation $e$ of $J^*$, there (merely) exists an object language
+derivation $d : J$ such that $d^* = e$.  In terms of provability, this
+says that no more sequents can be proved in the framework, and in terms
+of proof identity, it says that every derivation could have been written
+in the object language. Faithfullness says that the translation on
+derivations is injective---$d_1^* = d_2^*$ implies $d_1 = d_2$---so no
+more equalities can be proved in the framework.  The fact that a
+function is a bijection iff it is surjective and injective gives the
+overall result.
+
+In the above discussion, we would like equality of derivations to
+correspond to the categorical universal properties for the connectives,
+which generally equate more morphisms than syntactic equality of
+cut-free proofs (unless one uses more sophisticated sequent calculi than
+we consider here, e.g. focusing/multifocusing).  On the framework side,
+the equational theory of Section~\ref{sec:equational} already accounts
+for this.  On the source side, will define a logic by the usual sequent
+calculus rules that make cut and identity admissible, along with
+primitive cut and identity rules, and an equality judgement analogous to
+Section~\ref{sec:equational}, which is a concise description of
+$\beta\eta$ rules.  Cut elimination for the source will be a corollary
+of the adequacy theorem (we could simplify the source syntax by removing
+the built-in cuts in the non-invertible rules, using the general cut
+rule in their place, but including them is convenient for stating the
+cut elimination corollary).  Thus, we refine the discussion above by
+taking equality of derivations to be \deq-classes.
+
+\newcommand\backtrf[1]{\ensuremath{#1^{\leftarrow}}}
+\newcommand\backtr[1]{\ensuremath{#1^{\Leftarrow}}}
+
+We will generally focus on the following aspects of constructing such a
+full and faithful functor:
+\begin{definition}[The interesting part of an adequacy proof] ~
+\begin{enumerate}
+\item The translation from types to types ($A^*$) and sequents to
+  sequents ($J^*$).
+
+\item For each source inference rule for each connective, a
+  \emph{derivation} $d^*$ from the translated premises to the translated
+  conclusion (not just an admissibility: each rule will be defined by a
+  composition of framework inference rules).
+
+\item A proof that equality axioms are preserved: for each
+  connective-specific equality axiom (typically $\beta\eta$) $d_1 \deq
+  d_2$, $d_1^* \deq d_2^*$.
+
+\item A function \backtrf{-} from normal derivations $e : J^*$ to source
+  derivations of $J$.  It will usually (FIXME: always?) be the case that
+  the output does not use the cut rule, or identity at non-base-types.  
+
+\item A proof that ${\backtrf{e}}^* \deq e$.  
+
+\item A proof that when $\Identa{x} : J^*$, $\backtrf{\Identa{x}} \deq
+  x$.
+
+\item A proof that for normal $e$ and $e'$ in the image of ``cutable''
+  sequents $J^*$ and $J'^*$, $\backtrf{(\Cuta{e}{e'}{x})} \deq
+  \backtrf{e}[\backtrf{e'}/x]$ (Note: could be stated for $d^*$ and
+  $d'^*$ if that's more convenient).  
+
+\item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
+  identity and cut will use the previous two bullets.
+
+\item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
+  $\backtrf{e} \deq \backtrf{e'}$.  (Note: could be stated for
+  $\elim{d^*}$ if that's convenient.)
+\end{enumerate}
+\end{definition}
+
+From this, the full construction is as follows:
+\begin{remark}[The routine part of an adequacy proof] ~
+\begin{enumerate}
+\item For the construction of the functor:
+\begin{enumerate}
+\item The translation of types and sequents was given in part 1 above.
+
+\item The cases of the translation of derivations $d^*$ given above are
+  extended by sending identity to identity and cut to cut (possibly with
+  some weakening-over-weakening and exchange-over-exchange), to
+  determine a function from cutfull source derivations to cutfull
+  framework derivations.  So functoriality is true by definition.  
+
+\item We extend the above function $d^*$ on derivations to
+  \deq-equivalence classes by proving $d_1 \deq d_2$ implies $d_1^* \deq
+  d_2^*$.  The type-specific cases are given by part 3 above.
+  Reflexivity, symmetry, and transitivity are sent to reflexivity,
+  symmetry, transitivity rules in the framework. The congruence rule for
+  each source derivation constructor is sent to a composition of
+  framework congruence rules, which works because because each inference
+  rule is shown derivable (not just admissible) in part 2 above. The
+  unit and associativity laws for cut will be modeled by the
+  corresponding laws in the framework.  
+  %% application of a directed HIT?!
+\end{enumerate}
+
+\item For fullness, every $e$ is equal (by
+  Theorem~\ref{thm:permutative-soundess}) to a
+  cut/identity/transformation-free derivation $\elim{e}$, and the proof
+  for cut-free derivations is given by \backtrf{-} (parts 4 and 5
+  above).  Even though we are constructing a bijection between
+  derivations modulo \deq, we do not need to show that this function
+  respects the quotient: because of the ``mere
+  existence''/$-1$-truncation in the definition of surjective, the
+  function on representives automatically extends to the quotient.
+  %% Even constructively, this suffices to define a (untruncated) bijection
+  %% betweeb quotiented derivations---the fact that the framework-to-source
+  %% direction respects $\deq$ follows from injectivity.
+
+  If $\backtrf{-}$ does not use the cut rule in the source (or identity
+  at non-base-type), then the composite $\backtrf{\elim{d^*}}$ 
+  witnesses cut/identity elimination for the source.  
+
+\item For faithfulness, we need to show that $d_1^* \deq d_2^*$ implies
+  $d_1 \deq d_2$.  By part 8 above, it suffices to show 
+  $\backtrf{\elim{d_1^*}} \deq \backtrf{\elim{d_2^*}}$.
+  By completeness of permuatitive equality
+  (Theorem~\ref{thm:permutative-completeness}), 
+  $d_1^* \deq d_2^*$ implies $\elim{d_1^*} \deqp \elim{d_2^*}$,
+  so part 9 above gives the result.
+\end{enumerate}
+\end{remark}
+
+We do not abstract this ``template'' as a lemma because the class of
+``native sequent calculi'' taken as input is not precisely
+defined.  
+
+\begin{lemma}[Equational 0-use Strengthing] \label{lem:0-use-strengthening-eq}
+Under the conditions of Lemma~\ref{lem:0-use-strengthening}, the input
+derivation $\D$ is $\deq$ the strengthened derivation $\D'$.
+\end{lemma}
+
+%% We say that a formula $\F{\alpha}{\Delta}$ and \U{c.\alpha}{\Delta}{A}
+%% is relevant if every variable from $\Delta$ (and $c$ for \Usymb) occurs
+%% at least once in $\alpha$.
+
+%% Suppose the mode theory has the property that for all $x$, $\alpha$,
+%% $\beta$, if $\alpha \spr \beta$ and $x \# \alpha$ then $x \# \beta$ (in
+%% particular, equations must have the same variables on both sides).
+%% Suppose additionally a sequent \seq{\Gamma}{\alpha}{A} such that every
+%% \Fsymb/\Usymb\/ subformula of $\Gamma,A$ is relevant.
+
+%% Then if $\D :: \seq{\Gamma}{\alpha}{A}$ and $\vec{x}$ are variables such
+%% that $\vec{x} \# \alpha$ then there is a $\D' ::
+%% \seq{\Gamma-\vec{x}}{\alpha}{A}$ and $size(\D') \le size(\D)$ 
+%% $\D' \deq \D$ (when $\D'$ is weakened to reintroduce $\vec{x}$).  
+
+\subsection{Ordered Logic (Product Only)}
+
+\newcommand\dotLd[2]{\ensuremath{\mathord{\odot}}\dsd{L}^{#1}(#2)}
+\newcommand\dotRd[2]{\ensuremath{\mathord{\odot}}\dsd{R}(#1,#2)}
+
+As a first example of an adequacy proof, we consider the following mode
+theory for ordered logic with only $A \odot B$:
+\[
+\infer{\seql{A}{o}{A}}{}
+\quad
+\infer{\seql{\Gamma,\Delta,\Gamma'}{o}{C}}
+      {\seql{\Gamma,A,\Gamma'}{o}{C} &
+        \seql{\Delta}{o}{A}}
+\quad
+\infer{\seql{\Gamma,A \odot B,\Gamma'}{o}{C}}
+      {\seql{\Gamma,A,B,\Gamma'}{o}{C}}
+\quad
+\infer{\seql{\Gamma,\Delta}{o}{A \odot B}}
+      {\seql{\Gamma}{o}{A} &
+        \seql{\Delta}{o}{B}}
+\]
+\[
+\begin{array}{c}
+\Cut{\dotLd{z}{x,y.d}}{\dotRd{d_1}{d_2}}{z} \deq \Cut{\Cut{d}{d_1}{x}}{d_2}{y}\\
+d : \seql{\Gamma,z:A \odot B,\Gamma'}{o}{C} \deq \dotLd{z}{x,y.\Cut{d}{\dotRd{x}{y}}{z}}\\
+\end{array}
+\]
+
+We use a mode theory with a monoid $(\odot,1)$, so the only
+transformation axioms are equality axioms for associativity and unit.  
+
+The interesting parts of the adequacy proof are:
+\begin{enumerate}
+\item The type translation is given by $P^* := P$ and $(A \odot B)^* :=
+  \F{x \odot y}{x:A^*,y:B^*}$.  A context $(x_1:A_1,\ldots,x_n:A_n)^* :=
+  x_1:A_1^*,\ldots,x_n:A_n^*$.  Writing $\vars{x_1:A_1,\ldots,x_n:A_n}
+  := x_1 \odot \ldots \odot x_n$, a sequent $\seql{\Gamma}{o}{A}$ is
+  translated to \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
+
+We use the following properties of the mode theory:
+\begin{itemize}
+\item If ${\vars{\Gamma^*}} \deq {x}$ then $\Gamma$ is $x:Q$ for some
+  $Q$.  
+\item If $\vars{\Gamma} \deq \alpha_1 \odot \alpha_2$, then there exist
+  $\Gamma_1,\Gamma_2$ such that $\Gamma = \Gamma_1,\Gamma_2$ and
+  $\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_2$.
+\item $A^*$ and $\Gamma^*$ are relevant propositions, and the monoid
+  axioms preserve variables, so by Lemma~\ref{lem:0-use-strengthening} we can
+  strengthen away any variables that are not in the context descriptor.  
+\end{itemize}
+
+\item The inference rules for $\odot$ are derived as follows:
+
+\[
+\infer[\FL]{\seq{\Gamma^*,z:\F{x \otimes y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma}\odot z \odot \vars{\Gamma'}}{C}}
+      {\infer[Lemma~\ref{lem:exchange}]
+        {\seq{\Gamma^*,{\Gamma'}^*,x:A,y:B}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}
+        {\seq{\Gamma^*,x:A,y:B,{\Gamma'}^*}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}}
+\]
+
+\[
+\infer{\seq{\Gamma^*,\Delta^*}{\vars{\Gamma} \odot \vars{\Delta}}{\F{x \odot y}{x:A,y:B}}}
+      {{\vars{\Gamma} \odot \vars{\Delta}} \spr (x \odot y)[\vars{\Gamma}/x,\vars{\Delta}/y]
+        \infer[Lemma~\ref{lem:weakening}]
+              {\seql{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
+              {\seql{\Gamma^*}{\vars{\Gamma}}{A}} &
+        \infer[Lemma~\ref{lem:weakening}]
+              {\seql{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
+              {\seql{\Delta^*}{\vars{\Delta}}{B}}}
+\]
+
+Identity and cut are
+
+\[
+\infer[Thm~\ref{thm:identity}]
+      {\seq{x:A^*}{x}{A}}
+      {}
+\qquad
+\infer[Thm~\ref{thm:cut}]
+      {\seq{{\Gamma}^*,{\Delta}^*,{\Gamma'}^*}{\vars{\Gamma}\odot \vars{\Delta} \odot \vars{\Gamma'}}{C}}
+      {\infer[Lem~\ref{lem:weakening}]
+        {\seq{\Gamma^*,\Delta^*,x:A^*,{\Gamma'}^*}{\vars{\Gamma}\odot x \odot \vars{\Gamma'}}{C}}
+        {\seq{\Gamma^*,x:A^*,{\Gamma'}^*}{\vars{\Gamma}\odot x \odot \vars{\Gamma'}}{C}} &
+        \infer[Lem~\ref{lem:weakening}]{\seq{\Gamma^*,\Delta^*,x:A^*,{\Gamma'}^*}{\vars{\Delta}}{A^*}}
+             {{\seq{\Delta^*}{\vars{\Delta}}{A^*}}}}
+\]
+
+Since we do not notate weakening and exchange, we have
+\[
+\begin{array}{rcl}
+(\dotLd{z}{x,y.d})^* & := & \FLd{z}{x,y.d^*}\\
+(\dotRd{d_1}{d_2})^* & := & \FRd{}{1}{(d_1^*/x,d_2^*/y)}\\
+x^* & := & x\\
+(\Cut{e}{d}{x})^* & := & \Cut{e^*}{d^*}{x}
+\end{array}
+\]
+
+\item The $\beta\eta$ axioms for $\odot$ translate almost exactly to the
+  corresponding axioms for \F{x \odot y}{x:A^*,y:B^*}: for $\beta$, we
+  also use the fact that \Trd{1}{-} is the identity.  
+
+\item For the back-translation on normal derivations, suppose we have a
+  normal derivation of \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.  Because
+  there are no $\Usymb$-formulas in the context, the only possible rules
+  are hypothesis and the \Fsymb-rules.
+
+\begin{itemize}
+\item For identity
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{P}}
+      {{\vars{\Gamma^*}} \spr {x} &
+        x : P \in \Gamma^*}
+\]
+Because the only structural transformation axioms are equalities for
+associativity and unit, we have ${\vars{\Gamma^*}} \deq {x}$, which in
+turn implies that $\Gamma$ is $x:Q$ for some $Q$ (because if $\Gamma$ is
+empty, does not contain $x$, or contains anything else, \vars{\Gamma}
+will not equal $x$).  By definition, this implies $Q = P$, so $\Gamma$
+is $x:P$.  Therefore the identity rule applies.
+
+\item For \FR, because the only type that encodes to \Fsymb is $\odot$,
+  we have
+\[
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A_1^*,y:A_2^*}}}
+      {\vars{\Gamma} \deq \alpha_1 \odot \alpha_2 &
+       \seq{\Gamma^*}{\alpha_1}{A_1^*} &
+       \seq{\Gamma^*}{\alpha_2}{A_2^*}
+      }
+\]
+By properties of the mode theory, $\Gamma = \Gamma_1,\Gamma_2$ with
+$\vars{\Gamma_i} \deq \alpha_i$, so we have derivations of
+\seq{\Gamma^*}{\vars{\Gamma_i}}{A_i^*}.  Because 0-use strengthening
+applies, we can strengthen these to
+\seq{\Gamma_i^*}{\vars{\Gamma_i}}{A_i^*}.  Then the inductive hypothesis
+gives \seql{\Gamma_i}{A_i}, so applying the $\odot$ right rule gives the
+result.
+
+\item For \FL, because the only type encoding to $\Fsymb$ is $A \odot
+  B$, we have
+\[
+\infer{\seq{\Gamma^*,z:\F{x \odot y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma} \otimes z \otimes \vars{\Gamma'}}{C^*}}
+      {\seq{\Gamma^*,{\Gamma'}^*,x:A^*,y:B^*}{\vars{\Gamma} \otimes (x \otimes y) \otimes \vars{\Gamma'}}{C^*}}
+\]
+By exchange (Lemma~\ref{lem:exchange}), we have a no-bigger derivation
+of
+{\seq{\Gamma^*,x:A^*,y:B^*,{\Gamma'}^*}{\vars{\Gamma} \otimes (x \otimes y) \otimes \vars{\Gamma'}}{C^*}} 
+so applying the IH gives 
+\seql{{\Gamma,x:A,y:B,{\Gamma'}}}{o}{C}, and then $\odot$-left gives the result.
+
+\end{itemize}
+
+That is,
+\[
+\begin{array}{rcl}
+\backtrf{\Trd{1}{x}} & := & x\\
+\backtrf{\FRd{}{1}{e_1/x,e_2/y}} & := & \dotRd{\backtrf{e_1'}}{\backtrf{e_2'}}\\
+\backtrf{\FLd{z}{x,y.e}} & := & \dotLd{z}{x,y.\backtrf{e}}\\
+\end{array}
+\]
+where $e_i'$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
+
+\item Next, we show that for normal $e :
+  \seq{\Gamma^*}{\vars{\Gamma}}{A^*}$, ${\backtrf{e}}^* \deq e$.
+
+In the case for the hypothesis rule for atoms, we have
+\[
+{\backtrf{\Trd{1}{x}}}^* = x^* = x \deq \Trd{1}{x}
+\]
+
+In the case for \FL, we have 
+\[
+(\backtrf{\FLd{z}{x,y.e}})^* = (\dotLd{z}{x,y.\backtrf{e}})^* =
+{\FLd{z}{x,y.{\backtrf{e}}^*}}
+\]
+so the result follows from the inductive hypothesis.  
+
+In the case for \FR, we have
+\[
+(\backtrf{\FRd{}{1}{e_1/x,e_2/y}})^* = (\dotRd{\backtrf{e_1'}}{\backtrf{e_2'}})^* =
+{\FRd{}{1}{({\backtrf{{e_1'}}}^*/x,{\backtrf{{e_2'}}}^*/y)}}
+\]
+By the inductive hypothesis, we have 
+${\backtrf{e_i'}}^* \deq e_i'$, but we have $e_i' \deq e_i$ by
+Lemma~\ref{lem:0-use-strengthening}.  
+
+\item identity 
+\item cut
+\item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.  
+\item 
+\end{enumerate}
