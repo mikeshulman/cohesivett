@@ -10,7 +10,9 @@
 In this section, we give some examples of logical connectives that can
 be represented by mode theories in this framework, and explain
 informally why they have the desired behavior with respect to
-provability.
+provability.  We give some formal adequacy (soundness and completeness
+of provability) proofs in Section~\ref{sec:adequacy-long}.
+
 %% An additional level to these embeddings is making the
 %% equational theory of derivations of \seq{\Gamma}{\alpha}{A} match a
 %% desired notion of equality of maps/morphisms, and for this it is often
@@ -203,10 +205,9 @@ translation to the above encodings, and extend this pointwise to
 $\Gamma^*$ for an ordered logic context $\Gamma$.  Further, define
 $\vars{x_1:A_1,\ldots,x_n:A_n} = x_1 \odot \ldots \odot x_n$.  Then the
 encoding of ordered logic is adequate in the sense that
-$\seql{\Gamma}{o}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$.  The
-proof is very similar to the proof for affine logic discussed in
-Example~\ref{sec:ex:affine}.  The analogous translation of types and
-judgements and adequacy statement is used for
+$\seql{\Gamma}{o}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$ (see
+Section~\ref{sec:adequacy-long}).  The analogous translation of
+types and judgements and adequacy statement is used for
 Examples~\ref{sec:ex:linear},\ref{sec:ex:affine},\ref{sec:ex:relevant-cartesian}.
 
 \subsection{Linear products and implication}
@@ -384,54 +385,6 @@ For example, we can define a projection
                \infer[Theorem~\ref{thm:identity}]{\seq{x:A,y:B}{x}{A}}{}
              }}
 \]
-
-We give the full adequacy proof for this example in the appendix.
-Inspecting this proof, we can see that the translation from a ``native''
-sequent proof in affine logic to our framework and back is the identity
-on cut-free derivations.  The other round-trip is not the identity,
-because the framework allows two things that the native sequent calculus
-does not.  First, the framework allows weakening at the non-invertible
-rules, rather than pushing it to the leaves.  For example, we have
-the following two derivations of $P,Q,R \vdash P \otimes R$.
-
-\[
-\infer[\FR]
-      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
-              {(x \otimes y) \spr x} &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
-              {z \spr z}
-      }
-\]
-\[
-\infer[\FR]
-      {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr (x \otimes z) &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x}{C}}
-              {x \spr x} &
-        \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
-              {z \spr z}
-      }
-\]
-
-\noindent The second is that a derivation may perform a left rule on a
-$0$-linear (in the sense of the previous section) variable, i.e. one
-that does not occur in the context descriptor.  Such variables arise
-because \UL\/ ``removes a variable from the context'' by marking it as
-0-use, not by actually removing it.  For this mode theory (and the other
-ones we consider, besides the previous section), these left rules
-produce only other 0-use variables, which ultimately cannot be used, and
-can be strengthened away (see Lemma~\ref{lem:0-use-strengthening}).
-
-The equational theory of derivations (see Section~\ref{sec:equational})
-handles both of these issues, so we expect that the
-framework-native-framework composite of adequacy produces a derivation
-that is equal in this equational theory.  
 
 \subsection{Relevant and Cartesian products and implications}
 \label{sec:ex:relevant-cartesian}
@@ -968,6 +921,6 @@ explanation for the unusual features of these rules, such as promoting
 all cohesive variables to crisp in \Sharp{}-right, and eliminating a
 crisp \Sharp{} in \Sharp{}-left.  
 
-\subsection{Non-adjoints}
+%% \subsection{Non-adjoints}
 
-TODO E.g. the graded effects stuff, modalities in Lambek calculus  
+%% TODO E.g. the graded effects stuff, modalities in Lambek calculus  
