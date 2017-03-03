@@ -32,7 +32,7 @@ for $s_1 :: (\wfsp{\psi,x:p,\psi'}{\alpha_1}{\alpha_2}{r})$,
  $t_1 :: (\wfsp{\psi,\psi'}{\beta_1}{\beta_2}{p})$
  $t_2 :: (\wfsp{\psi,\psi'}{\beta_2}{\beta_3}{p})$
 \item $\subst{1_\alpha}{1_\beta}{x} \deq 1_{\subst{\alpha}{\beta}{x}}$
-\item $1_\alpha[s/x] \deq 1_\alpha$ if $y \# \alpha$
+\item $1_\alpha[s/y] \deq 1_\alpha$ if $y \# \alpha$
 \end{itemize}
 
 \noindent These are the 2-category axioms extended to the
@@ -69,9 +69,9 @@ atoms combines this and identity) and \Cut{\D_1}{\D_2}{x} for cut
 \Usymb/\Fsymb rules.  from Figure~\ref{fig:sequent}.  
 We do not notate weakenings or exchanges in these terms.
 
-We write \FRs\/ for $\FRd{\vec{x/x}}{1}{\Ident{x}/x} ::
+We write \FRs\/ for $\FRd{\vec{x/x}}{1_\alpha}{\Ident{x}/x} ::
 \seq{\Gamma}{\alpha}{\F{\alpha}{\Delta}}$ when $\Delta \subseteq \Gamma$
-and we write and \ULs{x} for $\ULd{x}{\vec{x/x}}{1}{\Ident{x}/x}{z.z} ::
+and we write and \ULs{x} for $\ULd{x}{\vec{x/x}}{1_\alpha}{\Ident{x}/x}{z.z} ::
 \seq{\Gamma}{\alpha}{A}$ when $x:\U{x.\alpha}{\Delta}{A} \in \Gamma$ and
 $\Delta \subseteq \Gamma$.  
 
@@ -90,7 +90,7 @@ the equations in Figure~\ref{fig:equality-of-derivations}.
 \Trd{(s_1;s_2)}{\D} & \deq & \Trd{{s_1}}{\Trd{{s_2}}{\D}} \\
 \Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} & \deq & \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \\
 \\
-\Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x_0])}{\D[\vec{\D_i/x_i}]} \\
+\Cut{\FLd{x_0}{\Delta.\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x_0])}{\D[\vec{\D_i/x_i}]} \\
 %% special case \Cut{\FLd{x_0}{\D}}{\FRs}{x_0} & \deq & \D \\
 \Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} & \deq & \Trd{(s[1_{\alpha}/{x_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \\
 \D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta.\Cut{\ULs x}{\D}{x}}\\

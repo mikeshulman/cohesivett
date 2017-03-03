@@ -1,4 +1,6 @@
 \newcommand\cD{\ensuremath{\mathcal{D}}}
+\newcommand\IndF[3]{\ensuremath{{#1}^\Fsymb_{{#2},{#3}}}}
+\newcommand\IndU[4]{\ensuremath{{#1}^\Usymb_{{#2},{#3},{#4}}}}
 
 \section{Categorical Semantics}
 \label{sec:semantics}
@@ -59,8 +61,63 @@ exchange instead of named variables.
      \end{footnotesize}
      where $\widehat{\sigma}$ acts as the identity from the $i^{\mathrm{th}}$ summand to the $(\sigma i)^{\mathrm{th}}$ summand.
   \end{enumerate}
-satisfying some equations that we elide here.  
+% satisfying some equations that we elide here.  
 \end{definition}
+
+Note that, due to the cartesian structure, we have projection morphisms (TODO: different notation?) $1_{A_i} \in \M(A_1, \dots, A_n; A_i)$ for any $1 \leq 1 \leq n$, which are defined to be $1_{A_i} \sigma^*$, where $1_{A_i}$ is the identity morphism and $\sigma : \{1\} \to \{1, \dots, n\}$ is the function $1 \mapsto i$.
+
+%We will find it useful to work with the following notion of composition that more closely matches the cut rule. If we have morphisms. Given objects $A_1, \dots, A_n$, $B$, $A'_1$, $A'_m$ and $C$, there is a functor 
+%\begin{align*}
+%\cdot[\cdot / B] :  \quad &\M(A_1, \dots, A_n, B, A'_1, \dots, A'_m;C) \times \M(A_1, \dots, A_n, A'_1, \dots, A'_m;B) \\ & \quad\to  \M(A_1, \dots, A_n, A'_1, \dots, A'_m;C)
+%\end{align*}
+%defined by
+%\begin{align*}
+%\Cut{f}{g}{B} := (f \circ(1_{A_1}, \dots, 1_{A_n}, g, 1_{A'_1}, \dots, 1_{A'_m})) \sigma^*
+%\end{align*}
+%where $\sigma*$ is the function 
+%\begin{align*}
+%\sigma : \{1, \dots, n \} \sqcup  \{1, \dots, n \} \sqcup  \{1, \dots, m \} \sqcup  \{1, \dots, m \} \to  \{1, \dots, n \} \sqcup  \{1, \dots, m \}
+%\end{align*}
+%that merges the two similar pairs. We will use the same notation $\Cut{s}{t}{B}$ to represent the action of this functor on morphisms.
+%
+%This form of composition enjoys the following associativity law:
+%\begin{lemma}
+%$\Cut{(\Cut{f}{g}{B})}{h}{B'} = \Cut{(\Cut{f}{h}{B'})}{\Cut{g}{h}{B'}}{B}$
+%\end{lemma}
+%\begin{proof}
+%\end{proof}
+%
+%Given the above operation, we can recover the original composition as follows. Suppose we have $g \in \M(B_1, \dots, B_m; C)$ and $f_i \in \M(A_{i1}, \dots, A_{in_i}; B_i)$. We proceed inductively: weaken $g$ to $g' : \M(A_{11}, \dots, A_{1n_1}, B_1, \dots, B_m; C)$ and $f_1$ to $f'_1 : \M(A_{11}, \dots, A_{1n_1}, B_2, \dots, B_m; B_1)$, then cut to form $g_1 := \Cut{g'}{f'_1}{B_1} : \M(A_{11}, \dots, A_{1n_1}, B_2, \dots, B_m; C)$. Again weaken $g_1$ to $g'_1 : \M(A_{11}, \dots, A_{1n_1}, A_{21}, \dots, A_{2n_2}, B_2, \dots, B_m; C)$ and $f_2$ to $\M(A_{11}, \dots, A_{1n_1}, A_{21}, \dots, A_{2n_2}, B_3 \dots, B_m; B_2)$... Define $g \circ (f_1, \dots, f_m)$ to be $g_k$.
+
+%TODO: Copy-pasted directly from mike's catlog notes, with 2- added:
+%
+We will find it useful to work with the following alternative description of composition in a multicategory.
+If in the ``multi-composition'' $g\circ (f_1,\dots,f_m)$ all the $f_j$'s for $j\neq i$ are identities, we write it as $g \circ_i f_i$. (TODO: this conflicts with the notation for horizontal composition later on)
+We may also write it as $g\circ_{B_i} f_i$ if there is no danger of ambiguity (e.g.\ if none of the other $B_j$'s are equal to $B_i$). (TODO: this gets very cluttered when the $B_i$ is big, like $\U{x.\alpha}{\Delta}{A}$)
+Thus we have \textbf{one-place composition} functors
+\[
+  \circ_i : \M(B_1,\dots,B_n;C) \times \M(A_1,\dots,A_m;B_i) \\
+  \to \M(B_1,\dots,B_{i-1},A_1,\dots,A_m,B_{i+1},\dots,B_n;C)
+\]
+that satisfy the following natural equalities:
+\begin{itemize}
+\item $1_B \circ_1 f = f$ (since $1_B$ is unary, $\circ_1$ is the only possible composition here).
+\item $f\circ_i 1_{B_i} = f$ for any $i$.
+\item If $h$ is $n$-ary, $g$ is $m$-ary, and $f$ is $k$-ary, then
+  \[ (h \circ_i g) \circ_{j} f=
+  \begin{cases}
+    (h\circ_j f)\circ_{i+k-1} g &\quad \text{if } j < i\\
+    h\circ_i (g\circ_{j-i+1} f) &\quad \text{if } i \le j < i+m\\
+    (h\circ_{j-m+1} f)\circ_{i} g &\quad \text{if } j \ge i+m
+  \end{cases}
+  \]
+%  We refer to the second of these equations as \emph{associativity}, and to the first and third as \emph{interchange}.
+\end{itemize}
+%Conversely, given one-place composition operations satisfying these axioms, one may define
+%\[ g\circ (f_1,\dots,f_m) = (\cdots((g \circ_m f_m) \circ_{m-1} f_{m-1}) \cdots \circ_2 f_2) \circ_1 f_1 \]
+%to recover the original definition of 2-multicategory. TODO: missing how this composition interacts with cartesianness! TODO: I hope this all works out!
+
+
 
 The next three definitions will be used to describe the
 \seq{\Gamma}{\alpha}{A} judgement.  
@@ -78,65 +135,265 @@ The next three definitions will be used to describe the
   is a discrete fibration.
 \end{definition}
 
-We write $\cD_f(A_1,\dots,A_n;B)$ for the fiber of this functor over
-$f\in \M(\pi A_1,\dots,\pi A_n;\pi B)$; when $\pi$ is a local discrete
+We write $\cD_\alpha(A_1,\dots,A_n;B)$ for the fiber of this functor over
+$\alpha \in \M(\pi A_1,\dots,\pi A_n;\pi B)$; when $\pi$ is a local discrete
 fibration, this fiber is a discrete set.
 
 \begin{definition}
   If $\pi:\cD\to\M$ is a local discrete fibration, then a morphism $\xi\in\cD(A_1,\dots,A_n;B)$ is \textbf{opcartesian} if all diagrams of the following form are pullbacks of categories:
   \[ \xymatrix{
-    \cD(\vec C,B,\vec D;E) \ar[r]^-{-\circ \xi} \ar[d]_\pi &
+    \cD(\vec C,B,\vec D;E) \ar[r]^-{(-)\circ_B \xi} \ar[d]_\pi &
     \cD(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
-    \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{-\circ \pi\xi} &
+    \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{(-)\circ_{\pi B} \pi\xi} &
     \M(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
   }\]
   Dually, a morphism $\xi\in\cD(\vec C,B,\vec D;E)$ is \textbf{cartesian at $B$} if all diagrams of the following form are pullbacks of categories:
   \[ \xymatrix{
-    \cD(\vec A;B) \ar[r]^-{\xi\circ -} \ar[d]_\pi &
+    \cD(\vec A;B) \ar[r]^-{\xi\circ_B (-)} \ar[d]_\pi &
     \cD(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
-    \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ -} &
+    \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ_{\pi B} (-)} &
     \cD(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
   }\]
   Given $\mu:(p_1,\dots,p_n) \to q$ in $\M$, we say that $\pi$ \textbf{has $\mu$-products} if for any $A_i$ with $\pi A_i = p_i$, there exists a $B$ with $\pi B = q$ and an opcartesian morphism in $\cD_\mu(A_1,\dots,A_n;B)$.
   Dually, we say $\pi$ \textbf{has $\mu$-homs} if for any $i$, any $B$ with $\pi B = q$, and any $A_j$ with $\pi A_j = p_j$ for $j\neq i$, there exists an $A_i$ with $\pi A_i = p_i$ and a cartesian morphism in $\cD_\mu(A_1,\dots,A_n;B)$.
 
-  We say that $\pi$ is a \textbf{bifibration} if it has $\mu$-products
-  and $\mu$-homs for all $\mu$.
+  We say that $\pi$ is an \textbf{opfibration} if it has $\mu$-products for all $\mu$, a \textbf{fibration} if it has $\mu$-homs for all $\mu$, and a \textbf{bifibration} if it is both an opfibration and a fibration.
 \end{definition}
 
-We now describe how these definitions correspond to the syntax, and
-sketch the beginnings of a soundness and completeness theorem.  
-To complete
-the correspondence, we will need an equational theory $s \deq s' :
-\alpha \spr \beta$ on syntactic transformations, as well as an equational
-theory on derivations of \seq{\Gamma}{\alpha}{A}, that match the
-semantic notions of equality of morphisms.  We have a candidate for such
-an equational theory, but have not yet checked the correspondence.  
+Useful will be the following characterisation of pullbacks of categories:
+\begin{lemma}
+\label{lem:pullbacks-in-cat}
+A diagram of categories
+\[ \xymatrix{
+    \mathcal{A} \ar[r]^-{H} \ar[d]_K & \mathcal{B} \ar[d]^F \\
+    \mathcal{C} \ar[r]_-{G} & \mathcal{D}
+  }\]
+is a pullback diagram iff:
+\begin{itemize}
+\item For every pair of objects $b \in \mathcal{B}$ and $c \in \mathcal{C}$ with $Fb = Gc$, there is a unique object $a \in \mathcal{A}$ such that $Ha = b$ and $Ka = c$; and,
+\item For every pair of morphisms $f \in \mathcal{B}(b,b')$ and $g \in \mathcal{C}(c,c')$ with $Ff= Gg$, there is a unique morphism $\theta \in \mathcal{A}$ such that $H\theta = f$ and $K\theta = g$. The domain and codomain of $\theta$ are fixed by the previous property.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+The forward direction follows from the universal property of pullbacks applied to maps out of the terminal category and the walking arrow $\bullet \to \bullet$.
 
-A mode theory $\Sigma$ presents a cartesian 2-multicategory, where
+For the reverse direction, suppose we have a category $\mathcal{E}$ and functors $J : \mathcal{E} \to \mathcal{B}$ and $L : \mathcal{E} \to \mathcal{C}$ such that $FJ = GL$. We construct a functor $P : \mathcal{E} \to \mathcal{A}$ as follows. On objects, set $P(e)$ to be the unique object $a \in \mathcal{A}$ such that $H(a) = J(e)$ and $K(a) = L(e)$. On morphisms, set $P(f)$ to be the unique morphism $g$ such that $H(g) = J(f)$ and $K(g) = L(f)$. The uniqueness principles ensure that these assignments are functorial. This functor itself is unique as its definition is forced on both objects and morphisms, so the square is a pullback square.
+\end{proof}
+
+We now describe how these definitions correspond to the syntax.
+
+TODO: partial substitutions seem unavoidable here? I haven't mentioned them
+
+Before we begin, we will describe explicitly the process of simultaneous substitution. Suppose we are given a term $\oftp{\psi'}{\alpha}{q}$. For the empty substitution $\oftp{\psi}{\cdot}{\cdot}$ we set $\tsubst{\alpha}{\cdot} := \alpha$, where $\alpha$ has implicitly been weakened to $\psi$. For a substitution $\oftp{\psi}{\gamma, \beta/x}{\psi', p}$, we inductively define $\tsubst{\alpha}{\gamma, \beta/x} := \tsubst{\tsubst{\alpha}{\gamma}}{\beta/x}$.
+
+If we are given a term $\oftp{x_1:p_1, \dots, x_n:p_n}{\alpha}{q}$ and terms $\oftp{\psi_i}{\beta_i}{p_i}$ with differing contexts, we can construct a term $\oftp{\psi_1, \dots, \psi_n}{a[\beta_1/x_1, \dots, \beta_n/x_n]}{q}$ first by weakening each $\beta_i$ to all of $\psi_1, \dots, \psi_n$ and then applying the above.
+
+\begin{theorem}[Completeness of mode theory]
+\label{thm:completeness-mode-theory}
+A mode theory $\Sigma$ presents a cartesian 2-multicategory $\M$, where
 $\M_0$ is the set of modes, an object of $\M(p_1,\ldots,p_n;q)$ is a
-term $\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ modulo the \deq-axioms,
-and a morphism of $\M(p_1,\ldots,p_n;q)$ is a structural transformation
-$s :: \wfsp{\psi}{\alpha}{\beta}{q}$ modulo some equations.  We fix a
-mode theory $\Sigma$ and write $\M$ for the 2-multicategory it presents.
+term $\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ and a morphism of $\M(p_1,\ldots,p_n;q)$ is a structural transformation
+$s :: \wfsp{\psi}{\alpha}{\beta}{q}$ modulo the equations given in Section \ref{sec:equational-transformations}.  
+\end{theorem}
+\begin{proof}
+We verify the axioms of a cartesian 2-multicategory.
 
-The overall conjecture is that the syntax is the initial bifibration
+For any modes $p_1, \dots, p_n, q$, the above definitions give a category $\M(p_1,\ldots,p_n;q)$: Both the identity morphisms and composites of morphisms are given directly by the first two rules for transformations. The first two \deq-axioms for transformations are exactly the unit and associativity laws.
+
+The identity 1-morphism is given is given by the derivation $\oftp{x : p}{x}{p}$.
+% FIXME: We name this morphism $1_p \in \M(p; p)$ to distinguish it from $1_x$, which may include a projection.
+
+We define the composition functors
+\[ \circ : \M(q_1, \dots, q_m; r) \times \prod_{i=1}^m \M(p_{i1},\dots,p_{in_i};q_i) \rightarrow \M(p_{11},\dots,p_{mn_m};r) \]
+as follows. Given 1-morphisms $\alpha \in \M(q_1, \dots, q_m; r)$ and $\beta_i \in \M(p_{i1},\dots,p_{in_i};q_i)$, define $\alpha \circ (\beta_1, \dots, \beta_m) = \alpha[\beta_1/x_1] \dots [\beta_m / x_m]$, with weakening inserted as required, according to the discussion above.
+
+ If we have 2-morphisms $s : \alpha \spr \alpha'$ and $t_i : \beta_i' \spr \beta_i'$, define $\comph{s}{(t_1, \dots, t_m)} = s[t_1/x_1]\dots[t_m/x_m]$. This 2-morphism has the correct domain and codomain: $\alpha[\beta_1/x_1] \dots [\beta_m / x_m]$ and $\alpha'[\beta'_1/x_1] \dots [\beta'_m / x_m]$ respectively. These definitions respect 2-morphism identities:
+\begin{align*}
+\comph{1_\alpha}{(1_{\beta_1}, \dots, 1_{\beta_m})} 
+&= 1_\alpha[1_{\beta_1}/x_1][1_{\beta_2}/x_2]\dots[1_{\beta_m}/x_m] \\
+&\deq (1_{\alpha[\beta_1/x_1]})[1_{\beta_2}/x_2]\dots[1_{\beta_m}/x_m] \\
+&\deq \dots \\
+&\deq 1_{\alpha[\beta_1/x_1] \dots [\beta_m / x_m]}
+\end{align*}
+and composition:
+\begin{align*}
+\comph{(\compv{s}{s'})}{(\compv{t_1}{t_1'}, \dots, \compv{t_m}{t_m'})}
+&= (s;s')[t_1;t_1'/x_1][t_2;t_2'/x_2]\dots[t_m;t_m'/x_m] \\ 
+&= (s[t_1/x_1];s'[t_1'/x_1])[t_2;t_2'/x_2]\dots[t_m;t_m'/x_m] \\
+&= \dots \\
+&= (s[t_1/x_1]\dots[t_m/x_m]);(s'[t'_1/x_1]\dots[t'_m/x_m]) \\
+&= \compv{(\comph{s}{(t_1, \dots, t_m)})}{(\comph{s'}{(t'_1, \dots, t'_m)})}
+\end{align*}
+as required.
+
+The required unit, associativity and renaming laws all hold syntactically.
+
+%The unit laws for 1-morphisms hold syntactically:
+%\begin{align*}
+%1_q \circ (\beta) &= 1_q[\beta/x] = \beta \\
+%\intertext{and}
+%\alpha \circ (1_{q_1},\dots,1_{q_m}) &= \alpha[1_{q_1}/x_1]\dots[1_{q_m}/x_m] = \alpha.
+%\end{align*}
+%
+%TODO: Associativity also just holds syntactically?
+%
+%Rearrangement
+%
+%Naturality of rearrangement
+\end{proof}
+
+\begin{theorem}[Soundness of mode theory]
+Let $\Sigma$ be a mode theory and $\M$ a cartesian 2-multicategory. Given a consistent (TODO: by this I suppose I mean a 2-multigraph morphism?) assignment of modes, context descriptors and transformations in $\Sigma$ to the objects, 1-morphisms and 2-morphisms in $\M$, there is a function $\llb -
+\rrb$ from derivations $\oftp{p_1, \dots, p_n}{\alpha}{q}$ to 1-morphisms $\llb \alpha \rrb \in \M(p_1, \dots, p_n; q)$ and from derivations $s ::\wfsp{p_1, \dots, p_n}{\alpha}{\beta}{q}$ to 2-morphisms $\llb s \rrb \in \M(p_1, \dots, p_n; q)(\llb \alpha \rrb, \llb \beta \rrb)$.
+\end{theorem}
+\begin{proof}
+(TODO: again comment on skipping brackets around modes $p$)
+
+Mode morphisms are interpreted as follows:
+\begin{itemize}
+\item The hypothesis rule 
+\[
+\infer{\oftp{\psi}{x}{p}}
+      {x:p \in \psi}
+\]
+is interpreted as the projection 1-morphism $1_p$.
+\item The composition rule
+\[
+\infer{\oftp{\psi}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
+      {\dsd{c} : p_1,\ldots,p_n \to q \in \Sigma &
+       \oftp{\psi}{\alpha_i}{p_i}
+      }
+\]
+is interpreted as the composite of 1-morphisms $\llb c \rrb \circ (\llb \alpha_1 \rrb, \dots, \llb \alpha_n \rrb)$.
+\end{itemize}
+Transformations are interpreted as follows:
+\begin{itemize}
+\item The identity rule
+\[
+\infer{\wfsp{\psi}{\alpha}{\alpha}{p}}{}
+\]
+is interpreted as the identity 2-morphism $1_{\llb \alpha \rrb} \in \M(\psi; p)$.
+\item For the composition rule
+\[
+\infer{\wfsp{\psi}{\alpha_1}{\alpha_3}{p}}
+      {s :: \wfsp{\psi}{\alpha_1}{\alpha_2}{p} &
+       t :: \wfsp{\psi}{\alpha_2}{\alpha_3}{p} &
+      }
+\]
+we take as our interpretation the composite of 2-morphisms $\llb s \rrb ; \llb t \rrb$.
+\item For the congruence rule
+\[
+\infer{\wfsp{\psi,\psi'}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
+      {s :: \wfsp{\psi,x:p,\psi'}{\beta}{\beta'}{q} &
+       t :: \wfsp{\psi,\psi'}{\alpha}{\alpha'}{p}}
+\]
+we use the functoriality of composition of 1-morphisms in $\M$. We take as our interpretation the 2-morphism $\Cut{\llb s \rrb}{\llb t \rrb}{p}$.
+\item For the final rule 
+\[
+\infer{\wfsp{\psi}{\alpha}{\alpha'}{p}}
+      {s :: \alpha \spr \alpha' \in \Sigma}
+\]
+we simply use the provided interpretation of $s$. TODO: Plus weakening??
+\end{itemize}
+
+Moreover, this interpretation function $\llb - \rrb$ respects the equations given in Section \ref{sec:equational-transformations}:
+\begin{itemize}
+\item $\llb 1_\alpha ; s \rrb  = \llb 1_\alpha \rrb; \llb s \rrb = 1_{\llb \alpha \rrb} ; \llb s \rrb = \llb s \rrb = \llb s \rrb ; 1_{\llb \beta \rrb} = \llb s \rrb ; \llb 1_\beta\rrb = \llb s ; 1_\beta\rrb$ by the unit laws in the category $\M(\psi, p)$
+\item $\llb (s_1;s_2);s_3 \rrb = (\llb s_1 \rrb ; \llb s_2 \rrb ); \llb s_3 \rrb = \llb s_1 \rrb ; (\llb s_2 \rrb ; \llb s_3 \rrb) = \llb s_1;(s_2;s_3) \rrb$ by associativity in $\M(\psi, p)$
+\item $\llb s[1_x/x] \rrb = \comph{\llb s \rrb}{(1_{1_{p_1}}, \dots, {1_x}, \dots, 1_{1_{p_n}})} = \llb s \rrb$ and $\llb 1_x[s/x] \rrb = \comph{1_x}{(\llb s \rrb)} = \llb s \rrb$ by the naturality of the unit laws for 1-morphisms.
+\item TODO:
+\item $\llb \subst{\subst{s_1}{s_2}{x}}{s_3}{y} \rrb = 
+\subst{\subst{s_1}{s_3}{y}}{\subst{s_2}{s_3}{y}}{x}$: TODO: this is associativity naturality of 2-morphism composition?
+\item $s_1[t_1/x];s_2[t_2/x] \deq (s_1;s_2)[(t_1;t_2)/x]$: TODO: this is functoriality of 1-morphism composition.
+\item $\subst{1_\alpha}{1_\beta}{x} \deq 1_{\subst{\alpha}{\beta}{x}}$: TODO: this is also functoriality of 1-morphism compositon.
+\item $1_\alpha[s/x] \deq 1_\alpha$ if $y \# \alpha$: TODO: This comes from the cartesian structure?
+\end{itemize}
+\end{proof}
+
+We fix a mode theory $\Sigma$ and write $\M$ for the 2-multicategory it presents. The overall conjecture is that the syntax is the initial bifibration
 over $\M$.  The correspondence between the syntax and a bifibration $\pi
-: \cD \to \M$ is as follows.  A type \wftype{A}{p} corresponds to an
-element $A \in \cD_0$ with $\pi(A) = p$.  A sequent
-\seq{\Gamma}{\alpha}{A} corresponds to an element $d \in \cD(\Gamma;A)$
-with $\pi(d) = \alpha$.  Identity \seq{\Gamma,x:A}{x}{A} corresponds to
-identity in $\cD(A;A)$ composed with a projection renaming.  Cut (part 3,
-for the whole context at once) corresponds to composition in $\cD$.
-Weakening, exchange, and contraction correspond to the $\sigma$-actions.
-Structurality-over-structurality corresponds to functoriality and
-renaming-preservation of $\pi$, which for example says that composition
-in $\cD$ lives over composition in $\M$.  The absence of any notion of
-morphism between derivations of \seq{\Gamma}{\alpha}{A} corresponds to
-local discreteness.  The type \F{\alpha}{\Delta} is an $\alpha$-product,
-while the type \U{x.\alpha}{\Delta}{A} is an $\alpha$-hom.
+: \cD \to \M$ is as follows.
 
-The first step of this correspondence is the following:
+\begin{theorem}[Completeness of sequent calculus rules]
+The syntax presents a bifibration $\pi : \cD \to \M$, where:
+\begin{itemize}
+\item Objects of $\cD$ are pairs $(p, \wftype{A}{p})$;
+\item 1-morphisms $\Gamma \to B$, i.e., objects of $\cD(\Gamma; B)$, are pairs $(\alpha, d :: \seq{\Gamma}{\alpha}{B})$ (up to \deq-equivalence of derivations); and,
+\item 2-morphisms $(\alpha, d) \to (\alpha', d')$ are structural transformations $s :: \alpha \spr \alpha'$ such that $\Trd{s}{d'} \deq d$.
+\end{itemize}
+The functor $\pi : \cD \to \M$ is given by first projection on objects and 1-morphisms, and sends 2-morphisms to the underlying structural transformations.
+\end{theorem}
+
+\begin{proof}
+To save space, we will simply write $A$ and $d$ for objects and derivations, when the underlying modes and mode morphisms are clear.
+
+Composition is defined identically to the mode multicategory: for 1-morphisms $g :: \seq{x_1 : B_1, \dots, x_m : B_m}{\alpha}{C}$ and $f_i :: \seq{A_{i1}, \dots, A_{in_i}}{\beta_i}{B_i}$ we set \[g \circ (f_1, \dots, f_n) := (\alpha[\beta_1/x_1, \dots, \beta_m], g[f_1/x_1, \dots, f_m/x_m])\] where we have again implicitly weakened in the appropriate places. That the latter derivation lies over $\alpha[\beta_1/x_1, \dots, \beta_m]$ follows from the cut rule. 
+
+Given 1-morphisms 
+\begin{align*}
+d &:: \seq{x_1 : B_1, \dots, x_m : B_m}{\alpha}{C} \\
+d' &:: \seq{x_1 : B_1, \dots, x_m : B_m}{\alpha'}{C} \\
+e_i &:: \seq{A_{i1}, \dots, A_{in_i}}{\beta_i}{B_i} \\
+e'_i &:: \seq{A_{i1}, \dots, A_{in_i}}{\beta'_i}{B_i} 
+\end{align*}
+and 2-morphisms $d \to d'$ and $e_i \to e'_i$ given by $s :: \alpha \spr \alpha'$ and $t_i :: \beta_i \spr \beta'_i$ respectively, the composite $\comph{s}{(t_1, \dots, t_m)} := s[t_1/x_1]\dots[t_m/x_m]$ is the same as the composite in the mode multicategory. This is a valid 2-morphism $d[e_1/x_1]\dots[e_m/x_m] \to d'[e'_1/x_1]\dots[e'_m/x_m]$ because
+\begin{align*}
+&(s[t_1/x_1]\dots[t_m/x_m])_*(d'[e'_1/x_1]\dots[e'_m/x_m]) \\
+\deq &(s[t_1/x_1]\dots[t_{m-1}/x_{m-1}])_*	(d'[e'_1/x_1]\dots[e'_{m-1}m/x_{m-1}])[(t_m)_*(e'_m)/x_m] \\
+&\vdots \\
+\deq &s_*(d')[(t_1)_*(e'_1)/x_1] \dots[(t_m)_*(e'_m)/x_m] \\
+\deq &d[e_1/x_1] \dots[e_m/x_m]
+\end{align*}
+as required.
+
+The unit and associativity laws TODO also need some handwaving.
+
+The cartesian structure is given by the admissible rules for weakening-over-weakening, exchange-over-exchange and contraction-over-contraction, from which all renamings can be made. These rules also all preserve the underlying mode morphisms in the correct way to make $\pi$ functorial.
+
+The next step is to show that $\pi$ is a local discrete fibration. Suppose we have a context $\Gamma$ and object $B$ with modes $\modeof{\Gamma}$ and $\modeof{B}$ respectively. We must show that the functor $\pi : \cD(\Gamma; B) \to \M(\modeof{\Gamma}; \modeof{B})$ is a discrete fibration. Let $\alpha, \alpha' \in \M(\modeof{\Gamma}; \modeof{B})$ be mode morphisms and suppose we have a transformation $s :: \alpha \spr \alpha'$ between them. If we have a chosen lift $d :: \seq{\Gamma}{\alpha'}{B}$ of $\alpha'$, then we can consider $s$ as a 2-morphism $(s_*(d), \alpha) \to (d, \alpha')$. The condition $s_*(d) \deq s_*(d)$ is trivially satisfied, and it is clear that $s_*(d)$ is the only possible choice of domain. The lift is therefore unique, so $\pi$ is a local discrete fibration.
+
+We now show that $\pi$ is a fibration, i.e., has $\alpha$-homs for all mode morphisms $\oftp{\psi}{\alpha}{q}$. Suppose we have lifts for the modes in $\psi$, i.e., a context $\Delta$ with $\modeof{\Delta} = \psi$. We define the opcartesian lift of $\alpha$ to be $\FR^* :: \seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}$. To verify that this is an opcartesian morphism, we must show that all squares of the form
+\[ \xymatrix{
+    \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{\Cut{-}{\FR^*}{x_0}} \ar[d]_\pi &
+    \cD(\Gamma,\Delta,\Gamma';C) \ar[d]^\pi \\
+    \M(\modeof{\Gamma}, q, \modeof{\Gamma'}; \modeof{C}) \ar[r]_-{\Cut{-}{\alpha}{x_0}} &
+    \M(\modeof{\Gamma},\psi,\modeof{\Gamma'}; \modeof{C})
+}\]
+are pullbacks of categories. For this we will use the characterisation of pullbacks given in Lemma \ref{lem:pullbacks-in-cat}. First, the property for objects. Suppose we have an object $d \in \cD(\Gamma,\Delta,\Gamma';C)$ and $\beta \in \M(\modeof{\Gamma}, q, \modeof{\Gamma'}; \modeof{C})$ such that $\pi(d) = \Cut{\beta}{\alpha}{x_0}$. This simply states that $d$ is of the form $d :: \seq{\Gamma, \Delta, \Gamma'}{\Cut{\beta}{\alpha}{x_0}}{C}$. We must produce a unique object $e \in \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C)$ such that $\pi(e) = \beta$ and $\Cut{e}{\FR^*}{x_0} = d$.
+
+We take as our $e$ the derivation $\FLd{x_0}{\Delta.\D}$. This lies over $\beta$, and we calculate
+\begin{align*}
+\Cut{e}{\FR^*}{x_0} &= \Cut{\FLd{x_0}{\Delta.\D}}{\FRd{\vec{x/x}}{1_\alpha}{\Ident{x}/x}}{x_0} \\
+&\deq \Trd{(1_\beta[1_\alpha/x_0])}{\D[\vec{\Ident{x}/x}]}\\
+&\deq \Trd{(1_{\beta[\alpha/x_0]})}{\D}\\
+&\deq \D
+\end{align*}
+by the $\beta$-law for \dsd{F}. 
+
+It remains to show uniqueness. Suppose we have some derivation $e'$ such that $\pi(e') = \beta$ and $\Cut{e'}{\FR^*}{x_0} = d$. By the $\eta$-law for \dsd{F}, we have
+\begin{align*}
+e' &\deq \FLd{x_0}{\Delta.\Cut{e'}{\FRs}{x_0}}\\
+&\deq \FLd{x_0}{\Delta.d}\\
+&= e
+\end{align*}
+as required.
+
+We now turn to the pullback property for morphisms. Let $\beta, \beta' \in \M(\modeof{\Gamma}, q, \modeof{\Gamma'}; \modeof{C})$ and let $s :: \beta \spr \beta'$ be a morphism. Further suppose that we have derivations $d :: \seq{\Gamma, \Delta, \Gamma'}{\Cut{\beta}{\alpha}{x_0}}{C}$ and $d' :: \seq{\Gamma, \Delta, \Gamma'}{\Cut{\beta'}{\alpha}{x_0}}{C}$ such that $(\Cut{s}{1_\alpha}{x_0})_*(d') \deq d$. This describes a morphism $T : d \spr d'$ in $\cD(\Gamma,\Delta,\Gamma';C)$ that lies over $\Cut{s}{1_\alpha}{x_0}$. This latter transformation is the result of applying the functor $\Cut{-}{\alpha}{x_0}$ to $s$.
+
+We now must find a morphism $S$ in $\cD(\Gamma,\Delta,\Gamma';C)$ that lies over $s$, and such that $\Cut{S}{\FR^*}{x_0} = T$. By the above argument for objects, we know that $S$ must have domain $\FLd{x_0}{\Delta.\D}$ and codomain $\FLd{x_0}{\Delta.\D'}$. The only option is for $S$ to have underlying structural transformation $s$, and we can verify that this gives a well-defined morphism $S : \FLd{x_0}{\Delta.\D} \spr \FLd{x_0}{\Delta.\D'}$:
+\begin{align*}
+s_*( \FLd{x_0}{\Delta.\D'}) &\deq \FLd{x_0}{\Delta.\Cut{s_*( \FLd{x_0}{\Delta.\D'})}{\FRs}{x_0}}\\
+&\deq \FLd{x_0}{\Delta.\Cut{s_*( \FLd{x_0}{\Delta.\D'})}{(1_\alpha)_*(\FRs)}{x_0}}\\
+&\deq \FLd{x_0}{\Delta.(\Cut{s}{1_\alpha}{x_0})_*( \FLd{x_0}{\Delta.\Cut{\D'}{\FRs}{x_0}}}\\
+&\deq \FLd{x_0}{\Delta.(\Cut{s}{1_\alpha}{x_0})_*(\D') }\\
+&\deq \FLd{x_0}{\Delta.\D}
+\end{align*}
+where we have used the $\eta$-law followed by the $\beta$-law. 
+
+We conclude that all squares of the given form are pullback squares, and so every $\alpha$ has an opcartesian lift. Therefore $\pi$ is an opfibration.
+
+TODO: $\alpha$-homs are similar.
+\end{proof}
 
 \begin{theorem}[Soundness of sequent calculus rules]
 Fix a bifibration $\pi : \cD \to \M$.  Then there is a function $\llb -
@@ -149,7 +406,7 @@ A_n \rrb) \to \llb C \rrb$, such that $\pi(d) = \alpha$.
 \begin{proof}
 If $\pi$ is a local discrete fibration, the 2-cells of $\M$ act on the
 fibers. Suppose $\alpha, \beta : \psi \to p$ and $s : \alpha \spr
-\beta$. We write $s_*$ for the induced function (of sets):
+\beta$. We re-use the notation $s_*$ for the induced function (of sets):
 $\cD_\beta(\Gamma; A) \to \cD_\alpha(\Gamma; A)$.  
 
 The definition of an opfibration of 2-multicategories guarantees that,
@@ -177,12 +434,9 @@ The sequent calculus rules are then interpreted as follows (we elide the
 semantic brackets on objects):
 
 \begin{itemize}
-\item For the hypothesis rule
-\[
-\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
-      {x:P \in \Gamma & s : \beta \spr x}
-\]
-we need a morphism in $\cD_\beta(\Gamma; P)$, which take to be $s_*(1_x)$.
+\item The identity derivation of a sequent $x :: \seq{\Gamma}{x}{A}$ is defined to be $\llb x \rrb = 1_A$.
+\item Given a derivation $d :: \seq{\Gamma}{\beta}{A}$ and transformation $s :: \beta' \spr \beta$, the respect-for-transformations derivation is interpreted as $\llb s_*(d) \rrb = s_*(\llb d \rrb d)$.
+\item Given derivations $d_1 :: \seq{\Gamma, x : A, \Gamma'}{\alpha}{B}$ and $d_2 :: \seq{\Gamma, \Gamma'}{\beta}{A}$, cut is interpreted as $\llb d_1[d_2/x] \rrb = \llb d_1 \rrb \circ_A \llb d_1 \rrb$. TODO: this is wrong, doesn't use cartesian structure to contract $\Gamma, \Gamma'$.
 \item For $\FL$
 \[
 \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{M : C}}
@@ -195,16 +449,15 @@ $\cD_{\beta}(\Gamma, \F{\alpha}{\Delta},\Gamma'; C)$. By the
 opcartesian-ness of $\zeta_{\alpha, \Delta}$, the following square is a
 pullback:
 \[ \xymatrix{
-    \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{-\circ \zeta_{\alpha, \Delta}} \ar[d]_\pi &
+    \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{(-)\circ_{F_\alpha(\Delta)}\, \zeta_{\alpha, \Delta}} \ar[d]_\pi &
     \cD(\Gamma,\Delta,\Gamma';C) \ar[d]^\pi \\
-    \M(\pi\Gamma,\pi \F{\alpha}{\Delta}, \pi\Gamma'; \pi C) \ar[r]_-{-\circ \alpha} &
+    \M(\pi\Gamma,\pi \F{\alpha}{\Delta}, \pi\Gamma'; \pi C) \ar[r]_-{(-)\circ_{\pi \F{\alpha}{\Delta}}\, \alpha} &
     \M(\pi\Gamma,\pi\Delta,\pi\Gamma'; \pi C)
 }\]
 We are given an object of the bottom left ($\beta$) and the top right
-($\llb \D \rrb$), with $\pi\llb \D \rrb = \beta \circ \alpha$. By the
-construction of pullbacks in $Cat$, there is an object $f \in
-\cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C)$ so that $\pi(f) = \beta$. We take
-this $f$ to be our interpretation.
+($\llb \D \rrb$), with $\pi\llb \D \rrb = \beta \circ_{\pi \F{\alpha}{\Delta}}\, \alpha$. By the
+construction of pullbacks in $Cat$, there is a unique object $\IndF{\llb \D \rrb}{\alpha}{\Delta} \in
+\cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C)$ so that $\pi(\IndF{\llb \D \rrb}{\alpha}{\Delta}) = \beta$. We take this object to be our interpretation.
 
 \item For $\FR$
 \[
@@ -231,40 +484,64 @@ the conclusion to be $s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb,
        \end{array}
       }
 \]
-let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb M_i \rrb \in \cD_{\gamma_i}(\Gamma; C_i)$ and $\llb D \rrb \in \cD_{\beta'}(\Gamma, A; C)$. Our interpretation is then
-$s_*(\llb D \rrb \circ_z \xi_{\alpha, \Delta,A} \circ (\llb M_1 \rrb, \dots, \llb M_n \rrb, id_x))$
+let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb \D_i \rrb \in \cD_{\gamma_i}(\Gamma; C_i)$ and $\llb \D \rrb \in \cD_{\beta'}(\Gamma, A; C)$. Our interpretation is then
+$s_*(\llb \D \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_x))$
 \item For $\UR$
 \[
 \infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{M:A}}
 \]
-we are given a morphism $\llb M \rrb \in \cD_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\cD_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
+we are given a morphism $\llb \D \rrb \in \cD_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\cD_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
 \[ \xymatrix{
-    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ -} \ar[d]_S &
-    \cD(\Gamma,\Delta;A) \ar[d]^S \\
-    \M(S\Gamma;S \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ -} &
-    \M(S\Gamma,S\Delta;S A)
+    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ_{\U{x.\alpha}{\Delta}{A}} (-)} \ar[d]_\pi &
+    \cD(\Gamma,\Delta;A) \ar[d]^\pi \\
+    \M(\pi\Gamma;\pi \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ_{\pi\U{x.\alpha}{\Delta}{A}} (-)} &
+    \M(\pi\Gamma,\pi\Delta;\pi A)
   }\]
-Again we have objects $\beta$ and $\llb M \rrb$ that agree in the bottom right, so an induced object in the top left which we take as our interpretation.
+Again we have objects $\beta$ and $\llb \D \rrb$ that agree in the bottom right, so an induced object $\IndU{\llb \D \rrb}{\alpha}{\Delta}{A}$ in the top left which we take as our interpretation.
+\end{itemize}
+
+We now show that the above interpretation function respects the equational theory on derivations.
+
+\begin{itemize}
+\item $\Cut{\D}{\Ident{x}}{x}  \deq  \D$
+\item $\Cut{\Ident{x}}{\D}{x}  \deq  \D$
+\item $\Cut{\D_1}{\D_2}{x}  \deq  \D_1$ if $x \# \D_1$
+\item $\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y}  \deq  \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}$
+
+\item $\Trd{1}{\D} \deq \D$
+\item $\Trd{(s_1;s_2)}{\D} \deq \Trd{{s_1}}{\Trd{{s_2}}{\D}}$
+\item $\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} \deq \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x}$
+
+\item \emph{$\beta$-rule for $\Fsymb$}: Suppose we are given TODO
+\begin{align*}
+\llb \Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} \rrb &= \llb \FLd{x_0}{\D}\rrb \circ_{F_\alpha(\Delta)} \llb \FRd{}{s}{\vec{\D_i/x_i}}\rrb \\
+&=\IndF{\llb \D \rrb}{\alpha}{\Delta} \circ_{F_\alpha(\Delta)} s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb, \dots, \llb d_n \rrb)) \\
+&= (1_\beta[s/x_0])_*((\IndF{\llb \D \rrb}{\alpha}{\Delta} \circ_{F_\alpha(\Delta)} \zeta_{\alpha, \Delta}) \circ (\llb d_1 \rrb, \dots, \llb d_n \rrb)) \\
+&= (1_\beta[s/x_0])_*(\llb \D \rrb \circ (\llb d_1 \rrb, \dots, \llb d_n \rrb)) \\
+&= \llb \Trd{(1_\beta[s/x_0])}{\D[\vec{\D_i/x_i}]} \rrb
+\end{align*}
+where $\IndF{\llb \D \rrb}{\alpha}{\Delta}$ is the object induced by the pullback in the interpretation of $\FL$. Here we have used that by the definition of $\IndF{\llb \D \rrb}{\alpha}{\Delta}$, the composite $\IndF{\llb \D \rrb}{\alpha}{\Delta} \circ_{F_\alpha(\Delta)} \zeta_{\alpha, \Delta}$ is equal to $\D$.
+
+\item \emph{$\eta$-rule for $\Fsymb$}:
+\begin{align*}
+\llb \FLd{x}{\Delta.\Cut{\D}{\FRs}{x}} \rrb &= \IndF{(\llb d \rrb \circ_{F_\alpha(\Delta)} \zeta_{\alpha, \Delta})}{\alpha}{\Delta}
+\end{align*} 
+On the right, this is the unique object $f \in \cD_\beta(\Gamma,\F{\alpha}{\Delta},\Gamma';C)$ such that $f \circ_{F_\alpha(\Delta)} \zeta_{\alpha, \Delta} = \llb d \rrb \circ_{F_\alpha(\Delta)} \zeta_{\alpha, \Delta}$. Clearly this must be $\llb \D \rrb$ itself, so indeed $\llb \FLd{x}{\Delta.\Cut{\D}{\FRs}{x}} \rrb = \llb \D \rrb$.
+
+\item \emph{$\beta$-rule for $\Usymb$}: 
+\begin{align*}
+\llb \Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} \rrb 
+&= \llb \ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'} \rrb \circ_{\U{x.\alpha}{\Delta}{A}} \llb \URd{\Delta.\D} \rrb\\
+&= s_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0})) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A}\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A})\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) )\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \llb \D \rrb \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) )\\
+&= TODO \\
+&= \llb \Trd{(s[1_{\alpha}/{x_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \rrb
+\end{align*}
+
+\item \emph{$\eta$-rule for $\Usymb$}: $\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}  \deq  \URd{\Delta.\Cut{\ULs x}{\D}{x}}$
 \end{itemize}
 \end{proof}
-
-Conversely, the syntactic bifibration should be defined as follows: an
-object of $\cD$ is a pair $(p,\wftype{A}{p})$, and the hom-category has
-objects pairs $(\alpha,d :: \seq{\Gamma}{\alpha}{A})$ (quotiented by
-some equations), and morphisms $(\alpha,d) \to (\alpha',d')$ structural
-transformations $s :: \alpha \spr \alpha'$ such that $\Trd{s}{d'} \deq
-d$ (the equational second component of these morphisms corresponds to
-local discreteness).  The functor $\pi : \cD \to \M$ is then first
-projection.  Identity, composition, and renamings for $\cD$ are defined
-by the corresponding syntactic lemmas, which lay over the appropriate
-context context descriptor to make $\pi$ functorial.  Cartesian and
-opcartesian lifts are defined to be \Fsymb{} and \Usymb{} types with
-$\FR^*$ and $\UL^*$.  What remains is to check that the equational
-theory implies the semantic equations.
-
-%% \begin{theorem}
-%% Given a mode theory $\M$, the syntax determines a 2-multicategory $\cD$ and a bifibration $S : \cD \to \M$.
-%% \end{theorem}
-%% \begin{proof}
 
