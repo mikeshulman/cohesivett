@@ -1,5 +1,26 @@
 
-\section{Adequacy of Provability}
+% non-associative products NO
+% ordered products YES
+%         implications NO
+% linear products     NO
+%        implications NO
+% multi-use functions YES
+%           products NO
+% affine products YES
+%        implications YES
+% relevant NO
+% cartesian products     YES
+%           implications YES
+% BI NO
+% Adjoint ! NO
+% Adjoint Box YES
+% Subexponentials NO
+% Monads nonstrong YES
+%        strong NO
+%        box-strong NO
+% spatial NO
+
+\section{Logical Adequacy}
 \label{sec:adequacy-long}
 
 Suppose we are representing some object logic, like the examples from
@@ -16,11 +37,11 @@ translation from object-logic sequents $J$ to framework sequents $J^*$,
 in such a way that $J$ is provable in the object logic iff $J^*$ is
 provable in the framework.  No claims are made about framework
 derivations of sequents that are not in the image of the translation.
-We call this \emph{adequacy of provability}, because it says that
-provability in the object logic is soundly and completely represented by
-provability in the framework.
-%% we consider stronger adequacy theorems, which consider the equational
-%% theory of derivations, below.
+We call this \emph{logical adequacy}, because it says that entailment in
+the object logic is soundly and completely represented by entailment in
+the framework.  We plan to consider stronger adequacy theorems, which
+extend this logical correspondence to an isomorphism on
+equivalence-classes of proofs.
 
 We will often use the following lemma:  
 
@@ -191,7 +212,7 @@ We use the following properties of the mode theory:
 
 Using these defintions, we have
 
-\begin{theorem}[Adequacy of provability for $\seql{}{o}{}$] 
+\begin{theorem}[Logical adequacy for $\seql{}{o}{}$] 
 $\seql{\Gamma}{o}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$
 \end{theorem}
 
@@ -319,7 +340,7 @@ context descriptor:
 \]
 
 Overall, we have
-\begin{theorem}[Adequacy of provability for $\seqa{}{}$] ~\\
+\begin{theorem}[Logical adequacy for $\seqa{}{}$] ~\\
 $\seqa{\Gamma}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$
 \end{theorem}
 
@@ -743,7 +764,7 @@ there exist unique ${k_1,\ldots,k_n}$ such that $\alpha \deq x_1^{k_1}
 \otimes \ldots \otimes x_n^{k_n}$.
 \end{lemma}
 
-\begin{theorem}[Adequacy of Provability for $n$-use Variables] ~\\
+\begin{theorem}[Logical adequacy for $n$-use functions] ~\\
 $x_1:^{k_1} A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
   \seq{x_1:A_1^*,\ldots,x_n:A_n^*}{x_1^{k_1} \otimes \ldots \otimes
     x_n^{k_n}}{C^*}
@@ -914,7 +935,7 @@ calculus that does not allow contraction for positives, but the above is
 more standard.
 
 Overall, we have
-\begin{theorem}
+\begin{theorem}[Logical adequacy for cartesian logic]
 $\seqc{\Gamma}{A}$ iff \seq{\Gamma^*}{\vars{\Gamma}}{A^*}
 \end{theorem}
 
@@ -1095,7 +1116,7 @@ $\validj{\Delta};\truej{\Gamma} \vdash \truej{A}$) are
 \]
 
 For the mode theory in Section~\ref{sec:example:box}, we have
-\begin{theorem}
+\begin{theorem}[Logical adequacy for a comonad]
 \[
 \begin{array}{c}
  x_1:\validj{A_1},\ldots;y_1:\truej{B_1},\ldots \vdash \truej{C}\\
@@ -1194,7 +1215,7 @@ Conversely, suppose we have
 \end{itemize}
 \end{proof}
 
-\subsection{Non-strong \Dia{}{}}
+\subsection{Non-strong Monad (\Dia{}{})}
 
 We compare the mode theory for the non-strong \Dia{}{} (modes \dsd{t}
 and \dsd{p} with an affine (semicartesian) commutative monoid
@@ -1204,7 +1225,7 @@ beginning of Section~\ref{sec:example:monad}.
 
 Recall from above that $\Dia{}{A}^* =
 \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}$ and that the correspondence is:
-\begin{theorem}
+\begin{theorem}[Logical adequacy for $\Dia{}{}$]
 \[
 \begin{array}{c}
 \truej{A_1}, \ldots, \truej{A_1} \vdash \truej{C}\\
@@ -1215,7 +1236,7 @@ Recall from above that $\Dia{}{A}^* =
 and 
 \[
 \begin{array}{c}
-\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}\\
+\truej{A_1}, \ldots, \truej{A_n} \vdash \possj{C}\\
 \text{iff}\\
 \seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes x_n)}{\F{\dsd{g}}{C^*}}.
 \end{array}
@@ -1250,7 +1271,7 @@ The three rules are represented by
       }
 \]
 (and an identity rule $\Gamma,\truej{P} \vdash \truej{P}$ would be
-translated as usual)
+translated as usual).
 
 Conversley, suppose we have a derivation of
 \seq{\Gamma^*}{\vars{\Gamma}}{C^*} or
@@ -1360,5 +1381,278 @@ no-bigger derivation of
 inductive hypothesis gives the result.  That is, we did an elimination
 to produce a 0-use variable, which we can strengthen away.  
 \end{itemize}
- 
 \end{proof}
+
+\subsection{Strong Monad (\Crc{}{A})}
+
+For the linear logic (commutative monoid)  mode theory, we compare the rules
+\[
+\infer{\Gamma \vdash \possj{A}}
+      {\Gamma \vdash \truej{A}}
+\qquad
+\infer{\Gamma \vdash \truej{\Crc{}{A}}}
+      {\Gamma \vdash \possj{A}}
+\qquad
+\infer{\Gamma,\truej{\Crc{}{A}},\Gamma' \vdash \possj{C}}
+      {\Gamma,\Gamma',\truej{A} \vdash \possj{C}}
+\]
+with the mode theory consisting of a commutative monoid $(\otimes,1)$ on
+\dsd{p}, a functor \dsd{g} from \dsd{t} to \dsd{p}, and 
+\[
+\begin{array}{ll}
+\oftp{x : \dsd{t}, y : \dsd{p}}{\ttp x y}{\dsd{p}}
+& \dsd{g}(x \otimes y) \deq \ttp x {\dsd{g}(y)}\\
+\end{array}
+\]
+(We elide the equations $\ttp {(x \otimes y)} z \deq \ttp x {(\ttp y
+  z)}$ and $\ttp {\dsd{1}} z \deq z$ discussed above because they
+provable when $z$ is $\dsd{g}(x)$, which are the only terms that come up
+in this encoding.)
+%% FIXME: do proof with them, since they seem useful for the general
+%% case where we consider more connectives.  
+
+Translating \Crc{}{A} by \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}, we have
+the same adequacy statement as above:
+\begin{theorem}[Logical adequacy for $\Crc{}{}$]
+\[
+\begin{array}{c}
+\truej{A_1}, \ldots, \truej{A_1} \vdash \truej{C}\\
+\text{iff}\\
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*}
+\end{array}
+\]
+and 
+\[
+\begin{array}{c}
+\truej{A_1}, \ldots, \truej{A_n} \vdash \possj{C}\\
+\text{iff}\\
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes x_n)}{\F{\dsd{g}}{C^*}}.
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+When $\Gamma$ is $x_1:\truej{A_1}, \ldots, x_n:\truej{A_n}$, we write 
+\vars{\Gamma} for $x_1 \otimes \ldots \otimes x_n$.  
+
+The three rules are represented by
+\[
+\infer[\FR]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {\dsd{g}(\vars{\Gamma}) \spr \dsd{g}(\vars{\Gamma}) &
+        \seq{\Gamma^*}{\vars{\Gamma}}{A^*}}
+\]
+
+\[
+\infer[\UR]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{\Uempty{\dsd{g}}{\F{\dsd{g}}{C^*}}}}
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+\]
+
+\[
+\infer{\seq{(\Gamma^* = \Gamma_1^*,x:\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}},\Gamma_2^*)}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {x : \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}} \in \Gamma^* &
+        \dsd{g}(\vars{\Gamma}) \spr \ttp {(\vars{\Gamma_1} \otimes \vars{\Gamma_2})} {\dsd{g}(x)} &
+        \infer[\FL]
+              {\seq{\Gamma^*,z:\F{\dsd{g}}{A^*}}{\vars{\Gamma_1} \otimes \vars{\Gamma_2} \otimes z}{\F{\dsd{g}}{C^*}}}
+              {\infer[Lemma~\ref{lem:weakening}]
+                     {\seq{\Gamma^*,y:{A^*}}{(\vars{\Gamma_1} \otimes \vars{\Gamma_2} \otimes \dsd{g}(y)) \deq \dsd{g}(\vars{\Gamma_1} \otimes y \otimes \vars{\Gamma_2})}{\F{\dsd{g}}{C^*}}}
+                     {\seq{\Gamma_1*,\Gamma_2^*,y:{A^*}}{\dsd{g}(\vars{\Gamma_1}\otimes\vars{\Gamma_2}\otimes y)}{\F{\dsd{g}}{C^*}}}}
+      }
+\]
+The transformation $\dsd{g}(\vars{\Gamma}) \spr \ttp {(\vars{\Gamma_1}
+  \otimes \vars{\Gamma_2})} {\dsd{g}(x)}$ is an equality given by
+associating and commuting $\vars{\Gamma} = (\vars{\Gamma_1} \otimes x
+\otimes \vars{\Gamma_2})$ to $(\vars{\Gamma_1} \otimes \vars{\Gamma_2})
+\otimes x$ and then using 
+\[
+\dsd{g}((\vars{\Gamma_1} \otimes
+\vars{\Gamma_2}) \otimes x) \deq \ttp {(\vars{\Gamma_1} \otimes
+  \vars{\Gamma_2})} {\dsd{g}(x)}
+\]
+
+An identity rule $\truej{P} \vdash \truej{P}$ is translated as usual.
+
+Conversely, suppose we have a derivation of
+\seq{\Gamma^*}{\vars{\Gamma}}{C^*} or
+\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.
+Lemma~\ref{lem:0-use-strengthening} can be used on such derivations: the
+equational axioms preserve variables and there are no transformations,
+so we use Lemma~\ref{lem:spr-doesnt-introduce}; and \F{\dsd{g}}{A} and
+\Uempty{\dsd{g}}{A} are both relevant, so by induction the encoding of
+any sequent is.  We use the following properties of the mode theory:
+\begin{itemize}
+\item If $\alpha \spr \beta$ then $\alpha \deq \beta$, because there are
+  no structural transformation axioms.
+
+\item If $\oftp{\tptm{x_1}{\dsd{t}}, \ldots, \tptm{x_n}{\dsd{t}},
+  \tptm{z}{\dsd{p}}}{\beta}{\dsd{p}}$ then $\beta$ is of the form
+  $\ttp{\alpha_1}{\ttp{\alpha_2}{\ldots z}}$, or
+  $\ttp{\alpha_1}{\ttp{\alpha_2}{\ldots \dsd{g}(\alpha_{n})}}$ (in which
+  case $z$ does not occur).  Moreover, if $\oftp{\tptm{x_1}{\dsd{t}},
+    \ldots, \tptm{x_n}{\dsd{t}}}{\beta}{\dsd{p}}$ then $\beta$ is of the
+  form $\ttp{\alpha_1}{\ttp{\alpha_2}{\ldots \dsd{g}(\alpha_{n})}}$.
+  This is because the only constants of mode \dsd{p} are $\ttp{}{}$,
+  which has only 1 \dsd{p}-mode subposition, and \dsd{g}, which has 0,
+  so any term of mode \dsd{p} must be an iterated application of
+  $\ttp{}{}$ ending in either a variable (if there is one in the
+  context), or \dsd{g}.
+
+\item If $\vec{x_i : \dsd{t}} \vdash \dsd{g}(\alpha) \deq
+  \dsd{g}(\beta)$ then $\alpha \deq \beta$.  We generalize and define a
+  meta-operation $\oftp{\psi}{t(\alpha)}{\dsd{t}}$ when
+  $\oftp{\psi}{\alpha}{\dsd{p}}$ that picks out the \dsd{t} parts of
+  $\alpha$: 
+  \[
+  \begin{array}{l}
+    t(z) = 1
+    t(\ttp \alpha \beta) = \alpha \otimes t(\beta)\\
+    t(\dsd{g}(\alpha)) = \alpha
+  \end{array}
+  \]
+  It now suffices to show that $\alpha \deq \beta$ implies $t(\alpha)
+  \deq t(\beta)$.  The cases for reflexivity, symmetry, and transitivity
+  all follow from the inductive hypotheses and the corresponding rules.
+  For the axiom $\dsd{g}(x \otimes y) \deq \ttp{x} \otimes \dsd{g}(y)$,
+  we get $x \otimes y$ on both sides.  For congruence, suppose $\psi,x:q
+  \vdash \alpha' \deq \beta' : \dsd{p}$ and $\psi \vdash \alpha \deq
+  \beta : q$.  By the inductive hypothesis, $t(\alpha) \deq t(\beta)$.
+  We distinguish cases on whether $q$ is \dsd{p} or $\dsd{t}$.  
+
+  If the congruence variable $x$ has mode \dsd{t}, then the result
+  follows from the fact that $x : \dsd{t} \vdash \alpha : \dsd{p}$ implies
+  $t(\alpha[\beta/x]) \deq t(\alpha)[\beta/x]$, because we get
+  $t(\alpha)[\alpha'/x] \deq t(\beta)[\beta'/x]$ by the congruence rule.
+  To prove this, the case for $z$ is immediate, because both sides are
+  $1$.  In the case for $\dsd{g}(\alpha)$, both sides are
+  $\alpha[\beta/x]$.  In the case for $\ttp{\alpha_1}{\alpha_2}$, by the
+  inductive hypothesis we get $t(\alpha_2[\beta/x]) \deq
+  t(\alpha_2)[\beta/x]$ by the inductive hypothesis, and we need to show
+  that $\alpha_1[\beta/x] \otimes t(\alpha_2[\beta/x]) \deq (\alpha_1
+  \otimes t(\alpha_2))[\beta/x]$, which by definition of substitution.
+  
+  If the congruence variable $x$ has mode \dsd{p}, then because all
+  equational axioms have the same variables on the left and right, $x$
+  occurs either on both sides or on neither.  If it occurs on neither,
+  then the inductive hypothesis $t(\alpha) \deq t(\beta)$ is enough,
+  because $t(\alpha[\beta/x]) = t(\alpha) \deq t(\beta) =
+  t(\alpha'[\beta'/x])$.  If it occurs on both, then the result follows
+  from the fact that $t(\alpha[\beta/x]) \deq t(\alpha) \otimes
+  t(\beta)$, because $t(\alpha) \deq t(\beta)$ and $t(\alpha') \deq
+  t(\beta')$ by the inductive hypotheses on the two subderivations, both
+  of which have mode \dsd{p}.  We prove the lemma that $x : \dsd{p}
+  \vdash \alpha : \dsd{p}$ (where $x$ occurs in $\alpha$) and $\beta :
+  \dsd{p}$ imply $t(\alpha[\beta/x]) \deq t(\alpha) \otimes t(\beta)$ by
+  induction on $\alpha$.  If it is $x$, then we have $t(\beta) \deq 1
+  \otimes t(\beta)$.  It cannot be some other $y$ or $\dsd{g}(\alpha)$
+  because then $x$ has no place to occur.  If it is
+  $\ttp{\alpha_1}{\alpha_2}$, then by the inductive hypothesis,
+  $t(\alpha_2[\beta/x]) \deq t(\alpha_2) \otimes t(\beta)$, and we have
+  to show that $\alpha_1[\beta/x] \otimes t(\alpha_2[\beta/x]) \deq
+  \alpha_1 \otimes t(\alpha_2) \otimes t(\beta)$.  This follows because
+  $x$, which has mode \dsd{p}, cannot occur in $\alpha_1$, which has
+  mode \dsd{t}.
+\end{itemize}
+
+Suppose we have \seq{\Gamma^*}{\vars{\Gamma}}{C^*}.  
+The hypothesis rule is translated back to itself as usual.  Since there
+are no types that encode to \Fsymb, any other final rule must be \UR\/ or \UL,
+and the type must be \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}.
+\begin{itemize}
+\item 
+If we have
+\[
+\infer[\UR]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}}}
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{A^*}}}
+\]
+then in the inductive hypothesis gives $\Gamma \vdash \possj{A}$, so we
+have $\Gamma \vdash \truej{\Crc{}{A}}$ by rule.
+
+\item 
+Suppose we have 
+\[
+\infer[\UL]
+      {\seq{\Gamma^*}{\vars{\Gamma}}{C^*}}
+      {x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma &
+        \vars{\Gamma} \spr \beta'[\dsd{g}(x)/z] &
+        \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\beta'}{C^*}}
+\]
+For this mode theory, there are no transformations besides identities,
+so $\vars{\Gamma} \deq \beta'[\dsd{g}(x)/z]$.  The constants do not
+allow embedding a \dsd{p}-mode term in a \dsd{t}-mode term.  Therefore,
+the subterm $\dsd{g}(x)$ cannot occur in a anything equal to
+\vars{\Gamma}, which has mode \dsd{t}.  Thus, $z$ does not occur in
+$\beta'$, and $\vars{\Gamma} \deq \beta'$.  Applying
+Lemma~\ref{lem:0-use-strengthening} to strengthen away $z$ gives a
+no-bigger derivation of \seq{\Gamma^*}{\vars{\Gamma}}{C^*}.  Then the
+inductive hypothesis gives $\Gamma \vdash \truej{C}$ as desired.
+\end{itemize}
+
+Suppose we have \seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}
+and want $\Gamma \vdash \possj{C}$.  Since there are no \Fsymb's in the
+context, the only possibilities are \UL\/ and \FR:
+\begin{itemize}
+
+\item Suppose we have
+\[
+\infer[\FR]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {{\dsd{g}(\vars{\Gamma})} \spr \dsd{g}(\alpha) &
+        {\seq{\Gamma^*}{\alpha}{C^*}}}
+\]
+
+We have ${\dsd{g}(\vars{\Gamma})} \deq \dsd{g}(\alpha)$, which 
+implies $\vars{\Gamma} \deq \alpha$.  By the inductive hyptothesis on
+the premise we get $\Gamma \vdash \truej{A}$, which gives $\Gamma \vdash
+\possj{A}$ as desired.
+
+\item Suppose we have 
+\[
+\infer[\UL]
+      {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
+      {\begin{array}{l}
+          x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma \\
+          \dsd{g}(\vars{\Gamma}) \deq \beta'[\dsd{g}(x)/z] \\
+          \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\beta'}{\F{\dsd{g}}{C^*}}
+        \end{array}
+      }
+\]
+We have \oftp{x_1:\dsd{t},\ldots,x_n:\dsd{t},z:\dsd{p}}{\beta'}{\dsd{p}}, so 
+$\beta'$ is either $\ttp {\alpha_1}{\ttp \ldots z}$ 
+or $\ttp {\alpha_1}{\ttp \ldots \dsd{g}{(\alpha)}}$, 
+and in this case \dsd{z} does not occur.  
+
+If $\beta'$ is $\ttp {\alpha_1}{\ttp \ldots z}$, then we have
+\seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\ttp {\alpha_1}{\ttp \ldots \ttp
+    {\alpha_n} z}}{\F{\dsd{g}}{C^*}} and $\dsd{g}(\vars{\Gamma}) \deq
+\ttp {\alpha_1}{\ttp \ldots \dsd{g}(x)}$.  This entails ${\vars{\Gamma}}
+\deq \alpha_1 \otimes \ldots \otimes \alpha_n \otimes x$, and because
+the only equations are the commutative monoid laws, $\vars{\Gamma-x}
+\deq \alpha_1 \otimes \ldots \otimes \alpha_n$.  By
+Lemma~\ref{lem:Finv}, we have a no-bigger derivation of
+\seq{\Gamma^*,y:A^*}{\ttp {\alpha_1}{\ttp \ldots
+    \dsd{g}(y)}}{\F{\dsd{g}}{C^*}}.  The subscript ${\ttp
+  {\alpha_1}{\ttp \ldots \dsd{g}(y)}}$ is equal to $\dsd{g}(\alpha_1
+\otimes \ldots \otimes \alpha_n \otimes y)$ and therefore
+$\dsd{g}(\vars{\Gamma-x} \otimes y)$, so we have 
+\seq{\Gamma^*,y:A^*}{\vars {\Gamma-x,y:A}}{\F{\dsd{g}}{C^*}}.
+By Lemma~\ref{lem:0-use-strengthening}, we can strengthen away $x$,
+giving a no-bigger derivation of 
+\seq{(\Gamma^*-x),y:A^*}{\vars {\Gamma-x,y:A}}{\F{\dsd{g}}{C^*}}.
+By the inductive hypothesis, this translates to a
+derivation of $\Gamma-x,\truej{A} \vdash \possj{C}$, so applying
+\Crc{}{}-left gives the result.
+
+If $z$ does not occur in $\beta'$ we have $\dsd{g}(\vars{\Gamma}) \deq
+\beta'$, so the premise is
+\seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.
+Then strengthening $z$ by Lemma~\ref{lem:0-use-strengthening} gives a
+no-bigger derivation of
+\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.  So the
+inductive hypothesis gives the result.  That is, we did an elimination
+to produce a 0-use variable, which we can strengthen away.
+\end{itemize}
+\end{proof}
+
+
