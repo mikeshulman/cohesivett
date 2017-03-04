@@ -492,7 +492,7 @@ Then the fact that $\Gamma \splits \Gamma_1,\Gamma_2$ implies $\Gamma
 
 \begin{lemma} \label{lem:strengthening-affine}
 If $\seq{{\Gamma_0}^*}{\alpha}{A^*}$ and $\vec{x} \# \alpha$ then there
-is a no larger derivation of $\seq{{\Gamma}^*-\vec{x}}{\alpha}{A^*}$
+is a no-bigger derivation of $\seq{{\Gamma}^*-\vec{x}}{\alpha}{A^*}$
 \end{lemma}
 
 \begin{proof}
@@ -576,7 +576,7 @@ logic rule.
   Using these equalities, the premises derive
   $\seq{\Gamma^*}{\vars{\Delta_1}}{A_1^*}$ and
   $\seq{\Gamma^*,z:A_2^*}{\vars{\Delta_2} \otimes z}{C}$, so by
-  Lemma~\ref{lem:strengthening-affine} we can strengthen to no bigger
+  Lemma~\ref{lem:strengthening-affine} we can strengthen to no-bigger
   derivations of
   $\seq{\Delta_1^*}{\vars{\Delta_1}}{A_1^*}$ (removing $\Gamma-\Delta_1$) and
   $\seq{\Delta_2*,z:A_2^*}{\vars{\Delta_2} \otimes z}{C}$ (removing $\Gamma-\Delta_2$).
@@ -1205,13 +1205,117 @@ from the intro forms for the cartesian $(\times,\top)$ and congruence of
 encoding of the premise with $\Gamma^*$
 
 Conversely, suppose we have
-\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}.
+\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}.  For
+this mode theory, the context descriptors containing all variables are
+initial:
+\begin{itemize}
+\item If
+  $\oftp{\vec{x_i}:{\dsd{v}},\vec{y_i}:{\dsd{t}}}{\alpha}{\dsd{v}}$ then
+  $x_1 \times_v \ldots \times_v x_n \spr \alpha$.  $\alpha$ a variable,
+  in which case we weaken all the others, $1$, in which case we weaken
+  everything, or $\alpha_1 \times_v \alpha_2$, in which case we get $x_1
+  \times_v \ldots \times_v x_n \spr \alpha_1$ $x_1 \times_v \ldots
+  \times_v x_n \spr \alpha_2$ by induction, apply congruence of
+  $\times_v$, and then precompose with contraction.
+
+\item If
+  $\oftp{\vec{x_i}:{\dsd{v}},\vec{y_i}:{\dsd{t}}}{\alpha}{\dsd{t}}$ then
+  $\dsd{f}(x_1) \times \dsd{f}(x_n) \times y_1 \times \ldots \times y_n
+  \spr \alpha$.  By induction on $\alpha$.  If it is $y_i$, then we
+  weaken all other variables; if it is $1$ then, we weaken everything.
+  If it is $\alpha_1 \times \alpha_2$, then we in which case we get
+  $\vec{f(x_i)} \otimes \vec{y_i} \spr \alpha_1$ $\vec{f(x_i)} \otimes
+  \vec{y_i} \spr \alpha_2$ by induction, apply congruence of $\times$,
+  and precompose with contraction.  Finally, if it is $\dsd{f}(\alpha)$,
+  then we get $x_1 \times_v \ldots \times_v x_n \spr \alpha$ by the
+  inductive hypothesis, apply congruence of \dsd{f}, and then weaken
+  with $\vec{y_i}$ and precompose with $\dsd{f}(x_1) \times \ldots
+  \times \dsd{f}(x_n) \spr \dsd{f}(x_1 \times_v \ldots \times_v x_n)$.
+\end{itemize}
+
+%% \item If $\dsd{f}(x_1) \otimes \ldots \otimes \dsd{f}(x_n) \otimes y_1
+%%   \otimes \ldots \otimes y_n \spr \dsd{f}(\alpha)$, then $x_1 \otimes
+%%   \ldots \otimes x_n \spr \alpha$.
+
+We proceed by induction on the given derivation.  Observe that
+Lemma~\ref{lem:0-use-strengthening} applies to any sequent
+\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}, because
+\F{\dsd{f}}{A} and \Uempty{\dsd{f}}{A} are relevant, and the
+equations (associativity, unit, commutativity) have the same variables
+on both sides, and the transformations (weakening, contraction,
+distributing \dsd{f}) do not introduce any new variables on the
+right-hand side, so Lemma~\ref{lem:spr-doesnt-introduce} applies.  
 \begin{itemize}
 \item For the axiom rule, we know $x:P$ is in $\Gamma^*$ not $\Delta^*$
-  because all $\Delta$-formulas are prefixed with a \Usymb.  
+  because all $\Delta$-formulas are prefixed with a \Usymb.  Since the
+  only formula that encodes to an atom is that atom, we have $x:P \in
+  \Gamma$, so the hypothesis rule applies.  
 
-\item FIXME TODO
+\item If the last rule used was $\FR$, then because the only formula
+  that encodes to \dsd{F} is $\Bx {}A$, we have 
+\[
+\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta} \otimes \vars{\Gamma}}{\F{\dsd{f}}{\Uempty{\dsd{f}}{A}}}}
+      {
+        {\Delta^* \otimes \Gamma^*} \spr \dsd{f}(\alpha) &
+        \seq{\Delta^*,\Gamma^*}{\alpha}{\Uempty{\dsd{f}}{A}}
+      }
+\]
+Writing the variables of $\Delta$ as $x_1,\ldots,x_n$, the first premise
+implies that $x_1 \otimes \ldots \otimes x_n \spr \alpha$, so by
+Lemma~\ref{lem:respectspr}, we can make the second premise into a
+no-bigger derivation of \seq{\Delta^*,\Gamma^*}{x_1 \otimes \ldots
+  \otimes x_n}{\Uempty{\dsd{f}}{A}}.  Applying Lemma~\ref{lem:Uinv-subderivation},
+we get a no-bigger derivation of 
+\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1 \otimes \ldots \otimes x_n)}{A}.  
+Again using Lemma~\ref{lem:respectspr}, we get 
+\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1) \otimes \ldots \otimes \dsd{f}(x_n)}{A}.  
+Finally, we use Lemma~\ref{lem:0-use-strengthening} to remove
+$\Gamma^*$, getting a no-larger derivation of 
+\seq{\Delta^*}{\vars{\Delta}}{A}.  Then the inductive hypothesis gives 
+$\Delta;\cdot \vdash A$, so we get $\Delta;\Gamma \vdash \Bx{}{}A$ by
+rule.  
 
+\item The last rule cannot have been \UR, because no types encode to a
+  formula beginning with $U$.  
+
+\item For \FL, because each variable in $\Delta^*$ begins with a \Usymb,
+  the variable being eliminated must be in $\Gamma$.  Because the only
+  type that encodes to $F$ is $\Bx{}{A}$, we have $x : \Bx{}{A}$ in
+  $\Gamma$ and 
+\[
+\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
+      {x : \F{\dsd{f}}{\Uempty{\dsd{f}}{A^*}} \in \Gamma^* &
+        \seq{\Delta^*,\Gamma^*-x,y:\Uempty{\dsd{f}}{A}}
+            {\vars{\Delta} \times \vars{\Gamma}[\dsd{f}(y)/x]}
+            {C^*}
+      }
+\]
+Using Lemma~\ref{lem:exchange}, we can change the premise's context to
+${\Delta^*,y:\Uempty{\dsd{f}}{A^*},\Gamma^*-x,}$ which is
+$(\Delta,y:A)^*,\Gamma^*-x$.  By associativity and commutativity, we
+have that $\vars{\Delta,y:A} \otimes \vars{\Gamma-x} \deq {\vars{\Delta}
+  \times \vars{\Gamma}[\dsd{f}(y)/x]}$.  So we can apply the inductive
+hypothesis to the premise to get $\Delta,y:A;\Gamma-x \vdash C$, and
+then we get $\Delta;\Gamma \vdash C$ by rule.  
+
+\item For \UL, because no types encode to \Usymb, the eliminated
+  variable must be from $\Delta^*$.  This means $x:A \in \Delta$ and we
+  have
+\[
+\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta}\times\vars{\Gamma}}{C^*}}
+      {\begin{array}{l}
+          x:\Uempty{\dsd{f}}{A} \in \Delta^* \\
+          {\vars{\Delta}\times\vars{\Gamma}} \spr \subst{\beta'}{\dsd{f}(x)}{z} \\
+          \seq{{\Delta^*,\Gamma^*},\tptm{z}{A^*}}{\beta'}{C^*}
+       \end{array}
+      }
+\]
+We have $\vars{\Delta} \otimes \vars{\Gamma} \otimes z \spr
+\beta'$, so by Lemma~\ref{lem:respectspr}, 
+$\seq{{\Delta^*,\Gamma^*},\tptm{z}{A^*}}{\vars{\Delta} \otimes \vars{\Gamma} \otimes z}{C^*}$.
+Then the inductive hypothesis gives 
+$\Delta;\Gamma,z:A \vdash C$, so the copy rule gives 
+$\Delta;\Gamma \vdash C$.  
 \end{itemize}
 \end{proof}
 
@@ -1612,7 +1716,7 @@ the premise we get $\Gamma \vdash \truej{A}$, which gives $\Gamma \vdash
 \infer[\UL]
       {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}}
       {\begin{array}{l}
-          x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma \\
+          x:{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}} \in \Gamma^* \\
           \dsd{g}(\vars{\Gamma}) \deq \beta'[\dsd{g}(x)/z] \\
           \seq{\Gamma^*,z:{\F{\dsd{g}}{A^*}}}{\beta'}{\F{\dsd{g}}{C^*}}
         \end{array}
