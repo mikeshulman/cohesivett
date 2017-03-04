@@ -212,7 +212,7 @@ We use the following properties of the mode theory:
 
 Using these defintions, we have
 
-\begin{theorem}[Logical adequacy for $\seql{}{o}{}$] 
+\begin{theorem}[Logical adequacy for ordered products] 
 $\seql{\Gamma}{o}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$
 \end{theorem}
 
@@ -229,13 +229,13 @@ the inference rules for $\odot$ are derived as follows:
 
 \[
 \infer{\seq{\Gamma^*,\Delta^*}{\vars{\Gamma} \odot \vars{\Delta}}{\F{x \odot y}{x:A,y:B}}}
-      {{\vars{\Gamma} \odot \vars{\Delta}} \spr (x \odot y)[\vars{\Gamma}/x,\vars{\Delta}/y]
+      {{\vars{\Gamma} \odot \vars{\Delta}} \spr (x \odot y)[\vars{\Gamma}/x,\vars{\Delta}/y] &
         \infer[Lemma~\ref{lem:weakening}]
-              {\seql{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
-              {\seql{\Gamma^*}{\vars{\Gamma}}{A}} &
+              {\seq{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
+              {\seq{\Gamma^*}{\vars{\Gamma}}{A}} &
         \infer[Lemma~\ref{lem:weakening}]
-              {\seql{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
-              {\seql{\Delta^*}{\vars{\Delta}}{B}}}
+              {\seq{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A}}
+              {\seq{\Delta^*}{\vars{\Delta}}{B}}}
 \]
 
 The backward direction is also by induction on the given derivation:
@@ -253,10 +253,11 @@ empty, does not contain $x$, or contains anything else, \vars{\Gamma}
 will not equal $x$).  By definition, this implies $Q = P$, so $\Gamma$
 is $x:P$.  Therefore the identity rule applies.
 
-\item For \FR, because the only type that encodes to \Fsymb is $\odot$,
-  we have
+\item For \FR, because the only type that encodes to \F{\alpha}{\Delta}
+  is $A \odot B$, and in this case we have $(A_1 \odot A_2)^* = \F{x \odot
+    y}{x:A_1,y:A_2}$, we have
 \[
-\infer{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x \otimes y}{x:A_1^*,y:A_2^*}}}
+\infer{\seq{\Gamma^*}{\vars{\Gamma}}{\F{x \odot y}{x:A_1^*,y:A_2^*}}}
       {\vars{\Gamma} \deq \alpha_1 \odot \alpha_2 &
        \seq{\Gamma^*}{\alpha_1}{A_1^*} &
        \seq{\Gamma^*}{\alpha_2}{A_2^*}
@@ -267,18 +268,18 @@ $\vars{\Gamma_i} \deq \alpha_i$, so we have derivations of
 \seq{\Gamma^*}{\vars{\Gamma_i}}{A_i^*}.  Because 0-use strengthening
 applies, we can strengthen these to
 \seq{\Gamma_i^*}{\vars{\Gamma_i}}{A_i^*}.  Then the inductive hypothesis
-gives \seql{\Gamma_i}{A_i}, so applying the $\odot$ right rule gives the
+gives \seql{\Gamma_i}{o}{A_i}, so applying the $\odot$ right rule gives the
 result.
 
 \item For \FL, because the only type encoding to $\Fsymb$ is $A \odot
   B$, we have
 \[
-\infer{\seq{\Gamma^*,z:\F{x \odot y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma} \otimes z \otimes \vars{\Gamma'}}{C^*}}
-      {\seq{\Gamma^*,{\Gamma'}^*,x:A^*,y:B^*}{\vars{\Gamma} \otimes (x \otimes y) \otimes \vars{\Gamma'}}{C^*}}
+\infer{\seq{\Gamma^*,z:\F{x \odot y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma} \odot z \odot \vars{\Gamma'}}{C^*}}
+      {\seq{\Gamma^*,{\Gamma'}^*,x:A^*,y:B^*}{\vars{\Gamma} \odot (x \odot y) \odot \vars{\Gamma'}}{C^*}}
 \]
 By exchange (Lemma~\ref{lem:exchange}), we have a no-bigger derivation
 of
-{\seq{\Gamma^*,x:A^*,y:B^*,{\Gamma'}^*}{\vars{\Gamma} \otimes (x \otimes y) \otimes \vars{\Gamma'}}{C^*}} 
+{\seq{\Gamma^*,x:A^*,y:B^*,{\Gamma'}^*}{\vars{\Gamma} \odot (x \odot y) \odot \vars{\Gamma'}}{C^*}} 
 so applying the IH gives 
 \seql{{\Gamma,x:A,y:B,{\Gamma'}}}{o}{C}, and then $\odot$-left gives the result.
 \end{itemize}
@@ -340,7 +341,7 @@ context descriptor:
 \]
 
 Overall, we have
-\begin{theorem}[Logical adequacy for $\seqa{}{}$] ~\\
+\begin{theorem}[Logical adequacy for affine products and functions] ~\\
 $\seqa{\Gamma}{A}$ iff $\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$
 \end{theorem}
 
@@ -470,10 +471,11 @@ and $\vars{\Gamma_2} \deq \alpha_2$.
 We define the splitting $\Gamma \splits \Gamma_1,\Gamma_2$ adding each
 variable in $\Gamma$ to $\Gamma_1$ if it occurs in $\alpha_1$, or
 $\Gamma_2$ if it occurs in $\alpha_2$ and not $\alpha_1$ (occurrence
-respects \deq).  Because $\deq$ is associativity, commutativity, and
-unit, $\alpha_1$ and $\alpha_2$ have no duplicates and every variable
-from \vars{\Gamma} occurs exactly once in one or the other, which gives
-$\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2} \deq \alpha_1$.
+respects \deq).  Because $\deq$ consists of associativity,
+commutativity, and unit, $\alpha_1$ and $\alpha_2$ have no duplicates
+and every variable from \vars{\Gamma} occurs exactly once in one or the
+other, which gives $\vars{\Gamma_1} \deq \alpha_1$ and $\vars{\Gamma_2}
+\deq \alpha_1$.
 %% FIXME: last sentence is a little sketchy
 \end{proof}
 
@@ -584,17 +586,6 @@ logic rule.
   \seq{\Delta_2,z:A_2}{C}, so we have the premises to use $\lolli$-left
   to conclude \seq{\Gamma'}{C}.  Finally, we weaken/exchange with
   $\Gamma \ge \Gamma'$.
-  Since the splitting implies that $\Gamma' \ge \Gamma_1$ and $\Gamma'
-  \ge \Gamma_2$, we have $\Gamma_0,z:A_2 \ge \Gamma_1,z:A_2$ and
-  $\Gamma_0 \ge \Gamma_2$.  Moreover, we have $\beta' \deq \vec{y}
-  \otimes z \deq \vars{\Gamma_1} \otimes z$ and $\alpha \deq
-  \vars{\Gamma_2}$, so the premises are
-  $\seq{\Gamma_0^*}{\vars{\Gamma_2}}{A_1^*}$ and
-  $\seq{\Gamma_0^*,z:A_2^*}{\vars{\Gamma_1,z:A_2}}{C^*}$.  Thus, the
-  inductive hypotheses give \seqa{\Gamma_2}{A_1} and
-  \seqa{\Gamma_1,z:A_2}{C}, which combined with the splitting gives
-  \seqa{\Gamma'}{C} by $\lolli$-left.  Finally, we have $\Gamma \ge
-  \Gamma'$, so we can weaken/exchange to get \seqa{\Gamma}{C}.
 
   If $z$ occurs 0 times in $\beta'$ (that is, we did a \UL\/ that
   introduced a 0-use variable in the continuation), then we have
@@ -607,6 +598,8 @@ logic rule.
   this premise gives \seqa{\Gamma'}{C}, and weakening/exchanging with
   $\Gamma \ge \Gamma'$ gives the result.
 \end{itemize}
+\end{proof}
+
 
 Inspecting this proof, we can see that the translation from a ``native''
 sequent proof in affine logic to our framework and back is the identity
@@ -619,79 +612,41 @@ the following two derivations of $P,Q,R \vdash P \otimes R$.
 \[
 \infer[\FR]
       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
+      {x \otimes y \otimes z \spr (x' \otimes y')[(x \otimes y)/x', z/y'] &
         \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
+              {\seq{x:P,y:Q,z:R}{x \otimes y}{P}}
               {(x \otimes y) \spr x} &
         \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
+              {\seq{x:P,y:Q,z:R}{z}{R}}
               {z \spr z}
       }
 \]
 \[
 \infer[\FR]
       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-      {x \otimes y \otimes z \spr (x \otimes z) &
+      {x \otimes y \otimes z \spr (x' \otimes y')[x/x', z/y'] &
         \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{x}{C}}
+              {\seq{x:P,y:Q,z:R}{x}{P}}
               {x \spr x} &
         \infer[\dsd{v}]
-              {\seq{x:A,y:B,z:C}{z}{C}}
+              {\seq{x:P,y:Q,z:R}{z}{R}}
               {z \spr z}
       }
 \]
 
 \noindent The second is that a derivation may perform a left rule on a
-$0$-linear (in the sense of the previous section) variable, i.e. one
-that does not occur in the context descriptor.  Such variables arise
-because \UL\/ ``removes a variable from the context'' by marking it as
-0-use, not by actually removing it.  For this mode theory (and the other
-ones we consider, besides the previous section), these left rules
-produce only other 0-use variables, which ultimately cannot be used, and
-can be strengthened away (see Lemma~\ref{lem:0-use-strengthening}).
+$0$-linear (in the sense of Section~\ref{sec:ex:nlinear}) variable,
+i.e. one that does not occur in the context descriptor.  Such variables
+arise because \UL\/ ``removes a variable from the context'' by marking
+it as 0-use, not by actually removing it.  For this mode theory, these
+left rules produce only other 0-use variables, which ultimately cannot
+be used, and were strengthened away by
+Lemma~\ref{lem:0-use-strengthening}.
 
-The equational theory of derivations (see Section~\ref{sec:equational})
+The equational theory of derivations (Section~\ref{sec:equational})
 handles both of these issues, so we expect that the
 framework-native-framework composite of adequacy produces a derivation
-that is equal in this equational theory.  
-
-\end{proof}
-
-%% FIXME: move to adequacy section
-%% \paragraph{Example}
-
-%% Consider an affine product (commutative monoid $(\otimes,1)$ with
-%% $\dsd{w} :: x \spr 1$) and the following two derivations of $P,Q,R
-%% \vdash P \otimes R$:
-
-%% \begin{footnotesize}
-%% \[
-%% \infer[\FR]
-%%       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-%%       {x \otimes y \otimes z \spr ((x \otimes y) \otimes z) &
-%%         \infer[\dsd{v}]
-%%               {\seq{x:A,y:B,z:C}{x \otimes y}{C}}
-%%               {(x \otimes y) \spr x} &
-%%         \infer[\dsd{v}]
-%%               {\seq{x:A,y:B,z:C}{z}{C}}
-%%               {z \spr z}
-%%       }
-%% \]
-%% \end{footnotesize}
-%% \begin{footnotesize}
-%% \[
-%% \infer[\FR]
-%%       {\seq{x:P,y:Q,z:R}{x \otimes y \otimes z}{\F{x' \otimes z'}{x':P,z':R}}}
-%%       {x \otimes y \otimes z \spr (x \otimes z) &
-%%         \infer[\dsd{v}]
-%%               {\seq{x:A,y:B,z:C}{x}{C}}
-%%               {x \spr x} &
-%%         \infer[\dsd{v}]
-%%               {\seq{x:A,y:B,z:C}{z}{C}}
-%%               {z \spr z}
-%%       }
-%% \]
-%% \end{footnotesize}
+that is equal in this equational theory.
 
 %% These differ by the placement of weakening: our rules allow for
 %% weakening away $y$ either at a leaf (there is a third possible
@@ -829,8 +784,8 @@ Conversely, suppose we have \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
 \]
 Let $\Gamma$ be $x_1 :^{k_1} A_1,\ldots,x:^{k}A,\ldots,x_n:^{k_n}{A_n}$.
 Since the only type that encodes to an atom is that atom, we have $A =
-P$.  For the linear logic mode theory (commutative monoid), we have only
-equations, so $\vars{\Gamma} \spr x$ implies $\vars{\Gamma} \deq x$,
+P$.  For the linear logic mode theory (commutative monoid), there are no
+transformation axioms besides equations, so $\vars{\Gamma} \spr x$ implies $\vars{\Gamma} \deq x$,
 which in turn implies that $k_i = 0$ and $k = 1$ (anything else would
 encode to a monoid term with a non-zero coefficient for some variable
 besides $x$, or with a non-one coefficient for $x$).  Thus 
@@ -935,7 +890,7 @@ calculus that does not allow contraction for positives, but the above is
 more standard.
 
 Overall, we have
-\begin{theorem}[Logical adequacy for cartesian logic]
+\begin{theorem}[Logical adequacy for cartesian products and functions]
 $\seqc{\Gamma}{A}$ iff \seq{\Gamma^*}{\vars{\Gamma}}{A^*}
 \end{theorem}
 
@@ -944,7 +899,7 @@ The proof of the forward direction is by induction on the given
 derivation, using the derivations of each rule:
 
 \[
-\infer[\dsd{v}]{\seq{\Gamma^*}{P^*}}
+\infer[\dsd{v}]{\seq{\Gamma^*}{\vars{\Gamma}}{P^*}}
       {x:P^* \in \Gamma^* &
         1_{(\vars{\Gamma-x})\times x}[\dsd{w}/x] :: \vars{\Gamma-x} \times x \spr x}
 \]
@@ -1130,7 +1085,7 @@ For the mode theory in Section~\ref{sec:example:box}, we have
 \begin{proof}
 We write $\Delta^*$ for $\vec{x_i : \Uempty{\dsd{f}}{A_i^*}}$ for each
 assumption in $x : A_i \in \Delta$ and $\Gamma^*$ as usual.  
-We write \vars{\Delta} for $\dsd{f}(x_1) \times \ldots \dsd{f}(x_n)$ for
+We write \vars{\Delta} for $\dsd{f}(x_1) \times \ldots \times \dsd{f}(x_n)$ for
 the variables in $\Delta$ 
 and \vars{\Gamma} as usual.  
 
@@ -1159,7 +1114,7 @@ For the copy rule:
         \end{array}
       }
 \]
-where the transformation contracts the \dsd{f}(x) that must be in $\vars{\Delta}$.
+where the transformation contracts the $\dsd{f}(x)$ that must be in $\vars{\Delta}$.
 
 For \Bx{}{}-left:
 \[
@@ -1187,7 +1142,7 @@ For \Bx{}{}-right:
               {\seq{\Delta^*,\Gamma^*}{(x_1\times_v \ldots)}{{\Uempty{\dsd{f}}{A^*}}}}
               {\infer[\ref{lem:respectspr}]
                 {\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1\times_v \ldots)}{A^*}}
-                {{\dsd{f}(x_1\ldots x_n)} \spr {\dsd{f}(x_1) \times \ldots} &
+                {{\dsd{f}(x_1 \times \ldots)} \spr {\dsd{f}(x_1) \times \ldots} &
                   \infer[\ref{lem:weakening}]
                         {\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1) \times \ldots }{A^*}}
                         {\seq{\Delta^*}{\vars{\Delta}}{A^*}}
@@ -1214,7 +1169,7 @@ initial:
   $x_1 \times_v \ldots \times_v x_n \spr \alpha$.  $\alpha$ a variable,
   in which case we weaken all the others, $1$, in which case we weaken
   everything, or $\alpha_1 \times_v \alpha_2$, in which case we get $x_1
-  \times_v \ldots \times_v x_n \spr \alpha_1$ $x_1 \times_v \ldots
+  \times_v \ldots \times_v x_n \spr \alpha_1$ and $x_1 \times_v \ldots
   \times_v x_n \spr \alpha_2$ by induction, apply congruence of
   $\times_v$, and then precompose with contraction.
 
@@ -1223,7 +1178,7 @@ initial:
   $\dsd{f}(x_1) \times \dsd{f}(x_n) \times y_1 \times \ldots \times y_n
   \spr \alpha$.  By induction on $\alpha$.  If it is $y_i$, then we
   weaken all other variables; if it is $1$ then, we weaken everything.
-  If it is $\alpha_1 \times \alpha_2$, then we in which case we get
+  If it is $\alpha_1 \times \alpha_2$, then we get
   $\vec{f(x_i)} \otimes \vec{y_i} \spr \alpha_1$ $\vec{f(x_i)} \otimes
   \vec{y_i} \spr \alpha_2$ by induction, apply congruence of $\times$,
   and precompose with contraction.  Finally, if it is $\dsd{f}(\alpha)$,
@@ -1254,21 +1209,21 @@ right-hand side, so Lemma~\ref{lem:spr-doesnt-introduce} applies.
 \item If the last rule used was $\FR$, then because the only formula
   that encodes to \dsd{F} is $\Bx {}A$, we have 
 \[
-\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta} \otimes \vars{\Gamma}}{\F{\dsd{f}}{\Uempty{\dsd{f}}{A}}}}
+\infer{\seq{\Delta^*,\Gamma^*}{\vars{\Delta} \times \vars{\Gamma}}{\F{\dsd{f}}{\Uempty{\dsd{f}}{A}}}}
       {
-        {\Delta^* \otimes \Gamma^*} \spr \dsd{f}(\alpha) &
+        {\Delta^* \times \Gamma^*} \spr \dsd{f}(\alpha) &
         \seq{\Delta^*,\Gamma^*}{\alpha}{\Uempty{\dsd{f}}{A}}
       }
 \]
 Writing the variables of $\Delta$ as $x_1,\ldots,x_n$, the first premise
-implies that $x_1 \otimes \ldots \otimes x_n \spr \alpha$, so by
+implies that $x_1 \times \ldots \times x_n \spr \alpha$, so by
 Lemma~\ref{lem:respectspr}, we can make the second premise into a
-no-bigger derivation of \seq{\Delta^*,\Gamma^*}{x_1 \otimes \ldots
-  \otimes x_n}{\Uempty{\dsd{f}}{A}}.  Applying Lemma~\ref{lem:Uinv-subderivation},
+no-bigger derivation of \seq{\Delta^*,\Gamma^*}{x_1 \times \ldots
+  \times x_n}{\Uempty{\dsd{f}}{A}}.  Applying Lemma~\ref{lem:Uinv-subderivation},
 we get a no-bigger derivation of 
-\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1 \otimes \ldots \otimes x_n)}{A}.  
+\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1 \times \ldots \times x_n)}{A}.  
 Again using Lemma~\ref{lem:respectspr}, we get 
-\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1) \otimes \ldots \otimes \dsd{f}(x_n)}{A}.  
+\seq{\Delta^*,\Gamma^*}{\dsd{f}(x_1) \times \ldots \times \dsd{f}(x_n)}{A}.  
 Finally, we use Lemma~\ref{lem:0-use-strengthening} to remove
 $\Gamma^*$, getting a no-larger derivation of 
 \seq{\Delta^*}{\vars{\Delta}}{A}.  Then the inductive hypothesis gives 
@@ -1293,7 +1248,7 @@ rule.
 Using Lemma~\ref{lem:exchange}, we can change the premise's context to
 ${\Delta^*,y:\Uempty{\dsd{f}}{A^*},\Gamma^*-x,}$ which is
 $(\Delta,y:A)^*,\Gamma^*-x$.  By associativity and commutativity, we
-have that $\vars{\Delta,y:A} \otimes \vars{\Gamma-x} \deq {\vars{\Delta}
+have that $\vars{\Delta,y:A} \times \vars{\Gamma-x} \deq {\vars{\Delta}
   \times \vars{\Gamma}[\dsd{f}(y)/x]}$.  So we can apply the inductive
 hypothesis to the premise to get $\Delta,y:A;\Gamma-x \vdash C$, and
 then we get $\Delta;\Gamma \vdash C$ by rule.  
@@ -1310,9 +1265,9 @@ then we get $\Delta;\Gamma \vdash C$ by rule.
        \end{array}
       }
 \]
-We have $\vars{\Delta} \otimes \vars{\Gamma} \otimes z \spr
+We have $\vars{\Delta} \times \vars{\Gamma} \times z \spr
 \beta'$, so by Lemma~\ref{lem:respectspr}, 
-$\seq{{\Delta^*,\Gamma^*},\tptm{z}{A^*}}{\vars{\Delta} \otimes \vars{\Gamma} \otimes z}{C^*}$.
+$\seq{{\Delta^*,\Gamma^*},\tptm{z}{A^*}}{\vars{\Delta} \times \vars{\Gamma} \times z}{C^*}$.
 Then the inductive hypothesis gives 
 $\Delta;\Gamma,z:A \vdash C$, so the copy rule gives 
 $\Delta;\Gamma \vdash C$.  
@@ -1329,7 +1284,7 @@ beginning of Section~\ref{sec:example:monad}.
 
 Recall from above that $\Dia{}{A}^* =
 \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}$ and that the correspondence is:
-\begin{theorem}[Logical adequacy for $\Dia{}{}$]
+\begin{theorem}[Logical adequacy for a non-strong monad]
 \[
 \begin{array}{c}
 \truej{A_1}, \ldots, \truej{A_1} \vdash \truej{C}\\
@@ -1377,7 +1332,7 @@ The three rules are represented by
 (and an identity rule $\Gamma,\truej{P} \vdash \truej{P}$ would be
 translated as usual).
 
-Conversley, suppose we have a derivation of
+Conversely, suppose we have a derivation of
 \seq{\Gamma^*}{\vars{\Gamma}}{C^*} or
 \seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{C^*}}.
 Lemma~\ref{lem:0-use-strengthening} can be used on such derivations: the
@@ -1517,7 +1472,7 @@ in this encoding.)
 
 Translating \Crc{}{A} by \Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}, we have
 the same adequacy statement as above:
-\begin{theorem}[Logical adequacy for $\Crc{}{}$]
+\begin{theorem}[Logical adequacy for a strong monad]
 \[
 \begin{array}{c}
 \truej{A_1}, \ldots, \truej{A_1} \vdash \truej{C}\\
@@ -1561,7 +1516,7 @@ The three rules are represented by
               {\seq{\Gamma^*,z:\F{\dsd{g}}{A^*}}{\vars{\Gamma_1} \otimes \vars{\Gamma_2} \otimes z}{\F{\dsd{g}}{C^*}}}
               {\infer[Lemma~\ref{lem:weakening}]
                      {\seq{\Gamma^*,y:{A^*}}{(\vars{\Gamma_1} \otimes \vars{\Gamma_2} \otimes \dsd{g}(y)) \deq \dsd{g}(\vars{\Gamma_1} \otimes y \otimes \vars{\Gamma_2})}{\F{\dsd{g}}{C^*}}}
-                     {\seq{\Gamma_1*,\Gamma_2^*,y:{A^*}}{\dsd{g}(\vars{\Gamma_1}\otimes\vars{\Gamma_2}\otimes y)}{\F{\dsd{g}}{C^*}}}}
+                     {\seq{\Gamma_1^*,\Gamma_2^*,y:{A^*}}{\dsd{g}(\vars{\Gamma_1}\otimes\vars{\Gamma_2}\otimes y)}{\F{\dsd{g}}{C^*}}}}
       }
 \]
 The transformation $\dsd{g}(\vars{\Gamma}) \spr \ttp {(\vars{\Gamma_1}
@@ -1624,8 +1579,8 @@ any sequent is.  We use the following properties of the mode theory:
   We distinguish cases on whether $q$ is \dsd{p} or $\dsd{t}$.  
 
   If the congruence variable $x$ has mode \dsd{t}, then the result
-  follows from the fact that $x : \dsd{t} \vdash \alpha : \dsd{p}$ implies
-  $t(\alpha[\beta/x]) \deq t(\alpha)[\beta/x]$, because we get
+  follows from the fact that $x : \dsd{t} \vdash \alpha : \dsd{p}$
+  implies $t(\alpha[\beta/x]) \deq t(\alpha)[\beta/x]$, because we get
   $t(\alpha)[\alpha'/x] \deq t(\beta)[\beta'/x]$ by the congruence rule.
   To prove this, the case for $z$ is immediate, because both sides are
   $1$.  In the case for $\dsd{g}(\alpha)$, both sides are
@@ -1633,7 +1588,8 @@ any sequent is.  We use the following properties of the mode theory:
   inductive hypothesis we get $t(\alpha_2[\beta/x]) \deq
   t(\alpha_2)[\beta/x]$ by the inductive hypothesis, and we need to show
   that $\alpha_1[\beta/x] \otimes t(\alpha_2[\beta/x]) \deq (\alpha_1
-  \otimes t(\alpha_2))[\beta/x]$, which by definition of substitution.
+  \otimes t(\alpha_2))[\beta/x]$, which is true by definition of
+  substitution.
   
   If the congruence variable $x$ has mode \dsd{p}, then because all
   equational axioms have the same variables on the left and right, $x$
@@ -1670,7 +1626,7 @@ If we have
       {\seq{\Gamma^*}{\vars{\Gamma}}{\Uempty{\dsd{g}}{\F{\dsd{g}}{A^*}}}}
       {\seq{\Gamma^*}{\dsd{g}(\vars{\Gamma})}{\F{\dsd{g}}{A^*}}}
 \]
-then in the inductive hypothesis gives $\Gamma \vdash \possj{A}$, so we
+then the inductive hypothesis gives $\Gamma \vdash \possj{A}$, so we
 have $\Gamma \vdash \truej{\Crc{}{A}}$ by rule.
 
 \item 
