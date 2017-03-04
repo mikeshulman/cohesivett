@@ -94,8 +94,8 @@ semantic analogue of the syntax in Figure~\ref{fig:2multicategory}.
 %TODO: Copy-pasted directly from mike's catlog notes, with 2- added:
 %
 We will find it useful to work with the following alternative description of composition in a multicategory.
-If in the ``multi-composition'' $g\circ (f_1,\dots,f_m)$ all the $f_j$'s for $j\neq i$ are identities, we write it as $g \circ_i f_i$. (TODO: this conflicts with the notation for horizontal composition later on)
-We may also write it as $g\circ_{B_i} f_i$ if there is no danger of ambiguity (e.g.\ if none of the other $B_j$'s are equal to $B_i$). (TODO: this gets very cluttered when the $B_i$ is big, like $\U{x.\alpha}{\Delta}{A}$)
+If in the ``multi-composition'' $g\circ (f_1,\dots,f_m)$ all the $f_j$'s for $j\neq i$ are identities, we write it as $g \circ_i f_i$.
+We may also write it as $g\circ_{B_i} f_i$ if there is no danger of ambiguity (e.g.\ if none of the other $B_j$'s are equal to $B_i$). 
 Thus we have \textbf{one-place composition} functors
 \[
   \circ_i : \M(B_1,\dots,B_n;C) \times \M(A_1,\dots,A_m;B_i) \\
@@ -248,7 +248,7 @@ The functor $\pi : \cD \to \M$ is given by first projection on objects and 1-mor
 \begin{proof}
 To save space, we will simply write $A$ and $d$ for objects and derivations, when the underlying modes and mode morphisms are clear. We will also omit variable names from sequents when able.
 
-Composition of 1-morphisms is defined analogously to the mode multicategory: for 1-morphisms $g :: (\seq{x_1 : B_1, \dots, x_m : B_m}{\alpha}{C})$ and $f_i :: (\seq{A_{i1}, \dots, A_{in_i}}{\beta_i}{B_i})$ we set \[g \circ (f_1, \dots, f_n) := (\alpha[\beta_1/x_1, \dots, \beta_m], g[f_1/x_1, \dots, f_m/x_m])\] where we have again implicitly weakened in the appropriate places. That the latter derivation lies over $\alpha[\beta_1/x_1, \dots, \beta_m]$ follows from the cut rule. 
+Composition of 1-morphisms is defined analogously to the mode multicategory: for 1-morphisms $g :: (\seq{x_1 : B_1, \dots, x_m : B_m}{\alpha}{C})$ and $f_i :: (\seq{A_{i1}, \dots, A_{in_i}}{\beta_i}{B_i})$ we set \[g \circ (f_1, \dots, f_n) := (\alpha[\beta_1/x_1, \dots, \beta_m], g[f_1/x_1, \dots, f_m/x_m])\] where we have again implicitly used weakening in the same manner as in composition of mode morphisms. That the latter derivation lies over $\alpha[\beta_1/x_1, \dots, \beta_m]$ follows from the cut rule and weakening-over-weakening.
 
 For the action of these composition functors on 2-morphisms, suppose we are given 1-morphisms 
 \begin{align*}
@@ -469,8 +469,8 @@ We now show that the above interpretation function respects the equational theor
 \begin{itemize}
 \item The first set of equations all follow from properties of single-variable composition in a cartesian multicategory.
 
-\item The transport equations correspond to standard properties of discrete fibrations. For the first, we must show $\Trd{{1_\alpha}}{\llb \D \rrb} \deq \llb \D \rrb$. The unique lift of $1_\alpha$ with codomain $\llb \D \rrb$ is simply $1_{\llb\D\rrb}$, so has domain $\llb\D\rrb$ as required.
-\item For $\Trd{(s_1;s_2)}{\llb \D \rrb} \deq \Trd{{s_1}}{\Trd{{s_2}}{\llb \D\rrb}}$, note that on the right-side, we lift $s_2$ with codomain $\llb \D \rrb$, and then lift $s_1$ with codomain the domain of the first lift, so the two lifts can be composed. By functoriality of $\pi$, this composite must be the lift of $s_1;s_2$, indeed the domains of the two lifts are equal.
+\item The transport equations correspond to properties of discrete fibrations, where for each morphism in the base category there is a unique lift of that morphism with a chosen lift of the codomain. For the first, we must show $\Trd{{1_\alpha}}{\llb \D \rrb} \deq \llb \D \rrb$. The unique lift of $1_\alpha$ with codomain $\llb \D \rrb$ is simply $1_{\llb\D\rrb}$, so has domain $\llb\D\rrb$ as required.
+\item For $\Trd{(s_1;s_2)}{\llb \D \rrb} \deq \Trd{{s_1}}{\Trd{{s_2}}{\llb \D\rrb}}$, note that on the right-side, we lift $s_2$ with codomain $\llb \D \rrb$, and then lift $s_1$ with codomain the domain of the first lift, so the two lifts can be composed. By functoriality of $\pi$, this composite must be the lift of $s_1;s_2$, so indeed the domains of the two lifts are equal.
 \item The equation $\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} \deq \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x}$ holds for a similar reason: the horizontal composite of the two lifts must be the lift of the horizontal composite, by uniqueness of lifts.
 
 \item \emph{$\beta$-rule for $\Fsymb$}:
