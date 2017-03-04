@@ -7,10 +7,12 @@
 
 In this section, we give a category-theoretic structure corresponding to
 the above syntax.  First, we define a cartesian 2-multicategory as a
-semantic analogue of the syntax in Figure~\ref{fig:2multicategory}. The
-semantics uses total substitutions (for the entire context at once)
-instead of single-variable substitutions, and explicit weakening and
-exchange instead of named variables.
+semantic analogue of the syntax in Figure~\ref{fig:2multicategory}. 
+
+%The
+%semantics uses total substitutions (for the entire context at once)
+%instead of single-variable substitutions, and explicit weakening and
+%exchange instead of named variables.
 
 \begin{definition}
   A \textbf{(strict) cartesian 2-multicategory} consists of
@@ -328,22 +330,19 @@ A_n \rrb) \to \llb C \rrb$, such that $\pi(d) = \alpha$.
 If $\pi$ is a local discrete fibration, the 2-cells of $\M$ act on the
 fibers. Suppose $\alpha, \beta : \psi \to p$ and $s : \alpha \spr
 \beta$. We re-use the notation $s_*$ for the induced function (of sets):
-$\cD_\beta(\Gamma; A) \to \cD_\alpha(\Gamma; A)$.  
+$\cD_\beta(\Gamma; A) \to \cD_\alpha(\Gamma; A)$ that sends an object $d \in \cD_\alpha(\Gamma; A)$ to the domain of the unique lift of $s$ with codomain $d$.
 
 The definition of an opfibration of 2-multicategories guarantees that,
-given a morphism in the mode category $\alpha : \psi \to q$ and a
-context $\wfctx{\Delta}{\psi}$ that lies over $\psi$, there is an
-opcartesian morphism over $\alpha$ with multidomain $\Delta$. For each
+given a morphism in the mode category $\oftp{\psi}{\alpha}{q}$ and a set of objects $\Delta$ that lies over $\psi$, there is an
+opcartesian morphism over $\alpha$ with domain $\Delta$. For each
 $\alpha$ we choose one such lift and take the codomain of this morphism
 as our interpretation of $\F{\alpha}{\Delta}$. Let us name this
 opcartesian lift $\zeta_{\alpha, \Delta} : \Delta \to
 \F{\alpha}{\Delta}$. $\zeta$ corresponds to the axiomatic $\FR^*$.
 
-Similarly, the fibration structure gives us, for every morphism $\alpha
-: (\psi,x) \to p$ and context $\Delta$ over $\psi$ and type $A$ over
-$p$, a cartesian morphism over $\alpha$ with codomain $A$, where the
-position in the domain marked by $x$ has been filled by an object over
-$q$. We take this object as the interpretation of
+Similarly, the fibration structure ensures that, for every morphism $\oftp{\psi, p}{\alpha}{q}$, context $\Delta$ over $\psi$ and type $A$ over
+$q$, there is cartesian morphism over $\alpha$ with codomain $A$, where the
+position in the domain over $q$ as been filled by an object. We take this object as the interpretation of
 $\U{x.\alpha}{\Delta}{A}$.  Let us name this cartesian lift
 $\xi_{\alpha, \Delta,A} : \Delta,\U{x.\alpha}{\Delta}{A} \to A$; it
 corresponds to the axiomatic $\UL^*$.  
@@ -356,8 +355,8 @@ semantic brackets on objects):
 
 \begin{itemize}
 \item The identity derivation of a sequent $x :: \seq{\Gamma}{x}{A}$ is defined to be $\llb x \rrb = 1_A$.
-\item Given a derivation $d :: \seq{\Gamma}{\beta}{A}$ and transformation $s :: \beta' \spr \beta$, the respect-for-transformations derivation is interpreted as $\llb s_*(d) \rrb = s_*(\llb d \rrb d)$.
-\item Given derivations $d_1 :: \seq{\Gamma, x : A, \Gamma'}{\alpha}{B}$ and $d_2 :: \seq{\Gamma, \Gamma'}{\beta}{A}$, cut is interpreted as $\llb d_1[d_2/x] \rrb = \llb d_1 \rrb \circ_A \llb d_1 \rrb$. TODO: this is wrong, doesn't use cartesian structure to contract $\Gamma, \Gamma'$.
+\item Given a derivation $d :: \seq{\Gamma}{\beta}{A}$ and transformation $s :: \beta' \spr \beta$, the respect-for-transformations derivation is interpreted as $\llb s_*(d) \rrb = s_*(\llb d \rrb)$.
+\item Given derivations $d_1 :: \seq{\Gamma, x : A, \Gamma'}{\alpha}{B}$ and $d_2 :: \seq{\Gamma, \Gamma'}{\beta}{A}$, cut is interpreted as $\llb d_1[d_2/x] \rrb = \llb d_1 \rrb \circ_A \llb d_1 \rrb$.
 \item For $\FL$
 \[
 \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{M : C}}
@@ -370,9 +369,9 @@ $\cD_{\beta}(\Gamma, \F{\alpha}{\Delta},\Gamma'; C)$. By the
 opcartesian-ness of $\zeta_{\alpha, \Delta}$, the following square is a
 pullback:
 \[ \xymatrix{
-    \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{(-)\circ_{F_\alpha(\Delta)}\, \zeta_{\alpha, \Delta}} \ar[d]_\pi &
+    \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{(-)\circ\zeta_{\alpha, \Delta}} \ar[d]_\pi &
     \cD(\Gamma,\Delta,\Gamma';C) \ar[d]^\pi \\
-    \M(\pi\Gamma,\pi \F{\alpha}{\Delta}, \pi\Gamma'; \pi C) \ar[r]_-{(-)\circ_{\pi \F{\alpha}{\Delta}}\, \alpha} &
+    \M(\pi\Gamma,\pi \F{\alpha}{\Delta}, \pi\Gamma'; \pi C) \ar[r]_-{(-)\circ \alpha} &
     \M(\pi\Gamma,\pi\Delta,\pi\Gamma'; \pi C)
 }\]
 We are given an object of the bottom left ($\beta$) and the top right
@@ -406,7 +405,7 @@ the conclusion to be $s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb,
       }
 \]
 let us again write $\gamma = (\gamma_1, \dots, \gamma_n)$ and $\Delta = (C_1, \dots, C_n)$, so that the interpretations of the premises are $\llb \D_i \rrb \in \cD_{\gamma_i}(\Gamma; C_i)$ and $\llb \D \rrb \in \cD_{\beta'}(\Gamma, A; C)$. Our interpretation is then
-$s_*(\llb \D \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_x))$
+$s_*(\llb \D \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{\U{\alpha}{\Delta}{A}}))$
 \item For $\UR$
 \[
 \infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
@@ -414,9 +413,9 @@ $s_*(\llb \D \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \
 \]
 we are given a morphism $\llb \D \rrb \in \cD_{\subst{\alpha}{\beta}{x}}(\Gamma, \Delta; A)$ and must produce a morphism in $\cD_{\beta}(\Gamma; \U{x.\alpha}{\Delta}{A})$. This time, by cartesian-ness of $\xi_{\alpha, \Delta,A}$, we have the pullback square
 \[ \xymatrix{
-    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ_{\U{x.\alpha}{\Delta}{A}} (-)} \ar[d]_\pi &
+    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\xi_{\alpha, \Delta,A}\circ (-)} \ar[d]_\pi &
     \cD(\Gamma,\Delta;A) \ar[d]^\pi \\
-    \M(\pi\Gamma;\pi \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ_{\pi\U{x.\alpha}{\Delta}{A}} (-)} &
+    \M(\pi\Gamma;\pi \U{x.\alpha}{\Delta}{A}) \ar[r]_-{\alpha\circ (-)} &
     \M(\pi\Gamma,\pi\Delta;\pi A)
   }\]
 Again we have objects $\beta$ and $\llb \D \rrb$ that agree in the bottom right, so an induced object $\IndU{\llb \D \rrb}{\alpha}{\Delta}{A}$ in the top left which we take as our interpretation.
@@ -425,16 +424,13 @@ Again we have objects $\beta$ and $\llb \D \rrb$ that agree in the bottom right,
 We now show that the above interpretation function respects the equational theory on derivations.
 
 \begin{itemize}
-\item $\Cut{\D}{\Ident{x}}{x}  \deq  \D$
-\item $\Cut{\Ident{x}}{\D}{x}  \deq  \D$
-\item $\Cut{\D_1}{\D_2}{x}  \deq  \D_1$ if $x \# \D_1$
-\item $\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y}  \deq  \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}$
+\item The first set of equations all follow from properties of single-variable composition in a cartesian multicategory.
 
-\item $\Trd{1}{\D} \deq \D$
-\item $\Trd{(s_1;s_2)}{\D} \deq \Trd{{s_1}}{\Trd{{s_2}}{\D}}$
-\item $\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} \deq \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x}$
+\item The transport equations correspond to standard properties of discrete fibrations. For the first, we must show $\Trd{{1_\alpha}}{\llb \D \rrb} \deq \llb \D \rrb$. The unique lift of $1_\alpha$ with codomain $\llb \D \rrb$ is simply $1_{\llb\D\rrb}$, so has domain $\llb\D\rrb$ as required.
+\item For $\Trd{(s_1;s_2)}{\llb \D \rrb} \deq \Trd{{s_1}}{\Trd{{s_2}}{\llb \D\rrb}}$, note that on the right-side, we lift $s_2$ with codomain $\llb \D \rrb$, and then lift $s_1$ with codomain the domain of the first lift, so the two lifts can be composed. By functoriality of $\pi$, this composite must be the lift of $s_1;s_2$, indeed the domains of the two lifts are equal.
+\item The equation $\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} \deq \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x}$ holds for a similar reason: the horizontal composite of the two lifts must be the lift of the horizontal composite, by uniqueness of lifts.
 
-\item \emph{$\beta$-rule for $\Fsymb$}: Suppose we are given TODO
+\item \emph{$\beta$-rule for $\Fsymb$}:
 \begin{align*}
 \llb \Cut{\FLd{x_0}{\D}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} \rrb &= \llb \FLd{x_0}{\D}\rrb \circ_{F_\alpha(\Delta)} \llb \FRd{}{s}{\vec{\D_i/x_i}}\rrb \\
 &=\IndF{\llb \D \rrb}{\alpha}{\Delta} \circ_{F_\alpha(\Delta)} s_*(\zeta_{\alpha, \Delta} \circ (\llb d_1 \rrb, \dots, \llb d_n \rrb)) \\
@@ -454,15 +450,20 @@ On the right, this is the unique object $f \in \cD_\beta(\Gamma,\F{\alpha}{\Delt
 \begin{align*}
 \llb \Cut{\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'}}{\URd{\Delta.\D}}{x_0} \rrb 
 &= \llb \ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z.\D'} \rrb \circ_{\U{x.\alpha}{\Delta}{A}} \llb \URd{\Delta.\D} \rrb\\
-&= s_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0})) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A}\\
-&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A})\\
-&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) )\\
-&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \llb \D \rrb \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{x_0}) )\\
-&= TODO \\
+&= s_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{\U{\alpha}{\Delta}{A}})) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A}\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{\U{\alpha}{\Delta}{A}}) \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A})\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \xi_{\alpha, \Delta,A} \circ_{\U{x.\alpha}{\Delta}{A}} \IndU{\llb \D \rrb}{\alpha}{\Delta}{A} \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{\Gamma}) )\\
+&= (s[1_{\alpha}/x_0])_*(\llb \D' \rrb \circ_A \llb \D \rrb \circ (\llb \D_1 \rrb, \dots, \llb \D_n \rrb, 1_{\Gamma}) )\\
 &= \llb \Trd{(s[1_{\alpha}/{x_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} \rrb
 \end{align*}
 
-\item \emph{$\eta$-rule for $\Usymb$}: $\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}  \deq  \URd{\Delta.\Cut{\ULs x}{\D}{x}}$
+\item \emph{$\eta$-rule for $\Usymb$}: 
+\begin{align*}
+\llb \URd{\Delta.\Cut{\ULs x}{\D}{x}} \rrb 
+&= \IndU{\llb \Cut{\ULs x}{\D}{x} \rrb}{\alpha}{\Delta}{A} \\
+&= \IndU{(\xi_{\alpha, \Delta, A} \circ_{\U{\alpha}{\Delta}{A}} \llb d \rrb)}{\alpha}{\Delta}{A} \\
+\end{align*}
+Similarly to the $\eta$-rule for $\Fsymb$, this is the unique object $f \in \cD_\beta(\Gamma;\U{\alpha}{\Delta}{A})$ such that $f \circ_{\U{\alpha}{\Delta}{A}} \xi_{\alpha, \Delta, A} = \llb d \rrb \circ_{\U{\alpha}{\Delta}{A}} \xi_{\alpha, \Delta, A}$. Again this must be $\llb \D \rrb$ itself.
 \end{itemize}
 \end{proof}
 
