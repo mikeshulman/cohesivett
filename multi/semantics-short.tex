@@ -273,7 +273,7 @@ The cartesian structure is given by the admissible rules for weakening-over-weak
 
 The next step is to show that $\pi$ is a local discrete fibration. Suppose we have a context $\Gamma$ and object $B$. We must show that the functor $\pi : \cD(\Gamma; B) \to \M(\pi \Gamma; \pi B)$ is a discrete fibration. Let $\alpha, \alpha' \in \M(\pi \Gamma; \pi B)$ be mode morphisms and suppose we have a transformation $s :: \alpha \spr \alpha'$ between them. Any 2-morphism in $\cD(\Gamma; B)$ lying over $s$ must clearly have $s$ as the underlying transformation. If we choose a lift $d' :: \seq{\Gamma}{\alpha'}{B}$ of $\alpha'$, then we can consider $s$ as a 2-morphism $(s_*(d'), \alpha) \spr (d', \alpha')$. The condition $s_*(d) \deq s_*(d)$ is trivially satisfied, and it is clear that $s_*(d)$ is the only possible choice of domain. The lift is therefore unique, so $\pi$ is a local discrete fibration.
 
-We now show that $\pi$ is a fibration, i.e., has $\alpha$-homs for all mode morphisms $\oftp{\psi}{\alpha}{q}$. Suppose we have lifts for the modes in $\psi$, i.e., a context $\Delta$ with $\pi\Delta = \psi$. We define the opcartesian lift of $\alpha$ to be $\FR^* :: \seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}$. To verify that this is an opcartesian morphism, we must show that all squares of the form
+We now show that $\pi$ is an opfibration, i.e., has $\alpha$-homs for all mode morphisms $\oftp{\psi}{\alpha}{q}$. Suppose we have lifts for the modes in $\psi$, i.e., a context $\Delta$ with $\pi\Delta = \psi$. We define the opcartesian lift of $\alpha$ to be $\FR^* :: \seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}$. To verify that this is an opcartesian morphism, we must show that all squares of the form
 \[ \xymatrix{
     \cD(\Gamma,\F{\alpha}{\Delta},\Gamma';C) \ar[r]^-{\Cut{-}{\FR^*}{x_0}} \ar[d]_\pi &
     \cD(\Gamma,\Delta,\Gamma';C) \ar[d]^\pi \\
@@ -315,7 +315,50 @@ where we have used the $\eta$-law followed by the $\beta$-law.
 
 We conclude that all squares of the given form are pullback squares, and so every $\alpha$ has an opcartesian lift. Therefore $\pi$ is an opfibration.
 
-TODO: $\alpha$-homs are similar.
+Finally, we show that $\pi$ is also a fibration; the reasoning is almost identical. Suppose have a mode morphism $\oftp{\psi, p}{\alpha}{q}$. We must show that $\pi$ has $\alpha$-homs. So suppose we have a context $\Delta$ over $\psi$ and a type $A$ over $q$. We define the cartesian lift of $\alpha$ to be $\UL^* :: (\seq{\Delta, \U{\alpha}{\Delta}{A}}{\alpha}{A})$. We must now verify that all squares
+\[ \xymatrix{
+    \cD(\Gamma;\U{x.\alpha}{\Delta}{A}) \ar[r]^-{\Cut{\UL^*}{-}{x}} \ar[d]_\pi &
+    \cD(\Gamma,\Delta;A) \ar[d]^\pi \\
+    \M(\pi\Gamma;p) \ar[r]_-{\Cut{\alpha}{-}{x}} &
+    \M(\pi\Gamma, \psi; q)
+  }\]
+are pullback squares.
+
+To check the pullback property for objects, suppose we have a $d \in \cD(\Gamma,\Delta;A)$ and $\beta \in \M(\pi\Gamma;p)$ such that $\pi(d) = \Cut{\alpha}{\beta}{x}$, i.e., a $d$ of the form $d :: \seq{\Gamma, \Delta}{\Cut{\alpha}{\beta}{x}}{A}$. We must produce a unique object $e :: (\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}})$ such that $\Cut{\UL^*}{e}{x} \deq d$.
+
+We take as $e$ the derivation $\UR(\Delta.d)$. We verify:
+\begin{align*}
+\Cut{\UL^*}{e}{x} 
+&\deq \Cut{\UL^*}{\UR(\Delta.d)}{x} \\
+&\deq \Cut{\ULd{x}{\vec{x/x}}{1_\alpha}{\Ident{x}/x}{z.z}
+}{\UR(\Delta.d)}{x} \\
+&\deq (\Cut{1_\alpha}{1_\beta}{x})_*(\Cut{z}{d}{z}) \\
+&\deq (1_{\Cut{\alpha}{\beta}{x}})_*(d)
+&\deq d
+\end{align*}
+by the $\beta$-law for $\Usymb$. For uniqueness, suppose we have some other $e'$ over $\beta$ such that $\Cut{\UL^*}{e'}{x} = d$. By the $\eta$-law we have
+\begin{align*}
+e' 
+&\deq \URd{\Delta.\Cut{\ULs x}{e'}{x}}\\
+&\deq \URd{\Delta.d} \\
+&= e
+\end{align*}
+So the pullback condition is satisfied for objects.
+
+For the pullback condition for morphisms, suppose we have $\beta, \beta' \in \M(\pi\Gamma;p)$, a transformation $s :: \beta \spr \beta'$, and derivations $d :: \seq{\Gamma, \Delta}{\Cut{\alpha}{\beta}{x}}{A}$ and $d' :: \seq{\Gamma, \Delta}{\Cut{\alpha}{\beta'}{x}}{A}$ such that $(\Cut{1_\alpha}{s}{x})_*(d') \deq d$. This describes a morphism $T : d \spr d'$ in $\cD(\Gamma,\Delta;A)$ that lies over $\Cut{1_\alpha}{s}{x}$. As in the opfibration case, we must find a morphism $S$ in $\cD(\Gamma;\U{x.\alpha}{\Delta}{A})$ that lies over $s$, and that is sent to $T$ by the functor $\Cut{\alpha}{-}{x}$.
+
+The morphism $S$ must have domain $\UR(\Delta.d)$, codomain $\UR(\Delta.d')$, and underlying transformation $s$. This gives a well defined morphism $\UR(\Delta.d) \spr \UR(\Delta.d')$, because:
+\begin{align*}
+s_*(\UR(\Delta.d')) 
+&\deq \URd{\Delta.\Cut{\ULs x}{s_*(\UR(\Delta.d'))}{x}}\\
+&\deq \URd{\Delta.\Cut{(1_\alpha)_*(\ULs x)}{s_*(\UR(\Delta.d'))}{x}}\\
+&\deq \URd{\Delta.(\Cut{1_\alpha}{s}{x})_*(\Cut{\ULs x}{\UR(\Delta.d')}{x}}\\
+&\deq \URd{\Delta.(\Cut{1_\alpha}{s}{x})_*(d')}\\
+&\deq \URd{\Delta.d}
+\end{align*}
+again by the $\eta$-law followed by the $\beta$-law.
+
+Therefore the square is a pullback, so we conclude $\pi$ is also an opfibration.
 \end{proof}
 
 \begin{theorem}[Soundness of sequent calculus rules]
@@ -461,7 +504,7 @@ On the right, this is the unique object $f \in \cD_\beta(\Gamma,\F{\alpha}{\Delt
 \begin{align*}
 \llb \URd{\Delta.\Cut{\ULs x}{\D}{x}} \rrb 
 &= \IndU{\llb \Cut{\ULs x}{\D}{x} \rrb}{\alpha}{\Delta}{A} \\
-&= \IndU{(\xi_{\alpha, \Delta, A} \circ_{\U{\alpha}{\Delta}{A}} \llb d \rrb)}{\alpha}{\Delta}{A} \\
+&= \IndU{(\xi_{\alpha, \Delta, A} \circ_{\U{\alpha}{\Delta}{A}} \llb d \rrb)}{\alpha}{\Delta}{A}
 \end{align*}
 Similarly to the $\eta$-rule for $\Fsymb$, this is the unique object $f \in \cD_\beta(\Gamma;\U{\alpha}{\Delta}{A})$ such that $f \circ_{\U{\alpha}{\Delta}{A}} \xi_{\alpha, \Delta, A} = \llb d \rrb \circ_{\U{\alpha}{\Delta}{A}} \xi_{\alpha, \Delta, A}$. Again this must be $\llb \D \rrb$ itself.
 \end{itemize}
