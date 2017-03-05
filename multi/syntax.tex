@@ -27,12 +27,16 @@
 \\ \\
 \infer{\wfsig{(\Sigma, (\alpha \deq \alpha' : \psi \to p))}}
       {\wfsig{\Sigma} &
-        \oftps{\Psi}{\Sigma}{\alpha}{p} & 
-        \oftps{\Psi}{\Sigma}{\alpha'}{p} 
+        \psi \dsd{ctx}_\Sigma & 
+        p \, \dsd{mode} \in \Sigma &
+        \oftps{\psi}{\Sigma}{\alpha}{p} & 
+        \oftps{\psi}{\Sigma}{\alpha'}{p} 
       }
 \qquad
 \infer{\wfsig{(\Sigma, (\alpha \spr \alpha' : \psi \to p))}}
       {\wfsig{\Sigma} &
+        \psi \dsd{ctx}_\Sigma & 
+        p \, \dsd{mode} \in \Sigma &
         \oftps{\psi}{\Sigma}{\alpha}{p} & 
         \oftps{\psi}{\Sigma}{\alpha'}{p} 
       }
@@ -58,7 +62,7 @@
       {x:p \in \psi}
 \quad
 \infer{\oftps{\psi}{\Sigma}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
-      {\dsd{c} : p_1,\ldots,p_n \to q \in \Sigma &
+      {(\dsd{c} : p_1,\ldots,p_n \to q) \in \Sigma &
        \oftps{\psi}{\Sigma}{\alpha_i}{p_i}
       }
 \]
@@ -98,7 +102,7 @@ and \oftps{\psi}{\Sigma}{\alpha'}{p}
         \deqtms{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
 \qquad
 \infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
-      {(\alpha \deq \alpha') : \psi \to p \in \Sigma}
+      {(\alpha \deq \alpha' : \psi \to p) \in \Sigma}
 \end{array}
 \]
 
@@ -121,7 +125,7 @@ same presuppositions as \deq
        \wfsps{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
 \qquad
 \infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
-      {(\alpha \spr \alpha') : \psi \to p \in \Sigma}
+      {(\alpha \spr \alpha' : \psi \to p) \in \Sigma}
 \end{array}
 \]
 
@@ -140,53 +144,58 @@ This is formalized in the notion of signature, or \emph{mode theory},
 defined in Figure~\ref{fig:2multicategory}.  The judgement $\wfsig
 \Sigma$ means that $\Sigma$ is a well-formed signature.  The top line
 says that a signature is either empty, or a signature extended with a
-new mode declaration, or a signature extended with a typed constant, all
-of whose modes are declared previously in the signature.  The notation
-$p_1,\ldots,p_n \to q$ is not itself a mode, but only notation for
-declaring a function symbol in the signature.  For example, the term
-constructors for a monoid $(\odot,1)$ are represented by a signature
+new mode declaration, or a signature extended with a typed
+constant/function symbol, all of whose modes are declared previously in
+the signature.  The notation $p_1,\ldots,p_n \to q$ is not itself a
+mode, but only notation for declaring a function symbol in the signature
+(it cannot occur on the right-hand side of a typing judgement).  For
+example, the term constructors for a monoid $(\odot,1)$ are represented
+by a signature
 \[
 \dsd{p} \, \dsd{mode},
 \dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
-1 : (\to \dsd{o})
+1 : (\to \dsd{p})
 \]
 
 The judgement $\psi \, \dsd{ctx}_\Sigma$ defines well-formedness of a
-context of variable delcarations relative to a signature $\Sigma$: each
+context of variable declarations relative to a signature $\Sigma$: each
 mode in the context must be declared in the signature.
 
 The judgement $\oftps{\psi}{\Sigma}{\alpha}{p}$ defines well-typedness
 of context descriptor terms, which are either a variable declared in the
-context or a constant declared in the signature applied to arguments of
+context, or a constant declared in the signature applied to arguments of
 the correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
 defines a substitution as a tuple of terms in the standard way.  The
 context $\psi$ in these judgements enjoys the cartesian structural
 properties (associativity, unit, weakening, exchange, contraction).
 Simultaneous substitution into terms is defined as usual.
 
-The final two rules of the judgement $\wfsig{\Sigma}$ permit two
-additional forms of signature declaration.  The first extends a
-signature with an equational axiom between two terms that have the same
-mode $p$, in the same context $\psi$, relative to the prior signature
-$\Sigma$.  These equational axioms will be used to encode object logic
+Returning to the top of the figure, the final two rules of the judgement
+$\wfsig{\Sigma}$ permit two additional forms of signature declaration.
+The first of these extends a signature with an equational axiom between
+two terms $\alpha$ and $\alpha'$ that have the same mode $p$, in the
+same context $\psi$, relative to the prior signature $\Sigma$.  These
+equational axioms will be used to encode reversible object logic
 structural properties, such as associativity, commutativity, and unit
-laws.  For example, to specify the left unit law for the above monoid
-$(\odot,1)$, we would add an axiom $x \odot 1 \deq x : (x : \dsd{p}) \to
-\dsd{p}$ to the signature.  The judgement
+laws.  For example, to specify the right unit law for the above monoid
+$(\odot,1)$, we add an axiom $(x \odot 1 \deq x : (x : \dsd{p}) \to
+\dsd{p})$ to the signature, which can be read as ``$x \odot 1$ is equal
+to $x$ as a morphism from $(x : \dsd{p})$ to \dsd{p}''.  The judgement
 \deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} is the least congruence closed
 under these axioms.
 
-The second extends a signature with a directed structural transformation
-axiom between two terms that have the same mode $p$, in the same context
-$\psi$, relative to the prior signature $\Sigma$.  As discussed above,
-these structural transformations will be used to represent object logic
-structural properties such as weakening and contraction that are not
-invertible.  The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p}
-defines these transformations: it is the least precongruence (preorder
-compatible with the term formers) closed under axioms the specified in
-the signature $\Sigma$.  For example, to say that the above monoid
-$(\odot,1)$ is affine, we would specify in $\Sigma$ a transformation
-axiom $(x \spr 1 : (x:p) \to {p})$.
+The second of these extends a signature with a directed structural
+transformation axiom between two terms $\alpha$ and $\alpha'$ that have
+the same mode $p$, in the same context $\psi$, relative to the prior
+signature $\Sigma$.  As discussed above, these structural
+transformations will be used to represent object logic structural
+properties such as weakening and contraction that are not invertible.
+The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p} defines these
+transformations: it is the least precongruence (preorder compatible with
+the term formers) closed under axioms the specified in the signature
+$\Sigma$.  For example, to say that the above monoid $(\odot,1)$ is
+affine, we add in $\Sigma$ a transformation axiom $(x \spr 1 : (x:p) \to
+{p})$.
 %% Then, using the rules in the figure, we can for example derive a
 %% transformation $(x \odot y) \spr (1 \odot y) \spr y$ that, when
 %% applied (contravariantly) to a sequent, will allow weakening $y$ to
@@ -222,11 +231,12 @@ equational theory between two structural property derivations $s \deq s'
 does not influence provability in the sequent calculus, only identity of
 proofs, we defer the details to that section.  
 
-In examples, we will typically introduce a context descriptor constant
-by writing it applied to variables, e.g. writing $x : \dsd{p}, y :
-\dsd{p} \vdash x \odot y : \dsd{p}$ for $\odot : \dsd{p},\dsd{p} \to
-\dsd{p}$.  We also suppress the signature $\Sigma$ in the judgement
-forms, as it is fixed at the outside of all derivations.  
+In examples, we will notate a signature declaration introducing a term
+constant/function symbol by showing the function symbol applied to
+variables, rather than writing the formal $\dsd{c} : p_1,\ldots,p_n \to
+q$. For example, we write $x : \dsd{p}, y : \dsd{p} \vdash x \odot y :
+\dsd{p}$ for $\odot : \dsd{p},\dsd{p} \to \dsd{p}$.  We also suppress
+the signature $\Sigma$ in the judgement forms.
 
 \subsection{Sequent Calculus Rules}
 
