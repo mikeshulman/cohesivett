@@ -3,50 +3,125 @@
 \section{Sequent Calculus}
 \label{sec:syntax}
 
+\newcommand\wfsig[1]{\ensuremath{#1 \, \dsd{sig}}}
+\newcommand\deqtms[5]{\ensuremath{#1 \vdash_{#2} #3 \deq #4 : #5}}
+\newcommand\wfsps[5]{\ensuremath{#1 \vdash_{#2} #3 \spr_{#5} #4}}
+
 \subsection{Mode Theories}
 
 \begin{figure}
+\framebox{Signatures \wfsig{\Sigma}}
+
 \[
-\begin{array}{llll}
-\text{modes} & p & & (constants) \\
-\text{mode contexts} & \psi & ::= & \cdot \mid \psi,\tptm{x}{p} \\
-%% \text{context descriptors} & \alpha,\beta & ::= & x \mid \dsd{c}(\alpha_1,\ldots,\alpha_n) \\
-%% \text{substitutions} & \gamma,\delta & ::= & \cdot \mid \gamma,\alpha/x\\
+\begin{array}{l}
+\infer{\wfsig{\cdot}}
+      {}
+\qquad
+\infer{\wfsig{(\Sigma,p \, \dsd{mode})}}
+      {\wfsig{\Sigma}}
+\qquad
+\infer{\wfsig{(\Sigma,c : \, p_1,\ldots,p_n \to q)}}
+      {\wfsig{\Sigma} &
+        (p_1 \, \dsd{mode},\ldots,p_n \, \dsd{mode},q \, \dsd{mode}) \in \Sigma
+      }
+\\ \\
+\infer{\wfsig{(\Sigma, (\alpha \deq \alpha' : \psi \to p))}}
+      {\wfsig{\Sigma} &
+        \oftps{\Psi}{\Sigma}{\alpha}{p} & 
+        \oftps{\Psi}{\Sigma}{\alpha'}{p} 
+      }
+\qquad
+\infer{\wfsig{(\Sigma, (\alpha \spr \alpha' : \psi \to p))}}
+      {\wfsig{\Sigma} &
+        \oftps{\psi}{\Sigma}{\alpha}{p} & 
+        \oftps{\psi}{\Sigma}{\alpha'}{p} 
+      }
 \end{array}
 \]
 
-\framebox{Context descriptors/mode morphisms \oftp{\psi}{\alpha}{p}}
+\framebox{Mode contexts $\psi \, \dsd{ctx}_{\Sigma}$}
 
 \[
-\infer{\oftp{\psi}{x}{p}}
-      {x:p \in \psi}
-\quad
-\infer{\oftp{\psi}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
-      {\dsd{c} : p_1,\ldots,p_n \to q \in \Sigma &
-       \oftp{\psi}{\alpha_i}{p_i}
+\infer{\cdot \, \dsd{ctx}_{\Sigma}}{}
+\qquad
+\infer{(\psi, x:p) \, \dsd{ctx}_{\Sigma}}
+      {\psi \, \dsd{ctx}_{\Sigma} & 
+        p \, \dsd{mode} \in \Sigma
       }
-\quad
-\infer{\oftp{\psi}{\alpha_i/x_i}{\psi'}}
-      {\forall x_i:q_i \in\psi', \oftp{\psi}{\alpha_i}{q_i} }
 \]
 
-\framebox{Structural transformations/mode 2-morphisms \wfsp{\psi}{\alpha}{\alpha'}{p}}
+\framebox{Context descriptors/mode morphisms \oftps{\psi}{\Sigma}{\alpha}{p},
+  where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$}
+
+\[
+\infer{\oftps{\psi}{\Sigma}{x}{p}}
+      {x:p \in \psi}
+\quad
+\infer{\oftps{\psi}{\Sigma}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
+      {\dsd{c} : p_1,\ldots,p_n \to q \in \Sigma &
+       \oftps{\psi}{\Sigma}{\alpha_i}{p_i}
+      }
+\]
+
+\framebox{Mode Substitutions \oftps{\psi}{\Sigma}{\gamma}{\psi'}, where
+  $\psi \, \dsd{ctx}_\Sigma$ and $\psi' \, \dsd{ctx}_\Sigma$ }
+
+\[
+\infer{\oftps{\psi}{\Sigma}{\cdot}{\cdot}}{}
+\qquad
+\infer{\oftps{\psi}{\Sigma}{\gamma,\alpha/x}{\psi',x:p}}
+      {\oftps{\psi}{\Sigma}{\gamma}{\psi'} &
+        \oftps{\psi}{\Sigma}{\alpha}{p}}
+\]
+
+\framebox{Equalities of mode morphisms
+  \deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p},
+where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$
+and \oftps{\psi}{\Sigma}{\alpha}{p}
+and \oftps{\psi}{\Sigma}{\alpha'}{p}
+}
 
 \[
 \begin{array}{c}
-\infer{\wfsp{\psi}{\alpha}{\alpha}{p}}{}
+\infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
 \qquad
-\infer{\wfsp{\psi}{\alpha_1}{\alpha_3}{p}}
-      {\wfsp{\psi}{\alpha_1}{\alpha_2}{p} &
-       \wfsp{\psi}{\alpha_2}{\alpha_3}{p} &
+\infer{\deqtms{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p}}
+      {\deqtms{\psi}{\Sigma}{\alpha_2}{\alpha_1}{p}}
+\qquad
+\infer{\deqtms{\psi}{\Sigma}{\alpha_1}{\alpha_3}{p}}
+      {\deqtms{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p} &
+        \deqtms{\psi}{\Sigma}{\alpha_2}{\alpha_3}{p} &
       }
 \\ \\
-\infer{\wfsp{\psi,\psi'}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
-      {\wfsp{\psi,x:p,\psi'}{\beta}{\beta'}{q} &
-       \wfsp{\psi,\psi'}{\alpha}{\alpha'}{p}}
+\infer{\deqtms{\psi,\psi'}{\Sigma}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
+      {\deqtms{\psi,x:p,\psi'}{\Sigma}{\beta}{\beta'}{q} &
+        \deqtms{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
 \qquad
-\infer{\wfsp{\psi}{\alpha}{\alpha'}{p}}
-      {\alpha \spr \alpha' \in \Sigma}
+\infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
+      {(\alpha \deq \alpha') : \psi \to p \in \Sigma}
+\end{array}
+\]
+
+\framebox{Structural transformations/mode 2-morphisms
+  \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p},
+same presuppositions as \deq
+}
+
+\[
+\begin{array}{c}
+\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
+\qquad
+\infer{\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_3}{p}}
+      {\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p} &
+       \wfsps{\psi}{\Sigma}{\alpha_2}{\alpha_3}{p} &
+      }
+\\ \\
+\infer{\wfsps{\psi,\psi'}{\Sigma}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
+      {\wfsps{\psi,x:p,\psi'}{\Sigma}{\beta}{\beta'}{q} &
+       \wfsps{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
+\qquad
+\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
+      {(\alpha \spr \alpha') : \psi \to p \in \Sigma}
 \end{array}
 \]
 
@@ -56,66 +131,102 @@
 
 The first layer of the logic is a type theory whose types we will call
 \emph{modes}, and whose terms we will call \emph{context descriptors} or
-\emph{mode morphisms}.  We begin with a simple type theory with
-variables and constants, as described in
-Figure~\ref{fig:2multicategory}.  We assume a fixed signature $\Sigma$
-of constants \dsd{c}, and we write $\oftp{\psi}{\alpha}{q}$ for context
-descriptor well-formedness and $\oftp{\psi}{\gamma}{\psi'}$ for
-substitution well-formedness.  The context $\psi$ here enjoys the
-cartesian structural properties (associativity, unit, weakening,
-exchange, contraction).  Simultaneous substitution into terms is defined
-as usual.
+\emph{mode morphisms}.  The only modes are atomic/base types $p$.  A
+term is either a variable (bound in a context $\psi$) or a typed $n$-ary
+constant (function symbol) \dsd{c} applied to terms of the appropriate
+types.  
 
-Next, we need a notation for presenting object-logic structural
-properties, which, as described above, will in general be directed
-transformations between context descriptors.  For
-\oftp{\psi}{\alpha,\alpha'}{p}, we define a judgement
-     {\wfsp{\psi}{\alpha}{\alpha'}{p}} representing such
-     transformations; it is the least precongruence (preorder compatible
-     with the term formers) closed under axioms specified in a signature
-     $\Sigma$.  For example, to say that a mode $p$ with a context
-     monoid $(\odot,1)$ is affine, we would specify in $\Sigma$ a
-     transformation \wfsp{x:p}{x}{1}{p}.  Then, using the rules in the
-     figure, we can for example derive a transformation $(x \odot y)
-     \spr (1 \odot y) \spr y$ that, when applied (contravariantly) to a
-     sequent, will allow weakening $y$ to $x \odot y$.
+This is formalized in the notion of signature, or \emph{mode theory},
+defined in Figure~\ref{fig:2multicategory}.  The judgement $\wfsig
+\Sigma$ means that $\Sigma$ is a well-formed signature.  The top line
+says that a signature is either empty, or a signature extended with a
+new mode declaration, or a signature extended with a typed constant, all
+of whose modes are declared previously in the signature.  The notation
+$p_1,\ldots,p_n \to q$ is not itself a mode, but only notation for
+declaring a function symbol in the signature.  For example, the term
+constructors for a monoid $(\odot,1)$ are represented by a signature
+\[
+\dsd{p} \, \dsd{mode},
+\dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
+1 : (\to \dsd{o})
+\]
 
-As discussed in Section~\ref{sec:semantics}, we will eventually need an
+The judgement $\psi \, \dsd{ctx}_\Sigma$ defines well-formedness of a
+context of variable delcarations relative to a signature $\Sigma$: each
+mode in the context must be declared in the signature.
+
+The judgement $\oftps{\psi}{\Sigma}{\alpha}{p}$ defines well-typedness
+of context descriptor terms, which are either a variable declared in the
+context or a constant declared in the signature applied to arguments of
+the correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
+defines a substitution as a tuple of terms in the standard way.  The
+context $\psi$ in these judgements enjoys the cartesian structural
+properties (associativity, unit, weakening, exchange, contraction).
+Simultaneous substitution into terms is defined as usual.
+
+The final two rules of the judgement $\wfsig{\Sigma}$ permit two
+additional forms of signature declaration.  The first extends a
+signature with an equational axiom between two terms that have the same
+mode $p$, in the same context $\psi$, relative to the prior signature
+$\Sigma$.  These equational axioms will be used to encode object logic
+structural properties, such as associativity, commutativity, and unit
+laws.  For example, to specify the left unit law for the above monoid
+$(\odot,1)$, we would add an axiom $x \odot 1 \deq x : (x : \dsd{p}) \to
+\dsd{p}$ to the signature.  The judgement
+\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} is the least congruence closed
+under these axioms.
+
+The second extends a signature with a directed structural transformation
+axiom between two terms that have the same mode $p$, in the same context
+$\psi$, relative to the prior signature $\Sigma$.  As discussed above,
+these structural transformations will be used to represent object logic
+structural properties such as weakening and contraction that are not
+invertible.  The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p}
+defines these transformations: it is the least precongruence (preorder
+compatible with the term formers) closed under axioms the specified in
+the signature $\Sigma$.  For example, to say that the above monoid
+$(\odot,1)$ is affine, we would specify in $\Sigma$ a transformation
+axiom $(x \spr 1 : (x:p) \to {p})$.
+%% Then, using the rules in the figure, we can for example derive a
+%% transformation $(x \odot y) \spr (1 \odot y) \spr y$ that, when
+%% applied (contravariantly) to a sequent, will allow weakening $y$ to
+%% $x \odot y$.
+
+An alternative to including the judgement $\alpha \deq \alpha'$ would be
+to present a desired equation $\alpha \deq \alpha'$ as an isomorphism,
+with transformation axioms $s : \alpha \spr \alpha'$ and $s' : \alpha'
+\spr \alpha$.  
+%% (and, writing $s_1;s_2$ for derivations by the above
+%% transitivity rule, equations $s;s' = 1_{\alpha}$ and $s';s =
+%% 1_{\alpha'}$)
+While this is conceptually and technically sufficient, we have found it
+helpful in examples to use ``strict'' equality of context descriptors.
+This simplifies the description of some situations, though the
+difference is important mainly at the level of identity of derivations
+rather than provability---for example, we can make a binary operation
+$\odot$ into a strict monoid, rather than adding associator and unitor
+isomorphisms.  Technically, because context descriptors $\alpha$ and
+their equality $\alpha_1 \deq \alpha_2$ are defined prior to the
+subsequent judgements of our logic, we suppress this equality by using
+$\alpha$ to refer to a term-modulo-\deq---that is, we assume a
+metatheory with quotient sets/types, and use meta-level equality for
+object-level equality, as recently advocated by
+\citet{altenkirchkaposi16qit}.  For example, because the judgement
+\wfsp{\psi}{\alpha}{\beta}{p} is indexed by equivalence classes of
+context descriptions, the reflexivity rule above implicitly means
+$\alpha \deq \beta$ implies $\alpha \spr \beta$.
+
+As discussed in Section~\ref{sec:equational}, we will eventually need an
 equational theory between two structural property derivations $s \deq s'
 :: \wfsp{\psi}{\alpha}{\alpha'}{q}$.  Because this equational theory
 does not influence provability in the sequent calculus, only identity of
-proofs, we defer the details.
+proofs, we defer the details to that section.  
 
-One choice in the design of this language of context descriptors is how
-to handle symmetric structural properties.  One possibility is to
-present a desired equation $\alpha = \alpha'$ as an isomorphism, with
-axioms $s : \alpha \spr \alpha'$ and $s' : \alpha' \spr \alpha$ (and,
-writing $s_1;s_2$ for derivations by the above transitivity rule,
-equations $s;s' = 1_{\alpha}$ and $s';s = 1_{\alpha'}$).  While this is
-conceptually and technically sufficient, we have found it helpful in
-examples to also use a ``strict'' equality of context descriptors which
-is implicitly respected by all types and judgements.  This simplifies
-the description of some situations, though the difference is important
-mainly at the level of identity of derivations rather than
-provability---for example, we can make a binary operation $\odot$ into a
-strict monoid, rather than adding associator and unitor isomorphisms,
-which requires more equations between structural transformations.  To
-support this, we allow $\Sigma$ to contain axioms for equations $\alpha
-\deq \beta$ and define a judgement $\psi \vdash \alpha \deq \beta : p$
-as the least congruence containing these axioms (i.e. the rules for
-$\spr$ plus symmetry).  Because the context descriptors and their
-equality are defined independently of any subsequent judgements, we take
-the liberty of suppressing this equality by using $\alpha$ to refer to a
-context-descriptor-modulo-\deq---that is, we assume a metatheory with
-quotient sets/types, and use meta-level equality for object-level
-equality, as recently advocated by \citet{altenkirchkaposi16qit}.  For
-example, because the judgement \wfsp{\psi}{\alpha}{\beta}{p} is indexed
-by equivalence classes of context descriptions, the reflexivity rule
-above implicitly means $\alpha \deq \beta$ implies $\alpha \spr \beta$.
-
-A signature $\Sigma$ consisting of some number of constants $c$,
-equations $\alpha \deq \beta$, transformations $\alpha \spr \beta$ (and
-equalities of transformations $s \deq s'$) specifies a \emph{mode theory}.
+In examples, we will typically introduce a context descriptor constant
+by writing it applied to variables, e.g. writing $x : \dsd{p}, y :
+\dsd{p} \vdash x \odot y : \dsd{p}$ for $\odot : \dsd{p},\dsd{p} \to
+\dsd{p}$.  We also suppress the signature $\Sigma$ in the judgement
+forms, as it is fixed at the outside of all derivations.  
 
 \subsection{Sequent Calculus Rules}
 
