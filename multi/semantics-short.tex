@@ -187,7 +187,7 @@ For the reverse direction, suppose we have a category $\mathcal{E}$ and functors
 We now describe how these definitions correspond to the syntax.
 
 Before we begin, we will describe explicitly the process of simultaneous substitution. Suppose we are given a term $\oftp{\psi'}{\alpha}{q}$ 
-and a substitution \oftp{\psi}{\gamma}{\psi'}.  First weaken $\alpha$ to $\oftp{\psi, \psi'}{\alpha}{q}$. Then for the empty substitution $\oftp{\psi}{\cdot}{\cdot}$, set $\tsubst{\alpha}{\cdot} := \alpha$. For a substitution $\oftp{\psi}{(\beta/x, \gamma)}{(x:p, \psi')}$, we inductively define $\tsubst{\alpha}{\beta/x,\gamma} := \tsubst{\tsubst{\alpha}{\beta/x}}{\gamma}$, where $\beta$ has been weakened to $\oftp{\psi, \psi'}{\beta}{p}$. This typechecks, because at each step we are invoking the substitution rule on derivations of the form $\oftp{\psi, x:p, \psi'}{\alpha}{q}$ and $\oftp{\psi, \psi'}{\beta}{p}$, yielding $\oftp{\psi, \psi'}{\Cut{\alpha}{\beta}{x}}{p}$, until $\psi'$ is exhausted.
+and a substitution \oftp{\psi}{\gamma}{\psi'}.  First weaken $\alpha$ to $\oftp{\psi, \psi'}{\alpha}{q}$. Then for the empty substitution $\oftp{\psi}{\cdot}{\cdot}$, set $\tsubst{\alpha}{\cdot} := \alpha$. For a substitution $\oftp{\psi}{(\beta/x, \gamma)}{(x:p, \psi')}$, we inductively define $\tsubst{\alpha}{\beta/x,\gamma} := \tsubst{\tsubst{\alpha}{\beta/x}}{\gamma}$, where $\beta$ has been weakened to $\oftp{\psi, \psi'}{\beta}{p}$. This type checks, because at each step we are invoking the substitution rule on derivations of the form $\oftp{\psi, x:p, \psi'}{\alpha}{q}$ and $\oftp{\psi, \psi'}{\beta}{p}$, yielding $\oftp{\psi, \psi'}{\Cut{\alpha}{\beta}{x}}{p}$, until $\psi'$ is exhausted.
 
 If we are given a term $\oftp{x_1:p_1, \dots, x_n:p_n}{\alpha}{q}$ and terms $\oftp{\psi_i}{\beta_i}{p_i}$ with differing contexts, we can construct a term $\oftp{\psi_1, \dots, \psi_n}{a[\beta_1/x_1, \dots, \beta_n/x_n]}{q}$ first by weakening each $\beta_i$ to all of $\psi_1, \dots, \psi_n$ and then applying the above.
 
@@ -228,7 +228,7 @@ as required.
 
 The unit and associativity laws follow for 1-morphisms from standard facts about building multi-variable substitutions from single variable substitutions. For 2-morphisms, they are enforced by the axioms in the equational theory.
 
-The action of renaming is given by the admissable weakening, exchange and contraction rules. 
+The action of renaming is given by the admissible weakening, exchange and contraction rules. 
 \end{proof}
 
 We fix a mode theory $\Sigma$ and write $\M$ for the 2-multicategory it presents. The overall conjecture is that the syntax is the initial bifibration
