@@ -149,8 +149,8 @@ constant/function symbol, all of whose modes are declared previously in
 the signature.  The notation $p_1,\ldots,p_n \to q$ is not itself a
 mode, but only notation for declaring a function symbol in the signature
 (it cannot occur on the right-hand side of a typing judgement).  For
-example, the term constructors for a monoid $(\odot,1)$ are represented
-by a signature
+example, the type and term constructors for a monoid $(\odot,1)$ are
+represented by a signature
 \[
 \dsd{p} \, \dsd{mode},
 \dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
@@ -192,10 +192,10 @@ transformations will be used to represent object logic structural
 properties such as weakening and contraction that are not invertible.
 The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p} defines these
 transformations: it is the least precongruence (preorder compatible with
-the term formers) closed under axioms the specified in the signature
+the term formers) closed under the axioms specified in the signature
 $\Sigma$.  For example, to say that the above monoid $(\odot,1)$ is
-affine, we add in $\Sigma$ a transformation axiom $(x \spr 1 : (x:p) \to
-{p})$.
+affine, we add in $\Sigma$ a transformation axiom $(x \spr 1 : (x:\dsd{p}) \to
+{\dsd{p}})$.
 %% Then, using the rules in the figure, we can for example derive a
 %% transformation $(x \odot y) \spr (1 \odot y) \spr y$ that, when
 %% applied (contravariantly) to a sequent, will allow weakening $y$ to

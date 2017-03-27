@@ -1,0 +1,323 @@
+%%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
+%%SHORT \IEEEoverridecommandlockouts
+
+\documentclass{article}
+\usepackage{times}
+\usepackage{authblk}
+%% \usepackage{fullpage}
+
+\usepackage[all]{xy}
+\usepackage{multicol}
+\usepackage{mathptmx}
+\usepackage{color}
+\usepackage[cmex10]{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{../drl-common/proof}
+\usepackage{../drl-common/typesit}
+\usepackage{../drl-common/typescommon}
+\usepackage{../drl-common/theorem-envs}
+\usepackage[sort]{natbib}
+%% \usepackage{arydshln}
+\usepackage{graphics}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{tipa}
+
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{fancyvrb}
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+\newcommand\Dia[2]{\ensuremath{\Diamond_{#1} \, {#2}}}
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
+\newcommand{\sh}{\text{\textesh}}
+
+\newcommand\D{\ensuremath{d}} %% originally was mathcal{D} but switched notation for derivations
+\newcommand\E{\ensuremath{e}}
+
+\newcommand\magicwand{\mathrel{-\mkern-6mu*}}
+\newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
+\newcommand\C{\ensuremath{\mathcal{C}}}
+\newcommand\deq{\ensuremath{\equiv}}
+\newcommand\spr{\ensuremath{\Rightarrow}} %% structural property/2-cell
+\newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
+\newcommand\seql[3]{\ensuremath{#1 \vdash^{\dsd{#2}} #3}}
+\newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \mid #3)}}
+\newcommand\Uempty[2]{\ensuremath{\dsd{U}_{#1}(#2)}}
+\newcommand\Fsymb[0]{\dsd{F}}
+\newcommand\Usymb[0]{\dsd{U}}
+\newcommand\tsubst[2]{\ensuremath{#1[#2]}}
+\renewcommand\subst[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\wftype[2]{\ensuremath{#1 \vdash #2 \,\, \dsd{type}}}
+\renewcommand\wfctx[2]{\ensuremath{#1 \vdash #2 \,\, \dsd{ctx}}}
+\newcommand\modeof[1]{\ensuremath{\hat{#1}}}
+\newcommand\many[1]{\ensuremath{\overline{#1}}}
+\renewcommand{\oftp}[3]{\ensuremath{#1 \, \vdash #2 \, \dcd{:} \, #3}}
+\newcommand\FL{\dsd{FL}}
+\newcommand\FR{\dsd{FR}}
+\newcommand\UL{\dsd{UL}}
+\newcommand\UR{\dsd{UR}}
+\newcommand\lolli\multimap
+\newcommand\la\dashv
+
+\def\M{\mathcal{M}}
+\def\toiso{\xrightarrow{\sim}}
+\let\To\Rightarrow
+%\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+
+\def\llb{\llbracket}
+\def\rrb{\rrbracket}
+
+\newcommand\seqa[2]{\seql{#1}{a}{#2}}
+\newcommand\seqc[2]{\seql{#1}{c}{#2}}
+\newcommand\splits{\rightrightarrows}
+\newcommand\vars[1]{\ensuremath{\overline{#1}}}
+
+\newcommand{\ignore}[1]{}
+
+\newcommand\FLd[2]{\ensuremath{\FL^{#1}(#2)}}
+\newcommand\FRd[3]{\ensuremath{\FR_{#1}(#2,#3)}}
+\newcommand\ULd[5]{\ensuremath{\UL^{#1}_{#2}(#3,#4,#5)}}
+\newcommand\URd[1]{\ensuremath{\UR(#1)}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+\newcommand\Ident[1]{\ensuremath{{#1}}}
+\newcommand\Cut[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\Cuta[3]{\ensuremath{#1\{#2/#3\}}}
+\newcommand\Cutta[2]{\ensuremath{#1\{#2\}}}
+\newcommand\Trda[2]{\ensuremath{#1_*\{#2\}}}
+\newcommand\Identa[1]{\ensuremath{{\dsd{id}\{#1\}}}}
+\newcommand\FRs{\ensuremath{\FR^*}}
+\newcommand\ULs[1]{\ensuremath{\UL^*_{#1}}}
+
+\newcommand\elim[1]{#1\mathord{\downarrow}}
+\newcommand\deqp{\deq_{\dsd p}}
+\newcommand\Linv[3]{\ensuremath{\dsd{linv}(#1,#2,#3)}}
+\newcommand\Rinv[2]{\ensuremath{\dsd{rinv}(#1,#2)}}
+
+\newcommand\pto{\mathrel{\ooalign{\hfil$\mapstochar$\hfil\cr$\to$\cr}}}
+
+\begin{document}
+
+\title{Double-Categorical Adjoint Logic}
+\author{DL, PS, MS, MR}
+
+%% SHORT
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+%% \author{\IEEEauthorblockN{Daniel R. Licata}
+%% \IEEEauthorblockA{Wesleyan University\\
+%% \url{dlicata@wesleyan.edu}}
+%% \and
+%% \IEEEauthorblockN{Michael Shulman}
+%% \IEEEauthorblockA{University of San Diego \\
+%%   \url{shulman@sandiego.edu}}
+%% \and
+%% \IEEEauthorblockN{Mitchell Riley}
+%% \IEEEauthorblockA{Wesleyan University \\
+%%   \url{mvriley@wesleyan.edu}}
+
+%% %% \thanks{
+%% %%   ?
+%% %% }
+
+%% \author[1]{{Daniel R. Licata}}
+%% \author[2]{{Michael Shulman}}
+%% \author[1]{{Mitchell Riley}}
+%% \affil[1]{Wesleyan University}
+%% \affil[2]{University of San Diego}
+
+\maketitle
+
+\section{Modes}
+
+Write $p$ for modes and $\psi := x_1:p_1,\ldots,x_n:p_n$ or $\phi$ for
+mode contexts.  We stipulate that contexts $\psi$ that differ only by
+the order of variables are equal (i.e. we have exchange).  Write
+\oftp{\psi}{a}{p} and \oftp{\psi}{\theta}{\psi'} for vertical morphisms,
+which are linear:
+\[
+\infer{\oftp{x:p}{x}{p}}{}
+\qquad
+\infer{\oftp{\psi_1,\psi_2}{\theta,a/x}{\psi',x:p}}
+      {\oftp{\psi_1}{\theta}{\psi} &
+        \oftp{\psi_2}{a}{p}}
+\]
+
+\newcommand\hmor[3]{\ensuremath{#1 \mid #2 \vdash^{\dsd h} #3}}
+\newcommand\sq[4]{\ensuremath{#1 \Rightarrow #2 \: [#3 \mid #4]}}
+\newcommand\hid[1]{1_{#1}}
+
+We write a horizontal morphism $\psi \pto \psi'$ profunctor-like, as a
+term $\hmor{\psi}{\phi}{\alpha}$ with both $\psi$ and $\phi$ as free
+variables.  These have identity and composition:
+
+\[
+\infer{\hmor{\psi}{\psi}{\hid{\psi}}}{}
+\qquad
+\infer{\hmor{\psi_1,\psi_1'}{\psi_3}{[\alpha/\psi_2]\beta}}
+      {\hmor{\psi_1}{\psi_2}{\alpha} &
+       \hmor{\psi_1',\psi_2}{\psi_3}{\beta}}
+\]
+
+We also need functoriality of the monoidal product:
+\[
+\infer{\hmor{\psi_1,\psi_2}{\psi_2,\psi_2'}{\alpha,\alpha'}}
+      {\hmor{\psi_1}{\psi_2}{\alpha} &
+       \hmor{\psi_1'}{\psi_2'}{\alpha'}}
+\]
+
+Exisitng adjoint logic terms $\psi \vdash \alpha : p$ can be encoded in
+``destination-passing-style:'' E.g.  instead of $x:p,y:p \vdash x
+\otimes y : p$, we'd have $x:p,y:p \mid d:p \vdash x \otimes y > d$, and
+$(x \otimes y) \otimes z$ is the formal composite
+\[
+[((x \otimes y) > d_1)/d_1](d_1 \otimes z > d)
+\]
+
+2-cells are squares \sq{\alpha}{\alpha'}{\theta}{\rho} where
+$\oftp{\psi}{\theta}{\psi'}$ and 
+$\oftp{\phi}{\rho}{\phi'}$ and
+$\hmor{\psi}{\phi}{\alpha}$ an
+$\hmor{\psi'}{\phi'}{\alpha'}$.  
+
+We assume that horizontal morphisms can be composed with vertical
+morphism on either side via an operation, probably with a filler square
+relating them too?
+\[
+\infer{\hmor{\psi'}{\phi}{\alpha[\theta/\psi]}}
+      {\hmor{\psi}{\phi}{\alpha} &
+        \oftp{\psi'}{\theta}{\psi}}
+\qquad
+\infer{\hmor{\psi}{\phi'}{\alpha[\theta/\phi]}}
+      {\hmor{\psi}{\phi}{\alpha} &
+        \oftp{\psi}{\theta}{\phi}}
+\]
+
+When the vertical 1-cells $\oftp{\Psi}{\theta}{\Psi'}$ are cartesian
+variable-for-variable substitutions, and the codomain contexts always
+have 1 variable, this should be clubs.  
+
+\section{Judgements}
+
+\newcommand{\seqh}[5]{\ensuremath{#1 \mid #2 \vdash_{#3} #4 \mid #5}}
+
+Types and contexts live over mode contexts, so we have judgements
+\wftype{\psi}{A} and \wfctx{\psi}{\Gamma}.  
+
+We require admissible rules pulling back along vertical morphisms:
+\[
+\infer{\wftype{\psi_1,\psi_2'}{A[\theta]}}
+      {\wftype{\psi_1,\psi_2}{A} & 
+        \oftp{\psi_2'}{\theta}{\psi_2}}
+\qquad
+\infer{\wfctx{\psi_1,\psi_2'}{\Gamma[\theta]}}
+      {\wfctx{\psi_1,\psi_2}{\Gamma} & 
+        \oftp{\psi_2'}{\theta}{\psi_2}}
+\]
+
+Contexts are defined by
+\[
+\infer{\wfctx{\cdot}{\cdot}}{}
+\qquad
+\infer{\wfctx{\psi,\psi'}{\Gamma,A}}
+      {\wfctx{\psi}{\Gamma} & \wfctx{\psi'}{A}}
+\]
+
+TODO: define $n$-ary partial-context substitution; it's a bit of a pain because of linearity.  
+
+We should have judgements $\seqh{\psi}{\Gamma}{\theta}{\psi'}{A}$ where
+$\oftp{\psi}{\theta}{\psi'}$ (vertical morphism over vertical morphism)
+and $\seqh{\psi}{\Gamma}{\alpha}{\phi}{A}$ where $\wfctx{\psi}{\Gamma}$
+and $\wftype{\phi}{A}$ and 
+$\hmor{\psi}{\phi}{\alpha}$ (horizontal morphism over horizontal
+morphism).  However, because we're thinking of the vertical arrows as
+terms that the types depend on, and insisting on pullbacks along them,
+we can shove everything into the fiber rather than having a primitive
+``over'' judgement. So a general vertical morphism
+\seqh{\psi}{\Gamma}{\theta}{\psi'}{A} can be represented by a
+homogeneous vertical morphism
+\seqh{\psi}{\Gamma}{x_i/x_i}{\psi}{A[\theta]}.  But a degenerate
+vertical morphism should be (???) the same as a degenerate horizontal
+morphism, so it suffices to have horizontal morphisms up top.
+
+Structural rules: identity over identity, cut over cut, transporting
+along a square:
+\[
+\infer{\seqh{\psi}{x:A}{\hid{\psi}}{\psi}{A}}{}
+\qquad
+\infer{\seqh{\psi_1,\psi_2}{\Gamma_1,\Gamma_2}{[\alpha/\psi]\beta}{\phi}{B}}
+      {\seqh{\psi_2}{\Gamma_2}{\alpha}{\psi}{A} &
+       \seqh{\psi_1,\psi}{\Gamma_1,x:A}{\beta}{\phi}{B}}
+\]
+
+\[
+\infer{\seqh{\psi}{\Gamma[\theta]}{\alpha}{\phi}{A[\rho]}}
+      {\seqh{\psi'}{\Gamma}{\beta}{\phi'}{A} &
+        \sq{\alpha}{\beta}{\theta}{\rho}}
+\]
+
+Atomic propositions:
+\[
+\infer{\wftype{\psi}{P(\theta)}}
+      {\psi' \vdash P &
+        \oftp{\psi}{\theta}{\psi'}
+      }
+\qquad
+\infer{\seqh{\psi}{P(\theta)}{\beta}{\phi}{P(\rho)}}
+      {\psi' \vdash P &
+        \sq{\beta}{\hid{\psi'}}{\theta}{\rho}}
+\]
+\[
+P(\theta)[\theta'] := P(\theta[\theta'])
+\]
+
+Pushforward along a horizontal morphism:
+
+%% (FIXME: should some of the
+%% dependency leak through to the conclusion? this seems weird):
+%% \[
+%% \infer{\wftype{\phi}{\F{\alpha}{\Delta}}}
+%%       {\wfctx{\psi}{\Delta} &
+%%         \hmor{\psi}{\phi}{\alpha}
+%%       }
+%% \qquad
+%% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta/\psi]}{\Delta}
+%% \]
+%% Axiomatic FR:
+%% \[
+%% \infer{\seqh{\psi}{\Delta}{\alpha}{\phi}{\F{\alpha}{\Delta}}}{}
+%% \]
+
+\[
+\infer{\wftype{\psi_0,\phi}{\F{\alpha}{\Delta}}}
+      {\wfctx{\psi_0,\psi}{\Delta} &
+        \hmor{\psi}{\phi}{\alpha}
+      }
+\qquad
+\F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta\mid_\psi]}{\Delta[\theta\mid_{\psi_0}]}
+\]
+
+\[
+\infer[\FR^*]{\seqh{\psi_0,\psi}{\Delta}{1_{\psi_0},\alpha}{\psi_0,\phi}{\F{\alpha}{\Delta}}}{}
+\]
+
+\[
+\infer[\FL]
+      {\seqh{\psi_1,(\psi_0,\phi)}{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{\phi_1}{C}}
+      {\seqh{\psi_1,(\psi_0,\psi)}{\Gamma,\Delta}{[\alpha/\psi]\beta}{\phi_1}{C}}
+\]
+
+\end{document}
+
