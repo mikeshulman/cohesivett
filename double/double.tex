@@ -4,7 +4,7 @@
 \documentclass{article}
 \usepackage{times}
 \usepackage{authblk}
-%% \usepackage{fullpage}
+\usepackage{fullpage}
 
 \usepackage[all]{xy}
 \usepackage{multicol}
@@ -139,6 +139,334 @@
 %% \affil[2]{University of San Diego}
 
 \maketitle
+
+\section{PROPs as Processes}
+
+\subsection{Symmetric Monoidal PROPs}
+
+\newcommand\const[3]{\ensuremath{\dsd{#1}(#2 \mid #3)}}
+\newcommand\cpy[2]{\ensuremath{\dsd{copy}(#1 \mid #2)}}
+\newcommand\cut[2]{\ensuremath{\nu #1.#2}}
+\newcommand\lst[1]{\ensuremath{\overline{#1}}}
+\newcommand\bfunc[2]{\ensuremath{#1 \bullet #2}}
+\newcommand\idp[1]{\ensuremath{1_{#1}}}
+
+\[
+\begin{array}{l}
+\psi,\phi ::= \cdot \mid \psi, x:p\\
+b ::= \cpy{x}{y} \mid \const{f}{\lst{x}}{\lst{y}}\\
+e ::= \cut{\psi}{\lst{b}}
+\end{array}
+\]
+
+Contexts are treated as \emph{lists}: we do not regard $x:p,y:q$ and
+$y:q,x:p$ as literally the same context (it might simplify things to do
+so, but the correspondence with the semantics would be less clear).  
+
+A basic process $b$ is either an identity \cpy{x}{y} or a generator
+\dsd{f} applied to arguments.  We sometimes write \lst{x} for a list of
+variables.  A process $e$ binds some ``private'' names $\psi$ and then
+consists of a list of basic processes.
+
+We write $\psi \splits \psi_1;\ldots;\psi_n$ to mean that $\psi_1$
+through $\psi_n$ is a shuffle of $\psi$, i.e.  an interleaving of
+$\psi_1$ through $\psi_n$ is equal to $\psi$.  
+
+\newcommand\tseq[3]{\ensuremath{#1 \vdash #2 : #3}}
+
+\[
+\begin{array}{c}
+\infer{\tseq{\lst{x_i:p_i}}
+            {\const{f}{\lst{x_i}}{\lst{y_i}}}
+            {\lst{y_i:q_i}}}
+      {  \dsd{f} \in G({\lst{x_i:p_i}};{\lst{y_i:q_i}})   }
+\qquad
+\infer{\tseq{x:p}{\cpy{x}{y}}{y:p}}{}
+\\ \\
+\infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_n)}}{\phi}}
+      { 
+       \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n \\
+        \phi \splits \phi_1;\ldots;\phi_n \\
+        \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
+        \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+       \end{array}
+      }
+\end{array}
+\]
+
+Here are some special cases of the third rule:
+\begin{itemize}
+\item In the case where $\psi_0$ is empty, e.g. \cut{()}{b_1,b_2}, we
+  have functoriality of $,$ (``parallel composition of processes''):
+\[
+\infer{\tseq{\psi}{\cut{()}{(b_1,b_2)}}{\phi}}
+      { 
+        \psi \splits \psi_1;\psi_2 & 
+        \phi \splits \phi_1;\phi_2 &
+        \tseq{\psi_1}{b_1}{\phi_1} &
+        \tseq{\psi_2}{b_2}{\phi_2}
+      }
+\]
+
+\item In the case where $\psi_i$ is empty for $i \ge 1$ and $\phi_i$ is
+  empty for $i<n$, and $\psi^{i}_j \deq \psi^o_{j-1}$, we have an
+  interated sequence of compostions, e.g.
+\[
+\begin{array}{l}
+\infer{\tseq{\psi}{\cut{(\psi_0)}{(b_1,b_2)}}{\phi}}
+      { 
+        \psi \splits \psi;\cdot & 
+        \phi \splits \cdot;\phi &
+        \psi_0 \splits \psi_0;\cdot &
+        \psi_0 \splits \cdot;\psi_0 &
+        \tseq{\psi}{b_1}{\psi_0} &
+        \tseq{\psi_0}{b_2}{\phi}
+      }
+\\ \\
+\infer{\tseq{\psi}{\cut{(\psi_0)}{(b_1,b_2,b_3)}}{\phi}}
+      { 
+        \psi \splits \psi;\cdot;\cdot & 
+        \phi \splits \cdot;\cdot;\phi &
+        \psi_0 \splits \psi_1;\psi_2;\cdot &
+        \psi_0 \splits \cdot;\psi_1;\psi_2 &
+        \tseq{\psi}{b_1}{\psi_1} &
+        \tseq{\psi_1}{b_2}{\psi_2} &
+        \tseq{\psi_2}{b_3}{\phi}
+      }
+\end{array}
+\]
+
+\item When $\phi$ and $\psi^o$ are both non-trivial in some position,
+  the term can both send outputs into subsequent cuts and into the
+  overall output, e.g.
+\[
+\begin{array}{l}
+\infer{\tseq{\psi}{\cut{(\psi_0)}{(b_1,b_2)}}{\phi}}
+      { 
+        \psi \splits \psi;\cdot & 
+        \phi \splits \phi_1;\phi_2 &
+        \psi_0 \splits \psi_0;\cdot &
+        \psi_0 \splits \cdot;\psi_0 &
+        \tseq{\psi}{b_1}{\phi_1,\psi_0} &
+        \tseq{\psi_0}{b_2}{\phi_2}
+      }
+\end{array}
+\]
+This implicitly uses functoriality of $,$ to route the $\phi_1$ to the
+overall output.  
+
+\item When $\psi^i$ is not the previous $\psi^o$, there is some
+  implicit tensoring with the identity to route outputs down the line,
+  e.g. 
+\[
+\infer{\tseq{\psi}{\cut{(\psi_0)}{(b_1,b_2,b_3)}}{\phi}}
+      { 
+        \psi \splits \psi;\cdot;\cdot & 
+        \phi \splits \cdot;\phi_1;\phi_2 &
+        \psi_0 \splits \psi_1,\psi_2;\cdot;\cdot &
+        \psi_0 \splits \cdot;\psi_1;\psi_2 &
+        \tseq{\psi}{b_1}{\psi_1,\psi_2} &
+        \tseq{\psi_1}{b_2}{\phi_1} &
+        \tseq{\psi_2}{b_3}{\phi_2}
+      }
+\]
+
+\item The condition that each $\psi^i$ is a subset of the previous
+  outputs prevents feedback loops / something from being used before it
+  is computed.
+\end{itemize}
+
+\subsection{Admissible Rules}
+
+Admissible rules of identity, functoriality, composition:
+\[
+\begin{array}{c}
+\infer{\tseq{\psi}{\idp{\psi}}{\psi}}
+      {%% \psi \splits x_1;x_2;\ldots;x_n &
+       %%  \tseq{x_i:p_i}{\cpy{x_i}{x_i}}{x_i:p_i}
+      }
+\qquad
+\infer{\tseq{\psi,\psi'}{\bfunc{e}{e'}}{\phi,\phi'}}
+      {
+        \tseq{\psi}{e}{\phi} &
+        \tseq{\psi'}{e'}{\phi'} &
+      }
+\qquad
+\infer{\tseq{\psi_1}{e_1;e_2}{\psi_3}}
+      {\tseq{\psi_1}{e_1}{\psi_2} &
+       \tseq{\psi_2}{e_2}{\psi_3}}
+\end{array}
+\]
+
+\begin{itemize}
+\item Identity:
+\[
+\infer{\tseq{\psi}{\idp{\psi} := \cut{()}{\cpy{x_1}{x_1},\ldots,\cpy{x_n}{x_n}}}{\psi}}
+      {\psi \splits x_1;x_2;\ldots;x_n &
+       \tseq{x_i:p_i}{\cpy{x_i}{x_i}}{x_i:p_i}
+      }
+\]
+
+\item 
+Functoriality: Given 
+\[
+\infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_n)}}{\phi}}
+      { 
+       \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n \\
+        \phi \splits \phi_1;\ldots;\phi_n \\
+        \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
+        \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+       \end{array}
+      }
+\qquad
+\infer{\tseq{\psi'}{\cut{\psi_0'}{(b_1',\ldots,b_m')}}{\phi'}}
+      { 
+       \begin{array}{l}
+        \psi' \splits \psi_1';\ldots;\psi_m' \\
+        \phi' \splits \phi_1';\ldots;\phi_m' \\
+        \psi_0' \splits {\psi_1^{o}}';\ldots;{\psi_{m-1}^o}';\cdot \\
+        \psi_0' \splits \cdot;{\psi_2^i}',\ldots,{\psi_m^{i}}' \\
+        {\psi_j^{i}}' \subseteq \lst{{\psi_{<j}^o}'} \\
+        \tseq{\psi_j',{\psi_j^i}'}{b_j'}{\phi_j',{\psi_j^o}'}\\
+       \end{array}
+      }
+\]
+we make
+\[
+\infer{\tseq{\psi,\psi'}{\bfunc {e}{e'} := \cut{(\psi_0,\psi_0')}{(\lst{b_j},\lst{b_j'})}}{\phi,\phi'}}
+      { 
+       \begin{array}{l}
+        \psi,\psi' \splits \psi_1;\ldots;\psi_n;\psi_1';\ldots;\psi_m' \\
+        \phi,\phi' \splits \phi_1;\ldots;\phi_n;\phi_1';\ldots;\phi_m' \\
+        \psi_0,\psi_0' \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot;{\psi_1^{o}}';\ldots;{\psi_{m-1}^o}';\cdot \\
+        \psi_0,\psi_0' \splits \cdot;\psi_2^i,\ldots,\psi_n^{i};\cdot;{\psi_2^i}',\ldots,{\psi_m^{i}}' \\
+        \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \quad {\psi_j^{i}}' \subseteq \psi_0,\lst{{\psi_{<j}^o}'} \\
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o} \quad \tseq{\psi_j',{\psi_j^i}'}{b_j'}{\phi_j',{\psi_j^o}'}\\
+       \end{array}
+      }
+\]
+
+\item 
+Composition: Given 
+\[
+\infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_m)}}{\psi'}}
+      { 
+       \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n \\
+        \psi' \splits \phi_1;\ldots;\phi_n \\
+        \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
+        \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+       \end{array}
+      }
+\qquad
+\infer{\tseq{\psi'}{\cut{\psi_0'}{(b_1',\ldots,b_n')}}{\phi'}}
+      { 
+       \begin{array}{l}
+        \psi' \splits \psi_1';\ldots;\psi_m' \\
+        \phi' \splits \phi_1';\ldots;\phi_m' \\
+        \psi_0' \splits {\psi_1^{o}}';\ldots;{\psi_{m-1}^o}';\cdot \\
+        \psi_0' \splits \cdot;{\psi_2^i}',\ldots,{\psi_m^{i}}' \\
+        {\psi_j^{i}}' \subseteq \lst{{\psi_{<j}^o}'} \\
+        \tseq{\psi_j',{\psi_j^i}'}{b_j'}{\phi_j',{\psi_j^o}'}\\
+       \end{array}
+      }
+\]
+we make
+\[
+\infer{\tseq{\psi}{\cut{(\psi_0,\psi_0',\psi')}{(\lst{b_j},\lst{b_j'})}}{\phi'}}
+      { 
+       \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n;\cdot;\ldots;\cdot \\
+        \phi' \splits \cdot;\ldots;\cdot;\phi_1;\ldots;\phi_m \\
+        \psi_0,\psi_0',\psi' \splits (\phi_1,\psi_1^{o});\ldots;(\phi_{n-1},\psi_{n-1}^o);(\phi_n,\cdot);{\psi_1^{o}}';\ldots;{\psi_{m-1}^o}';\cdot \\
+        \psi_0,\psi_0',\psi' \splits \cdot;\psi_2^i,\ldots,\psi_n^{i};(\psi_1',\cdot);(\psi_2',{\psi_2^i}'),\ldots,(\psi_m',{\psi_m^{i}}') \\
+        \psi_j^{i} \subseteq \lst{(\phi_k,\psi_{k}^o)_{k<j}} \quad
+            {(\psi_j',{\psi_j^{i}}')} \subseteq \psi',\lst{{\psi_{<j}^o}'} \\ 
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o} \quad 
+        \tseq{\psi_j',{\psi_j^i}'}{b_j'}{\phi_j',{\psi_j^o}'}\\
+       \end{array}
+      }
+\]
+\end{itemize}
+
+\subsubsection{Equational Theory}
+
+Unit and commutativity equations (in the derivations, you need to adjust
+the shuffles in the corresponding way):
+\[
+\begin{array}{rcl}
+\cut{\psi_0}{(\ldots,b_j,b_k,\ldots)} & \deq & \cut{\psi_0}{(\ldots,b_k,b_j,\ldots)} 
+\text{ if } \psi^i_k \# \psi^o_j
+\\
+%% FIXME update
+%% \cut {(\psi_0,x,\psi_0')}{\cpy{x}{x},c} & \deq & \cut{(\psi_0,\psi_0')}{c}\\
+%% \cut {(\psi_0,x,\psi_0')}{\cpy{x'}{x},c} & \deq &
+%% \cut{(\psi_0,\psi_0')}{c[x'/x]} \text{ if $x \neq x'$ }\\
+%% \cut {(\psi_0,x,\psi_0')}{\cpy{x}{x'},c} & \deq &
+%% \cut{(\psi_0,\psi_0')}{c[x'/x]} \text{ if $x \neq x'$ }
+\end{array}
+\]
+
+\subsubsection{Example: Symmetry}
+
+For example, we have the symmetry term
+\[
+\infer{\tseq{x:p,y:q}{\cut{()}{\cpy{x}{x'},\cpy{y}{y'}}}{y':q,x':p}}
+      {x:p,y:q \splits x:p;y:q &
+       y':q,x':p \splits x':p;y':q &
+       \tseq{x:p}{\cpy{x}{x'}}{x':p} &
+       \tseq{y:q}{\cpy{y}{y'}}{y':q}
+      }
+\]
+Composing
+\[
+(\cut{()}{\cpy{x}{x'},\cpy{y}{y'}});(\cut{()}{\cpy{x'}{x''},\cpy{y'}{y''}})
+\]
+is  
+\[
+\cut{(x',y')}{\cpy{x}{x'},\cpy{y}{y'},\cpy{x'}{x''},\cpy{y'}{y''}}
+\]
+which is equal? to 
+\[
+\cut{(x',y')}{\cpy{x}{x''},\cpy{y}{y''}}
+\]
+
+\subsubsection{Example: Duals and Traces}
+
+\subsection{Bicartesian PROPs}
+
+\[
+\begin{array}{c}
+\infer{\tseq{\psi}
+            {\const{f}{\lst{x_i}}{\lst{y_i}}}
+            {\phi}}
+      {  \dsd{f} \in G({\lst{p_i}};{\lst{q_i}}) &
+        {\lst{x_i:p_i}} \in \psi &
+        {\lst{y_i:q_i}} \in \phi
+      }
+\qquad
+\infer{\tseq{\psi}{\cpy{x}{y}}{\phi}}
+      {x:p \in \psi &
+       y:p \in \phi
+      }
+\\ \\
+\infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_n)}}{\phi}}
+      { 
+        \psi_0 \splits \psi_1;\psi_2;\ldots;\psi_{n-1};\cdot &
+        \lst{\tseq{\psi,\lst{\psi_{<j}}}{b_j}{\phi,\psi_{j}}}\\
+      }
+\end{array}
+\]
+
+
 
 \section{Modes}
 
