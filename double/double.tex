@@ -168,9 +168,12 @@ A basic process $b$ is either an identity \cpy{x}{y} or a generator
 variables.  A process $e$ binds some ``private'' names $\psi$ and then
 consists of a list of basic processes.
 
-We write $\psi \splits \psi_1;\ldots;\psi_n$ to mean that $\psi_1$
-through $\psi_n$ is a shuffle of $\psi$, i.e.  an interleaving of
-$\psi_1$ through $\psi_n$ is equal to $\psi$.  
+Here are the rules for basic processes, and then general processes.  We
+write $\psi \splits \psi_1;\ldots;\psi_n$ to mean that $\psi_1$ through
+$\psi_n$ is a shuffle of $\psi$, i.e.  an interleaving of $\psi_1$
+through $\psi_n$ is equal to $\psi$.  When $\Psi_j : 1 \le j \le n$ is a
+sequence of contexts, we write \lst{\psi_{<j}} for the concatenation of
+all contexts $\psi_1,\psi_2,\ldots,\psi_{j-1}$.  
 
 \newcommand\tseq[3]{\ensuremath{#1 \vdash #2 : #3}}
 
@@ -190,12 +193,14 @@ $\psi_1$ through $\psi_n$ is equal to $\psi$.
         \phi \splits \phi_1;\ldots;\phi_n \\
         \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
         \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
-        \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
-        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+        \forall 1 \le j \le n: \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \forall 1 \le j \le n: \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
        \end{array}
       }
 \end{array}
 \]
+We refer to the four shuffles as the source, target, output, and input
+respectively.  
 
 Here are some special cases of the third rule:
 \begin{itemize}
@@ -337,7 +342,7 @@ Functoriality: Given
        \end{array}
       }
 \]
-we make
+we make (by just concatenating all the shuffles contexts)
 \[
 \infer{\tseq{\psi,\psi'}{\bfunc {e}{e'} := \cut{(\psi_0,\psi_0')}{(\lst{b_j},\lst{b_j'})}}{\phi,\phi'}}
       { 
@@ -379,7 +384,7 @@ Composition: Given
        \end{array}
       }
 \]
-we make
+we make 
 \[
 \infer{\tseq{\psi}{\cut{(\psi_0,\psi_0',\psi')}{(\lst{b_j},\lst{b_j'})}}{\phi'}}
       { 
@@ -395,23 +400,55 @@ we make
        \end{array}
       }
 \]
+The idea is that the source shuffle is constant on the primed part, the
+target shuffle is contant on the unprimed part, the output shuffles are
+concatenated and the target shuffle of the unprimed part is added to its
+outputs, and the input shuffles are concatenated and the source shuffle
+of the primed part is added to its inputs.  
 \end{itemize}
 
 \subsubsection{Equational Theory}
 
-Unit and commutativity equations (in the derivations, you need to adjust
-the shuffles in the corresponding way):
+First, the order of \emph{independent} processes doesn't matter:
 \[
-\begin{array}{rcl}
-\cut{\psi_0}{(\ldots,b_j,b_k,\ldots)} & \deq & \cut{\psi_0}{(\ldots,b_k,b_j,\ldots)} 
+\cut{\psi_0}{(\ldots,b_j,b_k,\ldots)} \deq \cut{\psi_0}{(\ldots,b_k,b_j,\ldots)} 
 \text{ if } \psi^i_k \# \psi^o_j
-\\
-%% FIXME update
-%% \cut {(\psi_0,x,\psi_0')}{\cpy{x}{x},c} & \deq & \cut{(\psi_0,\psi_0')}{c}\\
+\]
+Officially, the equality rule has premises saying that the left-hand
+side is well-typed.  The side condition says that the outputs of $b_j$
+are not inputs to $b_k$, so the swapped version is also well-typed.  The
+shuffles in the derivation need to be adjusted in the corresponding
+way.  
+
+Second, suppose some process
+\tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o} is \cpy{x}{y}, then we have
+the following definitional equalities:
+\[
+\begin{array}{rcll}
+\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = x, \psi_j^i = \cdot, \phi_j = \cdot, \psi_j^o = y\\
+\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-x)}{(\lst{b}[y/x],\lst{b'})} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = y, \psi_j^o = \cdot\\
+\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = \cdot, \psi_j^o = y\\
 %% \cut {(\psi_0,x,\psi_0')}{\cpy{x'}{x},c} & \deq &
 %% \cut{(\psi_0,\psi_0')}{c[x'/x]} \text{ if $x \neq x'$ }\\
 %% \cut {(\psi_0,x,\psi_0')}{\cpy{x}{x'},c} & \deq &
 %% \cut{(\psi_0,\psi_0')}{c[x'/x]} \text{ if $x \neq x'$ }
+\end{array}
+\]
+There is no reduction if $x \in \psi_j,y \in \phi_j$ because this copy
+is visible to the output.  Note that the final two 
+
+Finally, the order of variables in $\psi_0$ doesn't matter (adjusting
+the shuffles accordingly in the derivation): 
+\[
+\begin{array}{rcll}
+\cut{(\psi_0,x,y,\psi_0')}{\lst{b}} & \deq & \cut{(\psi_0,y,x,\psi_0')}{\lst{b}}
+\end{array}
+\]
+From this and the third copy reduction and some $\alpha$-renaming,
+we should be able to get the symmetric
+\[
+\begin{array}{rcll}
+\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-x)}{(\lst{b}[y/x],\lst{b'})} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = \cdot, \psi_j^o = y\\
 \end{array}
 \]
 
