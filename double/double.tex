@@ -164,14 +164,14 @@ $y:q,x:p$ as literally the same context (it might simplify things to do
 so, but the correspondence with the semantics would be less clear).  
 
 A basic process $b$ is either an identity \cpy{x}{y} or a generator
-\dsd{f} applied to arguments.  We sometimes write \lst{x} for a list of
-variables.  A process $e$ binds some ``private'' names $\psi$ and then
-consists of a list of basic processes.
+\dsd{f} applied to arguments.  We sometimes write \lst{x_i} for a list
+of variables $x_1,x_2,\ldots,x_n$.  A process $e$ binds some
+``private'' names $\psi$ and then consists of a list of basic processes.
 
 Here are the rules for basic processes, and then general processes.  We
 write $\psi \splits \psi_1;\ldots;\psi_n$ to mean that $\psi_1$ through
 $\psi_n$ is a shuffle of $\psi$, i.e.  an interleaving of $\psi_1$
-through $\psi_n$ is equal to $\psi$.  When $\Psi_j : 1 \le j \le n$ is a
+through $\psi_n$ is equal to $\psi$.  When $\psi_j : 1 \le j \le n$ is a
 sequence of contexts, we write \lst{\psi_{<j}} for the concatenation of
 all contexts $\psi_1,\psi_2,\ldots,\psi_{j-1}$.  
 
@@ -180,12 +180,12 @@ all contexts $\psi_1,\psi_2,\ldots,\psi_{j-1}$.
 \[
 \begin{array}{c}
 \infer{\tseq{\lst{x_i:p_i}}
-            {\const{f}{\lst{x_i}}{\lst{y_i}}}
-            {\lst{y_i:q_i}}}
-      {  \dsd{f} \in G({\lst{x_i:p_i}};{\lst{y_i:q_i}})   }
+            {\const{f}{\lst{x_i}}{\lst{y_j}}}
+            {\lst{y_j:q_j}}}
+      {  \dsd{f} \in G({\lst{p_i}};{\lst{q_j}})   }
 \qquad
 \infer{\tseq{x:p}{\cpy{x}{y}}{y:p}}{}
-\\ \\
+\qquad
 \infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_n)}}{\phi}}
       { 
        \begin{array}{l}
@@ -216,7 +216,7 @@ Here are some special cases of the third rule:
       }
 \]
 
-\item In the case where $\psi_i$ is empty for $i \ge 1$ and $\phi_i$ is
+\item In the case where $\psi_i$ is empty for $i > 1$ and $\phi_i$ is
   empty for $i<n$, and $\psi^{i}_j \deq \psi^o_{j-1}$, we have an
   interated sequence of compostions, e.g.
 \[
@@ -286,7 +286,7 @@ overall output.
 
 \subsection{Admissible Rules}
 
-Admissible rules of identity, functoriality, composition:
+Admissible rules of identity, functoriality, composition, and scope extrusion:
 \[
 \begin{array}{c}
 \infer{\tseq{\psi}{\idp{\psi}}{\psi}}
@@ -303,6 +303,19 @@ Admissible rules of identity, functoriality, composition:
 \infer{\tseq{\psi_1}{e_1;e_2}{\psi_3}}
       {\tseq{\psi_1}{e_1}{\psi_2} &
        \tseq{\psi_2}{e_2}{\psi_3}}
+\qquad
+\infer{\tseq{\psi}{\cut{\psi_0}{b_1,\ldots,e_k,\ldots,b_n}}{\phi}}
+      {
+        \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n \\
+        \phi \splits \phi_1;\ldots;\phi_n \\
+        \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
+        \forall 1 \le j \le n: \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \forall j \ne k: \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+        \tseq{\psi_k,\psi_k^i}{e_k}{\phi_k,\psi_k^o}
+        \end{array}
+      }
 \end{array}
 \]
 
@@ -342,7 +355,7 @@ Functoriality: Given
        \end{array}
       }
 \]
-we make (by just concatenating all the shuffles contexts)
+we make (by just concatenating all the contexts and shuffles)
 \[
 \infer{\tseq{\psi,\psi'}{\bfunc {e}{e'} := \cut{(\psi_0,\psi_0')}{(\lst{b_j},\lst{b_j'})}}{\phi,\phi'}}
       { 
@@ -400,17 +413,78 @@ we make
        \end{array}
       }
 \]
-The idea is that the source shuffle is constant on the primed part, the
-target shuffle is contant on the unprimed part, the output shuffles are
-concatenated and the target shuffle of the unprimed part is added to its
-outputs, and the input shuffles are concatenated and the source shuffle
-of the primed part is added to its inputs.  
+We concatenate the $n$ processes of the first morphism (we will call
+this the first ``half'') with the $m$ of the second (and the second
+``half'', even though $n$ is not necessarily equal to $m$).  The source
+shuffle is the source shuffle from the first half and then constant on
+the second half.  The target shuffle is contant on the first half and
+then the target shuffle from the second half.  The output shuffles are
+concatenated, and then the target shuffle of the first half is added to
+the output shuffle of the first half.  The input shuffles are
+concatenated, and the source shuffle from the second half is added to
+the input shuffle for the second half.
+
+\item More generally, if we have general process with a general process
+  where one of the basic processes should go
+\[
+\infer{\tseq{\psi}{\cut{\psi_0}{b_1,\ldots,e_k,\ldots,b_n}}{\phi}}
+      {
+        \begin{array}{l}
+        \psi \splits \psi_1;\ldots;\psi_n \\
+        \phi \splits \phi_1;\ldots;\phi_n \\
+        \psi_0 \splits \psi_1^{o};\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0 \splits \cdot;\psi_2^i,\ldots,\psi_n^{i} \\
+        \forall 1 \le j \le n: \psi_j^{i} \subseteq \lst{\psi_{<j}^o} \\
+        \forall j \ne k: \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+        \tseq{\psi_k,\psi_k^i}{e_k}{\phi_k,\psi_k^o}
+        \end{array}
+      }
+\qquad
+\infer{\tseq{\psi_k,\psi_k^i}{e_k := \cut{\psi_0'}{c_1,\ldots,c_m}}{\phi_k,\psi_k^o}}
+      {
+        \begin{array}{l}
+        {\psi_k,\psi_k^i} \splits \psi_1';\ldots;\psi_m' \\
+        {\phi_k,\psi_k^o} \splits \phi_1';\ldots;\phi_m' \\
+        \psi_0' \splits {\psi_1^{o}}';\ldots;{\psi_{m-1}^o}';\cdot \\
+        \psi_0' \splits \cdot;{\psi_2^i}',\ldots,{\psi_m^{i}}' \\
+        {\psi_j^{i}}' \subseteq \lst{{\psi_{<j}^o}'} \\
+        \tseq{\psi_j',{\psi_j^i}'}{c_j}{{\phi_j}',{\psi_j^o}'}\\
+        \end{array}
+      }
+\]
+then we can merge them
+\[
+\infer{\tseq{\psi}{\cut{\psi_0,\psi_0'}{b_1,\ldots,c_1,\ldots,c_m,\ldots,b_n}}{\phi}}
+      {
+        \begin{array}{l}
+        \psi \splits \psi_1;\ldots;({\psi_1'}^s;\ldots;{\psi_m'}^s);\ldots;\psi_n \\
+        \phi \splits \phi_1;\ldots;({\phi_1'}^t;\ldots;{\phi_m'}^t);\ldots;\phi_n \\
+        \psi_0,\psi_0' \splits \psi_1^{o};\ldots;(({\psi_1^{o}}',{\phi_1'}^o);\ldots;({\psi_{m-1}^o}',{\phi_{m-1}'}^o);(\cdot,{\phi_{m}'}^o));\ldots;\psi_{n-1}^o;\cdot \\
+        \psi_0,\psi_0' \splits \cdot;\psi_2^i,\ldots,((\cdot,{\psi_1'}^i);({\psi_2'}^i,{\psi_2^i}'),\ldots,{\psi_m^{i}}',{\psi_m'}^i),\ldots,\psi_n^{i} \\
+        \text{(constraints are preserved)}\\
+        \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o}\\
+        \tseq{\psi_j',{\psi_j^i}'}{c_j}{{\phi_j}',{\psi_j^o}'}\\
+        \end{array}
+      }
+\]
+We write $\psi_j'^s$ for the part that came from $\psi_k$ and 
+${\psi_j'}^i$ for the part that came from $\psi_k^i$.  
+Similarly we write 
+${\phi_j'}^t$ for the part that came from $\phi_k$ and 
+${\phi_j'}^o$ for the part that came from $\psi_k^o$.  
+
+I haven't checked, but it seems like it should be the case that a term
+\cut{\psi_0}{e_1,\ldots,e_n} expands to the same thing (at least up to
+the equational theory below) no matter what order you expand things in,
+so is unambiguous.
 \end{itemize}
 
 \subsubsection{Equational Theory}
 
-First, the order of \emph{independent} processes doesn't matter:
+First, we have an interchange rule, which says that the order of
+\emph{independent} processes doesn't matter:
 \[
+\dsd{Interchange} \qquad
 \cut{\psi_0}{(\ldots,b_j,b_k,\ldots)} \deq \cut{\psi_0}{(\ldots,b_k,b_j,\ldots)} 
 \text{ if } \psi^i_k \# \psi^o_j
 \]
@@ -420,14 +494,14 @@ are not inputs to $b_k$, so the swapped version is also well-typed.  The
 shuffles in the derivation need to be adjusted in the corresponding
 way.  
 
-Second, suppose some process
+Second, we have some unit laws.  Suppose some process
 \tseq{\psi_j,\psi_j^i}{b_j}{\phi_j,\psi_j^o} is \cpy{x}{y}, then we have
 the following definitional equalities:
 \[
-\begin{array}{rcll}
-\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = x, \psi_j^i = \cdot, \phi_j = \cdot, \psi_j^o = y\\
-\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-x)}{(\lst{b}[y/x],\lst{b'})} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = y, \psi_j^o = \cdot\\
-\cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = \cdot, \psi_j^o = y\\
+\begin{array}{crcll}
+\dsd{Id1} & \cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = x, \psi_j^i = \cdot, \phi_j = \cdot, \psi_j^o = y\\
+\dsd{Id2} & \cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-x)}{(\lst{b}[y/x],\lst{b'})} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = y, \psi_j^o = \cdot\\
+\dsd{Id3} & \cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-y)}{(\lst{b},\lst{b'}[x/y])} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = \cdot, \psi_j^o = y\\
 %% \cut {(\psi_0,x,\psi_0')}{\cpy{x'}{x},c} & \deq &
 %% \cut{(\psi_0,\psi_0')}{c[x'/x]} \text{ if $x \neq x'$ }\\
 %% \cut {(\psi_0,x,\psi_0')}{\cpy{x}{x'},c} & \deq &
@@ -435,26 +509,52 @@ the following definitional equalities:
 \end{array}
 \]
 There is no reduction if $x \in \psi_j,y \in \phi_j$ because this copy
-is visible to the output.  Note that the final two 
+is visible to the output.  
 
 Finally, the order of variables in $\psi_0$ doesn't matter (adjusting
 the shuffles accordingly in the derivation): 
 \[
-\begin{array}{rcll}
-\cut{(\psi_0,x,y,\psi_0')}{\lst{b}} & \deq & \cut{(\psi_0,y,x,\psi_0')}{\lst{b}}
+\begin{array}{crcll}
+\dsd{Swap} & \cut{(\psi_0,x,y,\psi_0')}{\lst{b}} & \deq & \cut{(\psi_0,y,x,\psi_0')}{\lst{b}}
 \end{array}
 \]
-From this and the third copy reduction and some $\alpha$-renaming,
-we should be able to get the symmetric
+From this and the third identity law and some $\alpha$-renaming, we
+should be able to get the symmetric version of the third identity law:
 \[
 \begin{array}{rcll}
 \cut{\psi_0}{(\lst{b},\cpy{x}{y},\lst{b'})} & \deq & \cut{(\psi_0-x)}{(\lst{b}[y/x],\lst{b'})} & \text{ if } \psi_j = \cdot, \psi_j^i = x, \phi_j = \cdot, \psi_j^o = y\\
 \end{array}
 \]
 
-\subsubsection{Example: Symmetry}
+Definitional equality consists of the axioms \dsd{Interchange},
+\dsd{Swap}, \dsd{Id\{1,2,3\}} plus the following rules (we elide the
+typing premises necessary to make both sides well-typed, but officially
+they're there):
+\[
+\begin{array}{c}
+\infer{\tseq{\psi}{e \deq e'}{\phi}}
+      {{e \deq e'} \in G}
+\qquad
+\infer{\tseq{\psi}{e \deq e}{\psi}}
+      {}
+\qquad
+\infer{\tseq{\psi}{e_1 \deq e_2}{\psi}}
+      {\tseq{\psi}{e_2 \deq e_1}{\psi}}
+\qquad
+\infer{\tseq{\psi}{e_1 \deq e_3}{\psi}}
+      {\tseq{\psi}{e_1 \deq e_2}{\psi} &
+        \tseq{\psi}{e_2 \deq e_3}{\psi} 
+      }
+\\ \\
+\infer{\tseq{\psi}{\cut{\psi_0}{b_1,\ldots,e,\ldots,b_n} \deq \cut{\psi_0}{b_1,\ldots,e',\ldots,b_n}}{\phi}}
+      {\tseq{\psi_j,\psi^i_j}{e \deq e'}{\phi_j,\psi^o_j} 
+      }
+\end{array}
+\]
 
-For example, we have the symmetry term
+\subsubsection{Example: exchange}
+
+For example, we have the exchange term
 \[
 \infer{\tseq{x:p,y:q}{\cut{()}{\cpy{x}{x'},\cpy{y}{y'}}}{y':q,x':p}}
       {x:p,y:q \splits x:p;y:q &
@@ -471,15 +571,57 @@ is
 \[
 \cut{(x',y')}{\cpy{x}{x'},\cpy{y}{y'},\cpy{x'}{x''},\cpy{y'}{y''}}
 \]
-which is equal? to 
+which is equal to 
 \[
 \cut{(x',y')}{\cpy{x}{x''},\cpy{y}{y''}}
 \]
 
 \subsubsection{Example: Duals and Traces}
 
+Axioms:
+\[
+\begin{array}{l}
+\tseq{\cdot}{\const{\eta_A}{}{x,y}}{x:A,y:A^*}\\
+\tseq{y:A^*,x:A}{\const{\epsilon_A}{y,x}{}}{\cdot}\\
+\tseq{x:A}{\cut{y:A^*}{\const{\eta_A}{}{x',y},{\const{\epsilon_A}{y,x}{}} \deq \cpy{x}{x'} }}{x':A} \\
+\tseq{y:A^*}{\cut{x:A}{\const{\eta_A}{}{x,y'},{\const{\epsilon_A}{y,x}{}} \deq \cpy{y}{y'} }}{y':A^*} \\
+\end{array}
+\]
+We refer to the first equation as \emph{duality} (and won't use the second).  
+
+Assume a basic process \tseq{u:A}{\const{h}{u}{v}}{v:A}.  The trace of $h$ is written
+\[
+\tseq{\cdot}{\cut{(x:A,y:A^*,x':A)}{\const{\eta_A}{}{x,y},\const{h}{x}{x'},\const{\epsilon_A}{y,x'}{}}}{\cdot}
+\]
+
+Assume both $A$ and $B$ have duals and we have basic processes
+\tseq{x:A}{\const{f}{x}{u}}{u:B} and \tseq{u:B}{\const{g}{u}{x}}{x:A}.
+Then
+\[
+\begin{array}{l}
+tr(f;g) := \tseq{\cdot}{\cut{(x:A,y:A^*,u:B,x':A)}{\const{\eta_A}{}{x,y},\const{f}{x}{u},\const{g}{u}{x'},\const{\epsilon_A}{y,x'}{}}}{\cdot}\\
+tr(g;f) := \tseq{\cdot}{\cut{(u:B,v:B^*,x:A,u':B)}{\const{\eta_B}{}{u,v},\const{g}{u}{x},\const{f}{x}{u'},\const{\epsilon_A}{v,u'}{}}}{\cdot}
+\end{array}
+\]
+
+These are equal as follows:
+\[
+\begin{array}{llll}
+     & \nu {(x:A,y:A^*,u:B,x':A)} & {\const{\eta_A}{}{x,y},\const{f}{x}{u},\const{g}{u}{x'},\const{\epsilon_A}{y,x'}{}} \\
+\deq & \nu {(x:A,y:A^*,u:B,u':B,x':A)} & {\const{\eta_A}{}{x,y},\const{f}{x}{u'},\cpy{u'}{u},\const{g}{u}{x'},\const{\epsilon_A}{y,x'}{}} & identity \\
+\deq & \nu {(x:A,y:A^*,u:B,u':B,x':A,v:B^*)} & {\const{\eta_A}{}{x,y},\const{f}{x}{u'}, \const{\eta_B}{}{u,v},{\const{\epsilon_A}{v,u'}{}} ,\const{g}{u}{x'},\const{\epsilon_A}{y,x'}{}} & duality_A\\
+\deq & \nu {(u:B,v:B^*,x':A,x:A,u':B,y:A^*)} & \const{\eta_B}{}{u,v},\const{g}{u}{x'},\const{\eta_A}{}{x,y},{\const{\epsilon_A}{y,x'}{}},\const{f}{x}{u'},\const{\epsilon_B}{v,u'}{} & exchange \\
+\deq & \nu {(u:B,v:B^*,x':A,x:A,u':B)} & \const{\eta_B}{}{u,v},\const{g}{u}{x'},\cpy{x'}{x},\const{f}{x}{u'},\const{\epsilon_B}{v,u'}{} & duality_B \\
+\deq & \nu {(u:B,v:B^*,x:A,u':B)} & {\const{\eta_B}{}{u,v},\const{g}{u}{x},\const{f}{x}{u'},\const{\epsilon_B}{v,u'}{}} & identity
+\end{array}
+\]
+On the duality lines, we have used the congruence rule for scope
+extrusion, which by definition floats the cut variables of each term out
+to the outside.
+
 \subsection{Bicartesian PROPs}
 
+Bicartesian props are easier, because the shuffles mostly go away:
 \[
 \begin{array}{c}
 \infer{\tseq{\psi}
@@ -497,13 +639,13 @@ which is equal? to
 \\ \\
 \infer{\tseq{\psi}{\cut{\psi_0}{(b_1,\ldots,b_n)}}{\phi}}
       { 
-        \psi_0 \splits \psi_1;\psi_2;\ldots;\psi_{n-1};\cdot &
+        \psi_0 \splits \psi_1;\psi_2;\ldots;\psi_{n-1};\psi_n &
         \lst{\tseq{\psi,\lst{\psi_{<j}}}{b_j}{\phi,\psi_{j}}}\\
       }
 \end{array}
 \]
 
-
+\emph{FIXME: not updated below here}
 
 \section{Modes}
 
