@@ -146,7 +146,7 @@
 
 \newcommand\const[3]{\ensuremath{\dsd{#1}(#2 \mid #3)}}
 \newcommand\cpy[2]{\ensuremath{\dsd{copy}(#1 \mid #2)}}
-\newcommand\cut[2]{\ensuremath{\nu #1.#2}}
+\newcommand\cut[2]{\ensuremath{\nu #1. \, #2}}
 \newcommand\lst[1]{\ensuremath{\overline{#1}}}
 \newcommand\bfunc[2]{\ensuremath{#1 \bullet #2}}
 \newcommand\idp[1]{\ensuremath{1_{#1}}}
@@ -284,7 +284,7 @@ overall output.
   is computed.
 \end{itemize}
 
-\subsection{Admissible Rules}
+\subsubsection{Admissible Rules}
 
 Admissible rules of identity, functoriality, composition, and scope extrusion:
 \[
@@ -619,7 +619,218 @@ On the duality lines, we have used the congruence rule for scope
 extrusion, which by definition floats the cut variables of each term out
 to the outside.
 
-\subsection{Bicartesian PROPs}
+\subsubsection{Exmaple: Mode Theory for Classical Linear Logic}
+
+\newcommand\lm{\dsd{l}}
+\newcommand\mo[1]{\ensuremath{1_{#1}}}
+\newcommand\mten[3]{#1 \otimes #2 \rhd #3}
+\newcommand\mz[1]{\dsd{0}_{#1}}
+\newcommand\mpar[3]{#1 \lhd #2 \bindnasrepma #3}
+\newcommand\pars[0]{\bindnasrepma}
+
+We have one mode $\lm$ with a commutative monoid
+\begin{itemize}
+\item \tseq{\cdot}{\mo x}{x : \lm}
+\item \tseq{x : \lm, y : \lm}{(\mten x y z)}{z : \lm}
+\item \tseq{y : \lm}{(\cut{x}{\mo x, \mten{x}{y}{z}}) \deq \cpy{y}{z}}{z : \lm}
+\item \tseq{x : \lm}{(\cut{y}{\mo y, \mten{x}{y}{z}}) \deq \cpy{x}{z}}{z : \lm}
+\item \tseq{x : \lm,y:\lm,z:\lm}{(\cut{w}{\mten{x}{y}{w},\mten{w}{z}{u}}) \deq (\cut{w}{\mten{y}{z}{w},\mten{x}{w}{u}})}{u : \lm}
+\item \tseq{x : \lm,y:\lm}{(\cut{()}{\mten{x}{y}{u}}) \deq (\cut{()}{\mten{y}{x}{u}}) }{u : \lm}
+\end{itemize}
+and a commutative comonoid
+\begin{itemize}
+\item \tseq{x : \lm}{\mz x}{\cdot}
+\item \tseq{z : \lm}{(\mpar z x y)}{x : \lm, y : \lm}
+\item \tseq{z : \lm}{(\cut{x}{\mpar{z}{x}{y},\mz x}) \deq \cpy{z}{y}}{y : \lm}
+\item \tseq{z : \lm}{(\cut{y}{\mpar{z}{x}{y},\mz y}) \deq \cpy{z}{x}}{x : \lm}
+\item \tseq{u : \lm}{(\cut{w}{\mpar{u}{w}{z},\mpar{w}{x}{y}}) \deq (\cut{w}{\mpar{u}{x}{w},\mpar{w}{y}{z}})}{x : \lm,y:\lm,z:\lm}
+\item \tseq{u : \lm}{(\cut{()}{\mpar{u}{x}{y}}) \deq (\cut{()}{\mpar{u}{y}{x}}) }{x : \lm,y:\lm}
+\end{itemize}
+and the Frobenius axiom
+\begin{itemize}
+\item \tseq{(x:\lm,y:\lm)}{(\cut{w}{\mpar{x}{u}{w}, \mten w y v}) \deq (\cut{w}{\mten x y w, \mpar{w}{u}{v}})}{(u:\lm,v:\lm)}
+(These are also equal to (\cut{w}{\mpar{y}{w}{v}, \mten x w u}) 
+by commutativity.)
+\end{itemize}
+
+Write $x_1 \otimes \ldots \otimes x_n \rhd w_n$ for 
+\[
+\nu (w_0,w_1,\ldots,w_n). \mo{w_0}, \mten {w_0} {x_1} {w_1}, \mten {w_1} {x_2} {w_2}, \ldots, \mten {w_{n-1}} {x_n} {w_n}
+\]
+and dually write  $u_n \lhd y_1 \pars \ldots \pars y_n$ for 
+\[
+\nu (u_0,u_1,\ldots,u_n). \mpar {u_0} {y_1} {u_1}, \ldots, \mpar {y_{n-2}} {y_{n-1}} {u_{n-1}}, \mpar {u_{n-1}} {y_n} {u_n}, \mz {u_n}
+\]
+Then a linear logic sequent $x_1 : A_1, \ldots x_n : A_n \vdash y_1 : B_1, \ldots y_m : B_m$
+is over $x_1 \otimes \ldots \otimes x_n \rhd w, w \lhd y_1 \pars \ldots \pars y_n$.  
+
+The Frobenius axiom is used in cut, e.g. in cutting $a:A,b:B \vdash
+c:C,d:D$ with $d:D,e:E \vdash f:F$ to get $a:A,b:B,e:E \vdash c:C,f:F$,
+the mode morphisms of the premises of the cut are
+\[
+\nu w. \mten a b w, \mpar w c d  \qquad \mten d e f
+\]
+Composing the mode morphisms along $d$ gives
+\[
+\nu w,d. \mten a b w, \mpar w c d, \mten d e f
+\]
+which is by Frobenius
+\[
+\nu w,d. \mten a b w, \mten w e d, \mpar d c f
+\]
+
+\subsubsection{Example: Mode Theory for Directed Type Theory}
+
+\newcommand{\dualm}[1]{\ensuremath{#1^{\mathord{\circ}}}}
+
+We write modes as $A$ rather than $p$, and assume each mode has an
+associated other mode $\dualm A$ (we don't treat this as a type
+constructor because then we'd have to think about $\dualm {{\dualm A}}$).
+We have the dualization axioms as above, which we write as \dsd{s} and
+\dsd{t} for whether the variables are paired in the source or the
+target.  
+\[
+\begin{array}{l}
+\tseq{\cdot}{\const{t}{}{x,y}}{x:A,y:\dualm A}\\
+\tseq{y:\dualm A,x:A}{\const{s}{y,x}{}}{\cdot}\\
+\tseq{x:A}{\cut{y:\dualm A}{\const{t}{}{x',y},{\const{s}{y,x}{}} \deq \cpy{x}{x'} }}{x':A} \\
+\tseq{y:\dualm A}{\cut{x:A}{\const{t}{}{x,y'},{\const{s}{y,x}{}} \deq \cpy{y}{y'} }}{y':\dualm A} \\
+\end{array}
+\]
+Then a sequent 
+\[
+x:A,y:B,z:C \mid M(x^+,x^-,y^+) \vdash N(z^+,z^-,y^+)
+\]
+would be represented by 
+\[
+x:A, x':\dualm{A}, y:B \mid M(x,x',y) \vdash_{\const{s}{x',x}{},\const{t}{}{z,z'},\cpy{y}{y'}} z:C, z':\dualm{C}, y':B \mid N(z,z',y')
+\]
+
+\subsection{Logic over a 2-PROP}
+
+\newcommand{\seqh}[5]{\ensuremath{#1 \mid #2 \vdash_{#3} #4 \mid #5}}
+\newcommand{\ct}[2]{\ensuremath{#1 \mid #2}}
+
+Write $\alpha$ instead of $e$ for the morphisms of a PROP, and suppose
+there is 2-cell judgement $\alpha \spr \alpha'$ given by rules like
+equality above but without symmetry.
+
+Types have a mode context
+\[
+\wftype{\psi}{A}
+\]
+where what was previously $A_p$ would now be $\wftype{x:p}{A}$.  
+
+The sequent judgement is
+\[
+\seq{(\ct {\psi_1}{A_1}),\ldots,(\ct {\psi_n}{A_n})}{\alpha}{(\ct {\phi_1}{B_1}),\ldots,(\ct {\phi_m}{B_m})}
+\text { where } 
+\wftype{\psi_i}{A_i}, \wftype{\phi_i}{B_i}, 
+\tseq{\psi_1,\ldots,\psi_n}{\alpha}{\phi_1,\ldots,\phi_m}.
+\]
+We write $\Gamma$, $\Delta$ to abbreviate contexts.    
+
+Local fibration (should be admissible):
+\[
+\infer{\seq{\Gamma}{\beta}{\Delta}}
+      {\beta \spr \alpha &
+       \seq{\Gamma}{\alpha}{\Delta}}
+\]
+
+Identity (should be admissible):
+\[
+\infer{\seq{A}{\idp{\psi}}{A}}
+      {}
+\]
+
+Composition (should be admissible):
+\[
+\infer{\seq{\Gamma}{\alpha;\beta}{\Gamma''}}
+      {\seq{\Gamma}{\alpha}{\Gamma'} &
+       \seq{\Gamma'}{\beta}{\Gamma''}}
+\]
+%% \[
+%% \infer{\seq{\Gamma_1,\Gamma_2}{\cut{\psi}{\alpha,\beta}}{\Delta_1,\Delta_2}}
+%%       {\seq{\Gamma_1}{\alpha}{\Delta_1,(\ct \psi A)} &
+%%         \seq{\Gamma_2,(\ct \psi A)}{\beta}{\Delta_2}}
+%% \]
+
+Functoriality/mix (should be admissible):
+\[
+\infer{\seq{\Gamma,\Gamma'}{\bfunc {\alpha} {\alpha'}}{\Delta,\Delta'}}
+      {\seq{\Gamma}{\alpha}{\Gamma'} &
+       \seq{\Gamma'}{\alpha'}{\Delta'}}
+\]
+
+Atomic hypothesis rule:
+\[
+\infer{\seq{\ct \psi P}{\beta}{\ct \psi P}}
+      {\beta \spr \idp{\psi} &
+        \wftype \psi P}
+\]
+
+\Fsymb-types:
+
+\[
+\infer{\wftype{\phi}{\F{\alpha}{\Gamma \mid \Delta}}}
+      {\Gamma := \ct{\psi_1}{A_1},\ldots,\ct{\psi_n}{A_n} &
+       \Delta := \ct{\phi_1}{B_1},\ldots,\ct{\phi_n}{B_n} &
+       \wftype{\psi_i}{A_i} &
+       \wftype{\phi_i}{B_i} &
+       \tseq{\lst{\psi_i}}{\alpha}{\lst{\phi_i},\phi} &
+      }
+\]
+
+\[
+\infer[\text{TODO: build in cuts}]{\seq{\Gamma}{\alpha}{\Delta,(\ct \phi {\F{\alpha}{\Gamma \mid \Delta}})}}{}
+\]
+
+\[
+\infer{\seq{\Gamma,(\ct \phi {\F{\alpha}{\Gamma_0 \mid \Delta_0}}),\Gamma'}{\beta}{\Delta}}
+      {\seq{\Gamma,\Gamma_0,\Gamma'}{\cut{\phi}{\alpha,\beta}}{\Delta,\Delta_0}}
+\]
+
+\Usymb-types:
+
+\[
+\infer{\wftype{\psi}{\U{\alpha}{\Gamma}{\Delta}}}
+      {\Gamma := \ct{\psi_1}{A_1},\ldots,\ct{\psi_n}{A_n} &
+       \Delta := \ct{\phi_1}{B_1},\ldots,\ct{\phi_n}{B_n} &
+       \wftype{\psi_i}{A_i} &
+       \wftype{\phi_i}{B_i} &
+       \tseq{\lst{\psi_i},\psi}{\alpha}{\lst{\phi_i}} &
+      }
+\]
+
+\[
+\infer[\text{TODO: build in cuts}]{\seq{\Gamma,(\ct \psi {\U{\alpha}{\Gamma}{\Delta}})}{\alpha}{\Delta}}{}
+\]
+
+\[
+\infer{\seq{\Gamma}{\beta}{\Delta,(\ct \psi {\U{\alpha}{\Gamma_0}{\Delta_0}}),\Delta'}}
+      {\seq{\Gamma,\Gamma_0}{\cut{\psi}{\beta,\alpha}}{\Delta,\Delta_0,\Delta'}}
+\]
+
+%% \[
+%% \infer{\wftype{\psi_0,\phi}{\F{\alpha}{\Delta}}}
+%%       {\wfctx{\psi_0,\psi}{\Delta} &
+%%         \hmor{\psi}{\phi}{\alpha}
+%%       }
+%% \qquad
+%% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta\mid_\psi]}{\Delta[\theta\mid_{\psi_0}]}
+%% \]
+
+%% \[
+%% \infer[\FR^*]{\seqh{\psi_0,\psi}{\Delta}{1_{\psi_0},\alpha}{\psi_0,\phi}{\F{\alpha}{\Delta}}}{}
+%% \]
+
+%% \[
+%% \infer[\FL]
+%%       {\seqh{\psi_1,(\psi_0,\phi)}{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{\phi_1}{C}}
+%%       {\seqh{\psi_1,(\psi_0,\psi)}{\Gamma,\Delta}{[\alpha/\psi]\beta}{\phi_1}{C}}
+%% \]
+
+\section{Bicartesian PROPs}
 
 Bicartesian props are easier, because the shuffles mostly go away:
 \[
@@ -718,7 +929,6 @@ have 1 variable, this should be clubs.
 
 \section{Judgements}
 
-\newcommand{\seqh}[5]{\ensuremath{#1 \mid #2 \vdash_{#3} #4 \mid #5}}
 
 Types and contexts live over mode contexts, so we have judgements
 \wftype{\psi}{A} and \wfctx{\psi}{\Gamma}.  
