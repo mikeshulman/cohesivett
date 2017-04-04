@@ -107,6 +107,9 @@
 
 \newcommand\pto{\mathrel{\ooalign{\hfil$\mapstochar$\hfil\cr$\to$\cr}}}
 
+\newcommand{\seqh}[5]{\ensuremath{#1 \mid #2 \vdash_{#3} #4 \mid #5}}
+\newcommand{\ct}[2]{\ensuremath{{{#2}^{#1}}}}
+
 \begin{document}
 
 \title{Double-Categorical Adjoint Logic}
@@ -708,9 +711,6 @@ x:A, x':\dualm{A}, y:B \mid M(x,x',y) \vdash_{\const{s}{x',x}{},\const{t}{}{z,z'
 
 \subsection{Logic over a 2-PROP}
 
-\newcommand{\seqh}[5]{\ensuremath{#1 \mid #2 \vdash_{#3} #4 \mid #5}}
-\newcommand{\ct}[2]{\ensuremath{#1 \mid #2}}
-
 Write $\alpha$ instead of $e$ for the morphisms of a PROP, and suppose
 there is 2-cell judgement $\alpha \spr \alpha'$ given by rules like
 equality above but without symmetry.
@@ -739,7 +739,7 @@ Local fibration (should be admissible):
 
 Identity (should be admissible):
 \[
-\infer{\seq{A}{\idp{\psi}}{A}}
+\infer{\seq{\ct \psi A}{\idp{\psi}}{\ct \psi A}}
       {}
 \]
 
@@ -811,24 +811,141 @@ Atomic hypothesis rule:
       {\seq{\Gamma,\Gamma_0}{\cut{\psi}{\beta,\alpha}}{\Delta,\Delta_0,\Delta'}}
 \]
 
+\subsection{Logic over a 2-PROP (Single-conclusion)}
+
+\emph{TODO: Writing this out because it's easier, but is it the case that for
+mode theories that don't make use of multiple conclusions, the above
+restricts to this?}
+
+Write $\alpha$ instead of $e$ for the morphisms of a PROP, and suppose
+there is 2-cell judgement $\alpha \spr \alpha'$ given by rules like
+equality above but without symmetry.
+
+Types have a mode context
+\[
+\wftype{\psi}{A}
+\]
+where what was previously $A_p$ would now be $\wftype{x:p}{A}$.  
+
+The sequent judgement is
+\[
+\seq{(\ct {\psi_1}{A_1}),\ldots,(\ct {\psi_n}{A_n})}{\alpha}{(\ct {\phi}{B})}
+\text { where } 
+\wftype{\psi_i}{A_i}, \wftype{\phi}{B}, 
+\tseq{\psi_1,\ldots,\psi_n}{\alpha}{\phi}.
+\]
+We write $\Gamma$ to abbreviate contexts.    
+
+Local fibration (should be admissible):
+\[
+\infer{\seq{\Gamma}{\beta}{\ct \phi B}}
+      {\beta \spr \alpha &
+       \seq{\Gamma}{\alpha}{\ct \phi B}}
+\]
+
+Identity (should be admissible):
+\[
+\infer{\seq{\ct \psi A}{\idp{\psi}}{\ct \psi A}}
+      {}
+\]
+
+Composition (should be admissible):
+\[
+\infer{\seq{\Gamma,\Gamma'}{\cut{\psi}{\alpha,\beta}}{\ct \phi B}}
+      {\seq{\Gamma}{\alpha}{\ct \psi A} &
+       \seq{\Gamma',\ct \psi A}{\beta}{\ct \phi B}}
+\]
+Note that the well-formedness of the premises implies well-formedness of
+the conclusion, unlike usual, where we work bottom-up.  
 %% \[
-%% \infer{\wftype{\psi_0,\phi}{\F{\alpha}{\Delta}}}
-%%       {\wfctx{\psi_0,\psi}{\Delta} &
-%%         \hmor{\psi}{\phi}{\alpha}
+%% \infer{\seq{\Gamma_1,\Gamma_2}{\cut{\psi}{\alpha,\beta}}{\Delta_1,\Delta_2}}
+%%       {\seq{\Gamma_1}{\alpha}{\Delta_1,(\ct \psi A)} &
+%%         \seq{\Gamma_2,(\ct \psi A)}{\beta}{\Delta_2}}
+%% \]
+
+Substitutions:   
+\[
+\infer{\seq{\Gamma}{\bfunc{\bfunc{\alpha_1}{\ldots}}{\alpha_n}}{(\ct {\phi_1} {B_1}, \ldots, \ct {\phi_n} {B_n})}}
+      {\Gamma \splits \Gamma_1; \ldots ; \Gamma_n &
+        \seq{\Gamma_i}{\alpha_i}{\ct {\phi_i} {B_i}}
+      }
+\]
+
+Atomic hypothesis rule:
+\[
+\infer{\seq{\ct \psi P}{\beta}{\ct \psi P}}
+      {\beta \spr \idp{\psi} &
+        \wftype \psi P}
+\]
+
+\Fsymb-types:
+
+\[
+\infer{\wftype{\phi}{\F{\alpha}{\Gamma}}}
+      {\Gamma := \ct{\psi_1}{A_1},\ldots,\ct{\psi_n}{A_n} &
+       \wftype{\psi_i}{A_i} &
+       \tseq{\lst{\psi_i}}{\alpha}{\phi} &
+      }
+\qquad
+\infer{\seq{\Gamma}{\beta}{\ct \phi {\F{\alpha}{\Delta}}}}
+      {
+        \beta \spr \gamma;\alpha &
+        \seq{\Gamma}{\gamma}{\Delta} &
+      }
+%% \infer{\seq{\Gamma_\Psi}{\beta}{\ct \phi {\F{\alpha}{\Delta^\Phi}}}}
+%%       {
+%%         \tseq{\lst{\Psi}}{\beta}{\phi} &
+%%         \tseq{\lst{\Psi}}{\gamma}{\lst{\Phi}} &
+%%         \tseq{\lst{\Phi}}{\alpha}{\phi} &
+%%         \beta \spr \gamma;\alpha &
+%%         \seq{\Gamma}{\gamma}{\Delta} &
 %%       }
-%% \qquad
-%% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta\mid_\psi]}{\Delta[\theta\mid_{\psi_0}]}
-%% \]
+\qquad
+\infer{\seq{\Gamma,(\ct \phi {\F{\alpha}{\Gamma_0}}),\Gamma'}{\beta}{\ct \phi B}}
+      {\seq{\Gamma,\Gamma_0,\Gamma'}{\cut{\phi}{\alpha,\beta}}{\ct \phi B}}
+\]
 
-%% \[
-%% \infer[\FR^*]{\seqh{\psi_0,\psi}{\Delta}{1_{\psi_0},\alpha}{\psi_0,\phi}{\F{\alpha}{\Delta}}}{}
-%% \]
+\Usymb-types:
 
-%% \[
-%% \infer[\FL]
-%%       {\seqh{\psi_1,(\psi_0,\phi)}{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{\phi_1}{C}}
-%%       {\seqh{\psi_1,(\psi_0,\psi)}{\Gamma,\Delta}{[\alpha/\psi]\beta}{\phi_1}{C}}
-%% \]
+\[
+\infer{\wftype{\psi}{\U{\alpha}{\Gamma}{\ct \phi B}}}
+      {\Gamma := \ct{\psi_1}{A_1},\ldots,\ct{\psi_n}{A_n} &
+       \wftype{\psi_i}{A_i} &
+       \wftype{\phi}{B} &
+       \tseq{\lst{\psi_i},\psi}{\alpha}{\phi} &
+      }
+\]
+
+\[
+\infer{\seq{\Gamma,(\ct \psi {\U{\alpha}{\Delta}{(\ct \phi B)}})}
+           {\alpha}
+           {\ct {\phi'} C}}
+      {
+        \Gamma \splits {\Gamma_1;\Gamma_2} & 
+        \seq{\Gamma_1}{\gamma}{\ct{\Phi}{\Delta}} & 
+        \seq{\Gamma_2,\ct \phi B}{\beta'}{\ct {\phi'} C} &
+        \beta \spr \cut{\phi}{(\cut{\Phi}{\gamma,\alpha}),\beta'}
+      }
+\qquad
+\infer{\seq{\Gamma}{\beta}{\ct \psi {\U{\alpha}{\Delta}{(\ct \phi B)}}}}
+      {\seq{\Gamma,\Delta}{\cut{\psi}{\beta,\alpha}}{\ct \phi B}}
+\]
+
+\subsection{Example: Directed Type Theory}
+
+Suppose we have modes $A$ with duals $\dualm A$ a separate mode $\lm$
+with a commutative monoid.  We encode a module $\Psi \vdash M$ as a type
+as $\wftype{\Psi,d : \lm}{M}$, where $d$ is the ``destination'' of the
+type.
+
+\begin{itemize}
+\item $\Psi \vdash \int^{x:\dualm A,y:A} M^{\psi,x,y} := \F{\cut{()}{\const{s}{x,y}},\idp{\Psi,d}}{\ct {\Psi,d,x,y} M}$
+\item $\Psi \vdash \int_{x:\dualm A,y:A} M^{\psi,x,y} := \U{\cut{()}{\const{t}{}{x,y}},\idp{\Psi,d}}{\cdot}{\ct {\Psi,d,x,y} M}$
+\item $x : \dualm A, y : A \vdash \dsd{hom}_A(x,y) := \F{\cut{()}{\const{t}{}{x,y},\cdot_d}}{()}$
+\item $\Psi_1,\Psi_2 \vdash \ct {\Psi_1} {M_1} \otimes \ct {\Psi_2} {M_2} := \F{\cut{()}{\mten x y d, \idp{\psi_1,\psi_2}}}{M_1[x/d],M_2[y/d]}$
+\item $\dualm{\Psi_1},\Psi_2 \vdash \ct {\Psi_1} {M_1} \multimap \ct {\Psi_2} {M_2} := \U{\alpha}{M_1[x/d]}{M_2[y/d]}$
+where\\ $\tseq{\Psi_1,x,(\dualm{\Psi_1},\Psi_2,d)}{\alpha := \cut {()} {\const{s}{\dualm{\Psi_1},\Psi_1}{},\idp{\Psi_2},\mten d x y} }{\Psi_2,y}$
+\end{itemize}
 
 \section{Bicartesian PROPs}
 
@@ -856,185 +973,188 @@ Bicartesian props are easier, because the shuffles mostly go away:
 \end{array}
 \]
 
-\emph{FIXME: not updated below here}
-
-\section{Modes}
-
-Write $p$ for modes and $\psi := x_1:p_1,\ldots,x_n:p_n$ or $\phi$ for
-mode contexts.  We stipulate that contexts $\psi$ that differ only by
-the order of variables are equal (i.e. we have exchange).  Write
-\oftp{\psi}{a}{p} and \oftp{\psi}{\theta}{\psi'} for vertical morphisms,
-which are linear:
-\[
-\infer{\oftp{x:p}{x}{p}}{}
-\qquad
-\infer{\oftp{\psi_1,\psi_2}{\theta,a/x}{\psi',x:p}}
-      {\oftp{\psi_1}{\theta}{\psi} &
-        \oftp{\psi_2}{a}{p}}
-\]
-
-\newcommand\hmor[3]{\ensuremath{#1 \mid #2 \vdash^{\dsd h} #3}}
-\newcommand\sq[4]{\ensuremath{#1 \Rightarrow #2 \: [#3 \mid #4]}}
-\newcommand\hid[1]{1_{#1}}
-
-We write a horizontal morphism $\psi \pto \psi'$ profunctor-like, as a
-term $\hmor{\psi}{\phi}{\alpha}$ with both $\psi$ and $\phi$ as free
-variables.  These have identity and composition:
-
-\[
-\infer{\hmor{\psi}{\psi}{\hid{\psi}}}{}
-\qquad
-\infer{\hmor{\psi_1,\psi_1'}{\psi_3}{[\alpha/\psi_2]\beta}}
-      {\hmor{\psi_1}{\psi_2}{\alpha} &
-       \hmor{\psi_1',\psi_2}{\psi_3}{\beta}}
-\]
-
-We also need functoriality of the monoidal product:
-\[
-\infer{\hmor{\psi_1,\psi_2}{\psi_2,\psi_2'}{\alpha,\alpha'}}
-      {\hmor{\psi_1}{\psi_2}{\alpha} &
-       \hmor{\psi_1'}{\psi_2'}{\alpha'}}
-\]
-
-Exisitng adjoint logic terms $\psi \vdash \alpha : p$ can be encoded in
-``destination-passing-style:'' E.g.  instead of $x:p,y:p \vdash x
-\otimes y : p$, we'd have $x:p,y:p \mid d:p \vdash x \otimes y > d$, and
-$(x \otimes y) \otimes z$ is the formal composite
-\[
-[((x \otimes y) > d_1)/d_1](d_1 \otimes z > d)
-\]
-
-2-cells are squares \sq{\alpha}{\alpha'}{\theta}{\rho} where
-$\oftp{\psi}{\theta}{\psi'}$ and 
-$\oftp{\phi}{\rho}{\phi'}$ and
-$\hmor{\psi}{\phi}{\alpha}$ an
-$\hmor{\psi'}{\phi'}{\alpha'}$.  
-
-We assume that horizontal morphisms can be composed with vertical
-morphism on either side via an operation, probably with a filler square
-relating them too?
-\[
-\infer{\hmor{\psi'}{\phi}{\alpha[\theta/\psi]}}
-      {\hmor{\psi}{\phi}{\alpha} &
-        \oftp{\psi'}{\theta}{\psi}}
-\qquad
-\infer{\hmor{\psi}{\phi'}{\alpha[\theta/\phi]}}
-      {\hmor{\psi}{\phi}{\alpha} &
-        \oftp{\psi}{\theta}{\phi}}
-\]
-
-When the vertical 1-cells $\oftp{\Psi}{\theta}{\Psi'}$ are cartesian
-variable-for-variable substitutions, and the codomain contexts always
-have 1 variable, this should be clubs.  
-
-\section{Judgements}
+FIXME: think about equational theory between diagonals and codiagonals
 
 
-Types and contexts live over mode contexts, so we have judgements
-\wftype{\psi}{A} and \wfctx{\psi}{\Gamma}.  
+%% \emph{FIXME: not updated below here}
 
-We require admissible rules pulling back along vertical morphisms:
-\[
-\infer{\wftype{\psi_1,\psi_2'}{A[\theta]}}
-      {\wftype{\psi_1,\psi_2}{A} & 
-        \oftp{\psi_2'}{\theta}{\psi_2}}
-\qquad
-\infer{\wfctx{\psi_1,\psi_2'}{\Gamma[\theta]}}
-      {\wfctx{\psi_1,\psi_2}{\Gamma} & 
-        \oftp{\psi_2'}{\theta}{\psi_2}}
-\]
+%% \section{Modes}
 
-Contexts are defined by
-\[
-\infer{\wfctx{\cdot}{\cdot}}{}
-\qquad
-\infer{\wfctx{\psi,\psi'}{\Gamma,A}}
-      {\wfctx{\psi}{\Gamma} & \wfctx{\psi'}{A}}
-\]
-
-TODO: define $n$-ary partial-context substitution; it's a bit of a pain because of linearity.  
-
-We should have judgements $\seqh{\psi}{\Gamma}{\theta}{\psi'}{A}$ where
-$\oftp{\psi}{\theta}{\psi'}$ (vertical morphism over vertical morphism)
-and $\seqh{\psi}{\Gamma}{\alpha}{\phi}{A}$ where $\wfctx{\psi}{\Gamma}$
-and $\wftype{\phi}{A}$ and 
-$\hmor{\psi}{\phi}{\alpha}$ (horizontal morphism over horizontal
-morphism).  However, because we're thinking of the vertical arrows as
-terms that the types depend on, and insisting on pullbacks along them,
-we can shove everything into the fiber rather than having a primitive
-``over'' judgement. So a general vertical morphism
-\seqh{\psi}{\Gamma}{\theta}{\psi'}{A} can be represented by a
-homogeneous vertical morphism
-\seqh{\psi}{\Gamma}{x_i/x_i}{\psi}{A[\theta]}.  But a degenerate
-vertical morphism should be (???) the same as a degenerate horizontal
-morphism, so it suffices to have horizontal morphisms up top.
-
-Structural rules: identity over identity, cut over cut, transporting
-along a square:
-\[
-\infer{\seqh{\psi}{x:A}{\hid{\psi}}{\psi}{A}}{}
-\qquad
-\infer{\seqh{\psi_1,\psi_2}{\Gamma_1,\Gamma_2}{[\alpha/\psi]\beta}{\phi}{B}}
-      {\seqh{\psi_2}{\Gamma_2}{\alpha}{\psi}{A} &
-       \seqh{\psi_1,\psi}{\Gamma_1,x:A}{\beta}{\phi}{B}}
-\]
-
-\[
-\infer{\seqh{\psi}{\Gamma[\theta]}{\alpha}{\phi}{A[\rho]}}
-      {\seqh{\psi'}{\Gamma}{\beta}{\phi'}{A} &
-        \sq{\alpha}{\beta}{\theta}{\rho}}
-\]
-
-Atomic propositions:
-\[
-\infer{\wftype{\psi}{P(\theta)}}
-      {\psi' \vdash P &
-        \oftp{\psi}{\theta}{\psi'}
-      }
-\qquad
-\infer{\seqh{\psi}{P(\theta)}{\beta}{\phi}{P(\rho)}}
-      {\psi' \vdash P &
-        \sq{\beta}{\hid{\psi'}}{\theta}{\rho}}
-\]
-\[
-P(\theta)[\theta'] := P(\theta[\theta'])
-\]
-
-Pushforward along a horizontal morphism:
-
-%% (FIXME: should some of the
-%% dependency leak through to the conclusion? this seems weird):
+%% Write $p$ for modes and $\psi := x_1:p_1,\ldots,x_n:p_n$ or $\phi$ for
+%% mode contexts.  We stipulate that contexts $\psi$ that differ only by
+%% the order of variables are equal (i.e. we have exchange).  Write
+%% \oftp{\psi}{a}{p} and \oftp{\psi}{\theta}{\psi'} for vertical morphisms,
+%% which are linear:
 %% \[
-%% \infer{\wftype{\phi}{\F{\alpha}{\Delta}}}
-%%       {\wfctx{\psi}{\Delta} &
+%% \infer{\oftp{x:p}{x}{p}}{}
+%% \qquad
+%% \infer{\oftp{\psi_1,\psi_2}{\theta,a/x}{\psi',x:p}}
+%%       {\oftp{\psi_1}{\theta}{\psi} &
+%%         \oftp{\psi_2}{a}{p}}
+%% \]
+
+%% \newcommand\hmor[3]{\ensuremath{#1 \mid #2 \vdash^{\dsd h} #3}}
+%% \newcommand\sq[4]{\ensuremath{#1 \Rightarrow #2 \: [#3 \mid #4]}}
+%% \newcommand\hid[1]{1_{#1}}
+
+%% We write a horizontal morphism $\psi \pto \psi'$ profunctor-like, as a
+%% term $\hmor{\psi}{\phi}{\alpha}$ with both $\psi$ and $\phi$ as free
+%% variables.  These have identity and composition:
+
+%% \[
+%% \infer{\hmor{\psi}{\psi}{\hid{\psi}}}{}
+%% \qquad
+%% \infer{\hmor{\psi_1,\psi_1'}{\psi_3}{[\alpha/\psi_2]\beta}}
+%%       {\hmor{\psi_1}{\psi_2}{\alpha} &
+%%        \hmor{\psi_1',\psi_2}{\psi_3}{\beta}}
+%% \]
+
+%% We also need functoriality of the monoidal product:
+%% \[
+%% \infer{\hmor{\psi_1,\psi_2}{\psi_2,\psi_2'}{\alpha,\alpha'}}
+%%       {\hmor{\psi_1}{\psi_2}{\alpha} &
+%%        \hmor{\psi_1'}{\psi_2'}{\alpha'}}
+%% \]
+
+%% Exisitng adjoint logic terms $\psi \vdash \alpha : p$ can be encoded in
+%% ``destination-passing-style:'' E.g.  instead of $x:p,y:p \vdash x
+%% \otimes y : p$, we'd have $x:p,y:p \mid d:p \vdash x \otimes y > d$, and
+%% $(x \otimes y) \otimes z$ is the formal composite
+%% \[
+%% [((x \otimes y) > d_1)/d_1](d_1 \otimes z > d)
+%% \]
+
+%% 2-cells are squares \sq{\alpha}{\alpha'}{\theta}{\rho} where
+%% $\oftp{\psi}{\theta}{\psi'}$ and 
+%% $\oftp{\phi}{\rho}{\phi'}$ and
+%% $\hmor{\psi}{\phi}{\alpha}$ an
+%% $\hmor{\psi'}{\phi'}{\alpha'}$.  
+
+%% We assume that horizontal morphisms can be composed with vertical
+%% morphism on either side via an operation, probably with a filler square
+%% relating them too?
+%% \[
+%% \infer{\hmor{\psi'}{\phi}{\alpha[\theta/\psi]}}
+%%       {\hmor{\psi}{\phi}{\alpha} &
+%%         \oftp{\psi'}{\theta}{\psi}}
+%% \qquad
+%% \infer{\hmor{\psi}{\phi'}{\alpha[\theta/\phi]}}
+%%       {\hmor{\psi}{\phi}{\alpha} &
+%%         \oftp{\psi}{\theta}{\phi}}
+%% \]
+
+%% When the vertical 1-cells $\oftp{\Psi}{\theta}{\Psi'}$ are cartesian
+%% variable-for-variable substitutions, and the codomain contexts always
+%% have 1 variable, this should be clubs.  
+
+%% \section{Judgements}
+
+
+%% Types and contexts live over mode contexts, so we have judgements
+%% \wftype{\psi}{A} and \wfctx{\psi}{\Gamma}.  
+
+%% We require admissible rules pulling back along vertical morphisms:
+%% \[
+%% \infer{\wftype{\psi_1,\psi_2'}{A[\theta]}}
+%%       {\wftype{\psi_1,\psi_2}{A} & 
+%%         \oftp{\psi_2'}{\theta}{\psi_2}}
+%% \qquad
+%% \infer{\wfctx{\psi_1,\psi_2'}{\Gamma[\theta]}}
+%%       {\wfctx{\psi_1,\psi_2}{\Gamma} & 
+%%         \oftp{\psi_2'}{\theta}{\psi_2}}
+%% \]
+
+%% Contexts are defined by
+%% \[
+%% \infer{\wfctx{\cdot}{\cdot}}{}
+%% \qquad
+%% \infer{\wfctx{\psi,\psi'}{\Gamma,A}}
+%%       {\wfctx{\psi}{\Gamma} & \wfctx{\psi'}{A}}
+%% \]
+
+%% TODO: define $n$-ary partial-context substitution; it's a bit of a pain because of linearity.  
+
+%% We should have judgements $\seqh{\psi}{\Gamma}{\theta}{\psi'}{A}$ where
+%% $\oftp{\psi}{\theta}{\psi'}$ (vertical morphism over vertical morphism)
+%% and $\seqh{\psi}{\Gamma}{\alpha}{\phi}{A}$ where $\wfctx{\psi}{\Gamma}$
+%% and $\wftype{\phi}{A}$ and 
+%% $\hmor{\psi}{\phi}{\alpha}$ (horizontal morphism over horizontal
+%% morphism).  However, because we're thinking of the vertical arrows as
+%% terms that the types depend on, and insisting on pullbacks along them,
+%% we can shove everything into the fiber rather than having a primitive
+%% ``over'' judgement. So a general vertical morphism
+%% \seqh{\psi}{\Gamma}{\theta}{\psi'}{A} can be represented by a
+%% homogeneous vertical morphism
+%% \seqh{\psi}{\Gamma}{x_i/x_i}{\psi}{A[\theta]}.  But a degenerate
+%% vertical morphism should be (???) the same as a degenerate horizontal
+%% morphism, so it suffices to have horizontal morphisms up top.
+
+%% Structural rules: identity over identity, cut over cut, transporting
+%% along a square:
+%% \[
+%% \infer{\seqh{\psi}{x:A}{\hid{\psi}}{\psi}{A}}{}
+%% \qquad
+%% \infer{\seqh{\psi_1,\psi_2}{\Gamma_1,\Gamma_2}{[\alpha/\psi]\beta}{\phi}{B}}
+%%       {\seqh{\psi_2}{\Gamma_2}{\alpha}{\psi}{A} &
+%%        \seqh{\psi_1,\psi}{\Gamma_1,x:A}{\beta}{\phi}{B}}
+%% \]
+
+%% \[
+%% \infer{\seqh{\psi}{\Gamma[\theta]}{\alpha}{\phi}{A[\rho]}}
+%%       {\seqh{\psi'}{\Gamma}{\beta}{\phi'}{A} &
+%%         \sq{\alpha}{\beta}{\theta}{\rho}}
+%% \]
+
+%% Atomic propositions:
+%% \[
+%% \infer{\wftype{\psi}{P(\theta)}}
+%%       {\psi' \vdash P &
+%%         \oftp{\psi}{\theta}{\psi'}
+%%       }
+%% \qquad
+%% \infer{\seqh{\psi}{P(\theta)}{\beta}{\phi}{P(\rho)}}
+%%       {\psi' \vdash P &
+%%         \sq{\beta}{\hid{\psi'}}{\theta}{\rho}}
+%% \]
+%% \[
+%% P(\theta)[\theta'] := P(\theta[\theta'])
+%% \]
+
+%% Pushforward along a horizontal morphism:
+
+%% %% (FIXME: should some of the
+%% %% dependency leak through to the conclusion? this seems weird):
+%% %% \[
+%% %% \infer{\wftype{\phi}{\F{\alpha}{\Delta}}}
+%% %%       {\wfctx{\psi}{\Delta} &
+%% %%         \hmor{\psi}{\phi}{\alpha}
+%% %%       }
+%% %% \qquad
+%% %% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta/\psi]}{\Delta}
+%% %% \]
+%% %% Axiomatic FR:
+%% %% \[
+%% %% \infer{\seqh{\psi}{\Delta}{\alpha}{\phi}{\F{\alpha}{\Delta}}}{}
+%% %% \]
+
+%% \[
+%% \infer{\wftype{\psi_0,\phi}{\F{\alpha}{\Delta}}}
+%%       {\wfctx{\psi_0,\psi}{\Delta} &
 %%         \hmor{\psi}{\phi}{\alpha}
 %%       }
 %% \qquad
-%% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta/\psi]}{\Delta}
+%% \F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta\mid_\psi]}{\Delta[\theta\mid_{\psi_0}]}
 %% \]
-%% Axiomatic FR:
+
 %% \[
-%% \infer{\seqh{\psi}{\Delta}{\alpha}{\phi}{\F{\alpha}{\Delta}}}{}
+%% \infer[\FR^*]{\seqh{\psi_0,\psi}{\Delta}{1_{\psi_0},\alpha}{\psi_0,\phi}{\F{\alpha}{\Delta}}}{}
 %% \]
 
-\[
-\infer{\wftype{\psi_0,\phi}{\F{\alpha}{\Delta}}}
-      {\wfctx{\psi_0,\psi}{\Delta} &
-        \hmor{\psi}{\phi}{\alpha}
-      }
-\qquad
-\F{\alpha}{\Delta}[\theta] := \F{\alpha[\theta\mid_\psi]}{\Delta[\theta\mid_{\psi_0}]}
-\]
-
-\[
-\infer[\FR^*]{\seqh{\psi_0,\psi}{\Delta}{1_{\psi_0},\alpha}{\psi_0,\phi}{\F{\alpha}{\Delta}}}{}
-\]
-
-\[
-\infer[\FL]
-      {\seqh{\psi_1,(\psi_0,\phi)}{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{\phi_1}{C}}
-      {\seqh{\psi_1,(\psi_0,\psi)}{\Gamma,\Delta}{[\alpha/\psi]\beta}{\phi_1}{C}}
-\]
+%% \[
+%% \infer[\FL]
+%%       {\seqh{\psi_1,(\psi_0,\phi)}{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{\phi_1}{C}}
+%%       {\seqh{\psi_1,(\psi_0,\psi)}{\Gamma,\Delta}{[\alpha/\psi]\beta}{\phi_1}{C}}
+%% \]
 
 \end{document}
 
