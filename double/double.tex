@@ -758,13 +758,14 @@ Composition (should be admissible):
 Functoriality/mix (should be admissible):
 \[
 \infer{\seq{\Gamma,\Gamma'}{\bfunc {\alpha} {\alpha'}}{\Delta,\Delta'}}
-      {\seq{\Gamma}{\alpha}{\Gamma'} &
+      {\seq{\Gamma}{\alpha}{\Delta} &
        \seq{\Gamma'}{\alpha'}{\Delta'}}
 \]
 
 Atomic hypothesis rule:
 \[
-\infer{\seq{\ct \psi P}{\beta}{\ct \psi P}}
+\infer[\text{TODO: build in functoriality}]
+      {\seq{\ct \psi P}{\beta}{\ct \psi P}}
       {\beta \spr \idp{\psi} &
         \wftype \psi P}
 \]
@@ -781,8 +782,16 @@ Atomic hypothesis rule:
       }
 \]
 
+%% \[
+%% \infer[\text{TODO: build in cuts}]{\seq{\Gamma}{\alpha}{\Delta,(\ct \phi {\F{\alpha}{\Gamma \mid \Delta}})}}{}
+%% \]
+
 \[
-\infer[\text{TODO: build in cuts}]{\seq{\Gamma}{\alpha}{\Delta,(\ct \phi {\F{\alpha}{\Gamma \mid \Delta}})}}{}
+\infer{\seq{\Gamma'}{\beta}{(\ct \phi {\F{\alpha}{\Gamma \mid \Delta}}),\Delta'}}
+      {\seq{\Gamma'}{\gamma}{\Gamma} &
+       \seq{\Delta}{\delta}{\Delta'} &
+       \beta \spr \cut{(\lst{\psi_i},\lst{\phi_i})}{(\gamma,\alpha,\delta)}
+      }
 \]
 
 \[
@@ -941,7 +950,8 @@ type.
 \begin{itemize}
 \item $\Psi \vdash \int^{x:\dualm A,y:A} M^{\psi,x,y} := \F{\cut{()}{\const{s}{x,y}},\idp{\Psi,d}}{\ct {\Psi,d,x,y} M}$
 \item $\Psi \vdash \int_{x:\dualm A,y:A} M^{\psi,x,y} := \U{\cut{()}{\const{t}{}{x,y}},\idp{\Psi,d}}{\cdot}{\ct {\Psi,d,x,y} M}$
-\item $x : \dualm A, y : A \vdash \dsd{hom}_A(x,y) := \F{\cut{()}{\const{t}{}{x,y},\cdot_d}}{()}$
+\item $x : \dualm A, y : A \vdash \dsd{hom}_A(x,y) :=
+  \F{\cut{()}{\const{t}{}{x,y},\cdot_d}}{()}$
 \item $\Psi_1,\Psi_2 \vdash \ct {\Psi_1} {M_1} \otimes \ct {\Psi_2} {M_2} := \F{\cut{()}{\mten x y d, \idp{\psi_1,\psi_2}}}{M_1[x/d],M_2[y/d]}$
 \item $\dualm{\Psi_1},\Psi_2 \vdash \ct {\Psi_1} {M_1} \multimap \ct {\Psi_2} {M_2} := \U{\alpha}{M_1[x/d]}{M_2[y/d]}$
 where\\ $\tseq{\Psi_1,x,(\dualm{\Psi_1},\Psi_2,d)}{\alpha := \cut {()} {\const{s}{\dualm{\Psi_1},\Psi_1}{},\idp{\Psi_2},\mten d x y} }{\Psi_2,y}$
