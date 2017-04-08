@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage{amsthm,mathtools,mathpartir}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\newtheorem{eg}{Example}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\def\M{\mathcal{M}}
+\def\D{\mathcal{D}}
+\def\DD#1#2{\mathcal{D}^{#1}_{#2}}
+\let\ot\leftarrow
+\let\xto\xrightarrow
+\let\xot\xleftarrow
+\let\tot\leftrightarrow
+\def\o{^{\circ}}
+\title{Type theory over cartesian double and triple multicategories}
+\author{DL, PS, MS, MR}
+\begin{document}
+\maketitle
+
+In my head, the basic object parametrizing an intuitionistic type theory is a polynomial monad on $\mathbf{Cat}$, determining a notion of generalized multicategory.
+I think of a 2-multicategory as a simpler approximation to this.
+Similarly, the basic object parametrizing a ``classical'' type theory is a ``polynomial loose distributive law'' between two such polynomial monads, determining a notion of generalized polycategory.
+The following is intended as a similar simpler approximation to that.
+
+\begin{defn}
+  A \textbf{cartesian multi-double-category} consists of:
+  \begin{itemize}
+  \item Two cartesian multicategories with the same set of objects, whose arrows are called vertical and horizontal.
+  \item For horizontal arrows $\beta:(r_1,\dots,r_m)\to s$ and $\alpha_i:(p_{i1},\dots,p_{im_i})\to q_i$ and vertical arrows $\delta:(q_1,\dots,q_n) \to s$ and $\gamma_j:(p'_{j1},\dots,p'_{j n_j})\to r_j$ and permutations $(p_{11},\dots,p_{nm_n})\cong (p'_{11},\dots,p'_{mn_m})$, a set of squares
+    \[\begin{tikzcd}
+      \vec{p}\cong\vec{p'} \ar[r,"\vec{\alpha}"] \ar[d,swap,"\vec{\gamma}"]
+      \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+      \ar[Rightarrow,from=1,to=2,"e"]
+      & \vec{q} \ar[d,"\delta"]
+      \\ \vec{r} \ar[r,swap,"\beta"] & s
+    \end{tikzcd}\]
+  \item Squares compose horizontally and vertically like cartesian multicategories, and the compositions interchange.
+    In particular, vertical arrows have horizontal identity squares that are closed under vertical composition, and vice versa.
+  \end{itemize}
+\end{defn}
+
+Note that unlike other definitions of ``double multicategory'', this one is multi in \emph{both} directions.
+Here we are using ``double-ness'' in a different way, to separate the domains and codomains of sequents.
+
+Unfortunately, the corresponding notion of generalized polycategory doesn't seem to be as elegant as a bifibration over a 2-multicategory.
+
+\begin{defn}
+  Let $\M$ be a cartesian multi-double-category, whose objects are called \emph{modes}.
+  An \textbf{$\M$-polycategory} $\D$ consists of
+  \begin{itemize}
+  \item A set of objects, each assigned to a mode.
+  \item For any lists of objects $\vec{A}$ and $\vec{B}$ with modes $\vec{p}$ and $\vec{q}$ respectively, and any vertical mode morphism $\vec{p} \xto{\alpha} r$ and horizontal mode morphism $\vec{q} \xto{\beta} r$, a set of morphisms $\DD\alpha\beta(\vec{A},\vec{B})$.
+  \item Cartesian actions on these morphism sets ``over'' the cartesian actions on the domains of mode morphisms.
+  \item For any object $A$ with mode $p$, an identity morphism $1_A \in \DD{1_p^v}{1_p^h}(A,A)$.
+  \item For any square $e$ as above, and morphisms $f_i \in \DD{\phi_i}{\alpha_i}(\vec{A},\vec{B})$ and $g_j \in \DD{\gamma_j}{\psi_j}(\vec{B},\vec{C})$, a composite $\vec{g} \circ_e \vec{f} \in \DD{\delta\circ \vec{\phi}}{\beta\circ\vec{\psi}}(\vec{A},\vec{B})$.
+  \item Composition is unital, using the identity squares in $\M$.
+    That is, for any $f\in\DD{\alpha}{\beta}(\vec{A},\vec{B})$, we have $f = f \circ_{1_\alpha} 1_{\vec{A}}$ and $f = 1_{\vec{B}} \circ_{1_\beta} f$.
+  \item Composition is associative, using the composition of squares in $\M$.
+    This means $(h\circ_{e_3}g)\circ_{e_2 \circ e_1} f = h\circ_{e_3\circ e_2} (g\circ_{e_1} f)$ where $e_1,e_2,e_3$ are squares that can be composed like this:
+    \[\begin{tikzcd}
+       & . \ar[r] \ar[d]
+      \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+      \ar[Rightarrow,from=1,to=2,"e_1"]
+      & .\ar[d] \\
+      .\ar[r] \ar[d]
+      \ar[from=r,to=d,phantom,""{name=3,near start},""{name=4,near end}]
+      \ar[Rightarrow,from=3,to=4,"e_3"]
+      & .\ar[r] \ar[d]
+      \ar[from=r,to=d,phantom,""{name=5,near start},""{name=6,near end}]
+      \ar[Rightarrow,from=5,to=6,"e_2"]
+      & .\ar[d] \\
+      .\ar[r] & .\ar[r] & .
+    \end{tikzcd}\]
+  \item Composition $g\circ_e f$ respects the cartesian actions.
+    For the actions on the codomain of $g$ and the domain of $f$, what this means is obvious, and for \emph{permutation} actions on the domain of $g$ $=$ codomain of $f$ it makes sense, but I'm not sure whether there is a good condition to impose on diagonals and projections in the middle.
+  \end{itemize}
+\end{defn}
+
+\begin{eg}
+  If the horizontal multicategory of $\M$ is discrete, then $\M$ should be essentially a cartesian 2-multicategory, and an $\M$-polycategory should be essentially a local discrete fibration $\D$ over it.
+  The ``composition along squares'' operation incorporates together both the multicategorical composition in $\D$ and the local fibrational action of 2-cells in $\M$.
+  I say ``should be essentially'' because the cartesian action on the horizontal multicategory means there is extra junk floating around, but hopefully we can ignore it.
+\end{eg}
+
+\begin{eg}
+  Suppose $\M$ has one object $p$ that is a commutative monoid both horizontally and vertically.
+  Let $\mu^n : (p,p,\dots,p) \to p$ denote the $n$-fold multiplication.
+  Then the cut rule of classical linear logic
+  \[
+  \inferrule{\Gamma\vdash \Delta,A \\ A,\Phi\vdash \Psi}{\Gamma,\Phi \vdash \Delta,\Psi}
+  \]
+  can be generated by squares
+  \[\begin{tikzcd}[column sep=huge]
+    p^{n+1+m} \ar[r,"{(\mu^{n+1},1,\dots,1)}"] \ar[d,swap,"{(1,\dots,1,\mu^{1+m})}"]
+    \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+    \ar[Rightarrow,from=1,to=2,"e_{n,m}"]
+    & p^{1+m} \ar[d,"{\mu^{1+m}}"]
+    \\ p^{n+1} \ar[r,swap,"{\mu^{n+1}}"] & p
+  \end{tikzcd}\]
+  by composing with identities, $(1,\dots,1,g) \circ_{e_{n,m}} (f,1,\dots,1)$.
+  In fact, I believe all the above squares can be generated from the case $n=m=1$ by composing it with itself (and identities) horizontally and vertically.
+  We should assert that such self-composites are associative, and interchanging.
+
+  Note that the generating square $e_{1.1}$ is a sort of ``linear distributivity''.
+  In fact I suspect that a functor from this $\M$ to the multi-double-category of categories, functors (in both directions), and transformations (as squares) is precisely a linearly distributive category.
+  So just as we talk about modes in a cartesian 2-multicategory being monoids, commutative monoids, or cartesian monoids, we can talk about a mode in a multi-double-category being a ``linearly distributive monoid'', where the two monoidal structures involved in linear distributivity are horizontal and vertical.
+  That is, the natural context in which to define a ``linearly distributive monoid'' is a multi-double-category.
+  This is similar to how bimonoids are naturally defined in duoidal categories and Frobenius objects are naturally defined in linearly distributive categories.
+\end{eg}
+
+\begin{eg}
+  By adding ``contraction and weakening'' 2-cells to the previous example, both vertically and horizontally, we should obtain some kind of classical nonlinear logic.
+  For instance, horizontal contraction looks like
+  \[\begin{tikzcd}
+    p \ar[r,"\mu \Delta"] \ar[d,swap,"1_p"]
+    \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+    \ar[Rightarrow,from=1,to=2,"c^v"]
+    & p \ar[d,"1_p"]
+    \\ p \ar[r,swap,"1_p"] & p
+  \end{tikzcd}\]
+  where $\mu\Delta$ means the cartesian contraction of $\mu:(p,p)\to p$ into a morphism $p\to p$.
+  Then given a morphism like $f\in \DD{1}{\mu}(A,(B,B))$, by contraction-over-contraction we get $f\Delta \in \DD{1}{\mu\Delta}(A,B)$, and then by composing with an identity along the contraction 2-cell we get $1_B \circ_{c^v} f\Delta \in \DD{1}{1}(A,B)$.
+  The possible degenerate-ness of this may relate to what equations, if any, we impose on the composites of these squares.
+\end{eg}
+
+\begin{eg}
+  Suppose we have a set of ``categories'' and let the objects of $\M$ (modes) be ``signed lists'' of categories such as $(A,B\o,C)$.
+  A unary horizontal mode morphism consists of a pairing up of categories with their opposites in the \emph{domain only} and a bijection between the remaining categories (with variance) and the codomain.
+  For instance, we have such a morphism $(A,B\o,C\o,B) \to (C\o,A)$ that pairs up the $B$'s and switches the $A$ and the $C\o$.
+  There are no non-unary horizontal morphisms (except for those generated by weakening).
+  But a \emph{vertical} mode morphism can be of arbitrary arity, and consists of removing the parentheses from the domain and then performing such a pairing.
+  Thus, a morphism in $\D$ is ``intuitionistic'', with multiple modules in the domain and only one in the codomain, and parametrized by pairing some categories in the domains and some in the codomain and matching up the rest.
+  The simplest squares look like this:
+  \[\begin{tikzcd}[column sep=huge]
+    (A,A\o,A) \ar[r,"\varepsilon^{12}_A"] \ar[d,swap,"\varepsilon^{23}_A"]
+    \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+    \ar[Rightarrow,from=1,to=2,"e_A"]
+    & A \ar[d,"1_A"]
+    \\ A \ar[r,swap,"1_A"] & A
+  \end{tikzcd}
+  \qquad
+  \begin{tikzcd}[column sep=huge]
+    (A\o,A,A\o) \ar[r,"\varepsilon^{12}_A"] \ar[d,swap,"\varepsilon^{23}_A"]
+    \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+    \ar[Rightarrow,from=1,to=2,"{e_{A\o}}"]
+    & A\o \ar[d,"1_{A\o}"]
+    \\ A\o \ar[r,swap,"1_{A\o}"] & A\o
+  \end{tikzcd}\]
+  where $\varepsilon^{12}$ pairs up the first two categories and $\varepsilon^{23}$ the second two.
+  We need various generalizations of these too; I'm not sure how many we can get by composition and how many we need to put in by hand.
+  This gives us the cut rule for directed type theory (without functors).
+\end{eg}
+
+To incorporate substitution in first-order logics and functors in directed type theory, the natural thing to do is pass to \emph{triple} categories, where the third ``transversal'' direction describes substitution.
+But I'll leave that for later.  \texttt{(-:}
+
+\end{document}
