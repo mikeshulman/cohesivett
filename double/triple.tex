@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{amsthm,mathtools,mathpartir}
+\usepackage{amsthm,mathtools,mathpartir,cleveref}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
 \newtheorem{eg}{Example}
@@ -77,13 +77,13 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
   \end{itemize}
 \end{defn}
 
-\begin{eg}
+\begin{eg}\label{eg:degenerate}
   If the horizontal multicategory of $\M$ is discrete, then $\M$ should be essentially a cartesian 2-multicategory, and an $\M$-polycategory should be essentially a local discrete fibration $\D$ over it.
   The ``composition along squares'' operation incorporates together both the multicategorical composition in $\D$ and the local fibrational action of 2-cells in $\M$.
   I say ``should be essentially'' because the cartesian action on the horizontal multicategory means there is extra junk floating around, but hopefully we can ignore it.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{eg:linear}
   Suppose $\M$ has one object $p$ that is a commutative monoid both horizontally and vertically.
   Let $\mu^n : (p,p,\dots,p) \to p$ denote the $n$-fold multiplication.
   Then the cut rule of classical linear logic
@@ -109,7 +109,7 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
   This is similar to how bimonoids are naturally defined in duoidal categories and Frobenius objects are naturally defined in linearly distributive categories.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{eg:nonlinear}
   By adding ``contraction and weakening'' 2-cells to the previous example, both vertically and horizontally, we should obtain some kind of classical nonlinear logic.
   For instance, horizontal contraction looks like
   \[\begin{tikzcd}
@@ -124,7 +124,7 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
   The possible degenerate-ness of this may relate to what equations, if any, we impose on the composites of these squares.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{eg:dirtt}
   Suppose we have a set of ``categories'' and let the objects of $\M$ (modes) be ``signed lists'' of categories such as $(A,B\o,C)$.
   A unary horizontal mode morphism consists of a pairing up of categories with their opposites in the \emph{domain only} and a bijection between the remaining categories (with variance) and the codomain.
   For instance, we have such a morphism $(A,B\o,C\o,B) \to (C\o,A)$ that pairs up the $B$'s and switches the $A$ and the $C\o$.
@@ -151,6 +151,19 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
   We need various generalizations of these too; I'm not sure how many we can get by composition and how many we need to put in by hand.
   This gives us the cut rule for directed type theory (without functors).
 \end{eg}
+
+Note that if we mentally reverse the direction of horizontal mode morphisms, and regard a square as an ``equation'' between its top-left ``composite'' and bottom-right ``composite'', then the generating squares $e_{1,1}$ of \cref{eg:linear} become the Frobenius axiom of a Frobenius algebra, while those of \cref{eg:dirtt} become the triangle identities of a dual pair.
+
+Syntactically, the judgments of the type theory for $\M$-polycategories will look something like $\Gamma \vdash_{\alpha\tot\beta} \Delta$, where $\alpha$ is a term describing a vertical mode morphism using variables from $\Gamma$ and $\beta$ is a term describing a horizontal mode morphism using variables from $\Delta$.
+In \cref{eg:degenerate}, $\beta$ is trivial and this reduces to the previous syntax.
+In \cref{eg:linear}, with $\mu$ written $x:p,y:p \vdash xy:p$, the sequents we are interested in look like
+\[ x:A, y:B, z:C \vdash_{xyz \tot uvw} u:D, v:E, w:F \]
+In \cref{eg:nonlinear} we get contraction by passing through other kinds of sequents like
+\[ x:A, z:C \vdash_{xxz \tot uuw} u:D, w:F. \]
+In \cref{eg:linear} these latter sequents are still there, but can presumably be ignored as junk since there are no squares allowing us to get anywhere else from them; the annotation $xxz\tot uuw$ says that we must ``use $x$ twice and $y$ once, and co-use $u$ twice and $w$ once''.
+Finally, in \cref{eg:dirtt} with the morphisms written as $x:A, y:A\o \vdash \varepsilon(x,y) : ()$, we have extranatural judgments like
+\[ x:A, y:B, z:B\o \vdash_{\varepsilon(y,z) \tot \varepsilon(u,v)} u:C, v:C\o, w:D \]
+which are just a notational variant of the ``string diagrams'' syntax for directed type theory.
 
 To incorporate substitution in first-order logics and functors in directed type theory, the natural thing to do is pass to \emph{triple} categories, where the third ``transversal'' direction describes substitution.
 But I'll leave that for later.  \texttt{(-:}
