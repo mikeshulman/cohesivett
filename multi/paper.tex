@@ -108,7 +108,7 @@
 
 \begin{document}
 
-\title{A Fibrational Framework for \\ Substructural and Modal Logics}
+\title{A Fibrational Framework for \\ Substructural and Modal Logics \\ (extended version)}
 
 %% SHORT
 % author names and affiliations
@@ -139,29 +139,47 @@
 \maketitle
 
 \begin{abstract}
-Many intuitionistic substructural and modal logics can be seen as a
-restriction on the allowed proofs in a basic structural logic or
-$\lambda$-calculus.  For example, substructural logics remove structural
+Many intuitionistic substructural and modal logics / type theories can
+be seen as a restriction on the allowed proofs in a standard structural
+logic / $\lambda$-calculus.  For example, substructural logics remove
 properties such as associativity, weakening, exchange, and contraction,
-while modal logics place restrictions on positions in which certain
-variables can be used.  We give a new sequent calculus motivated by this
-idea, describing a substructural or modal logic derivation as a
-structural proof that obeys some constraints on the use of the context.
-Our sequent calculus is parametrized by a \emph{mode theory} describing
-the constraints and their structural properties.  We give a generic
-proof of cut (and identity) admissibility that applies to all mode
-theories.  We show that particular mode theories can be used to describe
-the standard intuitionistic substructural and modal connectives, as well
-as some more complex variants, including n-linear variables, bunched
-implications, adjoints, and subexponentials.  We give an equational
-theory on derivations that, in addition to the usual universal
-properties for types, equates derivations that differ only by the
-placement of structural rules.  Semantically, a mode theory corresponds
-to a 2-dimensional cartesian multicategory, the new sequent calculus
-corresponds to another such multicategory with a functor to the mode
-theory. The logical connectives make this functor into a bifibration.
-The resulting framework can be used both to understand logics from the
-literature and to design new substructural and modal logics.
+while modal logics place restrictions on the positions in which certain
+variables can be used.  These restrictions are usually enforced by a
+specific context structure (trees,lists,multisets,sets,dual zones,...)
+that products, implications, and modalities manipulate.  While the
+general technique is clear, it can be difficult to devise rules modeling
+a new situation, a problem we have recently run into while extending
+homotopy type theory to express additional mathematical applications.
+
+In this paper, we define a general framework that abstracts the common
+features of many intuitionistic substructural and modal logics.  The
+framework is a sequent calculus / normal-form type theory parametrized
+by a \emph{mode theory}, which is used to describe the structure of contexts
+and the structural properties they obey.  The framework makes use of
+resource annotations, where we pair the context itself, which obeys
+standard structural properties, with a term, drawn from the mode theory,
+that constrains how the context can be used.  Product types,
+implications, and modalities are defined as instances of two general
+connectives, one positive and one negative, that manipulate these
+resource annotations.  We show that specific mode theories can express
+non-associative, ordered, linear, affine, relevant, and cartesian
+products and implications; monoidal and non-monoidal comonads and
+adjunctions; strong and non-strong monads; n-linear variables; bunched
+implications; and the adjunctions that arose in our work on homotopy
+type theory.  We prove cut (and identity) admissibility independently of
+the mode theory, obtaining it for all of the above logics at
+once. Further, we give a general equational theory on derivations /
+terms that, in addition to the usual beta-eta rules, characterizes when
+two derivations differ only by the placement of structural rules.
+Finally, we give an equivalent semantic presentation of these ideas, in
+which a mode theory corresponds to a 2-dimensional cartesian
+multicategory, and the framework corresponds to another such
+multicategory with a functor to the mode theory. The logical connectives
+have universal properties relative to this functor, making it into a
+bifibration.  The sequent calculus rules and the equational theory on
+derivations are sound and complete for this.  The resulting framework
+can be used both to understand existing logics / type theories and to
+design new ones.
 \end{abstract}
 
 \input{intro}
@@ -172,6 +190,7 @@ literature and to design new substructural and modal logics.
 \input{equational}
 \input{semantics-short}
 \input{adequacy-appendix}
+\input{adequacy-eq}
 \input{conclusion}
 
 \setlength{\bibsep}{-1pt} %% dirty trick: make this negative

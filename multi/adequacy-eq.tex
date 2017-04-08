@@ -3,13 +3,13 @@
 
 \subsection{Template}
 
-In addition to the adequacy of provability results above, we expect that
-the translation from an object logic into the framework extends to
-something like a full and faithful functor from the object logic to the
-framework.  Unpacking this, the object part of the functor means we want
-a translation $A^*$ from object language types to framework types---and
-an extension translating object-language sequents $J$ to framework
-sequents $J^*$.  The morphism part of the functor maps each object-logic
+In addition to the logical adequacy results above, we expect that the
+translation from an object logic into the framework extends to something
+like a full and faithful functor from the object logic to the framework.
+Unpacking this, the object part of the functor means we want a
+translation $A^*$ from object language types to framework types---and an
+extension translating object-language sequents $J$ to framework sequents
+$J^*$.  The morphism part of the functor maps each object-logic
 derivation $d : J$ to a derivation $d^* : J^*$.  Functoriality means
 that the translation takes identities to identities and cuts to cuts.
 Together, full and faithfullness say that for each sequent $J$, the
@@ -45,6 +45,7 @@ taking equality of derivations to be \deq-classes.
 
 \newcommand\backtrf[1]{\ensuremath{#1^{\leftarrow}}}
 \newcommand\backtr[1]{\ensuremath{#1^{\Leftarrow}}}
+\newcommand\str[2]{\ensuremath{\dsd{str}_{#1}(#2)}}
 
 We will generally focus on the following aspects of constructing such a
 full and faithful functor:
@@ -63,8 +64,9 @@ full and faithful functor:
   d_2$, $d_1^* \deq d_2^*$.
 
 \item A function \backtrf{-} from normal derivations $e : J^*$ to source
-  derivations of $J$.  It will usually (FIXME: always?) be the case that
-  the output does not use the cut rule, or identity at non-base-types.  
+  derivations of $J$.  If the output does not use the cut rule, or
+  identity at non-base-types, this cut and identity elimination for the
+  source as a corollary.
 
 \item A proof that ${\backtrf{e}}^* \deq e$.  
 
@@ -73,15 +75,15 @@ full and faithful functor:
 
 \item A proof that for normal $e$ and $e'$ in the image of ``cutable''
   sequents $J^*$ and $J'^*$, $\backtrf{(\Cuta{e}{e'}{x})} \deq
-  \backtrf{e}[\backtrf{e'}/x]$ (Note: could be stated for $d^*$ and
-  $d'^*$ if that's more convenient).  
+  \backtrf{e}[\backtrf{e'}/x]$ (Note: this can be stated for $d^*$ and
+  $d'^*$ if that is more convenient).
 
 \item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
   identity and cut will use the previous two bullets.
 
 \item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
-  $\backtrf{e} \deq \backtrf{e'}$.  (Note: could be stated for
-  $\elim{d^*}$ if that's convenient.)
+  $\backtrf{e} \deq \backtrf{e'}$.  (This can be stated for
+  $\elim{d^*}$ if that is convenient.)
 \end{enumerate}
 \end{definition}
 
@@ -164,9 +166,6 @@ derivation $\D$ is $\deq$ the strengthened derivation $\D'$.
 
 \subsection{Ordered Logic (Product Only)}
 
-\newcommand\dotLd[2]{\ensuremath{\mathord{\odot}}\dsd{L}^{#1}(#2)}
-\newcommand\dotRd[2]{\ensuremath{\mathord{\odot}}\dsd{R}(#1,#2)}
-
 As a first example of an adequacy proof, we consider the following mode
 theory for ordered logic with only $A \odot B$:
 \[
@@ -213,10 +212,11 @@ We use the following properties of the mode theory:
   strengthen away any variables that are not in the context descriptor.  
 \end{itemize}
 
-\item The inference rules for $\odot$ are derived as follows:
+\item As discussed in Section~\ref{sec:adequacy:ordered-logical}, the
+  inference rules for $\odot$ are derived as follows:
 
 \[
-\infer[\FL]{\seq{\Gamma^*,z:\F{x \otimes y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma}\odot z \odot \vars{\Gamma'}}{C}}
+\infer[\FL]{\seq{\Gamma^*,z:\F{x \odot y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma}\odot z \odot \vars{\Gamma'}}{C}}
       {\infer[Lemma~\ref{lem:exchange}]
         {\seq{\Gamma^*,{\Gamma'}^*,x:A,y:B}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}
         {\seq{\Gamma^*,x:A,y:B,{\Gamma'}^*}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}}
@@ -249,7 +249,8 @@ Identity and cut are
              {{\seq{\Delta^*}{\vars{\Delta}}{A^*}}}}
 \]
 
-Since we do not notate weakening and exchange, we have
+Since we do not notate weakening and exchange, we can summarize these
+as:
 \[
 \begin{array}{rcl}
 (\dotLd{z}{x,y.d})^* & := & \FLd{z}{x,y.d^*}\\
@@ -317,11 +318,11 @@ That is,
 \[
 \begin{array}{rcl}
 \backtrf{\Trd{1}{x}} & := & x\\
-\backtrf{\FRd{}{1}{e_1/x,e_2/y}} & := & \dotRd{\backtrf{e_1'}}{\backtrf{e_2'}}\\
+\backtrf{\FRd{}{1}{e_1/x,e_2/y}} & := & \dotRd{\backtrf{\str{}{e_1}}}{\backtrf{\str{}{e_2}}}\\
 \backtrf{\FLd{z}{x,y.e}} & := & \dotLd{z}{x,y.\backtrf{e}}\\
 \end{array}
 \]
-where $e_i'$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
+where $\str{x}{e_i}$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
 
 \item Next, we show that for normal $e :
   \seq{\Gamma^*}{\vars{\Gamma}}{A^*}$, ${\backtrf{e}}^* \deq e$.
@@ -340,15 +341,94 @@ so the result follows from the inductive hypothesis.
 
 In the case for \FR, we have
 \[
-(\backtrf{\FRd{}{1}{e_1/x,e_2/y}})^* = (\dotRd{\backtrf{e_1'}}{\backtrf{e_2'}})^* =
-{\FRd{}{1}{({\backtrf{{e_1'}}}^*/x,{\backtrf{{e_2'}}}^*/y)}}
+(\backtrf{\FRd{}{1}{e_1/x,e_2/y}})^* = (\dotRd{\backtrf{\str{}{e_1}}}{\backtrf{\str{}{e_2}}})^* =
+{\FRd{}{1}{({\backtrf{{\str{}{e_1}}}}^*/x,{\backtrf{\str{}{e_2}}}^*/y)}}
 \]
 By the inductive hypothesis, we have 
-${\backtrf{e_i'}}^* \deq e_i'$, but we have $e_i' \deq e_i$ by
+${\backtrf{\str{}{e_i}}}^* \deq \str{}{e_i}$, but we have $\str{}{e_i} \deq e_i$ by
 Lemma~\ref{lem:0-use-strengthening}.  
 
-\item identity 
+\item If $\Identa{x} : \seq{\Gamma^*}{x}{A^*}$, then
+  $\backtrf{\Identa{x}} \deq x$.
+
+\begin{itemize}
+\item Case for $A = P$: We have $\backtrf{(\Trd{1}{x})} = x$ as required.
+
+\item Case for $A = \F{x_1 \otimes x_2}{x_1:A_1^*,x_2:A_2^*}$.  By definition,
+$\Identa{x}$ is 
+$\FLd{x}{x_1,x_2.\FRd{}{1}{\Identa{x_1}/x_1,\Identa{x_2}/x_2}}$, 
+so 
+\backtrf{\Identa{x}} is 
+\[
+\dotLd{x}{x_1,x_2.\dotRd{\backtrf{(\str{x_2}{\Identa{x_1}})}/x_1}{\backtrf{(\str{x_1}{\Identa{x_2}})}/x_2}}
+\]
+Since $x_2$ doesn't occur in \Identa{x_1}, \str{x_2}{\Identa{x_1}}
+is literally the same term as {\Identa{x_1}} (interpreted in a
+bigger context), without rewriting by any definitional equalities.  
+%% FIXME: state lemma 
+Therefore by the inductive hypothesis for $A_1^*$ and $A_2^*$ gives
+\[
+\dotLd{x}{x_1,x_2.\dotRd{{x_1}/x_1}{{x_2}/x_2}}
+\]
+which is equal to $x$ by the $\eta$ law for $A \odot B$.
+
+\end{itemize}
+
 \item cut
+
 \item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.  
-\item 
+
+The proof is by induction on $d$.  
+
+\begin{itemize}
+\item In the case for $\dotLd{}{}$, expanding definitions, we have
+\[
+\backtrf{\elim{(\dotLd{z}{x,y.d})^*}} \deq
+\backtrf{\elim{\FLd{z}{x,y.d^*}}} \deq 
+\backtrf{\FLd{z}{x,y.\elim{d^*}}} \deq
+{\dotLd{z}{x,y.\backtrf{\elim{d^*}}}}
+\]
+so the inductive hypothesis gives the result.  
+
+\item In the case for $\dotRd{}{}$, we have
+\[
+\begin{array}{ll}
+& \backtrf{\elim{(\dotRd{d_1}{d_2})^*}} \\
+\deq & \backtrf{\elim{\FRd{}{1}{(d_1^*/x,d_2^*/y)}}} \\
+\deq & \backtrf{\FRd{}{1}{(\elim{d_1^*}/x,\elim{d_2^*}/y)}} \\
+\deq & \dotRd{\backtrf{\str{}{\elim{d_1^*}}}/x}{\backtrf{\str{}{\elim{d_2^*}}}/y}
+\end{array}
+\]
+Note that the forward translation weakens $d_i^*$ when it constructs 
+${\FRd{}{1}{(d_1^*/x,d_2^*/y)}}$, and cut elimination does not introduce
+left rules on variables that are not case-analyzed somewhere in the
+proof.  
+%% FIXME: state lemma
+So in this case the 0-use strengthening $\str{}{\elim{d_1}^*}$ will
+simply undo the weakening done in constructing the term, and
+\backtrf{\str{}{\elim{d_1^*}}} equals \backtrf{{\elim{d_1^*}}}.  (Note
+that it doesn't type check to say $\backtrf{\str{}{e}} = e$ in general,
+because $e$ is not always in the image of the translation when
+$\str{}{e}$ is, but in this case it does.)  Therefore the inductive
+hypotheses give the result.  
+
+\item In the case for a variable, we have
+\[
+\backtrf{\elim{x^*}} \deq \backtrf{\elim{x}} \deq \backtrf{\Identa{x}}
+\]
+so the above part gives the result.  
+
+\item In the case for cut, we have
+\[
+\backtrf{\elim{(\Cut{e}{d}{x})^*}} \deq \backtrf{\elim{\Cut{e^*}{d^*}{x}}}
+\deq \backtrf{(\Cuta{\elim{e^*}}{\elim{d^*}}{x})}
+\]
+By the above part, this is 
+\Cut{\backtrf{\elim{e^*}}}{\backtrf{\elim{d^*}}}{x}, 
+so the inductive hypothesis gives the result.  
+
+\end{itemize}
+
+\item Permutative
+
 \end{enumerate}
