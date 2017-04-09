@@ -65,21 +65,21 @@ full and faithful functor:
 
 \item A function \backtrf{-} from normal derivations $e : J^*$ to source
   derivations of $J$.  If the output does not use the cut rule, or
-  identity at non-base-types, this cut and identity elimination for the
-  source as a corollary.
+  identity at non-base-types, this gives cut and identity elimination
+  for the source as a corollary.
 
 \item A proof that ${\backtrf{e}}^* \deq e$.  
 
-\item A proof that when $\Identa{x} : J^*$, $\backtrf{\Identa{x}} \deq
-  x$.
-
-\item A proof that for normal $e$ and $e'$ in the image of ``cutable''
-  sequents $J^*$ and $J'^*$, $\backtrf{(\Cuta{e}{e'}{x})} \deq
-  \backtrf{e}[\backtrf{e'}/x]$ (Note: this can be stated for $\elim{d^*}$ and
-  $\elim{d'^*}$ if that is more convenient).
+\item A proof that the meta-operations are preserved by
+  back-translation.  For example, for identity $\Identa{x} : J^*$, we
+  should have $\backtrf{\Identa{x}} \deq x$.  For normal $e$ and $e'$ in
+  the image of ``cutable'' sequents $J^*$ and $J'^*$,
+  $\backtrf{(\Cuta{e}{e'}{x})} \deq \backtrf{e}[\backtrf{e'}/x]$ (Note:
+  this can be stated for $\elim{d^*}$ and $\elim{d'^*}$ if that is more
+  convenient).
 
 \item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
-  identity and cut will use the previous two bullets.
+  identity and cut will use the previous bullet.
 
 \item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
   $\backtrf{e} \deq \backtrf{e'}$.  (This can be stated for
@@ -147,7 +147,7 @@ defined.
 \begin{lemma}[Equational 0-use Strengthing] \label{lem:0-use-strengthening-eq}
 Under the conditions of Lemma~\ref{lem:0-use-strengthening}, write
 \str{\vec{x}}{\D} for the derivation produced by the lemma.  Then
-$\str{\vec{x}}{\D}$ (weakened with $\vec{x}$) is equal to $\D$.  
+$\str{\vec{x}}{\D}$ (weakened with $\vec{x}$) $\deq \D$.  
 %% Moreover, if $\vec{x}$ do not occur in the
 %% derivation $d$ (i.e. at an identity rule or as the principal argument of
 %% a left rule), then $\str{\vec{x}}{d}$ is syntactically equal to $d$.
@@ -222,9 +222,47 @@ are where a rule is deleted.
 %% \seq{\Gamma-\vec{x}}{\alpha}{A}$ and $size(\D') \le size(\D)$ 
 %% $\D' \deq \D$ (when $\D'$ is weakened to reintroduce $\vec{x}$).  
 
-\begin{lemma}[Strengthening Fusion] \label{lem:0-use-strengthening-fusion}
-$\str{\Gamma}{\str{\Delta}{e}} = \str{\Gamma,\Delta}{e}$
+\begin{lemma}[Properties of Strengthening] \label{lem:strengthening-eq-properties} ~ 
+\begin{itemize}
+\item $\str{\Gamma}{\str{\Delta}{e}} = \str{\Gamma,\Delta}{e}$
+\item $\str{\Delta,x}{d} = \str{\Delta,x,\Delta'}{\Linv{d}{\Delta'}{x}}$
+\item $\str{\Delta}{\Linv{d}{\Delta'}{x}} = \Linv{\str{\Delta}{d}}{\Delta'}{x}$ if $x \# \Delta$
+\item $\str{\vec{x}}{\Ident{y}} = \Ident{y}$ if $y \not \in x$.  
+\item $\str{\vec{x}}{d} = d$ if $\vec{x} \# d$ and for every $\UL$ in $d$,
+  $z$ occurs in $\beta'$.    
+\end{itemize}
 \end{lemma}
+
+\begin{proof}
+For the first part, deleting rules in two passes is the same one, as
+long as all of the same variables are deleted overall.  
+
+For the second part, deleting all uses of $x$ is the same as first
+inverting $x$ (which deletes all left rules on it) and then deleting all
+uses of the variables that are produced by the inversion (which are
+deleted when strengthening hits $\FL^{x}$).
+
+For the third, left inversion commutes with deleting variables other
+than the ones being deleted.  
+
+For the fourth, the $\eta$-expanded identity on $y$ contains no variables
+beside $y$ and those introduced by rules in it, so $\str{\vec{x}}$
+deletes nothing.  
+
+For the fifth, strengthening only deletes (1) left rules on $x$ and
+subsidiaries, and (2) unneeded occurences of $\UL$, and the premises say
+that there are none of these.  
+\end{proof}
+
+\begin{lemma}[Cut does not introduce left rules] \label{lem:cut-doesnt-intro}
+If $\FL^{x}$ or $\UL^{x}$ occus in $\elim{d}$, then it occurs in $d$
+\end{lemma}
+
+\begin{proof}
+By induction on the execution trace of cut elimination: for each rule in
+Figure~\ref{fig:admissible-rule-equations}, $\FL^{x}$ or $\UL^{x}$ 
+occurs on the right only if it occurs on the left.  
+\end{proof}
 
 \subsection{Ordered Logic (Product Only)}
 
@@ -410,6 +448,10 @@ By the inductive hypothesis, we have
 ${\backtrf{\str{}{e_i}}}^* \deq \str{}{e_i}$, but we have $\str{}{e_i} \deq e_i$ by
 Lemma~\ref{lem:0-use-strengthening}.  
 
+\item Meta-operations are preserved by back-translation:
+%% FIXME: check this in more detail
+
+\begin{itemize}
 \item If $\Identa{x} : \seq{\Gamma^*}{x}{A^*}$, then
   $\backtrf{\Identa{x}} \deq x$.
 
@@ -427,7 +469,6 @@ so
 Since $x_2$ doesn't occur in \Identa{x_1}, \str{x_2}{\Identa{x_1}}
 is literally the same term as {\Identa{x_1}} (interpreted in a
 bigger context), without rewriting by any definitional equalities.  
-%% FIXME: state lemma 
 Therefore by the inductive hypothesis for $A_1^*$ and $A_2^*$ gives
 \[
 \dotLd{x}{x_1,x_2.\dotRd{{x_1}/x_1}{{x_2}/x_2}}
@@ -436,9 +477,83 @@ which is equal to $x$ by the $\eta$ law for $A \odot B$.
 
 \end{itemize}
 
-\item cut
+\item Left-inversion: if $y,z \# d$, then 
+$\backtrf{\Linv{d}{(y,z)}{x}} \deq \Cut{\backtrf{d}}{\dotRd{y}{z}}{x}$.
 
-\item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.  
+If $d$ is \FLd{x}{y,z.d'} then we get \backtrf{d'} on the left, and 
+$\Cut{\dotLd{x}{y,z.d'}}{\dotRd{y}{z}}{x}$ on the right, so they are
+equal by $\beta$ in the source.  Otherwise the result follows from the
+inductive hypotheses.  
+
+%% \Linv{\Trd{s}{x}}{\vec{x}}{x_0} & := & {\Trd{s}{x}}\\
+%% \Linv{\FLd{y}{\Delta.\D}}{\vec{x}}{x_0} & := & \D[\Delta \leftrightarrow \vec{x}]\\
+%% \Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0} & := & \FLd{x}{\Delta.\Linv{\D}{\vec{x}}{x_0}} & (x \# x_0)\\
+%% \Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0} & := & \FRd{}{{s[1_{\alpha_0}/x_0]}}{{{\Linv{\D_i}{\vec{x}}{y}}/x_i}}\\
+
+\item Cut: If 
+$e : \seq{\Gamma'^*,\Gamma^*,\Delta^*}{\vars{\Gamma}}{B^*}$
+and 
+$d : \seq{\Gamma'^*,\Gamma^*-x_0,\Delta^*}{\vars{\Delta}}{A^*}$ (where
+$x_0 : A \in \Gamma$), then
+$\backtrf{\str{\Gamma'}{\Cuta{e}{d}{x_0}}} \deq \Cut{\backtrf{\str{\Gamma',\Delta}{e}}}{\backtrf{\str{\Gamma-x,\Gamma'}{d}}}{x_0}$.
+
+%% If 
+%% $e : \seq{\Gamma'^*,\Gamma^*,\Delta^*}{\vars{\Gamma}}{B^*}$
+%% and 
+%% $d : \seq{\Gamma'^*,\Gamma^*-x_0,\Delta^*}{\vars{\Delta}}{A^*}$ (where
+%% $x_0 : A \in \Gamma$), then
+%% $\backtrf{\str{\Gamma'}{\Cuta{e}{d}{x_0}}} \deq \Cut{\backtrf{\str{\Gamma',\Delta}{e}}}{\backtrf{\str{\Gamma-x,\Gamma'}{d}}}{x_0}$.
+
+Here, $\Gamma'$ is some extra variables that occur in neither side of
+the cut, which is necessary to get the induction to go through.
+
+Since the only transformations are the identity, $\Trda{s}{d} = d$ for
+any $s$ and $d$.  
+
+The proof is to go through each reduction of cut and check that it is
+valid in the source.  We check a few cases of the definition of cut:
+
+\begin{itemize}
+\item 
+$\Cuta{x_0}{d}{x_0} = d$.  In this case, $\Gamma,\Gamma'$ are empty
+  besides $x_0$, and the cut in the source reduces to $\backtrf{\str{}{d}}$.
+
+%% \item 
+%% $\Cuta{y}{d}{x_0} = y$.  
+
+\item 
+$\Cuta{\FLd{x_0}{x_1,x_2.\E}}{\FRd{}{1}{\vec{\D_i/x_i}}}{x_0} = {\Cutta \E {\vec{\D_i/x_i}}}$
+
+We need to show
+\[
+\backtrf{\str{\Gamma'}{{\Cutta \E {\vec{\D_i/x_i}}}}} = 
+\Cut{\backtrf{\str{}{{\FLd{x_0}{x_1,x_2.\E}}}}}{\backtrf{\str{}{\FRd{}{1}{\vec{\D_i/x_i}}}}}{x_0}
+\]
+The right-hand side is equal to
+\Cut{\dotLd{x_0}{x_1,x_2.\backtrf{\str{}\E}}}{\dotRd{\backtrf{\str{}{\D_1}}}{\backtrf{\str{}{\D_2}}}}{x_0}, 
+so reducing the cut in the source gives 
+$\backtrf{\str{}\E}[{\backtrf{\str{}{\D_1}}}/x_1,{\backtrf{\str{}{\D_2}}}/x_2]$
+and the inductive hypothesis gives the result.  
+
+%% \item 
+%% $\Cuta{\FRd{}{1}{\vec{\E}}}{\D}{x_0} = {\FRd{}{1}{\Cuta{\vec{\E}}{\D}{x_0}}}$
+
+%% \item 
+%% $\Cuta{\FLd{x}{y,x.\E}}{\D}{x_0} = \FLd{x}{y,z.\Cuta{\E}{\Linv{\D}{\Delta}{x}}{x_0}}$
+
+%% \item 
+%% $\Cuta{\E}{\FLd{x}{y,z.\D}}{x_0} = \FLd{x}{y,z.\Cuta{\Linv{\E}{y,z}{x}}{\D}{x_0}}$
+
+%% \item The commutative cases follow from the inductive hypothesis, merging
+%% strengthenings, the left inversion lemma in the previous part, and the
+%% commutative cut rules in the source.  
+
+\end{itemize}
+
+
+\end{itemize}
+
+\item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.
 
 The proof is by induction on $d$.  
 
@@ -464,15 +579,12 @@ so the inductive hypothesis gives the result.
 Note that the forward translation weakens $d_i^*$ when it constructs 
 ${\FRd{}{1}{(d_1^*/x,d_2^*/y)}}$, and cut elimination does not introduce
 left rules on variables that are not case-analyzed somewhere in the
-proof.  
-%% FIXME: state lemma
-So in this case the 0-use strengthening $\str{}{\elim{d_1}^*}$ will
-simply undo the weakening done in constructing the term, and
-\backtrf{\str{}{\elim{d_1^*}}} equals \backtrf{{\elim{d_1^*}}}.  (Note
-that it doesn't type check to say $\backtrf{\str{}{e}} = e$ in general,
-because $e$ is not always in the image of the translation when
-$\str{}{e}$ is, but in this case it does.)  Therefore the inductive
-hypotheses give the result.  
+proof by Lemma~\ref{lem:cut-doesnt-intro}.  
+So by Lemma~\ref{lem:strengthening-eq-properties}, strengthening
+$\str{}{\elim{d_1}^*}$ will simply undo the weakening done in
+constructing the term, and \backtrf{\str{}{\elim{d_1^*}}} equals
+\backtrf{{\elim{d_1^*}}}.  Therefore the inductive hypotheses give the
+result.
 
 \item In the case for a variable, we have
 \[
@@ -485,10 +597,10 @@ so the above part gives the result.
 \backtrf{\elim{(\Cut{e}{d}{x})^*}} \deq \backtrf{\elim{\Cut{e^*}{d^*}{x}}}
 \deq \backtrf{(\Cuta{\elim{e^*}}{\elim{d^*}}{x})}
 \]
-By the above part, this is 
-\Cut{\backtrf{\elim{e^*}}}{\backtrf{\elim{d^*}}}{x}, 
-so the inductive hypothesis gives the result.  
-
+By the previous part, this is
+\Cut{\backtrf{\elim{e^*}}}{\backtrf{\elim{d^*}}}{x} (the strengthening
+only undoes the weakening that the forward translation puts in), so the
+inductive hypothesis gives the result.
 \end{itemize}
 
 \item For normal derivations $e,e' :
@@ -525,7 +637,7 @@ if $e \deqp e'$, then $\backtrf{\str{\Delta}{e}} \deq \backtrf{\str{\Delta}{e'}}
     \deq 
     \dotRd{\backtrf{\str{\Gamma_2}{\str{\Delta}{e_1'}}}}{\backtrf{\str{\Gamma_1}{\str{\Delta}{e_2}}}}
   \]
-  By Lemma~\ref{lem:0-use-strengthening-fusion}, ${\str{\Gamma_2}{\str{\Delta}{e_1'}}} =
+  By Lemma~\ref{lem:strengthening-eq-properties}, ${\str{\Gamma_2}{\str{\Delta}{e_1'}}} =
   {\str{\Gamma_2,\Delta}{e_1'}}$, so the inductive hypothesis gives the
   result.
 
@@ -548,8 +660,8 @@ we need to show that
 \backtrf{\str{\Delta}{\FLd{x}{y,z.\Linv{\D}{(y,z)}{x}}}}
 \]
 
-We distinguish cases on whether the strengthening deletes the \FL or
-not.
+We distinguish cases on whether $x \in \Delta$ (so the strengthening
+deletes the \FL) or not.
 
 If it does, we need to show that 
 \[
@@ -557,9 +669,9 @@ If it does, we need to show that
 \deq 
 \backtrf{\str{\Delta,x,y,z}{\Linv{\D}{(y,z)}{x}}}
 \]
-FIXME: lemma? 
+This follows from Lemma~\ref{lem:strengthening-eq-properties}.  
 
-If it does not, we need to show that 
+If it is not, we need to show that 
 \[
 \backtrf{\str{\Delta}{d}}
 \deq 
@@ -567,14 +679,10 @@ If it does not, we need to show that
 \]
 and by $\eta$-expanding the left-hand side gives
 $\dotLd{x}{y,z.\Cut{\backtrf{\str{\Delta}{d}}}{\dotRd{y}{z}}{x}}$.
-
-FIXME: finish
-
-%% But $\Linv{\D}{(y,z)}{x} = \Cuta{\D}{\FR{(y,z)}}{x}$, 
-%% %% is left inverting literally the same as cutting?
-%% %% if not prove that backtranslation takes it to cutting.  
-%% and $\backtrf{\Cuta{\D}{\FR{(y,z)}}{x}} \deq 
-%% \backtrf{\D}[\backtrf{\FR(y,z)}/x]$
+But in this case 
+$\str{\Delta}{\Linv{\D}{(y,z)}{x}} = \Linv{\str{\Delta}{d}}{(y,z)}{x}$,
+so the fact that back-translation preserves left inversion gives the
+result.  
 
 \end{itemize}
 
