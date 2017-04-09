@@ -34,25 +34,27 @@ Similarly, the basic object parametrizing a ``classical'' type theory is a ``pol
 By looking for a similar simpler approximation to that, I arrived at the following.
 
 \begin{defn}
-  A \textbf{cartesian multi-double-category} consists of:
+  A \textbf{(cartesian) multi-double-category} consists of:
   \begin{itemize}
-  \item Two cartesian multicategories with the same set of objects, whose arrows are called vertical and horizontal.
+  \item Two (cartesian) multicategories with the same set of objects, whose arrows are called vertical and horizontal.
   \item For horizontal arrows $\beta:(r_1,\dots,r_m)\to s$ and $\alpha_i:(p_{i1},\dots,p_{im_i})\to q_i$ and vertical arrows $\delta:(q_1,\dots,q_n) \to s$ and $\gamma_j:(p'_{j1},\dots,p'_{j n_j})\to r_j$ and permutations $(p_{11},\dots,p_{nm_n})\cong (p'_{11},\dots,p'_{mn_m})$, a set of squares
     \[\begin{tikzcd}
       \vec{p}\cong\vec{p'} \ar[r,"\vec{\alpha}"] \ar[d,swap,"\vec{\gamma}"]\drtwocell{e}
       & \vec{q} \ar[d,"\delta"]
       \\ \vec{r} \ar[r,swap,"\beta"] & s
     \end{tikzcd}\]
-  \item Squares compose horizontally and vertically like cartesian multicategories, and the compositions interchange.
+  \item (In the cartesian case) cartesian actions on the squares, in both directions, that respect the cartesian actions on the arrows, and probably commute with each other in an appropriate sense.
+  \item Squares compose horizontally and vertically like (cartesian) multicategories, and the compositions interchange.
     In particular, vertical arrows have horizontal identity squares that are closed under vertical composition, and vice versa.
   \end{itemize}
 \end{defn}
 
 Note that unlike other definitions of ``double multicategory'', this one is multi in \emph{both} directions.
 We will be using ``double-ness'' in a different way, to separate the domains and codomains of sequents.
+It's reasonable to expect that for syntax we can deal only with the cartesian case and ``adequacy away'' all the undesired junk if it's there, but for defining semantic examples we need to actually omit the cartesian structure when we don't want it.
 
 \begin{eg}\label{eg:quintet}
-  Any cartesian 2-multicategory $\M$ should give rise to a cartesian multi-double-category $\Q(\K)$ whose vertical and horizontal arrows are the same, and whose squares are 2-cells from the top-right composite to the left-bottom composite.
+  Any (cartesian) 2-multicategory $\M$ should give rise to a (cartesian) multi-double-category $\Q(\K)$ whose vertical and horizontal arrows are the same, and whose squares are 2-cells from the top-right composite to the left-bottom composite.
   This is a multicategorical version of the classical ``quintet'' construction of a double category from a 2-category, although in the multicategorical case there are no longer always five things involved (originally it was the four arrows and the 2-cell that determine a square in the double category).
   For instance, $\Q(\Cat)$ has as objects categories, as arrows multi-variable functors (in both directions), and as squares natural transformations.
 \end{eg}
@@ -60,12 +62,12 @@ We will be using ``double-ness'' in a different way, to separate the domains and
 Unfortunately, the corresponding notion of generalized polycategory doesn't seem to be as elegant as a bifibration over a 2-multicategory.
 
 \begin{defn}
-  Let $\M$ be a cartesian multi-double-category, whose objects are called \emph{modes}.
-  An \textbf{$\M$-polycategory} $\D$ consists of
+  Let $\M$ be a (cartesian) multi-double-category, whose objects are called \emph{modes}.
+  A \textbf{(cartesian) $\M$-polycategory} $\D$ consists of
   \begin{itemize}
   \item A set of objects, each assigned to a mode.
   \item For any lists of objects $\vec{A}$ and $\vec{B}$ with modes $\vec{p}$ and $\vec{q}$ respectively, and any vertical mode morphism $\vec{p} \xto{\alpha} r$ and horizontal mode morphism $\vec{q} \xto{\beta} r$, a set of morphisms $\DD\alpha\beta(\vec{A},\vec{B})$.
-  \item Cartesian actions on these morphism sets ``over'' the cartesian actions on the domains of mode morphisms.
+  \item (In the cartesian case) cartesian actions on these morphism sets ``over'' the cartesian actions on the domains of mode morphisms.
   \item For any object $A$ with mode $p$, an identity morphism $1_A \in \DD{1_p^v}{1_p^h}(A,A)$.
   \item For any square $e$ as above, and morphisms $f_i \in \DD{\phi_i}{\alpha_i}(\vec{A},\vec{B})$ and $g_j \in \DD{\gamma_j}{\psi_j}(\vec{B},\vec{C})$, a composite $\vec{g} \circ_e \vec{f} \in \DD{\delta\circ \vec{\phi}}{\beta\circ\vec{\psi}}(\vec{A},\vec{B})$.
   \item Composition is unital, using the identity squares in $\M$.
@@ -86,7 +88,7 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
       & .\ar[d] \\
       .\ar[r] & .\ar[r] & .
     \end{tikzcd}\]
-  \item Composition $g\circ_e f$ respects the cartesian actions.
+  \item (In the cartesian case) composition $g\circ_e f$ respects the cartesian actions.
     For the actions on the codomain of $g$ and the domain of $f$, what this means is obvious, and for \emph{permutation} actions on the domain of $g$ $=$ codomain of $f$ it makes sense, but I'm not sure whether there is a good condition to impose on diagonals and projections in the middle.
   \end{itemize}
 \end{defn}
@@ -95,13 +97,14 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
 \label{sec:examples}
 
 \begin{eg}\label{eg:degenerate}
-  If the horizontal multicategory of $\M$ is discrete, then $\M$ should be essentially a cartesian 2-multicategory, and an $\M$-polycategory should be essentially a local discrete fibration $\D$ over it.
+  If the horizontal multicategory of $\M$ is discrete, then $\M$ should be essentially a (cartesian) 2-multicategory, and an $\M$-polycategory should be essentially a local discrete fibration $\D$ over it.
   The ``composition along squares'' operation incorporates together both the multicategorical composition in $\D$ and the local fibrational action of 2-cells in $\M$.
-  I say ``should be essentially'' because the cartesian action on the horizontal multicategory means there is extra junk floating around, but hopefully we can ignore it.
+  I say ``should be essentially'' because in the cartesian case, the cartesian action on the horizontal multicategory means there is extra junk floating around, but hopefully we can ignore it at least in the syntax.
+  Or we could define a version that is cartesian only in one direction.
 \end{eg}
 
 \begin{eg}\label{eg:linear}
-  Suppose $\M$ has one object $p$ that is a commutative monoid both horizontally and vertically.
+  Suppose $\M$ is non-cartesian, and has one object $p$ that is a commutative monoid both horizontally and vertically.
   Let $\mu^n : (p,p,\dots,p) \to p$ denote the $n$-fold multiplication.
   Then the cut rule of classical linear logic
   \[
@@ -119,13 +122,13 @@ Unfortunately, the corresponding notion of generalized polycategory doesn't seem
 
   Note that the generating square $e_{1.1}$ is a sort of ``linear distributivity''.
   In fact I suspect that a functor from this $\M$ to $\Q(\Cat)$ is precisely a linearly distributive category.
-  So just as we talk about modes in a cartesian 2-multicategory being monoids, commutative monoids, or cartesian monoids, we can talk about a mode in a multi-double-category being a ``linearly distributive monoid'', where the two monoidal structures involved in linear distributivity are horizontal and vertical.
+  So just as we talk about modes in a (cartesian) 2-multicategory being monoids, commutative monoids, or cartesian monoids, we can talk about a mode in a multi-double-category being a ``linearly distributive monoid'', where the two monoidal structures involved in linear distributivity are horizontal and vertical.
   That is, the natural context in which to define a ``linearly distributive monoid'' is a multi-double-category.
   This is similar to how bimonoids are naturally defined in duoidal categories (see \cref{eg:duoidal}) and Frobenius objects are naturally defined in linearly distributive categories.
 \end{eg}
 
 \begin{eg}\label{eg:nonlinear}
-  By adding ``contraction and weakening'' 2-cells to the previous example, both vertically and horizontally, we should obtain some kind of classical nonlinear logic.
+  By making the previous example cartesian and adding ``contraction and weakening'' 2-cells, both vertically and horizontally, we should obtain some kind of classical nonlinear logic.
   For instance, horizontal contraction looks like
   \[\begin{tikzcd}
     p \ar[r,"\mu \Delta"] \ar[d,swap,"1_p"] \drtwocell{c^v}
