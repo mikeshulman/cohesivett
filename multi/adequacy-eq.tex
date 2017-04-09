@@ -3,13 +3,13 @@
 
 \subsection{Template}
 
-In addition to the adequacy of provability results above, we expect that
-the translation from an object logic into the framework extends to
-something like a full and faithful functor from the object logic to the
-framework.  Unpacking this, the object part of the functor means we want
-a translation $A^*$ from object language types to framework types---and
-an extension translating object-language sequents $J$ to framework
-sequents $J^*$.  The morphism part of the functor maps each object-logic
+In addition to the logical adequacy results above, we expect that the
+translation from an object logic into the framework extends to something
+like a full and faithful functor from the object logic to the framework.
+Unpacking this, the object part of the functor means we want a
+translation $A^*$ from object language types to framework types---and an
+extension translating object-language sequents $J$ to framework sequents
+$J^*$.  The morphism part of the functor maps each object-logic
 derivation $d : J$ to a derivation $d^* : J^*$.  Functoriality means
 that the translation takes identities to identities and cuts to cuts.
 Together, full and faithfullness say that for each sequent $J$, the
@@ -45,6 +45,7 @@ taking equality of derivations to be \deq-classes.
 
 \newcommand\backtrf[1]{\ensuremath{#1^{\leftarrow}}}
 \newcommand\backtr[1]{\ensuremath{#1^{\Leftarrow}}}
+\newcommand\str[2]{\ensuremath{\dsd{str}_{#1}(#2)}}
 
 We will generally focus on the following aspects of constructing such a
 full and faithful functor:
@@ -63,8 +64,9 @@ full and faithful functor:
   d_2$, $d_1^* \deq d_2^*$.
 
 \item A function \backtrf{-} from normal derivations $e : J^*$ to source
-  derivations of $J$.  It will usually (FIXME: always?) be the case that
-  the output does not use the cut rule, or identity at non-base-types.  
+  derivations of $J$.  If the output does not use the cut rule, or
+  identity at non-base-types, this cut and identity elimination for the
+  source as a corollary.
 
 \item A proof that ${\backtrf{e}}^* \deq e$.  
 
@@ -73,15 +75,15 @@ full and faithful functor:
 
 \item A proof that for normal $e$ and $e'$ in the image of ``cutable''
   sequents $J^*$ and $J'^*$, $\backtrf{(\Cuta{e}{e'}{x})} \deq
-  \backtrf{e}[\backtrf{e'}/x]$ (Note: could be stated for $d^*$ and
-  $d'^*$ if that's more convenient).  
+  \backtrf{e}[\backtrf{e'}/x]$ (Note: this can be stated for $\elim{d^*}$ and
+  $\elim{d'^*}$ if that is more convenient).
 
 \item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
   identity and cut will use the previous two bullets.
 
 \item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
-  $\backtrf{e} \deq \backtrf{e'}$.  (Note: could be stated for
-  $\elim{d^*}$ if that's convenient.)
+  $\backtrf{e} \deq \backtrf{e'}$.  (This can be stated for
+  $\elim{d^*}$ if that is convenient.)
 \end{enumerate}
 \end{definition}
 
@@ -143,10 +145,68 @@ We do not abstract this ``template'' as a lemma because the class of
 defined.  
 
 \begin{lemma}[Equational 0-use Strengthing] \label{lem:0-use-strengthening-eq}
-Under the conditions of Lemma~\ref{lem:0-use-strengthening}, the input
-derivation $\D$ is $\deq$ the strengthened derivation $\D'$.
+Under the conditions of Lemma~\ref{lem:0-use-strengthening}, write
+\str{\vec{x}}{\D} for the derivation produced by the lemma.  Then
+$\str{\vec{x}}{\D}$ (weakened with $\vec{x}$) is equal to $\D$.  
+%% Moreover, if $\vec{x}$ do not occur in the
+%% derivation $d$ (i.e. at an identity rule or as the principal argument of
+%% a left rule), then $\str{\vec{x}}{d}$ is syntactically equal to $d$.
 \end{lemma}
+\begin{proof}
+Inspecting the proof, we have the following reductions:
+\[
+\begin{array}{rcll}
+\str{\vec{x}}{\Trd{\beta}{y}} & := & {\Trd{\beta}{y}}\\
+\str{\vec{x}}{\FRd{}{s}{\vec{d}}} & := & \FRd{}{s}{\str{\vec{x}}{\vec{d}}}\\
+\str{\vec{x}}{\FLd{x}{\Delta.d}} & := & \str{\vec{x},x,\Delta}{d} & \text{ if } x \in \vec{x}\\
+\str{\vec{x}}{\FLd{x}{\Delta.d}} & := & \FLd{x}{\Delta.\str{\vec{x}}{d}} & \text{ if } x \not\in \vec{x}\\
+\str{\vec{x}}{\URd{\Delta.d}} & := & \URd{\Delta.\str{\vec{x}}{d}}\\
+\str{\vec{x}}{\ULd{x}{s}{\vec{d}}{z.d'}} & := & \Trd{s}{\str{\vec{x,z}}{d'}} & \text{ if } z \# \beta'\\
+\str{\vec{x}}{\ULd{x}{}{s}{\vec{d}}{z.d'}} & := & \ULd{x}{}{s}{\str{\vec{x}}{d}}{z.\str{\vec{x}}{d'}} & \text{ if } z \in \beta', x \notin \vec{x}\\
+\end{array}
+\]
+%% If $\vec{x}$ do not occur in the derivation, then no rules are deleted,
+%% so we can prove that the term is unchanged by the inductive hypothesis
+%% in each case.  
+Most cases follow from the inductive hypothesis; the interesting ones
+are where a rule is deleted.  
 
+\begin{itemize}
+
+\item Suppose we began with $\FLd{x}{\Delta.d} :
+  \seq{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{B}$ with $x \in \vec{x}$ and
+  produced $\str{\vec{x},x,\Delta}{d} : \seq{\Gamma-\vec{x}}{\beta}{B}$
+  (because neither $x$ nor $\Delta$ occur in $\beta$).  Then weakening
+  with $x,\Delta$ gives $\str{\vec{x},x,\Delta}{d} :
+  \seq{\Gamma,x:\F{\alpha}{\Delta},\Delta}{\beta}{B}$, and the inductive
+  hypothesis gives that this is equal to $d$.  
+
+  Thus, it suffices to show that for any $e :
+  \seq{\Gamma,x:\F{\alpha}{\Delta}}{\beta}{B}$ where $x$ doesn't occur
+  in $\beta$ or $e$, then $e$ is equal to \FLd{x}{\Delta.e}---i.e. we
+  can introduce a ``dead branch'' on $x$.  But by the $\eta$ rule we
+  have $e \deq \FLd{x}{\Cut{e}{\FR}{x}}$, and the cut cancels
+  because $x$ does not occur.
+  
+\item Suppose we began with $\ULd{x}{}{s}{\vec{d}}{z.d'} :
+  \seq{\Gamma,x:\U{\alpha}{\Delta}{A}}{\beta}{B}$ and $z$ does not occur
+  in $\beta'$, the resources of $d'$, and we produce
+  \Trd{s}{\str{\vec{x},z}{d'}}, and want to show this is equal to
+  $\ULd{x}{}{s}{\vec{d}}{z.d'}$.  By the IH, weakening
+  $\str{\vec{x},z}{d'}$ is equal to $d'$.
+
+  Thus, it suffices to show that $\ULd{x}{}{s}{\vec{d}}{z.d'} \deq
+  \Trd{s}{d'}$ when $z$ does not occur in the \emph{derivation} $d'$.
+  This is immediate from the semantic expansion of \UL{} 
+  \[
+  \ULd{x}{}{s}{\vec{d/y}}{z.d'} \deq \Trd{s}{(d'[\ULs{x}[\vec{d/y}]/z])}
+  \]
+  because in this the substitution for $z$, which does not occur,
+  cancels.
+
+\end{itemize}
+
+\end{proof}
 %% We say that a formula $\F{\alpha}{\Delta}$ and \U{c.\alpha}{\Delta}{A}
 %% is relevant if every variable from $\Delta$ (and $c$ for \Usymb) occurs
 %% at least once in $\alpha$.
@@ -162,10 +222,11 @@ derivation $\D$ is $\deq$ the strengthened derivation $\D'$.
 %% \seq{\Gamma-\vec{x}}{\alpha}{A}$ and $size(\D') \le size(\D)$ 
 %% $\D' \deq \D$ (when $\D'$ is weakened to reintroduce $\vec{x}$).  
 
-\subsection{Ordered Logic (Product Only)}
+\begin{lemma}[Strengthening Fusion] \label{lem:0-use-strengthening-fusion}
+$\str{\Gamma}{\str{\Delta}{e}} = \str{\Gamma,\Delta}{e}$
+\end{lemma}
 
-\newcommand\dotLd[2]{\ensuremath{\mathord{\odot}}\dsd{L}^{#1}(#2)}
-\newcommand\dotRd[2]{\ensuremath{\mathord{\odot}}\dsd{R}(#1,#2)}
+\subsection{Ordered Logic (Product Only)}
 
 As a first example of an adequacy proof, we consider the following mode
 theory for ordered logic with only $A \odot B$:
@@ -213,10 +274,11 @@ We use the following properties of the mode theory:
   strengthen away any variables that are not in the context descriptor.  
 \end{itemize}
 
-\item The inference rules for $\odot$ are derived as follows:
+\item As discussed in Section~\ref{sec:adequacy:ordered-logical}, the
+  inference rules for $\odot$ are derived as follows:
 
 \[
-\infer[\FL]{\seq{\Gamma^*,z:\F{x \otimes y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma}\odot z \odot \vars{\Gamma'}}{C}}
+\infer[\FL]{\seq{\Gamma^*,z:\F{x \odot y}{x:A^*,y:B^*},{\Gamma'}^*}{\vars{\Gamma}\odot z \odot \vars{\Gamma'}}{C}}
       {\infer[Lemma~\ref{lem:exchange}]
         {\seq{\Gamma^*,{\Gamma'}^*,x:A,y:B}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}
         {\seq{\Gamma^*,x:A,y:B,{\Gamma'}^*}{\vars{\Gamma}\odot x \odot y \odot \vars{\Gamma'}}{C}}}
@@ -249,7 +311,8 @@ Identity and cut are
              {{\seq{\Delta^*}{\vars{\Delta}}{A^*}}}}
 \]
 
-Since we do not notate weakening and exchange, we have
+Since we do not notate weakening and exchange, we can summarize these
+as:
 \[
 \begin{array}{rcl}
 (\dotLd{z}{x,y.d})^* & := & \FLd{z}{x,y.d^*}\\
@@ -317,11 +380,11 @@ That is,
 \[
 \begin{array}{rcl}
 \backtrf{\Trd{1}{x}} & := & x\\
-\backtrf{\FRd{}{1}{e_1/x,e_2/y}} & := & \dotRd{\backtrf{e_1'}}{\backtrf{e_2'}}\\
+\backtrf{\FRd{}{1}{e_1/x,e_2/y}} & := & \dotRd{\backtrf{\str{}{e_1}}}{\backtrf{\str{}{e_2}}}\\
 \backtrf{\FLd{z}{x,y.e}} & := & \dotLd{z}{x,y.\backtrf{e}}\\
 \end{array}
 \]
-where $e_i'$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
+where $\str{x}{e_i}$ is the result of Lemma~\ref{lem:0-use-strengthening}.  
 
 \item Next, we show that for normal $e :
   \seq{\Gamma^*}{\vars{\Gamma}}{A^*}$, ${\backtrf{e}}^* \deq e$.
@@ -340,15 +403,179 @@ so the result follows from the inductive hypothesis.
 
 In the case for \FR, we have
 \[
-(\backtrf{\FRd{}{1}{e_1/x,e_2/y}})^* = (\dotRd{\backtrf{e_1'}}{\backtrf{e_2'}})^* =
-{\FRd{}{1}{({\backtrf{{e_1'}}}^*/x,{\backtrf{{e_2'}}}^*/y)}}
+(\backtrf{\FRd{}{1}{e_1/x,e_2/y}})^* = (\dotRd{\backtrf{\str{}{e_1}}}{\backtrf{\str{}{e_2}}})^* =
+{\FRd{}{1}{({\backtrf{{\str{}{e_1}}}}^*/x,{\backtrf{\str{}{e_2}}}^*/y)}}
 \]
 By the inductive hypothesis, we have 
-${\backtrf{e_i'}}^* \deq e_i'$, but we have $e_i' \deq e_i$ by
+${\backtrf{\str{}{e_i}}}^* \deq \str{}{e_i}$, but we have $\str{}{e_i} \deq e_i$ by
 Lemma~\ref{lem:0-use-strengthening}.  
 
-\item identity 
+\item If $\Identa{x} : \seq{\Gamma^*}{x}{A^*}$, then
+  $\backtrf{\Identa{x}} \deq x$.
+
+\begin{itemize}
+\item Case for $A = P$: We have $\backtrf{(\Trd{1}{x})} = x$ as required.
+
+\item Case for $A = \F{x_1 \otimes x_2}{x_1:A_1^*,x_2:A_2^*}$.  By definition,
+$\Identa{x}$ is 
+$\FLd{x}{x_1,x_2.\FRd{}{1}{\Identa{x_1}/x_1,\Identa{x_2}/x_2}}$, 
+so 
+\backtrf{\Identa{x}} is 
+\[
+\dotLd{x}{x_1,x_2.\dotRd{\backtrf{(\str{x_2}{\Identa{x_1}})}/x_1}{\backtrf{(\str{x_1}{\Identa{x_2}})}/x_2}}
+\]
+Since $x_2$ doesn't occur in \Identa{x_1}, \str{x_2}{\Identa{x_1}}
+is literally the same term as {\Identa{x_1}} (interpreted in a
+bigger context), without rewriting by any definitional equalities.  
+%% FIXME: state lemma 
+Therefore by the inductive hypothesis for $A_1^*$ and $A_2^*$ gives
+\[
+\dotLd{x}{x_1,x_2.\dotRd{{x_1}/x_1}{{x_2}/x_2}}
+\]
+which is equal to $x$ by the $\eta$ law for $A \odot B$.
+
+\end{itemize}
+
 \item cut
+
 \item Next, we show that $\backtrf{{\elim{d^*}}} \deq d$.  
-\item 
+
+The proof is by induction on $d$.  
+
+\begin{itemize}
+\item In the case for $\dotLd{}{}$, expanding definitions, we have
+\[
+\backtrf{\elim{(\dotLd{z}{x,y.d})^*}} \deq
+\backtrf{\elim{\FLd{z}{x,y.d^*}}} \deq 
+\backtrf{\FLd{z}{x,y.\elim{d^*}}} \deq
+{\dotLd{z}{x,y.\backtrf{\elim{d^*}}}}
+\]
+so the inductive hypothesis gives the result.  
+
+\item In the case for $\dotRd{}{}$, we have
+\[
+\begin{array}{ll}
+& \backtrf{\elim{(\dotRd{d_1}{d_2})^*}} \\
+\deq & \backtrf{\elim{\FRd{}{1}{(d_1^*/x,d_2^*/y)}}} \\
+\deq & \backtrf{\FRd{}{1}{(\elim{d_1^*}/x,\elim{d_2^*}/y)}} \\
+\deq & \dotRd{\backtrf{\str{}{\elim{d_1^*}}}/x}{\backtrf{\str{}{\elim{d_2^*}}}/y}
+\end{array}
+\]
+Note that the forward translation weakens $d_i^*$ when it constructs 
+${\FRd{}{1}{(d_1^*/x,d_2^*/y)}}$, and cut elimination does not introduce
+left rules on variables that are not case-analyzed somewhere in the
+proof.  
+%% FIXME: state lemma
+So in this case the 0-use strengthening $\str{}{\elim{d_1}^*}$ will
+simply undo the weakening done in constructing the term, and
+\backtrf{\str{}{\elim{d_1^*}}} equals \backtrf{{\elim{d_1^*}}}.  (Note
+that it doesn't type check to say $\backtrf{\str{}{e}} = e$ in general,
+because $e$ is not always in the image of the translation when
+$\str{}{e}$ is, but in this case it does.)  Therefore the inductive
+hypotheses give the result.  
+
+\item In the case for a variable, we have
+\[
+\backtrf{\elim{x^*}} \deq \backtrf{\elim{x}} \deq \backtrf{\Identa{x}}
+\]
+so the above part gives the result.  
+
+\item In the case for cut, we have
+\[
+\backtrf{\elim{(\Cut{e}{d}{x})^*}} \deq \backtrf{\elim{\Cut{e^*}{d^*}{x}}}
+\deq \backtrf{(\Cuta{\elim{e^*}}{\elim{d^*}}{x})}
+\]
+By the above part, this is 
+\Cut{\backtrf{\elim{e^*}}}{\backtrf{\elim{d^*}}}{x}, 
+so the inductive hypothesis gives the result.  
+
+\end{itemize}
+
+\item For normal derivations $e,e' :
+  \seq{\Gamma^*}{\vars{\Gamma}}{A^*}$, if $e \deqp e'$, then
+  $\backtrf{e} \deq \backtrf{e'}$.
+
+We generalize slightly and prove that for 
+$e,e' : \seq{\Gamma^*,\Delta^*}{\vars{\Gamma}}{A^*}$, 
+if $e \deqp e'$, then $\backtrf{\str{\Delta}{e}} \deq \backtrf{\str{\Delta}{e'}}$.
+
+\begin{itemize}
+
+\item The cases for reflexivity, symmetry, and transitivity follow by
+  induction, using the the correponding rules of source-language
+  equalty.
+
+\item The cases for compatibility all have a similar structure.  For
+  example, suppose we have $\FRd{}{1}{e_1,e_2} \deqp
+  \FRd{}{1}{e_1',e_2}$ because $e_1 \deqp e_1'$.
+  Then by the inductive
+  hypothesis we get $\backtrf{\str{\Delta,\Gamma_2}{e_1}} \deq
+  \backtrf{\str{\Delta,\Gamma_2}{e_1'}}$.
+  We need to show that $\backtrf{\str{\Delta}{\FRd{}{1}{e_1,e_2}}} \deq 
+  \backtrf{\str{\Delta}{\FRd{}{1}{e_1,e_2}}}$.  By expanding definitions
+  on both sides, it suffices to show
+  \[
+    \backtrf{\FRd{}{1}{\str{\Delta}{e_1},\str{\Delta}{e_2}}}
+    \deq 
+    \backtrf{\FRd{}{1}{\str{\Delta}{e_1'},\str{\Delta}{e_2}}}
+  \]
+  and so
+  \[
+    \dotRd{\backtrf{\str{\Gamma_2}{\str{\Delta}{e_1}}}}{\backtrf{\str{\Gamma_1}{\str{\Delta}{e_2}}}}
+    \deq 
+    \dotRd{\backtrf{\str{\Gamma_2}{\str{\Delta}{e_1'}}}}{\backtrf{\str{\Gamma_1}{\str{\Delta}{e_2}}}}
+  \]
+  By Lemma~\ref{lem:0-use-strengthening-fusion}, ${\str{\Gamma_2}{\str{\Delta}{e_1'}}} =
+  {\str{\Gamma_2,\Delta}{e_1'}}$, so the inductive hypothesis gives the
+  result.
+
+\item For the axiom
+
+\[
+\FRd{}{s}{\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots} \deqp \FRd{}{s;(1_{\alpha[\alpha_1/x_1,\ldots,\alpha_{i-1}/x_{i-1},\ldots]}[s_i/x_i])}{\vec{\D_j/x_j}}\\
+\]
+since there are only identity structural transformations in this mode
+theory, $e$ and $e'$ must be syntactically identical terms.
+
+\item For 
+\[
+\D \deqp \FLd{x}{y,z.\Linv{\D}{(y,z)}{x}}
+\]
+we need to show that
+\[
+\backtrf{\str{\Delta}{d}}
+\deq 
+\backtrf{\str{\Delta}{\FLd{x}{y,z.\Linv{\D}{(y,z)}{x}}}}
+\]
+
+We distinguish cases on whether the strengthening deletes the \FL or
+not.
+
+If it does, we need to show that 
+\[
+\backtrf{\str{\Delta}{d}}
+\deq 
+\backtrf{\str{\Delta,x,y,z}{\Linv{\D}{(y,z)}{x}}}
+\]
+FIXME: lemma? 
+
+If it does not, we need to show that 
+\[
+\backtrf{\str{\Delta}{d}}
+\deq 
+\dotLd{x}{y,z.\backtrf{\str{\Delta}{\Linv{\D}{(y,z)}{x}}}}
+\]
+and by $\eta$-expanding the left-hand side gives
+$\dotLd{x}{y,z.\Cut{\backtrf{\str{\Delta}{d}}}{\dotRd{y}{z}}{x}}$.
+
+FIXME: finish
+
+%% But $\Linv{\D}{(y,z)}{x} = \Cuta{\D}{\FR{(y,z)}}{x}$, 
+%% %% is left inverting literally the same as cutting?
+%% %% if not prove that backtranslation takes it to cutting.  
+%% and $\backtrf{\Cuta{\D}{\FR{(y,z)}}{x}} \deq 
+%% \backtrf{\D}[\backtrf{\FR(y,z)}/x]$
+
+\end{itemize}
+
 \end{enumerate}
