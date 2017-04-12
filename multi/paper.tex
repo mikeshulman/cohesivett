@@ -105,6 +105,9 @@
 \newcommand\Linv[3]{\ensuremath{\dsd{linv}(#1,#2,#3)}}
 \newcommand\Rinv[2]{\ensuremath{\dsd{rinv}(#1,#2)}}
 
+\usepackage{ifthen}
+\newboolean{short}
+\setboolean{short}{true}
 
 \begin{document}
 
@@ -183,8 +186,8 @@ design new ones.
 \end{abstract}
 
 \input{intro}
+\input{org}
 \input{syntax}
-%%SHORT   \input{synprop-short}
 \input{examples}
 \input{synprop-long}
 \input{equational}

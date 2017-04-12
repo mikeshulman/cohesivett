@@ -10,10 +10,10 @@
 \subsection{Mode Theories}
 
 \begin{figure}
-\framebox{Signatures \wfsig{\Sigma}}
-
 \[
 \begin{array}{l}
+\framebox{Signatures \wfsig{\Sigma}}
+\qquad
 \infer{\wfsig{\cdot}}
       {}
 \qquad
@@ -40,24 +40,19 @@
         \oftps{\psi}{\Sigma}{\alpha}{p} & 
         \oftps{\psi}{\Sigma}{\alpha'}{p} 
       }
-\end{array}
-\]
-
+\\\\
 \framebox{Mode contexts $\psi \, \dsd{ctx}_{\Sigma}$}
-
-\[
+\qquad
 \infer{\cdot \, \dsd{ctx}_{\Sigma}}{}
 \qquad
 \infer{(\psi, x:p) \, \dsd{ctx}_{\Sigma}}
       {\psi \, \dsd{ctx}_{\Sigma} & 
         p \, \dsd{mode} \in \Sigma
       }
-\]
-
-\framebox{Context descriptors/mode morphisms \oftps{\psi}{\Sigma}{\alpha}{p},
+\\\\
+\framebox{Context descriptors \oftps{\psi}{\Sigma}{\alpha}{p},
   where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$}
-
-\[
+\qquad
 \infer{\oftps{\psi}{\Sigma}{x}{p}}
       {x:p \in \psi}
 \quad
@@ -65,28 +60,24 @@
       {(\dsd{c} : p_1,\ldots,p_n \to q) \in \Sigma &
        \oftps{\psi}{\Sigma}{\alpha_i}{p_i}
       }
-\]
-
+\\\\
 \framebox{Mode Substitutions \oftps{\psi}{\Sigma}{\gamma}{\psi'}, where
   $\psi \, \dsd{ctx}_\Sigma$ and $\psi' \, \dsd{ctx}_\Sigma$ }
-
-\[
+\qquad
 \infer{\oftps{\psi}{\Sigma}{\cdot}{\cdot}}{}
 \qquad
 \infer{\oftps{\psi}{\Sigma}{\gamma,\alpha/x}{\psi',x:p}}
       {\oftps{\psi}{\Sigma}{\gamma}{\psi'} &
         \oftps{\psi}{\Sigma}{\alpha}{p}}
-\]
 
-\framebox{Equalities of mode morphisms
+\ifthenelse{\boolean{short}}{}
+{\framebox{Equalities of mode morphisms
   \deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p},
 where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$
 and \oftps{\psi}{\Sigma}{\alpha}{p}
 and \oftps{\psi}{\Sigma}{\alpha'}{p}
 }
-
-\[
-\begin{array}{c}
+\qquad
 \infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
 \qquad
 \infer{\deqtms{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p}}
@@ -103,23 +94,20 @@ and \oftps{\psi}{\Sigma}{\alpha'}{p}
 \qquad
 \infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
       {(\alpha \deq \alpha' : \psi \to p) \in \Sigma}
-\end{array}
-\]
-
-\framebox{Structural transformations/mode 2-morphisms
-  \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p},
-same presuppositions as \deq
 }
-
-\[
-\begin{array}{c}
-\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
+\\\\
+\framebox{Structural transformations \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p},
+where \oftps{\psi}{\Sigma}{\alpha}{p}
+and \oftps{\psi}{\Sigma}{\alpha'}{p}
+}
 \qquad
+\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
+\\\\
 \infer{\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_3}{p}}
       {\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p} &
        \wfsps{\psi}{\Sigma}{\alpha_2}{\alpha_3}{p} &
       }
-\\ \\
+\qquad
 \infer{\wfsps{\psi,\psi'}{\Sigma}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
       {\wfsps{\psi,x:p,\psi'}{\Sigma}{\beta}{\beta'}{q} &
        \wfsps{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
@@ -151,11 +139,8 @@ mode, but only notation for declaring a function symbol in the signature
 (it cannot occur on the right-hand side of a typing judgement).  For
 example, the type and term constructors for a monoid $(\odot,1)$ are
 represented by a signature
-\[
-\dsd{p} \, \dsd{mode},
-\dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
-1 : (\to \dsd{p})
-\]
+$\dsd{p} \, \dsd{mode}, \dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
+1 : (\to \dsd{p})$.  
 
 The judgement $\psi \, \dsd{ctx}_\Sigma$ defines well-formedness of a
 context of variable declarations relative to a signature $\Sigma$: each
@@ -168,7 +153,9 @@ the correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
 defines a substitution as a tuple of terms in the standard way.  The
 context $\psi$ in these judgements enjoys the cartesian structural
 properties (associativity, unit, weakening, exchange, contraction).
-Simultaneous substitution into terms is defined as usual.
+Simultaneous substitution into terms and substitutions is defined as
+usual (e.g.  $x[\rho,\alpha/x] := \alpha$ and
+$\dsd{c}(\vec{\alpha_i})[\gamma] := \dsd{c}(\alpha_i[\gamma])$).
 
 Returning to the top of the figure, the final two rules of the judgement
 $\wfsig{\Sigma}$ permit two additional forms of signature declaration.
@@ -181,8 +168,9 @@ laws.  For example, to specify the right unit law for the above monoid
 $(\odot,1)$, we add an axiom $(x \odot 1 \deq x : (x : \dsd{p}) \to
 \dsd{p})$ to the signature, which can be read as ``$x \odot 1$ is equal
 to $x$ as a morphism from $(x : \dsd{p})$ to \dsd{p}''.  The judgement
-\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} is the least congruence closed
-under these axioms.
+\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} (omitted from the figure; the
+rules are the same as for $\spr$ plus symmetry) is the least congruence
+closed under these axioms.
 
 The second of these extends a signature with a directed structural
 transformation axiom between two terms $\alpha$ and $\alpha'$ that have
@@ -205,9 +193,6 @@ An alternative to including the judgement $\alpha \deq \alpha'$ would be
 to present a desired equation $\alpha \deq \alpha'$ as an isomorphism,
 with transformation axioms $s : \alpha \spr \alpha'$ and $s' : \alpha'
 \spr \alpha$.  
-%% (and, writing $s_1;s_2$ for derivations by the above
-%% transitivity rule, equations $s;s' = 1_{\alpha}$ and $s';s =
-%% 1_{\alpha'}$)
 While this is conceptually and technically sufficient, we have found it
 helpful in examples to use ``strict'' equality of context descriptors.
 This simplifies the description of some situations, though the
@@ -250,7 +235,7 @@ the signature $\Sigma$ in the judgement forms.
 \framebox{Types $A,B,C$ \quad \wftype{A}{p}}
 \qquad
 \infer{\wftype{P}{p}}{}
-\\ \\
+\qquad
 \infer{\wftype{\F{\alpha}{\Delta}}{q}}
       {\oftp{\psi}{\alpha}{q} &
         \wfctx{\Delta}{\psi}}
@@ -273,7 +258,7 @@ the signature $\Sigma$ in the judgement forms.
 \\ \\
 \infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
       {x:P \in \Gamma & \beta \spr x}
-\\ \\
+\qquad
 \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
       {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
 \quad
@@ -289,10 +274,10 @@ the signature $\Sigma$ in the judgement forms.
 %%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
 \\ \\
 \infer[\UL]{\seq{\Gamma}{\beta}{C}}
-      {\begin{array}{l}
-          x:\U{x.\alpha}{\Delta}{A} \in \Gamma \\
-          \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} \\
-          \seq{\Gamma}{\gamma}{\Delta} \\
+      {\begin{array}{llll}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma &
+          \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+          \seq{\Gamma}{\gamma}{\Delta} &
           \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
        \end{array}
       }
@@ -301,7 +286,7 @@ the signature $\Sigma$ in the judgement forms.
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
 \\ \\
 \framebox{\seq{\Gamma}{\gamma}{\Delta} where $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and  $\oftp{\psi}{\gamma}{\psi'}$}
-\\ \\
+\qquad
 \infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
       {}
 \qquad
@@ -340,6 +325,7 @@ implies $x : p_i$ in $\psi$ with \wftype{A_i}{p_i}, we think of $\Gamma$
 as binding variable names both in $\alpha$ and for use in the
 derivation.
 
+\ifthenelse{\boolean{short}}{}{
 As discussed in the introduction, a guiding principle is to make the
 following rules admissible (see Section~\ref{sec:synprop-long} for
 details), which express respect for structural transformations and
@@ -366,6 +352,7 @@ structurality-over-structurality:
       {\seq{\Gamma,x:A,y:A}{\alpha}{C}}
 \end{array}
 \]
+}
 
 We now explain the rules for the sequent calculus; the reader may wish
 to refer to the examples in Section~\ref{sec:exampleencodings} in
@@ -418,10 +405,8 @@ typing of $\gamma$ implicit, though there is officially a requirement
 $\oftp{\psi}{\gamma}{\psi'}$ where $\wfctx{\Gamma}{\psi}$ and
 $\wfctx{\Delta}{\psi'}$, as required for the second premise to be a
 well-formed sequent.  Another way to understand this rule is to begin
-with the ``axiomatic \FR''
-\[
-\infer[\FR^*]{\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}{}
-\]
+with the ``axiomatic \FR'' instance 
+$\FR^* :: {\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}{}$
 which says that there is a map from $\Delta$ to \F{\alpha}{\Delta} along
 $\alpha$.  Then, in the same way that a typical right rule for
 coproducts builds a precomposition into an ``axiomatic injection'' such
@@ -448,9 +433,7 @@ B$ is represented by \U{x.x \otimes y}{y:A}{B}, which says to extend the
 descriptor $\beta$ being used to prove the \dsd{U} is substituted
 \emph{for $x$} in $\alpha$ (dual to \FL, which substituted $\alpha$ into
 $\beta$).  The ``axiomatic'' \UL\/ instance
-\[
-\infer[\UL^*]{\seq{\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}{}
-\]
+$\UL^* :: {\seq{\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}$
 says that \U{x.\alpha}{\Delta}{A} together with $\Delta$ has a map to
 $A$ along $\alpha$.  (The bound $x$ in $x.\alpha$ subscript is tacitly
 renamed to match the name of the assumption in the context, in the same
@@ -502,5 +485,4 @@ sums $\wftype{A_p + B_p}{p}$ if
 %%       {\seq{\Gamma}{\alpha}{B}}
 \end{array}
 \]
-
 

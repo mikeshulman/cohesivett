@@ -1,0 +1,107 @@
+
+First, we thank both reviewers for their time and effort and for their
+encouraging and positive comments about the main ideas of the paper.  We
+very much appreciate the detailed feedback on how to revise the paper.
+We will respond to a few points the reviewers raised.
+
+== Review 1 ==
+
+Regarding the issue of completeness for the examples (back translations,
+showing that the encoding proves exactly the same sequents as the
+source), we do discuss this in Section 3, though in retrospect not
+nearly as prominently or as clearly as we should have---our apologies.
+On page 7, in the ordered logic example, we say that Γ ⊢ A in ordered
+logic if and only if Γ∗ ⊢_\overbar{Γ} A∗ in the framework, and
+subsequent representations are stated as (or intended to be) "if and
+only if"'s as well.  In the affine logic section on page 8, we refer to
+(and comment on) the full proof of adequacy for affine logic in the appendix,
+which is on page 19 of the submission, and shows the translation in both
+directions.  We included this one example to illustrate the techniques,
+but we have written out formal logical adequacy proofs (translations in
+both directions on derivations) for a representative selection of
+examples, including ordered products, affine products and implications,
+n-use functions, cartesian products and implications, a comonad, and a
+non-strong monad, and a strong monad.  The proofs all have roughly the
+same form as the one included in the appendix of the submission.  If the
+reviewer would like to see the details, they are available on pages
+46-65 here:
+http://dlicata.web.wesleyan.edu/tmp/lics-response.pdf
+If the paper is accepted, we will remove the details of one or two
+example encodings in order to make space for an adequacy proof, so that
+this issue is clarified for future readers.
+
+Regarding the categorical semantics: In Section 4, we both showed the
+interpretation of the sequent calculus rules in any bifibration and very
+quickly (in a paragraph on page 12) sketched the construction of the
+syntactic bifibration.  We have now checked the remaining equational
+parts of both these theorems in detail, and proved [equational
+soundness] that the beta-eta laws for F and U types are true in any
+bifibration, and [completeness] that the sketch of a syntactic
+bifibration given in the submission does indeed work given these
+equations on derivations.  If the reviewer would like to see them, the
+details are on pages 35-45 at the above link.  We have not yet proved
+that the functor from the syntactic bifibration given by the soundness
+proof is unique.
+
+As for the motivation for the categorical semantics, we have two.
+First, because we intend to use the framework to design new type
+theories a la Example L (spatial type theory, part of the cohesive
+homotopy type theory line of work) motivated by particular semantic
+situations, in collaboration with category theorists, we think it is
+important to have a categorical paraphrase of what the framework itself
+is, to help our collaborators understand it.  Second, we agree that most
+of the insight is already contained in the individual type/category
+correspondences that are included as special cases of the multicategory
+framework, and that the multicategories are just a way to encapsulate
+all of those correspondences in one theorem.  But we do find a bit of
+additional insight in the generalization: many mathematicians who we
+talk to often wonder "what exactly is a type theory?". Here we have a
+large class of interesting type theories that can be identified with a
+class of more "mathematical" objects, namely cartesian
+2-multicategories.  Moreover, these type theories are themselves
+presented using a type theory of modes, mode morphisms, and
+transformations, which can therefore be regarded as a sort of "(2-)type
+theory of type theories", analogous to the "2-category of categories".
+While we do not think this is a complete or final answer, we do think
+the paper makes some contribution towards defining what a substructural
+or modal type theory is in more mathematical terms.
+
+== Review 2 ==
+
+The reviewer asks about the formal details of signatures.  We apologize
+for describing this in an informal and confusing way, and have revised
+Section 2.1 accordingly.  A signature is a list, each element of which
+is one of 4 kinds of declarations.
+
+The first kind declares a constant naming an atomic/base *type* (written p).
+
+The second kind declares, one level down, an n-ary *term*
+constant/function symbol, which has a list of argument types p_1...p_n
+and a result type q (the notation p_1,..., p_n -> q is not itself a
+type/mode; it is just notation for declaring such a function
+symbol/constant in the signature).  Terms \alpha are defined inductively
+as either variables or function symbols applied to subterms of the
+correct types.
+
+The third form of declaration is an equational axiom between two terms
+\alpha and \alpha' that have the same mode p in the same context \psi
+relative to the prior signature.  This accounts for the 
+(\alpha \equiv \alpha') axioms in the examples.  
+
+The fourth form of declaration is a structural transformation axiom
+between two terms \alpha and \alpha' that have the same mode p in the
+same context \psi relative to the prior signature---this is the notation
+"\alpha => \alpha' \in \Sigma" used in the rules and examples.  
+
+In the examples, we thought it would be more readable to suppress the
+formal p_1,..., p_n -> q notation for introducing function symbols by
+displaying a function symbol applied to varaibles of the appropriate types,
+such as x:n,y:n \vdash x \circ y:n for \circ : (p,p) -> p.  
+
+If the reviewer would like to see the revision before deciding on the
+paper's fate, the above link includes a formal definition of signatures
+on page 6 as well as discussion along these lines.  We hope this
+discussion helps the reviewer with understanding the technical details
+of signatures, and we will revise the remainder of Section 2 as best as
+we can.
+

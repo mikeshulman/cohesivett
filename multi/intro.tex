@@ -117,12 +117,9 @@ the context descriptor term $\alpha$.  We analyze structural properties
 as \emph{equations}, or more generally \emph{directed transformations},
 on such terms.  For example, to specify linear logic, we will add a unit
 element $1 : \dsd{n}$ together with equations making $(\odot,1)$ into a
-commutative monoid:
-\[
-x \odot (y \odot z) = (x \odot y) \odot z \qquad
-x \odot 1 = x = 1 \odot x \qquad
-x \odot y = y \odot x 
-\]
+commutative monoid ($x \odot (y \odot z) = (x \odot y) \odot z$ and 
+$x \odot 1 = x = 1 \odot x$ and 
+$x \odot y = y \odot x$)
 so that the context descriptors ignore associativity and order.  To get
 BI, we add an additional commutative monoid $(\times,\top)$ (with
 weakening and contraction, as discussed below), so that a BI context
@@ -157,11 +154,6 @@ product structures, and in some cases~\citep{ls16adjoint} it is
 important that there can be more than one structural transformation
 between a given pair of context descriptors.
 
-%% In summary, to specify a particular substructural or modal logic / type
-%% theory, one gives constants generating context descriptors $\alpha$,
-%% with equations $\alpha = \beta$ and transformations $\alpha \spr \beta$
-%% expressing structural properties.  
-
 A guiding principle of the framework is a meta-level notion of
 \emph{structurality over structurality}.  For example, we always have
 \emph{weakening over weakening}: if \seq{\Gamma}{\alpha}{A} then
@@ -188,7 +180,7 @@ cut together by sequents with $\beta = x_1 \odot \ldots \odot x_n
 \odot x$ and $\alpha = y_1 \odot \ldots \odot y_n$ then
 $\beta[\alpha/x] = x_1 \odot \ldots \odot x_n \odot y_1 \odot \ldots \odot y_n$
 correctly deletes $x$ and replaces it with the variables from $\Delta$.
-Moreover, in more subtle situations such as BI, the substitution will
+In more subtle situations such as BI, the substitution will
 insert the resources used to prove the cut formula in the correct place
 in the tree.
 
@@ -210,7 +202,15 @@ prove that \dsd{F} is left-invertible and \dsd{U} is right-invertible.
 %% $\U{x.\alpha}{\Delta^{\mathord{+}}}{A^{\mathord{-}}}^{\mathord{-}}$).
 In linear logic terms, our \dsd{F} and \dsd{U} cover both the
 multiplicatives and exponentials; additives can be added separately by
-essentially the usual rules.
+the usual rules.  
+
+In summary, to specify a particular substructural or modal logic / type
+theory, one gives constants generating context descriptors $\alpha$,
+with equations $\alpha = \beta$ and transformations $\alpha \spr \beta$
+expressing structural properties.  We discuss many examples of
+\emph{logical adequacy} theorems, showing that a sequent can be proved
+in a standard sequent calculus for a logic iff its embedding can be
+proved in the framework.  
 
 Being a very general theory, our framework treats the object-logic
 structural properties in a general but na\"ive way, allowing an
@@ -229,12 +229,9 @@ theory on sequent derivations that identifies different placements of
 the same structural rules.  This equational theory can be used to prove
 correctness of such optimizations not just at the level of provability,
 but also identity of derivations---which matters for our intended
-applications to internal languages.  We discuss many examples of
-\emph{logical adequacy} theorems, showing that a sequent can be proved
-in a standard sequent calculus for a logic iff its embedding can be
-proved in the framework, and preliminary work on \emph{equational
-  adequacy}, which extends these correspondences to isomorphisms of
-definitional-equality-classes of derivations.
+applications to internal languages.  We discuss some preliminary work on
+\emph{equational adequacy}, which extends the logical correspondence to
+isomorphisms of definitional-equality-classes of derivations.
 
 Semantically, the logic corresponds to a functor between
 \emph{2-dimensional cartesian multicategories} which is a fibration in
@@ -252,17 +249,21 @@ fibration conditions (similar to
 the structural transformations and the presence of \dsd{F} and \dsd{U}
 types.  We prove that the sequent calculus and the equational theory are
 sound and complete for this semantics: the syntax can be interpreted in
-any bifibration, and itself determines one.
+any bifibration, and itself determines one.  This semantics shows that a
+class of interesting type theories can be identified with a class of
+mathematical objects, fibrations of cartesian 2-multicategories, thus
+providing a partial answer to the question of characterizing what a
+substructural or modal type theory is in mathematical terms.
 
 Our framework builds on many approaches to substructural and modal logic
 in the literature; we mention but a few of the most closely related
-systems.  Logical rules that act at a leaf of a tree-structued context
+systems.  Logical rules that act at a leaf of a tree-structured context
 go back to the Lambek calculus~\citep{lambek58calculus}.  A rich
 collection of context structures that correspond to type constructors
 plays a central role in display logic~\citep{belnap82display}.
 \citet{atkey04separation}'s $\lambda$-calculus for resource separation
-corresponds to the case of our framework with one mode, but where there
-is at most one 2-cell between a given pair of 1-cells; at the logical
+corresponds to the case of our framework with one mode, where there is
+at most one 2-cell between a given pair of 1-cells; at the logical
 level, our calculus is a unification of this with the multimode adjoint
 logic of \citet{reed09adjoint}.  Algebraic resource annotations on
 variables are used to track modalities in Agda's
@@ -279,7 +280,7 @@ conditions are encoded in the language of context descriptors and the
 definition of types from them.  Moreover, none of these existing
 approaches allow for proof-relevant 2-cells/structural rules, and their
 presence (and the equational theory we give for them) is important for
-some applications to extensions of homotopy type theory.  A point of
+our applications to extensions of homotopy type theory.  A point of
 contrast with substructural logical
 frameworks~\citep{cervesatopfenning02llf,watkins+03clf-tr,reed09thesis}
 is that logics are ``embedded'' in our calculus (giving a type
@@ -289,15 +290,4 @@ derivations as a type.  This way, we obtain cut elimination for object
 languages as a corollary of cut elimination for the framework.
 %% Similar semantic structures have come up recently
 %% in~\citep{zeilberger,mellieszeilberger,johann}.  
-
-The remainder of this paper is organized as follows.  In
-Section~\ref{sec:syntax}, we present the rules of the logic.  In
-Section~\ref{sec:exampleencodings}, we discuss how a number of logics
-are represented.  In Section~\ref{sec:synprop-long}, we show how
-identity and cut are implemented.  In Section~\ref{sec:equational}, we
-give an equational theory on derivations.  In
-Section~\ref{sec:semantics}, we discuss the logic's categorical
-semantics.  In Section~\ref{sec:adequacy-long}, we return to the
-examples, proving logical adequacy of their representation.  In
-Section~\ref{sec:adequacy-equational}, we discuss one example of
-equational adequacy.
+ 

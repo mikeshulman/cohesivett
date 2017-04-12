@@ -1,0 +1,188 @@
+\documentclass[letterpaper,USenglish,numberwithinsect]{lipics-v2016}
+%% \usepackage{microtype}%if unwanted, comment out or use option "draft"
+
+%%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
+%%SHORT \IEEEoverridecommandlockouts
+
+\usepackage{microtype}
+
+\usepackage{times}
+\usepackage{authblk}
+%% \usepackage{fullpage}
+
+\usepackage[all]{xy}
+\usepackage{multicol}
+\usepackage{mathptmx}
+\usepackage{color}
+%% \usepackage[cmex10]{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{../drl-common/proof}
+\usepackage{../drl-common/typesit}
+\usepackage{../drl-common/typescommon}
+%% \usepackage{../drl-common/theorem-envs}
+\usepackage[sort]{natbib}
+%% \usepackage{arydshln}
+\usepackage{graphics}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{tipa}
+
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{fancyvrb}
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+
+\newcommand\Bx[2]{\ensuremath{\Box_{#1} \, {#2}}}
+\newcommand\Crc[2]{\ensuremath{\bigcirc_{#1} \, {#2}}}
+\newcommand\Dia[2]{\ensuremath{\Diamond_{#1} \, {#2}}}
+\newcommand\Flat[1]{\ensuremath{\flat \, {#1}}}
+\newcommand\Sharp[1]{\ensuremath{\sharp \, {#1}}}
+\newcommand{\sh}{\text{\textesh}}
+
+\newcommand\D{\ensuremath{d}} %% originally was mathcal{D} but switched notation for derivations
+\newcommand\E{\ensuremath{e}}
+
+\newcommand\magicwand{\mathrel{-\mkern-6mu*}}
+\newcommand\mor[3]{\ensuremath{#2} \longrightarrow_#1 #3}
+\newcommand\C{\ensuremath{\mathcal{C}}}
+\newcommand\deq{\ensuremath{\equiv}}
+\newcommand\spr{\ensuremath{\Rightarrow}} %% structural property/2-cell
+\newcommand\seq[3]{\ensuremath{#1 \vdash_{#2} #3}}
+\newcommand\seql[3]{\ensuremath{#1 \vdash^{\dsd{#2}} #3}}
+\newcommand\F[2]{\ensuremath{\dsd{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\dsd{U}_{#1}(#2 \mid #3)}}
+\newcommand\Uempty[2]{\ensuremath{\dsd{U}_{#1}(#2)}}
+\newcommand\Fsymb[0]{\dsd{F}}
+\newcommand\Usymb[0]{\dsd{U}}
+\newcommand\tsubst[2]{\ensuremath{#1[#2]}}
+\renewcommand\subst[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\wftype[2]{\ensuremath{#1 \,\, \dsd{type}_{#2}}}
+\renewcommand\wfctx[2]{\ensuremath{#1 \,\, \dsd{ctx}_{#2}}}
+\newcommand\modeof[1]{\ensuremath{\hat{#1}}}
+\newcommand\many[1]{\ensuremath{\overline{#1}}}
+\renewcommand{\oftp}[3]{\ensuremath{#1 \, \vdash #2 \, \dcd{:} \, #3}}
+\newcommand\FL{\dsd{FL}}
+\newcommand\FR{\dsd{FR}}
+\newcommand\UL{\dsd{UL}}
+\newcommand\UR{\dsd{UR}}
+\newcommand\lolli\multimap
+\newcommand\la\dashv
+
+\def\M{\mathcal{M}}
+\def\toiso{\xrightarrow{\sim}}
+\let\To\Rightarrow
+%\newcommand\compo[2]{\ensuremath{#1 \circ #2}}
+\newcommand\compv[2]{\ensuremath{#1 \cdot #2}}
+\newcommand\comph[2]{\ensuremath{#1 \mathbin{\circ_2} #2}}
+
+\def\llb{\llbracket}
+\def\rrb{\rrbracket}
+
+\newcommand\seqa[2]{\seql{#1}{a}{#2}}
+\newcommand\seqc[2]{\seql{#1}{c}{#2}}
+\newcommand\splits{\rightrightarrows}
+\newcommand\vars[1]{\ensuremath{\overline{#1}}}
+
+\newcommand{\ignore}[1]{}
+
+\newcommand\FLd[3]{\ensuremath{\dsd{split} \, #2 \, = \, {#1} \, \dsd{in} \, #3}}
+\newcommand\FRd[3]{\ensuremath{\Trd{#2}{#3}}}
+\newcommand\ULd[6]{\ensuremath{\Trd{#3}{\dsd{let} \, #5 \, = \, #1(#4) \, \dsd{in} \, #6 }}}
+\newcommand\URd[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+\newcommand\Ident[1]{\ensuremath{{#1}}}
+\newcommand\Cut[3]{\ensuremath{#1[#2/#3]}}
+\newcommand\Cuta[3]{\ensuremath{#1\{#2/#3\}}}
+\newcommand\Cutta[2]{\ensuremath{#1\{#2\}}}
+\newcommand\Trda[2]{\ensuremath{#1_*\{#2\}}}
+\newcommand\Identa[1]{\ensuremath{{\dsd{id}\{#1\}}}}
+\newcommand\FRs{\ensuremath{\FR^*}}
+\newcommand\ULs[1]{\ensuremath{\UL^*_{#1}}}
+
+\newcommand\elim[1]{#1\mathord{\downarrow}}
+\newcommand\deqp{\deq_{\dsd p}}
+\newcommand\Linv[3]{\ensuremath{\dsd{linv}(#1,#2,#3)}}
+\newcommand\Rinv[2]{\ensuremath{\dsd{rinv}(#1,#2)}}
+
+\usepackage{ifthen}
+\newboolean{short}
+\setboolean{short}{true}
+
+\begin{document}
+
+\title{A Fibrational Framework for Substructural and Modal Logics}
+%% \titlerunning{A Sample LIPIcs Article}
+
+\author[1]{{Daniel R. Licata}}
+\author[2]{{Michael Shulman}}
+\author[1]{{Mitchell Riley}}
+\affil[1]{Wesleyan University\thanks{This material is based on research sponsored by The United States Air Force Research Laboratory under agreement number FA9550-15-1-0053.  The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright notation thereon.  The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of the United States Air Force Research Laboratory, the U.S. Government, or Carnegie Mellon University.}}
+\affil[2]{University of San Diego$^*$}
+
+\Copyright{Daniel R. Licata, Michael Shulman, Mitchell Riley}
+
+\authorrunning{D. Licata and M. Shulman and M. Riley} 
+
+%% \subjclass{Dummy classification -- please refer to \url{http://www.acm.org/about/class/ccs98-html}}% mandatory: Please choose ACM 1998 classifications from http://www.acm.org/about/class/ccs98-html . E.g., cite as "F.1.1 Models of Computation". 
+%% \keywords{Dummy keyword -- please provide 1--5 keywords}% mandatory: Please provide 1-5 keywords
+
+\maketitle
+
+\begin{abstract}
+We define a general framework that abstracts the common features of many
+intuitionistic substructural and modal logics.  The framework is a
+sequent calculus / normal-form type theory parametrized by a \emph{mode
+  theory}, which is used to describe the structure of contexts and the
+structural properties they obey.  The framework makes use of resource
+annotations, where we pair the context itself, which obeys standard
+structural properties, with a term, drawn from the mode theory, that
+constrains how the context can be used.  Product types, implications,
+and modalities are defined as instances of two general connectives, one
+positive and one negative, that manipulate these resource annotations.
+%% We show that specific mode theories can express non-associative,
+%% ordered, linear, affine, relevant, and cartesian products and
+%% implications; monoidal and non-monoidal comonads and adjunctions; strong
+%% and non-strong monads; n-linear variables; bunched implications; and the
+%% adjunctions that arose in our work on homotopy type theory.  
+We prove cut (and identity) admissibility independently of the mode
+theory, obtaining it for many different logics at once. Further, we
+give a general equational theory on derivations / terms that, in
+addition to the usual beta-eta rules, characterizes when two derivations
+differ only by the placement of structural rules.  Finally, we give an
+equivalent semantic presentation of these ideas, in which a mode theory
+corresponds to a 2-dimensional cartesian multicategory, the
+framework corresponds to another such multicategory with a functor to
+the mode theory, and the logical connectives make this into a bifibration.
+%% The logical connectives have universal properties
+%% relative to this functor, making it into a bifibration.  The sequent
+%% calculus rules and the equational theory on derivations are sound and
+%% complete for this.  The resulting framework can be used both to
+%% understand existing logics / type theories and to design new ones.
+\end{abstract}
+
+\input{intro} 
+
+The remainder of this paper is organized as follows FIXME.  
+
+\input{syntax}
+\input{synprop-short}
+%% \input{examples}
+\input{equations-short}
+\input{semantics-very-short}
+%% \input{adequacy-appendix}
+%% \input{adequacy-eq}
+\input{conclusion}
+
+\setlength{\bibsep}{-1pt} %% dirty trick: make this negative
+{ \small
+\linespread{0.70}
+\bibliographystyle{abbrvnat}
+\bibliography{../drl-common/cs}
+}
+
+\end{document}
