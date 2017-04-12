@@ -313,9 +313,9 @@ by $\eta$ and $\beta$ for $\Usymb$.
 \begin{enumerate}
 \item $\Trda{s}{\D} \deq \Trd{s}{\D}$ (for normal \D)
 \item $x \deq \Identa{x}$
-\item $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRd{}{1}{\vec{y_i/x_i}}}{x_0}$
-\item $\Rinv{\D}{\vec{y}} \deq \Cut{\ULd{x_0}{}{1}{\vec{y_i/x_i}}{z.z}}{\D}{x_0}$
-\item $\Cuta{\E}{\D}{x} \deq \Cut{\E}{\D}{x}$ ((for normal \D,\E)
+\item $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRs}{x_0}$
+\item $\Rinv{\D}{\vec{y}} \deq \Cut{\ULs{x_0}}{\D}{x_0}$
+\item $\Cuta{\E}{\D}{x} \deq \Cut{\E}{\D}{x}$ (for normal \D,\E)
 \item $\D \deq \elim{\D}$
 \item If $\D \deqp \D'$ then $\D \deq \D'$
 \item If $\elim{\D} \deqp \elim{\D'}$ then $\D \deq \D'$.  
@@ -381,8 +381,8 @@ $\Identa{x} \deq x$ is straightforward:
 &\deq x
 \end{align*}
 \end{itemize}
-For $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRd{}{1}{\vec{y_i/x_i}}}{x_0}$
-TODO: is this $\Cut{\D}{\FRs}{x_0}$
+
+For $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRs}{x_0}$:
 \begin{itemize}
 \item \begin{align*}
 \Linv{\Trd{s}{x}}{\vec{x}}{x_0} 
@@ -441,6 +441,87 @@ by the $\beta$ rule, associativity of cut and the $\eta$ rule.
 by the Lemma, associativity of cut twice, the interchange law, and the Lemma.
 \end{itemize}
 
+
+For $\Rinv{\D}{\vec{y}} \deq \Cut{\ULs{x_0}}{\D}{x_0}$:
+\begin{itemize}
+\item \begin{align*}
+\Rinv{\URd{\Delta.\D}}{\vec{x}} &= \D[\Delta \leftrightarrow \vec{x}]\\
+&\deq \Cut{\ULs{x_0}}{\URd{\Delta.\D}}{x_0}
+\end{align*}
+by $\beta$.
+\item \begin{align*}
+\Rinv{\FLd{x}{\Delta.\D}}{\vec{x}} 
+&= \FLd{x}{\Delta.\Rinv{\D}{\vec{x}}} \\
+&\deq \FLd{x}{\Delta.\Cut{\ULs{x_0}}{\D}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\ULs{x_0}}{(\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x})}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\ULs{x_0}}{\FLd{x}{\Delta.\D}}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\ULs{x_0}}{\FLd{x}{\Delta.\D}}{x_0}
+\end{align*}
+by $\beta$, associativity of cut and $\eta$.
+\item \begin{align*}
+\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}} 
+&= \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Rinv{\D}{\vec{x}}}\\
+&\deq \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{\ULs{x_0}}{\D}{x_0}}\\
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{\ULs{x_0}}{\D}{x_0}[\ULs{x}[\vec{d_i/y_i}]/z]} \\
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{\ULs{x_0}}{\D[\ULs{x}[\vec{d_i/y_i}]/z]}{x_0}} \\
+&\deq \Cut{\Trd{(1_\alpha)}{\ULs{x_0}}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{\ULs{x_0}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{\ULs{x_0}}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0}
+\end{align*}
+by the Lemma, associativity of cut, the interchange law, and the Lemma.
+\end{itemize}
+
+Cut: First few cases are immediate by applying the above. The interesting ones:
+\begin{itemize}
+\item \begin{align*}
+\Cuta{\FRd{}{s}{\E}}{\D}{x_0}
+&= {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cuta{\E}{\D}{x_0}}}\\
+&\deq {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
+&\deq \Cut{\FRd{}{s}{\E}}{\D}{x_0}
+\end{align*}
+by the same argument as used in the case for $\Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0}$. TODO: make it a lemma then?
+\item \begin{align*}
+\Cuta{\URd{\Delta.\E}}{\D}{x_0} 
+&= \URd{\Delta.\Cuta{\E}{\D}{x_0}}\\
+&\deq \URd{\Delta.\Cut{\E}{\D}{x_0}}\\
+&\deq \Cut{\URd{\Delta.\E}}{\D}{x_0} 
+\end{align*}
+by the same argument a used in $\Linv{\URd{\Delta.\D}}{\vec{x}}{x_0}$.
+\item If $x \neq x_0$
+\begin{align*}
+\Cuta{\FLd{x}{\Delta.\E}}{\D}{x_0} 
+&= \FLd{x}{\Delta.\Cuta{\E}{\Linv{\D}{\Delta}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\E}{\Cut{\D}{\FRs}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\E}}{\FRs}{x}}{\Cut{\D}{\FRs}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\E}}{\D}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\FLd{x}{\Delta.\E}}{\D}{x_0} 
+\end{align*}
+by $\beta$ applied to $e$, associativity of cut, and $\eta$.
+\item If $x \neq x_0$
+\begin{align*}
+\Cuta{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} 
+&= {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cuta{\E_i}{\D}{x_0})/x_i}}{z.\Cuta{\E'}{\D}{x_0}}} \\
+&\deq {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} 
+\end{align*}
+by the same argument as used in $\Linv{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}{x_0}$.
+\item For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
+\begin{align*}
+\Cuta{\E}{\FLd{x}{\Delta.\D}}{x_0} 
+&= \FLd{x}{\Delta.\Cuta{\Linv{\E}{\Delta}{x}}{\D}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\E}{\FRs}{x}}{\D}{x_0}} \\
+&\deq \Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} 
+\end{align*}
+by the same argument as used for $\Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0}$.
+\item For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
+\begin{align*}
+\Cuta{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+&= \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{\E}{\D_2}{x_0}} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x_0}} 
+&\deq \Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+\end{align*}
+by the same argument as used for $\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}$.
+\end{itemize}
 \end{proof}
 
 \begin{conjecture}{Completeness of Permutative Equality.}\\ \label{thm:permutative-completeness}
