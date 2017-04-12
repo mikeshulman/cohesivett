@@ -9,15 +9,15 @@ The following rules are admissible:
 \quad
 \infer{\seq{\Gamma,x:A}{x}{A}}{}
 \quad
-\infer{\seq{\Gamma}{\alpha}{A}}
-      {\alpha \spr \beta &
-       \seq{\Gamma}{\beta}{A}}
-\quad
 \infer{\seq{\Gamma,y:A}{\alpha}{C}}
       {\seq{\Gamma}{\alpha}{C}}
 \quad
 \infer{\seq{\Gamma,y:B,x:A}{\alpha}{C}}
       {\seq{\Gamma,x:A,y:B}{\alpha}{C}}
+\quad
+\infer{\seq{\Gamma}{\alpha}{A}}
+      {\alpha \spr \beta &
+       \seq{\Gamma}{\beta}{A}}
 %% \quad
 %% \infer{\seq{\Gamma,x:A}{\subst \alpha x y}{C}}
 %%       {\seq{\Gamma,x:A,y:A}{\alpha}{C}}
@@ -26,25 +26,21 @@ The following rules are admissible:
 \end{theorem}
 The complete proofs are in the extended version.  
 
-The following constructions inside the logic are helpful for
-understanding the types.  The following``fusion'' rules (which are
+The following general constructions can be helpful for understanding how
+the types behave.  The first three ``fusion'' rules (which are
 additionally type isomorphisms, not just interprovabilities) relate
 $\Fsymb$ and $\Usymb$.  Special cases include: $A \times (B \times C)$
 is isomorphic to a primitive triple product $\{x:A,y:B,z:C\}$; currying;
 and associativity of $n$-ary functions ($A_1,\ldots,A_n \to
 (B_1,\ldots,B_m \to C)$ is isomorphic to $A_1,\ldots,A_n,B_1,\ldots,B_m
-\to C$).
+\to C$).  Second, the types respect a transformation covariantly for
+\Fsymb\/ and contravariantly for \Usymb\/.
 \[
-\begin{array}{c}
-\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} \dashv \vdash \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}\\
-\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} \dashv \vdash \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}\\
-\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} \dashv \vdash \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}
+\begin{array}{rcl}
+\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} & \dashv \vdash & \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}\\
+\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} & \dashv \vdash & \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}\\
+\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} & \dashv \vdash & \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}\\
+\F{\alpha}{\Delta} & \vdash & \F{\beta}{\Delta} \text { if } \alpha \spr \beta \\
+\U{x.\beta}{\Delta}{A} & \vdash & \U{x.\alpha}{\Delta}{A} \text { if } \alpha \spr \beta \\
 \end{array}
-\]
-Second, the types respect a transformation $\alpha \spr \beta$,
-covariantly for \Fsymb\/ and contravariantly for \Usymb\/.
-\[
-{\F{\alpha}{\Delta} \vdash \F{\beta}{\Delta}}
-\qquad
-{\U{x.\beta}{\Delta}{A} \vdash \U{x.\alpha}{\Delta}{A}}
 \]

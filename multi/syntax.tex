@@ -41,7 +41,8 @@
         \oftps{\psi}{\Sigma}{\alpha'}{p} 
       }
 \\\\
-\framebox{Mode contexts $\psi \, \dsd{ctx}_{\Sigma}$}
+\ifthenelse{\boolean{short}}{}
+{\framebox{Mode contexts $\psi \, \dsd{ctx}_{\Sigma}$}
 \qquad
 \infer{\cdot \, \dsd{ctx}_{\Sigma}}{}
 \qquad
@@ -50,6 +51,7 @@
         p \, \dsd{mode} \in \Sigma
       }
 \\\\
+}
 \framebox{Context descriptors \oftps{\psi}{\Sigma}{\alpha}{p},
   where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$}
 \qquad
@@ -121,12 +123,12 @@ and \oftps{\psi}{\Sigma}{\alpha'}{p}
 \label{fig:2multicategory}
 \end{figure}
 
-The first layer of the logic is a type theory whose types we will call
+The first layer of our framework is a type theory whose types we will call
 \emph{modes}, and whose terms we will call \emph{context descriptors} or
 \emph{mode morphisms}.  The only modes are atomic/base types $p$.  A
 term is either a variable (bound in a context $\psi$) or a typed $n$-ary
 constant (function symbol) \dsd{c} applied to terms of the appropriate
-types.  
+types.
 
 This is formalized in the notion of signature, or \emph{mode theory},
 defined in Figure~\ref{fig:2multicategory}.  The judgement $\wfsig
@@ -135,21 +137,26 @@ says that a signature is either empty, or a signature extended with a
 new mode declaration, or a signature extended with a typed
 constant/function symbol, all of whose modes are declared previously in
 the signature.  The notation $p_1,\ldots,p_n \to q$ is not itself a
-mode, but only notation for declaring a function symbol in the signature
-(it cannot occur on the right-hand side of a typing judgement).  For
+mode, but notation for declaring a function symbol in the signature (it
+cannot occur on the right-hand side of a typing judgement).  For
 example, the type and term constructors for a monoid $(\odot,1)$ are
-represented by a signature
-$\dsd{p} \, \dsd{mode}, \dsd{\odot} : (\dsd{p},\dsd{p} \to \dsd{p}),
-1 : (\to \dsd{p})$.  
+represented by a signature $\dsd{p} \, \dsd{mode}, \dsd{\odot} :
+(\dsd{p},\dsd{p} \to \dsd{p}), 1 : (\to \dsd{p})$.
 
+\ifthenelse{\boolean{short}}{
+We elide the rules for 
+the judgement $\psi \, \dsd{ctx}_\Sigma$, which simply says that each
+mode used in the 
+context of variable declarations $\psi$ is declared in $\Sigma$.  
+}
+{
 The judgement $\psi \, \dsd{ctx}_\Sigma$ defines well-formedness of a
 context of variable declarations relative to a signature $\Sigma$: each
-mode in the context must be declared in the signature.
-
-The judgement $\oftps{\psi}{\Sigma}{\alpha}{p}$ defines well-typedness
-of context descriptor terms, which are either a variable declared in the
-context, or a constant declared in the signature applied to arguments of
-the correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
+mode in the context must be declared in the signature.}  The judgement
+$\oftps{\psi}{\Sigma}{\alpha}{p}$ defines well-typedness of context
+descriptor terms, which are either a variable declared in the context,
+or a constant declared in the signature applied to arguments of the
+correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
 defines a substitution as a tuple of terms in the standard way.  The
 context $\psi$ in these judgements enjoys the cartesian structural
 properties (associativity, unit, weakening, exchange, contraction).
@@ -162,7 +169,7 @@ $\wfsig{\Sigma}$ permit two additional forms of signature declaration.
 The first of these extends a signature with an equational axiom between
 two terms $\alpha$ and $\alpha'$ that have the same mode $p$, in the
 same context $\psi$, relative to the prior signature $\Sigma$.  These
-equational axioms will be used to encode reversible object logic
+equational axioms will be used to encode reversible object language
 structural properties, such as associativity, commutativity, and unit
 laws.  For example, to specify the right unit law for the above monoid
 $(\odot,1)$, we add an axiom $(x \odot 1 \deq x : (x : \dsd{p}) \to
@@ -176,7 +183,7 @@ The second of these extends a signature with a directed structural
 transformation axiom between two terms $\alpha$ and $\alpha'$ that have
 the same mode $p$, in the same context $\psi$, relative to the prior
 signature $\Sigma$.  As discussed above, these structural
-transformations will be used to represent object logic structural
+transformations will be used to represent object language structural
 properties such as weakening and contraction that are not invertible.
 The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p} defines these
 transformations: it is the least precongruence (preorder compatible with
@@ -188,20 +195,22 @@ affine, we add in $\Sigma$ a transformation axiom $(x \spr 1 : (x:\dsd{p}) \to
 %% transformation $(x \odot y) \spr (1 \odot y) \spr y$ that, when
 %% applied (contravariantly) to a sequent, will allow weakening $y$ to
 %% $x \odot y$.
-
-An alternative to including the judgement $\alpha \deq \alpha'$ would be
+\ifthenelse{\boolean{short}}{}
+{An alternative to including the judgement $\alpha \deq \alpha'$ would be
 to present a desired equation $\alpha \deq \alpha'$ as an isomorphism,
 with transformation axioms $s : \alpha \spr \alpha'$ and $s' : \alpha'
-\spr \alpha$.  
-While this is conceptually and technically sufficient, we have found it
-helpful in examples to use ``strict'' equality of context descriptors.
-This simplifies the description of some situations, though the
-difference is important mainly at the level of identity of derivations
-rather than provability---for example, we can make a binary operation
-$\odot$ into a strict monoid, rather than adding associator and unitor
-isomorphisms.  Technically, because context descriptors $\alpha$ and
-their equality $\alpha_1 \deq \alpha_2$ are defined prior to the
-subsequent judgements of our logic, we suppress this equality by using
+\spr \alpha$.  While this is conceptually and technically sufficient, we
+have found it helpful in examples to use ``strict'' equality of context
+descriptors.  This simplifies the description of some situations, though
+the difference is important mainly at the level of identity of
+derivations rather than provability---for example, we can make a binary
+operation $\odot$ into a strict monoid, rather than adding associator
+and unitor isomorphisms.
+
+}
+Because context descriptors
+$\alpha$ and their equality $\alpha_1 \deq \alpha_2$ are defined prior
+to the subsequent judgements, we suppress this equality by using
 $\alpha$ to refer to a term-modulo-\deq---that is, we assume a
 metatheory with quotient sets/types, and use meta-level equality for
 object-level equality, as recently advocated by
@@ -209,23 +218,26 @@ object-level equality, as recently advocated by
 \wfsp{\psi}{\alpha}{\beta}{p} is indexed by equivalence classes of
 context descriptions, the reflexivity rule above implicitly means
 $\alpha \deq \beta$ implies $\alpha \spr \beta$.
-
+\ifthenelse{\boolean{short}}{}
+{
 As discussed in Section~\ref{sec:equational}, we will eventually need an
 equational theory between two structural property derivations $s \deq s'
 :: \wfsp{\psi}{\alpha}{\alpha'}{q}$.  Because this equational theory
 does not influence provability in the sequent calculus, only identity of
 proofs, we defer the details to that section.  
 
+}
 In examples, we will notate a signature declaration introducing a term
 constant/function symbol by showing the function symbol applied to
 variables, rather than writing the formal $\dsd{c} : p_1,\ldots,p_n \to
 q$. For example, we write $x : \dsd{p}, y : \dsd{p} \vdash x \odot y :
 \dsd{p}$ for $\odot : \dsd{p},\dsd{p} \to \dsd{p}$.  We also suppress
-the signature $\Sigma$ in the judgement forms.
+the signature $\Sigma$.
 
 \subsection{Sequent Calculus Rules}
 
 \begin{figure}
+\begin{small}
 \[
 \begin{array}{l}
 %% \begin{array}{llll}
@@ -255,10 +267,7 @@ the signature $\Sigma$ in the judgement forms.
         \wftype{A}{p}}
 \\ \\
 \framebox{\seq{\Gamma}{\alpha}{A} where $\wfctx{\Gamma}{\psi}$ and $\wftype{A}{q}$ and  $\oftp{\psi}{\alpha}{q}$}
-\\ \\
-\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
-      {x:P \in \Gamma & \beta \spr x}
-\qquad
+\quad
 \infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
       {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
 \quad
@@ -284,6 +293,9 @@ the signature $\Sigma$ in the judgement forms.
 \quad
 \infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
       {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\quad
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+      {x:P \in \Gamma & \beta \spr x}
 \\ \\
 \framebox{\seq{\Gamma}{\gamma}{\Delta} where $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and  $\oftp{\psi}{\gamma}{\psi'}$}
 \qquad
@@ -299,6 +311,7 @@ the signature $\Sigma$ in the judgement forms.
 \caption{Sequent Calculus}
 \label{fig:sequent}
 \hrule
+\end{small}
 \end{figure}
 
 The whole sequent calculus is parametrized by a mode theory $\Sigma$,
@@ -356,15 +369,14 @@ structurality-over-structurality:
 
 We now explain the rules for the sequent calculus; the reader may wish
 to refer to the examples in Section~\ref{sec:exampleencodings} in
-parallel with this abstract description.
-
-We assume atomic propositions $P$ are given a specified mode $p$, and
-state identity as a primitive rule only for them.  If we had instead
-stated the identity rule as \seq{\Gamma,x:P}{x}{P}, then respect for
-structural transformation would not be admissible, so we allow a $\beta
-\spr x$ premise here.  Using a structural property at a leaf of a
-derivation is common in e.g. affine logic, where the derivation of
-$\beta \spr x$ would use weakening to forget any additional resources.
+parallel with this abstract description.  We assume atomic propositions
+$P$ are given a specified mode $p$, and state identity as a primitive
+rule only for them.  If we had instead stated the identity rule as
+\seq{\Gamma,x:P}{x}{P}, then respect for structural transformation would
+not be admissible, so we allow a $\beta \spr x$ premise here.  Using a
+structural property at a leaf of a derivation is common in e.g. affine
+logic, where the derivation of $\beta \spr x$ would use weakening to
+forget any additional resources.
 
 Next, we consider the \F{\alpha}{\Delta} type, which ``internalizes''
 the context operation $\alpha$ as a type/proposition.  Syntactically, we
@@ -441,13 +453,14 @@ way that the typing rule for $\lambda x.e : \Pi x:A.B$ requires
 coordination between two variables in different scopes).  The full rule
 builds in precomposition with \seq{\Gamma}{\gamma}{\Delta},
 postcomposition with \seq{\Gamma,z:A}{\beta'}{C}, and precomposition
-with a structural transformation $\beta \spr \beta'[\alpha[\gamma]/z]$.
+with $\beta \spr \beta'[\alpha[\gamma]/z]$.
 
 Finally, the rules for substitutions are pointwise.  In examples, we
 will write the components of a substitution directly as multiple
 premises of \FR\/ and \UL\/, eliding packaging them into a list with the
 $\_,\_$ and $\cdot$ rules.
 
+\ifthenelse{\boolean{short}}{}{
 One subtle point about the $\FL$ rule is that there are two competing
 principles: making the rules ``obviously'' structural-over-structural,
 and reducing inessential non-determinism.  Here, we choose the later,
@@ -459,6 +472,7 @@ for negatives is built into the \UL-rule, and contraction for positives
 follows from this and the fact that we can always reconstruct a positive
 from what it decays to on the left (c.f. how purely positive formulas
 have contraction in linear logic).
+}
 
 Additives can be added to this sequent calculus; e.g. a mode $p$ has
 sums $\wftype{A_p + B_p}{p}$ if

@@ -1,0 +1,32 @@
+Our framework builds on many approaches to substructural and modal logic
+in the literature.  Logical rules that act at a leaf of a
+tree-structured context go back to the Lambek
+calculus~\citep{lambek58calculus}.  A rich collection of context
+structures that correspond to type constructors plays a central role in
+display logic~\citep{belnap82display}.  \citet{atkey04separation}'s
+$\lambda$-calculus for resource separation is similar to mode theories
+with one mode, where there is at most one 2-cell between a given pair of
+1-cells; at the logical level, our calculus is a unification of this
+with the multimode adjoint logic of
+\citet{reed09adjoint}.  Algebraic resource annotations on variables are
+used to track modalities in Agda's implementation~\citep{abel15modal}
+and in \citet{mcbride16nuttin}'s approach to linear dependent types.  LF
+representations of modal or substructural logics work by restricting the
+use of cartesian variables~\citep{crary10substructural}.  Relative to
+all of these approaches, we believe that the analysis of the context
+structures/resources as a \emph{term} in a base type theory, and the
+fibrational structure of the derivations over them, is a new and useful
+observation.  For example, rather than needing extra-logical conditions
+on proof rules to ensure cut admissibility, as in display logic, the
+conditions are encoded in the language of context descriptors and the
+definition of types from them.  Moreover, none of these existing
+approaches allow for proof-relevant 2-cells/structural rules, and their
+presence (and the equational theory we give for them) is important for
+our applications to extensions of homotopy type theory.  A point of
+contrast with substructural logical
+frameworks~\citep{cervesatopfenning02llf,watkins+03clf-tr,reed09thesis}
+is that logics are ``embedded'' in our calculus (giving a type
+translation such that provability in the object logic corresponds to
+provability in ours), rather than ``encoding'' the structure of
+derivations.  This way, we obtain cut elimination for object languages
+as a corollary of framework cut elimination.

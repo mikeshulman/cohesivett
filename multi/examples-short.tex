@@ -1,0 +1,468 @@
+%% FIXME: discussion of how the theories of context descriptors for the
+%% various systems related to any semantic structure in existing models
+%% of those systems.
+
+\newcommand\truej[1]{#1 \,\, \dsd{true}}
+\newcommand\possj[1]{#1 \,\, \dsd{poss}}
+\newcommand\validj[1]{#1 \,\, \dsd{valid}}
+\newcommand\crispj[1]{#1 \,\, \dsd{crisp}}
+\newcommand\cohesivej[1]{#1 \,\, \dsd{coh}}
+
+\section{Examples}
+\label{sec:exampleencodings}
+
+In the extended version, we give a more leisurely discussion of these
+examples, and additionally consider subexponentials, modal S4 $\Box$,
+and strong/$\Box$-strong monads.
+
+\subsection{Products and Implications}
+
+A mode theory with one mode \dsd{m} and a constant \oftp{x : \dsd{m}, y
+  : \dsd{m}}{x \odot y}{\dsd{m}} specifies a completely astructural
+context (no weakening, exchange, contraction, associativity), as in
+non-associative Lambek calculus~\citep{lambek58calculus}.  To pass to
+\emph{ordered logic} (associativity and unit laws but none of exchange,
+weakening, and contraction), we add a constant $1 : \dsd{m}$ and
+equational axioms $x \odot (y \odot z) \deq (x \odot y) \odot z$ and $x
+\odot 1 \deq x \deq 1 \odot x$---i.e. $(\odot,1)$ is a monoid.  Then
+associativity $A \odot (B \odot C) \vdash (A \odot B) \odot C)$ is
+\begin{small}
+\[
+\infer[\FL]
+{\seq{a:\F{x \odot p}{x:A,p:\F{y \odot z}{y:B,z:C}}}
+  {a}
+  {\F{q \odot z}{q:\F{x \odot y}{x:A,y:B},z:C}}}
+{
+  \infer[\FL]
+        {\seq{x:A,p:\F{y \odot z}{y:B,z:C}}{x \times p}{{\F{q \odot z}{q:\F{x \odot y}{x:A,y:B},z:C}}}}
+        {\infer[\FR]
+          {\seq{x:A,y:B,z:C}{x \times (y \odot z)}{{\F{q \odot z}{q:\F{x \odot y}{x:A,y:B},z:C}}}}
+          { {x \odot (y \odot z)} \spr (q \odot z)[x \odot y /q, z/z] &
+            {\seq{x:A,y:B,z:C}{x \odot y}{\F{x \odot y}{x:A,y:B}}}
+                  %% {x \otimes y \spr (x' \odot y')[x/x',y/y'] &
+                  %%   \infer{\seq{x:A,y:B,z:C}{x}{A}}{} &
+                  %%   \infer{\seq{x:A,y:B,z:C}{y}{B}}{} 
+                  %% } 
+            &
+            \infer{\seq{x:A,y:B,z:C}{z}{C}}{}
+        }}
+}
+\]
+\end{small}
+where ${\seq{x:A,y:B,z:C}{x \odot y}{\F{x \odot y}{x:A,y:B}}}$ is the
+axiomatic \FR\/ instance.  Without the associativity axiom, the premise
+${x \odot (y \odot z)} \spr ((x \odot y) \odot z)$ is not provable.  
+
+Ordered logic has two different implications, one that adds to the left
+of the context, and one that adds to the right; the expected rules are
+\[
+\begin{array}{l}
+\infer{\seql{\Gamma}{o}{ A \rightharpoonup B}}
+      {\seql{\Gamma,A}{o}B}
+\qquad
+\infer{\seql{\Gamma,A \rightharpoonup B,\Delta,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+       \seql{\Gamma,B,\Gamma'}{o}{C}
+      }
+\qquad
+\infer{\seql{\Gamma}{o}{A \leftharpoonup B}}
+      {\seql{A,\Gamma}{o}{B}}
+\qquad
+\infer{\seql{\Gamma,\Delta,A \leftharpoonup B,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+        \seql{\Gamma,B,\Gamma'}{o}{C}
+      }
+\end{array}
+\]
+
+We represent these by \Usymb-types: $A \rightharpoonup B := \U{c.c \odot
+  x}{x:A}{B}$ and $A \leftharpoonup B := \U{c.x \odot c}{x:A}{B}$.
+\begin{small}
+\[
+\infer{\seq{\Gamma}{\beta}{\U{c.c \odot x}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{\beta \odot x}{B}}
+\qquad
+\infer{\seq{\Gamma} {\beta} {C}}
+      {\begin{array}{l}
+          c:\U{c.c \odot x}{x:A}{B} \in \Gamma \\
+          \beta \spr \beta'[c \odot \alpha/z] \\
+          \seq{\Gamma}{\alpha}{A} \\
+          \seq{\Gamma,z:A}{\beta'}{C}
+        \end{array}
+      }
+\qquad
+\infer{\seq{\Gamma}{\beta}{\U{c.x \odot c}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{x \odot \beta}{B}}
+\qquad
+\infer{\seq{\Gamma} {\beta} {C}}
+      {\begin{array}{l}
+          c:\U{c.x \odot c}{x:A}{B} \in \Gamma \\
+          \beta \spr \beta'[\alpha \odot c/z] \\
+          \seq{\Gamma}{\alpha}{A} \\
+          \seq{\Gamma,z:A}{\beta'}{C}
+       \end{array}
+      }
+\]
+\end{small}
+These have the expected right rules, putting $x$ on the left or right of
+the current context descriptor, by the substitution $\beta/c$ in \UR.
+Suppose that $\beta$ is of the form $x_1 \odot \ldots c \ldots \odot
+x_n$ for distinct variables $x_i$, and consider the left rule for, for
+$\rightharpoonup$.  Because the only structural transformations are the
+associativity and unit equations, the transformation must reassociate
+$\beta$ as $\beta_1 \odot (c \odot \alpha) \odot \beta_2$, with $\beta'
+= \beta_1 \odot z \odot \beta_2$, for some $\beta_1$ and $\beta_2$.
+Here $\alpha$ plays the role of $\Delta$ in the ordered logic rule---the
+resources used to prove $A$, which occur to the right of the implication
+being eliminated.  Reading the substitution backwards, the resources
+$\beta'$ used for the continuation are ``$\beta$ with $c \odot \alpha$
+replaced by the result of the implication,'' as desired.  While $c$ and
+any variables used in $\alpha$ are still in $\Gamma$, permission to use
+them has been removed from $\beta'$---and there is no way to restore
+such permissions in this mode theory.  The rule for $\leftharpoonup$ is
+the same, but with $\alpha$ on the opposite side of $c$.
+
+Linear logic is ordered logic with exchange, so to model this we add a
+commutativity equation $x \odot y \deq y \odot x$ making $\odot$ into a
+commutative monoid.  %% For example, we can
+%% derive {\seq{p : A \odot B}{p}{B \odot A}}:
+%% \[
+%% \infer[\FL]
+%%       {\seq{p:\F{x\odot y}{x:A,y:B}}{p}{\F{z\odot w}{z:B,w:A}}}
+%%       {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
+%%         {
+%%             x \odot y \spr (z \odot w) [y/z,x/w] &
+%%             \seq{x:A,y:B}{y}{B} &
+%%             \seq{x:A,y:B}{x}{A} 
+%%       }}
+%% \]
+%% where the first premise is exactly $x \odot y \deq y \odot x$.  For
+For this mode theory, \U{c.c \odot x}{x:A}{B} and \U{c.x \odot
+  c}{x:A}{B} are equal types (because commutativity is an equation, and
+types are parametrized by equivalence-classes of context descriptors),
+and both represent $A \lolli B$.  If we add a directed structural
+transformation $\dsd{w} :: x \spr 1$ then we get weakening (affine
+logic), and with $\dsd{c} :: x \spr x \odot x$ we get contraction
+(relevant logic):
+\[
+\infer[\FL]{\seq{z : \F{x \odot y}{x:A,y:B}}{z}{A}}
+           {
+             \infer{\seq{x:A,y:B}{x \odot y}{A}}
+             {\infer{x \odot y \spr x \odot 1 \deq x}
+                    {w :: y \spr 1}
+               &
+               \infer{\seq{x:A,y:B}{x}{A}}{}
+           }}
+\qquad
+\infer[\FR]{\seq{z : A}{z}{\F{x \odot y}{x:A,y:A}}}
+           {c :: z \spr (x \odot y)[z/x,z/y] &
+            \infer{\seq{z:A}{z}{A}}{}
+           }
+\]
+If we have both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x \odot
+x$, then $x \odot y$ is a cartesian product in the mode theory, and
+consequently $A \odot B$ will behave like a cartesian product type,
+and $\U{c.c \otimes x}{x:A}{B}$ like the usual structural $A \to B$.  We
+refer to this mode theory as an \emph{cartesian monoid} and write
+$(\times,\top)$ for it.
+
+These encodings are adequate in the following sense:
+\begin{theorem}[Logical Adequacy]
+Write $A^*$ for the encoding of a type as above and extend this
+pointwise to contexts $\Gamma^*$.  Further, define
+$\vars{x_1:A_1,\ldots,x_n:A_n} = x_1 \odot \ldots \odot x_n$.  Then
+$\seql{\Gamma}{}{A}$ in the standard sequent calculus iff
+$\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$.
+\end{theorem}
+\begin{proof}
+Detailed proofs for ordered logic (products), affine logic, and
+cartesian logic are in the extended version. Encoding an object-language
+derivation is straightforward, because the mode theory is chosen to make
+each rule derivable.  The back-translation from the framework relies on
+cut-freeness (so that we only need to translate normal forms), and a
+lemma that, for these mode theories, left-rules on variables that are in
+the framework context $\Gamma$ but do not occur in the context
+descriptor $\alpha$ can be strengthened away.
+\end{proof}
+
+This approach extends to contexts with more than one type of tree node,
+as in bunched implication~\citep{ohearnpym99bunched}, which has two
+context-forming operations $\Gamma,\Gamma'$ and $\Gamma;\Gamma'$, along
+with corresponding products and implications.  Both are associative,
+unital, and commutative, but $;$ has weakening and contraction while $,$
+does not.  A context is represented by a tree such as $(x:A, y:B);(z :
+C, w : D)$ (considered modulo the laws), and the notation
+$\Gamma[\Delta]$ is used to refer to a tree with a hole $\Gamma[-]$ that
+has $\Delta$ as a subtree at the hole.  In sequent calculus style, the
+rules for the product and implication corresponding to $,$ are
+\[
+\begin{array}{l}
+\infer{\Gamma[A * B] \vdash C}
+      {\Gamma[A , B] \vdash C}
+\quad
+\infer{\Gamma,\Delta \vdash A * B}
+      {\Gamma \vdash A &
+       \Delta \vdash B}
+\quad
+\infer{\Gamma \vdash A \magicwand B}
+      {\Gamma, A \vdash B}
+\quad
+\infer{\Gamma[A \magicwand B, \Delta] \vdash C}
+      {\Delta \vdash A &
+       \Gamma[B] \vdash C}
+\end{array}
+\]
+There are similar connectives $\times,\to$ for $;$ and structural rules
+of weakening and contraction for it.
+
+We model BI by a mode \dsd{m} with a commutative monoid $(*,I)$ and a
+cartesian monoid $(\times,\top)$.  We define the BI products and
+implications using the monoids as above (e.g.  $A * B := \F{x * y}{x :
+  A, y : B}$ and $A \magicwand B := \U{c.c * x}{x : A}{B}$; replace $*$
+with $\times$ for $\times$ and $\to$).  A context descriptor such as $(x
+\times y) * (z \times w)$ captures the ``bunched'' structure of a BI
+context, and substitution for a variable models the hole-filling
+operation $\Gamma[\Delta]$.  The left rules are
+\[
+\infer{\seq{\Gamma,z:A*B,\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',x:A,y:B}{\subst{\beta}{x * y}{z}}{C}}
+\qquad
+\infer{\seq{\Gamma}{\beta}{C}}
+      {
+        c : A \magicwand B \in \Gamma &
+        \beta \spr \beta'[ c * \alpha / z] & 
+        \seq{\Gamma}{\alpha}{A} &
+        \seq{\Gamma,z:B}{\beta'}{C} 
+      }
+\]
+The rule for $*$ (and similarly $\times$) acts on a leaf and replaces
+the leaf where $z$ occurs in the tree $\beta$ with the correct bunch
+$x*y$. The left rule for $\magicwand$ (and similarly for $\to$) isolates
+a subtree containing the implication $c$ and resources $*$'ed with it,
+uses those resources to prove $A$, and then replaces the subtree with
+the variable $z$ standing for the result of the implication.
+
+%% We assume the BI sequent is given as a judgement $\Gamma \vdash A$ where
+%% $\Gamma$ is a tree and there are explicit equality premises for the
+%% algebraic laws on bunches.  Then we define $\Gamma^*$ as an in-order
+%% flattening of the tree into one of our contexts (e.g.  $(x:A)^* = x:A^*$ and
+%% $(\Gamma,\Delta)^* = (\Gamma;\Delta)^*=\Gamma^*,\Delta^*$), while we
+%% define $\vars{\Gamma}$ as a context descriptor that preserves the tree
+%% structure (e.g. $\vars{x:A} = x$ and $\vars{(\Gamma,\Delta)} =
+%% \vars{\Gamma}*\vars{\Delta}$ and
+%% $\vars{\Gamma;\Delta}=\vars{\Gamma}\times\vars{\Delta}$).  Then we have
+%% the usual adequacy statement $\Gamma \vdash A$ iff
+%% \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
+
+\subsection{Multi-use variables}
+\label{sec:ex:nlinear}
+
+An $n$-use
+variable~\citep{reed08namessubstructural,abel15modal,mcbride16nuttin} is
+like a linear variable, but instead of being used ``exactly once''
+(modulo additives), it is used ``exactly $n$ times.''  We use the
+following sequent calculus rules for $n$-linear functions
+\[
+\infer{{0\cdot \Gamma,x:^1 P} \vdash {P}}
+      {}
+\qquad
+\infer{\Gamma \vdash A \to^n B}
+      {{\Gamma, x :^n A} \vdash {B}}
+\qquad
+\infer{\Gamma + f:^k A \to^n B + (nk \cdot \Delta) \vdash C}
+      {\Delta \vdash A &
+       {\Gamma, z :^k B} \vdash {C}}
+\]
+\noindent where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m}
+A = x :^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A
+= x :^{nm} A$.  In the left rule, $\Gamma$ and $\Delta$ have the same
+underlying variables and types (but potentially different counts), and
+$f:^kA \to^n B$ abbreviates a context with the same variables and types
+but $0$'s for all counts besides $f$'s.  The left rule says that if you
+spend $k$ ``uses'' of a function that takes $n$ uses of an
+argument, then you need $nk$ uses of whatever you use to
+construct the argument, in order to get $k$ uses of the result.  
+
+We can model this in the mode theory of a commutative monoid by using
+context descriptors that are themselves non-linear: we define $A \to^n B
+:= \U{c.c \odot (x^n)}{x:A}{B}$ where $x^n := x \odot x \odot \ldots
+\dot x$ ($n$ times).  This has the following instances of \UL{}{} and
+\UR{}:
+\[
+\infer{\seq{\Gamma}{\beta}{A \to^n B}}
+      {\seq{\Gamma, x:A}{\beta \odot x^n}{B}}
+\qquad
+\infer{\seq{\Gamma}{\beta}{C}}
+      {f : \U{f.f \odot x^n}{x : A}{B} \in \Gamma &
+        \beta \spr \beta'[f \odot (\alpha)^n/z] &
+        \seq{\Gamma}{\alpha}{A} &
+        \seq{\Gamma, z:B}{\beta'}{C} 
+      }
+\]
+The only transformations are the commutative monoid equations, so we can
+commute $\beta'$ to the form $\beta'' \odot z^k$ for some $k$ and
+$\beta''$ not mentioning $z$ because any context descriptor is a
+polynomial of variables. Thus the premise of $\UL$ is really of form
+$\beta \deq (\beta'' \odot z^k) [f \odot (\alpha)^n/z]$, which is equal
+to $\beta'' \odot f^k \odot (\alpha)^{nk}$.  Here $\beta''$ corresponds
+to the $\Gamma$ in the above left rule (the resources of the
+continuation, besides $z^k$) and $\alpha$ corresponds to $\Delta$.  The
+full proof of adequacy is in the extended version:
+\begin{theorem}[Logical adequacy for $n$-use variables]
+$x_1:^{k_1} A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
+  \seq{x_1:A_1^*,\ldots,x_n:A_n^*}{x_1^{k_1} \odot \ldots \odot
+    x_n^{k_n}}{C^*}, where $A^*$ translates $A \to^n B$ to 
+$\U{c.c \odot (x^n)}{x:A^*}{B^*}$
+\end{theorem}
+
+\subsection{Comonads}  
+\label{sec:example:bang}
+
+Following \citet{benton94mixed,bentonwadler96adjoint}, we decompose the
+$!$ exponential of intuitionistic linear logic as the comonad of an
+adjunction between ``linear'' and ``cartesian'' categories.  We start
+with two modes \dsd{l} (linear) and \dsd{c} (cartesian), along with a
+commutative monoid $(\otimes,1)$ on \dsd{l} and a cartesian monoid
+$(\times,\top)$ on \dsd{c}.  Next, we add a context descriptor from
+\dsd{c} to \dsd{l} ($x : \dsd{c} \vdash \dsd{f}(x) : \dsd{l}$) that we
+think of as including a cartesian context in a linear context.  This
+generates types \wftype {\F{\dsd{f}(x)}{x : A_{\dsd{c}}}}{\dsd{l}} and
+\wftype {\U{x.\dsd{f}(x)}{\cdot}{A_{\dsd{l}}}}{\dsd{c}} which are
+adjoint $\F{\dsd{f}(x)}{x:-} \la {\U{x.\dsd{f}(x)}{\cdot}{-}}$.  The
+bijection on hom-sets is defined using \FL\/ and \FR\/ and their
+invertibility.  The comonad of the adjunction
+\F{\dsd{f}(x)}{x:\U{c.\dsd{f}(c)}{\cdot}{A}} is the linear logic $!A$.
+
+In the LNL models and sequent calculus~\citep{benton94mixed}, $F(A
+\times B) \cong F(A) \otimes F(B)$ and $F(\top) \cong 1$, which we can
+add to the mode theory by equations $\dsd{f}(x \times y) \deq \dsd{f}(x)
+\otimes \dsd{f}(y)$ and $\dsd{f}(\top) \deq 1$. These equations then
+extend to isomorphisms because all of $F,\otimes,\times$ are represented
+by \Fsymb-types in our framework.  These properties of \dsd{f} are
+necessary to prove that $!  A$ has weakening and contraction (with
+respect to $\otimes$) and $!A \otimes !B \vdash !(A \otimes B)$, for
+example.  Omitting these equations allows us to describe non-monoidal
+(or lax monoidal, if we add only one direction) left adjoints;
+in the extended version, we consider S4 $\Box$.  
+
+\begin{theorem}[Logical adequacy for Adjoint $!$]
+Translate $F(A)^* = \F{\dsd{f}(x)}{x:A^*}$ and $G(A)^* =
+\U{x.\dsd{f}(x)}{\cdot}{A}$ and products and functions as usual.  Then
+$x_1:C_1,\ldots,x_n:C_n \vdash C$ in the cartesian category iff
+\seq{x_1:C_1^*,\ldots,x_n:C_n^*}{x_1 \times \ldots \times x_n}{C^*}, and
+a mixed sequent with cartesian and linear assumptions and a linear
+conclusion $x_1:C_1,\ldots,x_n:C_n;y_1:A_1,\ldots,y_m:A_m \vdash A$ iff
+\seq{x_1:C_1^*,\ldots,y_1:A_1^*,\ldots}{\dsd{f}(x_1)
+  \otimes\ldots\otimes \dsd{f}(x_n) \otimes y_1 \otimes \ldots \otimes
+  y_n}{A^*}.
+\end{theorem}
+
+\subsection{Monads}
+\label{sec:example:monad}
+
+We model a \Dia{}{A} modality with rules in the style of
+\citet{pfenningdavies}
+%% \[
+%% \infer{\Gamma \vdash \possj{A}}
+%%       {\Gamma \vdash \truej{A}}
+%% \qquad
+%% \infer{\Gamma \vdash \truej{\Dia{}{A}}}
+%%       {\Gamma \vdash \possj{A}}
+%% \qquad
+%% \infer{\Gamma,\truej{\Dia{}{A}} \vdash \possj{C}}
+%%       {\truej{A} \vdash \possj{C}}
+%% \]
+by a mode theory with two modes \dsd{t} and \dsd{p}
+and context descriptor \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}, defining
+the type $\Dia{}{A} := \U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$.
+This is always a monad, but it does not automatically have a tensorial
+strength.  For example, if we have a monoid $(\otimes,1)$ on mode
+\dsd{t} and try to derive strength
+\[
+\infer[\UR]
+      {\seq{x : A, y : \Dia{\dsd{g}}{B}}{x \otimes y}{\Dia{\dsd{g}}{(A \otimes B)}}}
+      {\infer[\UL]
+        {\seq{x : A, y : \Dia{\dsd{g}}{B}}{\dsd{g}(x \otimes y)}{\F{\dsd{g}}{A \otimes B}}}
+        {\dsd{g}(x \otimes y) \spr \subst{\beta'}{\dsd{g}(y)}{z} &
+          \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes B}}
+        }}
+\]
+\noindent we are stuck, because there is no way to rewrite $\dsd{g}(x
+\otimes_{\dsd t} y)$ as a term containing $\dsd{g}(y)$.  If $\otimes$ is
+affine, then we can weaken away $x$ and take $\beta' =
+z$---corresponding to the context-clearing in the left rule for
+$\Dia{}{A}$ in \citet{pfenningdavies}---but then in the right-hand
+premise we will only have access to $z$, not $x$, so we cannot complete
+the derivation.  Thus, we can express non-strong monads cleanly in our
+framework.  In the extended version, we prove adequacy for this and
+extend the mode theory to express strong monads.
+
+\begin{theorem}[Logical adequacy for a monad]
+We translate all types at mode \dsd{t}, representing
+\Dia{}{A} as above. Then $\truej{A_1}, \ldots,
+\truej{A_1} \vdash \truej{C}$ iff
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*}, and 
+$\truej{A_1}, \ldots, \truej{A_b} \vdash \possj{C}$ iff 
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes
+  x_n)}{\F{\dsd{g}}{C^*}}.  
+%% The three ``native'' rules above are
+%% \FR, \UR, and a composite of \UL\/ followed by \FL, respectively.
+\end{theorem}
+
+\subsection{Spatial Type Theory}
+
+The spatial type theory for cohesion~\citep{shulman15realcohesion}
+(which motivated this work) has an adjoint pair $\flat \la \sharp$,
+where $\flat$ is a comonad and $\sharp$ is a monad, with some additional
+properties.  In the one-variable case~\citep{ls16adjoint}, we analyzed
+this as arising from an idempotent comonad\footnote{There it was an
+  idempotent monad; the variance of \dsd{F} and \dsd{U} has been flipped
+  in paper.} in the mode theory: we have a mode \dsd{c} with a cartesian
+monoid $(\times,\top)$ and a context descriptor
+\oftp{x:\dsd{c}}{\dsd{r}(x)}{\dsd{c}} such that $\dsd{r}(\dsd{r}(x))
+\deq \dsd{r}(x)$ and there is a directed transformation $\dsd{r}(x) \spr
+x$.  Then we define $\flat A := \F{\dsd{r}}{A}$ and $\sharp A :=
+\Uempty{\dsd{r}}{A}$. These are adjoint, and the transformation gives
+the counit $\F{\dsd{r}}{A} \vdash A$ and the unit $A \vdash
+\Uempty{\dsd{r}}{A}$.  Now that we have a multi-assumptioned logic, we
+can model the fact that $\flat{A}$ preserves products by the equational
+axiom $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.  Overall,
+we encode a simply-typed spatial type theory judgement $x_1 :
+\crispj{A_1},\ldots;y_1:\cohesivej{B_1} \vdash \cohesivej{C}$ as
+$\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
+  y_1\times\ldots}{C}$.  As a sequent calculus, the rules
+from~\citep{shulman15realcohesion} are
+\[
+\begin{array}{c}
+\infer{\Delta;\Gamma \vdash C}
+      {A \in \Delta &
+       \Delta;\Gamma,A \vdash C}
+\quad
+\infer{\Delta; \Gamma \vdash {\Flat A}}
+      {\Delta; \cdot \vdash {A}}
+\quad
+\infer{\Delta; \Gamma,\Flat{A} \vdash C}
+      {\Delta,A; \Gamma \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash {\Sharp C}}
+      {\Delta,\Gamma; \cdot \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash C}
+      {\Sharp A \in \Delta &
+        \Delta;\Gamma,A \vdash {C}}
+\quad
+\end{array}
+\]
+In order, these correspond to (1) the action of the contraction and
+$\dsd{r}(x) \spr x$ transformations; (2) \FR\/ with weakening, using
+monoidalness of \dsd{r} in one direction; (3) \FL; (4) \UR, using
+monoidalness of \dsd{r} in the other direction and idempotence; (5) \UL,
+with contraction.  This provides a satisfying explanation for the
+unusual features of these rules, such as promoting all cohesive
+variables to crisp in \Sharp{}-right, and eliminating a crisp \Sharp{}
+in \Sharp{}-left, and illustrates how our framework can be used in
+investigating extensions of homotopy type theory.
+
+%% \subsection{Non-adjoints}
+
+%% TODO E.g. the graded effects stuff, modalities in Lambek calculus  

@@ -1,79 +1,74 @@
 \section{Equational Theory on Derivations}
 \label{sec:equational}
 
-In this section, we give our framework a proof term notation and
-equational theory describing $\beta\eta$-equality.  We use this
-equational theory in the categorical semantics below, and to reason
-about terms in encoded logics (for example, to prove that a pair of
-entailments is an isomorphism, we show that the maps compose to the
-identity up to these equations).  First, we need a notation for
-derivations of the $\alpha \spr \beta$ judgement in
-Figure~\ref{fig:2multicategory}.  We assume names for constants are
-given in the signature $\Sigma$, and write $1_\alpha$ for reflexivity,
-$s_1;s_2$ for transitivity (in diagramatic order), and $s_1[s_2/x]$ for
-congruence.  We extend the signature $\Sigma$ to allow axioms for
-equality of transformations $s_1 \deq s_2$ (for two derivations of the
-same judgement $s_1,s_2 :: \wfsp{\psi}{\alpha}{\beta}{p}$), and define
-equality to be the least congruence closed under those axioms and some
-associativity, unit, and interchange laws, which are the 2-category
-axioms extended to the multicategorical case (see the extended version
-for details).  As with equality of context descriptors, we think of all
-definitions as being parametrized by \deq-equivalence-classes of
-transformations, not raw syntax.
+In this section, an equational theory describing $\beta\eta$-equality of
+derivations.  We use this equational theory in the categorical semantics
+below, and to reason about terms in encoded languages (for example, to
+prove that a pair of entailments is an isomorphism, we show that the
+maps compose to the identity up to these equations).
+
+First, we need a notation for derivations of the $\alpha \spr \beta$
+judgement in Figure~\ref{fig:2multicategory}.  We assume names for
+constants are given in the signature $\Sigma$, and write $1_\alpha$ for
+reflexivity, $s_1;s_2$ for transitivity (in diagramatic order), and
+$s_1[s_2/x]$ for congruence.  We extend the signature $\Sigma$ to allow
+axioms for equality of transformations $s_1 \deq s_2$ (for two
+derivations of the same judgement $s_1,s_2 ::
+\wfsp{\psi}{\alpha}{\beta}{p}$), and define equality to be the least
+congruence closed under those axioms and some associativity, unit, and
+interchange laws, which are the 2-category axioms extended to the
+multicategorical case (see the extended version for details).  As with
+equality of context descriptors, we think of all definitions as being
+parametrized by \deq-equivalence-classes of transformations, not raw
+syntax.
 
 To simplify the axiomatic description of equality, we use a notation for
 derivations where the admissible transformation, identity, and cut rules
 are internalized as explicit rules---so the calculus has the flavor of
-an explicit substitution one:  
-\[
-\begin{array}{rcl}
-\D & ::= & \Ident{x} \mid \Trd{s}{\D} \mid \Cut{\D_1}{\D_2}{x} \mid
- \FLd{x}{\Delta}{\D} \mid \FRd{\gamma}{s}{\vec{\D_i/x_i}} \mid \ULd{x}{}{s}{\vec{\D_i/x_i}}{z}{\D} \mid \URd{\Delta}{\D} 
-\end{array}
-\]
-We omit the primitive hypothesis rule for atoms (it is derivable), and
-write $x$ for identity and \Trd{s}{\D} for respect for transformations
-(identity for atoms combines these) and \Cut{\D_1}{\D_2}{x} for cut.
-The next 4 terms correspond to the 4 \Usymb/\Fsymb\, rules from
-Figure~\ref{fig:sequent}.  We write $d :: \seq{\Gamma}{\alpha}{A}$ to
-mean $d$ is a derivation of that sequent; we use this slightly unusual
-notation to call attention to the fact that we think of the terms as a
-linear representation of the derivations themselves, rather than as a
-``raw'' term syntax.  
+an explicit substitution one.
+%% \[
+%% \begin{array}{rcl}
+%% \D & ::= & \Ident{x} \mid \Trd{s}{\D} \mid \Cut{\D_1}{\D_2}{x} \mid
+%%  \FLd{x}{\Delta}{\D} \mid \FRd{\gamma}{s}{\vec{\D_i/x_i}} \mid \ULd{x}{}{s}{\vec{\D_i/x_i}}{z}{\D} \mid \URd{\Delta}{\D} 
+%% \end{array}
+%% \]
+We write proof terms for these plus the 4 \Usymb/\Fsymb\, rules (the
+hypothesis rule for atoms is derivable from these) as follows.
+\begin{small}
 \[
 \begin{array}{c}
-\infer{x :: \seq{\Gamma,x:A}{x}{A}}{}
+\infer{{\Gamma,x:A} \vdash_{x} x : {A}}{}
 \qquad
-\infer{\Trd{s}{d} :: \seq{\Gamma}{\alpha}{A}}
+\infer{{\Gamma} \vdash_{\alpha} \Trd{s}{d} : {A}}
       {s :: \alpha \spr \beta &
-       d :: \seq{\Gamma}{\beta}{A}}
+        {\Gamma} \vdash_{\beta} d : {A}}
 \qquad
-\infer{\Cut{e}{d}{x} :: \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}
-      {e :: \seq{\Gamma,x:A}{\beta}{B} &
-       d :: \seq{\Gamma}{\alpha}{A}}
+\infer{{\Gamma} \vdash_{\subst{\beta}{\alpha}{x}} \Cut{e}{d}{x} : {B}}
+      {{\Gamma,x:A} \vdash_{\beta} e : {B} &
+        {\Gamma} \vdash_{\alpha} d : {A}}
 \\\\ 
-\infer{(\FLd{x}{\Delta}{d}) :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
-      {d :: \seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+\infer{{\Gamma,x:\F{\alpha}{\Delta},\Gamma'} \vdash_{\beta} (\FLd{x}{\Delta}{d}) : {C}}
+      {{\Gamma,\Gamma',\Delta} \vdash_{\subst \beta {\alpha}{x}} d : {C}}
 \quad
-\infer{\FRd{}{s}{\vec{d_i/x_i}} :: \seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+\infer{{\Gamma} \vdash_{\beta} \FRd{}{s}{\vec{d_i/x_i}} : {\F{\alpha}{\Delta}}}
       {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
         s :: \beta \spr \tsubst{\alpha}{\gamma} &
-        \vec{d_i/x_i} :: \seq{\Gamma}{\gamma}{\Delta} 
+        {\Gamma} \vdash_{\gamma} \vec{d_i/x_i} : {\Delta} 
       }
 \\\\
-\infer{\ULd{x}{}{s}{\vec{d_i/x_i}}{z}{d} :: \seq{\Gamma}{\beta}{C}}
+\infer{{\Gamma} \vdash_{\beta} \ULd{x}{}{s}{\vec{d_i/x_i}}{z}{d} : {C}}
       {
         x:\U{x.\alpha}{\Delta}{A} \in \Gamma &
         s :: \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
-        {\vec{d_i/x_i}} :: \seq{\Gamma}{\gamma}{\Delta} &
-        d' :: \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+        {\Gamma} \vdash_{\gamma} {\vec{d_i/x_i}} : {\Delta} &
+        {\Gamma,\tptm{z}{A}} \vdash_{\beta'} d' : {C}
       }
 \quad
-\infer{\URd{\Delta}{d} :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
-      {d :: \seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\infer{{\Gamma} \vdash_{\beta} \URd{\Delta}{d} : {\U{x.\alpha}{\Delta}{A}}}
+      {{\Gamma,\Delta} \vdash_{\subst{\alpha}{\beta}{x}} d : {A}}
 \end{array}
 \]
-We elide weakenings and exchanges in the terms.
+\end{small}
 
 %% We write \FRs\/ for $\FRd{\vec{x/x}}{1_\alpha}{\Ident{x}/x} ::
 %% \seq{\Gamma}{\alpha}{\F{\alpha}{\Delta}}$ when $\Delta \subseteq \Gamma$
@@ -83,6 +78,7 @@ We elide weakenings and exchanges in the terms.
 
 The equational theory of derivations is the least congruence containing
 the following equations.  
+\begin{small}
 \[
 \begin{array}{rcll} 
 \Cut{\D}{\Ident{x}}{x} & \deq & \D \\
@@ -106,10 +102,11 @@ the following equations.
 \D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta}{\Cut{(\ULd{x}{}{1}{\Delta/\Delta}{z}{z})}{\D}{x}} & \dsd{U\eta}\\
 \end{array}
 \]
+\end{small}
 
 In the top-left, the first two equations say that identity is a unit for
 cut.  The third says that non-occurence of a variable is a projection.
-The fourth is functoriality of cut.  In the next group, the first two
+The fourth is functoriality of cut.  In the top-right, the first two
 rules say that the action of a transformation is functorial, and the
 third says that it commutes with cut.  The typing in the third rule is
 $\D_1 :: \seq{\Gamma}{\alpha'}{A}$ and $\D_2 ::
