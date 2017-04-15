@@ -309,13 +309,16 @@ For $\UL$:
 by $\eta$ and $\beta$ for $\Usymb$.
 \end{proof}
 
-\begin{theorem}{Soundness of Admissible Rules} \label{thm:admissible-soundess}
+\begin{theorem}{Soundness of Permutative Equality} \label{thm:permutative-soundess}
 \begin{enumerate}
 \item $\Trda{s}{\D} \deq \Trd{s}{\D}$ (for normal \D)
 \item $x \deq \Identa{x}$
 \item $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRs}{x_0}$
 \item $\Rinv{\D}{\vec{y}} \deq \Cut{\ULs{x_0}}{\D}{x_0}$
 \item $\Cuta{\E}{\D}{x} \deq \Cut{\E}{\D}{x}$ (for normal \D,\E)
+\item $\D \deq \elim{\D}$
+\item If $\D \deqp \D'$ then $\D \deq \D'$
+\item If $\elim{\D} \deqp \elim{\D'}$ then $\D \deq \D'$.  
 \end{enumerate}
 \end{theorem}
 \begin{proof}
@@ -526,16 +529,59 @@ For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
 &\deq \Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
 \end{align*}
 by the same argument as used for $\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}$.
+\\~\\
+\textbf{Cut elimination:} This is immediate by induction and the previous equalities.
+\\~\\
+\textbf{Permutative equality:} 
+For this we verify that the given equations for $\deqp$ also hold for $\deq$. The first two equations are exactly the $\eta$ rules for $\Fsymb$ and $\Usymb$, after applying the above equations for $\mathsf{linv}$ and $\mathsf{rinv}$. For the remainder:
 
+\begin{align*}
+\Cuta{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+&\deq \Cut{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} \\
+&\deq \Cut{\Trd{(1_\beta)}{c}}{\Trd{s}{\D_2[\ULs{x}[\vec{d/y}]/z]}}{x_0} \\
+&\deq \Trd{(1_\beta[s/x_0])}{\Cut{c}{\D_2[\ULs{x}[\vec{d/y}]/z]}{x_0}} \\
+&\deq \Trd{(1_\beta[s/x_0])}{\Cut{c}{\D_2}{x_0}[\ULs{x}[\vec{d/y}]/z]} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{c}{\D_2}{x_0}} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{c}{\D_2}{x_0}} \\
+\end{align*}
+by similar reasoning as in the $\UL$ case for $\mathsf{linv}$.
+
+For the following, let $\widehat{[d_j/x_j]}$ denote the substitution $[d_1/x_1, \dots, d_{i-1}/x_{i-1}, d_{i+1}/x_{i+1}, \dots]$ that drops $d_i/x_i$. In each case we apply the Lemma, then interchange, then the Lemma again.
+
+\begin{align*}
+\FRd{}{s}{\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots} 
+&\deq \Trd{s}{\Cut{\FRs\widehat{[d_j/x_j]}}{\Trd{{s_i}}{d_i}}{x_i}}\\
+&\deq \Trd{s}{\Cut{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]})}{\FRs\widehat{[d_j/x_j]}}}{\Trd{{s_i}}{d_i}}{x_i}}\\
+&\deq \Trd{s}{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\FRs\widehat{[d_j/x_j]}[d_i/x_i]}}\\
+&\deq \Trd{s}{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\FRs[\vec{d_j/x_j}]}}\\
+&\deq \Trd{(s;(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i]))}{\FRs[\vec{d_j/x_j}]} \\
+& \deq \FRd{}{s;(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\vec{\D_j/x_j}} 
+\end{align*}
+
+For $\mathsf{UL}$:
+
+\begin{align*}
+\ULd{x}{}{s}{(\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots)}{z.\D} 
+&\deq \Trd{s}{d[\ULs{x}\widehat{[d_j/x_j]}[\Trd{{s_i}}{d_i}/x_i]/z]} \\
+&\deq \Trd{s}{\Cut{d[\ULs{x}\widehat{[d_j/x_j]}/z]}{\Trd{{s_i}}{d_i}}{x_i}} \\
+&\deq \Trd{s}{\Cut{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]})}{d[\ULs{x}\widehat{[d_j/x_j]}/z]}}{\Trd{{s_i}}{d_i}}{x_i}} \\
+&\deq \Trd{s}{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{d[\ULs{x}\widehat{[d_j/x_j]}/z][d_i/x_i]}} \\
+&\deq \Trd{s}{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{d[\ULs{x}[\vec{d_j/x_j}]/z]}} \\
+&\deq \Trd{(s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i]))}{d[\ULs{x}[\vec{d_j/x_j}]/z]} \\
+&\deq \ULd{x}{}{s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{\vec{\D_j/x_j}}{z.\D}
+\end{align*}
+
+And finally:
+
+\begin{align*}
+\ULd{x}{}{s}{\vec{\D/x}}{z.\Trd{s'}{\D}} 
+&\deq \Trd{s}{\Cut{\Trd{s'}{d}}{\ULs{x}[\vec{d_i/y_i}]}{z}} \\
+&\deq \Trd{s}{\Cut{\Trd{s'}{d}}{\Trd{(1_{\alpha[\gamma]})}{\ULs{x}[\vec{d_i/y_i}]}}{z}} \\
+&\deq \Trd{s}{\Trd{(s'[1_{\alpha[\gamma]}/z])}{d[\ULs{x}[\vec{d_i/y_i}]/z]}} \\
+&\deq \Trd{(s;s'[1_{\alpha[\gamma]}/z])}{d[\ULs{x}[\vec{d_i/y_i}]/z]} \\
+& \deq \ULd{x}{}{(s;s'[1_{\alpha[\gamma]}/z])}{\vec{\D/x}}{z.\D}
+\end{align*}
 \end{proof}
-
-\begin{conjecture}{Soundness of Permutative Equality} \label{thm:permutative-soundess}
-\begin{enumerate}
-\item $\D \deq \elim{\D}$
-\item If $\D \deqp \D'$ then $\D \deq \D'$
-\item If $\elim{\D} \deqp \elim{\D'}$ then $\D \deq \D'$.  
-\end{enumerate}
-\end{conjecture}
 
 \begin{conjecture}{Completeness of Permutative Equality.}\\ \label{thm:permutative-completeness}
 If $\D \deq \D'$ then $\elim{\D} \deqp \elim{\D'}$
