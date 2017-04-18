@@ -309,6 +309,72 @@ For $\UL$:
 by $\eta$ and $\beta$ for $\Usymb$.
 \end{proof}
 
+\begin{lemma}
+\begin{align*}
+\Cut{\FLd{x}{\Delta.\D}}{d'}{x_0} &\deq \FLd{x}{\Delta.\Cut{\D}{d'}{x_0}} & \text{if } x \neq x_0 \\
+\Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{d'}{x_0} &\deq \FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{d'}{x_0})/x_i} \\
+\Cut{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{d'}{x_0} &\deq \ULd{x}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{d'}{x_0})/y_i}{z.\Cut{\D}{d'}{x_0}}  & \text{if } x \neq x_0 \\
+\Cut{\URd{\Delta.\D}}{d'}{x_0} &\deq \URd{\Delta.\Cut{\D}{d'}{x_0}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\FLd{x}{\Delta.\Cut{\D}{d'}{x_0}}
+&\deq \FLd{x}{\Delta.\Cut{\Trd{1}{\D}}{d'}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x}}{d'}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{d'}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\FLd{x}{\Delta.\D}}{d'}{x_0}
+\end{align*}
+where we use $\beta$, then associativity of cut (exploiting $x \neq x_0$), then $\eta$.
+
+\begin{align*}
+\FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{d'}{x_0})/x_i}
+&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\FRs}{(\Cut{\D_i}{d'}{x_0})}{x_i}} \\
+&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\Cut{\FRs}{\D_i}{x_i}}{d'}{x_0}} \\
+&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{\Trd{(1_\alpha)}{d'}}{x_0} \\
+&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{d'}{x_0} \\
+&\deq \Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{d'}{x_0}
+\end{align*}
+by the previous Lemma, associativity of cut, the interchange law and the previous Lemma again. 
+
+\begin{align*}
+\ULd{x}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{d'}{x_0})/y_i}{z.\Cut{\D}{d'}{x_0}}
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{d'}{x_0})[\Cut{\ULs{x}}{\Cut{\D_i}{d'}{x_0}}{y_i}/z]} \\
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{d'}{x_0})[\Cut{\Cut{\ULs{x}}{\D_i}{y_i}}{d'}{x_0}/z]} \\
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{\Cut{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}{d'}{x_0}} \\
+&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{\Trd{1}{d'}}{x_0} \\
+&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{d'}{x_0} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{d'}{x_0}
+\end{align*}
+by the Lemma, associativity of cut twice, the interchange law, and the Lemma.
+
+\begin{align*}
+\URd{\Delta.\Cut{\D}{d'}{x_0}}
+&\deq \URd{\Delta.\Cut{\Trd{1}{\D}}{d'}{x_0}} \\
+&\deq \URd{\Delta.\Cut{\Cut{\ULs{x}}{\URd{\Delta.\D}}{x}}{d'}{x_0}} \\
+&\deq \URd{\Delta.\Cut{\ULs{x}}{(\Cut{\URd{\Delta.\D}}{d'}{x_0})}{x}}\\
+&\deq \Cut{\URd{\Delta.\D}}{d'}{x_0}
+\end{align*}
+by the $\beta$ rule, associativity of cut and the $\eta$ rule.
+\end{proof}
+
+\begin{lemma}
+\begin{align*}
+\Cut{d'}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0} &\deq \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{d'}{\D}{x_0}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{d'}{\D}{x_0}}
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{d'}{\D}{x_0}[\ULs{x}[\vec{d_i/y_i}]/z]} \\
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{d'}{\D[\ULs{x}[\vec{d_i/y_i}]/z]}{x_0}} \\
+&\deq \Cut{\Trd{(1_\alpha)}{d'}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{d'}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{d'}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0}
+\end{align*}
+by the first Lemma, associativity of cut, the interchange law, and the first Lemma again.
+\end{proof}
+
 \begin{theorem}{Soundness of Permutative Equality} \label{thm:permutative-soundess}
 \begin{enumerate}
 \item $\Trda{s}{\D} \deq \Trd{s}{\D}$ (for normal \D)
@@ -322,7 +388,6 @@ by $\eta$ and $\beta$ for $\Usymb$.
 \end{enumerate}
 \end{theorem}
 \begin{proof}
-For each statement we induct on the derivation $\D$. \\~\\
 \textbf{Respect for transformations}:
 \begin{align*}
 \Trda{s}{\FRd{}{s'}{\vec{\D/x}}} 
@@ -331,7 +396,7 @@ For each statement we induct on the derivation $\D$. \\~\\
 &\deq \Trd{s}{\Trd{s'}{\FRs[\vec{\D/x}]}} \\
 &\deq \Trd{s}{\FRd{}{s'}{\vec{\D/x}}}
 \end{align*}
-using the previous Lemma and functoriality of $(-)_*$.
+using the first Lemma and functoriality of $(-)_*$.
 \begin{align*}
 \Trda{s}{\FLd{x}{\Delta.\D}} 
 &= \FLd{x}{\Delta.\Trda{(s[1_\alpha/x])}{\D}} \\
@@ -350,7 +415,7 @@ using the $\beta$ law, the interchange law, and the $\eta$ law.
 &\deq \Trd{s}{\Trd{s'}{d'[\ULs{x}[\vec{\D/y}]/z]}} \\
 &\deq \Trd{s}{\ULd{x}{}{s'}{\vec{\D/y}}{z.\D'}} 
 \end{align*}
-again by the Lemma.
+again by the first Lemma.
 
 \begin{align*}
 \Trda{s}{\URd{\Delta.\D}} 
@@ -383,7 +448,7 @@ If $x : \U{\alpha}{\Delta}{A}$, then
 &\deq x
 \end{align*}
 \\~\\
-\textbf{Left Invertibility:}
+\textbf{Left invertibility:}
 \begin{align*}
 \Linv{\Trd{s}{x}}{\vec{x}}{x_0} 
 &= {\Trd{s}{x}} \\
@@ -398,52 +463,38 @@ as $x_0$ does not appear in $\Trd{s}{x}$.
 \end{align*}
 by $\eta$.
 
-If $x \neq x_0$: \begin{align*}
+If $x \neq x_0$: 
+\begin{align*}
 \Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0} 
 &= \FLd{x}{\Delta.\Linv{\D}{\vec{x}}{x_0}} \\
 &\deq \FLd{x}{\Delta.\Cut{\D}{\FRs}{x_0}} \\
-&\deq \FLd{x}{\Delta.\Cut{\Trd{1}{\D}}{\FRs}{x_0}} \\
-&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x}}{\FRs}{x_0}} \\
-&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x_0}}{\FRs}{x}} \\
 &\deq \Cut{\FLd{x}{\Delta.\D}}{\FRs}{x_0}
 \end{align*}
-where we use $\beta$, then associativity of cut (exploiting $x \neq x_0$), then $\eta$.
+by the second Lemma.
 
 \begin{align*}
 \Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0} 
 &= \FRd{}{s[1_\alpha/x_0]}{{{\Linv{\D_i}{\vec{x}}{y}}/x_i}} \\
 &\deq \FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{\FRs}{x_0})/x_i} \\
-&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\FRs}{(\Cut{\D_i}{\FRs}{x_0})}{x_i}} \\
-&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\Cut{\FRs}{\D_i}{x_i}}{\FRs}{x_0}} \\
-&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{\Trd{(1_\alpha)}{\FRs}}{x_0} \\
-&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{\FRs}{x_0} \\
 &\deq \Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{\FRs}{x_0}
 \end{align*}
-using the Lemma, associativity of cut, the interchange law, a unit law, and the Lemma again.
+by the second Lemma.
 
 \begin{align*}
 \Linv{\URd{\Delta.\D}}{\vec{x}}{x_0} 
 &= \URd{\Delta.\Linv{\D}{\vec{x}}{x_0}} \\
 &\deq \URd{\Delta.\Cut{\D}{\FRs}{x_0}} \\
-&\deq \URd{\Delta.\Cut{\Trd{1}{\D}}{\FRs}{x_0}} \\
-&\deq \URd{\Delta.\Cut{\Cut{\ULs{x}}{\URd{\Delta.\D}}{x}}{\FRs}{x_0}} \\
-&\deq \URd{\Delta.\Cut{\ULs{x}}{(\Cut{\URd{\Delta.\D}}{\FRs}{x_0})}{x}}\\
 &\deq \Cut{\URd{\Delta.\D}}{\FRs}{x_0}
 \end{align*}
-by the $\beta$ rule, associativity of cut and the $\eta$ rule.
+by the second Lemma.
 
 \begin{align*}
 \Linv{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}{x_0} 
 &= \ULd{y}{}{s[1_{\alpha_0}/x_0]}{\Linv{\D_i}{\vec{x}}{x_0}/y_i}{z.\Linv{\D}{\vec{x}}{x_0}} \\
 &\deq \ULd{y}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{\FRs}{x_0})/y_i}{z.\Cut{\D}{\FRs}{x_0}} \\
-&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{\FRs}{x_0})[\Cut{\ULs{x}}{\Cut{\D_i}{\FRs}{x_0}}{y_i}/z]} \\
-&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{\FRs}{x_0})[\Cut{\Cut{\ULs{x}}{\D_i}{y_i}}{\FRs}{x_0}/z]} \\
-&\deq \Trd{(s[1_{\alpha_0}/x_0])}{\Cut{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}{\FRs}{x_0}} \\
-&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{\Trd{1}{\FRs}}{x_0} \\
-&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{\FRs}{x_0} \\
 &\deq \Cut{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\FRs}{x_0}
 \end{align*}
-by the Lemma, associativity of cut twice, the interchange law, and the Lemma.
+by the second Lemma.
 \\~\\
 \textbf{Right invertibility:}
 
@@ -467,13 +518,9 @@ by $\beta$, associativity of cut and $\eta$.
 \Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}} 
 &= \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Rinv{\D}{\vec{x}}}\\
 &\deq \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{\ULs{x_0}}{\D}{x_0}}\\
-&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{\ULs{x_0}}{\D}{x_0}[\ULs{x}[\vec{d_i/y_i}]/z]} \\
-&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{\ULs{x_0}}{\D[\ULs{x}[\vec{d_i/y_i}]/z]}{x_0}} \\
-&\deq \Cut{\Trd{(1_\alpha)}{\ULs{x_0}}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
-&\deq \Cut{\ULs{x_0}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
 &\deq \Cut{\ULs{x_0}}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0}
 \end{align*}
-by the Lemma, associativity of cut, the interchange law, and the Lemma.
+by the third Lemma.
 \\~\\
 \textbf{Cut:} The first few cases are immediate by applying the above. For the remainder:
 \begin{align*}
@@ -482,7 +529,7 @@ by the Lemma, associativity of cut, the interchange law, and the Lemma.
 &\deq {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
 &\deq \Cut{\FRd{}{s}{\E}}{\D}{x_0}
 \end{align*}
-by the same argument as used in the case for $\Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0}$.
+by the second Lemma.
 
 \begin{align*}
 \Cuta{\URd{\Delta.\E}}{\D}{x_0} 
@@ -490,7 +537,7 @@ by the same argument as used in the case for $\Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\
 &\deq \URd{\Delta.\Cut{\E}{\D}{x_0}}\\
 &\deq \Cut{\URd{\Delta.\E}}{\D}{x_0} 
 \end{align*}
-by the same argument a used in $\Linv{\URd{\Delta.\D}}{\vec{x}}{x_0}$.
+by the second Lemma.
 
 If $x \neq x_0$
 \begin{align*}
@@ -510,7 +557,7 @@ If $x \neq x_0$
 &\deq {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} \\
 &\deq \Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} 
 \end{align*}
-by the same argument as used in $\Linv{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}{x_0}$.
+by the second Lemma.
 
 For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
 \begin{align*}
@@ -519,16 +566,16 @@ For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
 &\deq \FLd{x}{\Delta.\Cut{\Cut{\E}{\FRs}{x}}{\D}{x_0}} \\
 &\deq \Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} 
 \end{align*}
-by the same argument as used for $\Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0}$.
+by the second Lemma.
 
 For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
 \begin{align*}
 \Cuta{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
 &= \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{\E}{\D_2}{x_0}} \\
-&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x_0}} 
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x_0}} \\
 &\deq \Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
 \end{align*}
-by the same argument as used for $\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}$.
+by the third Lemma.
 \\~\\
 \textbf{Cut elimination:} This is immediate by induction and the previous equalities.
 \\~\\
@@ -538,13 +585,10 @@ For this we verify that the given equations for $\deqp$ also hold for $\deq$. Th
 \begin{align*}
 \Cuta{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
 &\deq \Cut{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} \\
-&\deq \Cut{\Trd{(1_\beta)}{c}}{\Trd{s}{\D_2[\ULs{x}[\vec{d/y}]/z]}}{x_0} \\
-&\deq \Trd{(1_\beta[s/x_0])}{\Cut{c}{\D_2[\ULs{x}[\vec{d/y}]/z]}{x_0}} \\
-&\deq \Trd{(1_\beta[s/x_0])}{\Cut{c}{\D_2}{x_0}[\ULs{x}[\vec{d/y}]/z]} \\
 &\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{c}{\D_2}{x_0}} \\
 &\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{c}{\D_2}{x_0}} \\
 \end{align*}
-by similar reasoning as in the $\UL$ case for $\mathsf{linv}$.
+by the third Lemma.
 
 For the following, let $\widehat{[d_j/x_j]}$ denote the substitution $[d_1/x_1, \dots, d_{i-1}/x_{i-1}, d_{i+1}/x_{i+1}, \dots]$ that drops $d_i/x_i$. In each case we apply the Lemma, then interchange, then the Lemma again.
 
