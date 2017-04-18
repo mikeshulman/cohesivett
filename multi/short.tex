@@ -1,12 +1,12 @@
 \documentclass[letterpaper,USenglish,numberwithinsect]{lipics-v2016}
-%% \usepackage{microtype}%if unwanted, comment out or use option "draft"
+\usepackage{microtype}%if unwanted, comment out or use option "draft"
 
 %%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
 %%SHORT \IEEEoverridecommandlockouts
 
 \usepackage{microtype}
 
-\usepackage{times}
+%% \usepackage{times}
 \usepackage{authblk}
 %% \usepackage{fullpage}
 
@@ -116,7 +116,7 @@
 \begin{document}
 
 \title{A Fibrational Framework for \hspace{4in} Substructural and Modal Logics}
-%% \titlerunning{A Sample LIPIcs Article}
+\titlerunning{A Fibrational Framework for Substructural and Modal Logics}
 
 \author[1]{{Daniel R. Licata}}
 \author[2]{{Michael Shulman}}
@@ -137,13 +137,14 @@
 
 \begin{abstract}
 We define a general framework that abstracts the common features of many
-intuitionistic substructural and modal logics.  The framework is a
-sequent calculus / normal-form type theory parametrized by a \emph{mode
-  theory}, which is used to describe the structure of contexts and the
-structural properties they obey.  The framework makes use of resource
-annotations, where we pair the context itself, which obeys standard
-structural properties, with a term, drawn from the mode theory, that
-constrains how the context can be used.  
+intuitionistic substructural and modal logics / type theories.  The
+framework is a sequent calculus / normal-form type theory parametrized
+by a \emph{mode theory}, which is used to describe the structure of
+contexts and the structural properties they obey.  
+%% The makes use of
+%% resource annotations, where we pair the context itself, which obeys
+%% standard structural properties, with a term, drawn from the mode theory,
+%% that constrains how the context can be used.
 %% Product types, implications,
 %% and modalities are defined as instances of two general connectives, one
 %% positive and one negative, that manipulate these resource annotations.
@@ -155,7 +156,7 @@ constrains how the context can be used.
 We prove cut (and identity) admissibility independently of the mode
 theory, obtaining it for many different logics at once. Further, we
 give a general equational theory on derivations / terms that, in
-addition to the usual beta-eta rules, characterizes when two derivations
+addition to the usual $\beta\eta$-rules, characterizes when two derivations
 differ only by the placement of structural rules.  Finally, we give an
 equivalent semantic presentation of these ideas, in which a mode theory
 corresponds to a 2-dimensional cartesian multicategory, the
@@ -164,8 +165,9 @@ the mode theory, and the logical connectives make this into a bifibration.
 %% The logical connectives have universal properties
 %% relative to this functor, making it into a bifibration.  The sequent
 %% calculus rules and the equational theory on derivations are sound and
-%% complete for this.  The resulting framework can be used both to
-%% understand existing logics / type theories and to design new ones.
+%% complete for this.  
+We show how the framework can be used both to encode existing existing
+logics / type theories and to design new ones.
 \end{abstract}
 
 \input{intro} 
@@ -175,9 +177,11 @@ Section~\ref{sec:exampleencodings}, we discuss how a number of logics
 are represented.  In Section~\ref{sec:equational}, we give the
 $\beta\eta$-equational theory on derivations.  In
 Section~\ref{sec:semantics}, we discuss the framework's categorical
-semantics.  Proof and additional examples are presented in an extended
-version of this paper, available from
-\url{dlicata.web.wesleyan.edu/pubs.html}.  
+semantics.  Proofs (of cut and identity admissibility, soundness and
+completeness of the semantics, and adequacy of encodings) and additional
+examples (subexponentials, modal S4 $\Box$, and strong/$\Box$-strong
+monads) are available in an extended version of this paper, from
+\url{http://dlicata.web.wesleyan.edu/pubs.html}.
 
 \input{syntax}
 \input{synprop-short}

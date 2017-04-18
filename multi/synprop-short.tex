@@ -27,20 +27,29 @@ The following rules are admissible:
 The complete proofs are in the extended version.  
 
 The following general constructions can be helpful for understanding how
-the types behave.  The first three ``fusion'' rules (which are
-additionally type isomorphisms, not just interprovabilities) relate
-$\Fsymb$ and $\Usymb$.  Special cases include: $A \times (B \times C)$
-is isomorphic to a primitive triple product $\{x:A,y:B,z:C\}$; currying;
-and associativity of $n$-ary functions ($A_1,\ldots,A_n \to
-(B_1,\ldots,B_m \to C)$ is isomorphic to $A_1,\ldots,A_n,B_1,\ldots,B_m
-\to C$).  Second, the types respect a transformation covariantly for
-\Fsymb\/ and contravariantly for \Usymb\/.
+the types behave.  We write $A \vdash B$ for $\seq{x:A}{x}{B}$.  The
+three ``fusion'' rules on the left (which are type isomorphisms, not
+just interprovabilities) relate $\Fsymb$ and $\Usymb$.  Special cases
+include: $A \times (B \times C)$ is isomorphic to a primitive triple
+product $\{x:A,y:B,z:C\}$; currying; and associativity of $n$-ary
+functions ($A_1,\ldots,A_n \to (B_1,\ldots,B_m \to C)$ is isomorphic to
+$A_1,\ldots,A_n,B_1,\ldots,B_m \to C$).  Second, the types respect a
+transformation covariantly for \Fsymb\/ and contravariantly for
+\Usymb\/.
+\begin{theorem}[Fusion and Respect Laws]~\label{lem:fusion-respect}
+\begin{small}
 \[
 \begin{array}{rcl}
 \F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} & \dashv \vdash & \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}\\
 \U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} & \dashv \vdash & \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}\\
 \U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} & \dashv \vdash & \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}\\
-\F{\alpha}{\Delta} & \vdash & \F{\beta}{\Delta} \text { if } \alpha \spr \beta \\
-\U{x.\beta}{\Delta}{A} & \vdash & \U{x.\alpha}{\Delta}{A} \text { if } \alpha \spr \beta \\
+\end{array}
+\qquad
+\begin{array}{rcll}
+\F{\alpha}{\Delta} & \vdash & \F{\beta}{\Delta} & \text { if } \alpha \spr \beta \\
+\U{x.\beta}{\Delta}{A} & \vdash & \U{x.\alpha}{\Delta}{A} & \text { if } \alpha \spr \beta \\
 \end{array}
 \]
+\end{small}
+\end{theorem}
+See the extended version for derivations.

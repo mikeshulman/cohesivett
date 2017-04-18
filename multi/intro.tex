@@ -11,20 +11,19 @@ properties of weakening, exchange, and contraction, while \emph{modal
 formula $\Bx{} C$ can only be proved using assumptions of $\Bx{} A$,
 while an assumption of $\Dia{}{A}$ can only be used when the conclusion
 is $\Dia{}{C}$.  Substructural and modal logics have had many
-applications to both functional and logic programming (modeling concepts
-such state, staging, distribution, and concurrency, to name just a few).
-They are also used as \emph{internal languages} of categories: one uses
-an appropriate logical language to do constructions ``inside'' a
-particular mathematical setting, which often leads to shorter statements
-than working ``externally''.  For example, to define a function
-externally in domains, one must first define the underlying
-set-theoretic function, and then prove that it is continuous; but when
-using untyped $\lambda$-calculus as an internal language of domains,
-there is no need to prove that a function described by a $\lambda$-term
-is continuous, because all terms are shown to denote continuous
-functions.  Substructural logics extend this idea to
-various forms of monoidal categories, while modal logics describe monads
-and comonads.  Recently,
+applications to both functional and logic programming, modeling concepts
+such state, staging, distribution, and concurrency.
+They are also used as \emph{internal languages} of categories, where one
+uses an appropriate logical language to do constructions ``inside'' a
+particular mathematical setting, which often results in shorter
+statements than working ``externally''.  For example, to define a
+function externally in domains, one must first define the underlying
+set-theoretic function, and then prove that it is continuous; when using
+untyped $\lambda$-calculus as an internal language of domains, one
+writes what looks like only the function part, and continuity follows
+from a general theorem about the language itself.  Substructural logics
+extend this idea to various forms of monoidal categories, while modal
+logics describe monads and comonads.  Recently,
 \citet{schreibershulman12cohesive,shulman15realcohesion} proposed using
 modal operators to add a notion of \emph{cohesion} to homotopy type
 theory/univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
@@ -33,43 +32,39 @@ to add a triple $\sh{} \la \Flat{} \la \Sharp{}$ of type operators,
 where for example $\Sharp{}$ is a monad (like a modal possibility
 $\Diamond$ or $\bigcirc$), $\Flat{}$ is a comonad (like a modal
 necessity $\Box$), and there is an adjunction structure between them
-(e.g. $\flat{A} \to B$ is the same as $A \to \Sharp{B}$).  This raised
-the question of how to best add modalities with these properties to type
+($\flat{A} \to B$ is the same as $A \to \Sharp{B}$).  This raised the
+question of how to best add modalities with these properties to type
 theory.
 
-Because other similar applications have different monads and comonads
-with different properties, we would like general tools for going from a
-semantic situation of interest to a well-behaved logic/type theory for
-it, e.g. one with cut and identity admissibility (normalization,
-$\eta$-expansion).  In previous work~\citep{ls16adjoint}, we considered
-the special case of a single-assumption logic, building most directly on
-the adjoint logics of
+Because other similar applications rely on functors with different
+properties, we would like general tools for going from a semantic
+situation of interest to a well-behaved logic/type theory for
+it---e.g. one with cut admissibility / normalization and identity
+admissibility / $\eta$-expansion.  In previous work~\citep{ls16adjoint},
+we considered the special case of a single-assumption logic, building
+most directly on the adjoint logics of
 \citet{benton94mixed,bentonwadler96adjoint,reed09adjoint}.  Here we
 extend this previous work to the multi-assumption case.  The resulting
 framework is quite general and covers many existing intuitionistic
-substructural and modal connectives: cartesian, linear, affine,
-relevant, ordered, bunched~\citep{ohearnpym99bunched} and
-non-associative products and implications; $n$-linear
+substructural and modal connectives: non-associative, ordered, linear,
+affine, relevant, and cartesian products and implications; combinations
+thereof such as bunched logic~\citep{ohearnpym99bunched} and resource
+separation~\citep{atkey04separation}; $n$-linear
 variables~\citep{reed08namessubstructural,abel15modal,mcbride16nuttin};
 the comonadic $\Box$ and linear exponential $!$ and
 subexponentials~\citep{nigammiller09subexponentials,danos+93subexponentials};
 monadic $\Diamond$ and $\bigcirc$ modalities; and adjoint logic $F$ and
 $G$~\citep{benton94mixed,bentonwadler96adjoint,reed09adjoint}, including
 the single-assumption 2-categorical version from our previous
-work~\citep{ls16adjoint}.  It also supports variations on these, such as
-non-monoidal comonads and non-strong monads.  A central syntactic result
-is that cut and identity are admissible for our framework
-itself, which implies cut admissibility for any logic that can be
-described in the framework, including all of the above, as well as any
-new logics that one designs using it.  When we view the derivations in
-the framework as terms in a type theory, this gives an immediate
-normalization (and $\eta$-expansion) result.
-%% While it is not too surprising
-%% that this is possible, given that cut proofs for these logics all follow
-%% a similar template, it is nonetheless satisfying to codify this pattern
-%% as an abstraction.
+work~\citep{ls16adjoint}.  A central syntactic result is that cut and
+identity are admissible for our framework itself, and this implies cut
+admissibility for any logic that can be described in the framework,
+including all of the above, as well as any new logics that one designs
+using it.  When we view the derivations in the framework as terms in a
+type theory, this gives an immediate normalization (and
+$\eta$-expansion) result.
 
-At a high level, the framework is based on the idea that all of the
+At a high level, the framework makes use of the fact that all of the
 above logics / type theories are a restriction on how variables can be
 used in ordinary structural/cartesian proofs.  We express these
 restrictions using a first layer, which is a simple type theory for what
@@ -79,36 +74,36 @@ context descriptor $\alpha$ is a term built from variables and
 constants.  The next layer is the main logic.  Each proposition/type is
 assigned a mode, and the basic sequent is \seq{x_1 : A_1, \ldots, x_n :
   A_n}{\alpha}{C}, where if $A_i$ has mode $p_i$, and $C$ has mode $q$,
-then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$.  We use a sequent
+then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$ (we use a sequent
 calculus to concisely describe cut-free derivations/normal forms, but
-everything can be translated to natural deduction in the usual way.
-$\Gamma$ itself behaves like an ordinary structural/cartesian context,
-while the substructural and modal aspects are enforced by the
-\emph{term} $\alpha$, which constrains how the resources from $\Gamma$
-may be used.  For example, in linear logic/ordered logic/BI, the context
-is usually taken to be a multiset/list/tree.  We represent this by a
-pair of an ordinary structural context $\Gamma$, together with a term
-$\alpha$ that describes the multiset or list or tree structure, labeled
-with variables from the ordinary context at the leaves.  We pronounce a
-sequent \seq{\Gamma}{\alpha}{A} as ``$\Gamma$ proves $A$ \{along,over\}
+everything can be translated to natural deduction in the usual way).  We
+write ${\Gamma}$ for $x_1 : A_1, \ldots, x_n : A_n$, and $\Gamma$ itself
+behaves like an ordinary structural/cartesian context, while the
+substructural and modal aspects are enforced by the \emph{term}
+$\alpha$, which constrains how the resources from $\Gamma$ may be used.
+For example, in linear logic/ordered logic/BI, the context is usually
+taken to be a multiset/list/tree.  We represent this by a pair of an
+ordinary structural context $\Gamma$, together with a term $\alpha$ that
+describes the multiset or list or tree structure, labeled with variables
+from the ordinary context at the leaves.  We pronounce a sequent
+\seq{\Gamma}{\alpha}{A} as ``$\Gamma$ proves $A$ \{along,over,using\}
 $\alpha$''.
 
-For example, suppose we have one mode $\dsd{n}$, together with a context
-descriptor constant $x : \dsd{n}, y:\dsd{n} \vdash x \odot y : \dsd{n}$.
-Then an example sequent \seq{x:A, y:B, z:C, w:D}{(y \odot x) \odot z}{E}
+For example, if we have a mode $\dsd{n}$, together with a context
+descriptor constant $x : \dsd{n}, y:\dsd{n} \vdash x \odot y : \dsd{n}$,
+then an example sequent \seq{x:A, y:B, z:C, w:D}{(y \odot x) \odot z}{E}
 should be read as saying that we must prove $E$ using the resources $y$
 and $x$ and $z$ (but not $w$) according to the particular tree structure
 ${(y \odot x) \odot z}$.  If we say nothing else, the framework will
-treat $\odot$ as describing a non-associative, linear, ordered context
-as in Lambek calculus~\citep{lambek58calculus}: if we have a
-product-like type $A \odot B$ internalizing this context
-operation,\footnote{We overload binary operations to refer both to
-  context descriptors and propositional connectives, because it is clear
-  from whether it is applied to variables $x,y,z$ or propositions
-  $A,B,C$ which we mean.}  then we will \emph{not} be able to prove
-associativity ($(A \odot B) \odot C \dashv\vdash A \odot (B \odot C)$)
-or exchange ($A \odot B \vdash B \odot A$) etc.  
-\ifthenelse{\boolean{short}}{}{ 
+treat $\odot$ as describing a non-associative, linear, ordered
+context~\citep{lambek58calculus}: if we have a product-like type $A
+\odot B$ internalizing this context operation,\footnote{We overload
+  binary operations to refer both to context descriptors and
+  propositional connectives, because it is clear from whether it is
+  applied to variables $x,y,z$ or propositions $A,B,C$ which we mean.}
+then we will \emph{not} be able to prove associativity ($(A \odot B)
+\odot C \dashv\vdash A \odot (B \odot C)$) or exchange ($A \odot B
+\vdash B \odot A$) etc.  \ifthenelse{\boolean{short}}{}{
 %% para break
 }
 To get from this basic structure to a linear or affine or relevant or
@@ -139,30 +134,35 @@ in representing the structural properties of object logics that are
 embedded in our framework.  The main sequent $\seq{\Gamma}{\alpha}{A}$
 respects the specified structural properties in the sense that when
 $\alpha = \beta$, we regard $\seq{\Gamma}{\alpha}{A}$ and
-$\seq{\Gamma}{\beta}{A}$ as the same sequent, while when $\alpha \spr
+$\seq{\Gamma}{\beta}{A}$ as the same sequent (so a derivation of one is
+a derivation of the other), while when $\alpha \spr
 \beta$, there will be an operation that takes a derivation of
-\seq{\Gamma}{\beta}{A} to a derivation of \seq{\Gamma}{\alpha}{A}.
+\seq{\Gamma}{\beta}{A} to a derivation of
+\seq{\Gamma}{\alpha}{A}---i.e. uses of transformations are explicitly
+marked in the term.  
 
 Modal logics will generally involve a mode theory with more than one
 mode.  For example, a context descriptor $x : \dsd{c} \vdash \dsd{f}(x)
 : \dsd{l}$ will generate an adjoint pair of functors between the two
 modes, as in the adjoint syntax for linear logic's
 $!$~\citep{bentonwadler96adjoint} or other modal
-operators~\citep{reed09adjoint}.  Structural transformations are used to
+operators~\citep{reed09adjoint}.  Using this, a context descriptor
+$\dsd{f}(x) \odot y$ expresses permission to use $x$ in a cartesian way
+and $y$ in a linear way.  Structural transformations are used to
 describe how these modal operators interact with each other and with the
-product structures, and in some cases~\citep{ls16adjoint} it is
-important that there can be more than one structural transformation
-between a given pair of context descriptors.
+products, and for some systems~\citep{ls16adjoint} it is important that
+there can be more than one transformation between a given pair of
+context descriptors.
 
 A guiding principle of the framework is a meta-level notion of
 \emph{structurality over structurality}.  For example, we always have
 \emph{weakening over weakening}: if \seq{\Gamma}{\alpha}{A} then
 \seq{\Gamma,y:B}{\alpha}{A}, where $\alpha$ itself is weakened with $y$.
-This does not prevent encodings of e.g. linear logic: it is permissible
-to weaken a derivation of \seq{\Gamma}{x_1 \odot \ldots \odot x_n}{A}
+This does not prevent encodings of relevant logics: though we might
+weaken a derivation of \seq{\Gamma}{x_1 \odot \ldots \odot x_n}{A}
 (``use $x_1$ through $x_n$'') to a derivation of \seq{\Gamma,y:B}{x_1
-  \odot \ldots \odot x_n}{A} because the (weakened) context descriptor
-still disallows the use of $y$.  Similarly, we have exchange over
+  \odot \ldots \odot x_n}{A}, the (weakened) context descriptor
+does not allow the use of $y$.  Similarly, we have exchange over
 exchange and contraction over contraction.  The \emph{identity-over-identity}
 principle says that we should be able to prove $A$ using exactly an
 assumption $x:A$ ({\seq{\Gamma,x:A}{x}{A}}).  The cut principle says
@@ -172,11 +172,11 @@ the result of the cut is the substitution of the context descriptor used
 to prove $A$ into the one used to prove $B$.  For example, together with
 weakening-over-weakening, this captures the usual cut principle of
 linear logic, which says that cutting $\Gamma,x:A \vdash B$ and $\Delta
-\vdash A$ yields $\Gamma,\Delta \vdash B$.  If $\Gamma$ binds
+\vdash A$ yields $\Gamma,\Delta \vdash B$: if $\Gamma$ binds
 $x_1,\ldots,x_n$ and $\Delta$ binds $y_1,\ldots,y_n$, then we will
 represent the two derivations to be cut together by sequents with $\beta
 = x_1 \odot \ldots \odot x_n \odot x$ and $\alpha = y_1 \odot \ldots
-\odot y_n$ then $\beta[\alpha/x] = x_1 \odot \ldots \odot x_n \odot y_1
+\odot y_n$, so $\beta[\alpha/x] = x_1 \odot \ldots \odot x_n \odot y_1
 \odot \ldots \odot y_n$ correctly deletes $x$ and replaces it with the
 variables from $\Delta$.  In more subtle situations such as BI, the
 substitution will insert the resources used to prove the cut formula in
@@ -221,8 +221,8 @@ situation (such as the cohesion example mentioned, ``a comonad and a
 monad which are themselves adjoint'') and a proof theory: the framework
 gives \emph{some} proof theory for the semantics, and the placement of
 structural rules can then be optimized purely in syntax.  To support
-this mode of use, we give an equational theory on sequent derivations
-that identifies different placements of the same structural rules, which
+this mode of use, we give an equational theory on derivations/terms
+that identifies different placements of the same structural rules.  This
 can be used to prove correctness of such optimizations not just at the
 level of provability, but also identity of derivations---which matters
 for our intended applications to internal languages.  We discuss some

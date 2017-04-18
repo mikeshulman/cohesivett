@@ -10,6 +10,7 @@
 \subsection{Mode Theories}
 
 \begin{figure}
+\begin{small}
 \[
 \begin{array}{l}
 \framebox{Signatures \wfsig{\Sigma}}
@@ -118,7 +119,7 @@ and \oftps{\psi}{\Sigma}{\alpha'}{p}
       {(\alpha \spr \alpha' : \psi \to p) \in \Sigma}
 \end{array}
 \]
-
+\end{small}
 \caption{Syntax for mode theories}
 \label{fig:2multicategory}
 \end{figure}
@@ -161,7 +162,7 @@ defines a substitution as a tuple of terms in the standard way.  The
 context $\psi$ in these judgements enjoys the cartesian structural
 properties (associativity, unit, weakening, exchange, contraction).
 Simultaneous substitution into terms and substitutions is defined as
-usual (e.g.  $x[\rho,\alpha/x] := \alpha$ and
+usual (e.g.  $x[\gamma,\alpha/x] := \alpha$ and
 $\dsd{c}(\vec{\alpha_i})[\gamma] := \dsd{c}(\alpha_i[\gamma])$).
 
 Returning to the top of the figure, the final two rules of the judgement
@@ -206,8 +207,8 @@ the difference is important mainly at the level of identity of
 derivations rather than provability---for example, we can make a binary
 operation $\odot$ into a strict monoid, rather than adding associator
 and unitor isomorphisms.
-
 }
+
 Because context descriptors
 $\alpha$ and their equality $\alpha_1 \deq \alpha_2$ are defined prior
 to the subsequent judgements, we suppress this equality by using
@@ -314,9 +315,8 @@ the signature $\Sigma$.
 \end{small}
 \end{figure}
 
-The whole sequent calculus is parametrized by a mode theory $\Sigma$,
-which is an implicit argument to all of the definitions in
-Figure~\ref{fig:sequent}.  The first judgement assigns each
+For a fixed mode theory $\Sigma$, we define a second layer of judgements
+in Figure~\ref{fig:sequent}.  The first judgement assigns each
 proposition/type $A$ a mode $p$.  Encodings of non-modal logics will
 generally only make use of one mode, while modal logics use different
 modes to represent different notions of truth, such as the linear and
@@ -330,7 +330,7 @@ passes between derivations in one and the other.
 
 The sequent judgement \seq{\Gamma}{\alpha}{A} relates a context
 $\wfctx{\Gamma}{\psi}$ and a type $\wftype{A}{p}$ and context descriptor
-\oftp{\psi}{\alpha}{p}, while the substitution relates
+\oftp{\psi}{\alpha}{p}, while the substitution judgement \seq{\Gamma}{\gamma}{\Delta} relates
 $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and
 $\oftp{\psi}{\gamma}{\psi'}$. Because $\wfctx{\Gamma}{\psi}$ means that
 each variable in $\Gamma$ is in $\psi$, where $x : A_i \in \Gamma$
@@ -371,12 +371,12 @@ We now explain the rules for the sequent calculus; the reader may wish
 to refer to the examples in Section~\ref{sec:exampleencodings} in
 parallel with this abstract description.  We assume atomic propositions
 $P$ are given a specified mode $p$, and state identity as a primitive
-rule only for them.  If we had instead stated the identity rule as
-\seq{\Gamma,x:P}{x}{P}, then respect for structural transformation would
-not be admissible, so we allow a $\beta \spr x$ premise here.  Using a
-structural property at a leaf of a derivation is common in e.g. affine
-logic, where the derivation of $\beta \spr x$ would use weakening to
-forget any additional resources.
+rule only for them with the \dsd{v} rule.  This says that
+\seq{\Gamma,x:P}{x}{P}, and additionally composes with a structural
+transformation $\beta \spr x$.  Using a structural property at a leaf of
+a derivation is common in e.g. affine logic, where the derivation of
+$\beta \spr x$ would use weakening to forget any additional resources
+besides $x$.
 
 Next, we consider the \F{\alpha}{\Delta} type, which ``internalizes''
 the context operation $\alpha$ as a type/proposition.  Syntactically, we
@@ -403,7 +403,7 @@ these examples.  The left $\FL$ rule says that \F{\alpha}{\Delta}
 ``decays'' into $\Delta$, but \emph{structuring the uses of resources in
   $\Delta$ with $\alpha$ by the substitution \subst{\beta}{\alpha}{x}}.
 We assume that $\Delta$ is $\alpha$-renamed to avoid collision with
-$\Gamma$ (the proof term here would be a ``\dsd{split}'' that binds
+$\Gamma$ (the proof term here is a ``\dsd{split}'' that binds
 variables for each position in $\Delta$).  The placement of $\Delta$ at
 the right of the context is arbitrary (because we have
 exchange-over-exchange), but we follow the convention that new variables
@@ -457,8 +457,8 @@ with $\beta \spr \beta'[\alpha[\gamma]/z]$.
 
 Finally, the rules for substitutions are pointwise.  In examples, we
 will write the components of a substitution directly as multiple
-premises of \FR\/ and \UL\/, eliding packaging them into a list with the
-$\_,\_$ and $\cdot$ rules.
+premises of \FR\/ and \UL\/, rather than packaging them with 
+$\_,\_$ and $\cdot$.
 
 \ifthenelse{\boolean{short}}{}{
 One subtle point about the $\FL$ rule is that there are two competing
