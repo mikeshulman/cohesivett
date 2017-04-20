@@ -1,17 +1,24 @@
 \documentclass{article}
-\usepackage{amsthm,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist}
+\usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{conj}[thm]{Conjecture}
 \theoremstyle{definition}
-\newtheorem{defn}{Definition}
-\newtheorem{eg}{Example}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{eg}[thm]{Example}
+\theoremstyle{remark}
+\newtheorem{rmk}[thm]{Remark}
 \usepackage{tikz}
 \usepackage{tikz-cd}
 \let\sto\looparrowright
 \def\M{\mathcal{M}}
+\def\N{\mathcal{N}}
 \def\K{\mathcal{K}}
 \def\Q{\mathcal{Q}}
+\def\Mh{\M_{\bullet 0}}
+\def\Mv{\M_{0\bullet}}
+\def\mult{\mathfrak{m}}
+\def\pow{\mathfrak{p}}
 \def\SQ{\mathcal{S}\mathit{q}}
 \def\Cat{\mathcal{C}\mathit{at}}
 \def\Fib{\mathcal{F}\mathit{ib}}
@@ -21,6 +28,10 @@
 \def\dom{\mathrm{dom}}
 \def\cod{\mathrm{cod}}
 \def\DD#1#2{\mathcal{D}^{#1}_{#2}}
+\def\Poly{\mathbb{P}\mathsf{oly}}
+\def\Span{\mathsf{Span}}
+\def\sZ{\mathcal{Z}}
+\def\sQ{\mathcal{Q}}
 \let\ot\leftarrow
 \let\xto\xrightarrow
 \let\xot\xleftarrow
@@ -65,7 +76,7 @@ The bicategory of spans in a category $\sC$ is equivalent to the bicategory of \
 This sits inside the larger bicategory of \emph{polynomial functors}: those of the form
 \[ \sC/I \xto{q^*} \sC/B \xto{\Pi_f} \sC/A \xto{\Sigma_p} \sC/J \]
 for some \emph{polynomial} $I \xot{q} B \xto{f} A \xto{p} J$, where $f$ is an exponentiable morphism (i.e.\ $f^*$ has a right adjoint $\Pi_f$).
-The natural ``transformations'' between polynomial functors are the cartesian ones (those whose naturality squares are all pullbacks); these correspond to diagrams 
+The most naturally-definable ``transformations'' between polynomial functors are the cartesian ones (those whose naturality squares are all pullbacks); these correspond to diagrams 
 \begin{equation}
 \begin{tikzcd}
   I \ar[d] & B \ar[l] \ar[r]\ar[d] \ar[dr,phantom,near start,"\lrcorner"] & A \ar[r]\ar[d] & J\ar[d] \\
@@ -73,6 +84,7 @@ The natural ``transformations'' between polynomial functors are the cartesian on
 \end{tikzcd}\label{eq:poly-cartmap}
 \end{equation}
 in which the middle square is a pullback.
+(Non-cartesian natural transformations can also be described in terms of polynomial data, but they are a bit more complicated.)
 
 This suggests that \emph{polynomial monads} in $\Cat$ (monads whose underlying functor is polynomial and whose unit and multiplication are cartesian) are a natural ``higher-arity'' version of double categories.
 Let) us write such a polynomial as $\M_0 \xot{\mu_2} \M_2 \xto{\mu_1} \M_1 \xto{\mu_0} \M_0$.
@@ -108,18 +120,20 @@ If $\mu_1$ is a discrete fibration, so that all the spans appearing in squares a
 If the spans are functions or bijections, then we have a \textbf{cocartesian club} (a ``club over $\mathbf{S}$'') or a \textbf{symmetric club} (a ``club over $\mathbf{P}$'') respectively.
 In the cartesian case there is an induced functor $\M_1 \to \mathbf{FinSet}^{\mathrm{op}}$; \textbf{cartesian 2-multicategories} as in~\cite{lsr:multi} can be identified with cartesian clubs for which this functor is a split fibration.
 
-Since a polynomial monad is cartesian, it induces a notion of ``generalized multicategory'' in the sense of Leinster and Burroni~\cite{leinster:higher-opds,burroni:t-cats} using the double category of spans.
+Since a polynomial monad is cartesian, it induces a notion of ``generalized multicategory'' in the sense of Leinster~\cite{leinster:higher-opds} and Burroni~\cite{burroni:t-cats} using the double category of spans.
 We can identify these with a slice category of polynomials:
 
 \begin{lem}\label{thm:poly-multi}
-  If $\M$ is a polynomial monad on a slice category $\sC/\M_0$ of a locally cartesian closed category $\sC$, then Leinster-Burroni $\M$-multicategories in $\sC/\M_0$ are equivalent to polynomial monads (on arbitrary slice categories of $\sC$) over $\M$ by a cartesian transformation as in~\eqref{eq:poly-cartmap}.
+  If $\M$ is a polynomial monad on a slice category $\sC/\M_0$ of a locally cartesian closed category $\sC$, then Leinster--Burroni $\M$-multicategories in $\sC/\M_0$ are equivalent to polynomial monads (on arbitrary slice categories of $\sC$) over $\M$ by a cartesian transformation as in~\eqref{eq:poly-cartmap}.
 \end{lem}
 
 In particular, cartesian clubs can be identified with $\mathcal{S}$-multicategories, where $\mathcal{S}$ is the monad for strictly associative finite products, and similarly for cocartesian and symmetric clubs.
-However, more of the ``usual'' sorts of multicategories arise rather by considering monads on a double category of \emph{profunctors}~\cite{cs:multicats}.
+More of the ``usual'' sorts of multicategories arise rather by considering monads on a double category of \emph{profunctors}~\cite{cs:multicats}.
+At least in many cases, these can be identified with Leinster--Burroni multicategories whose underlying span is a ``two-sided discrete fibration'', i.e.\ $\D_1 \to \D_0$ is an opfibration (which is a trivial condition if $\D_0$ is discrete), $\D_1 \to \M(\D_0)$ is a fibration, and $\D_1 \to \D_0 \times \M(\D_0)$ has discrete fibers.
+We can also identify this condition in terms of polynomials.
 
 \begin{lem}\label{thm:poly-multi-2}
-  Suppose $\M$ is a polynomial monad in $\Cat$ where $\mu_1$ has discrete fibers, and assume furthermore that $\mu_0$ is a fibration and that the span associated to every $\mu_0$-cartesian arrow in $\M_1$ is a function (such as, for instance, if $\mu_1$ is an opfibration).
+  Suppose $\M$ is a polynomial monad in $\Cat$ where $\mu_1$ has finite discrete fibers, and assume furthermore that $\mu_0$ is a fibration and that the arity span associated to every $\mu_0$-cartesian arrow in $\M_1$ (i.e.\ the fiber of $\mu_2$ over it) is a function (such as, for instance, if $\mu_1$ is an opfibration).
   Then the monad $\M$ induced on $\Cat/\M_0$ preserves (split) fibrations.
   Moreover, under the equivalence of \cref{thm:poly-multi}, the following properties correspond:
   \begin{enumerate}[(i)]
@@ -136,6 +150,9 @@ However, more of the ``usual'' sorts of multicategories arise rather by consider
   Now standard arguments about composites of fibrations imply that if $\D_1 \to \M(\D_0)$ is a discrete fibration, then the composite $\D_1 \to \M(\D_0) \to \M_0$ is a fibration and $\D_1 \to \M(\D_0)$ is a discrete fibration in $\Fib(\M_0)$, while conversely if $\D_1 \to \M(\D_0)$ is a discrete fibration in $\Fib(\M_0)$ then it is also a discrete fibration in $\Cat$.
 \end{proof}
 
+It should be straightforward to formulate ``horizontal'' fibration and opfibration conditions on such a morphism $\D\to\M$.
+The opfibration condition should correspond to being a \emph{representable} $\M$-multicategory as in~\cite{hermida:coh-univ,hermida:multicats,cs:multicats}, hence equivalent to a pseudo $\M$-algebra.
+
 \begin{conj}\label{thm:poly-multi-3}
   For a polynomial monad $\M$ as in \cref{thm:poly-multi-2}, $\M$-multicategories as in~(\ref{item:pm2}) can be identified with object-discrete $\M$-multicategories in $\Prof(\Fib(\M_0))$.
 \end{conj}
@@ -144,12 +161,10 @@ The statement of~(\ref{item:pm2}) tells us that we have an object-discrete $\M$-
 The remaining content of the conjecture is nontrivial because $\M$ as a monad on $\Fib(\M_0)$ will not preserve two-sided discrete fibrations.
 Indeed the extension of $\M$ to a monad on $\Prof(\Fib(\M_0))$ must be constructed in some other way before the conjecture is even fully precise.
 
-It should be straightforward to formulate ``horizontal'' fibration and opfibration conditions on such a morphism $\D\to\M$.
-The opfibration condition should correspond to being a \emph{representable} $\M$-multicategory as in~\cite{hermida:coh-univ,hermida:multicats,cs:multicats}, hence equivalent to a pseudo $\M$-algebra.
-
 If \cref{thm:poly-multi-3} is false, I'm not sure which of the two things it wants to identify we ought to be considering as our intended semantics.
-Even if \cref{thm:poly-multi-3} is true, I don't know how to ensure the condition on $\M$ in \cref{thm:poly-multi-2} as a property of the \emph{syntactic} mode theory, and without that condition I'm not even sure how to state a generalized-multicategory notion for the comparison, since the monad may not preserve fibrations.
-This suggests that to be general we ought to consider ``discrete fibrations of polynomial monads'' as in~(\ref{item:pm1}) as the intended semantics --- though I'm not yet entirely reconciled to that conclusion, since generalized multicategories seem more natural to me from a categorical viewpoint.
+Even if \cref{thm:poly-multi-3} is true, I don't know how to ensure the condition on $\M$ in \cref{thm:poly-multi-2} as a property of the \emph{syntactic} mode theory.
+This suggests that in general, our intended semantics ought to lie in Leinster--Burroni $\M$-multicategories, or equivalently polynomial monads over $\M$.
+(Although it's not clear to me that there is anything very sensical to be said in the case when the condition of \cref{thm:poly-multi-2} fails, since then we can't really regard the monad as describing structure on fibrations the way we want to in other cases.)
 
 
 \section{Type theory over polynomials}
@@ -157,7 +172,7 @@ This suggests that to be general we ought to consider ``discrete fibrations of p
 
 Here are some first thoughts about a type theory over polynomial monads.
 For the mode theory, we have modes and horizontal mode morphisms forming an ordinary ordered logic.
-We also have modes and vertical mode morphisms forming an ordinary unary logic, $x:p \vdash^v f(x):q$
+We also have modes and vertical mode morphisms forming an ordinary unary logic, $x:p \vdash^v f(x):q$.
 Then we have a judgment for squares that looks like
 \[
 \left.{\textstyle\frac{x_1:p_1, \dots, x_n:p_n} {y_1:q_1,\dots,y_m:q_m}} \right| \dots z_i:y_{t(i)} = f_i(x_{s(i)}) \dots  \;\vdash\; e(\vec z_i) : {\beta(\vec y)} = g({\alpha(\vec x)})
@@ -177,6 +192,7 @@ However, it ought at least to work in the following three cases, which I think c
 \item All the spans are opposites of functions (a cartesian club).
 \item There are no equations to be imposed between mode squares (e.g.\ if we only care about provability).
 \end{itemize}
+(In fact, nearly all examples seem to be cartesian clubs; contraction and weakening are much more common than their duals.)
 Note that there is a partial cut-elimination theorem for symmetric clubs in~\cite{kelly:mv-funct-calc}, extended to the cartesian case in~\cite{kelly:club-doc}.
 
 In the case of FOL and DirTT, the vertical mode theory also wants to include morphisms of higher arity.
@@ -195,35 +211,51 @@ when $x_1:p_1, \dots, x_n:p_n \vdash \alpha(x_1,\dots,x_n) : p$ is a horizontal 
 To include FOL and DirTT, however, it seems better to regard types as ``dependent on'' mode variables:
 \begin{mathpar}
   x:p \vdash A(x) \type \and
-  x_1:p_1, \dots ,x_n:p_n \mid u_1:A_1(x_1),\dots, u_n:A_n(x_n) \vdash B(\alpha(x_1,\dots,x_n))
+  x_1:p_1, \dots ,x_n:p_n \mid u_1:A_1(x_1),\dots, u_n:A_n(x_n) \vdash_{\alpha(x_1,\dots,x_n)\tot v} B(v) \mid v:q
 \end{mathpar}
 If we allow a prop type theory for the vertical mode theory, then each $x_n$ would actually be a context of sorts (plus perhaps a pre-mode).
 
-We should have an (admissible?)\ rule of substitution along vertical mode morphisms into types:
+We should have an (admissible) rule of substitution along vertical mode morphisms into types:
 \[
 \inferrule{y:q \vdash A(y)\type \\ x:p \vdash^v f(x):q}{x:p \vdash A(f(x)) \type}
 \]
-We are abusing the notation a bit here: $B(\alpha(x_1,\dots,x_n))$ and $A(f(x))$ mean something different.
-By $A(f(x))$ we mean the usual $A[f(x)/y]$, a syntactic substitution of $f(x)$ into $y$.
-But $B(\alpha(x_1,\dots,x_n))$ is instead something formal, indicating the consequent and also the horizontal mode morphism parametrizing the judgment at once: we can't actually substitute a \emph{horizontal} mode term into a type.
-Perhaps this is ill-advised and we should instead write something like
-\[
-  x_1:p_1, \dots ,x_n:p_n,y:p \mid u_1:A_1(x_1),\dots, u_n:A_n(x_n) \vdash_{y=\alpha(x_1,\dots,x_n)} B(y).
-\]
-
-We should also have a rule of substitution of term judgments along mode squares, something like this:
+And also a rule of substitution of term judgments along mode squares, something like this:
 \begin{mathpar}
   \inferrule{
     \left.{\textstyle\frac{x_1:p_1, \dots, x_n:p_n} {y_1:q_1,\dots,y_m:q_m}} \right| \dots z_i:y_{t(i)} = f_i(x_{s(i)}) \dots  \;\vdash\; e(\vec z_i) : {\beta(\vec y)} = g({\alpha(\vec x)}) \\
-    y_1:q_1, \dots ,y_m:q_m \mid A_1(y_1),\dots, A_m(y_m) \vdash B(\beta (\vec y))\\
+    y_1:q_1, \dots ,y_m:q_m \mid A_1(y_1),\dots, A_m(y_m) \vdash_{\beta (\vec y)\tot v} B(v) \mid v:s\\
     \forall i, C_{s(i)}(x_{s(i)}) \equiv A_{t(i)}(f_i(x_{s(i)}))
   }
-  {x_1:p_1,\dots, x_n:p_n \mid \dots C_j(x_j)\dots \vdash B(g(\alpha(\vec x)))}
+  {x_1:p_1,\dots, x_n:p_n \mid \cdots C_j(x_j)\dots \vdash_{\alpha(\vec x)\tot u} B(g(u)) \mid u:r}
 \end{mathpar}
 This includes substitution of vertical mode morphisms into term judgments, and also structural actions by nontrivial 2-cells.
 Here $B(g(\alpha(\vec x)))$ combines the above two kinds of ``substitution'': we actually substitute $g(u)$ into $B(v)$, then formally set $u$ to $\alpha(\vec x)$ to indicate both the consequent and the mode morphism.
 
-If the condition of \cref{thm:poly-multi-2} doesn't hold (and I have no idea how to ensure that it does as a property of a syntactic mode theory), or if \cref{thm:poly-multi-3} fails, then possibly this rule should be different.
+Note that unlike for cartesian 2-multicategories, to get a structural action like contraction
+\[ \inferrule{x:A,y:A\vdash_{x\otimes y} B}{x:A\vdash_x B} \]
+we don't need to pass through a ``junk'' sequent like $x:A \vdash_{x\otimes x} B$.
+Contraction arises directly from a single mode square like so:
+\begin{mathpar}
+  \inferrule{\left.{\textstyle\frac{x:p}{y_1:p,y_2:p}}\right| z_1 : y_1 = x, z_2 : y_2 = x \;\vdash\; e(z_1,z_2) : y_1\otimes y_2 = x \\
+    y_1:p, y_2:p \mid A_1(y_1), A_2(y_2) \vdash_{(y_1\otimes y_2) \tot u} B(u) \mid u:p \\
+    C(x) \equiv A_1(x) \\ C(x) \equiv A_2(x)}
+  {x:p \mid C(x) \vdash_{x\tot u} B(u) \mid u:p}
+\end{mathpar}
+I don't think this prevents us from talking about $n$-linear types either: we just need to put them in by hand.
+For instance, suppose in addition to a commutative monoid structure $\mult:(p,p)\to p$ we have power operations $\pow^n:p\to p$, with laws like $\pow^n \circ \pow^k = \pow^{nk}$ and $\pow^n(\mult(x,y)) = \mult(\pow^n(x),\pow^n(y))$.
+Then we can have a square allowing us to contract $\mult(x,y)$ to $\pow^2(x)$, and so on:
+\begin{mathpar}
+  \inferrule{\left.{\textstyle\frac{x:p}{y_1:p,y_2:p}}\right| z_1 : y_1 = x, z_2 : y_2 = x \;\vdash\; e(z_1,z_2) : y_1\otimes y_2 = \pow^2(x) \\
+    y_1:p, y_2:p \mid A_1(y_1), A_2(y_2) \vdash_{(y_1\otimes y_2) \tot v} B(v) \mid v:p \\
+    C(x) \equiv A_1(x) \\ C(x) \equiv A_2(x)}
+  {x:p \mid C(x) \vdash_{\pow^2(x)\tot u} B(u) \mid u:p}
+\end{mathpar}
+Then an $F$-type for $\pow^n$ will be an $n$-linear type, and so on.
+
+If the condition of \cref{thm:poly-multi-2} doesn't hold (and I have no idea how to ensure that it does as a property of a syntactic mode theory), or if \cref{thm:poly-multi-3} fails, then possibly the rule for the action of squares should be different.
+However, that condition or something like it seems necessary in order for FOL-substitution to be admissible: the only way to substitute into an $F$-type is to distribute the substitution to the $F$ and to its arguments, and the span being a function seems necessary for the arguments of the substituted $F$ to be determined uniquely.
+This suggests that perhaps some similar condition might be necessary to deal with $U$-types.
+(If $\M_0$ is discrete, of course, there is nothing to worry about.)
 
 There is of course also a cut-over-cut rule, and so on.
 Note that~\cite{kelly:cutelim} contains a partial cut-elimination theorem for type theory over symmetric clubs with $\M_0$ discrete; I think his theorem is essentially eliminating only cuts at $U$-types.
@@ -270,14 +302,15 @@ The obvious way to see these is as a \textbf{triple category}, which adds a coll
 Following~\cite{gp:intercategories-i,gp:intercategories-ii} we refer to the horizontal-transversal, vertical-transversal, and horizontal-vertical squares as \emph{horizontal}, \emph{vertical}, and \emph{basic cells} respectively.
 
 A double 2-category is essentially a triple category with only identity transversal arrows and in which the horizontal and vertical cells ``act'' on the basic ones.
-I don't see any obstacle to such an action --- it essentially means that from any ``allowable cut'' we can get a new one by incorporating structural actions on the cut formulas (is this perhaps something to do with the ``mix rule'' of classical logic?) --- but neither does it seem necessary.
+This would essentially mean that from any ``allowable cut'' we can get a new one by incorporating structural actions on the cut formulas (is this perhaps something to do with the ``mix rule'' of classical logic?).
+This would be sensible to have, but also seems sensible to omit, and by omitting it the higher-ary case below is simplified.
 
 
-\section{Double polynomials}
+\section{Double polynomial monads}
 \label{sec:double-polynomials}
 
 Now we need to combine the generalizations of \cref{sec:polynomials,sec:unary-classical}.
-Just as an internal category in $\sC$ is a monad in the double category of spans, an internal \emph{double} category in $\sC$ is a ``double monad'' in the \emph{triple} category of spans.
+Just as an internal category in a category $\sC$ is a monad in the double category of spans, an internal \emph{double} category in $\sC$ is a ``double monad'' in the \emph{triple} category of spans.
 The latter has objects of $\sC$ for objects, morphisms for transversal arrows, spans for horizontal and vertical arrows, and basic cells that look like
 \[
 \begin{tikzcd}
@@ -299,13 +332,277 @@ equipped with two unit cubes and two multiplication cubes (a horizontal one and 
 The horizontal and vertical boundaries of these cubes tell us in particular that $A_{10}$ is a monad in the horizontal double category and $A_{01}$ is a monad in the vertical double category.
 
 This suggests that our desired common generalization of \cref{sec:polynomials,sec:unary-classical} should be a double monad in some triple category whose horizontal and vertical morphisms are both polynomials in $\Cat$.
-Such a triple category could be obtained by the ``quintets'' construction~\cite{pare:isotropic-intercats} from a triple category whose horizontal arrows are polynomials and whose non-identity vertical arrows we ignore (but whose basic cells we care about).
+From the generalized-multicategory perspective, such a double monad will be a sort of \emph{distributive law} between our two polynomial monads.
+Indeed, a double monad in the triple category of quintets in a bicategory is precisely a distributive law therein, and similarly for pseudo-distributive laws.
 
-However, it's not yet clear to me what the correct choice is.
-From the generalized-multicategory perspective, we should expect to have a ``profunctorial distributive law'' between our two polynomial monads as in~\cite{garner:polycats}, which suggests that the basic cells should consist of profunctors.
+In~\cite{garner:polycats} such a pseudo-distributive law in the double category of \emph{profunctors} was used to describe ordinary polycategories.
 But this would be a generalization of the ``double 2-category'' approach in \cref{sec:unary-classical}, whereas I argued there that triple categories may be a better object in general.
-A triple category is a double category internal to $\Cat$, and hence a double monad in the triple category of spans in $\Cat$; thus perhaps we should consider quintets in a triple category of polynomials in $\Cat$ and some kind of \emph{spans} in the other direction (rather than profunctors).
-But what kind of spans I don't know.
+A triple category is a double category internal to $\Cat$, and hence a double monad in the triple category of spans in $\Cat$; thus it seems reasonable to ask the basic cells to be some kind of span between polynomials.
+Here is one such construction.
+
+By the arguments of~\cite[\S3.3]{weber:poly-pb}, the double category $\Poly$ of polynomials has ``strong pullbacks'', i.e.\ it is an internal category in the 2-category of categories with pullbacks.
+Thus, by~\cite[\S6.1]{gp:intercategories-ii}, there is a triple category $\Span(\Poly)$ whose horizontal double category is that of polynomials in $\Cat$ and whose vertical structure consists of spans: vertical arrows are spans of functors, and basic cells are spans of polynomials as in
+\[
+\begin{tikzcd}
+  \M_0 & \M_2 \ar[l] \ar[r] & \M_1 \ar[r] & \M_0\\
+  \D_0 \ar[u] \ar[d] & \D_2 \ar[l] \ar[r] \ar[u] \ar[d] \ar[ur,phantom,near start,"\urcorner"] \ar[dr,phantom,near start,"\lrcorner"] & \D_1 \ar[r] \ar[u] \ar[d] & \D_0 \ar[u] \ar[d]\\
+  \N_0 & \N_2 \ar[l] \ar[r] & \N_1 \ar[r] & \N_0
+\end{tikzcd}
+\]
+It is easy to check that this is \emph{transversally invariant} in the sense of~\cite{pare:isotropic-intercats} (basic cells can be transported along transversal isomorphisms).
+Thus we can discard the nonidentity vertical arrows and vertical cells to obtain a \emph{cylindrical} triple category $\sZ(\Span(\Poly))$, and then apply the \emph{quintets} construction from~\cite{pare:isotropic-intercats} to obtain a new triple category $\sQ(\sZ(\Span(\Poly)))$.
+Its horizontal \emph{and} vertical double categories are both $\Poly$, and its basic cells
+\[
+\begin{tikzcd}
+  A \ar[r,"\M"] \ar[d,swap,"\N"] \drtwocell{} & B \ar[d,"\mathcal{P}"] \\ C \ar[r,swap,"\mathcal{R}"] & D
+\end{tikzcd}
+\]
+are spans of polynomials relating the polynomial composite $\mathcal{P}\circ\M$ to the composite $\mathcal{R}\circ\N$.
+\[
+\begin{tikzcd}
+   & (\mathcal{P}\M)_2 \ar[dl] \ar[r] & (\mathcal{P}\M)_1 \ar[dr] & \\
+  A & \mathcal{E}_2 \ar[l] \ar[r] \ar[u] \ar[d] \ar[ur,phantom,near start,"\urcorner"] \ar[dr,phantom,near start,"\lrcorner"] & \mathcal{E}_1 \ar[r] \ar[u] \ar[d] & D\\
+   & (\mathcal{R}\N)_2 \ar[ul] \ar[r] & (\mathcal{R}\N)_1 \ar[ur] & 
+\end{tikzcd}
+\]
+
+\begin{defn}
+  A \textbf{double polynomial monad} (in $\Cat$) is a double monad in $\sQ(\sZ(\Span(\Poly)))$.
+\end{defn}
+
+Thus it consists of two polynomial monads $\Mv$ and $\Mh$ with the same category of objects $\M_{00}$, together with a span of polynomials
+\[
+\begin{tikzcd}
+   & (\Mv\Mh)_2 \ar[dl] \ar[r] & (\Mv\Mh)_1 \ar[dr] & \\
+  \M_{00} & \M_2 \ar[l] \ar[r] \ar[u] \ar[d] \ar[ur,phantom,near start,"\urcorner"] \ar[dr,phantom,near start,"\lrcorner"] & \M_{11} \ar[r] \ar[u] \ar[d] & \M_{00}\\
+   & (\Mh\Mv)_2 \ar[ul] \ar[r] & (\Mh\Mv)_1 \ar[ur] & 
+\end{tikzcd}
+\]
+with composition and unit structure.
+Just as any polynomial induces a functor between slice categories and any transformation as in~\eqref{eq:poly-cartmap} induces a cartesian transformation, such a span of polynomials induces a pseudonatural transformation whose components are spans.
+The double monad axioms tell us that this transformation is a pseudo-distributive law.
+
+Concretely, we view $\Mv$ and $\Mh$ as ``horizontal'' and ``vertical'', with the morphisms of $\M_{00}$ being transversal arrows and the morphisms of $\M_{01}$ and $\M_{10}$ being horizontal and vertical cells respectively.
+The objects of $\M_{11}$ are the ``basic cells''; their domains and codomains are ``formal composites'' of horizontal and vertical arrows, like so:
+\begin{equation}\label{eq:dpcell}
+\begin{tikzcd}
+  & (p_{11},\dots,p_{nk_n}) \ar[drr,"{(\alpha_1,\dots,\alpha_n)}"]  \\
+  (p'_{11},\dots,p_{m\ell_m}) \ar[ddr,swap,"{(\gamma_1,\dots,\gamma_m)}"] \ar[ur,"\cong"] & \twocell{rr}{dd}{} && (q_1,\dots,q_n) \ar[dd,"\delta"]\\
+  \\
+  & (r_1,\dots,r_m) \ar[rr,swap,"\beta"] && s
+\end{tikzcd}
+\end{equation}
+Here $\delta:(q_1,\dots,q_n) \to s$ and each $\gamma_j : (p'_{j1},\dots,p'_{j\ell_j}) \to r_j$ are vertical arrows, while $\beta:(r_1,\dots,r_m)\to s$ and each $\alpha_i : (p_{i1},\dots,p_{ik_i})\to q_i$ are horizontal arrows.
+We additionally have an \emph{isomorphism} rearranging the list $(p_{11},\dots,p_{nk_n})$ into the list $(p'_{11},\dots,p_{m\ell_m})$, coming from the pair of pullback squares above saying that $(\Mh\Mv)_2\to (\Mh\Mv)_1$ and $(\Mv\Mh)_2\to (\Mv\Mh)_1$ have the same fibers over $\M_{11}$.
+
+The double monad structure says that these basic cells can be composed both horizontally and vertically, in a natural multicategorical way.
+Furthermore we have cubes, which relate two such basic cells along a pair of formal composites of horizontal and vertical cells.
+The spans in these formal composites must ``match up'' as if we were actually composing squares in an ordinary polynomial monad, and the composite spans must commute with the domain isomorphisms.
+
+\begin{defn}
+  For a double polynomial monad $\M$ as above, an \textbf{$\M$-polycategory} consists of:
+  \begin{itemize}
+  \item A discrete fibration $A_0 \to \M_0$,
+  \item A discrete fibration $A_1 \to \Mh(A_0) \times_{M_0} \Mv(A_0)$,
+  \item A composition map of spans
+    \[
+    \begin{tikzcd}[column sep=small]
+      \Mh\Mh(A_0) \ar[d] & \Mh(A_1)\underset{\Mh\Mv(A_0)}{\times} \M_{11} \underset{\Mv\Mh(A_0)}\times \Mv(A_1) \ar[l] \ar[r] \ar[d] & \Mv\Mv(A_0) \ar[d]\\
+      \Mh(A_0) & A_1 \ar[l] \ar[r] & \Mv(A_0)
+    \end{tikzcd}
+    \]
+  \item A unit map of spans
+    \[
+    \begin{tikzcd}
+      & A_0\ar[dl] \ar[d] \ar[dr] \\
+      \Mh(A_0) & A_1 \ar[l] \ar[r] & \Mv(A_0)
+    \end{tikzcd}
+    \]
+  \item Associativity and unit laws hold.
+  \end{itemize}
+  % It is a \textbf{local discrete fibration} if $A_0 \to \M_0$ is a discrete fibration and the span $\Mh(A_0) \leftarrow A_1 \to \Mv(A_0)$ is a two-sided discrete fibration.
+\end{defn}
+
+These should be the semantics for the type theory over a double polynomial monad as a mode theory.
+Concretely, every object of $A_0$ is assigned a mode (an object of $\M_0$), in a discrete-fibrational way, and for any lists of objects $\vec{A}$ and $\vec{B}$ with modes $\vec{p}$ and $\vec{q}$ respectively, and any vertical mode morphism $\vec{p} \xto{\alpha} r$ and horizontal mode morphism $\vec{q} \xto{\beta} r$, we have a set of morphisms $\DD\alpha\beta(\vec{A},\vec{B})$.
+These morphisms are acted on by the horizontal and vertical cells in $\M$ (the two-sided discrete fibration condition), and can be composed ``along a square'': for any square $e$ as in~\eqref{eq:dpcell}, and morphisms $f_i \in \DD{\phi_i}{\alpha_i}(\vec{A},\vec{B})$ and $g_j \in \DD{\gamma_j}{\psi_j}(\vec{B},\vec{C})$, we have a composite $\vec{g} \circ_e \vec{f} \in \DD{\delta\circ \vec{\phi}}{\beta\circ\vec{\psi}}(\vec{A},\vec{B})$.
+We also have an identity morphism $1_A \in \DD{1_p^v}{1_p^h}(A,A)$ for any object $A$ with mode $p$, and identity and unit axioms saying that for $f\in\DD{\alpha}{\beta}(\vec{A},\vec{B})$, we have $f = f \circ_{1_\alpha} 1_{\vec{A}}$ and $f = 1_{\vec{B}} \circ_{1_\beta} f$, and that $(h\circ_{e_3}g)\circ_{e_2 \circ e_1} f = h\circ_{e_3\circ e_2} (g\circ_{e_1} f)$ where $e_1,e_2,e_3$ are squares that can be composed like this:
+\[\begin{tikzcd}
+  & . \ar[r] \ar[d]
+  \ar[from=r,to=d,phantom,""{name=1,near start},""{name=2,near end}]
+  \ar[Rightarrow,from=1,to=2,"e_1"]
+  & .\ar[d] \\
+  .\ar[r] \ar[d]
+  \ar[from=r,to=d,phantom,""{name=3,near start},""{name=4,near end}]
+  \ar[Rightarrow,from=3,to=4,"e_3"]
+  & .\ar[r] \ar[d]
+  \ar[from=r,to=d,phantom,""{name=5,near start},""{name=6,near end}]
+  \ar[Rightarrow,from=5,to=6,"e_2"]
+  & .\ar[d] \\
+  .\ar[r] & .\ar[r] & .
+\end{tikzcd}\]
+
+The representable $\M$-polycategories (those having all $F$-functors) should correspond to \textbf{$\M$-algebras}, i.e.\ simultaneous $\Mh$- and $\Mv$-algebras together with 2-cells coming from the squares.
+
+Note that unlike the situation with a profunctorial distributive law as in~\cite{garner:polycats}, the horizontal and vertical mode cells \emph{both} act contravariantly on the morphisms of an $\M$-polycategory: we have a fibration $A_1 \to \Mh(A_0) \times_{M_0} \Mv(A_0)$ instead of a two-sided fibration from one to the other.
+This seems natural here because the morphisms in $\M_0$ must act contravariantly everywhere, and mixing the variance in $\Mh(A_0)$ would make the meaning of cubes rather opaque.
+
+When written out explicitly, in the case when $\M_0$ is discrete, the above notions of double polynomial monad and generalized polycategory over them are almost the same as my previous idea using ``multi-double-categories''; the main difference is that now the structural transformations are ``club-like'' in the transversal direction, rather than using cartesian structure that acts directly on the morphisms and cells, and we have cubes to mediate their relationship to the basic cells.
+The following examples can be mostly copied over from the previous suggestion.
+
+\begin{eg}\label{eg:degenerate}
+  If $\Mh$ is trivial (the identity monad), then we can take $\M_{11}$ to contain only identities, in which case an $\M$-polycategory reduces to an $\Mv$-multicategory as in \cref{sec:polynomials}.
+\end{eg}
+
+\begin{eg}\label{eg:linear}
+  Suppose $\M$ has one object $p$ that is a commutative monoid both horizontally and vertically.
+  Commutativity means that if $\mult:(p,p)\to p$ is either of the multiplications, we have a horizontal or vertical cell that is an isomorphism $\mult\cong \mult$ and whose arity span is the transposition $(p,p)\cong (p,p)$, satisfying the usual axioms of a symmetric monoidal category.
+
+  Let $\mult^n : (p,p,\dots,p) \to p$ denote the $n$-fold multiplication.
+  Then the cut rule of classical linear logic
+  \[
+  \inferrule{\Gamma\vdash \Delta,A \\ A,\Phi\vdash \Psi}{\Gamma,\Phi \vdash \Delta,\Psi}
+  \]
+  can be generated by squares
+  \[\begin{tikzcd}[column sep=huge]
+    p^{n+1+m} \ar[r,"{(\mult^{n+1},1,\dots,1)}"] \ar[d,swap,"{(1,\dots,1,\mult^{1+m})}"] \drtwocell{e_{n,m}}
+    & p^{1+m} \ar[d,"{\mult^{1+m}}"]
+    \\ p^{n+1} \ar[r,swap,"{\mult^{n+1}}"] & p
+  \end{tikzcd}\]
+  by composing with identities, $(1,\dots,1,g) \circ_{e_{n,m}} (f,1,\dots,1)$.
+  In fact, I believe all the above squares can be generated from the case $n=m=1$ by composing it with itself (and identities) horizontally and vertically.
+  We should assert that such self-composites are associative, and interchanging.
+  Moreover, we should have cubes saying that these squares commute with the symmetric structure of the multiplications.
+
+  Note that the generating square $e_{1.1}$ is a sort of ``linear distributivity''.
+  In fact I suspect that an \emph{$\M$-algebra} is precisely a linearly distributive category.
+  So just as we talk about modes in a 2-multicategory or a polynomial monad being monoids or commutative monoids, we can talk about a mode in a double polynomial monad being a ``linearly distributive monoid'', where the two monoidal structures involved in linear distributivity are horizontal and vertical.
+  That is, the natural context in which to define a ``linearly distributive monoid'' is a double polynomial monad.
+  This is similar to how bimonoids are naturally defined in duoidal categories (see \cref{eg:duoidal}) and Frobenius objects are naturally defined in linearly distributive categories.
+\end{eg}
+
+\begin{eg}\label{eg:nonlinear}
+  If we enhance the vertical and horizontal monoid structures in the previous example to cartesian monoids, we should obtain some kind of classical nonlinear logic.
+  The ``triple-categorical'' perspective allows the horizontal and vertical contraction and weakening cells to be essentially independent of the basic cells that describe the cut rule.
+  However, if we want we can add in cubes that specify some kind of interaction.
+\end{eg}
+
+\begin{eg}\label{eg:dirtt}
+  Suppose we have a set of ``categories'' and let the objects of $\M$ (modes) be ``signed lists'' of categories such as $(A,B\o,C)$.
+  A unary horizontal mode morphism consists of a pairing up of categories with their opposites in the \emph{domain only} and a bijection between the remaining categories (with variance) and the codomain.
+  For instance, we have such a morphism $(A,B\o,C\o,B) \to (C\o,A)$ that pairs up the $B$'s and switches the $A$ and the $C\o$.
+  There are no non-unary horizontal morphisms (except for those generated by weakening).
+  But a \emph{vertical} mode morphism can be of arbitrary arity, and consists of removing the parentheses from the domain and then performing such a pairing.
+  Thus, a morphism in $\D$ is ``intuitionistic'', with multiple modules in the domain and only one in the codomain, and parametrized by pairing some categories in the domains and some in the codomain and matching up the rest.
+  The simplest squares look like this:
+  \[\begin{tikzcd}[column sep=huge]
+    (A,A\o,A) \ar[r,"\varepsilon^{12}_A"] \ar[d,swap,"\varepsilon^{23}_A"] \drtwocell{e_A}
+    & A \ar[d,"1_A"]
+    \\ A \ar[r,swap,"1_A"] & A
+  \end{tikzcd}
+  \qquad
+  \begin{tikzcd}[column sep=huge]
+    (A\o,A,A\o) \ar[r,"\varepsilon^{12}_A"] \ar[d,swap,"\varepsilon^{23}_A"] \drtwocell{e_{A\o}}
+    & A\o \ar[d,"1_{A\o}"]
+    \\ A\o \ar[r,swap,"1_{A\o}"] & A\o
+  \end{tikzcd}\]
+  where $\varepsilon^{12}$ pairs up the first two categories and $\varepsilon^{23}$ the second two.
+  We need various generalizations of these too; I'm not sure how many we can get by composition and how many we need to put in by hand.
+  This gives us the cut rule for directed type theory (without functors).
+\end{eg}
+
+Note that if we mentally reverse the direction of horizontal mode morphisms, and regard a square as an ``equation'' between its top-left ``composite'' and bottom-right ``composite'', then the generating squares $e_{1,1}$ of \cref{eg:linear} become the Frobenius axiom of a Frobenius algebra, while those of \cref{eg:dirtt} become the triangle identities of a dual pair.
+
+\begin{eg}\label{eg:prop}
+  Let $\M$ be generated by a vertical commutative monoid and a horizontal commutative monoid, as before, together with the following squares:
+  \begin{mathpar}
+    \begin{tikzcd}
+      (p,p) \ar[r,"\mult"] \ar[d,"\mult",swap] \drtwocell{e_\mult} & p \ar[d,"1"] \\ p\ar[r,"1",swap] & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      (p,p) \ar[r,"{(1,1)}"] \ar[d,"{(1,1)}",swap] \drtwocell{e'_\mult} & (p,p) \ar[d,"\mult"] \\ (p,p)\ar[r,"\mult",swap] & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      () \ar[r,"\eta"] \ar[d,"\eta",swap] \drtwocell{e_\eta} & p \ar[d,"1"] \\ p\ar[r,"1",swap] & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      () \ar[r,"()"] \ar[d,"()",swap] \drtwocell{e'_\eta} & () \ar[d,"\eta"] \\ () \ar[r,"\eta",swap] & p
+    \end{tikzcd}
+  \end{mathpar}
+  making the horizontal and vertical monoid structures into double-categorical ``companions''.
+  Then an $\M$-algebra is an object with two isomorphic commutative monoid structures, i.e.\ essentially only one such.
+
+  An $\M$-polycategory, on the other hand, should be essentially a \emph{prop}.
+  By composing the above generators we obtain corresponding squares for all $\mult^n$.
+  The square $e_{\mult^n}$ then tells us that we can compose morphisms along $n$ objects at once, i.e.\ if $f\in\DD{\mult^m}{\mult^n}(\vec{A},\vec{B})$ and $g\in \DD{\mult^n}{\mult^k}(\vec{B},\vec{C})$ then $g\circ_{e_{\mult^n}} f \in \DD{\mult^m}{\mult^k}(\vec{A},\vec{C})$.
+  And the square $e'_{\mult^n}$ gives us an ``$n$-ary identity'' $1_{\vec{A}} = \vec{1}_A \circ_{e'_{\mult^n}} \vec{1}_A\in\DD{\mult^n}{\mult^n}(\vec{A},\vec{A})$, which (by the companion axioms) acts as an identity for the $n$-ary composition.
+\end{eg}
+
+\begin{eg}\label{eg:duoidal}
+  Let $\M$ be generated again by a vertical and a horizontal commutative monoid, but now the following generating squares:
+  \begin{mathpar}
+    \begin{tikzcd}
+      (p,p,p,p) \ar[r,"{(1,\sigma,1)}"] \ar[d,"{(\mult,\mult)}",swap] \drrtwocell{e_{2,2}} &
+      (p,p,p,p) \ar[r,"{(\mult,\mult)}"] & (p,p) \ar[d,"\mult"] \\
+      (p,p) \ar[rr,"\mult",swap] & & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      () \ar[r,"()"] \ar[d,"()",swap] \drtwocell{e_{0,0}} & () \ar[d,"\eta"] \\ () \ar[r,"\eta",swap] & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      () \ar[r,"()"] \ar[d,"{(\eta,\eta)}",swap] \drtwocell{e_{0,2}} & () \ar[d,"\eta"] \\ (p,p) \ar[r,"\mult",swap] & p
+    \end{tikzcd}
+    \and
+    \begin{tikzcd}
+      () \ar[r,"{(\eta,\eta)}"] \ar[d,"()",swap] \drtwocell{e_{2,0}} & (p,p) \ar[d,"\mult"] \\ () \ar[r,"\eta",swap] & p
+    \end{tikzcd}
+  \end{mathpar}
+  With appropriate axioms imposed, an $\M$-algebra is now a \emph{duoidal category}: a category with two monoidal structures $(\diamond,I)$ and $(\star,J)$ such that $(\star,J)$ is lax monoidal with respect to $(\diamond,I)$ (or equivalently the dual).
+  An $\M$-polycategory is thus a structure that ``is to a duoidal category what a polycategory is to a linearly distributive category'': it is the composition structure induced on the sets of morphisms $A_1 \star \cdots \star A_m \to B_1\diamond \cdots \diamond B_n$ in a duoidal category.
+\end{eg}
+
+\begin{rmk}
+  We could perform essentially the same constructions using cartesian clubs directly instead of polynomial monads, and lose little generality in the horizontal and vertical parts.
+  This is because, as remarked above, contraction and weakening are much more common than their duals, and unlike in the profunctorial case of~\cite{garner:polycats}, our horizontal and vertical cells \emph{both} act contravariantly on polycategory morphisms.
+  However, the extra generality of polynomial monads is useful even when all our monads are cartesian clubs, because not every morphism of such monads is a morphism of cartesian clubs, i.e.\ it may not respect the splitting of the fibrations.
+  In particular, if we did the quintet construction for clubs instead of polynomials, the permutation in the domains of a basic cell would have to be an identity.
+  This might not be a problem in some cases like \cref{eg:linear}, where we can always permute the domains or codomains of the inputs to a composition; but it would rule out the first generating square of \cref{eg:duoidal}, where the permutation on both sides ``mixes'' the modes in the domains of two morphisms.
+\end{rmk}
+
+
+\section{Type theory for generalized polycategories}
+\label{sec:syntax}
+
+Syntactically, the judgments of the type theory for $\M$-polycategories will look something like $\Gamma \vdash_{\alpha\tot\beta} \Delta$, where $\alpha$ is a term describing a vertical mode morphism using variables from $\Gamma$ and $\beta$ is a term describing a horizontal mode morphism using variables from $\Delta$.
+In \cref{eg:degenerate}, $\beta$ is trivial and this reduces to the previous syntax.
+In \cref{eg:linear}, with $\mult$ written as $\otimes$, the sequents we are interested in look like
+\[ x:A, y:B, z:C \vdash_{x\otimes y\otimes z \tot u\otimes v\otimes w} u:D, v:E, w:F \]
+As before, to deal with FOL and DirTT it may make more sense to have types dependent on modes rather than duplicating variables:
+\[ x:p, y:q \mid A(x), B(y) \vdash_{x\otimes y \tot u\otimes v} D(u), E(v) \mid u:r, v:s \]
+This allows the variables to belong to sorts, as before, with the modes being contexts of sorts (perhaps with a pre-mode too).
+For instance, in \cref{eg:dirtt} with the ``pairing'' morphisms written as $x:A, y:A\o \vdash \varepsilon(x,y) : ()$, we have extranatural judgments like
+\[ x:A, y:B, z:B\o \mid M(x,y),N(z) \vdash_{(x\mid \varepsilon(y,z)) \tot (w\mid\varepsilon(u,v))} P(u,v,w) \mid u:C, v:C\o, w:A \]
+which are a somewhat more verbose notational variant of the ``string diagrams'' syntax for directed type theory.
+
+The cut rule is parametrized by basic mode cells.
+For instance, in \cref{eg:linear} the generating square $e_{1,1}$ induces the following cut rule
+\begin{mathpar}
+  \inferrule{\Gamma\vdash_{\mult^\Gamma \tot \mult(x,y)} x:B,y:A \\ \Delta \vdash_{\mult^\Delta \tot z} z:C \\\\ u:A,v:C\vdash_{\mult(u, v) \tot \mult^\Psi} \Psi \\ w:B \vdash_{w\tot \mult^\Phi} \Phi}{\Gamma,\Delta \vdash_{\mult(\mult^\Gamma,\mult^\Delta) \tot \mult(\mult^\Phi,\mult^\Psi)} \Phi,\Psi}
+\end{mathpar}
+And in \cref{eg:dirtt} the generating square $e_A$ induces the following cut rule:
+\begin{mathpar}
+  \inferrule{\Gamma \vdash_{\alpha \tot (z\mid \epsilon(y,x))} M(x,y,z) \mid x:A, y:A\o, z:A \\
+    u:A, v:A\o, w:A \mid M(u,v,w) \vdash_{(u\mid \epsilon(v,w)) \tot \beta} \Delta}
+  {\Gamma \vdash_{\alpha \tot \beta} \Delta}
+\end{mathpar}
+
+We should also have a substitution action of transversal mode morphisms on the types, and likewise an action of the horizontal and vertical mode cells on the above judgments.
+The commutativity of this action with the cut (mediated by basic cells) should be specified by mode cubes.
 
 
 \bibliography{../all.bib}
