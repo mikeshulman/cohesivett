@@ -1,10 +1,7 @@
-%%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
-%%SHORT \IEEEoverridecommandlockouts
-
 \documentclass{article}
 \usepackage{times}
 \usepackage{authblk}
-%% \usepackage{fullpage}
+\usepackage{fullpage}
 
 \usepackage[all]{xy}
 \usepackage{multicol}
@@ -107,37 +104,24 @@
 
 \usepackage{ifthen}
 \newboolean{short}
-\setboolean{short}{true}
+\setboolean{short}{false}
 
 \begin{document}
 
-\title{A Fibrational Framework for \\ Substructural and Modal Logics \\ (extended version)}
+\title{A Fibrational Framework for Substructural and Modal Logics \\ (extended version)}
 
-%% SHORT
-% author names and affiliations
-% use a multiple column layout for up to three different
-% affiliations
-%% \author{\IEEEauthorblockN{Daniel R. Licata}
-%% \IEEEauthorblockA{Wesleyan University\\
-%% \url{dlicata@wesleyan.edu}}
-%% \and
-%% \IEEEauthorblockN{Michael Shulman}
-%% \IEEEauthorblockA{University of San Diego \\
-%%   \url{shulman@sandiego.edu}}
-%% \and
-%% \IEEEauthorblockN{Mitchell Riley}
-%% \IEEEauthorblockA{Wesleyan University \\
-%%   \url{mvriley@wesleyan.edu}}
-
-%% %% \thanks{
-%% %%   ?
-%% %% }
-
-\author[1]{{Daniel R. Licata}\thanks{This material is based on research sponsored by The United States Air Force Research Laboratory under agreement number FA9550-15-1-0053.  The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright notation thereon.  The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of the United States Air Force Research Laboratory, the U.S. Government, or Carnegie Mellon University.}}
-\author[2]{{Michael Shulman}$^*$}
-\author[1]{{Mitchell Riley}}
-\affil[1]{Wesleyan University}
-\affil[2]{University of San Diego}
+\author[1]{{Daniel R. Licata}\thanks{This material is based on research
+    sponsored by The United States Air Force Research Laboratory under
+    agreement number FA9550-15-1-0053 and and FA9550-16-1-0292.  The
+    U.S. Government is authorized to reproduce and distribute reprints
+    for Governmental purposes notwithstanding any copyright notation
+    thereon.  The views and conclusions contained herein are those of
+    the authors and should not be interpreted as necessarily
+    representing the official policies or endorsements, either expressed
+    or implied, of the United States Air Force Research Laboratory, the
+    U.S. Government, or Carnegie Mellon University.}}
+\author[2]{{Michael Shulman}$^*$} 
+\author[1]{{Mitchell Riley}$^*$} \affil[1]{Wesleyan University} \affil[2]{University of San Diego}
 
 \maketitle
 
@@ -157,11 +141,11 @@ homotopy type theory to express additional mathematical applications.
 In this paper, we define a general framework that abstracts the common
 features of many intuitionistic substructural and modal logics.  The
 framework is a sequent calculus / normal-form type theory parametrized
-by a \emph{mode theory}, which is used to describe the structure of contexts
-and the structural properties they obey.  The framework makes use of
-resource annotations, where we pair the context itself, which obeys
-standard structural properties, with a term, drawn from the mode theory,
-that constrains how the context can be used.  Product types,
+by a \emph{mode theory}, which is used to describe the structure of
+contexts and the structural properties they obey.  The framework makes
+use of resource annotations, where we pair the context itself, which
+obeys standard structural properties, with a term, drawn from the mode
+theory, that constrains how the context can be used.  Product types,
 implications, and modalities are defined as instances of two general
 connectives, one positive and one negative, that manipulate these
 resource annotations.  We show that specific mode theories can express
@@ -172,8 +156,8 @@ implications; and the adjunctions that arose in our work on homotopy
 type theory.  We prove cut (and identity) admissibility independently of
 the mode theory, obtaining it for all of the above logics at
 once. Further, we give a general equational theory on derivations /
-terms that, in addition to the usual beta-eta rules, characterizes when
-two derivations differ only by the placement of structural rules.
+terms that, in addition to the usual $\beta\eta$-rules, characterizes
+when two derivations differ only by the placement of structural rules.
 Finally, we give an equivalent semantic presentation of these ideas, in
 which a mode theory corresponds to a 2-dimensional cartesian
 multicategory, and the framework corresponds to another such
@@ -193,6 +177,7 @@ design new ones.
 \input{equational}
 \input{semantics-short}
 \input{adequacy-appendix}
+\input{equational-permutative}
 \input{adequacy-eq}
 \input{conclusion}
 
