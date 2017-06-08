@@ -74,13 +74,15 @@
         \oftps{\psi}{\Sigma}{\alpha}{p}}
 
 \ifthenelse{\boolean{short}}{}
-{\framebox{Equalities of mode morphisms
+{
+\\\\
+\framebox{Equalities of mode morphisms
   \deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p},
 where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$
 and \oftps{\psi}{\Sigma}{\alpha}{p}
 and \oftps{\psi}{\Sigma}{\alpha'}{p}
 }
-\qquad
+\\\\
 \infer{\deqtms{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
 \qquad
 \infer{\deqtms{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p}}
@@ -176,8 +178,9 @@ laws.  For example, to specify the right unit law for the above monoid
 $(\odot,1)$, we add an axiom $(x \odot 1 \deq x : (x : \dsd{p}) \to
 \dsd{p})$ to the signature, which can be read as ``$x \odot 1$ is equal
 to $x$ as a morphism from $(x : \dsd{p})$ to \dsd{p}''.  The judgement
-\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} (omitted from the figure; the
-rules are the same as for $\spr$ plus symmetry) is the least congruence
+\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} 
+\ifthenelse{\boolean{short}}{(omitted from the figure; the
+rules are the same as for $\spr$ plus symmetry)}{} is the least congruence
 closed under these axioms.
 
 The second of these extends a signature with a directed structural

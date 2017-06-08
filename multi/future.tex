@@ -1,4 +1,5 @@
 
+\ifthenelse{\boolean{short}}{
 In future work, we plan to continue a preliminary investigation of
 equational adequacy that is discussed in the extended version,
 investigating whether that the logical adequacy proofs are an
@@ -7,7 +8,8 @@ to show that object-language equations are true in the framework.  We
 conjecture that the converse is true for the mode theories we have
 described here, which says that the ``extra'' types and judgements
 available in the framework do not add to the equations between terms in
-the image of encoded sequents.  Proving this is challenging because the
+the image of encoded sequents.  
+Proving this is challenging because the
 equational theory of Section~\ref{sec:equational} does not itself
 obviously have the subformula property---we can in principle prove
 equations by introducing and then eliminating cuts.  We have sketched a
@@ -19,6 +21,11 @@ $\beta$-reduce and then rearrange the normal form).  We proved this
 lemma for one-variable sequents~\citep{ls16adjoint}, and have checked
 one direction here.
 
+}{
+In future work, we plan to continue the preliminary investigation of
+equational adequacy that is discussed
+Section~\ref{sec:adequacy-equational}.  
+}
 Additionally, we plan to apply our framework to investigate more
 extensions of homotopy type theory like the spatial type theory
 considered here; in current work with Eric Finster, we are designing a

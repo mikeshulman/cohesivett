@@ -36,12 +36,15 @@ for this.  On the source side, will define a logic by the usual sequent
 calculus rules that make cut and identity admissible, along with
 primitive cut and identity rules, and an equality judgement analogous to
 Section~\ref{sec:equational}, which is a concise description of
-$\beta\eta$ rules.  Cut elimination for the source will be a corollary
-of the adequacy theorem (we could simplify the source syntax by removing
-the built-in cuts in the non-invertible rules, using the general cut
-rule in their place, but including them is convenient for stating the
-cut elimination corollary).  Thus, we refine the discussion above by
-taking equality of derivations to be \deq-classes.
+$\beta\eta$ rules.  The presentation of framework equality in
+Section~\ref{sec:equational-permutative} is helpful for translating
+framework equalities back to the source.  Cut elimination for the source
+will be a corollary of the adequacy theorem (we could simplify the
+source syntax by removing the built-in cuts in the non-invertible rules,
+using the general cut rule in their place, but including them is
+convenient for stating the cut elimination corollary).  Thus, we refine
+the discussion above by taking equality of derivations to be
+\deq-classes.
 
 \newcommand\backtrf[1]{\ensuremath{#1^{\leftarrow}}}
 \newcommand\backtr[1]{\ensuremath{#1^{\Leftarrow}}}
@@ -81,7 +84,7 @@ full and faithful functor:
 \item A proof that $\backtrf{(\elim{d^*})} \deq d$.  The cases for
   identity and cut will use the previous bullet.
 
-\item A proof that for normal $e,e' : J^*$, $e \deqp e$ imples
+\item A proof that for normal $e,e' : J^*$, $e \deqp e$ implies
   $\backtrf{e} \deq \backtrf{e'}$.  (This can be stated for
   $\elim{d^*}$ if that is convenient.)
 \end{enumerate}
@@ -121,7 +124,7 @@ From this, the full construction is as follows:
   derivations modulo \deq, we do not need to show that this function
   respects the quotient: because of the ``mere
   existence''/$-1$-truncation in the definition of surjective, the
-  function on representives automatically extends to the quotient.
+  function on representatives automatically extends to the quotient.
   %% Even constructively, this suffices to define a (untruncated) bijection
   %% betweeb quotiented derivations---the fact that the framework-to-source
   %% direction respects $\deq$ follows from injectivity.
@@ -133,7 +136,7 @@ From this, the full construction is as follows:
 \item For faithfulness, we need to show that $d_1^* \deq d_2^*$ implies
   $d_1 \deq d_2$.  By part 8 above, it suffices to show 
   $\backtrf{\elim{d_1^*}} \deq \backtrf{\elim{d_2^*}}$.
-  By completeness of permuatitive equality
+  By completeness of permutative equality
   (Theorem~\ref{thm:permutative-completeness}), 
   $d_1^* \deq d_2^*$ implies $\elim{d_1^*} \deqp \elim{d_2^*}$,
   so part 9 above gives the result.
@@ -250,12 +253,12 @@ beside $y$ and those introduced by rules in it, so $\str{\vec{x}}$
 deletes nothing.  
 
 For the fifth, strengthening only deletes (1) left rules on $x$ and
-subsidiaries, and (2) unneeded occurences of $\UL$, and the premises say
+subsidiaries, and (2) unneeded occurrences of $\UL$, and the premises say
 that there are none of these.  
 \end{proof}
 
 \begin{lemma}[Cut does not introduce left rules] \label{lem:cut-doesnt-intro}
-If $\FL^{x}$ or $\UL^{x}$ occus in $\elim{d}$, then it occurs in $d$
+If $\FL^{x}$ or $\UL^{x}$ occurs in $\elim{d}$, then it occurs in $d$
 \end{lemma}
 
 \begin{proof}
@@ -614,8 +617,8 @@ if $e \deqp e'$, then $\backtrf{\str{\Delta}{e}} \deq \backtrf{\str{\Delta}{e'}}
 \begin{itemize}
 
 \item The cases for reflexivity, symmetry, and transitivity follow by
-  induction, using the the correponding rules of source-language
-  equalty.
+  induction, using the the corresponding rules of source-language
+  equality.
 
 \item The cases for compatibility all have a similar structure.  For
   example, suppose we have $\FRd{}{1}{e_1,e_2} \deqp
