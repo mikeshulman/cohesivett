@@ -77,8 +77,6 @@
 \let\xot\xleftarrow
 \let\tot\leftrightarrow
 \def\o{^{\circ}}
-\def\type{\;\mathsf{type}}
-\let\types\vdash
 \tikzset{horiz/.style={"\mathclap\bullet" description}}
 \def\genus{\mathsf{genus}}
 \def\degree{\mathsf{degree}}
@@ -106,6 +104,16 @@
 \def\Kbar{\overline{\mathcal{K}}}
 \def\Lbar{\overline{\mathcal{L}}}
 \def\dhybar{\overline{\mathcal{D}}}
+
+\def\ec{\diamond}
+\def\edgectx{\;\mathsf{edgectx}}
+\def\loopctx{\;\mathsf{loopctx}}
+\def\vertex{\;\mathsf{vertex}}
+\def\ctx{\;\mathsf{ctx}}
+\def\graph{\;\mathsf{graph}}
+\def\type{\;\mathsf{type}}
+\let\types\vdash
+\let\jdeq\equiv
 
 \hyphenation{hyper-graph}
 \hyphenation{hyper-graphs}
@@ -218,8 +226,8 @@ Moreover, it is a reflective sub-2-category of $\hy/\dhy$.
 The fact that we can define polygraphs in this way is another advantage of using hypergraphs.
 It makes the following definition very easy:
 
-\begin{defn}
-  If $\P$ is a polygraph, then a \textbf{$\P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to\P$.
+\begin{defn}\label{thm:labeled}
+  If $P$ is a polygraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to P$.
 \end{defn}
 
 Other conditions on hypergraphs are not as naturally expressed categorically.
@@ -469,6 +477,62 @@ This is the definition of graph from~\cite{jk:feynman} (though they call the ele
 Their graph morphisms are similar to ours, although theirs are not required to preserve the ``degree of the root''.
 
 
+\section{Type theory for hypergraphs}
+\label{sec:tt-hy}
+
+For all of this section let $P$ be a fixed polygraph.
+We will describe a type theory for $P$-labeled hypergraphs; this includes unlabeled hypergraphs as the degenerate case when $P$ is terminal.
+
+An \textbf{edge context} $\Delta$ is a finite list of distinct variables, each labeled with an object of $P$ as its type.
+
+\begin{mathpar}
+  \inferrule{ }{\ec \edgectx}
+  \and
+  \inferrule{\Delta\edgectx \\ p\in P \\ x\notin \Delta}{(\Delta,x:p) \edgectx}
+\end{mathpar}
+
+A \textbf{loop context} $\Xi$ in an edge context $\Delta$ is a finite list of equalities between variables of the same type.
+
+\begin{mathpar}
+  \inferrule{ }{\Delta \types \ec\loopctx}
+  \and
+  \inferrule{\Delta\types\Xi\loopctx \\ (x:p)\in \Delta \\ (y:p)\in\Delta}{\Delta\types (\Xi,x\doteq y) \loopctx}
+\end{mathpar}
+
+A \textbf{vertex} in an edge context is a morphism of $P$ with variables of appropriate type assigned as its domain and codomain.
+
+\begin{mathpar}
+  \inferrule{\alpha\in P(p_1,\dots,p_n;q_1,\dots,q_m) \\ (x_i\in p_i)\in\Delta \\ (y_j\in q_j)\in\Delta}{\Delta \types \alpha(x_1,\dots,x_n;y_1,\dots,y_m) \vertex}
+\end{mathpar}
+
+A \textbf{graph context} is an edge context, a loop context, and a finite list of variables assigned to vertices.
+
+\begin{mathpar}
+  \inferrule{\Delta \edgectx \\ \Delta\types \Xi\loopctx}{\Delta \mid\Xi\types \ec\graph}
+  \and
+  \inferrule{\Delta \mid\Xi\types \Gamma\graph \\ \Delta\types M\vertex \\ (f\notin \Gamma)}{\Delta\mid\Xi\types (\Gamma,f:M)\graph}
+\end{mathpar}
+
+\begin{thm}
+  A graph context determines, and is determined by, a finite $P$-labeled hypergraph $\G\to P$.
+\end{thm}
+\begin{proof}
+  The variables in the edge context correspond to the set of objects of the edge groupoid $E$, and their assignment to types is the action of  $\G\to P$ on edges.
+  The equalities in the loop context correspond to freely generating isomorphism in the edge groupoid $E$.
+  The variables in the graph context correspond to the vertices, and their type assignment to a morphism of $P$ is the action of $\G\to P$ on vertices.
+  Finally, the list of variables in a syntactic vertex $\alpha(x_1,\dots,x_n;y_1,\dots,y_m)$ specifies the flags.
+\end{proof}
+
+I'm not sure in what sense we can say this is an equivalence.
+Maybe we shouldn't even try at this point.
+
+In particular, note that self-equalities $(x\doteq x)$ in the loop context correspond to automorphisms in the groupoid $E$, hence to edges of nontrivial genus.
+Thus, it is only reasonable to simplify by substituting along equalities of \emph{distinct} variables:
+\begin{equation}\label{eq:subst}
+  \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Gamma\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Gamma[x/y] \graph}
+\end{equation}
+This should change the corresponding hypergraph into an \emph{equivalent} one by contracting an object along an isomorphism.
+
 
 \section{Insertion of hypergraphs}
 \label{sec:insertion}
@@ -635,25 +699,32 @@ Let $\C_n$ denote the rooted $n$-corolla, which has $n$ edges of genus 0 and two
 \cref{thm:ins-assoc,thm:ins-unit} are also true in the directed case.
 To see this, we can just work in the slice 2-category over $\dhy$, using the fact that pseudo-colimits in any slice 2-category are created in the base.
 
+\section{Type theory for insertion}
+\label{sec:tt-insertion}
 
-\section{A type theory for hypergraphs}
-\label{sec:graphs-type-theory}
+In type theory it is easiest to describe insertion when $V_0$ is a single vertex.
+We represent a rooted hypergraph as a graph context together with another vertex judgment in the same edge/loop context.
+The fact that two vertices have the same degree is automatic when in the labeled case they have the same label.
+This leads to the following insertion/substitution (admissible) rule:
 
-For a rooted hypergraph $G$, let $G_0$ denote $G$ with the root vertex and all flags adjacent to it removed.
-In particular, if $G$ is finite, locally-ordered, and directed, then $G_0$ is a polygraph.
+\begin{mathpar}
+  \inferrule{\Delta_1\mid\Xi_1 \types \Gamma_1 \graph\\
+    \Delta_1\mid\Xi_1 \types \alpha(\vec x;\vec y)\vertex \\
+    \Delta_2\mid\Xi_2 \types \Gamma_2, \alpha(\vec u;\vec v) \graph}
+  {\Delta_1,\Delta_2 \mid \Xi_1,\Xi_2, \vec x\doteq \vec u, \vec y \doteq \vec v \types \Gamma_1, \Gamma_2 \graph}
+\end{mathpar}
 
-For the rest of this section, let $P$ be a fixed polygraph.
+The equalities $\vec x\doteq \vec u, \vec y \doteq \vec v$ correspond to the isomorphisms inserted by the pseudo-pushout of groupoids.
+We are assuming $\Delta_1\cap \Delta_2=\emptyset$, so all of these are equalities between distinct variables, and thus at least some of them can be substituted away by~\eqref{eq:subst} (a ``unification algorithm'' for the arguments of the two $\alpha$-labeled vertices).
+However, we may still be left with additional self-loops, for instance:
 
-\begin{defn}
-  A \textbf{$P$-labeled hypergraph} is a finite locally-ordered directed rooted hypergraph $G$ together with a polygraph morphism $G_0\to P$.
-\end{defn}
-
-In particular, if $P$ is the terminal polygraph, then a $P$-labeled hypergraph is just a finite locally-ordered directed rooted hypergraph.
-Thus, a syntax for $P$-labeled hypergraphs is more general than a syntax for unlabeled ones.
-
-\begin{defn}
-  An \textbf{edge context} is a finite list of distinct variables, each labeled with an object of $P$ as its type.
-\end{defn}
+\begin{mathpar}
+  \inferrule*{\inferrule*{x:p \mid\cdot \types \Gamma_1 \graph\\
+    x:p \mid\cdot \types \alpha(x,x;) \vertex \\
+    u:p \mid\cdot \types \Gamma_2, \alpha(u,u;) \graph}
+  {x:p,u:p \mid x\doteq u, x\doteq u \types \Gamma_1,\Gamma_2\graph}}
+{x:p \mid x\doteq x \types \Gamma_1,\Gamma_2[x/u] \graph}
+\end{mathpar}
 
 
 \section{The pseudomonad for hypercategories}
