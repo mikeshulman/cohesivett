@@ -28,8 +28,9 @@
 \tikzset{cross/.style={white,line width=3pt}}
 \let\sto\looparrowright
 \def\M{\mathcal{M}}
+\def\A{\mathcal{A}}
+\def\B{\mathcal{B}}
 \def\C{\mathcal{C}}
-\def\K{\mathcal{K}}
 \def\P{\mathcal{P}}
 \def\Q{\mathcal{Q}}
 \def\D{\mathcal{D}}
@@ -37,6 +38,7 @@
 \def\H{\mathcal{H}}
 \def\K{\mathcal{K}}
 \def\L{\mathcal{L}}
+\def\R{\mathcal{R}}
 % \def\Cat{\ensuremath{\mathcal{C}\mathit{at}}}
 \let\setof\Set
 \def\Set{\mathbf{Set}}
@@ -83,7 +85,8 @@
 \def\rank{\mathsf{rank}}
 \def\N{\mathbb{N}}
 \def\Np{\N_{\bullet}}
-\def\hy{\mathbf{HyGph}}
+\def\hy{\mathcal{H}\mathit{y}\mathcal{G}\mathit{ph}}
+\def\hyrel{\mathcal{H}\mathit{y}\mathcal{R}\mathit{el}}
 \def\thy{\mathcal{T}}
 \def\dhy{\mathcal{D}}
 \def\fhy{\mathcal{F}}
@@ -115,14 +118,12 @@
 \section{Hypergraphs}
 \label{sec:hypergraphs}
 
-The natural numbers $\N$ include zero.
-
 \begin{defn}
-  A \textbf{hypergraph} is a diagram of sets and functions
-  \[ V \ot F \to E \xto{\genus} \N\]
-  in which each fiber of the map $F\to V$ is a finite set equipped with a linear ordering.
+  A \textbf{hypergraph} is a span
+  \[ V \ot F \to E \]
+  in which $V$ and $F$ are sets, each fiber of the map $F\to V$ is a finite set equipped with a linear ordering, and $E$ is a groupoid all of whose objects have finitely generated free automorphism groups.
 
-  The elements of $E$ are called \textbf{edges}, those of $V$ are called \textbf{vertices}, and those of $F$ are called \textbf{flags}.
+  The isomorphism classes of objects of $E$ are called \textbf{edges}, the elements of $V$ are called \textbf{vertices}, and those of $F$ are called \textbf{flags}.
   If a vertex and an edge are the image of a common flag, we say they are \textbf{incident}; thus the flags are the ``witnesses of incidence''.
   We also speak of a flag as being \textbf{incident} to its associated edge and vertex.
 \end{defn}
@@ -131,100 +132,73 @@ We allow vertices that are not incident to any edges, and edges that are not inc
 Also a vertex and an edge can be ``incident more than once'', i.e.\ the image of more than one common flag.
 
 \begin{defn}
-  Let $\G=(V\ot F\to E\to\N)$ be a hypergraph.
+  Let $\G=(V\ot F\to E)$ be a hypergraph.
   \begin{itemize}
   \item The \textbf{degree} of a vertex in $\G$ is the cardinality of the set of flags adjacent to it, which is a natural number.
     The \textbf{rank} of an edge in $\G$ is the cardinality of the set of flags adjacent to it, which in general can be finite or infinite.
-    We say $\G$ has \textbf{finite rank} if all its ranks are finite, and $\G$ is \textbf{finite} if the sets $V$ and $E$ (hence also $F$) are finite.
-  \item The set of \textbf{connected components} of $\G$ is the pushout of the span $V \leftarrow F \to E$.
+    We say $\G$ %has \textbf{finite rank} if all its ranks are finite, and $\G$
+    is \textbf{finite} if it has finitely many vertices and edges (hence also finitely many flags).
+  \item The free rank of the automorphism group of an edge is called its \textbf{genus}.
+    We say $\G$ has \textbf{genus zero} if all of its edges have genus zero, i.e.\ $E$ is equivalent to a discrete set.
+  \item The \textbf{connected components} of $\G$ are the connected components of the groupoid pushout of the span $V \leftarrow F \to E$.
     We say $\G$ is \textbf{connected} if it has exactly one connected component.
     % In particular, vertices not incident to any edges, and edges not incident to any vertices, lie in their own connected components.
-  \item We say $\G$ has \textbf{genus zero} if all of its edges have genus zero.
   \item We say $\G$ is \textbf{simple} if no edge is incident to any vertex more than once, so that the span $E \ot F \to V$ is a relation.
   \end{itemize}
 \end{defn}
 
 The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed) finite simple hypergraphs of genus zero, but without the orderings on the flags adjacent to each vertex.
+We include the orderings because we eventually want a correspondence to linear syntax, and to definitions of prop and polycategory using ordered lists of objects, but they are not essential to the theory.
+We draw vertices as dots and edges as lines connecting them, which are allowed to ``branch'' in order to connect more than two vertices.
+We draw an edge of positive genus as containing ``loops''.
 \fxnote{Add some examples.}
 
 \begin{defn}
   A \textbf{morphism of hypergraphs} is a diagram
   \[
-  \begin{tikzcd}[row sep=tiny]
-    V' \ar[dd] & F' \ar[dd] \ar[r] \ar[l] \dlpullback[ddl] & E' \ar[dr] \ar[dd]\\
-    &&& \N\\
-    V  & F \ar[r] \ar[l] & E \ar[ur]
+  \begin{tikzcd}
+    V' \ar[d] & F' \ar[d] \ar[r] \ar[l] \dlpullback[dl] \ar[dr,phantom,"\cong"] & E' \ar[d]\\
+    V  & F \ar[r] \ar[l] & E
   \end{tikzcd}
   \]
-  in which the left-hand square is a pullback and preserves the linear orderings on the fibers.
-  This defines the category $\hy$ of hypergraphs.
+  in which the left-hand square is a pullback and preserves the linear orderings on the fibers, and the right-hand square commutes up to a specified isomorphism.
+  A \textbf{2-cell of hypergraphs} is a 2-cell between the functors $E'\to E$ commuting with these specified isomorphisms.
+  This defines the 2-category $\hy$.
 \end{defn}
 
-Let $\Np$ be the set $\setof{(k,n) \in \N\times \N | k<n}$, with $\ell:\Np\to \N$ the second projection.
-Thus the fiber of $\ell$ over $n\in\N$ is the canonical $n$-element linear order.
-Let $P_\ell$ be the polynomial endofunctor of $\Set$ defined by $\ell$, i.e.\ the composite
-\[ \Set \xto{(\Np)^*} \Set/\Np \xto{\Pi_\ell} \Set/\N \xto{\Sigma_\N} \Set.\]
-Thus an element of $P_\ell(E)$ is a finite list of elements of $E$.
+The fact that the left-hand square is a pullback means in particular that a morphism of hypergraphs preserves the degree of vertices.
+However, it does not preserve the rank or the genus of edges.
 
-\begin{lem}
-  The category $\hy$ of hypergraphs is equivalent to the comma category
-  \[
-  \begin{tikzcd}
-    \hy \ar[rr] \ar[d] \twocell{drr} && \Set \ar[d,equals] \\
-    \Set/\N \ar[r,"{\Sigma_\N}"'] & \Set \ar[r,"P_\ell"'] & \Set.
-  \end{tikzcd}
-  \]
-\end{lem}
+Because of the freeness restriction on automorphism groups, the 2-category $\hy$ is not particularly well-behaved, lacking limits and colimits.
+However, it does have some important ones.
+For instance, it has a terminal object $\thy$, which has exactly one edge of genus zero, and one vertex of each possible degree.
+It also has some pushouts:
+
+\begin{thm}\label{thm:pushout}
+  If $\G_2 \ot \G_1 \to \G_3$ is a span of finite hypergraphs in which $\G_1$ has genus zero, then it has a pseudo-pushout in $\hy$.
+\end{thm}
 \begin{proof}
-  An object of the comma category consists of a set $E$ with a map $E\to \N$, together with a set $V$ and a map $V \to P_\ell E$.
-  By definition of $P_\ell$, the latter map is equivalent to a map $f:V\to \N$ together with a map $f^*\Np \to E$.
-  And the set of maps $f:V\to\N$ is equivalent to the groupoid of maps $F\to V$ with finite linearly ordered fibers (via the equivalence $F=f^*\Np$), so this corresponds exactly to the above definition of a hypergraph.
+  The map $F\to V$ in any hypergraph is the pullback of the generic finite linear order $\N_\le \to \N$ along a unique classifying map $V\to\N$, and morphisms of hypergraphs commute with these classifying maps.
+  Thus, if we take the set-pushout $V_2 +_{V_1} V_3$ it has an induced map to $\N$, and since limits are stable under pullback in $\Set$, this map classifies the set-pushout $F_2 +_{F_1} F_3$.
+  We complete the definition of the hypergraph pushout by taking the groupoid pseudo-pushout $E_2 +_{E_1} E_3$; it remains to show that this has finitely generated free automorphism groups.
 
-  A morphism in the comma category consists of a map $E'\to E$ over $\N$ and a map $V'\to V$ making the evident square commute.
-  The composite $V'\to V\to P_\ell E$ corresponds to precomposing the maps $V' \to V \to \N$, which means taking the pullback
-  \[
-  \begin{tikzcd}
-    V' \ar[d] & F' \dlpullback \ar[d] \ar[l] \ar[dr] \\
-    V & F \ar[l] \ar[r] & E
-  \end{tikzcd}
-  \]
-  Whereas the composite $V' \to P_\ell E' \to P_\ell E$ corresponds to taking the composite
-  \[
-  \begin{tikzcd}
-    V' & F' \ar[l] \ar[r] \ar[dr] & E' \ar[d] \\
-    && E
-  \end{tikzcd}
-  \]
-  Thus saying that they are equal reproduces exactly the above definition of hypergraph morphism.
+  In fact, if $e$ is an edge of this pushout, and we write $n_i(e)$ for the edges in $\G_i$ mapping onto $e$, then
+  \[ \genus(e) = \sum_{d\in n_2(e)} \genus(d) + \sum_{d\in n_3(e)} \genus(d) + |n_1(e)| - |n_2(e)| - |n_3(e)| + 1. \]
+  \fxnote{Give some argument for this.}
+  This is nonnegative because there must be enough edges in $n_1(e)$ to connect all the edges in $n_2(e)$ and $n_3(e)$ so that they all map to the same edge $e$ in the pushout.
 \end{proof}
 
-\begin{cor}
-  $\hy$ is a presheaf topos.
-  In particular, it is complete and cocomplete.
-\end{cor}
-\begin{proof}
-  The functor $P_\ell \circ \Sigma_\N : \Set/\N \to \Set$ is polynomial, hence a parametric right adjoint.
-  Thus, since $\Set/\N$ is a presheaf topos, by~\cite{cj:clfrag} the comma category $\hy$ is again a presheaf topos.
-\end{proof}
-
-In the comma category presentation, the terminal hypergraph $\thy$ has $E=\N$, with $\genus : E\to\N$ the identity, and $V = P_\ell E = P_\ell \N$ with $V\to P_\ell E$ the identity.
-That is, there is exactly one edge of each genus, and for each finite list of such edges there is exactly one vertex adjacent to those edges in that order.
-
-Various other kinds of hypergraphs can be defined as slice categories of $\hy$, which again form presheaf toposes since the slice of any presheaf topos is a presheaf topos.
-For instance, if $\thy_0$ denotes the sub-hypergraph of $\thy$ containing only the edge of genus 0 and exactly the vertices that are adjacent only to that edge (of which there are $\N$), then $\hy/\thy_0$ is the category of genus-zero hypergraphs.
-
-A little less trivially, let $\dhy$ denote the hypergraph with $E=\N$ (i.e.\ exactly one edge of each genus) and where the fiber of $V\to P_\ell E$ over a list of edges of length $n$ is the $(n+1)$-element linear order.
-We think of the $k^{\mathrm{th}}$ element of this fiber as a vertex with its $n$ adjacent flags partitioned into the first $k$ elements and the last $n-k$ elements.
+Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex $(n,m)$ having $n+m$ flags, which we think of as partitioned into the first $k$ elements and the last $n-k$ elements.
 
 \begin{defn}
-  The category of \textbf{directed hypergraphs} is the slice category $\hy/\dhy$.
+  The 2-category of \textbf{directed hypergraphs} is the slice category $\hy/\dhy$.
 \end{defn}
 
 Thus, a directed hypergraph is a hypergraph in which at each vertex the list of adjacent flags is partitioned into two linear orders, which we call the \textbf{incoming} and \textbf{outgoing} flags respectively.
 The numbers of incoming and outgoing flags are respectively called the \textbf{in-degree} and \textbf{out-degree} of the vertex.
 Similarly, the \textbf{in-rank} and \textbf{out-rank} of an edge are respectively the cardinalities of the sets of outgoing (from their vertices, hence incoming to the edge) and incoming (to their vertices, hence outgoing from the edge) flags adjacent to it.
 
-The unique projection $\dhy\to\thy$ has a section $\thy\to\dhy$ that chooses the $0^{\mathrm{th}}$ element of each fiber.
+The unique projection $\dhy\to\thy$ to the terminal object has a section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
 Thus, we have
 \[\hy \simeq \hy/\thy \simeq (\hy/\dhy)/(\thy\to\dhy).\]
 In other words, arbitrary hypergraphs can also be regarded as particular directed ones, namely those in which all flags are outgoing.
@@ -238,19 +212,22 @@ This is one advantage of hypergraphs over ordinary graphs.
 A polygraph is the underlying data of a polycategory or a (colored) prop: each morphism has a finite list of ``source'' objects and a finite list of ``target'' objects.
 %The category of polygraphs is equivalently the category of presheaves on the category with objects $0$ and $(m,n)$ for $m,n\in\mathbb{N}$ and $m+n$ distinct arrows $0\to (m,n)$.
 Our graph-theoretic representation invokes the Poincar\'e dual ``string diagram convention'', in which objects are 1-dimensional and morphisms are 0-dimensional.
-The category of polygraphs is the slice category $\hy/(\thy_0\times\dhy)$, hence again a presheaf topos.
-The fact that we can define polygraphs in this way is another advantage of using hypergraphs; as we will see, it makes the notion of ``labeled graph'' very easy to define.
+The 2-category of polygraphs is equivalent to a 1-category, which is in fact a presheaf topos.
+Moreover, it is a reflective sub-2-category of $\hy/\dhy$.
 
-Other conditions on hypergraphs are not expressible as slices and do not define presheaf toposes.
+The fact that we can define polygraphs in this way is another advantage of using hypergraphs.
+It makes the following definition very easy:
+
+\begin{defn}
+  If $\P$ is a polygraph, then a \textbf{$\P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to\P$.
+\end{defn}
+
+Other conditions on hypergraphs are not as naturally expressed categorically.
 For instance:
 
 \begin{defn}
   A hypergraph is \textbf{rooted} if it is equipped with a specified vertex called the \textbf{root}.
 \end{defn}
-
-To express this categorically, for each vertex $v$ in $\thy$, let $\thy_v$ denote the sub-hypergraph of $\thy$ containing only $v$ and all the edges adjacent to it.
-Then the category of rooted hypergraphs is the disjoint union of coslice categories $\coprod_v (\thy_v/\hy)$.
-Thus it has connected limits and colimits, but not disconnected ones.
 
 In general, we think of the root as ``not really there'' and the flags adjacent to it as ``free''.
 In a directed rooted hypergraph, we think of the incoming or outgoing edges of the root as ``incoming/outgoing to the entire graph''.
@@ -449,7 +426,7 @@ The most restrictive thing we can say about about automorphisms is:
 \end{proof}
 
 The presence of nontrivial automorphisms means that in general, we cannot simply ``pass to isomorphism classes'' of hypergraphs, and thus structures over hypergraphs are not definable using ``set-based shapes'', such as polynomial monads on the category of polygraphs.
-In~\cite{bb:htapm} isomorphism classes and polynomial monads are shown to work for certain subclasses of graphs, but even there such a restriction is technical and error-prone.
+In~\cite{bb:htapm} isomorphism classes and polynomial monads are shown to work for certain subclasses of graphs, but even when it works such a restriction is technical and error-prone.
 Thus, we will generally work instead with categories and groupoids, never passing to isomorphism classes, and using a pseudomonad rather than a strict one.
 
 We end this section by comparing our graphs to others in the literature.
@@ -463,8 +440,12 @@ The corresponding restriction in our theory is the following:
   every edge either has rank 2 and genus 0, or rank 0 and genus 1.
 \end{defn}
 
-This condition is not naturally expressible in terms of the category $\hy$, since the morphisms in $\hy$ do not preserve ranks of edges.
-Amusingly, however, it can be reformulated by saying that the rank of an edge is the same as its ``Euler characteristic'' $\chi=2-2g$.
+Amusingly, this condition can be reformulated by saying that the rank of an edge is the same as its ``Euler characteristic'' $\chi=2-2g$.
+Its directed version is a little kludgy to state due to our convention about the orientations of flags adjacent to the root.
+
+\begin{defn}
+  A \textbf{directed rooted binary hypergraph} is a hypergraph that is separately directed, rooted, and binary, and moreover if we switched the direction of all flags adjacent to the root, then every edge would have equal in-rank and out-rank.
+\end{defn}
 
 In a binary rooted hypergraph, we can define an involution on the set of flags not adjacent to the root by sending each flag to the other flag of its corresponding edge, if that flag is not adjacent to the root, or to itself otherwise.
 The quotient of this involution is then isomorphic to the set of edges that are adjacent to some non-root vertex.
@@ -485,20 +466,15 @@ This is essentially how binary rooted hypegraphs are encoded in~\cite{bb:htapm},
 Another possibility is to express the partial function $F\rightharpoonup V$ as a relation, i.e.\ a span $F \ot H \to V$ in which $H\to F$ is injective.
 If we exclude the possibility of exceptional loops, then the function $F\to E$ is a 2-to-1 surjection and hence can be encoded up to isomorphism by a fixed-point-free involution of $F$.
 This is the definition of graph from~\cite{jk:feynman} (though they call the elements $H$ the ``flags'' and those of $F$ the ``(directed) edges'').
-TODO: Morphisms
+Their graph morphisms are similar to ours, although theirs are not required to preserve the ``degree of the root''.
 
-Our convention about the orientations of flags adjacent to the root, though convenient for insertion, does mean that in the binary case such edges appear different from ordinary ones, since 
-
-\begin{defn}
-  A \textbf{directed rooted binary hypergraph} is a hypergraph that is separately directed, rooted, and binary, and moreover if we switched the direction of all flags adjacent to the root, then every edge would have equal in-rank and out-rank.
-\end{defn}
 
 
 \section{Insertion of hypergraphs}
 \label{sec:insertion}
 
 We now define an operation of \emph{insertion} of hypergraphs, which replaces some of the vertices in one graph by entire new graphs having the same ``flag structure''.
-Suppose $\G = (V\ot F \to E\to \N)$ is a hypergraph, and for some subset $V_0 \subseteq V$ and each $v\in V_0$ we have a rooted hypergraph $\H_v = (V_v \ot F_v \to E_v\to \N)$ whose root $\ast_v$ has the same degree as $v$.
+Suppose $\G = (V\ot F \to E)$ is a hypergraph, and for some subset $V_0 \subseteq V$ and each $v\in V_0$ we have a rooted hypergraph $\H_v = (V_v \ot F_v \to E_v)$ whose root $\ast_v$ has the same degree as $v$.
 In the directed case, we require it to have the same in-degree and out-degree separately.
 (Usually, $V_0$ will be either a single vertex or the set of all non-root vertices.)
 There is a unique induced order-preserving (and, in the directed case, direction-preserving) bijection between the flags adjacent to $v$ and the flags adjacent to $\ast_v$, yielding a pair of pullback squares
@@ -512,7 +488,7 @@ where the map $V_0 \to \sum_v V_v$ sends $v$ to $\ast_v$.
 
 We define the \textbf{insertion} of the $\H_v$'s into $\G$ at the vertices $v\in V_0$, denoted 
 \[ \ins{\G}{V_0}{v}{\H_v} \]
-to have an underlying span obtained by first taking the pushout of the following spans:
+to be obtained by first taking the pseudo-pushout of the following hypergraphs (which exists since $F_0$ is a discrete set):
 \[
 \begin{tikzcd}
   E & F_0 \ar[d,equals] \ar[r] \ar[l] & \sum_v E_v & E' & E' \ar[l,equals]  \\
@@ -531,57 +507,74 @@ Explicitly, this means:
   % In particular, the insertion hypergraph is naturally locally-ordered and directed if the inputs are.
 \item An edge in $E'$ is either an edge in some $E_v$ or an edge in $E$, where an edge in $E_v$ adjacent to the root $\ast_v$ is identified with the corresponding edge adjacent to $v$ in $E$.
 \end{itemize}
-This relation on the edges that we quotient by is not an equivalence relation, so it may ``collapse homotopical information''.
-We record this lost information in the induced genus function $E'\to \N$.
-Specifically, we consider the commuting fork
-\[
-\begin{tikzcd}
-F_0 \ar[r,shift left]\ar[r,shift right] & E + \sum_v E_v  \ar[r] & E' 
-\end{tikzcd}
-\]
-as assigning to each $e\in E'$ a directed graph, whose set of vertices is its preimage in $E+\sum_v E_v$ and whose set of edges is its preimage in $F_0$.
-This graph has a ``genus'', i.e.\ the rank of its fundamental group, and we define $\genus(e)$ to be this the sum of this genus and all the genera of its preimages in $E$ and $\sum_v E_v$.
 \fxnote{Add some examples.}
 
-The pushout in the definition of insertion is \emph{almost} a colimit construction in $\hy$.
-If we define $\G_0$ to be the hypergraph $V_0 \ot F_0 \to F_0 \to \N$, then we have an inclusion map $\G_0\to \G$, and the above pushout of spans looks like it should be the pushout of this inclusion along a map $\G_0\to \sum_v \H_v$.
-
-The problem is that there is no such map $\G_0\to \sum_v \H_v$, since the map on edges $F_0 \to \sum_v E_v$ will not generally preserve genera.
-We can solve this problem by introducing the following more homotopical perspective on genera.
-
-\begin{defn}
-  An \textbf{extended hypergraph} is a span
-  \[ V \ot F \to \bE \]
-  in which $V$ and $F$ are sets, each fiber of the map $F\to V$ is a finite set equipped with a linear ordering, and $\bE$ is a groupoid.
-  A \textbf{morphism of extended hypergraphs} is a diagram
-  \[
-  \begin{tikzcd}
-    V' \ar[d] & F' \ar[d] \ar[r] \ar[l] \dlpullback[dl] \ar[dr,phantom,"\cong"] & \bE' \ar[d]\\
-    V  & F \ar[r] \ar[l] & \bE
-  \end{tikzcd}
-  \]
-  in which the left-hand square is a pullback and preserves the linear orderings on the fibers, and the right-hand square commutes up to a specified isomorphism.
-  A \textbf{2-cell of extended hypergraphs} is a transformation between the two functors $\bE'\rightrightarrows \bE$ that commutes with the above isomorphisms.
-  This defines the 2-category $\ehy$ of extended hypergraphs.
-\end{defn}
-
-We regard a hypergraph $\G$ as an extended hypergraph $\Gbar$ by replacing the set $E$ by the groupoid $\Ebar = \sum_{e\in E} \mathbf{B F}_{\genus(e)}$, the disjoint union over $e\in E$ of (the one-object groupoids corresponding to) the free groups of rank $\genus(e)$.
-A function $E'\to E$ commuting with genera induces a functor $\Ebar' \to \Ebar$ that is an isomorphism on each free group; this defines a functor $\hy \to \ehy$ that is ``faithful'' in the sense that each functor $\hy(\G,\H) \to \ehy(\Gbar,\Hbar)$ is injective on isomorphism classes, though it is not in general full or essentially surjective.
-
-An extended hypergraph is equivalent to one of the form $\Gbar$ just when its groupoid of edges is equivalent to a disjoint union of finitely generated free groups, in which case the corresponding set of edges is its set of connected components and the genera are the free ranks.
-Extended hypergraphs of this sort are not generally closed under colimits, but they are closed under the particular colimits we are interested in.
-
-Specifically, in the situation of an insertion, let $\Gbar$ and $\Hbar_v$ be the extended hypergraphs corresponding to $G$ and $H_v$ as above, and let $\Gbar_0$ be the extended hypergraph $V_0 \ot F_0 \to F_0$ with a \emph{discrete} groupoid of edges, i.e.\ where each edge has genus zero.
-Then we do have morphisms of extended hypergraphs $\Gbar_0 \to \Gbar$ and $\Gbar_0 \to \sum_v \Hbar_v$, and we have:
+To make it easier to prove abstract properties of insertion, we identify the last ``removing vertices'' step using a factorization system and a ``relational composition''.
 
 \begin{thm}
-  The extended hypergraph $\overline{\ins{\G}{V_0}{v}{\H_v}}$ corresponding to an insertion is equivalent to the subobject of the pseudo-pushout of $\Gbar_0 \to \Gbar$ and $\Gbar_0 \to \sum_v \Hbar_v$ in $\ehy$ determined by the vertices $V' \setminus V_0$.
+  There is a bicategorical unique factorization system on $\hy$, in which the left class $\L$ consists of morphisms that are bijective on vertices (hence also on flags) and the right class $\R$ consists of morphisms that are an equivalence on groupoids of edges.
+  Moreover, both classes of maps are preserved by the pseudo-pushouts from \cref{thm:pushout}.
 \end{thm}
 \begin{proof}
-  This pseudo-pushout is obtained by taking the pushouts of the spans of vertices and flags and the pseudo-pushout of the groupoids of edges, and the connected components functor takes pseudo-pushouts of groupoids to pushouts of sets.
-  Thus, it remains to show that each component of the pseudo-pushout of edge groupoids is a free group of the appropriate rank.
-  But this follows from the ``van Kampen theorem for groupoids''.
+  Any map factors as an $\L$-map followed by an $\R$-map:
+  \[
+  \begin{tikzcd}
+    V' \ar[d,equals] & F' \ar[l] \ar[d,equals] \dlpullback \ar[r] & E' \ar[d] \\
+    V' \ar[d] & F' \ar[l] \ar[d] \ar[r] \dlpullback & E \ar[d,equals]\\
+    V & F \ar[l] \ar[r] & E
+  \end{tikzcd}
+  \]
+  and it is easy to see that this factorization is unique up to equivalence.
+  The last statement follows since the pseudo-pushouts are constructed using pushouts of sets and pseudo-pushouts of groupoids, which preserve bijections and equivalences respectively.
 \end{proof}
+
+A \textbf{corolla} is a hypergraph of the form $1 \ot F = F$, i.e.\ having one vertex, each flag of which is adjacent to a unique edge.
+A disjoint union of corollas, i.e.\ a hypergraph of the form $V \ot F = F$, is called an \textbf{inflorescence}.\footnote{A corolla is the whorl of petals in a flower; an inflorescence is a cluster of flowers on a single stem.}
+
+\begin{thm}
+  There is a tricategory $\hyrel$, which in fact is a bicategory enriched over 2-categories, in which:
+  \begin{itemize}
+  \item The objects are finite inflorescences.
+  \item The morphisms are cospans $\A \to \G \ot \B$ of finite hypergraphs such that $(\A+\B) \to \G$ is bijective on vertices.
+  \item The composite of $\A \to \G \ot \B$ and $\B \to \H \ot \C$ is given by taking the pseudo-pushout $\G +_{\B} \H$ and then $(\L,\R)$-factoring the induced map $(\A + \C) \to (\G +_{\B} \H)$.
+  \item The unit of an inflorescence $\A$ is given by $(\L,\R)$-factoring the codiagonal $(\A+\A)\to\A$.
+  \end{itemize}
+\end{thm}
+\begin{proof}
+  It is classical to construct the bicategory of relations (jointly monic spans) in any regular category, with composition defined by pullback followed by (strong epi, mono) factorization.
+  More generally, this works using any pullback-stable factorization system.
+  The present theorem is a bicategorical version of the dual of that result; a similar construction is used in~\cite{cjsv:modulated-bicats}.
+
+  We can make it very explicit (and see the strictness) as follows: first define a tricategory whose objects are finite sets and whose hom-2-categories are cospans with vertex a groupoid.
+  Composition is by pseudo-pushout, and it is easy to see that when we use pseudo-pushouts that have a strict 2-categorical universal property this operation is associative up to isomorphism (not just equivalence).
+  In this way we get a bicategory enriched over 2-categories.
+
+  Now a finite inflorescence is determined by a map of sets $F\to V$ with finite linearly ordered fibers, and a cospan as in the theorem statement is then determined by a cospan $F_1 \to E \ot F_2$ with $E$ a suitable groupoid.
+  Thus, our desired structure is obtained by adding extra ignored structure to the objects of this 2-category-enriched bicategory (the objects $V$ with maps from $F$) and restricting its hom-2-categories (to require finitely-generated freeness of the automorphism groups).
+\end{proof}
+
+Now, if $\G= (V\ot F\to E)$ is any hypergraph and $V_0$ is a subset of its vertices, with $F_0$ the pullback of $F$ to $V_0$, then we can define
+\begin{align*}
+  \G|_{V_0} &= (V_0 \ot F_0 = F_0)\\
+  % \G_{F_0} &= (\emptyset \ot \emptyset \to F_0)\\
+  \G|_{\neg V_0} &= ((V\setminus V_0) \ot (F\setminus F_0) = (F\setminus F_0))
+\end{align*}
+and regard $\G$ as a morphism from $\G|_{V_0}$ to $\G|_{\neg V_0}$ in $\hyrel$.
+Similarly, if $\H$ is a rooted hypergraph, we can regard it as a morphism from $\H|_{\neg \ast}$ to $\H|_\ast$ in $\hyrel$.
+Thus, if for each $v\in V_0$ we have a rooted hypergraph $\H_v$ whose root has the same degree as $v$, then $\sum_v \H_v|_\ast \cong\G|_{V_0}$.
+Inspecting the definition of insertion, we have:
+
+\begin{thm}
+  The insertion $\ins{\G}{V_0}{v}{\H_v}$ is the composite of the morphisms
+  \[
+  \begin{tikzcd}
+    \textstyle \sum_v \H|_{\neg \ast} \ar[r,"\mathclap\circ" description,"\sum_v \H_v"] &
+    \sum_v \H_v|_\ast \cong\G|_{V_0} \ar[r,"\mathclap\circ" description,"\G"] &
+    \G|_{\neg V_0}
+  \end{tikzcd}
+  \]
+  in $\hyrel$.\qed
+\end{thm}
 
 This makes it easy to show that insertion of hypergraphs is coherently associative in an appropriate sense.
 
@@ -594,7 +587,7 @@ This makes it easy to show that insertion of hypergraphs is coherently associati
   \item for each $v$ a subset $W_v$ of non-root vertices in $\H_v$, and
   \item for each $v$ and $w\in W_v$ a rooted hypergraph $\K_w$ whose root $\ast_w$ has the same degree as $w$.
   \end{itemize}
-  Then there is an isomorphism
+  Then there is an isomorphism:
   \begin{equation}
     \ins{\Bigl(\ins{\G}{V_0}{v}{\H_v}\Bigr)}{\sum_v W_v}{w}{\K_w} \;\cong \;
     \ins{\G}{V_0}{v}{\Bigl(\ins{\H_v}{W_v}{w}{\K_w}\Bigr)}\label{eq:ins-assoc}
@@ -615,24 +608,7 @@ This makes it easy to show that insertion of hypergraphs is coherently associati
   \]
 \end{thm}
 \begin{proof}
-  It is straightforward to see that when constructing iterated insertions of this sort, we can take all the pushouts at once and then remove the appropriate vertices and their associated flags.
-  Since coproducts preserve pseudo-colimits, the pushouts involved in determining both sides of~\eqref{eq:ins-assoc} are equivalent to the pseudo-colimit in $\ehy$ of the diagram
-  \[
-  \begin{tikzcd}
-    & \Gbar_0 \ar[dl] \ar[dr] & & \sum_v \Hbar_{v,0} \ar[dr] \ar[dl]\\
-    \Gbar && \sum_v \Hbar_v  && \sum_v\sum_w \Kbar_w
-  \end{tikzcd}
-  \]
-  hence equivalent, and thus isomorphic since they are discrete.
-  The corresponding subobjects coincide since we are removing the same vertices $V_0 \cup (\bigcup_v W_v)$ on both sides.
-  Similarly, the pushouts involved in all vertices of the pentagon are equivalent to the pseudo-colimit of the diagram
-  \[
-  \begin{tikzcd}[column sep=tiny]
-    & \Gbar_0 \ar[dl] \ar[dr] & & \sum_v \Hbar_{v,0} \ar[dr] \ar[dl] && \sum_v\sum_w \Kbar_{w,0} \ar[dl]\ar[dr]\\
-    \Gbar && \sum_v \Hbar_v  && \sum_v\sum_w\Kbar_w && \sum_v \sum_w \sum_u \Lbar_u
-  \end{tikzcd}
-  \]
-  These equivalences commute up to isomorphism with the maps in the pentagon, so that the pentagon commutes up to isomorphism, and hence on the nose since all objects in it are discrete.
+  The isomorphism~\eqref{eq:ins-assoc} is just an instance of the associativity isomorphism for $\hyrel$, and similarly the pentagon is one of its coherence laws.
 \end{proof}
 
 Similarly, insertion is unital in an appropriate sense.
@@ -653,30 +629,11 @@ Let $\C_n$ denote the rooted $n$-corolla, which has $n$ edges of genus 0 and two
   \]
 \end{thm}
 \begin{proof}
-  The pushout appearing in the insertion $\ins{\G}{V_0}{v}{\C_{\degree(v)}}$ adds a new copy of each vertex in $V_0$, connected to the same edges in the same order.
-  The map $F_0 \to \sum_v \C_{\degree(v)}$ is an isomorphism, so no new edges are added and no genera are changed.
-  Then we remove the old vertices in $V_0$, giving a result clearly isomorphic to the original $\G$.
-
-  Similarly, the pushout in $\ins{\C_n}{}{c}{\G}$ adds a new copy of the root of $\G$, connected to the same edges in the same order.
-  In this case it is $F_0 \to E$ that is an isomorphism, so no new edges are added and no genera are changed.
-  Then we remove the old root, yielding a result isomorphic to $\G$.
-
-  Finally, the associativity isomorphism in the triangle comes from identifying both sides with the pseudo-colimit of
-  \[
-  \begin{tikzcd}
-    & \Gbar_0 \ar[dl] \ar[dr] & & \sum_v \Cbar_{\degree(v),0} \ar[dr] \ar[dl]\\
-    \Gbar && \sum_v \Cbar_{\degree(v)}  && \sum_v \Hbar_v
-  \end{tikzcd}
-  \]
-  Here the two inclusions $\Gbar_0 \to \sum_v \Cbar_{\degree(v)}$ and $\sum_v \Cbar_{\degree(v),0} \to \sum_v \Cbar_{\degree(v)}$ are actually a coproduct diagram on vertices, so that the vertices of the pseudo-colimit are the disjoint union of those in $\G$ and those in $\sum_v \H_v$.
-  The left-hand diagonal isomorphism in the triangle corresponds to first removing the vertices in $V_0$ and identifying them with the roots of the $\H_v$, then removing those roots; while the right-hand isomorphism corresponds to first removing the roots of the $\H_v$ and identifying them with the vertices in $V_0$, then removing those.
-  Thus they are the same modulo the above identification.
+  As before, this is just a unit isomorphism and coherence law for $\hyrel$, noting that the \emph{rooted} $n$-corolla $\C_n$ is the unit morphism in $\hyrel$ for the \emph{unrooted} $n$-corolla.
 \end{proof}
 
 \cref{thm:ins-assoc,thm:ins-unit} are also true in the directed case.
-The easiest way to see this is to note that directed hypergraphs correspond to extended hypergraphs sliced over the extended hypergraph $\dhybar_0$ coming from the sub-hypergraph of $\dhy$ containing only genus-zero edges.
-(We don't need the higher-genus edges since the more general morphisms in $\ehy$ allow arbitrary genera to be collapsed to zero.)
-Since (pseudo-)colimits in slice categories are created in the base, the same proofs apply.
+To see this, we can just work in the slice 2-category over $\dhy$, using the fact that pseudo-colimits in any slice 2-category are created in the base.
 
 
 \section{A type theory for hypergraphs}
@@ -705,6 +662,7 @@ Thus, a syntax for $P$-labeled hypergraphs is more general than a syntax for unl
 Let \cpg be the 2-category of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
 Thus a \Cat-polygraph has a category $P(0)$ of objects together with, for each $n,m\in\N$, a category $P(n,m)$ of $n$-ary $m$-coary morphisms, equipped with $n+m$ functors $P(n,m) \to P(0)$.
 We may regard an ordinary polygraph as a discrete \Cat-polygraph.
+\fxnote{How does this categorical direction interact with the groupoid direction in $E$?}
 
 A \textbf{bracketing} of $n$ things is a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
 The \textbf{arity} of the bracketing is the length of the list.
@@ -729,7 +687,7 @@ Now, given a \Cat-polygraph $P$, define a new \Cat-polygraph $T P$ as follows.
   \end{tikzcd}
   \]
 \item The objects of $TP(n,m)$ are morphisms of polygraphs $G_0\to P$, where $G$ is an $(n,m)$-bracketed hypergraph.
-  An arrow in $TP(n,m)$ from $G_0\to P$ to $H_0\to P$ consists of an isomorphism of $(n,m)$-bracketed hypergraphs $G\cong H$ together with a transformation
+  An arrow in $TP(n,m)$ from $G_0\to P$ to $H_0\to P$ consists of an equivalence of $(n,m)$-bracketed hypergraphs $G\cong H$ together with a transformation
   \[
   \begin{tikzcd}
     G_0 \ar[rr,"\cong"] \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & H_0 \ar[dl] \\ & P
@@ -1089,6 +1047,30 @@ We can then add the exchange rule of intuitionistic linear logic:
 \end{mathpar}
 with axioms yielding a symmetric multicategory.
 
+\subsection{Flavors of operad}
+\label{sec:operads}
+
+All of these use only binary directed graphs.
+A summary is in~\cite{bb:htapm}.
+
+Directed sorts:
+\begin{itemize}
+\item Wheeled props~\cite{mms:wheeled-props} use arbitrary directed graphs.
+\item Props use directed graphs with no directed loops.
+\item Properads~\cite{vallette:properads} use connected directed graphs with no directed loops.
+\item Wheeled properads use arbitrary connected directed graphs.
+\item Dioperads~\cite{gan:dioperads} / polycategories~\cite{szabo:polycats,koslowski:polycats,garner:polycats} have no directed loops and are connected and simply connected (no undirected loops either), or equivalently contractible.~\cite{markl:operads-props}
+\item Symmetric operads/multicategories use arbitrary directed trees.
+\item Non-symmetric operads/multicategories use planar directed trees.
+\end{itemize}
+
+Undirected sorts:
+\begin{itemize}
+\item Cyclic operads~\cite{gk:cyclic-operads} use undirected trees; compare to~\cite{co:flang-cyclic}.
+\item Modular operads~\cite{gk:modular-operads} use arbitrary connected graphs (plus a ``stability'' condition).
+\item Compact symmetric multicategories~\cite{jk:feynman} use arbitrary graphs.
+  This is a somewhat misleading name as it doesn't indicate that the objects are actually \emph{self-}dual (the undirectedness).
+\end{itemize}
 
 \bibliography{../all.bib}
 \bibliographystyle{alpha}
