@@ -56,6 +56,9 @@
 % \def\twocellr#1#2#3#4{\inferrule*[Left={$\side{#1}$},right={$\side{#4}$}]{#2}{#3}}
 % \def\twocelllr#1#2#3#4{\inferrule*[left={$\side{#1}$},right={$\side{#4}$}]{#2}{#3}}
 
+\def\op{^{\mathrm{op}}}
+\def\lan{\operatorname{Lan}}
+
 \newcounter{nodemaker}
 \setcounter{nodemaker}{0}
 \def\twocell#1{%
@@ -85,6 +88,7 @@
 \def\Np{\N_{\bullet}}
 \def\hy{\mathcal{H}\mathit{y}\mathcal{G}\mathit{ph}}
 \def\hyrel{\mathcal{H}\mathit{y}\mathcal{R}\mathit{el}}
+\def\hohy{\mathbf{HyGph}}
 \def\thy{\mathcal{T}}
 \def\dhy{\mathcal{D}}
 \def\fhy{\mathcal{F}}
@@ -126,6 +130,53 @@
 \section{Hypergraphs}
 \label{sec:hypergraphs}
 
+Intuitively, a hypergraph is like a graph, but where an ``edge'' can be incident to any number of vertices, not only two.
+An incidence between a vertex and an edge is called a \emph{flag}.
+For directed hypergraphs, which we will mainly be concerned with, each flag is marked as ``incoming'' or ``outgoing'' (to the associated vertex).
+When drawing a hypergraph, we draw vertices as dots and edges as lines connecting them, which are allowed to ``branch'' in order to connect more than two vertices.
+Here is an example:
+\[
+\begin{tikzpicture}
+  \node[vertex] (f) at (0,1) {$f$};
+  \node[vertex] (g) at (0,-1) {$g$};
+  \node[vertex] (h) at (2,0) {$h$};
+  \coordinate (e) at (1,0);
+  \draw[edge] (f) to[out=0,in=180] (e);
+  \draw[edge] (g) to[out=30,in=180] (e);
+  \draw[edge] (e) to[out=0,in=180] node[auto] {$e_1$} (h);
+  \coordinate (e2) at (1,2);
+  \draw[edge] (h) to[out=30,in=0] node[auto,swap] {$e_2$} (e2);
+  \draw[edge] (e2) to[out=180,in=180,looseness=2] (g);
+  \coordinate (e3) at (3,-1);
+  \draw[edge] (h) to[out=-30,in=180] (e3);
+  \draw[edge] (g) to[out=-30,in=180] node[auto,swap] {$e_3$} (e3);
+  \draw[edge] (h) -- node[auto,very near end] {$e_4$} +(1,0);
+  \draw[edge] (f) to[out=-60,in=-120,looseness=5] node[auto] {$e_5$} (f);
+  \draw (-1,-.5) -- node[auto] {$e_6$} (0,-.5);
+\end{tikzpicture}
+\]
+Here $e_1$ is incident to $f$ and $g$ outgoing and to $h$ incoming, $e_2$ is adjacent to $h$ outgoing and $g$ incoming, $e_3$ is adjacent to $g$ and $h$ both outgoing, $e_4$ is adjacent to only $h$ outgoing, $e_5$ is adjacent to $f$ once outgoing and once incoming, and $e_6$ is not adjacent to any vertices at all.
+
+There are many possible variations on hypergraphs.
+Unlike in the combinatorial literature, but like the ``graphs'' usually used in category theory, our edges are not uniquely determined by the vertices they are incident to, i.e.\ we can have ``parallel edges''.
+Also, we will assume that each vertex is incident to a finite set of edges, but in general place no such restriction on the edges; this will be convenient because it makes polygraphs a special case of directed hypergraphs.
+
+We will also allow edges to contain ``loops''.
+In particular, this distinguishes between the following two edges, neither of which is adjacent to any vertices, but of which one contains a loop and one does not:
+\[
+\begin{tikzpicture}
+  \draw (0,0) -- (1,0);
+  \draw (3,0) to[out=90,in=90,looseness=2] (4,0) to[out=-90,in=-90,looseness=2] (3,0);
+\end{tikzpicture}
+\]
+Moreover, the hyper-ness of our graphs means that once we allow loops, we need to allow edges adjacent to vertices to also contain loops, and some edges to contain multiple loops.
+The presence of loops turns out to make the definition of hypergraph very tricky to get right, in particular as regards the notion of morphism between such graphs.
+
+First I tried just marking each edge with a natural number ``genus''; but in defining labeled hypergraphs as morphisms we need to be able to collapse loops, and automorphisms of hypergraphs need to be able to permute loops.
+Then I thought of just assigning to each edge a pointed set of ``loops'', but when inserting one hypergraph into another we can create ``loops'' of a sort for which there is no obvious way to choose a ``basepoint'' to get an actual ``set of loops''; what arises naturally is a directed graph, or equivalently a free groupoid.
+So I tried defining a hypergraph to have a (free) groupoid of edges rather than a set; but free groupoids have too many automorphisms.
+At present the most promising approach seems to be to define a hypergraph to have a directed graph of edges, but I have not yet completely solved the problem of how to define the isomorphisms in this context.
+
 \begin{defn}
   A \textbf{hypergraph} is a span
   \[ V \ot F \to E \]
@@ -157,9 +208,6 @@ Also a vertex and an edge can be ``incident more than once'', i.e.\ the image of
 
 The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed) finite simple hypergraphs of genus zero, but without the orderings on the flags adjacent to each vertex.
 We include the orderings because we eventually want a correspondence to linear syntax, and to definitions of prop and polycategory using ordered lists of objects, but they are not essential to the theory.
-We draw vertices as dots and edges as lines connecting them, which are allowed to ``branch'' in order to connect more than two vertices.
-We draw an edge of positive genus as containing ``loops''.
-\fxnote{Add some examples.}
 
 \begin{defn}
   A \textbf{morphism of hypergraphs} is a diagram
@@ -452,8 +500,86 @@ Amusingly, this condition can be reformulated by saying that the rank of an edge
 Its directed version is a little kludgy to state due to our convention about the orientations of flags adjacent to the root.
 
 \begin{defn}
-  A \textbf{directed rooted binary hypergraph} is a hypergraph that is separately directed, rooted, and binary, and moreover if we switched the direction of all flags adjacent to the root, then every edge would have equal in-rank and out-rank.
+  Let $\G$ be a directed rooted hypergraph.
+  \begin{enumerate}
+  \item $\G$ is \textbf{weakly binary} if it is binary (in the undirected sense) and moreover every edge not adjacent to the root has equal in-rank and out-rank (i.e.\ either both 1 or both 0).
+  \item $\G$ is \textbf{strongly binary} if it is binary (in the undirected sense) and moreover if we switched the direction of all flags adjacent to the root then every edge would have equal in-rank and out-rank.
+  \end{enumerate}
 \end{defn}
+
+Here is an example of a strongly binary directed rooted hypergraph:
+\[
+\begin{tikzpicture}
+  \node[vertex] (f) at (0,0) {$f$};
+  \node[vertex] (g) at (1,-1) {$g$};
+  \node[vertex] (h) at (0,-2) {$h$};
+  \node[outer] (in1) at (0,1) {};
+  \node[outer] (in2) at (2,1) {};
+  \node[outer] (in3) at (1,1) {};
+  \node[outer] (out2) at (2,-3) {};
+  \node[outer] (out3) at (1,-3) {};
+  \node[outer] (out1) at (0,-3) {};
+  \draw[edge] (f) -- (g);
+  \draw[edge] (in1) -- (f);
+  \draw[edge] (g) -- (h);
+  \draw[edge] (f) -- (h);
+  \draw[edge] (h) -- (out1);
+  \draw[edge] (in3) -- (g);
+  \draw[edge] (in2) -- (out2);
+  \draw[edge] (h) -- (out3);
+\end{tikzpicture}
+\]
+Here is one that is weakly binary but not strongly binary:
+\[
+\begin{tikzpicture}
+  \node[vertex] (f) at (0,0) {$f$};
+  \node[vertex] (g) at (1,-1) {$g$};
+  \node[vertex] (h) at (0,-2) {$h$};
+  \node[outer] (in1) at (0,1) {};
+  \node[outer] (in2) at (3,1) {};
+  \node[outer] (in4) at (2,1) {};
+  \node[outer] (in3) at (1,1) {};
+  \node[outer] (out2) at (3,-4) {};
+  \node[outer] (out3) at (1,-4) {};
+  \node[outer] (out4) at (2,-4) {};
+  \node[outer] (out1) at (0,-4) {};
+  \draw[edge] (f) -- (g);
+  \draw[edge] (in1) -- (f);
+  \draw[edge] (g) -- (h);
+  \draw[edge] (f) -- (h);
+  \draw[edge] (h) -- (out1);
+  \draw[edge] (in3) -- (g);
+  \draw[edge] (in2) -- (out2);
+  \coordinate (four) at (1,-3);
+  \draw[edge] (h) to[out=-90,in=90] (four);
+  \draw[edge] (in4) to[out=-90,in=90] (four);
+  \coordinate (five) at (2,-3);
+  \draw[edge] (five) to[out=-90,in=90] (out3);
+  \draw[edge] (five) to[out=-90,in=90] (out4);
+\end{tikzpicture}
+\]
+And here is a directed rooted hypergrah that is binary in the undirected sense, but not even weakly binary in the directed sense:
+\[
+\begin{tikzpicture}
+  \node[vertex] (f) at (0,0) {$f$};
+  \node[vertex] (g) at (1,-1) {$g$};
+  \node[vertex] (h) at (0,-2) {$h$};
+  \node[outer] (in1) at (0,1) {};
+  \node[outer] (in3) at (1,1) {};
+  \node[outer] (out3) at (1,-4) {};
+  \node[outer] (out1) at (0,-4) {};
+  \draw[edge] (f) -- (g);
+  \draw[edge] (in1) -- (f);
+  \draw[edge] (g) -- (h);
+  \draw[edge] (h) -- (out1);
+  \draw[edge] (in3) -- (g);
+  \draw[edge] (h) -- (out3);
+  \coordinate (two) at (-1,-3);
+  \draw[edge] (f) to[out=-90,in=90] (two);
+  \draw[edge] (h) to[out=-120,in=90] (two);
+\end{tikzpicture}
+\]
+
 
 In a binary rooted hypergraph, we can define an involution on the set of flags not adjacent to the root by sending each flag to the other flag of its corresponding edge, if that flag is not adjacent to the root, or to itself otherwise.
 The quotient of this involution is then isomorphic to the set of edges that are adjacent to some non-root vertex.
@@ -513,7 +639,7 @@ A \textbf{graph context} is an edge context, a loop context, and a finite list o
   \inferrule{\Delta \mid\Xi\types \Gamma\graph \\ \Delta\types M\vertex \\ (f\notin \Gamma)}{\Delta\mid\Xi\types (\Gamma,f:M)\graph}
 \end{mathpar}
 
-\begin{thm}
+\begin{thm}\label{thm:ctx-hy}
   A graph context determines, and is determined by, a finite $P$-labeled hypergraph $\G\to P$.
 \end{thm}
 \begin{proof}
@@ -523,15 +649,35 @@ A \textbf{graph context} is an edge context, a loop context, and a finite list o
   Finally, the list of variables in a syntactic vertex $\alpha(x_1,\dots,x_n;y_1,\dots,y_m)$ specifies the flags.
 \end{proof}
 
-I'm not sure in what sense we can say this is an equivalence.
-Maybe we shouldn't even try at this point.
-
 In particular, note that self-equalities $(x\doteq x)$ in the loop context correspond to automorphisms in the groupoid $E$, hence to edges of nontrivial genus.
 Thus, it is only reasonable to simplify by substituting along equalities of \emph{distinct} variables:
 \begin{equation}\label{eq:subst}
   \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Gamma\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Gamma[x/y] \graph}
 \end{equation}
 This should change the corresponding hypergraph into an \emph{equivalent} one by contracting an object along an isomorphism.
+
+In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to introduce morphisms between graph contexts.
+We will consider only \emph{isomorphisms}, which are a generalized form of $\alpha$-equivalence.
+
+\begin{defn}
+  A loop context is \textbf{reduced} if it contains only self-equalities.
+  Given two reduced graph contexts
+  \begin{mathpar}
+    \Delta\mid\Xi\types \Gamma\graph \and
+    \Delta'\mid\Xi'\types \Gamma'\graph \and
+  \end{mathpar}
+  an \textbf{$\alpha$-isomorphism} between them consists of:
+  \begin{enumerate}
+  \item A bijection $\sigma : \Delta \cong \Delta'$ that respects types.
+  \item A bijection $\tau : \Xi \cong \Xi'$ that respects $\sigma$, i.e.\ $\tau(x\doteq x)$ must be an equality of the form $\sigma(x)\doteq \sigma(x)$.
+  \item A function $\rho : \Xi \to \{1,-1\}$ (indicating ``whether each equality gets reversed'').
+  \item A bijection $\nu : \Gamma \cong \Gamma'$ that respects types modulo $\sigma$, i.e.\ if $f:\alpha(\vec x;\vec y)$ then $\nu(f) : \alpha(\sigma(\vec x);\sigma(\vec y))$.
+  \end{enumerate}
+\end{defn}
+
+There is a groupoid of reduced graph contexts and $\alpha$-isomorphisms; in the composition we multiply the numbers $\rho$.
+
+TODO: Even free groups (of rank $>1$) have lots of outer automorphisms, e.g. the outer automorphisms of $F_2$ are $GL(2,\mathbb{Z})$.
 
 
 \section{Insertion of hypergraphs}
@@ -726,11 +872,67 @@ However, we may still be left with additional self-loops, for instance:
 {x:p \mid x\doteq x \types \Gamma_1,\Gamma_2[x/u] \graph}
 \end{mathpar}
 
+We can also state a simultaneous insertion rule:
+
+\begin{mathpar}
+  \inferrule{\Delta_i\mid\Xi_i \types \Gamma_i \graph\\
+    \Delta_i\mid\Xi_i \types \alpha_i(\vec x_i;\vec y_i)\vertex \\\\
+    \Delta'\mid\Xi' \types (\alpha_1(\vec u_1;\vec v_1),\dots,\alpha_n(\vec u_n;\vec v_n)) \graph}
+  {\Delta_1,\dots,\Delta_n,\Delta' \mid \Xi_1,\dots,\Xi_n,\Xi', \vec x_1\doteq \vec u_1, \vec y_1 \doteq \vec v_1,\dots,\vec x_n\doteq \vec u_n, \vec y_n \doteq \vec v_n \types \Gamma_1,\dots, \Gamma_n \graph}
+\end{mathpar}
+
 
 \section{The pseudomonad for hypercategories}
 \label{sec:hypercats}
 
-Let \cpg be the 2-category of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
+We would like to build a monad out of labeled hypergraphs.
+Our first thought may be that it should be a polynomial monad, since each hypergraph should give a ``constructor'' whose ``arguments'' are a labeling of it.
+However, in a categorical situation where labelings have dependency, polynomial functors are too restrictive; they work in the ``one-object'' clase of generalized operads (as in~\cite{bb:htapm}), but for generalized multicategories (``colored operads'') we need the more general \emph{parametric right adjoints} of~\cite{weber:parmrep,weber:fam-pra}.
+
+As shown in~\cite{weber:fam-pra}, a parametric right adjoint between presheaf categories $[I\op,\Set]\to [J\op,\Set]$ can be represented by a polynomial in \Cat:
+\[ I \xot{d} E \xto{c} K \xto{p} J \]
+in which $K\to J$ is a discrete fibration and $(d,c)$ is a two-sided discrete fibration (i.e.\ $d$ is a fibration, $c$ is an opfibration, and $(d,c): E \to I\times K$ has discrete fibers).
+These conditions ensure that the polynomial functor $p_! c_* d^* : \Cat/I \to \Cat/J$ restricts to discrete fibrations, hence to presheaves.
+If we write $H:I\op\times K\to \Set$ for the profunctor corresponding to $(d,c)$, then the functor on presheaves can equivalently be described as
+\[ [I\op,\Set] \xto{\hom_I(H,-)} [K\op,\Set] \xto{\lan_p} [J\op,\Set]. \]
+where $\hom_I(H,X)(k) = \lim_{i\in I} \hom(H(i,k),X(i))$.
+
+In fact, hypergraphs do not quite give such a parametric right adjoint either: the presence of automorphisms prevents $p$ from being a \emph{discrete} fibration.
+However, we still get a polynomial in \Cat, which we can reflect into a monad on a presheaf category, although the result will no longer be polynomial or even parametric right adjoint.
+The situation is analogous to how the definition of symmetric monoidal category is not obtained from that of a commutative monoid by ``using the same operations and imposing axioms only up to isomorphism'' (the way that of an ordinary monoidal category is obtained from that of an ordinary monoid); instead the operations have to be ordered and the symmetry only imposed up to isomorphism as well.
+
+We will treat only the directed case explicitly, and find the undirected case inside it using ``outgoing-only'' graphs.
+For simplicity we will start with a purely polycategorical monad, with composition operations on morphisms but no operations on objects, and then later add the monoidal structure on objects.
+
+Let $J$ be the category such that presheaves on $J$ are polygraphs.
+That is, $J$ has an object $0$ and objects $(n,m)$ for $n,m\in\N$, with $n+m$ nonidentity morphisms $0\to (n,m)$.
+
+Let $\hohy$ be the homotopy 1-category of $\hy$, obtained by identifying isomorphic 1-cells and discarding the 2-cells.
+We pass to this quotient since for a polygraph $P$, the $P$-labeled hypergraphs depend only on the image of $P$ in $\hohy$.
+By an \textbf{$(n,m)$-hypergraph} we will mean a directed rooted object of $\hohy$ whose root has in-rank $n$ and out-rank $m$.
+
+We define a functor $J\op\to\Cat$ (i.e.\ an internal polygraph in $\Cat$) by sending $(n,m)$ to the groupoid of such $(n,m)$-hypergraphs and isomorphisms between them, and $0$ to the terminal category with unique object $\star$.
+Let $p:K_1 \to J$ be the (split, groupoidal, but not discrete) fibration corresponding to this functor.
+
+We define a profunctor $H_1 : J\op\times K_1 \to \Set$ as follows:
+\begin{align*}
+  H_1(0,\G) &= \text{edges of $\G$}\\
+  H_1((n,m),\G) &= \text{non-root vertices in $\G$ with in-rank $n$ and out-rank $m$}.\\
+  H_1(0,\star) &= 1\\
+  H_1((n,m),\star) &= \emptyset
+\end{align*}
+The automorphisms of graphs in $K_1$ act on $\H_1(-,\G)$ in the obvious way.
+The $n+m$ morphisms $\star\to\G$ in $K_1$ induce the maps $H_1(0,\star) \to H_1(0,\G)$ picking out the edges associated to the incoming and outgoing flags of the root.
+The $n+m$ morphisms $(n,m)\to 0$ in $J$ induce the maps $H_1((n,m),\G) \to H_1 (0,\G)$ selecting the incoming and outgoing edges of each vertex.
+
+We denote the two-sided discrete fibration corresponding to $H_1$ by $J \xot{d} E_1 \xto{c} K_1$.
+We now have an induced polynomial functor
+\[ \Cat/J \xto{d^*} \Cat/E_1 \xto{c_*} \Cat/K_1 \xto{p_!} \Cat/J. \]
+Although $p_!$ does not preserve discrete fibrations, it does preserve \emph{split} fibrations, i.e.\ functors $J\op\to\Cat$, since $p$ is split.
+And since $c$ is a discrete, hence split, opfibration, $c_*$ also preserves split fibrations; while $d^*$ certainly does.
+Thus we have an induced endofunctor of the category $[J\op,\Cat]$ of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
+
+
 Thus a \Cat-polygraph has a category $P(0)$ of objects together with, for each $n,m\in\N$, a category $P(n,m)$ of $n$-ary $m$-coary morphisms, equipped with $n+m$ functors $P(n,m) \to P(0)$.
 We may regard an ordinary polygraph as a discrete \Cat-polygraph.
 \fxnote{How does this categorical direction interact with the groupoid direction in $E$?}
