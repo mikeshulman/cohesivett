@@ -7,6 +7,8 @@
 \crefname{lem}{Lemma}{Lemmas}
 \newtheorem{cor}[thm]{Corollary}
 \crefname{cor}{Corollary}{Corollaries}
+\newtheorem{conj}[thm]{Corollary}
+\crefname{conj}{Conjecture}{Conjectures}
 \theoremstyle{definition}
 \newtheorem{defn}[thm]{Definition}
 \crefname{defn}{Definition}{Definitions}
@@ -39,16 +41,18 @@
 \def\K{\mathcal{K}}
 \def\L{\mathcal{L}}
 \def\R{\mathcal{R}}
-% \def\Cat{\ensuremath{\mathcal{C}\mathit{at}}}
 \let\setof\Set
 \def\Set{\mathbf{Set}}
-\def\Cat{\ensuremath{\mathbf{Cat}}}
+\def\Cat{\ensuremath{\mathcal{C}\mathit{at}}}
+%\def\Cat{\ensuremath{\mathbf{Cat}}}
 \def\Fib{\mathcal{F}\mathit{ib}}
+\def\SFib{\mathcal{SF}\mathit{ib}}
 \def\Prof{\mathcal{P}\mathit{rof}}
-\def\cpg{\ensuremath{\mathbf{CPG}}\xspace}
+\def\cpg{\ensuremath{\mathcal{CPG}}\xspace}
 \def\dom{\mathrm{dom}}
 \def\cod{\mathrm{cod}}
 \def\id{\mathrm{id}}
+\def\Id{\mathrm{Id}}
 \def\side#1{{\scriptstyle(#1)}}
 \def\sid{\side{\id}}
 % \def\twocell#1#2#3#4{\inferrule*[Left={$\side{#1}$},Right={$\side{#4}$}]{#2}{#3}}
@@ -97,9 +101,21 @@
 \def\fhy{\mathcal{F}}
 \def\ehy{\mathcal{E}\mathit{xt}\mathcal{H}\mathit{y}\mathcal{G}\mathit{ph}}
 
+% Get new symbols from mathabx without changing the old ones
+\DeclareFontFamily{U}{mathb}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathb}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * mathb
+      <10.95> mathb10 <12> <14.4> <17.28> <20.74> <24.88> mathb12
+      }{}
+\DeclareSymbolFont{mathb}{U}{mathb}{m}{n}
+\DeclareFontSubstitution{U}{mathb}{m}{n}
+\DeclareMathSymbol{\Asterisk}{2}{mathb}{"06}
+
 \makeatletter
-\def\ins#1#2#3#4{#1 \underset{\@ifmtarg{#2}{#3}{#3\in #2}}{\circ} #4}
-\def\insy{\circ}
+%\def\ins#1#2#3#4{#1 \underset{\@ifmtarg{#2}{#3}{#3\in #2}}{\circ} #4}
+\def\ins#1#2#3#4{#1 \mathbin{{\Asterisk}_{\@ifmtarg{#2}{#3}{#3\in #2}}} #4}
+\def\insy{\Asterisk}
+\def\coll{\mathbin{\Asterisk}}
 \makeatother
 \def\bE{\mathbf{E}}
 \def\bC{\ensuremath{\mathbf{C}}\xspace}
@@ -121,6 +137,8 @@
 \def\type{\;\mathsf{type}}
 \let\types\vdash
 \let\jdeq\equiv
+\let\sametypes\approx
+\def\varsof#1{|#1|}
 
 \hyphenation{hyper-graph}
 \hyphenation{hyper-graphs}
@@ -315,12 +333,15 @@ And a cycligraph is the underlying data of a cyclic multicategory, in which sour
 Our graph-theoretic representation of these objects invokes the Poincar\'e dual ``string diagram convention'', in which objects are 1-dimensional and morphisms are 0-dimensional.
 The categories of cycligraphs, polygraphs, and multigraphs are presheaf toposes.
 Also, cycligraphs are a reflective subcategory of $\hy$, and polygraphs are a reflective subcategory of $\hy/\dhy$.
+We write $\pi \G$ for the cycligraph reflection of $\G$, which has the same vertices and edges as $\G$ but its edge graph is the discrete set $\pi E$ of connected components of the edge graph $E$ of $\G$.
 
 The above definitions of cycligraphs, polygraphs, and multigraphs make the following definitions very easy.
 
 \begin{defn}\label{thm:labeled}
   If $P$ is a cycligraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to P$.
 \end{defn}
+
+Of course, by reflectivity, to give a map $\G\to P$ is equivalently to give a map $\pi \G \to P$.
 
 Note that if $P$ is a polygraph, it is by definition simply a cycligraph equipped with a morphism $P\to \dhy$.
 Therefore, for any $P$-labeled hypergraph $\G\to P$ in the above sense, the composite $\G\to P\to\dhy$ automatically makes $\G$ a directed hypergraph and $\G\to P$ a directed hypergraph morphism.
@@ -541,7 +562,29 @@ Amusingly, this condition can be reformulated by saying that the rank of an edge
 
 The presence of nontrivial automorphisms means that in general, we cannot simply ``pass to isomorphism classes'' of hypergraphs, and thus structures over hypergraphs are not definable using ``set-based shapes'', such as polynomial monads on the category of polygraphs.
 In~\cite{bb:htapm} isomorphism classes and polynomial monads are shown to work for certain subclasses of graphs, but even when it works such a restriction is technical and error-prone.
-Thus, we will generally work instead with categories and groupoids, never passing to isomorphism classes, and using a pseudomonad rather than a strict one.
+Thus, we will generally work with categories instead of sets, never passing to isomorphism classes, and using a weak monad rather than a strict one.
+
+In addition, our definition of hypergraph does not support all the isoomorphisms we would like to have.
+For instance, we would like a non-reduced hypergraph to be isomorphic to a ``reduction'' in which distinct edge representatives of the same edge have been collapsed along an identification.
+This collapse exists as a \emph{morphism} of hypergraphs in one direction, but is not invertible.
+Thus we introduce the following definition:
+
+\begin{defn}\label{defn:weq}
+  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every reflexivity edge is a (nonempty) undirected tree.
+  A morphism of hypergraphs is a \textbf{weak equivalence} if it is bijective on vertices (hence on flags) and its map on edges is a weak equivalence.
+\end{defn}
+
+\begin{lem}
+  Every hypergraph admits a weak equivalence to a reduced one.
+  Moreover, if $\G\to \G_1$ and $\G \to \G_2$ are weak equivalences with $\G_1$ and $\G_2$ reduced, then there is a non-unique isomorphism $\G_1 \cong \G_2$ (which need not commute with the maps from $\G$).
+\end{lem}
+\begin{proof}
+  To construct a reduction of $\G$, choose a spanning tree inside each edge and collapse it to a point.
+  The second statement follows since weak equivalences induce isomorphisms of sets of edges that preserve genera, and any two reduced hypergraphs with the same vertices, flags, edges, and genera are isomorphic.
+\end{proof}
+
+The non-uniqueness of ``reduction'' is the reason for including non-reduced graphs in the theory; as we will see, they arise naturally in the construction of insertion in \cref{sec:tt-insertion}, and without a canonical way to reduce them it is more natural to keep them around.
+If we represented the edges by a free groupoid rather than a reflexive graph, weak equivalences would be actual equivalences, but free groupoids also have additional automorphisms that we don't want.
 
 % The directed version of the binary condition is a little kludgy to state due to our convention about the orientations of flags adjacent to the root.
 
@@ -728,12 +771,11 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
   The partial function $\tau$ corresponds to the action on edge identifications; where it is undefined, we send the corresponding edge to reflexivity.
 \end{proof}
 
-% In particular, note that self-equalities $(x\doteq x)$ in the loop context correspond to automorphisms in the groupoid $E$, hence to edges of nontrivial genus.
-% Thus, it is only reasonable to simplify by substituting along equalities of \emph{distinct} variables:
-% \begin{equation}\label{eq:subst}
-%   \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Gamma\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Gamma[x/y] \graph}
-% \end{equation}
-% This should change the corresponding hypergraph into an \emph{equivalent} one by contracting an object along an isomorphism.
+The weak equivalences from \cref{defn:weq} also have a natural type-theoretic interpretation.
+They are inductively obtained by substituting along equalities of \emph{distinct} variables:
+\begin{equation}\label{eq:subst}
+  \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Gamma\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Gamma[x/y] \graph}
+\end{equation}
 
 
 \section{Insertion of hypergraphs}
@@ -743,7 +785,7 @@ We now define an operation of \emph{insertion} of hypergraphs, which replaces so
 To clarify the abstract properties of this operation, we phrase it as a bicategorical composition.
 
 \begin{defn}
-  If $E_1 \xot{s} F \xto{t} E_2$ is a span of reflexive graphs in which $F$ is discrete (has only reflexivity edges), then its \textbf{collage} $E_1 *_F E_2$ is the disjoint union reflexive graph $E_1+E_2$ augmented by a new edge for each $x\in F$, attaching $s(x)$ to $t(x)$.
+  If $E_1 \xot{s} F \xto{t} E_2$ is a span of reflexive graphs in which $F$ is discrete (has only reflexivity edges), then its \textbf{collage} $E_1 \coll_F E_2$ is the disjoint union reflexive graph $E_1+E_2$ augmented by a new edge for each $x\in F$, attaching $s(x)$ to $t(x)$.
 \end{defn}
 
 \begin{defn}
@@ -754,22 +796,22 @@ To clarify the abstract properties of this operation, we phrase it as a bicatego
 Note that an inflorescence is uniquely determined, up to isomorphism, by giving a set of vertices and their degrees.
 
 \begin{defn}
-  A \textbf{laxly unital bicategory} is like a bicategory, but its unit transformations $f \circ 1_x \to f$ and $1_y\circ f \to f$ are not necessarily invertible (though it associativity isomorphisms are).
+  A \textbf{conormal lax bicategory} is like a bicategory, but its unit transformations $f \circ 1_x \to f$ and $1_y\circ f \to f$ are not necessarily invertible (though it associativity isomorphisms are).
   We still ask for the same coherence axioms.
 \end{defn}
 
-\begin{thm}
-  There is a laxly unital bicategory $\hyrel$ in which
+\begin{thm}\label{thm:hyrel}
+  There is a conormal lax bicategory $\hyrel$ in which
   \begin{itemize}
   \item The objects are inflorescences.
-  \item The morphisms are cospans $\A \to \G \ot \B$ of hypergraphs such that $(\A+\B) \to \G$ is bijective on vertices.
-    Equivalently, they are simply hypergraphs $\G$ equipped with a partition of their vertices into two disjoint subsets; the inflorescences $\A$ and $\B$ are then uniquely determined.
-  \item The composite $\G *_{\B} \H$ of $\A \to \G \ot \B$ and $\B \to \H \ot \C$ is defined to be
-    \[ V_{\A}  + V_{\B} \longleftarrow F_{\A} + F_{\B} \longrightarrow E_{\G} *_{E_\B} E_{\H} \]
+  \item The morphisms from $\A$ to $\B$ are cospans $\A \to \G \ot \B$ of hypergraphs such that $(\A+\B) \to \G$ is bijective on vertices.
+    Equivalently, the morphisms are hypergraphs $\G$ equipped with a partition of their vertices into two disjoint subsets; the inflorescences $\A$ and $\B$ are then uniquely determined.
+  \item The composite $\G \coll_{\B} \H$ of $\A \to \G \ot \B$ and $\B \to \H \ot \C$ is defined to be
+    \[ V_{\A}  + V_{\B} \longleftarrow F_{\A} + F_{\B} \longrightarrow E_{\G} \coll_{E_\B} E_{\H} \]
     In other words:
     \begin{enumerate}
-    \item The vertices and flags of $\G *_{\B} \H$ the disjoint unions of those of $\A$ and those of $\C$.
-    \item The reflexive graph of edges of $\G *_{\B} \H$ is the collage of those of $\G$ and $\H$ under that of $\B$.
+    \item The vertices and flags of $\G \coll_{\B} \H$ the disjoint unions of those of $\A$ and those of $\C$.
+    \item The reflexive graph of edges of $\G \coll_{\B} \H$ is the collage of those of $\G$ and $\H$ under that of $\B$.
       Thus, an edge representative is either one in $\G$ or one in $\H$, while an edge identification is either one in $\G$, one in $\H$, or one identifying the images in $\G$ and $\H$ of an edge in $\B$.
     \end{enumerate}
   \item The unit $1_{\A}$ of an inflorescence $\A=(V\ot F = F)$ is $V+V \ot F+F \to F$, with the two evident inclusions from $\A$.
@@ -777,13 +819,17 @@ Note that an inflorescence is uniquely determined, up to isomorphism, by giving 
 \end{thm}
 \begin{proof}
   Associativity follows from the associativity of coproducts and collages.
-  The latter means that if we have $E_1 \ot F_1 \to E_2 \ot F_2 \to E_3$ with $F_1,F_2$ discrete, then $(E_1 *_{F_1} E_2) *_{F_2} E_3 \cong E_1 *_{F_1} (E_2 *_{F_2} E_3)$, and the pentagon equation is satisfied if we have another span $E_3 \ot F_3 \to E_4$.
+  The latter means that if we have $E_1 \ot F_1 \to E_2 \ot F_2 \to E_3$ with $F_1,F_2$ discrete, then $(E_1 \coll_{F_1} E_2) \coll_{F_2} E_3 \cong E_1 \coll_{F_1} (E_2 \coll_{F_2} E_3)$, and the pentagon equation is satisfied if we have another span $E_3 \ot F_3 \to E_4$.
   This is a straightforward verification.
 
-  The composite $1_{\A} *_{\A} \G$ has the same vertices and flags as $\G$ (up to isomorphism), but its edge graph has been augmented by a new edge representative $\bar{x}$ for each flag $x\in F_{\A}$, and new identifications connecting $\bar{x}$ to the edge representative adjacent to the image of $x$ in $\G$.
+  The composite $1_{\A} \coll_{\A} \G$ has the same vertices and flags as $\G$ (up to isomorphism), but its edge graph has been augmented by a new edge representative $\bar{x}$ for each flag $x\in F_{\A}$, and new identifications connecting $\bar{x}$ to the edge representative adjacent to the image of $x$ in $\G$.
   Thus, it is not isomorphic to $\G$, but admits a map to $\G$ that contracts each of these new identifications to reflexivity.
   The other unit constraint is dual, and the coherence axiom is straightforward to check.
 \end{proof}
+
+Note that the set $\pi(E_1 \coll_F E_2)$ of connected components of a collage of reflexive graphs is the pushout $\pi E_1 +_{\pi F} \pi E_2$.
+It follows that the cycligraph reflection $\pi(\G \coll_{\B} \H)$ of a composite in $\hyrel$ is the pushout $\pi\G \coll_{\pi \B} \pi \H_v$ of the cycligraph reflections, and similarly for the unit.
+In other words, the ``homwise cycligraph reflection'' of $\hyrel$ is simply the bicategory of cospans of cycligraphs.
 
 The most common situation in which we apply this is the following.
 Suppose $\G = (V\ot F \to E)$ is a hypergraph, and that for some subset $V_0 \subseteq V$ and each $v\in V_0$ we have a rooted hypergraph $\H_v = (V_v \ot F_v \to E_v)$ whose root $\ast_v$ has the same degree as $v$.
@@ -792,7 +838,11 @@ Suppose $\G = (V\ot F \to E)$ is a hypergraph, and that for some subset $V_0 \su
 
 We regard $\G$ as a morphism from $\A$ to $\B$ in $\hyrel$, where $\A$ is determined by the vertices not in $V_0$ and $\B$ is determined by the vertices in $V_0$.
 Similarly, we regard $\sum_v \H_v$ as a morphism from $\B'$ to $\C$, where $\B'$ is determined by the roots $\setof{ \ast_v | v\in V_0}$ and $\C$ by the non-root vertices.
-The assumption tells us that $\B'\cong \B$, so we can compose $\G *_{\B} \sum_v \H_v$ in $\hyrel$; we call this the \textbf{insertion} of the hypergraphs $\H_v$ into $\G$ at the vertices $v\in V_0$.
+The assumption tells us that $\B'\cong \B$, so we can form the composite $\G \coll_{\B} \sum_v \H_v$ in $\hyrel$.
+We call the result the \textbf{insertion} of the hypergraphs $\H_v$ into $\G$ at the vertices $v\in V_0$, denoted $\ins{\G}{V_0}{v}{\H_v}$.
+
+If $\G$ was rooted with $\ast \notin V_0$, then $\ins{\G}{V_0}{v}{\H_v}$ is again rooted with the same root.
+Moreover, if $\G$ and each $\H_v$ are labeled by some cycligraph $P$, with labelings that agree on $V_0$, then since these labelings factor through $\pi \G$ and $\pi \H_v$ and the cycligraph reflection takes insertions to pushouts, there is a unique induced labeling on $\ins{\G}{V_0}{v}{\H_v}$.
 
 \fxnote{Add some examples.}
 
@@ -801,37 +851,31 @@ The assumption tells us that $\B'\cong \B$, so we can compose $\G *_{\B} \sum_v 
 \section{Type theory for insertion}
 \label{sec:tt-insertion}
 
-In type theory it is easiest to describe insertion when $V_0$ is a single vertex.
-We represent a rooted hypergraph as a graph context together with another vertex judgment in the same edge/loop context.
-The fact that two vertices have the same degree is automatic when in the labeled case they have the same label.
-This leads to the following insertion/substitution (admissible) rule:
-
+If $\Gamma$ and $\Gamma'$ are graph contexts, we write $\Gamma \sametypes \Gamma'$ to mean that their variables have the same types in the same order, i.e.:
 \begin{mathpar}
-  \inferrule{\Delta_1\mid\Xi_1 \types \Gamma_1 \graph\\
-    \Delta_1\mid\Xi_1 \types \alpha(\vec x;\vec y)\vertex \\
-    \Delta_2\mid\Xi_2 \types \Gamma_2, \alpha(\vec u;\vec v) \graph}
-  {\Delta_1,\Delta_2 \mid \Xi_1,\Xi_2, \vec x\doteq \vec u, \vec y \doteq \vec v \types \Gamma_1, \Gamma_2 \graph}
+  \inferrule{ }{\Delta\mid\Xi\types \ec \sametypes \ec}
+  \and
+  \inferrule{\Delta\mid\Xi\types \Gamma\sametypes\Gamma' \\ \Delta\types \alpha(\vec x)\vertex \\ \Delta\types \alpha(\vec y) \vertex}{\Delta\mid\Xi\types (\Gamma,\alpha(\vec x)) \sametypes (\Gamma',\alpha(\vec y))}
 \end{mathpar}
-
-The equalities $\vec x\doteq \vec u, \vec y \doteq \vec v$ correspond to the isomorphisms inserted by the pseudo-pushout of groupoids.
-We are assuming $\Delta_1\cap \Delta_2=\emptyset$, so all of these are equalities between distinct variables, and thus at least some of them can be substituted away by~\eqref{eq:subst} (a ``unification algorithm'' for the arguments of the two $\alpha$-labeled vertices).
-However, we may still be left with additional self-loops, for instance:
+We also write $\varsof\Gamma$ for the ordered list of edge variables occurring in $\Gamma$, i.e.:
+\begin{align*}
+  \varsof\ec &\coloneqq ()\\
+  \varsof{(\Gamma,\alpha(\vec x))} &\coloneqq (\varsof\Gamma,\vec x)
+\end{align*}
+With these notations, the insertion rule can be expressed as:
+\begin{mathpar}
+  \inferrule{\Delta\mid\Xi\types (\Gamma,\Phi)\graph\\ \Delta'\mid\Xi'\types (\Psi,\Upsilon) \graph}
+  {\Delta,\Delta' \mid \Xi,\Xi',\varsof\Phi\doteq\varsof\Psi \types (\Gamma,\Upsilon) \graph}
+\end{mathpar}
+Implicit in the notation is that $\Delta\cap \Delta'=\emptyset$, so that $\varsof\Phi\doteq\varsof\Psi$ consists of equalities between distinct variables.
+Thus at least some of them can be substituted away by a weak equivalence as in~\eqref{eq:subst} (a ``unification algorithm'' for the arguments of the vertices in $\Phi$ and $\Psi$).
+However, we may still be left with additional self-loops created by the insertion, for instance:
 
 \begin{mathpar}
-  \inferrule*{\inferrule*{x:p \mid\cdot \types \Gamma_1 \graph\\
-    x:p \mid\cdot \types \alpha(x,x;) \vertex \\
-    u:p \mid\cdot \types \Gamma_2, \alpha(u,u;) \graph}
-  {x:p,u:p \mid x\doteq u, x\doteq u \types \Gamma_1,\Gamma_2\graph}}
+  \inferrule*{\inferrule*{x:p \mid\cdot \types (\Gamma_1,f:\alpha(x,x)) \graph \\
+    u:p \mid\cdot \types (g:\alpha(u,u),\Gamma_2) \graph}
+  {x:p,u:p \mid x\doteq u, x\doteq u \types (\Gamma_1,\Gamma_2)\graph}}
 {x:p \mid x\doteq x \types \Gamma_1,\Gamma_2[x/u] \graph}
-\end{mathpar}
-
-We can also state a simultaneous insertion rule:
-
-\begin{mathpar}
-  \inferrule{\Delta_i\mid\Xi_i \types \Gamma_i \graph\\
-    \Delta_i\mid\Xi_i \types \alpha_i(\vec x_i;\vec y_i)\vertex \\\\
-    \Delta'\mid\Xi' \types (\alpha_1(\vec u_1;\vec v_1),\dots,\alpha_n(\vec u_n;\vec v_n)) \graph}
-  {\Delta_1,\dots,\Delta_n,\Delta' \mid \Xi_1,\dots,\Xi_n,\Xi', \vec x_1\doteq \vec u_1, \vec y_1 \doteq \vec v_1,\dots,\vec x_n\doteq \vec u_n, \vec y_n \doteq \vec v_n \types \Gamma_1,\dots, \Gamma_n \graph}
 \end{mathpar}
 
 
@@ -840,146 +884,120 @@ We can also state a simultaneous insertion rule:
 
 We would like to build a monad out of labeled hypergraphs.
 Our first thought may be that it should be a polynomial monad, since each hypergraph should give a ``constructor'' whose ``arguments'' are a labeling of it.
-However, in a categorical situation where labelings have dependency, polynomial functors are too restrictive; they work in the ``one-object'' clase of generalized operads (as in~\cite{bb:htapm}), but for generalized multicategories (``colored operads'') we need the more general \emph{parametric right adjoints} of~\cite{weber:parmrep,weber:fam-pra}.
+However, in a categorical situation where labelings have dependency, polynomial functors are too restrictive.
+They are sufficient in the ``one-object'' clase of generalized operads (as in~\cite{bb:htapm}), but for generalized multicategories (``colored operads'') we need the more general \emph{parametric right adjoints} of~\cite{weber:parmrep,weber:fam-pra}.
 
-As shown in~\cite{weber:fam-pra}, a parametric right adjoint between presheaf categories $[I\op,\Set]\to [J\op,\Set]$ can be represented by a polynomial in \Cat:
-\[ I \xot{d} E \xto{c} K \xto{p} J \]
-in which $K\to J$ is a discrete fibration and $(d,c)$ is a two-sided discrete fibration (i.e.\ $d$ is a fibration, $c$ is an opfibration, and $(d,c): E \to I\times K$ has discrete fibers).
-These conditions ensure that the polynomial functor $p_! c_* d^* : \Cat/I \to \Cat/J$ restricts to discrete fibrations, hence to presheaves.
-If we write $H:I\op\times K\to \Set$ for the profunctor corresponding to $(d,c)$, then the functor on presheaves can equivalently be described as
+As shown in~\cite{weber:fam-pra}, a parametric right adjoint (p.r.a.) functor between presheaf categories $[I\op,\Set]\to [J\op,\Set]$ can be represented by a discrete fibration $p:K\to J$ together with a profunctor $H:I\op\times K\to\Set$.
+The p.r.a.\ functor corresponding to $p$ and $H$ is the composite
 \[ [I\op,\Set] \xto{\hom_I(H,-)} [K\op,\Set] \xto{\lan_p} [J\op,\Set]. \]
 where $\hom_I(H,X)(k) = \lim_{i\in I} \hom(H(i,k),X(i))$.
+By writing $H$ as a two-sided discrete fibration, we can also represent a p.r.a.\ functor as the restriction to discrete fibrations of a polynomial in \Cat, but this will be less useful for our purposes.
+However, we do note that $\lan_p$ acting on discrete fibration is just composition with $p$.
 
 In fact, hypergraphs do not quite give such a parametric right adjoint either: the presence of automorphisms prevents $p$ from being a \emph{discrete} fibration.
-However, we still get a polynomial in \Cat, which we can reflect into a monad on a presheaf category, although the result will no longer be polynomial or even parametric right adjoint.
-The situation is analogous to how the definition of symmetric monoidal category is not obtained from that of a commutative monoid by ``using the same operations and imposing axioms only up to isomorphism'' (the way that of an ordinary monoidal category is obtained from that of an ordinary monoid); instead the operations have to be ordered and the symmetry only imposed up to isomorphism as well.
+We can still define a functor on presheaf categories in the same way, but it will not be p.r.a.\ because $\lan_p$ is no longer just composition of discrete fibrations.
+A more natural thing to do is to define a functor on \Cat-valued presheaves, where the first step $\hom_I(H,-)$ is still the same, but the second step is given by composition with a non-discrete fibration $p$.
 
-We will treat only the directed case explicitly, and find the undirected case inside it using ``outgoing-only'' graphs.
-For simplicity we will start with a purely polycategorical monad, with composition operations on morphisms but no operations on objects, and then later add the monoidal structure on objects.
+\begin{thm}
+  Suppose given categories $I,J,K$, a \Cat-valued profunctor $H:I\op\times K\to \Cat$, and a split fibration $p:K\to J$.
+  Then the composite
+  \[ [I\op,\Cat] \xto{\hom_I(K,-)} [K\op,\Cat] \cong \SFib/K \xto{p_!} \SFib/J \cong [J\op,\Cat] \]
+  is a parametric right adjoint 2-functor, i.e.\ the induced 2-functor $[I\op,\Cat] \to [J\op,\Cat]/T1$ is a right 2-adjoint.
+\end{thm}
+\begin{proof}
+  Since $\hom_I(K,-)$ is a right 2-adjoint, it suffices to show that $p_!$ is a parametric right adjoint.
+  But $p_!1 = K$, so the relevant functor on slice categories is an equivalence.
+\end{proof}
 
-Let $J$ be the category such that presheaves on $J$ are polygraphs.
-That is, $J$ has an object $0$ and objects $(n,m)$ for $n,m\in\N$, with $n+m$ nonidentity morphisms $0\to (n,m)$.
+(It is natural to conjecture that every p.r.a.\ 2-functor between presheaf 2-categories can be represented in this form, but we will not need this.)
+The situation is analogous to how while the 2-monad for strict monoidal categories is just the monad for monoids acting on objects and morphisms separately, the 2-monad for symmetric strict monoidal categories is not similarly obtained from the monad for commutative monoids.
+Instead the operations have to be ordered and the symmetry only imposed up to isomorphism, and hence the 2-monad does not restrict to discrete categories.
 
-Let $\hohy$ be the homotopy 1-category of $\hy$, obtained by identifying isomorphic 1-cells and discarding the 2-cells.
-We pass to this quotient since for a polygraph $P$, the $P$-labeled hypergraphs depend only on the image of $P$ in $\hohy$.
-By an \textbf{$(n,m)$-hypergraph} we will mean a directed rooted object of $\hohy$ whose root has in-rank $n$ and out-rank $m$.
+Our category $K$ will incorporate the automorphisms of labeled hypergraphs, and also the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
+In all the semantic examples that we know, these weak equivalences act as isomorphisms; so in constructing the monad we could formally invert them.
+But this would actually make our lives \emph{more} difficult, since it would be extra work to verify that the inversion is consistent everywhere, and from a syntactic point of view it is more natural to keep them directional (since substitution is more natural than its inverse).
 
-We define a functor $J\op\to\Cat$ (i.e.\ an internal polygraph in $\Cat$) by sending $(n,m)$ to the groupoid of such $(n,m)$-hypergraphs and isomorphisms between them, and $0$ to the terminal category with unique object $\star$.
-Let $p:K_1 \to J$ be the (split, groupoidal, but not discrete) fibration corresponding to this functor.
+We begin with a simpler version of the definition that omits any monoidal structure on objects.
+Let $J$ be the category such that presheaves on $J$ are cycligraphs.
+Then $J$ has one object $\bullet$ and objects $[n]$ for $n\in\N$, with $n$ nonidentity morphisms $\bullet\to [n]$.
+By an \textbf{$n$-hypergraph} we will mean a rooted hypergraph whose root has rank $n$.
+
+We define a functor $J\op\to\Cat$ (i.e.\ an internal polygraph in $\Cat$) by sending $[n]$ to the category of $n$-hypergraphs and weak equivalences between them, and $\bullet$ to the terminal category with unique object $\star$.
+(Note that any isomorphism is a weak equivalence.)
+Let $p:K_1 \to J$ be the (split, but not discrete) fibration corresponding to this functor.
 
 We define a profunctor $H_1 : J\op\times K_1 \to \Set$ as follows:
 \begin{align*}
-  H_1(0,\G) &= \text{edges of $\G$}\\
-  H_1((n,m),\G) &= \text{non-root vertices in $\G$ with in-rank $n$ and out-rank $m$}.\\
-  H_1(0,\star) &= 1\\
-  H_1((n,m),\star) &= \emptyset
+  H_1(\bullet,\G) &= \text{edges of $\G$}\\
+  H_1([n],\G) &= \text{non-root vertices in $\G$ with rank $n$}\\
+  H_1(\bullet,\star) &= 1\\
+  H_1([n],\star) &= \emptyset
 \end{align*}
-The automorphisms of graphs in $K_1$ act on $\H_1(-,\G)$ in the obvious way.
-The $n+m$ morphisms $\star\to\G$ in $K_1$ induce the maps $H_1(0,\star) \to H_1(0,\G)$ picking out the edges associated to the incoming and outgoing flags of the root.
-The $n+m$ morphisms $(n,m)\to 0$ in $J$ induce the maps $H_1((n,m),\G) \to H_1 (0,\G)$ selecting the incoming and outgoing edges of each vertex.
+The morphisms of graphs in the fibers of $K_1$ over $[n]$ act (by isomorphisms) on $\H_1(-,\G)$ in the obvious way.
+The $n$ morphisms $\star\to\G$ in $K_1$ induce the maps $H_1(\bullet,\star) \to H_1(\bullet,\G)$ picking out the edges incident to the root.
+The $n$ morphisms $\bullet\to [n]$ in $J$ induce the maps $H_1([n],\G) \to H_1(\bullet,\G)$ selecting the edges incident to each vertex.
 
-We denote the two-sided discrete fibration corresponding to $H_1$ by $J \xot{d} E_1 \xto{c} K_1$.
-We now have an induced polynomial functor
-\[ \Cat/J \xto{d^*} \Cat/E_1 \xto{c_*} \Cat/K_1 \xto{p_!} \Cat/J. \]
-Although $p_!$ does not preserve discrete fibrations, it does preserve \emph{split} fibrations, i.e.\ functors $J\op\to\Cat$, since $p$ is split.
-And since $c$ is a discrete, hence split, opfibration, $c_*$ also preserves split fibrations; while $d^*$ certainly does.
-Thus we have an induced endofunctor of the category $[J\op,\Cat]$ of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
+Thus we have an induced p.r.a.\ endo-2-functor of the 2-category $[J\op,\Cat]$ of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
+This is almost, but not quite, the monad we want: we also want a monoidal structure on the objects, which requires a further enhancement.
 
-
-Thus a \Cat-polygraph has a category $P(0)$ of objects together with, for each $n,m\in\N$, a category $P(n,m)$ of $n$-ary $m$-coary morphisms, equipped with $n+m$ functors $P(n,m) \to P(0)$.
-We may regard an ordinary polygraph as a discrete \Cat-polygraph.
-\fxnote{How does this categorical direction interact with the groupoid direction in $E$?}
-
-A \textbf{bracketing} of $n$ things is a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
+We define a \textbf{bracketing} of $n$ things to be a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
 The \textbf{arity} of the bracketing is the length of the list.
 For instance, the bracketing $(2,0,3,1)$ of $6$, of arity $4$, should be thought of as $(xx)()(xxx)(x)$.
+An \textbf{$n$-bracketed hypergraph} is a rooted hypergraph together with a bracketing of arity $n$ of the flags incident to the root.
+A morphism of bracketed hypergraphs must, of course, preserve the bracketings.
 
-A \textbf{bracketed hypergraph} is a rooted locally-ordered directed hypergraph together with bracketings of the incoming and outgoing edges at the root.
-An isomorphism of bracketed hypergraphs must, of course, preserve the bracketings.
-If the incoming and outgoing bracketings have arities $n$ and $m$ respectively, we call it an $(n,m)$-bracketed hypergraph.
+Now we define another functor $J\op\to\Cat$ by sending $[n]$ to the category of $n$-bracketed hypergraphs and bracket-preserving weak equivalences between them, and $\bullet$ to the discrete category $\N$.\fxnote{Can we incorporate symmetries here?  We ought to have them for kits at least.}
+The $n$ morphisms $\bullet \to [n]$ act by sending an $n$-bracketed hypergraph to the $n$ natural numbers appearing in its bracketing.
 
-If $G$ is a rooted hypergraph, we write $G_0$ for the result of removing the root and all flags adjacent to it (but not removing any edges).
-If $k\in\N$, we write $\mathbf{k}$ for the polygraph with $n$ objects (i.e.\ edges) and no morphisms (i.e.\ vertices), hence no flags.
-If $G$ is an $(n,m)$-bracketed hypergraph, then we have $n+m$ polygraph morphisms $\mathbf{k}\to G_0$, as $k$ varies over the numbers in the bracketings, which are pairwise disjoint and together enumerate the edges adjacent to the root, grouped according to the specified bracketing.
+Let $p:K \to J$ be the split fibration corresponding to this functor.
+We define a profunctor $H : J\op\times K \to \Set$ as follows:
+\begin{align*}
+  H(\bullet,\G) &= \text{edges of $\G$}\\
+  H([n],\G) &= \text{non-root vertices in $\G$ with rank $n$}\\
+  H(\bullet,m) &= \mathbf{m} \quad\text{(the standard $m$-element set)}\\
+  H([n],m) &= \emptyset
+\end{align*}
+The morphisms of graphs in the fibers of $K$ over $[n]$ act (by isomorphisms) on $\H(-,\G)$ in the obvious way.
+If $m$ appears in the bracketing of $\G$, then the corresponding morphism $m\to\G$ in $K$ induces the map $H(\bullet,m) \to H(\bullet,\G)$ that picks out the corresponding $m$ edges incident to the root.
+And as before, the $n$ morphisms $\bullet\to [n]$ in $J$ induce the maps $H([n],\G) \to H(\bullet,\G)$ selecting the edges incident to each vertex.
 
-Now, given a \Cat-polygraph $P$, define a new \Cat-polygraph $T P$ as follows.
-\begin{enumerate}
-\item The category of objects $T P(0)$ is the free strict monoidal category on the category of objects $P(0)$.
-  Thus its objects and arrows are finite lists of those in $P(0)$.
-  Equivalently, its objects are \Cat-polygraph maps $\mathbf{k}\to P$ for some $k\in\N$, and its arrows are natural transformations (2-cells in \cpg)
-  \[
-  \begin{tikzcd}
-    \mathbf{k} \ar[rr,equals] \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \mathbf{k} \ar[dl] \\ & P
-  \end{tikzcd}
-  \]
-\item The objects of $TP(n,m)$ are morphisms of polygraphs $G_0\to P$, where $G$ is an $(n,m)$-bracketed hypergraph.
-  An arrow in $TP(n,m)$ from $G_0\to P$ to $H_0\to P$ consists of an equivalence of $(n,m)$-bracketed hypergraphs $G\cong H$ together with a transformation
-  \[
-  \begin{tikzcd}
-    G_0 \ar[rr,"\cong"] \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & H_0 \ar[dl] \\ & P
-  \end{tikzcd}
-  \]
-\item The $n+m$ functors $TP(n,m) \to TP(0)$ are obtained by precomposing with the $n+m$ polygraph morphisms $\mathbf{k}\to G_0$ described above.
-  These morphisms commute with any isomorphism of bracketed hypergraphs, so this precomposition acts on arrows as well as on objects.
-\end{enumerate}
+Let $T$ be the induced endo-2-functor of the 2-category $[J\op,\Cat]$ of \Cat-polygraphs. %, which we denote \cpg.
+Note that as a parametric right adjoint, $T$ preserves connected limits, and in particular pullbacks.
+
+We will now make $T$ into a monad.
+For this purpose we need the following observation:
 
 \begin{lem}
-  This defines a 2-functor $T:\cpg\to\cpg$ that preserves connected limits and groupoidal objects.
+  Suppose given $p:K\to J$ and $H:I\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F$, and also $p':K'\to J$ and $H':I\op\times K'\to\Cat$ determining another one $G$, and also a functor $k:K'\to K$ such that $p' = p k$ and $H' \cong H(1,k)$.
+  Then there is an induced cartesian 2-natural transformation $F\to G$.
 \end{lem}
 \begin{proof}
-  Functoriality is easy by postcomposition.
-  If $P = \lim P_i$ is a connected limit, then an object or arrow of $\lim T P_i(0)$ must have the same $\mathbf{k}$ everywhere and hence lift uniquely to an element of $T P(0)$.
-  Similarly, the $G$ and $H$ must be constant for any object or arrow $\lim T P_i(n,m)$ so that it lifts uniquely to $T P (n,m)$.
-  Finally, it is clear from the definition that if all arrows in $P$ are invertible, the same is true for $TP$.
+  Since $H' \cong H(1,k)$, the functor $\hom_I(H',-)$ is isomorphic to $k^* \circ \hom_I(H,-)$, where $k^*$ denotes precomposition with $k$, or equivalently pullback of split fibrations along $k$.
+  Moreover, since $p' = p k$, we have $(p')_! \cong p_! \circ k_!$ as functors on slice categories of \Cat.
+  (Note that in general, $k_! : \Cat/K' \to \Cat/K$ need not preserve split fibrations or split morphisms between them, but it does take them to objects and morphisms whose images under $p_!$ are split.)
+  Thus, $F$ is isomorphic to the composite $p_! \circ k_! \circ k^* \circ \hom_I(H,-)$, and our transformation is induced by the counit $k_! k^* \to \Id$.
+  But this counit is always a cartesian transformation, and $p_!$ preserves pullbacks.
 \end{proof}
 
-Let $\C_{n,m}$ denote the rooted $(n,m)$-corolla:
-\begin{center}
-  \begin{tikzpicture}
-    \node[outer] (a1) at (-1,1) {};
-    \node[outer] (a2) at (-.5,1) {};
-    \node at (0.3,1) {$\overset{n}{\dots}$};
-    \node[outer] (an) at (1,1) {};
-    \node[vertex] (f) at (0,0) {$f$};
-    \node[outer] (b1) at (-1,-1) {};
-    \node[outer] (b2) at (-.5,-1) {};
-    \node at (0.3,-1) {$\overset{m}{\dots}$};
-    \node[outer] (bn) at (1,-1) {};
-    \draw[edge] (a1) to[out=-90,in=150] (f);
-    \draw[edge] (a2) to[out=-90,in=120] (f);
-    \draw[edge] (an) to[out=-90,in=30] (f);
-    \draw[edge] (f) to[out=-150,in=90] (b1);
-    \draw[edge] (f) to[out=-120,in=90] (b2);
-    \draw[edge] (f) to[out=-30,in=90] (bn);
-  \end{tikzpicture}
-\end{center}
-This is an $(n,m)$-bracketed hypergraph with exactly one non-root vertex and with bracketings $n=\overbrace{1+1+\cdots+1}^n$ and $m=\overbrace{1+1+\cdots+1}^m$.
-For any polygraph $P$, morphisms $(C_{n,m})_0 \to P$ are in bijection with vertices of $P$ having in-degree $n$ and out-degree $m$.
+Now, the identity functor $\Id$ of $[J\op,\Cat]$ is p.r.a.\ and determined by the hom-profunctor $\hom_J$ and the identity split fibration $J\to J$.
+Thus, to define a unit $\eta : \Id \to T$, it suffices to define a functor $k:J\to K$ such that $p k\cong 1_J$ and $H(1,k) \cong \hom_J$.
+In our case, we define $k$ to send $\bullet$ to $1$ and $[n]$ to the \textbf{rooted $n$-corolla} $\C_n$, which has two vertices (one of which is the root) and $n$ edges each incident to both vertices once in the same order.
+We bracket this as $(1,1,\dots,1)$, so that we can send the $n$ morphisms $\bullet \to [n]$ to the $n$ morphisms $\star\to \C_n$ that pick out each of the edges.
+It is clear that $k$ is a section of $p$, while inspecting the definition of $H$ yields $H(1,k) \cong \hom_J$.
 
-Now, for any polygraph $P$, we define $\eta_P : P \to T P$ as follows:
-\begin{enumerate}
-\item $\eta:P(0) \to TP(0)$ sends an object $x\in P(0)$ to its classifying map $x:\mathbf{1}\to P$, and similarly on arrows.
-\item $\eta:P(n,m) \to TP(n,m)$ sends an object $f\in P(n,m)$ to its classifying map $f:(C_{n,m})_0\to P$, and similarly on arrows.
-\end{enumerate}
+Thus we have a cartesian 2-natural transformation $\eta : \Id\to T$, where $\eta_P : P \to T P$ sends each object $x\in P$ to the unary list $(x)$ and each morphism to the $n$-corolla labeled by it.
 
-\begin{thm}
-  This defines a fully faithful cartesian 2-natural transformation $\eta: 1\to T$.
-\end{thm}
-\begin{proof}
-  Naturality is easy, since postcomposing classifying maps is the same as acting on objects and arrows.
-  Full faithfulness on $0$-parts is easy, while on $(n,m)$-parts it follows from the fact that $C_{n,m}$ has no nontrivial automorphisms.
-  Finally, $\eta$ is cartesian, meaning that its naturality squares are pullbacks, since its image consists precisely of the objects and arrows involving $\mathbf{1}$ or $C_{n,m}$.
-\end{proof}
-
-Of course, there are many different (isomorphic) $(n,m)$-corollas.
-However, the theorem is true as long as we fix a \emph{particular} such corolla for each $(n,m)$ to use in defining $\eta$.
+Of course, there are many different (isomorphic) $n$-corollas.
+However, onec we fix any particular such corolla for each $n$, we get such a transformation $\eta$.
 The existence of other corollas means that $\eta$, though fully faithful, is not replete: objects of $TP$ defined using other corollas are isomorphic to ones in the image of $\eta$ but are not in the image of $\eta$ themselves.
 
-Using insertion of hypergraphs, we define a cartesian 2-natural transformation $\mu:T^2\to T$.
+Now we define a cartesian 2-natural transformation $\mu:T^2\to T$.
+For this we need a description of composites of p.r.a.\ functors in terms of their generating data.
 \fxnote{Incomplete}
 
-However, the monad laws hold only up to coherent isomorphism, so that we have a ``cartesian pseudomonad'' of a fairly strict sort (the functor and transformations are strict and strictly cartesian; only the monad laws are pseudo).
-\fxnote{Incomplete}
+Since $\hyrel$ is a conormal lax bicategory, with associativity up to isomorphism and unitality up to transformation, $T$ is similarly a \emph{conormal lax monad} with associativity up to isomorphism and unitality up to transformation.\fxnote{Incomplete}
+Lax monads are perhaps not very familiar, but they are not much harder to deal with than pseudomonads.
+In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T$ to become invertible in any pseudoalgebra.
 
 \begin{defn}
   A $T$-pseudoalgebra is called a \textbf{double hypercategory}.
