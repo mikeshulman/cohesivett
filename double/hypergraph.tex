@@ -65,14 +65,23 @@
 
 \newcounter{nodemaker}
 \setcounter{nodemaker}{0}
-\def\twocell#1{%
+\newcommand{\twocell}[2][]{%
   \global\edef\mynodeone{twocell\arabic{nodemaker}}%
   \stepcounter{nodemaker}%
   \global\edef\mynodetwo{twocell\arabic{nodemaker}}%
   \stepcounter{nodemaker}%
-  \ar[#1,phantom,shift left=3,""{name=\mynodeone}]%
-  \ar[#1,phantom,shift right=3,""'{name=\mynodetwo}]%
-  \ar[Rightarrow,from=\mynodeone,to=\mynodetwo]%
+  \ar[#2,phantom,shift left=3,""{name=\mynodeone}]%
+  \ar[#2,phantom,shift right=3,""'{name=\mynodetwo}]%
+  \ar[Rightarrow,from=\mynodeone,to=\mynodetwo,"{#1}"]%
+}
+\newcommand{\twocellop}[2][]{%
+  \global\edef\mynodeone{twocell\arabic{nodemaker}}%
+  \stepcounter{nodemaker}%
+  \global\edef\mynodetwo{twocell\arabic{nodemaker}}%
+  \stepcounter{nodemaker}%
+  \ar[#2,phantom,shift left=3,""{name=\mynodeone}]%
+  \ar[#2,phantom,shift right=3,""'{name=\mynodetwo}]%
+  \ar[Rightarrow,from=\mynodetwo,to=\mynodeone,"{#1}"]%
 }
 \newcommand{\drpullback}[1][dr]{\ar[#1,phantom,near start,"\lrcorner"]}
 \newcommand{\dlpullback}[1][dl]{\ar[#1,phantom,near start,"\llcorner"]}
@@ -201,7 +210,7 @@ At present the most promising approach seems to be to define a hypergraph to hav
 \begin{defn}
   A \textbf{hypergraph} $\G$ is a span
   \[ V \ot F \to E \]
-  in which $V$ and $F$ are sets, each fiber of the map $F\to V$ is a finite set equipped with a linear ordering, and $E$ is a reflexive directed graph (with $F$ mapping into its vertices).
+  in which $V$ and $F$ are sets, each fiber of the map $F\to V$ is finite, and $E$ is a reflexive directed graph (with $F$ mapping into its vertices).
 
   The vertices of $E$ are called \textbf{edge representatives} of $\G$, the edges of $E$ are called \textbf{edge identifications} of $\G$, and the connected components of $E$ are called the \textbf{edges} of $\G$.
   The elements of $V$ are called the \textbf{vertices} of $\G$, and those of $F$ are called its \textbf{flags}.
@@ -231,8 +240,7 @@ We write $\pi E$ for the set of edges, i.e.\ the set of connected components of 
   \end{itemize}
 \end{defn}
 
-The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed) finite simple reduced hypergraphs of genus zero, but without the orderings on the flags adjacent to each vertex.
-We include the orderings because we eventually want a correspondence to linear syntax, and to definitions of prop and polycategory using ordered lists of objects, but they are not essential to the theory.
+The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed) finite simple reduced hypergraphs of genus zero.
 
 \begin{defn}
   A \textbf{morphism of hypergraphs} is a diagram
@@ -242,15 +250,28 @@ We include the orderings because we eventually want a correspondence to linear s
     V  & F \ar[r] \ar[l] & E
   \end{tikzcd}
   \]
-  in which the left-hand square is a pullback and preserves the linear orderings on the fibers.
+  in which the left-hand square is a pullback.
   This defines the category $\hy$.
 \end{defn}
 
 The fact that the left-hand square is a pullback means in particular that a morphism of hypergraphs preserves the degree of vertices.
 However, it does not preserve the rank or the genus of edges.
 
+Usually we will want to assume that the flags incident to each vertex are ordered so that we can distinguish them.
+Let $\thy$ be the hypergraph with exactly one edge representative of genus zero, and for each natural number $n$ exactly one vertex incident to $n$ flags (each in turn incident to the unique edge representative).
+We fix a labeling of these $n$ flags $0,1,\dots,n-1$, so that they are ordered.
+
+\begin{defn}
+  The category of \textbf{ordered hypergraphs} is the slice category $\hy/\thy$.
+\end{defn}
+
+A hypergraph morphism $\G\to\thy$ is uniquely determined on edges and vertices, so it consists only of the data of an ordering on the flags adjacent to each vertex.
+Of course, such a morphism always exists, i.e.\ any hypergraph can be ordered; the point is that morphisms in $\hy/\thy$ must preserve the specified orderings.
+
+Ordered hypergraphs have another convenient description.
 Let $\Np$ be the set $\setof{(k,n) \in \N\times \N | k<n}$, with $\ell:\Np\to \N$ the second projection.
-Thus the fiber of $\ell$ over $n\in\N$ is the canonical $n$-element linear order.
+Thus the fiber of $\ell$ over $n\in\N$ is the canonical $n$-element linear order, and we can write $\thy = (\N \ot \Np \to 1)$.
+
 Let $P_\ell$ be the polynomial endofunctor of $\Set$ defined by $\ell$, i.e.\ the composite
 \[ \Set \xto{(\Np)^*} \Set/\Np \xto{\Pi_\ell} \Set/\N \xto{\Sigma_\N} \Set.\]
 Thus an element of $P_\ell(E)$ is a finite list of elements of $E$.
@@ -258,7 +279,7 @@ Thus an element of $P_\ell(E)$ is a finite list of elements of $E$.
 Let $\RGph$ denote the category of reflexive directed graphs, with $U:\RGph\to\Set$ the functor taking the underlying set of vertices.
 
 \begin{lem}
-  The category $\hy$ of hypergraphs is equivalent to the comma category
+  The category $\hy/\thy$ of ordered hypergraphs is equivalent to the comma category
   \[
   \begin{tikzcd}
     \hy \ar[rr] \ar[d] \twocell{drr} && \Set \ar[d,equals] \\
@@ -269,39 +290,20 @@ Let $\RGph$ denote the category of reflexive directed graphs, with $U:\RGph\to\S
 \begin{proof}
   An object of the comma category consists of a reflexive graph $E$ together with a set $V$ and a map $V \to P_\ell U E$.
   By definition of $P_\ell$, the latter map is equivalent to a map $f:V\to \N$ together with a map $f^*\Np \to UE$.
-  And the set of maps $f:V\to\N$ is equivalent to the groupoid of maps $F\to V$ with finite linearly ordered fibers (via the equivalence $F=f^*\Np$), so this corresponds exactly to the above definition of a hypergraph.
-
-  A morphism in the comma category consists of a map $E'\to E$ of reflexive graphs and a map $V'\to V$ making the evident square commute.
-  The composite $V'\to V\to P_\ell U E$ corresponds to precomposing the maps $V' \to V \to \N$, which means taking the pullback
-  \[
-  \begin{tikzcd}
-    V' \ar[d] & F' \dlpullback \ar[d] \ar[l] \ar[dr] \\
-    V & F \ar[l] \ar[r] & U E
-  \end{tikzcd}
-  \]
-  Whereas the composite $V' \to P_\ell U E' \to P_\ell U E$ corresponds to taking the composite
-  \[
-  \begin{tikzcd}
-    V' & F' \ar[l] \ar[r] \ar[dr] & U E' \ar[d] \\
-    && U E
-  \end{tikzcd}
-  \]
-  Thus saying that they are equal reproduces exactly the above definition of hypergraph morphism.
+  This is exactly the data of a hypergraph $V \ot f^*\Np \to E$ equipped with a hypergraph map to $\thy = (\N \ot\Np \to 1)$.
 \end{proof}
 
 \begin{cor}
-  $\hy$ is a presheaf topos.
+  $\hy/\thy$ is a presheaf topos.
   In particular, it is complete and cocomplete.
 \end{cor}
 \begin{proof}
   The functor $P_\ell \circ U : \RGph \to \Set$ is a parametric right adjoint, since $P_\ell$ is a polynomial functor and $U$ is a right adjoint.
-  Thus, since $\RGph$ is a presheaf topos, by~\cite{cj:clfrag} the comma category $\hy$ is again a presheaf topos.
+  Thus, since $\RGph$ is a presheaf topos, by~\cite{cj:clfrag} $\hy/\thy$ is again a presheaf topos.
 \end{proof}
 
-In the comma category presentation, the terminal hypergraph $\thy$ has $E$ the terminal reflexive graph, with $V = P_\ell U E = P_\ell 1$ with $V\to P_\ell U E$ the identity.
-That is, there is exactly one edge representative and only its reflexivity identification, and for each natural number $n$ there is exactly one vertex adjacent to the unique edge representative $n$ times.
-
-Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex $(n,m)$ having $n+m$ flags, which we think of as partitioned into the first $k$ elements and the last $n-k$ elements.
+Sometimes we want a further refinement of ordered hypergraphs to \emph{directed} ones.
+Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex $(n,m)$ having $n+m$ flags, which we think of as partitioned into $n$ ordered elements and $m$ ordered elements.
 
 \begin{defn}
   The category of \textbf{directed hypergraphs} is the slice category $\hy/\dhy$.
@@ -311,15 +313,17 @@ Thus, a directed hypergraph is a hypergraph in which at each vertex the list of 
 The numbers of incoming and outgoing flags are respectively called the \textbf{in-degree} and \textbf{out-degree} of the vertex.
 Similarly, the \textbf{in-rank} and \textbf{out-rank} of an edge are respectively the cardinalities of the sets of outgoing (from their vertices, hence incoming to the edge) and incoming (to their vertices, hence outgoing from the edge) flags adjacent to it.
 
-The unique projection $\dhy\to\thy$ to the terminal object has a section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
+There is an obvious projection $\dhy\to\thy$ sending $(n,m)$ to $n+m$, with the incoming flags ordered before the outgoing ones.
+Moreover, this has a section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
 Thus, we have
-\[\hy \simeq \hy/\thy \simeq (\hy/\dhy)/(\thy\to\dhy).\]
-In other words, arbitrary hypergraphs can also be regarded as particular directed ones, namely those in which all flags are outgoing.
-These equivalences make the directed and undirected cases almost interchangeable, which is one advantage of hypergraphs over ordinary graphs.
+\[\hy/\dhy \simeq (\hy/\thy)/(\dhy\to\thy) \]
+\[\hy/\thy \simeq (\hy/\dhy)/(\thy\to\dhy).\]
+In other words, ordered and directed hypergraphs are each special cases of each other.
+This is one advantage of hypergraphs over ordinary graphs.
 Another is the ease of the following definitions.
 
 \begin{defn}
-  A reduced hypergraph of genus zero is called a \textbf{cycligraph}.
+  An ordered reduced hypergraph of genus zero is called a \textbf{cycligraph}.
   A directed cycligraph is called a \textbf{polygraph}.
   A polygraph in which each vertex has out-degree equal to 1 is a \textbf{multigraph}.
 
@@ -332,8 +336,8 @@ And a cycligraph is the underlying data of a cyclic multicategory, in which sour
 
 Our graph-theoretic representation of these objects invokes the Poincar\'e dual ``string diagram convention'', in which objects are 1-dimensional and morphisms are 0-dimensional.
 The categories of cycligraphs, polygraphs, and multigraphs are presheaf toposes.
-Also, cycligraphs are a reflective subcategory of $\hy$, and polygraphs are a reflective subcategory of $\hy/\dhy$.
-We write $\pi \G$ for the cycligraph reflection of $\G$, which has the same vertices and edges as $\G$ but its edge graph is the discrete set $\pi E$ of connected components of the edge graph $E$ of $\G$.
+Also, cycligraphs are a reflective subcategory of $\hy/\thy$, and polygraphs are a reflective subcategory of $\hy/\dhy$.
+We write $\pi \G$ for the cycligraph reflection of an ordered hypergraph $\G$, which has the same vertices and edges as $\G$ but its edge graph is the discrete set $\pi E$ of connected components of the edge graph $E$ of $\G$.
 
 The above definitions of cycligraphs, polygraphs, and multigraphs make the following definitions very easy.
 
@@ -341,11 +345,9 @@ The above definitions of cycligraphs, polygraphs, and multigraphs make the follo
   If $P$ is a cycligraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to P$.
 \end{defn}
 
-Of course, by reflectivity, to give a map $\G\to P$ is equivalently to give a map $\pi \G \to P$.
-
-Note that if $P$ is a polygraph, it is by definition simply a cycligraph equipped with a morphism $P\to \dhy$.
-Therefore, for any $P$-labeled hypergraph $\G\to P$ in the above sense, the composite $\G\to P\to\dhy$ automatically makes $\G$ a directed hypergraph and $\G\to P$ a directed hypergraph morphism.
-So the directed case is subsumed by the undirected one.
+Since a cycligraph is ordered, if $\G\to P$ is a $P$ labeled hypergraph then $\G$ automatically inherits an ordering.
+On the other hand, if $\G$ is given as an ordered hypergraph, then to give a map $\G\to P$ is equivalently to give a map of cycligraphs $\pi \G \to P$.
+Similar remarks apply to directed hypergraphs and polygraphs.
 
 Other conditions on hypergraphs are not as naturally expressed categorically.
 For instance:
@@ -472,7 +474,7 @@ The following example shows a number of distinct degenerate possibilities in a d
 \end{center}
 Here $e_{10}$, $e_{11}$, and $e_{12}$ are all edges not adjacent to any vertices, with genera 0, 1, and 2 respectively.
 We did not draw any arrows on them because only flags, not edges, are directed as ``incoming'' or ``outgoing''.
-When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$e_7$ adjacent to the root above would be drawn as follows (preserving the ordering on incoming and outgoing edges to the root by drawing the incoming and outgoing edges to the graph in the same order).
+When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$e_7$ adjacent to the root above would be drawn as follows. %(preserving the ordering on incoming and outgoing edges to the root by drawing the incoming and outgoing edges to the graph in the same order).
 \begin{center}
   \begin{tikzpicture}
     \node[outer] (e1a) at (2,1) {};
@@ -499,7 +501,7 @@ When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$
   \end{tikzpicture}
 \end{center}
 
-We note that there are many ways in which a hypergraph can have nontrivial automorphisms.
+We note that there are many ways in which even a ordered hypergraph can have nontrivial automorphisms.
 One simple example is the graph with two vertices and no edges:
 \begin{center}
 \begin{tikzpicture}
@@ -793,7 +795,7 @@ To clarify the abstract properties of this operation, we phrase it as a bicatego
   A disjoint union of corollas, i.e.\ a hypergraph of the form $V \ot F = F$, is called an \textbf{inflorescence}.\footnote{A corolla is the whorl of petals in a flower; an inflorescence is a cluster of flowers on a single stem.}
 \end{defn}
 
-Note that an inflorescence is uniquely determined, up to isomorphism, by giving a set of vertices and their degrees.
+Note that an inflorescence is uniquely determined, up to non-unique isomorphism, by giving a set of vertices and their degrees.
 
 \begin{defn}
   A \textbf{conormal lax bicategory} is like a bicategory, but its unit transformations $f \circ 1_x \to f$ and $1_y\circ f \to f$ are not necessarily invertible (though it associativity isomorphisms are).
@@ -827,9 +829,10 @@ Note that an inflorescence is uniquely determined, up to isomorphism, by giving 
   The other unit constraint is dual, and the coherence axiom is straightforward to check.
 \end{proof}
 
-Note that the set $\pi(E_1 \coll_F E_2)$ of connected components of a collage of reflexive graphs is the pushout $\pi E_1 +_{\pi F} \pi E_2$.
-It follows that the cycligraph reflection $\pi(\G \coll_{\B} \H)$ of a composite in $\hyrel$ is the pushout $\pi\G \coll_{\pi \B} \pi \H_v$ of the cycligraph reflections, and similarly for the unit.
-In other words, the ``homwise cycligraph reflection'' of $\hyrel$ is simply the bicategory of cospans of cycligraphs.
+Note that if $\A$ and $\C$ are ordered or directed, so is $\G \coll_{\B} \H$, since its vertices are simply those of $\A$ and $\C$.
+Moreover, the set $\pi(E_1 \coll_F E_2)$ of connected components of a collage of reflexive graphs is the pushout $\pi E_1 +_{\pi F} \pi E_2$.
+It follows that in the ordered case, the cycligraph reflection $\pi(\G \coll_{\B} \H)$ of a composite in $\hyrel$ is the pushout $\pi\G \coll_{\pi \B} \pi \H_v$ of the cycligraph reflections, and similarly for the unit.
+In other words, the ``homwise cycligraph reflection'' of the ordered form of $\hyrel$ is simply the bicategory of cospans of cycligraphs.
 
 The most common situation in which we apply this is the following.
 Suppose $\G = (V\ot F \to E)$ is a hypergraph, and that for some subset $V_0 \subseteq V$ and each $v\in V_0$ we have a rooted hypergraph $\H_v = (V_v \ot F_v \to E_v)$ whose root $\ast_v$ has the same degree as $v$.
@@ -879,8 +882,8 @@ However, we may still be left with additional self-loops created by the insertio
 \end{mathpar}
 
 
-\section{The pseudomonad for hypercategories}
-\label{sec:hypercats}
+\section{Parametric right 2-adjoints}
+\label{sec:pr2a}
 
 We would like to build a monad out of labeled hypergraphs.
 Our first thought may be that it should be a polynomial monad, since each hypergraph should give a ``constructor'' whose ``arguments'' are a labeling of it.
@@ -898,31 +901,197 @@ In fact, hypergraphs do not quite give such a parametric right adjoint either: t
 We can still define a functor on presheaf categories in the same way, but it will not be p.r.a.\ because $\lan_p$ is no longer just composition of discrete fibrations.
 A more natural thing to do is to define a functor on \Cat-valued presheaves, where the first step $\hom_I(H,-)$ is still the same, but the second step is given by composition with a non-discrete fibration $p$.
 
-\begin{thm}
+The situation is analogous to how while the 2-monad for strict monoidal categories is just the monad for monoids acting on objects and morphisms separately, the 2-monad for symmetric strict monoidal categories is not similarly obtained from the monad for commutative monoids.
+Instead the operations have to be ordered and the symmetry only imposed up to isomorphism, and hence the 2-monad does not restrict to discrete categories, though it can be reflected into them.
+
+In this section we develop the necessary preliminaries on parametric right 2-adjoints.
+
+\begin{lem}\label{thm:pra}
   Suppose given categories $I,J,K$, a \Cat-valued profunctor $H:I\op\times K\to \Cat$, and a split fibration $p:K\to J$.
   Then the composite
-  \[ [I\op,\Cat] \xto{\hom_I(K,-)} [K\op,\Cat] \cong \SFib/K \xto{p_!} \SFib/J \cong [J\op,\Cat] \]
+  \[ [I\op,\Cat] \xto{\hom_I(K,-)} [K\op,\Cat] \cong \SFib/K \xto{\Sigma_p} \SFib/J \cong [J\op,\Cat] \]
   is a parametric right adjoint 2-functor, i.e.\ the induced 2-functor $[I\op,\Cat] \to [J\op,\Cat]/T1$ is a right 2-adjoint.
-\end{thm}
+\end{lem}
 \begin{proof}
-  Since $\hom_I(K,-)$ is a right 2-adjoint, it suffices to show that $p_!$ is a parametric right adjoint.
-  But $p_!1 = K$, so the relevant functor on slice categories is an equivalence.
+  Since $\hom_I(K,-)$ is a right 2-adjoint, it suffices to show that $\Sigma_p$ is a parametric right adjoint.
+  But $\Sigma_p1 = K$, so the relevant functor on slice categories is an equivalence.
 \end{proof}
 
-(It is natural to conjecture that every p.r.a.\ 2-functor between presheaf 2-categories can be represented in this form, but we will not need this.)
-The situation is analogous to how while the 2-monad for strict monoidal categories is just the monad for monoids acting on objects and morphisms separately, the 2-monad for symmetric strict monoidal categories is not similarly obtained from the monad for commutative monoids.
-Instead the operations have to be ordered and the symmetry only imposed up to isomorphism, and hence the 2-monad does not restrict to discrete categories.
+It is natural to conjecture that every p.r.a.\ 2-functor between presheaf 2-categories can be represented in this form, but we will not need this.
+We do however need functorial extensions of this result.
+The following proofs are adapted from the corresponding proofs for polynomial functors in~\cite{kg:polynomials,weber:poly-pb}.
 
-Our category $K$ will incorporate the automorphisms of labeled hypergraphs, and also the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
+\begin{lem}\label{thm:pra2cell}
+  Suppose given a split fibration $p:K\to J$ and $H:I\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F$, and also $p':K'\to J$ and $H':I\op\times K'\to\Cat$ determining another one $G$, and also a functor $k:K'\to K$ such that $p' = p k$ and $H' \cong H(1,k)$.
+  Then there is an induced cartesian 2-natural transformation $F\to G$.
+\end{lem}
+\begin{proof}
+  Since $H' \cong H(1,k)$, the functor $\hom_I(H',-)$ is isomorphic to $k^* \circ \hom_I(H,-)$, where $k^*$ denotes precomposition with $k$, or equivalently pullback of split fibrations along $k$.
+  Moreover, since $p' = p k$, we have $\Sigma_{p'} \cong \Sigma_p \circ \Sigma_k$ as functors on slice categories of \Cat.
+  (Note that in general, $\Sigma_k : \Cat/K' \to \Cat/K$ need not preserve split fibrations or split morphisms between them, but it does take them to objects and morphisms whose images under $\Sigma_p$ are split.)
+  Thus, $F$ is isomorphic to the composite $\Sigma_p \circ \Sigma_k \circ k^* \circ \hom_I(H,-)$, and our transformation is induced by the counit $\Sigma_k k^* \to \Id$.
+  But this counit is always a cartesian transformation, and $\Sigma_p$ preserves pullbacks.
+\end{proof}
+
+\begin{lem}\label{thm:pracomp}
+  Suppose given $H : J\op\times K \to \Cat$ and a split fibration $p:E\to J$.
+  Then there is a split fibration $q:L\to K$ and a profunctor $M:E\op \times L \to \Cat$ and a natural isomorphism
+  \[
+  \begin{tikzcd}[column sep=huge]
+    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[d,"\Sigma_p"'] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[d,"\Sigma_q"]\\
+    {[J\op,\Cat]} \ar[r,"{\hom_J(H,-)}"'] & {[K\op,\Cat]}
+  \end{tikzcd}
+  \]
+\end{lem}
+\begin{proof}
+  Let $P:J\op\to\Cat$ be the functor corresponding to the split fibration $p:E\to J$, let $Q : K\op\to\Cat$ be $\hom_J(H,P)$, and let $q:L\to K$ be the split fibration corresponding to $Q$.
+  Thus an object $\ell\in L$ is a natural transformation $\ell : H(-,q(\ell)) \to P$.
+
+  If we let $f:F_\ell \to J$ be the split fibration corresponding to $H(-,q(\ell))$, then $\ell$ is equivalently a strict morphism of split fibrations $\hat\ell : F_\ell \to E$ over $J$.
+  Let $G_\ell$ be the comma category of $\hat\ell$ under $E$ and over $J$, i.e.\ there is a universal 2-cell such that
+  \[
+  \begin{tikzcd}
+    G_\ell \ar[r] \ar[d] \twocell{dr} & E \ar[d,equals] \\
+    F_\ell \ar[r,"{\hat\ell}"'] & E \ar[dr,"p"] \\
+    && J
+  \end{tikzcd}
+  \]
+  is an identity.
+  Then $G_\ell \to E$ is a split fibration; we define $M(-,\ell) : E\op\to\Cat$ to be the corresponding functor.
+  For functoriality in $\ell$, note that a morphism $\psi:\ell\to\ell'$ consists of an arrow $q(\psi):q(\ell) \to q(\ell')$ and a modification
+  \[
+  \begin{tikzcd}
+    H(-,q(\ell)) \ar[rr,"{H(-,q(\psi))}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & H(-,q(\ell')) \ar[dl,"\ell'"] \\
+    & P.
+  \end{tikzcd}
+  \]
+  or equivalently a vertical transformation
+  \[
+  \begin{tikzcd}
+    F_\ell \ar[rr,"{F_\psi}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & F_{\ell'} \ar[dl,"\ell'"] \\
+    & E.
+  \end{tikzcd}
+  \]
+  If we paste this with the defining comma square of $G_\ell$, we can factor it through $G_{\ell'}$ by a map that is a strict morphism of split fibrations, hence induces a map $M(-,\ell) \to M(-,\ell')$.
+
+  % Of course, an object $e\in E$ is an object of $P(p(e))$.
+  % We define $M(e,\ell)$ to be the comma category of the functor $\ell_{p(e)} : H(p(e),q(\ell)) \to P(p(e))$ under $e$:
+  % \[
+  % \begin{tikzcd}
+  %   M(e,\ell) \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e"] \\
+  %   H(p(e),q(\ell)) \ar[r,"{\ell_{p(e)}}"'] & P(p(e))
+  % \end{tikzcd}
+  % \]
+  % That is, an object of $M(e,\ell)$ is an object $h\in H(p(e),q(\ell))$ with a morphism $e\to \ell_{p(e)}(h)$.
+
+  % To make $M$ a profunctor, note that a morphism $\phi : e'\to e$ in $E$ consists of a morphism $p(\phi) : p(e')\to p(e)$ in $J$ and a morphism $\bar{\phi}:e'\to p(\phi)^*(e)$ in $P(p(e'))$, while a morphism $\psi:\ell\to\ell'$ consists of an arrow $q(\psi):q(\ell) \to q(\ell')$ and a modification
+  % \[
+  % \begin{tikzcd}
+  %   H(-,q(\ell)) \ar[rr,"{H(-,q(\psi))}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & H(-,q(\ell')) \ar[dl,"\ell'"] \\
+  %   & P.
+  % \end{tikzcd}
+  % \]
+  % To define the action of $M$ on $\phi,\psi$ we form the following pasting:
+  % \[
+  % \begin{tikzcd}
+  %   M(e,\ell) \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e"] \ar[ddr,bend left,"e'"] \twocell[\bar{\phi}]{ddr} \\
+  %   H(p(e),q(\ell)) \ar[r,"{\ell_{p(e)}}"'] \ar[d,"{H(\phi,1)}"'] & P(p(e)) \ar[dr,"{p(\phi)^*}" description]\\
+  %   H(p(e'),q(\ell)) \ar[rr,"{\ell_{p(e')}}"] \ar[d,"{H(1,\psi)}"'] &~& P(p(e'))\\
+  %   H(p(e'),q(\ell')) \ar[urr,"{\ell'_{p(e')}}"',shift right] \twocell[\bar{\psi}_{p(e')}]{ur}
+  % \end{tikzcd}
+  % \]
+  % and factor it through the comma square for $e'$ and $\ell'$:
+  % \[
+  % \begin{tikzcd}
+  %   M(e,\ell) \ar[dr,"{M(\phi,\psi)}"]\\
+  %   &M(e',\ell') \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e'"] \\
+  %   &H(p(e'),q(\ell')) \ar[r,"{\ell'_{p(e')}}"'] & P(p(e'))
+  % \end{tikzcd}
+  % \]
+
+  Now we construct the desired isomorphism.
+  We will take it to be the mate under the adjunctions $\Sigma_p \dashv p^*$ and $\Sigma_q \dashv q^*$ of an isomorphism
+  \begin{equation}
+  \begin{tikzcd}[column sep=huge]
+    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[from=d,"p^*"] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[from=d,"q^*"']\\
+    {[J\op,\Cat]} \ar[r,"{\hom_J(H,-)}"'] & {[K\op,\Cat]}
+  \end{tikzcd}\label{eq:pracomp-mate}
+  \end{equation}
+  To construct this, let $R:J\op\to\Cat$, corresponding to a split fibration $r:C\to J$.
+  Its image under the lower-right composite is the functor $S:L\op\to\Cat$ defined by $S(\ell) = \hom_J(H(-,q(\ell)),R)$.
+  That is, an object of $S(\ell)$ is a natural transformation $H(-,q(\ell)) \to R$, or equivalently a strict morphism of split fibrations $F_\ell \to C$ over $J$.
+  %, assigning to each $j\in J$ a functor $H(j,q(\ell)) \to R(j)$, naturally in $j$.
+
+  The image of $R$ under the left-upper composite is the functor $T:L\op\to Cat$ defined by $T(\ell) = \hom_E(M,R\circ p)$.
+  That is, an object of $T(\ell)$ is a natural transformation $M(-,\ell) \to R(p(-))$, or equivalently a strict morphism of split fibrations
+  \[
+  \begin{tikzcd}
+    G_\ell \ar[d] \ar[r] & C \ar[d] \\
+    E \ar[r,"p"'] & J
+  \end{tikzcd}
+  \]
+  over $p$.
+  % , assigning to each $e\in E$ a functor $M(e,\ell) \to R(p(e))$.
+  % Now an object of $M(e,\ell)$ consists of an object $h\in H(p(e),q(\ell))$ and an arrow $e\to \ell_{p(e)}(h)$ in $P(p(e))$.
+  % In particular, for each $j\in J$ and $h\in H(j,q(\ell))$ we can take $e=\ell_{j}(h)$ and act on the identity arrow in $P(p(e))$ to get an object of $R(p(\ell_{j}(h)))$, i.e.\ $R(j)$.
+  However, $G_\ell$ is the free fibration generated by $\hat\ell : F_\ell \to E$ over $J$, so such a morphism is equivalently an arbtrary morphism
+  \[
+  \begin{tikzcd}
+    F_\ell \ar[d] \ar[r] & C \ar[d] \\
+    E \ar[r,"p"'] & J
+  \end{tikzcd}
+  \]
+  that is a strict morphism over $J$, i.e.\ an object of $S(\ell)$.
+  We leave it to the reader to verify the naturality of this isomorphism.
+
+  It remains to show that the mate of~\eqref{eq:pracomp-mate} really is an isomorphism.
+  Since the unit and counit of the adjunctions $\Sigma_p \dashv p^*$ and $\Sigma_q \dashv q^*$ are cartesian natural transformations, and all the functors involved preserve pullbacks, this mate is again a cartesian transformation.
+  Thus, it is an isomorphism as soon as its component at the terminal object is so.
+  Now $\hom_E(M,-)$ is a right adjoint, hence preserves the terminal object, while $\Sigma_q$ takes the terminal object to the split fibration $q:L\to K$ itself.
+  But $\Sigma_p$ also takes the terminal object to $p:E\to J$ itself, which $\hom_J(H,-)$ takes to $q:L\to K$ by definition of $q$.
+\end{proof}
+
+\begin{lem}\label{thm:pracomp2}
+  Given a split fibration $p_2:K\to J_3$ and $H_2:J_2\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F_2:[J_2\op,\Cat] \to [J_3\op,\Cat]$, and also $p_1:E\to J$ and $H_1:J_1\op \times E\to \Cat$ determining $F_1 : [J_1\op,\Cat] \to [J_2\op,\Cat]$, the composite $F_2\circ F_1$ is determined by the composite split fibration $L \xto{q} K \xto{p_2} J_3$ and the composite profunctor $H_1 \otimes_E M : J_1\op \times L \to \Cat$, where $q$ and $M$ are as in \cref{thm:pracomp}.
+\end{lem}
+\begin{proof}
+  From the isomorphism of \cref{thm:pracomp} we obtain
+  \[
+  \begin{tikzcd}[column sep=huge]
+    {[J_1\op,\Cat]} \ar[r,"{\hom_{J_1}(H_1,-)}"] \ar[dr,"F_1"'] \ar[rr,"{\hom_{J_1}(H_1 \otimes_E M,-)}",bend left] &
+    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[d,"\Sigma_p"'] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[d,"\Sigma_q"]
+    \ar[dr,"\Sigma_{p_2 q}"] \\
+    &{[J_2\op,\Cat]} \ar[r,"{\hom_{J_2}(H_2,-)}"'] \ar[rr,"F_2"',bend right]
+    & {[K\op,\Cat]}
+    \ar[r,"\Sigma_{p_2}"] & {[J_3\op,\Cat]}
+  \end{tikzcd}
+  \]
+  yielding the desired isomorphism.
+\end{proof}
+
+Putting all this together, we have:
+
+\begin{thm}\label{thm:pra-psfr}
+  There is a bicategory whose objects are categories, whose morphisms from $I$ to $J$ consist of a split fibration $p:K\to J$ and a profunctor $H:I\op\times K\to \Cat$, whose 2-cells are as in \cref{thm:pra2cell}, and whose composition is as in \cref{thm:pracomp2}.
+  Moreover, $J\mapsto [J\op,\Cat]$ defines a pseudofunctor from this bicategory to the bicategory of 2-categories, parametric right adjoint 2-functors, and cartesian 2-natural transformations.\qed
+\end{thm}
+
+
+\section{The pseudomonad for hypercategories}
+\label{sec:hypercats}
+
+We now apply the machinery of \cref{sec:pr2a} to construct a monad out of hypergraphs, where the non-discrete split fibration $p:K\to J$ incorporates the automorphisms of hypergraphs.
+In fact we will include in it also the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
 In all the semantic examples that we know, these weak equivalences act as isomorphisms; so in constructing the monad we could formally invert them.
 But this would actually make our lives \emph{more} difficult, since it would be extra work to verify that the inversion is consistent everywhere, and from a syntactic point of view it is more natural to keep them directional (since substitution is more natural than its inverse).
 
-We begin with a simpler version of the definition that omits any monoidal structure on objects.
+We begin with a simpler monad that omits any monoidal structure on objects.
 Let $J$ be the category such that presheaves on $J$ are cycligraphs.
 Then $J$ has one object $\bullet$ and objects $[n]$ for $n\in\N$, with $n$ nonidentity morphisms $\bullet\to [n]$.
-By an \textbf{$n$-hypergraph} we will mean a rooted hypergraph whose root has rank $n$.
+A functor $J\op\to\Cat$ is an internal cycligraph in \Cat, or equivalently an internal category in cycligraphs; we call it a \textbf{\Cat-cycligraph}.
 
-We define a functor $J\op\to\Cat$ (i.e.\ an internal polygraph in $\Cat$) by sending $[n]$ to the category of $n$-hypergraphs and weak equivalences between them, and $\bullet$ to the terminal category with unique object $\star$.
+By an \textbf{$n$-hypergraph} we will mean a rooted ordered hypergraph whose root has rank $n$.
+We define a \Cat-cycligraph $J\op\to\Cat$ by sending $[n]$ to the category of $n$-hypergraphs and weak equivalences between them, and $\bullet$ to the terminal category with unique object $\star$.
 (Note that any isomorphism is a weak equivalence.)
 Let $p:K_1 \to J$ be the (split, but not discrete) fibration corresponding to this functor.
 
@@ -937,13 +1106,36 @@ The morphisms of graphs in the fibers of $K_1$ over $[n]$ act (by isomorphisms) 
 The $n$ morphisms $\star\to\G$ in $K_1$ induce the maps $H_1(\bullet,\star) \to H_1(\bullet,\G)$ picking out the edges incident to the root.
 The $n$ morphisms $\bullet\to [n]$ in $J$ induce the maps $H_1([n],\G) \to H_1(\bullet,\G)$ selecting the edges incident to each vertex.
 
-Thus we have an induced p.r.a.\ endo-2-functor of the 2-category $[J\op,\Cat]$ of \textbf{\Cat-polygraphs}, i.e.\ internal polygraphs in \Cat, or equivalently internal categories in polygraphs.
+Thus we have an induced p.r.a.\ endo-2-functor $T_1$ of the 2-category $[J\op,\Cat]$ of \Cat-cycligraphs.
+We now make $T_1$ into a sort of monad, using \cref{thm:pra-psfr}.
+
+The identity functor $\Id$ of $[J\op,\Cat]$ is p.r.a.\ and determined by the hom-profunctor $\hom_J$ and the identity split fibration $J\to J$.
+Thus, to define a unit $\eta : \Id \to S$, it suffices to define a functor $k:J\to K_1$ such that $p k\cong 1_J$ and $H_1(1,k) \cong \hom_J$.
+In our case, we define $k$ to send $\bullet$ to $1$ and $[n]$ to the \textbf{rooted $n$-corolla} $\C_n$, which has two vertices (one of which is the root) and $n$ edges each incident to both vertices once in the same order.
+It is clear that $k$ is a section of $p$, while inspecting the definition of $H_1$ yields $H_1(1,k) \cong \hom_J$.
+
+Thus we have a cartesian 2-natural transformation $\eta : \Id\to T_1$, where $\eta_P : P \to T_1 P$ sends each each morphism to the $n$-corolla labeled by itself.
+Of course, there are many different (isomorphic) $n$-corollas.
+However, onec we fix any particular such corolla for each $n$, we get such a transformation $\eta$.
+The existence of other corollas means that $\eta$, though fully faithful, is not replete: objects of $T_1 P$ defined using other corollas are isomorphic to ones in the image of $\eta$ but are not in the image of $\eta$ themselves.
+
+Now we define a cartesian 2-natural transformation $\mu:T^2\to T$.
+
+
+\newpage
+
 This is almost, but not quite, the monad we want: we also want a monoidal structure on the objects, which requires a further enhancement.
 
 We define a \textbf{bracketing} of $n$ things to be a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
 The \textbf{arity} of the bracketing is the length of the list.
 For instance, the bracketing $(2,0,3,1)$ of $6$, of arity $4$, should be thought of as $(xx)()(xxx)(x)$.
 An \textbf{$n$-bracketed hypergraph} is a rooted hypergraph together with a bracketing of arity $n$ of the flags incident to the root.
+
+
+
+
+TODO: orders
+
 A morphism of bracketed hypergraphs must, of course, preserve the bracketings.
 
 Now we define another functor $J\op\to\Cat$ by sending $[n]$ to the category of $n$-bracketed hypergraphs and bracket-preserving weak equivalences between them, and $\bullet$ to the discrete category $\N$.\fxnote{Can we incorporate symmetries here?  We ought to have them for kits at least.}
@@ -965,35 +1157,11 @@ Let $T$ be the induced endo-2-functor of the 2-category $[J\op,\Cat]$ of \Cat-po
 Note that as a parametric right adjoint, $T$ preserves connected limits, and in particular pullbacks.
 
 We will now make $T$ into a monad.
-For this purpose we need the following observation:
+For this purpose we 
 
-\begin{lem}
-  Suppose given $p:K\to J$ and $H:I\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F$, and also $p':K'\to J$ and $H':I\op\times K'\to\Cat$ determining another one $G$, and also a functor $k:K'\to K$ such that $p' = p k$ and $H' \cong H(1,k)$.
-  Then there is an induced cartesian 2-natural transformation $F\to G$.
-\end{lem}
-\begin{proof}
-  Since $H' \cong H(1,k)$, the functor $\hom_I(H',-)$ is isomorphic to $k^* \circ \hom_I(H,-)$, where $k^*$ denotes precomposition with $k$, or equivalently pullback of split fibrations along $k$.
-  Moreover, since $p' = p k$, we have $(p')_! \cong p_! \circ k_!$ as functors on slice categories of \Cat.
-  (Note that in general, $k_! : \Cat/K' \to \Cat/K$ need not preserve split fibrations or split morphisms between them, but it does take them to objects and morphisms whose images under $p_!$ are split.)
-  Thus, $F$ is isomorphic to the composite $p_! \circ k_! \circ k^* \circ \hom_I(H,-)$, and our transformation is induced by the counit $k_! k^* \to \Id$.
-  But this counit is always a cartesian transformation, and $p_!$ preserves pullbacks.
-\end{proof}
-
-Now, the identity functor $\Id$ of $[J\op,\Cat]$ is p.r.a.\ and determined by the hom-profunctor $\hom_J$ and the identity split fibration $J\to J$.
-Thus, to define a unit $\eta : \Id \to T$, it suffices to define a functor $k:J\to K$ such that $p k\cong 1_J$ and $H(1,k) \cong \hom_J$.
-In our case, we define $k$ to send $\bullet$ to $1$ and $[n]$ to the \textbf{rooted $n$-corolla} $\C_n$, which has two vertices (one of which is the root) and $n$ edges each incident to both vertices once in the same order.
 We bracket this as $(1,1,\dots,1)$, so that we can send the $n$ morphisms $\bullet \to [n]$ to the $n$ morphisms $\star\to \C_n$ that pick out each of the edges.
-It is clear that $k$ is a section of $p$, while inspecting the definition of $H$ yields $H(1,k) \cong \hom_J$.
 
-Thus we have a cartesian 2-natural transformation $\eta : \Id\to T$, where $\eta_P : P \to T P$ sends each object $x\in P$ to the unary list $(x)$ and each morphism to the $n$-corolla labeled by it.
 
-Of course, there are many different (isomorphic) $n$-corollas.
-However, onec we fix any particular such corolla for each $n$, we get such a transformation $\eta$.
-The existence of other corollas means that $\eta$, though fully faithful, is not replete: objects of $TP$ defined using other corollas are isomorphic to ones in the image of $\eta$ but are not in the image of $\eta$ themselves.
-
-Now we define a cartesian 2-natural transformation $\mu:T^2\to T$.
-For this we need a description of composites of p.r.a.\ functors in terms of their generating data.
-\fxnote{Incomplete}
 
 Since $\hyrel$ is a conormal lax bicategory, with associativity up to isomorphism and unitality up to transformation, $T$ is similarly a \emph{conormal lax monad} with associativity up to isomorphism and unitality up to transformation.\fxnote{Incomplete}
 Lax monads are perhaps not very familiar, but they are not much harder to deal with than pseudomonads.
