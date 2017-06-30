@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist,xspace,braket,ifmtarg}
-\usepackage[status=draft]{fixme}
+\usepackage[status=draft,author=]{fixme}
+\fxusetheme{color}
 \newtheorem{thm}{Theorem}[section]
 \crefname{thm}{Theorem}{Theorems}
 \newtheorem{lem}[thm]{Lemma}
@@ -29,7 +30,7 @@
 \tikzset{houter/.style={regular polygon,regular polygon sides=3,inner sep=1pt,draw,shape border rotate=270}}
 \tikzset{cross/.style={white,line width=3pt}}
 \let\sto\looparrowright
-\def\M{\mathcal{M}}
+\def\M{\mathbb{M}}
 \def\A{\mathcal{A}}
 \def\B{\mathcal{B}}
 \def\C{\mathcal{C}}
@@ -38,9 +39,14 @@
 \def\D{\mathcal{D}}
 \def\G{\mathcal{G}}
 \def\H{\mathcal{H}}
-\def\K{\mathcal{K}}
+\def\K{\mathbb{K}}
 \def\L{\mathcal{L}}
 \def\R{\mathcal{R}}
+\def\V{\mathscr{V}}
+\def\frob{\mathbb{F}\mathsf{rob}}
+\def\ten{\mathbb{T}\mathsf{en}}
+\def\hspan{\mathbb{HS}\mathsf{pan}}
+\def\form#1{\mathsf{F}_{#1}}
 \let\setof\Set
 \def\Set{\mathbf{Set}}
 \def\Cat{\ensuremath{\mathcal{C}\mathit{at}}}
@@ -107,6 +113,7 @@
 \def\hohy{\mathbf{HyGph}}
 \def\thy{\mathcal{T}}
 \def\dhy{\mathcal{D}}
+\def\bhy{\mathcal{B}}
 \def\fhy{\mathcal{F}}
 \def\ehy{\mathcal{E}\mathit{xt}\mathcal{H}\mathit{y}\mathcal{G}\mathit{ph}}
 
@@ -118,7 +125,18 @@
       }{}
 \DeclareSymbolFont{mathb}{U}{mathb}{m}{n}
 \DeclareFontSubstitution{U}{mathb}{m}{n}
+%
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+%
 \DeclareMathSymbol{\Asterisk}{2}{mathb}{"06}
+\DeclareMathSymbol{\bigboxtimes}{1}{mathx}{"D2}
 
 \makeatletter
 %\def\ins#1#2#3#4{#1 \underset{\@ifmtarg{#2}{#3}{#3\in #2}}{\circ} #4}
@@ -140,7 +158,9 @@
 \def\ec{\diamond}
 \def\edgectx{\;\mathsf{edgectx}}
 \def\loopctx{\;\mathsf{loopctx}}
+\def\extloopctx{\;\mathsf{loopctx}^+}
 \def\vertex{\;\mathsf{vertex}}
+\def\extvertex{\;\mathsf{vertex}^+}
 \def\ctx{\;\mathsf{ctx}}
 \def\graph{\;\mathsf{graph}}
 \def\type{\;\mathsf{type}}
@@ -148,23 +168,25 @@
 \let\jdeq\equiv
 \let\sametypes\approx
 \def\varsof#1{|#1|}
+\def\unifies#1#2#3#4#5{(#1\mid #2) \leadsto (#3\mid#4) : #5}
 
 \hyphenation{hyper-graph}
 \hyphenation{hyper-graphs}
 
-\title{Hypercategories and some kind of type theory}
+\title{One type theory to rule them all}
 \author{Dan Licata \and\ Mitchell Riley \and\ Patrick Schultz \and\ Michael Shulman}
 \begin{document}
 \maketitle
+
 
 \section{Hypergraphs}
 \label{sec:hypergraphs}
 
 Intuitively, a hypergraph is like a graph, but where an ``edge'' can be incident to any number of vertices, not only two.
 An incidence between a vertex and an edge is called a \emph{flag}.
-For directed hypergraphs, which we will mainly be concerned with, each flag is marked as ``incoming'' or ``outgoing'' (to the associated vertex).
+In a directed hypergraph, each flag is moreover marked as ``incoming'' or ``outgoing'' (to the associated vertex).
 When drawing a hypergraph, we draw vertices as dots and edges as lines connecting them, which are allowed to ``branch'' in order to connect more than two vertices.
-Here is an example:
+Here is an example of a directed hypergraph:
 \[
 \begin{tikzpicture}
   \node[vertex] (f) at (0,1) {$f$};
@@ -185,27 +207,27 @@ Here is an example:
   \draw (-1,-.5) -- node[auto] {$e_6$} (0,-.5);
 \end{tikzpicture}
 \]
-Here $e_1$ is incident to $f$ and $g$ outgoing and to $h$ incoming, $e_2$ is adjacent to $h$ outgoing and $g$ incoming, $e_3$ is adjacent to $g$ and $h$ both outgoing, $e_4$ is adjacent to only $h$ outgoing, $e_5$ is adjacent to $f$ once outgoing and once incoming, and $e_6$ is not adjacent to any vertices at all.
+Here $e_1$ is incident to $f$ and $g$ outgoing and to $h$ incoming, $e_2$ is incident to $h$ outgoing and $g$ incoming, $e_3$ is incident to $g$ and $h$ both outgoing, $e_4$ is incident to only $h$ outgoing, $e_5$ is incident to $f$ once outgoing and once incoming, and $e_6$ is not incident to any vertices at all.
 
 There are many possible variations on hypergraphs.
 Unlike in the combinatorial literature, but like the ``graphs'' usually used in category theory, our edges are not uniquely determined by the vertices they are incident to, i.e.\ we can have ``parallel edges''.
 Also, we will assume that each vertex is incident to a finite set of edges, but in general place no such restriction on the edges; this will be convenient because it makes polygraphs a special case of directed hypergraphs.
 
 We will also allow edges to contain ``loops''.
-In particular, this distinguishes between the following two edges, neither of which is adjacent to any vertices, but of which one contains a loop and one does not:
+In particular, this distinguishes between the following two edges, neither of which is incident to any vertices, but of which one contains a loop and one does not:
 \[
 \begin{tikzpicture}
   \draw (0,0) -- (1,0);
   \draw (3,0) to[out=90,in=90,looseness=2] (4,0) to[out=-90,in=-90,looseness=2] (3,0);
 \end{tikzpicture}
 \]
-Moreover, the hyper-ness of our graphs means that once we allow loops, we need to allow edges adjacent to vertices to also contain loops, and some edges to contain multiple loops.
+Moreover, the hyper-ness of our graphs means that once we allow loops, we need to allow edges incident to vertices to also contain loops, and some edges to contain multiple loops.
 The presence of loops turns out to make the definition of hypergraph very tricky to get right, in particular as regards the notion of morphism between such graphs.
 
 First I tried just marking each edge with a natural number ``genus''; but in defining labeled hypergraphs as morphisms we need to be able to collapse loops, and automorphisms of hypergraphs need to be able to permute loops.
 Then I thought of just assigning to each edge a pointed set of ``loops'', but when inserting one hypergraph into another we can create ``loops'' of a sort for which there is no obvious way to choose a ``basepoint'' to get an actual ``set of loops''; what arises naturally is a directed graph, or equivalently a free groupoid.
 So I tried defining a hypergraph to have a (free) groupoid of edges rather than a set; but free groupoids have too many automorphisms.
-At present the most promising approach seems to be to define a hypergraph to have a reflexive directed graph of edges, although the treatment of isomorphisms is still not completely satisfactory.
+At present the most promising approach seems to be to define a hypergraph to have a reflexive directed graph of edges, although the treatment of isomorphisms is perhaps still not completely satisfactory.
 
 \begin{defn}
   A \textbf{hypergraph} $\G$ is a span
@@ -226,13 +248,13 @@ We write $\pi E$ for the set of edges, i.e.\ the set of connected components of 
 \begin{defn}
   Let $\G=(V\ot F\to E)$ be a hypergraph.
   \begin{itemize}
-  \item The \textbf{degree} of a vertex in $\G$ is the cardinality of the set of flags adjacent to it, which is a natural number.
-    The \textbf{rank} of an edge in $\G$ is the cardinality of the set of flags adjacent to it, which in general can be finite or infinite.
+  \item The \textbf{degree} of a vertex in $\G$ is the cardinality of the set of flags incident to it, which is a natural number.
+    The \textbf{rank} of an edge in $\G$ is the cardinality of the set of flags incident to it, which in general can be finite or infinite.
     We say $\G$ %has \textbf{finite rank} if all its ranks are finite, and $\G$
     is \textbf{finite} if $V$ and $E$ (hence also $F$) are finite.
   \item The free rank of the fundamental group of an edge (meaning that of its geometric realization, considered as a 1-truncated simplicial set, or equivalently of the free groupoid that it generates) is called its \textbf{genus}.
     We say $\G$ has \textbf{genus zero} if all of its edges have genus zero, i.e.\ $E$ is a forest.
-  \item The \textbf{connected components} of $\G$ are the connected components of the groupoid pushout of the span $V \leftarrow F \to \pi E$.
+  \item The \textbf{connected components} of $\G$ are the elements of the pushout of the span $V \leftarrow F \to \pi E$.
     We say $\G$ is \textbf{connected} if it has exactly one connected component.
     % In particular, vertices not incident to any edges, and edges not incident to any vertices, lie in their own connected components.
   \item We say $\G$ is \textbf{simple} if no edge is incident to any vertex more than once, so that the span $V \ot F \to \pi E$ is a relation.
@@ -240,7 +262,7 @@ We write $\pi E$ for the set of edges, i.e.\ the set of connected components of 
   \end{itemize}
 \end{defn}
 
-The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed) finite simple reduced hypergraphs of genus zero.
+The ``hypergraphs'' of~\cite{glpn:directed-hypergraphs} are our finite simple reduced hypergraphs of genus zero.
 
 \begin{defn}
   A \textbf{morphism of hypergraphs} is a diagram
@@ -250,7 +272,7 @@ The (directed) hypergraphs of~\cite{glpn:directed-hypergraphs} are our (directed
     V  & F \ar[r] \ar[l] & E
   \end{tikzcd}
   \]
-  in which the left-hand square is a pullback.
+  in which $V'\to V$ and $F'\to F$ are functions, $E'\to E$ is a map of reflexive directed graphs, and the left-hand square is a pullback.
   This defines the category $\hy$.
 \end{defn}
 
@@ -258,16 +280,17 @@ The fact that the left-hand square is a pullback means in particular that a morp
 However, it does not preserve the rank or the genus of edges.
 
 Usually we will want to assume that the flags incident to each vertex are ordered so that we can distinguish them.
-Let $\thy$ be the hypergraph with exactly one edge representative of genus zero, and for each natural number $n$ exactly one vertex incident to $n$ flags (each in turn incident to the unique edge representative).
+To say this precisely, let $\thy$ be the hypergraph with exactly one edge representative of genus zero, and for each natural number $n$ exactly one vertex incident to $n$ flags (each in turn incident to the unique edge representative).
 We fix a labeling of these $n$ flags $0,1,\dots,n-1$, so that they are ordered.
 
 \begin{defn}
   The category of \textbf{ordered hypergraphs} is the slice category $\hy/\thy$.
 \end{defn}
 
-A hypergraph morphism $\G\to\thy$ is uniquely determined on edges and vertices, so it consists only of the data of an ordering on the flags adjacent to each vertex.
+A hypergraph morphism $\G\to\thy$ is uniquely determined on edges and vertices, so it consists only of the data of an ordering on the flags incident to each vertex.
 Of course, such a morphism always exists, i.e.\ any hypergraph can be ordered; the point is that morphisms in $\hy/\thy$ must preserve the specified orderings.
 
+\begin{comment}
 Ordered hypergraphs have another convenient description.
 Let $\Np$ be the set $\setof{(k,n) \in \N\times \N | k<n}$, with $\ell:\Np\to \N$ the second projection.
 Thus the fiber of $\ell$ over $n\in\N$ is the canonical $n$-element linear order, and we can write $\thy = (\N \ot \Np \to 1)$.
@@ -301,6 +324,7 @@ Let $\RGph$ denote the category of reflexive directed graphs, with $U:\RGph\to\S
   The functor $P_\ell \circ U : \RGph \to \Set$ is a parametric right adjoint, since $P_\ell$ is a polynomial functor and $U$ is a right adjoint.
   Thus, since $\RGph$ is a presheaf topos, by~\cite{cj:clfrag} $\hy/\thy$ is again a presheaf topos.
 \end{proof}
+\end{comment}
 
 Sometimes we want a further refinement of ordered hypergraphs to \emph{directed} ones.
 Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex $(n,m)$ having $n+m$ flags, which we think of as partitioned into $n$ ordered elements and $m$ ordered elements.
@@ -309,21 +333,19 @@ Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex
   The category of \textbf{directed hypergraphs} is the slice category $\hy/\dhy$.
 \end{defn}
 
-Thus, a directed hypergraph is a hypergraph in which at each vertex the list of adjacent flags is partitioned into two linear orders, which we call the \textbf{incoming} and \textbf{outgoing} flags respectively.
+Thus, a directed hypergraph is a hypergraph in which at each vertex the list of incident flags is partitioned into two linear orders, which we call the \textbf{incoming} and \textbf{outgoing} flags respectively.
 The numbers of incoming and outgoing flags are respectively called the \textbf{in-degree} and \textbf{out-degree} of the vertex.
-Similarly, the \textbf{in-rank} and \textbf{out-rank} of an edge are respectively the cardinalities of the sets of outgoing (from their vertices, hence incoming to the edge) and incoming (to their vertices, hence outgoing from the edge) flags adjacent to it.
+Similarly, the \textbf{in-rank} and \textbf{out-rank} of an edge are respectively the cardinalities of the sets of outgoing (from their vertices, hence incoming to the edge) and incoming (to their vertices, hence outgoing from the edge) flags incident to it.
 
 There is an obvious projection $\dhy\to\thy$ sending $(n,m)$ to $n+m$, with the incoming flags ordered before the outgoing ones.
 Moreover, this has a section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
 Thus, we have
 \[\hy/\dhy \simeq (\hy/\thy)/(\dhy\to\thy) \]
 \[\hy/\thy \simeq (\hy/\dhy)/(\thy\to\dhy).\]
-In other words, ordered and directed hypergraphs are each special cases of each other.
-This is one advantage of hypergraphs over ordinary graphs.
-Another is the ease of the following definitions.
+Thus, ordered and directed hypergraphs are each special cases of each other.
 
 \begin{defn}
-  An ordered reduced hypergraph of genus zero is called a \textbf{cycligraph}.
+  A \textbf{cycligraph} is an ordered reduced hypergraph of genus zero.
   A directed cycligraph is called a \textbf{polygraph}.
   A polygraph in which each vertex has out-degree equal to 1 is a \textbf{multigraph}.
 
@@ -332,7 +354,7 @@ Another is the ease of the following definitions.
 
 A polygraph is the underlying data of a polycategory or a (colored) prop: each morphism has a finite list of ``source'' objects and a finite list of ``target'' objects.
 Similarly, a multigraph is the underlying data of a multicategory: each morphism has a finite list of source objects and a single target object.
-And a cycligraph is the underlying data of a cyclic multicategory, in which sources and targets are not distinguished; we speak instead of the \textbf{legs} of a morphism.
+And a cycligraph is the underlying data of a cyclic multicategory, in which sources and targets are not distinguished; we speak instead of the \textbf{entries} of a morphism.
 
 Our graph-theoretic representation of these objects invokes the Poincar\'e dual ``string diagram convention'', in which objects are 1-dimensional and morphisms are 0-dimensional.
 The categories of cycligraphs, polygraphs, and multigraphs are presheaf toposes.
@@ -345,18 +367,15 @@ The above definitions of cycligraphs, polygraphs, and multigraphs make the follo
   If $P$ is a cycligraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to P$.
 \end{defn}
 
-Since a cycligraph is ordered, if $\G\to P$ is a $P$ labeled hypergraph then $\G$ automatically inherits an ordering.
+Since a cycligraph is ordered, if $\G\to P$ is a $P$-labeled hypergraph then $\G$ automatically inherits an ordering.
 On the other hand, if $\G$ is given as an ordered hypergraph, then to give a map $\G\to P$ is equivalently to give a map of cycligraphs $\pi \G \to P$.
 Similar remarks apply to directed hypergraphs and polygraphs.
-
-Other conditions on hypergraphs are not as naturally expressed categorically.
-For instance:
 
 \begin{defn}
   A hypergraph is \textbf{rooted} if it is equipped with a specified vertex called the \textbf{root}.
 \end{defn}
 
-In general, we think of the root as ``not really there'' and the flags adjacent to it as ``free''.
+In general, we think of the root as ``not really there'' and the flags incident to it as ``free''.
 In a directed rooted hypergraph, we think of the incoming or outgoing edges of the root as ``incoming/outgoing to the entire graph''.
 For instance, given the graph on the left with $\ast$ the root:
 \begin{equation}
@@ -443,7 +462,7 @@ This choice, which as we will see makes the definition of insertion somewhat sim
 % in which $e_4$ and $e_5$ are ``incoming to the graph'' and $e_1$ is ``outgoing from the graph''.
 % We do want to consider~\eqref{eq:loops2} as containing ``loops'', because there are paths from ``in'' to ``out'' that travel some paths ``backwards''.\fxnote{Is that right?}
 
-Note also that we allow edges that are not adjacent to any vertices, or that are adjacent to only one vertex, but are \emph{not} adjacent to the root and hence not ``incoming'' or ``outgoing'' to the graph.
+Note also that we allow edges that are not incident to any vertices, or that are incident to only one vertex, but are \emph{not} incident to the root and hence not ``incoming'' or ``outgoing'' to the graph.
 The following example shows a number of distinct degenerate possibilities in a directed (reduced) hypergraph (where $\ast$ is the root):
 \begin{center}
   \begin{tikzpicture}
@@ -472,9 +491,9 @@ The following example shows a number of distinct degenerate possibilities in a d
     \draw (7.5,0) to[out=90,in=90,looseness=1.5] (8,0) to[out=-90,in=-90,looseness=1.5] (7.5,0);
   \end{tikzpicture}
 \end{center}
-Here $e_{10}$, $e_{11}$, and $e_{12}$ are all edges not adjacent to any vertices, with genera 0, 1, and 2 respectively.
+Here $e_{10}$, $e_{11}$, and $e_{12}$ are all edges not incident to any vertices, with genera 0, 1, and 2 respectively.
 We did not draw any arrows on them because only flags, not edges, are directed as ``incoming'' or ``outgoing''.
-When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$e_7$ adjacent to the root above would be drawn as follows. %(preserving the ordering on incoming and outgoing edges to the root by drawing the incoming and outgoing edges to the graph in the same order).
+When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$e_7$ incident to the root above would be drawn as follows. %(preserving the ordering on incoming and outgoing edges to the root by drawing the incoming and outgoing edges to the graph in the same order).
 \begin{center}
   \begin{tikzpicture}
     \node[outer] (e1a) at (2,1) {};
@@ -501,7 +520,7 @@ When interpreted as incoming or outgoing to the entire graph, the edges $e_1$--$
   \end{tikzpicture}
 \end{center}
 
-We note that there are many ways in which even a ordered hypergraph can have nontrivial automorphisms.
+We note that there are many ways in which an hypergraph (even an ordered one) can have nontrivial automorphisms.
 One simple example is the graph with two vertices and no edges:
 \begin{center}
 \begin{tikzpicture}
@@ -539,6 +558,19 @@ This example cannot be rooted (the automorphism has no fixed points) --- or more
   \end{tikzpicture}
 \end{center}
 Here there is an automorphism that swaps $g$ and $h$ and fixes the root $\ast$.
+Note that this hypergraph is distinct from
+\begin{center}
+  \begin{tikzpicture}
+    \node[vertex] (f) at (0,0) {$\ast$};
+    \node[vertex] (g) at (1,2) {$g$};
+    \node[vertex] (h) at (-1,2) {$h$};
+    \draw[edge] (g) to[out=-90,in=60] (f);
+    \draw[edge] (h) to[out=-90,in=120] (f);
+  \end{tikzpicture}
+\end{center}
+The former has \emph{one} edge that is incident to three vertices, while the latter has \emph{two} edges each incident to two vertices.
+In contrast to the former, the latter has no automorphisms that preserve an ordering on the edges incident to the root.
+
 The most restrictive thing we can say about about automorphisms is the following.
 
 \begin{defn}
@@ -556,8 +588,8 @@ Amusingly, this condition can be reformulated by saying that the rank of an edge
 \begin{proof}
   Suppose $\phi$ is an automorphism of $\G$.
   By assumption, it must preserve the root.
-  Since it is locally-ordered, it must preserve all edges adjacent to the root.
-  But since each of those edges is adjacent to exactly one other vertex, it must preserve those vertices too.
+  Since it is locally-ordered, it must preserve all edges incident to the root.
+  But since each of those edges is incident to exactly one other vertex, it must preserve those vertices too.
   Proceeding inductively we find that it must preserve all edges and vertices in the connected component of the root, which is all of them since the graph is connected.
   Finally, since $\G$ is reduced and of genus zero, preserving all the edges means that it is the identity on the reflexive graph $E$.
 \end{proof}
@@ -572,11 +604,11 @@ This collapse exists as a \emph{morphism} of hypergraphs in one direction, but i
 Thus we introduce the following definition:
 
 \begin{defn}\label{defn:weq}
-  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every reflexivity edge is a (nonempty) undirected tree.
+  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every non-reflexivity edge is a singleton, and the preimage of every reflexivity edge is a (nonempty) undirected tree.
   A morphism of hypergraphs is a \textbf{weak equivalence} if it is bijective on vertices (hence on flags) and its map on edges is a weak equivalence.
 \end{defn}
 
-\begin{lem}
+\begin{lem}\label{thm:reduction}
   Every hypergraph admits a weak equivalence to a reduced one.
   Moreover, if $\G\to \G_1$ and $\G \to \G_2$ are weak equivalences with $\G_1$ and $\G_2$ reduced, then there is a non-unique isomorphism $\G_1 \cong \G_2$ (which need not commute with the maps from $\G$).
 \end{lem}
@@ -588,13 +620,13 @@ Thus we introduce the following definition:
 The non-uniqueness of ``reduction'' is the reason for including non-reduced graphs in the theory; as we will see, they arise naturally in the construction of insertion in \cref{sec:tt-insertion}, and without a canonical way to reduce them it is more natural to keep them around.
 If we represented the edges by a free groupoid rather than a reflexive graph, weak equivalences would be actual equivalences, but free groupoids also have additional automorphisms that we don't want.
 
-% The directed version of the binary condition is a little kludgy to state due to our convention about the orientations of flags adjacent to the root.
+% The directed version of the binary condition is a little kludgy to state due to our convention about the orientations of flags incident to the root.
 
 % \begin{defn}
 %   Let $\G$ be a directed rooted hypergraph.
 %   \begin{enumerate}
-%   \item $\G$ is \textbf{weakly binary} if it is binary (in the undirected sense) and moreover every edge not adjacent to the root has equal in-rank and out-rank (i.e.\ either both 1 or both 0).
-%   \item $\G$ is \textbf{strongly binary} if it is binary (in the undirected sense) and moreover if we switched the direction of all flags adjacent to the root then every edge would have equal in-rank and out-rank.
+%   \item $\G$ is \textbf{weakly binary} if it is binary (in the undirected sense) and moreover every edge not incident to the root has equal in-rank and out-rank (i.e.\ either both 1 or both 0).
+%   \item $\G$ is \textbf{strongly binary} if it is binary (in the undirected sense) and moreover if we switched the direction of all flags incident to the root then every edge would have equal in-rank and out-rank.
 %   \end{enumerate}
 % \end{defn}
 
@@ -674,21 +706,21 @@ If we represented the edges by a free groupoid rather than a reflexive graph, we
 We end this section by comparing our graphs to others in the literature.
 Graphs with ``free flags'' have been used in defining many kinds of operads, but usually only of the binary sort, corresponding to non-cartesian multicategories and operads.
 
-In a reduced binary rooted hypergraph, we can define an involution on the set of flags not adjacent to the root by sending each flag to the other flag of its corresponding edge, if that flag is not adjacent to the root, or to itself otherwise.
-The quotient of this involution is then isomorphic to the set of edges that are adjacent to some non-root vertex.
+In a reduced binary rooted hypergraph, we can define an involution on the set of flags not incident to the root by sending each flag to the other flag of its corresponding edge, if that flag is not incident to the root, or to itself otherwise.
+The quotient of this involution is then isomorphic to the set of edges that are incident to some non-root vertex.
 Thus, we can equivalently define a binary rooted hypergraph by giving
 \begin{itemize}
-\item a set $F$ of flags (the flags not adjacent to the root),
+\item a set $F$ of flags (the flags not incident to the root),
 \item an involution on $F$,
-\item a set of ``exceptional linear edges'' (the edges adjacent to the root twice),
-\item a set of ``exceptional loops'' (the edges not adjacent to any vertex --- the only ones with genus 1), and
+\item a set of ``exceptional linear edges'' (the edges incident to the root twice),
+\item a set of ``exceptional loops'' (the edges not incident to any vertex --- the only ones with genus 1), and
 \item a set $V$ of (non-root) vertices and a function $F\to V$ with finite linearly ordered fibers (equivalently, a ``partition'' of $F$ into finite linearly ordered blocks, some of which are allowed to be empty).
 \end{itemize}
 This is the definition of ``graph'' used commonly in operad theory, e.g.~\cite{bm:gen-opds,km:gwcqceg,costello:ainf,mms:wheeled-props,gk:modular-operads}, although often exceptional loops and edges are omitted or treated inconsistently.
 
-Alternatively, if we remove the root but not the flags adjacent to it, then the function $F\to V$ becomes a partial function, which is defined on a flag just when that flag is not adjacent to the root.
-Now we still have the exceptional edges (those adjacent to two flags that are not adjacent to any vertices) and the exceptional loops (those not adjacent to any flags).
-This is essentially how binary rooted hypegraphs are encoded in~\cite{bb:htapm}, except that their exceptional loops are ``adjacent to a single flag twice'' rather than to no flags at all.
+Alternatively, if we remove the root but not the flags incident to it, then the function $F\to V$ becomes a partial function, which is defined on a flag just when that flag is not incident to the root.
+Now we still have the exceptional edges (those incident to two flags that are not incident to any vertices) and the exceptional loops (those not incident to any flags).
+This is essentially how binary rooted hypegraphs are encoded in~\cite{bb:htapm}, except that their exceptional loops are ``incident to a single flag twice'' rather than to no flags at all.
 
 Another possibility is to express the partial function $F\rightharpoonup V$ as a relation, i.e.\ a span $F \ot H \to V$ in which $H\to F$ is injective.
 If we exclude the possibility of exceptional loops, then the function $F\to E$ is a 2-to-1 surjection and hence can be encoded up to isomorphism by a fixed-point-free involution of $F$.
@@ -718,18 +750,20 @@ A \textbf{loop context} $\Xi$ in an edge context $\Delta$ is a finite list of eq
   \inferrule{\Delta\types\Xi\loopctx \\ (x:p)\in \Delta \\ (y:p)\in\Delta}{\Delta\types (\Xi,x\doteq y) \loopctx}
 \end{mathpar}
 
-A \textbf{vertex} in an edge context is a morphism of $P$ with variables of appropriate type assigned as its legs.
+A \textbf{vertex} in an edge context is a morphism of $P$ with variables of appropriate type assigned as its entries.
 
 \begin{mathpar}
-  \inferrule{\alpha\in P(p_1,\dots,p_n) \\ (x_i\in p_i)\in\Delta}{\Delta \types \alpha(x_1,\dots,x_n) \vertex}
+  \inferrule{\alpha\in P(p_1,\dots,p_n) \\ (x_i:p_i)\in\Delta}{\Delta \types \alpha(x_1,\dots,x_n) \vertex}
 \end{mathpar}
+
+In the directed case, we write $\alpha(x_1,\dots,x_n ; y_1,\dots,y_m)$ to indicate the separation of entries into domain and codomain.
 
 A \textbf{graph context} is an edge context, a loop context, and a finite list of variables assigned to vertices.
 
 \begin{mathpar}
   \inferrule{\Delta \edgectx \\ \Delta\types \Xi\loopctx}{\Delta \mid\Xi\types \ec\graph}
   \and
-  \inferrule{\Delta \mid\Xi\types \Gamma\graph \\ \Delta\types M\vertex \\ (f\notin \Gamma)}{\Delta\mid\Xi\types (\Gamma,f:M)\graph}
+  \inferrule{\Delta \mid\Xi\types \Theta\graph \\ \Delta\types M\vertex \\ (f\notin \Theta)}{\Delta\mid\Xi\types (\Theta,f:M)\graph}
 \end{mathpar}
 
 \begin{thm}\label{thm:ctx-hy}
@@ -747,10 +781,10 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
 \begin{defn}
   Given two graph contexts
   \begin{mathpar}
-    \Delta\mid\Xi\types \Gamma\graph \and
-    \Delta'\mid\Xi'\types \Gamma'\graph \and
+    \Delta\mid\Xi\types \Theta\graph \and
+    \Delta'\mid\Xi'\types \Theta'\graph \and
   \end{mathpar}
-  an \textbf{morphism} or \textbf{substitution} $\Gamma\to\Gamma'$ consists of:
+  an \textbf{morphism} or \textbf{substitution} $\Theta\to\Theta'$ consists of:
   \begin{enumerate}
   \item A function $\sigma : \Delta' \to \Delta$ that respects types.
   \item A partial function $\tau : \Xi' \rightharpoonup \Xi$ such that
@@ -758,12 +792,12 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
     \item If $\tau(x\doteq y)$ is defined, then it is of the form $\sigma(x)\doteq \sigma(y)$.
     \item If $\tau(x\doteq y)$ is undefined, then $\sigma(x)=\sigma(y)$.
     \end{enumerate}
-  \item A function $\nu : \Gamma' \to \Gamma$ that respects types modulo $\sigma$, i.e.\ if $f:\alpha(\vec x)$ then $\nu(f) : \alpha(\sigma(\vec x))$.
+  \item A function $\nu : \Theta' \to \Theta$ that respects types modulo $\sigma$, i.e.\ if $f:\alpha(\vec x)$ then $\nu(f) : \alpha(\sigma(\vec x))$.
   \end{enumerate}
   This defines the category $\GCtx_P$ of $P$-labeled graph contexts.
 \end{defn}
 
-\begin{thm}
+\begin{thm}\label{thm:hyctx}
   There is an equivalence of categories
   \[ (\hy/P)\op \simeq \GCtx_P. \]
 \end{thm}
@@ -776,7 +810,7 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
 The weak equivalences from \cref{defn:weq} also have a natural type-theoretic interpretation.
 They are inductively obtained by substituting along equalities of \emph{distinct} variables:
 \begin{equation}\label{eq:subst}
-  \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Gamma\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Gamma[x/y] \graph}
+  \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Theta\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Theta[x/y] \graph}
 \end{equation}
 
 
@@ -791,7 +825,7 @@ To clarify the abstract properties of this operation, we phrase it as a bicatego
 \end{defn}
 
 \begin{defn}
-  A \textbf{corolla} is a reduced hypergraph of genus zero of the form $1 \ot F = F$, i.e.\ having one vertex, each flag of which is adjacent to a unique edge.
+  A \textbf{corolla} is a reduced hypergraph of genus zero of the form $1 \ot F = F$, i.e.\ having one vertex, each flag of which is incident to a unique edge.
   A disjoint union of corollas, i.e.\ a hypergraph of the form $V \ot F = F$, is called an \textbf{inflorescence}.\footnote{A corolla is the whorl of petals in a flower; an inflorescence is a cluster of flowers on a single stem.}
 \end{defn}
 
@@ -809,11 +843,11 @@ Note that an inflorescence is uniquely determined, up to non-unique isomorphism,
   \item The morphisms from $\A$ to $\B$ are cospans $\A \to \G \ot \B$ of hypergraphs such that $(\A+\B) \to \G$ is bijective on vertices.
     Equivalently, the morphisms are hypergraphs $\G$ equipped with a partition of their vertices into two disjoint subsets; the inflorescences $\A$ and $\B$ are then uniquely determined.
   \item The composite $\G \coll_{\B} \H$ of $\A \to \G \ot \B$ and $\B \to \H \ot \C$ is defined to be
-    \[ V_{\A}  + V_{\B} \longleftarrow F_{\A} + F_{\B} \longrightarrow E_{\G} \coll_{E_\B} E_{\H} \]
+    \[ V_{\A}  + V_{\C} \longleftarrow F_{\A} + F_{\C} \longrightarrow E_{\G} \coll_{E_\B} E_{\H} \]
     In other words:
     \begin{enumerate}
-    \item The vertices and flags of $\G \coll_{\B} \H$ the disjoint unions of those of $\A$ and those of $\C$.
-    \item The reflexive graph of edges of $\G \coll_{\B} \H$ is the collage of those of $\G$ and $\H$ under that of $\B$.
+    \item The vertices and flags of $\G \coll_{\B} \H$ are the disjoint unions of those of $\A$ and those of $\C$.
+    \item The edge graph of $\G \coll_{\B} \H$ is the collage of those of $\G$ and $\H$ under that of $\B$.
       Thus, an edge representative is either one in $\G$ or one in $\H$, while an edge identification is either one in $\G$, one in $\H$, or one identifying the images in $\G$ and $\H$ of an edge in $\B$.
     \end{enumerate}
   \item The unit $1_{\A}$ of an inflorescence $\A=(V\ot F = F)$ is $V+V \ot F+F \to F$, with the two evident inclusions from $\A$.
@@ -824,14 +858,14 @@ Note that an inflorescence is uniquely determined, up to non-unique isomorphism,
   The latter means that if we have $E_1 \ot F_1 \to E_2 \ot F_2 \to E_3$ with $F_1,F_2$ discrete, then $(E_1 \coll_{F_1} E_2) \coll_{F_2} E_3 \cong E_1 \coll_{F_1} (E_2 \coll_{F_2} E_3)$, and the pentagon equation is satisfied if we have another span $E_3 \ot F_3 \to E_4$.
   This is a straightforward verification.
 
-  The composite $1_{\A} \coll_{\A} \G$ has the same vertices and flags as $\G$ (up to isomorphism), but its edge graph has been augmented by a new edge representative $\bar{x}$ for each flag $x\in F_{\A}$, and new identifications connecting $\bar{x}$ to the edge representative adjacent to the image of $x$ in $\G$.
+  The composite $1_{\A} \coll_{\A} \G$ has the same vertices and flags as $\G$ (up to isomorphism), but its edge graph has been augmented by a new edge representative $\bar{x}$ for each flag $x\in F_{\A}$, and new identifications connecting $\bar{x}$ to the edge representative incident to the image of $x$ in $\G$.
   Thus, it is not isomorphic to $\G$, but admits a map to $\G$ that contracts each of these new identifications to reflexivity.
   The other unit constraint is dual, and the coherence axiom is straightforward to check.
 \end{proof}
 
 Note that if $\A$ and $\C$ are ordered or directed, so is $\G \coll_{\B} \H$, since its vertices are simply those of $\A$ and $\C$.
 Moreover, the set $\pi(E_1 \coll_F E_2)$ of connected components of a collage of reflexive graphs is the pushout $\pi E_1 +_{\pi F} \pi E_2$.
-It follows that in the ordered case, the cycligraph reflection $\pi(\G \coll_{\B} \H)$ of a composite in $\hyrel$ is the pushout $\pi\G \coll_{\pi \B} \pi \H_v$ of the cycligraph reflections, and similarly for the unit.
+It follows that in the ordered case, the cycligraph reflection $\pi(\G \coll_{\B} \H)$ of a composite in $\hyrel$ is the pushout $\pi\G +_{\pi \B} \pi \H_v$ of the cycligraph reflections, and similarly for the unit.
 In other words, the ``homwise cycligraph reflection'' of the ordered form of $\hyrel$ is simply the bicategory of cospans of cycligraphs.
 
 The most common situation in which we apply this is the following.
@@ -854,246 +888,62 @@ Moreover, if $\G$ and each $\H_v$ are labeled by some cycligraph $P$, with label
 \section{Type theory for insertion}
 \label{sec:tt-insertion}
 
-If $\Gamma$ and $\Gamma'$ are graph contexts, we write $\Gamma \sametypes \Gamma'$ to mean that their variables have the same types in the same order, i.e.:
+If $\Theta$ and $\Theta'$ are graph contexts, we write $\Theta \sametypes \Theta'$ to mean that their variables have the same types in the same order, i.e.:
 \begin{mathpar}
   \inferrule{ }{\Delta\mid\Xi\types \ec \sametypes \ec}
   \and
-  \inferrule{\Delta\mid\Xi\types \Gamma\sametypes\Gamma' \\ \Delta\types \alpha(\vec x)\vertex \\ \Delta\types \alpha(\vec y) \vertex}{\Delta\mid\Xi\types (\Gamma,\alpha(\vec x)) \sametypes (\Gamma',\alpha(\vec y))}
+  \inferrule{\Delta\mid\Xi\types \Theta\sametypes\Theta' \\ \Delta\types \alpha(\vec x)\vertex \\ \Delta\types \alpha(\vec y) \vertex}{\Delta\mid\Xi\types (\Theta,\alpha(\vec x)) \sametypes (\Theta',\alpha(\vec y))}
 \end{mathpar}
-We also write $\varsof\Gamma$ for the ordered list of edge variables occurring in $\Gamma$, i.e.:
+We also write $\varsof\Theta$ for the ordered list of edge variables occurring in $\Theta$, i.e.:
 \begin{align*}
   \varsof\ec &\coloneqq ()\\
-  \varsof{(\Gamma,\alpha(\vec x))} &\coloneqq (\varsof\Gamma,\vec x)
+  \varsof{(\Theta,\alpha(\vec x))} &\coloneqq (\varsof\Theta,\vec x)
 \end{align*}
+And if $\vec x=(x_1,\dots,x_n)$ and $\vec y=(y_1,\dots,y_n)$ are lists of variables of the same length (such as $\varsof\Theta$), then by $\vec x \doteq \vec y$ we mean the list of equalities
+\[x_1\doteq y_1,\dots,x_n\doteq y_n.\]
 With these notations, the insertion rule can be expressed as:
 \begin{mathpar}
-  \inferrule{\Delta\mid\Xi\types (\Gamma,\Phi)\graph\\ \Delta'\mid\Xi'\types (\Psi,\Upsilon) \graph}
-  {\Delta,\Delta' \mid \Xi,\Xi',\varsof\Phi\doteq\varsof\Psi \types (\Gamma,\Upsilon) \graph}
+  \inferrule{\Delta\mid\Xi\types (\Theta,\Phi)\graph\\ \Delta'\mid\Xi'\types (\Psi,\Upsilon) \graph \\ \Phi\sametypes\Psi}
+  {\Delta,\Delta' \mid \Xi,\Xi',\varsof\Phi\doteq\varsof\Psi \types (\Theta,\Upsilon) \graph}
 \end{mathpar}
 Implicit in the notation is that $\Delta\cap \Delta'=\emptyset$, so that $\varsof\Phi\doteq\varsof\Psi$ consists of equalities between distinct variables.
-Thus at least some of them can be substituted away by a weak equivalence as in~\eqref{eq:subst} (a ``unification algorithm'' for the arguments of the vertices in $\Phi$ and $\Psi$).
+Thus at least some of them can be substituted away by a weak equivalence as in~\eqref{eq:subst} (a ``nondeterministic unification algorithm'' for the arguments of the vertices in $\Phi$ and $\Psi$).
 However, we may still be left with additional self-loops created by the insertion, for instance:
 
 \begin{mathpar}
-  \inferrule*{\inferrule*{x:p \mid\cdot \types (\Gamma_1,f:\alpha(x,x)) \graph \\
-    u:p \mid\cdot \types (g:\alpha(u,u),\Gamma_2) \graph}
-  {x:p,u:p \mid x\doteq u, x\doteq u \types (\Gamma_1,\Gamma_2)\graph}}
-{x:p \mid x\doteq x \types \Gamma_1,\Gamma_2[x/u] \graph}
+  \inferrule*{\inferrule*{x:p \mid\cdot \types (\Theta_1,f:\alpha(x,x)) \graph \\
+    u:p \mid\cdot \types (g:\alpha(u,u),\Theta_2) \graph}
+  {x:p,u:p \mid x\doteq u, x\doteq u \types (\Theta_1,\Theta_2)\graph}}
+{x:p \mid x\doteq x \types \Theta_1,\Theta_2[x/u] \graph}
 \end{mathpar}
 
 
-\section{Parametric right 2-adjoints}
-\label{sec:pr2a}
-
-We would like to build a monad out of labeled hypergraphs.
-Our first thought may be that it should be a polynomial monad, since each hypergraph should give a ``constructor'' whose ``arguments'' are a labeling of it.
-However, in a categorical situation where labelings have dependency, polynomial functors are too restrictive.
-They are sufficient in the ``one-object'' clase of generalized operads (as in~\cite{bb:htapm}), but for generalized multicategories (``colored operads'') we need the more general \emph{parametric right adjoints} of~\cite{weber:parmrep,weber:fam-pra}.
-
-As shown in~\cite{weber:fam-pra}, a parametric right adjoint (p.r.a.) functor between presheaf categories $[I\op,\Set]\to [J\op,\Set]$ can be represented by a discrete fibration $p:K\to J$ together with a profunctor $H:I\op\times K\to\Set$.
-The p.r.a.\ functor corresponding to $p$ and $H$ is the composite
-\[ [I\op,\Set] \xto{\hom_I(H,-)} [K\op,\Set] \xto{\lan_p} [J\op,\Set]. \]
-where $\hom_I(H,X)(k) = \lim_{i\in I} \hom(H(i,k),X(i))$.
-By writing $H$ as a two-sided discrete fibration, we can also represent a p.r.a.\ functor as the restriction to discrete fibrations of a polynomial in \Cat, but this will be less useful for our purposes.
-However, we do note that $\lan_p$ acting on discrete fibration is just composition with $p$.
-
-In fact, hypergraphs do not quite give such a parametric right adjoint either: the presence of automorphisms prevents $p$ from being a \emph{discrete} fibration.
-We can still define a functor on presheaf categories in the same way, but it will not be p.r.a.\ because $\lan_p$ is no longer just composition of discrete fibrations.
-A more natural thing to do is to define a functor on \Cat-valued presheaves, where the first step $\hom_I(H,-)$ is still the same, but the second step is given by composition with a non-discrete fibration $p$.
-
-The situation is analogous to how while the 2-monad for strict monoidal categories is just the monad for monoids acting on objects and morphisms separately, the 2-monad for symmetric strict monoidal categories is not similarly obtained from the monad for commutative monoids.
-Instead the operations have to be ordered and the symmetry only imposed up to isomorphism, and hence the 2-monad does not restrict to discrete categories, though it can be reflected into them.
-
-In this section we develop the necessary preliminaries on parametric right 2-adjoints.
-
-\begin{lem}\label{thm:pra}
-  Suppose given categories $I,J,K$, a \Cat-valued profunctor $H:I\op\times K\to \Cat$, and a split fibration $p:K\to J$.
-  Then the composite
-  \[ [I\op,\Cat] \xto{\hom_I(K,-)} [K\op,\Cat] \cong \SFib/K \xto{\Sigma_p} \SFib/J \cong [J\op,\Cat] \]
-  is a parametric right adjoint 2-functor, i.e.\ the induced 2-functor $[I\op,\Cat] \to [J\op,\Cat]/T1$ is a right 2-adjoint.
-\end{lem}
-\begin{proof}
-  Since $\hom_I(K,-)$ is a right 2-adjoint, it suffices to show that $\Sigma_p$ is a parametric right adjoint.
-  But $\Sigma_p1 = K$, so the relevant functor on slice categories is an equivalence.
-\end{proof}
-
-It is natural to conjecture that every p.r.a.\ 2-functor between presheaf 2-categories can be represented in this form, but we will not need this.
-We do however need functorial extensions of this result.
-The following proofs are adapted from the corresponding proofs for polynomial functors in~\cite{kg:polynomials,weber:poly-pb}.
-
-\begin{lem}\label{thm:pra2cell}
-  Suppose given a split fibration $p:K\to J$ and $H:I\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F$, and also $p':K'\to J$ and $H':I\op\times K'\to\Cat$ determining another one $G$, and also a functor $k:K'\to K$ such that $p' = p k$ and $H' \cong H(1,k)$.
-  Then there is an induced cartesian 2-natural transformation $F\to G$.
-\end{lem}
-\begin{proof}
-  Since $H' \cong H(1,k)$, the functor $\hom_I(H',-)$ is isomorphic to $k^* \circ \hom_I(H,-)$, where $k^*$ denotes precomposition with $k$, or equivalently pullback of split fibrations along $k$.
-  Moreover, since $p' = p k$, we have $\Sigma_{p'} \cong \Sigma_p \circ \Sigma_k$ as functors on slice categories of \Cat.
-  (Note that in general, $\Sigma_k : \Cat/K' \to \Cat/K$ need not preserve split fibrations or split morphisms between them, but it does take them to objects and morphisms whose images under $\Sigma_p$ are split.)
-  Thus, $F$ is isomorphic to the composite $\Sigma_p \circ \Sigma_k \circ k^* \circ \hom_I(H,-)$, and our transformation is induced by the counit $\Sigma_k k^* \to \Id$.
-  But this counit is always a cartesian transformation, and $\Sigma_p$ preserves pullbacks.
-\end{proof}
-
-\begin{lem}\label{thm:pracomp}
-  Suppose given $H : J\op\times K \to \Cat$ and a split fibration $p:E\to J$.
-  Then there is a split fibration $q:L\to K$ and a profunctor $M:E\op \times L \to \Cat$ and a natural isomorphism
-  \[
-  \begin{tikzcd}[column sep=huge]
-    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[d,"\Sigma_p"'] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[d,"\Sigma_q"]\\
-    {[J\op,\Cat]} \ar[r,"{\hom_J(H,-)}"'] & {[K\op,\Cat]}
-  \end{tikzcd}
-  \]
-\end{lem}
-\begin{proof}
-  Let $P:J\op\to\Cat$ be the functor corresponding to the split fibration $p:E\to J$, let $Q : K\op\to\Cat$ be $\hom_J(H,P)$, and let $q:L\to K$ be the split fibration corresponding to $Q$.
-  Thus an object $\ell\in L$ is a natural transformation $\ell : H(-,q(\ell)) \to P$.
-
-  If we let $f:F_\ell \to J$ be the split fibration corresponding to $H(-,q(\ell))$, then $\ell$ is equivalently a strict morphism of split fibrations $\hat\ell : F_\ell \to E$ over $J$.
-  Let $G_\ell$ be the comma category of $\hat\ell$ under $E$ and over $J$, i.e.\ there is a universal 2-cell such that
-  \[
-  \begin{tikzcd}
-    G_\ell \ar[r] \ar[d] \twocell{dr} & E \ar[d,equals] \\
-    F_\ell \ar[r,"{\hat\ell}"'] & E \ar[dr,"p"] \\
-    && J
-  \end{tikzcd}
-  \]
-  is an identity.
-  Then $G_\ell \to E$ is a split fibration; we define $M(-,\ell) : E\op\to\Cat$ to be the corresponding functor.
-  For functoriality in $\ell$, note that a morphism $\psi:\ell\to\ell'$ consists of an arrow $q(\psi):q(\ell) \to q(\ell')$ and a modification
-  \[
-  \begin{tikzcd}
-    H(-,q(\ell)) \ar[rr,"{H(-,q(\psi))}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & H(-,q(\ell')) \ar[dl,"\ell'"] \\
-    & P.
-  \end{tikzcd}
-  \]
-  or equivalently a vertical transformation
-  \[
-  \begin{tikzcd}
-    F_\ell \ar[rr,"{F_\psi}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & F_{\ell'} \ar[dl,"\ell'"] \\
-    & E.
-  \end{tikzcd}
-  \]
-  If we paste this with the defining comma square of $G_\ell$, we can factor it through $G_{\ell'}$ by a map that is a strict morphism of split fibrations, hence induces a map $M(-,\ell) \to M(-,\ell')$.
-
-  % Of course, an object $e\in E$ is an object of $P(p(e))$.
-  % We define $M(e,\ell)$ to be the comma category of the functor $\ell_{p(e)} : H(p(e),q(\ell)) \to P(p(e))$ under $e$:
-  % \[
-  % \begin{tikzcd}
-  %   M(e,\ell) \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e"] \\
-  %   H(p(e),q(\ell)) \ar[r,"{\ell_{p(e)}}"'] & P(p(e))
-  % \end{tikzcd}
-  % \]
-  % That is, an object of $M(e,\ell)$ is an object $h\in H(p(e),q(\ell))$ with a morphism $e\to \ell_{p(e)}(h)$.
-
-  % To make $M$ a profunctor, note that a morphism $\phi : e'\to e$ in $E$ consists of a morphism $p(\phi) : p(e')\to p(e)$ in $J$ and a morphism $\bar{\phi}:e'\to p(\phi)^*(e)$ in $P(p(e'))$, while a morphism $\psi:\ell\to\ell'$ consists of an arrow $q(\psi):q(\ell) \to q(\ell')$ and a modification
-  % \[
-  % \begin{tikzcd}
-  %   H(-,q(\ell)) \ar[rr,"{H(-,q(\psi))}"] \ar[dr,"\ell"'] & ~\twocellop[\bar{\psi}]{d} & H(-,q(\ell')) \ar[dl,"\ell'"] \\
-  %   & P.
-  % \end{tikzcd}
-  % \]
-  % To define the action of $M$ on $\phi,\psi$ we form the following pasting:
-  % \[
-  % \begin{tikzcd}
-  %   M(e,\ell) \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e"] \ar[ddr,bend left,"e'"] \twocell[\bar{\phi}]{ddr} \\
-  %   H(p(e),q(\ell)) \ar[r,"{\ell_{p(e)}}"'] \ar[d,"{H(\phi,1)}"'] & P(p(e)) \ar[dr,"{p(\phi)^*}" description]\\
-  %   H(p(e'),q(\ell)) \ar[rr,"{\ell_{p(e')}}"] \ar[d,"{H(1,\psi)}"'] &~& P(p(e'))\\
-  %   H(p(e'),q(\ell')) \ar[urr,"{\ell'_{p(e')}}"',shift right] \twocell[\bar{\psi}_{p(e')}]{ur}
-  % \end{tikzcd}
-  % \]
-  % and factor it through the comma square for $e'$ and $\ell'$:
-  % \[
-  % \begin{tikzcd}
-  %   M(e,\ell) \ar[dr,"{M(\phi,\psi)}"]\\
-  %   &M(e',\ell') \ar[r] \ar[d] \twocell{dr} & 1 \ar[d,"e'"] \\
-  %   &H(p(e'),q(\ell')) \ar[r,"{\ell'_{p(e')}}"'] & P(p(e'))
-  % \end{tikzcd}
-  % \]
-
-  Now we construct the desired isomorphism.
-  We will take it to be the mate under the adjunctions $\Sigma_p \dashv p^*$ and $\Sigma_q \dashv q^*$ of an isomorphism
-  \begin{equation}
-  \begin{tikzcd}[column sep=huge]
-    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[from=d,"p^*"] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[from=d,"q^*"']\\
-    {[J\op,\Cat]} \ar[r,"{\hom_J(H,-)}"'] & {[K\op,\Cat]}
-  \end{tikzcd}\label{eq:pracomp-mate}
-  \end{equation}
-  To construct this, let $R:J\op\to\Cat$, corresponding to a split fibration $r:C\to J$.
-  Its image under the lower-right composite is the functor $S:L\op\to\Cat$ defined by $S(\ell) = \hom_J(H(-,q(\ell)),R)$.
-  That is, an object of $S(\ell)$ is a natural transformation $H(-,q(\ell)) \to R$, or equivalently a strict morphism of split fibrations $F_\ell \to C$ over $J$.
-  %, assigning to each $j\in J$ a functor $H(j,q(\ell)) \to R(j)$, naturally in $j$.
-
-  The image of $R$ under the left-upper composite is the functor $T:L\op\to Cat$ defined by $T(\ell) = \hom_E(M,R\circ p)$.
-  That is, an object of $T(\ell)$ is a natural transformation $M(-,\ell) \to R(p(-))$, or equivalently a strict morphism of split fibrations
-  \[
-  \begin{tikzcd}
-    G_\ell \ar[d] \ar[r] & C \ar[d] \\
-    E \ar[r,"p"'] & J
-  \end{tikzcd}
-  \]
-  over $p$.
-  % , assigning to each $e\in E$ a functor $M(e,\ell) \to R(p(e))$.
-  % Now an object of $M(e,\ell)$ consists of an object $h\in H(p(e),q(\ell))$ and an arrow $e\to \ell_{p(e)}(h)$ in $P(p(e))$.
-  % In particular, for each $j\in J$ and $h\in H(j,q(\ell))$ we can take $e=\ell_{j}(h)$ and act on the identity arrow in $P(p(e))$ to get an object of $R(p(\ell_{j}(h)))$, i.e.\ $R(j)$.
-  However, $G_\ell$ is the free fibration generated by $\hat\ell : F_\ell \to E$ over $J$, so such a morphism is equivalently an arbtrary morphism
-  \[
-  \begin{tikzcd}
-    F_\ell \ar[d] \ar[r] & C \ar[d] \\
-    E \ar[r,"p"'] & J
-  \end{tikzcd}
-  \]
-  that is a strict morphism over $J$, i.e.\ an object of $S(\ell)$.
-  We leave it to the reader to verify the naturality of this isomorphism.
-
-  It remains to show that the mate of~\eqref{eq:pracomp-mate} really is an isomorphism.
-  Since the unit and counit of the adjunctions $\Sigma_p \dashv p^*$ and $\Sigma_q \dashv q^*$ are cartesian natural transformations, and all the functors involved preserve pullbacks, this mate is again a cartesian transformation.
-  Thus, it is an isomorphism as soon as its component at the terminal object is so.
-  Now $\hom_E(M,-)$ is a right adjoint, hence preserves the terminal object, while $\Sigma_q$ takes the terminal object to the split fibration $q:L\to K$ itself.
-  But $\Sigma_p$ also takes the terminal object to $p:E\to J$ itself, which $\hom_J(H,-)$ takes to $q:L\to K$ by definition of $q$.
-\end{proof}
-
-\begin{lem}\label{thm:pracomp2}
-  Given a split fibration $p_2:K\to J_3$ and $H_2:J_2\op \times K\to \Cat$ determining a p.r.a.\ 2-functor $F_2:[J_2\op,\Cat] \to [J_3\op,\Cat]$, and also $p_1:E\to J$ and $H_1:J_1\op \times E\to \Cat$ determining $F_1 : [J_1\op,\Cat] \to [J_2\op,\Cat]$, the composite $F_2\circ F_1$ is determined by the composite split fibration $L \xto{q} K \xto{p_2} J_3$ and the composite profunctor $H_1 \otimes_E M : J_1\op \times L \to \Cat$, where $q$ and $M$ are as in \cref{thm:pracomp}.
-\end{lem}
-\begin{proof}
-  From the isomorphism of \cref{thm:pracomp} we obtain
-  \[
-  \begin{tikzcd}[column sep=huge]
-    {[J_1\op,\Cat]} \ar[r,"{\hom_{J_1}(H_1,-)}"] \ar[dr,"F_1"'] \ar[rr,"{\hom_{J_1}(H_1 \otimes_E M,-)}",bend left] &
-    {[E\op,\Cat]} \ar[r,"{\hom_E(M,-)}"] \ar[d,"\Sigma_p"'] \ar[dr,phantom,"\cong"] & {[L\op,\Cat]} \ar[d,"\Sigma_q"]
-    \ar[dr,"\Sigma_{p_2 q}"] \\
-    &{[J_2\op,\Cat]} \ar[r,"{\hom_{J_2}(H_2,-)}"'] \ar[rr,"F_2"',bend right]
-    & {[K\op,\Cat]}
-    \ar[r,"\Sigma_{p_2}"] & {[J_3\op,\Cat]}
-  \end{tikzcd}
-  \]
-  yielding the desired isomorphism.
-\end{proof}
-
-Putting all this together, we have:
-
-\begin{thm}\label{thm:pra-psfr}
-  There is a bicategory whose objects are categories, whose morphisms from $I$ to $J$ consist of a split fibration $p:K\to J$ and a profunctor $H:I\op\times K\to \Cat$, whose 2-cells are as in \cref{thm:pra2cell}, and whose composition is as in \cref{thm:pracomp2}.
-  Moreover, $J\mapsto [J\op,\Cat]$ defines a pseudofunctor from this bicategory to the bicategory of 2-categories, parametric right adjoint 2-functors, and cartesian 2-natural transformations.\qed
-\end{thm}
-
-
-\section{The pseudomonad for hypercategories}
+\section{Hypercategories and virtual hypercategories}
 \label{sec:hypercats}
 
-We now apply the machinery of \cref{sec:pr2a} to construct a monad out of hypergraphs, where the non-discrete split fibration $p:K\to J$ incorporates the automorphisms of hypergraphs.
-In fact we will include in it also the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
+We now construct a monad $T$ out of hypergraphs.
+Rather than an ordinary monad on a 1-category (such as polygraphs or cycligraphs), our monad must be a 2-monad on a 2-category, since it will incorporate the automorphisms of hypergraphs so that $T P$ will not be discrete even if $P$ is.
+In fact, $T P$ will also include the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
 In all the semantic examples that we know, these weak equivalences act as isomorphisms; so in constructing the monad we could formally invert them.
 But this would actually make our lives \emph{more} difficult, since it would be extra work to verify that the inversion is consistent everywhere, and from a syntactic point of view it is more natural to keep them directional (since substitution is more natural than its inverse).
+However, this choice does mean that $T$ will only be a lax monad, just as $\hyrel$ is only a lax bicategory.
 
-We begin with a simpler monad that omits any monoidal structure on objects.
+\begin{anfxnote}{Technology}
+  I am currently working on some technology (``parametric right 2-adjoints'') that should make it easier to construct this monad explicitly.
+  For now let's not worry about the details.
+\end{anfxnote}
+
 Let $J$ be the category such that presheaves on $J$ are cycligraphs.
 Then $J$ has one object $\bullet$ and objects $[n]$ for $n\in\N$, with $n$ nonidentity morphisms $\bullet\to [n]$.
 A functor $J\op\to\Cat$ is an internal cycligraph in \Cat, or equivalently an internal category in cycligraphs; we call it a \textbf{\Cat-cycligraph}.
+A \Cat-cycligraph has four kinds of data: the objects and arrows of the category $P(\bullet)$, which we call \emph{objects} and \emph{arrows} of $P$, and the objects and arrows of the categories $P([n])$, which we call \emph{morphisms} and \emph{2-cells} of $P$.
+The $n$ objects associated to a morphism, and the $n$ arrows associated to a 2-cell, are called its \emph{entries}.
 
+\begin{comment}
 By an \textbf{$n$-hypergraph} we will mean a rooted ordered hypergraph whose root has rank $n$.
 We define a \Cat-cycligraph $J\op\to\Cat$ by sending $[n]$ to the category of $n$-hypergraphs and weak equivalences between them, and $\bullet$ to the terminal category with unique object $\star$.
 (Note that any isomorphism is a weak equivalence.)
-Let $p:K_1 \to J$ be the (split, but not discrete) fibration corresponding to this functor.
+Let $p:K_1 \to J$ be the (split, but not discrete) fibration corresponding to this functor; thus it is the category of rooted ordered hypergraphs and weak equivalences with an additional object $\star$ adjoined along with $n$ morphisms from $\ast$ to each $n$-hypergraph ``picking out the edges incident to the root''.
 
 We define a profunctor $H_1 : J\op\times K_1 \to \Set$ as follows:
 \begin{align*}
@@ -1107,6 +957,9 @@ The $n$ morphisms $\star\to\G$ in $K_1$ induce the maps $H_1(\bullet,\star) \to 
 The $n$ morphisms $\bullet\to [n]$ in $J$ induce the maps $H_1([n],\G) \to H_1(\bullet,\G)$ selecting the edges incident to each vertex.
 
 Thus we have an induced p.r.a.\ endo-2-functor $T_1$ of the 2-category $[J\op,\Cat]$ of \Cat-cycligraphs.
+If $P$ is a cycligraph, then the objects of $T_1 P$ are those of $P$, while a morphism in $T_1 P$ with arity $n$ consists of a rooted ordered $n$-hypergraph $\G$ (an object of $K_1$) and a natural transformation $H_1(-,\G) \to P$, which is to say a $P$-labeling of the non-root vertices in $\G$.
+If $P$ is a $\Cat$-cycligraph, then this definition extends functorially to the category of objects and the category of morphisms.
+
 We now make $T_1$ into a sort of monad, using \cref{thm:pra-psfr}.
 
 The identity functor $\Id$ of $[J\op,\Cat]$ is p.r.a.\ and determined by the hom-profunctor $\hom_J$ and the identity split fibration $J\to J$.
@@ -1119,229 +972,309 @@ Of course, there are many different (isomorphic) $n$-corollas.
 However, onec we fix any particular such corolla for each $n$, we get such a transformation $\eta$.
 The existence of other corollas means that $\eta$, though fully faithful, is not replete: objects of $T_1 P$ defined using other corollas are isomorphic to ones in the image of $\eta$ but are not in the image of $\eta$ themselves.
 
-Now we define a cartesian 2-natural transformation $\mu:T^2\to T$.
+Next we define a cartesian 2-natural transformation $\mu:T_1 T_1\to T_1$.
+As constructed in \cref{thm:pracomp2}, the composite $T_1 T_1$ is determined as follows: first we form $\hom_J(H_1,K_1)$, incarnate it as a split fibration $L_1 \to K_1$, and then take the composites $L_1\to K_1\to J$ and $H_1 \otimes_{K_1} M_1$ for the profunctor $M_1$ defined as there.
 
+Now by definition, an object of $L_1$ is (either $\star$ or) a rooted ordered hypergraph $\G$ each of whose non-root vertices $v$ is labeled by another rooted ordered hypergraph $\H_v$, with an ordered bijection between the flags of $v$ and of $\ast_v$.
+Thus we can form $\ins{\G}{V_0}{v}{\H_v}$, giving a functor $k:L_1 \to K_1$ over $J$.
 
-\newpage
+Now we have to unravel the profunctor $M_1 : K_1\op \times L_1 \to \Cat$.
+In the notation of \cref{thm:pracomp}, with $\ell = (\G,\{\H_v\})$, the objects of $F_\ell$ are the edges and non-root vertices of $\G$, with morphisms to each vertex from its incident edges.
+The functor $\hat\ell : F_\ell \to K_1$ sends each vertex $v$ to the hypergraph $\H_v$, and each edge to $\star$.
+Thus, an object of $G_\ell$ is either $\star$ together with an edge of $\G$, or a rooted ordered hypergraph $\G'$ with a weak 
 
-This is almost, but not quite, the monad we want: we also want a monoidal structure on the objects, which requires a further enhancement.
+ actually lands in $\Set$ and is defined as follows:
+\begin{align*}
+  M_1(\G',(\G,\H_v)) &= \text{weak equivalences $\G'\to \H_v$ for some $v$}\\
+  M_1(\star,(\G,\H_v)) &= \text{edges of $\G$}\\
+  M_1(\G',\star) &= \emptyset\\
+  M_1(\star,\star) &= 1\\
+\end{align*}
+We claim that the composite profunctor $H_1 \otimes_{K_1} M_1$ is then given by
+\begin{align*}
+  H_1 \otimes_{K_1} M_1(\bullet,(\G,\H_v)) &= \text{edges of $\H_v$ for some $v$}\\
+  H_1 \otimes_{K_1} M_1([n],(\G,\H_v)) &= \text{non-root vertices in $\H_v$ for some $v$ with rank $n$}\\
+  H_1 \otimes_{K_1} M_1(\bullet,\star) &= 1\\
+  H_1 \otimes_{K_1} M_1([n],\star) &= \emptyset
+\end{align*}
+For $([n],(\G,\H_v))$ this follows from the co-Yoneda lemma combining $H_1([n],\G')$ with $M_1(\G',(\G,\H_v))$, and the fact that $H_1([n],\star)=\emptyset$ so there is no contribution from $M_1(\star,(\G,\H_v))$.
+The trivial cases are straightforward.
+And for $(\bullet,(\G,\H_v))$, from $H_1(\bullet,\G')$ and $M_1(\G',(\G,\H_v))$ we get (by the co-Yoneda lemma again) a contribution of the edges of $\H_v$ for all $v$, while from $H_1(\bullet,\star)$ and $M_1(\star,(\G,\H_v))$ we get a contribution of $1$
+\end{comment}
+
+For a rooted hypergraph $\G$, we write $\G_0$ for the hypergraph obtained by removing the root and all its incident flags.
+Thus, $\G$ can be regarded as a morphism in $\hyrel$ from $\G_0$ to a corolla.
+
+\begin{thm}
+  There is a lax monad $T_1$ on the category of $\Cat$-cycligraphs such that:
+  \begin{itemize}
+  \item The objects and arrows of $T_1 P$ are those of $P$.
+  \item A morphism in $T_1 P$ is a finite rooted ordered hypergraph $\G$ with a labeling $\G_0\to P$.
+    Its entries are the images of the edges incident to the root vertex.x
+    A 2-cell in $T_1 P$ from $\G_0\to P$ to $\H_0\to P$ is a weak equivalence of rooted ordered hypergraphs $\H\to \G$ (note the reversal of direction, corresponding to \cref{thm:hyctx}) and a transformation
+    \[
+    \begin{tikzcd}
+      \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
+    \end{tikzcd}
+    \]
+  \item The unit transformation $P\to T_1 P$ sends each morphism of $P$ to a rooted corolla (the unit in $\hyrel$) labeled by that morphism.
+  \item The multiplication $T_1 T_1 P \to T_1 P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$ with labelings carried along.
+  \item The associativity constraint is an isomorphism, induced by the associativity constraint of $\hyrel$.
+  \item The unit constraints are noninvertible weak equivalences, induced by the unit constraints of $\hyrel$.
+  \end{itemize}
+\end{thm}
+
+This monad suffices to describe various kinds of generalized multicategories, and the judgmental structure of the corresponding type theories.
+But to include information about the operations on objects (type formers), we need a monad $T$ that acts nontrivially on objects as well.
 
 We define a \textbf{bracketing} of $n$ things to be a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
 The \textbf{arity} of the bracketing is the length of the list.
 For instance, the bracketing $(2,0,3,1)$ of $6$, of arity $4$, should be thought of as $(xx)()(xxx)(x)$.
-An \textbf{$n$-bracketed hypergraph} is a rooted hypergraph together with a bracketing of arity $n$ of the flags incident to the root.
 
+If $B$ is a bracketing $(k_1,\dots,k_m)$, let $\Sigma_B$ be the one-object groupoid corresponding to the product of symmetric groups $\Sigma_{k_1} \times \cdots \times \Sigma_{k_m}$, which acts naturally by ``blocks'' on any $(k_1+\dots+k_m)$-element set.
+Let $\Sigma = \coprod_B \Sigma_B$ be the disjoint union of these groupoids over all bracketings $B$.
+Define a functor $\bhy : \Sigma \to \hy$ that sends each $(k_1,\dots,k_m)$ to the coproduct of $\thy$ and the $(k_1+\dots+k_m)$-corolla, with the symmetric groups acting by permuting the flags of the corolla.
+We consider this new corolla to be the root of the hypergraph $\bhy(B)$.
 
+\begin{defn}
+  A \textbf{bracketed rooted hypergraph} is a rooted hypergraph $\G$ together with a morphism $\G\to\bhy(B)$ of rooted hypergraphs, for some $B$, such that no non-root vertex is mapped to the root.
+  The category of bracketed rooted hypergraphs is a full subcategory of the comma category $\hy/\bhy$.
+\end{defn}
 
+Thus a bracketed rooted hypergraph has orderings on the flags incident to each non-root vertex and a bracketing on the flags incident to the root.
+Morphisms of bracketed rooted hypergraphs must preserve the orderings and the bracketing, but can permute the flags incident to the root \emph{within} each block of the bracketing.
 
-TODO: orders
+\begin{thm}
+  There is a lax monad $T$ on the category of $\Cat$-cycligraphs such that:
+  \begin{itemize}
+  \item The category of objects and arrows of $T P$ is the free symmetric strict monoidal category on the category of objects and arrows of $P$.
+    That is, an object of $T P$ is a finite list of objects of $P$, and an arrow is a finite list of arrows in $P$ together with a permutation.
+  \item A morphism in $T P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
+    Its entries are the images of the blocks within each bracketing of the edges incident to the root.
+    A 2-cell in $T P$ from $\G_0\to P$ to $\H_0\to P$ is a weak equivalence of bracketed rooted hypergraphs $\H\to \G$ and a transformation
+    \[
+    \begin{tikzcd}
+      \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
+    \end{tikzcd}
+    \]
+  \item The unit transformation $P\to T P$ sends each morphism of $P$ to the corresponding labeled rooted corolla, bracketed by $(1,1,\dots,1)$.
+  \item The multiplication $T T P \to T P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$, and on bracketings by removing parentheses.
+  \item The associativity and unit constraints are again induced by those of $\hyrel$.
+  \end{itemize}
+\end{thm}
 
-A morphism of bracketed hypergraphs must, of course, preserve the bracketings.
-
-Now we define another functor $J\op\to\Cat$ by sending $[n]$ to the category of $n$-bracketed hypergraphs and bracket-preserving weak equivalences between them, and $\bullet$ to the discrete category $\N$.\fxnote{Can we incorporate symmetries here?  We ought to have them for kits at least.}
-The $n$ morphisms $\bullet \to [n]$ act by sending an $n$-bracketed hypergraph to the $n$ natural numbers appearing in its bracketing.
-
-Let $p:K \to J$ be the split fibration corresponding to this functor.
-We define a profunctor $H : J\op\times K \to \Set$ as follows:
-\begin{align*}
-  H(\bullet,\G) &= \text{edges of $\G$}\\
-  H([n],\G) &= \text{non-root vertices in $\G$ with rank $n$}\\
-  H(\bullet,m) &= \mathbf{m} \quad\text{(the standard $m$-element set)}\\
-  H([n],m) &= \emptyset
-\end{align*}
-The morphisms of graphs in the fibers of $K$ over $[n]$ act (by isomorphisms) on $\H(-,\G)$ in the obvious way.
-If $m$ appears in the bracketing of $\G$, then the corresponding morphism $m\to\G$ in $K$ induces the map $H(\bullet,m) \to H(\bullet,\G)$ that picks out the corresponding $m$ edges incident to the root.
-And as before, the $n$ morphisms $\bullet\to [n]$ in $J$ induce the maps $H([n],\G) \to H(\bullet,\G)$ selecting the edges incident to each vertex.
-
-Let $T$ be the induced endo-2-functor of the 2-category $[J\op,\Cat]$ of \Cat-polygraphs. %, which we denote \cpg.
-Note that as a parametric right adjoint, $T$ preserves connected limits, and in particular pullbacks.
-
-We will now make $T$ into a monad.
-For this purpose we 
-
-We bracket this as $(1,1,\dots,1)$, so that we can send the $n$ morphisms $\bullet \to [n]$ to the $n$ morphisms $\star\to \C_n$ that pick out each of the edges.
-
-
-
-Since $\hyrel$ is a conormal lax bicategory, with associativity up to isomorphism and unitality up to transformation, $T$ is similarly a \emph{conormal lax monad} with associativity up to isomorphism and unitality up to transformation.\fxnote{Incomplete}
 Lax monads are perhaps not very familiar, but they are not much harder to deal with than pseudomonads.
 In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T$ to become invertible in any pseudoalgebra.
 
 \begin{defn}
-  A $T$-pseudoalgebra is called a \textbf{double hypercategory}.
-\end{defn}
-
-A double hypercategory $H$ has the following structure:
-\begin{itemize}
-\item A set of \emph{objects}, the objects of the category $H(0)$.
-\item A set of \emph{vertical arrows}, the arrows of $H(0)$, which can be composed in the usual way.
-\item An (unbiased, non-strict) monoidal structure on the category of objects and vertical arrows.
-\item For each $n,m$, a set of \emph{horizontal arrows} with lists of $n$ objects as source and $m$ objects as target (the objects of the category $H(n,m)$).
-\item For each $n,m$, a set of \emph{2-cells} with horizontal arrows as ``vertical source and target'', and lists of $n$ vertical arrows and $m$ vertical arrows as ``horizontal source and target''.
-  These can be composed vertically.
-\item ``Horizontal composition'' operations on horizontal arrows and 2-cells, parametrized by bracketed hypergraphs.
-  That is, if we label the non-root vertices of any rooted locally-ordered directed hypergraph by horizontal arrows of $H$, in such a way that the edges are labeled compatibly by objects, and bracket the incoming and outgoing edges to the root, then we obtain a composed horizontal arrow whose source and target are obtained by applying the monoidal structure on objects to the groups in the brackets.
-  We can similarly compose hypergraphs labeled by 2-cells, and this operation is functorial with respect to vertical composition.
-\item Moreover, isomorphisms of bracketed hypergraphs induce isomorphisms of composed horizontal arrows, naturally.
-  In particular, this applies to \emph{automorphisms}.
-\end{itemize}
-
-\begin{defn}
-  If a double hypercategory has only identity vertical arrows, we call it a \textbf{2-hypercategory}.
-  If it additionally has only identity 2-cells, we call it a \textbf{hypercategory}.%
+  A $T$-pseudoalgebra is called a \textbf{hypercategory}.%
   \footnote{The word ``hypercategory'' was also used by~\cite{hmt:strict-n-hypercats,mt:omega-hypergraphs}.
     Our meaning is somewhat different, but not unrelated since they also use a kind of hypergraph.
     The ``hyperstructures'' of~\cite{baas:higher-structures} are also related, although in contrast to both of these references we consider here only one dimension of hyper-dependency.}
 \end{defn}
 
-\begin{eg}
-  Let \bC be a symmetric monoidal category in which every object is equipped with the structure of a Frobenius algebra (but we do \emph{not} assume that all morphisms of \bC are monoid or comonoid homomorphisms).
-  Then \bC has the structure of a hypercategory.
-  In fact, it could be that this is exactly what a hypercategory is.
-\end{eg}
+A hypercategory $\K$ consists of a $\Cat$-cycligraph together with:
+\begin{itemize}
+\item An (unbiased, non-strict) symmetric monoidal structure on the category $\K(\bullet)$ of objects and arrows.
+\item An operation allowing us to ``compose'' any bracketed rooted hypergraph labeled by morphisms of $\K$, obtaining a new morphism whose entries are the $k$-ary monoidal products of those in the blocks of the bracketing.
+\item Composition is functorial, so we can compose hypergraphs labeled by 2-cells of $\K$ too.
+  Moreover, any weak equivalence of bracketed rooted hypergraphs induces a 2-cell in $\K$ in the opposite direction, naturally.
+\item Composition is associative up to coherent isomorphism, relative to graph insertion.
+\item Composition is unital up to coherent isomorphism: the composite of a labeled corolla is isomorphic to the unique labeling morphism.
+\end{itemize}
+
+It is natural to wonder about simpler ``decategorified'' versions of a hypercategory.
+One trap is that because the category of objects and arrows is symmetric monoidal, it cannot be discrete without trivializing into a commutative monoid.
+However, we can decategorify in a slightly less drastic way.
 
 \begin{eg}
-  More generally, a sufficiently strictly monoidal 2-category in which every object has the structure of a Frobenius pseudomonoid~\cite{street:frob-psmon} gives rise to a 2-hypercategory.
-  In particular, this applies to any cartesian bicategory~\cite{ckww:cartbicats-ii} in which every object is Frobenius~\cite{ww:frob-cart} and in which the monoidal structure is strict enough.
-
-  In general, what can we take the vertical arrows to be?
-  Arbitrary left adjoints?
-  Morphisms that are colax for both monoid and comonoid structures?
+  Let \bC be a symmetric monoidal category.
+  Then there is a hypercategory $\frob(\bC)$ in which:
+  \begin{itemize}
+  \item The objects are Frobenius algebras in \bC.
+  \item The arrows are Frobenius algebra homomorphisms in \bC.
+  \item The morphisms with entries $(A_1,\dots,A_n)$ are arbitrary morphisms $I \to A_1\otimes\cdots\otimes A_n$ in \bC, where $I$ is the unit object.
+  \item The 2-cells are commutative triangles
+    \[
+    \begin{tikzcd}[column sep=small]
+      & A_1\otimes\cdots\otimes A_n \ar[dd,"f_1\otimes\cdots\otimes f_n"] \\
+      I \ar[ur] \ar[dr] \\
+      & B_1\otimes\cdots\otimes B_n
+    \end{tikzcd}
+    \]
+  \end{itemize}
 \end{eg}
 
-\begin{eg}
-  If \bS has finite products, then an \bS-indexed monoidal category with indexed homotopy coproducts preserved by the tensor product on both sides, in the sense of~\cite{ps:indexed}, gives rise to a double hypercategory whose vertical category is \bS.
-\end{eg}
+There should presumably be some categorified version of this example involving ``horizontal pseudo-Frobenius algebras~\cite{lauda:psfrob} in a symmetric monoidal double category''.
+A particular case of this should be the following very important example.
 
+Let \bS be a category with finite products, and $\V$ an \bS-indexed symmetric monoidal category, i.e.\ a pseudofunctor from $\bS\op$ to symmetric monoidal categories.
+The two important examples are:
+\begin{itemize}
+\item $\V(X) = \bS/X$ with the cartesian product (pullback in \bS).
+\item $\V(X) = \mathbf{V}^X$, where $\bS=\Set$ and $\mathbf{V}$ is an ordinary symmetric monoidal category.
+\end{itemize}
+The first example when $\bS=\Set$ coincides with the second example when $\mathbf{V}=\Set$.
+The general notion of indexed monoidal category is a ``conceptual pushout'' of these two examples over the common case of $\Set$.
 
+\begin{thm}
+  Suppose $\V$ is an \bS-indexed symmetric monoidal category with indexed homotopy coproducts preserved by the tensor product on both sides, as studied in~\cite{shulman:frbi,ps:indexed}.
+  Then there is a hypercategory $\ten(\V)$ in which:
+  \begin{itemize}
+  \item The objects and arrows are those of \bS.
+  \item A morphism with entries $X_1,\dots,X_n$ is an object of $\V(X_1\times\cdots\times X_n)$.
+  \end{itemize}
+\end{thm}
+\begin{proof}
+  The composite of a labeled hypergraph $A:\G_0\to\ten(\V)$ is defined as follows.
+  Write $\G= (V\xot{\nu} F\xto{\epsilon} E)$ and $E = (E_1 \rightrightarrows E_0)$, where as usual $\G_0 = (V_0 \ot F_0 \to E)$ is obtained by removing the root and its incident flags.
+  Then $A$ assigns to each $e\in E_0$ an object $A_e\in \bS$, such that $A_{s(i)}=A_{t(i)}$ for all $i\in E_1$, and to each $v\in V_0$ an object $A_v \in \V(\bigtimes_{f\in \nu^{-1}(v)} A_{\epsilon(f)})$.
 
+  Now we can form the ``external product'' $\bigboxtimes_{v\in V_0} A_v \in \V(\bigtimes_{f\in F_0} A_{\epsilon(f)})$.
+  The set-functions
+  \[ F_0 \xto{\epsilon} E_0 \xot{s} E_1 \xto{t} E_0 \xot{\epsilon_\ast} \nu^{-1}(\ast) \]
+  induce morphisms in \bS in the opposite direction
+  \[ \bigtimes_{f\in F_0} A_{\epsilon(f)} \ot \bigtimes_{e\in E_0} A_e \to \bigtimes_{i\in E_1} A_{i} \ot \bigtimes_{e\in E_0} A_e \to \bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}. \]
+  Alternately pulling back (reindexing) and pushing forwards (taking indexed coproducts) along these morphisms, we obtain a functor
+  \[ \V\Big(\bigtimes_{f\in F_0} A_{\epsilon(f)}\Big) \to \V\Big(\bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}\Big). \]
+  We define the composite of $A$ to be this functor applied to $\bigboxtimes_{v\in V_0} A_v$.
+  \fxnote{Check stuff to complete the proof.}
+\end{proof}
 
-\section{Virtual double hypercategories}
-\label{sec:vdhc}
+The name $\ten(\V)$ comes from regarding its morphisms as ``tensors'' with entries in $\V$, analogously to how the bicategory constructed from $\V$ in~\cite{shulman:frbi,ps:indexed} may be said to consist of ``matrices'' with entries in $\V$.
+The hypergraph composition operations are then a generalized sort of ``multiplication/contraction of tensor indices''.
 
-Our main purpose in defining the pseudomonad $T$ was to consider $T$-multicategories.
-Leinster~\cite{leinster:higher-opds} defines $T$-multicategories with respect to a cartesian monad on any category with pullbacks.
-Here we have only a pseudomonad on \cpg, but this causes little difficulty, especially since we are interested in the ``object-discrete'' case.
+In particular, if $\G$ is reduced, then the cospan
+\[ \bigtimes_{e\in E_0} A_e \to \bigtimes_{i\in E_1} A_{i} \ot \bigtimes_{e\in E_0} A_e \]
+is a finite product over $E_0$ of cospans of the form
+\[ A \to A^{\times (g+1)} \ot A \]
+where $g$ is the genus of the corresponding edge.
+In the genus zero case, these cospans are all identities and so contribute nothing.
+Moreover, because we have pullback squares
+\[
+\begin{tikzcd}
+  A \ar[r] \ar[d] & A \ar[d] \\ A \ar[r] & A^{\times (g+1)}
+\end{tikzcd}
+\]
+if the indexed coproducts of $\V$ satisfy the Beck-Chevalley condition for all pullback squares, then nothing is contributed by these cospans regardless of the value of $g$, and thus the genus doesn't matter.
+This is the case for the two examples of $\V$ mentioned above, but there are other examples (generally where $\V(X)$ is some kind of homotopy category) for which it fails, and in this case these cospans contribute factors of the ``loop space of $A$''; see~\cite{ps:indexed} for some more details.
+
+Our type-theoretic syntax, however, will be not for hypercategories but for \emph{virtual} hypercategories.
+To define these we need:
+
+\begin{thm}
+  The lax monad $T$ extends to the double category of $\Cat$-cycligraphs and ``cycli-profunctors''.
+\end{thm}
 
 \begin{defn}
-  A \textbf{virtual double hypercategory} $M$ consists of the following.
-  \begin{enumerate}
-  \item A polygraph $M_0$.
-  \item A discrete fibration of \Cat-polygraphs $M_1 \to M_0 \times TM_0$.
-  \item A composition operation $M_1 \times_{TM_0} TM_1 \to M_1$ over $1\times \mu$:
-    \[
-    \begin{tikzcd}
-      M_1 \times_{TM_0} TM_1 \ar[r,dashed] \ar[d] & M_1\ar[d]\\
-      M_0 \times TTM_0 \ar[r,"1\times \mu"'] & M_0\times TM_0.
-    \end{tikzcd}
-    \]
-  \item A unit $M_0 \to M_1$ over $(1,\eta)$:
-    \[
-    \begin{tikzcd}
-      M_0 \ar[r,dashed] \ar[d,equals] & M_1 \ar[d] \\
-      M_0\ar[r,"{(1,\eta)}"'] & M_0\times TM_0.
-    \end{tikzcd}
-    \]
-  \item An associativity isomorphism lying over the pseudomonad coherence isomorphism:
-    \[\hspace{-2cm}
-    \begin{tikzcd}
-      & M_1 \times_{TM_0} TM_1 \ar[drr] \ar[ddd]\\
-      M_1 \times_{TM_0} TM_1 \times_{TTM_0} TTM_1 \ar[ur] \ar[drr] \ar[ddd] \ar[rrr,phantom,"\cong"] &&&
-      M_1 \ar[ddd] \\
-      && M_1 \times_{TM_0} TM_1  \ar[ur]\ar[ddd]\\
-      & M_0\times TTM_0\ar[drr] \\
-      M_0 \times TTTM_0 \ar[ur] \ar[drr] \ar[rrr,phantom,"\cong"] &&&
-      M_0\times TM_0 \\
-      && M_0\times TTM_0\ar[ur]
-    \end{tikzcd}\hspace{-2cm}
-    \]
-  \item Unit isomorphisms lying over the pseudomonad coherence isomorphisms:
-    \[
-    \begin{tikzcd}
-      & M_1 \times_{TM_0} TM_1 \ar[dr] \ar[dddr,phantom,"\cong" very near start] \ar[dd] \\
-      M_1 \ar[rr,equals] \ar[ur]\ar[dd] &~ & M_1\ar[dd]\\
-      & M_0\times TM_0 \times TTM_0 \ar[dr] \ar[d,phantom,"\cong"] \\
-      M_0\times TM_0 \ar[rr,equals]\ar[ur] &~& M_0\times TM_0
-    \end{tikzcd}
-    \]
-    (There are two such isomorphisms, but the pictures look the same except that the omitted labels on the arrows should be different.)
-  \end{enumerate}
+  A \textbf{virtual hypercategory} is a virtual $T$-algebra (i.e.\ a generalized $T$-multicategory in the sense of~\cite{cs:multicats}) in this double category.
 \end{defn}
 
-Since $M_1 \to M_0\times TM_0$ is assumed to be a discrete fibration, the coherence isomorphisms are unique, and automatically satisfy any axioms we might wish them to; thus we do not bother writing down those axioms (which would simply lift the corresponding pseudomonad axioms).
-Explicitly, a virtual double hypercategory has the following structure.
-
+In~\cite{cs:multicats} we defined virtual algebras only for strict monads on double categories, but the lax case works similarly.
+Explicitly, a virtual hypercategory has the following structure.
 \begin{enumerate}
-\item A set of \emph{objects} (the objects of $M_0$).
-\item A set of \emph{vertical multi-arrows}, with source a finite list of objects and target a single object (the objects of $M_1$).
-  These can be composed as in an ordinary (non-symmetric) multicategory.
-\item For each $n,m$, a set of \emph{horizontal arrows} with lists of $n$ objects as source and $m$ objects as target (the morphisms in the polygraph $M_0$).
-\item A set of \emph{2-cells}, each of which has a bracketed hypergraph labeled by horizontal arrows as its vertical source, a single horizontal arrow as its vertical target, and lists of vertical multi-arrows as its horizontal source and target.
-\item Each horizontal arrow has an identity 2-cell.
-\item A composition operation on 2-cells that involves hypergraph insertion, which is appropriately associative and unital.
+\item A cycligraph of \emph{objects} and \emph{morphisms}.
+\item A set of \emph{multi-arrows}, with source a finite list of objects and target a single object.
+  These can be composed and permuted as in an ordinary symmetric multicategory.
+\item A set of \emph{2-cells}, each of which has a bracketed hypergraph labeled by morphisms as its source, a single morphism as its target, and lists of multi-arrows as its ``entries''.
+\item Weak equivalences of bracketed hypergraphs act on 2-cells contravariantly.
+  In particular, any reduction $\G\to \G'$ as in \cref{thm:reduction} induces a map from $\G$-labeled 2-cells to $\G'$-labeled ones.
+  Moreover, 2-cells are also permuted by all automorphisms of hypergraphs.
+\item Each morphism has an identity 2-cell, with source a corolla.
+\item There is a composition operation on 2-cells that involves hypergraph insertion, which is appropriately associative and unital.
 \end{enumerate}
 
-We also have algebras over generalized multicategories, for which again we restrict to the discrete case.
-Here there is no room for nontrivial isomorphisms at all.
+As usual, any hypercategory gives rise to a virtual hypercategory.
+We will see more examples momentarily.
+
+% \begin{defn}
+%   If $\M$ is a virtual hypercategory, an \textbf{$\M$-algebra} is an algebra for $\M$ as a virtual $T$-algebra, i.e.\ a cycli-profunctor from $\M$ to $1$ that is acted on by $\M$.
+% \end{defn}
+
+% Explicitly, an $\M$-algebra consists of:
+% \begin{enumerate}
+% \item A cycligraph $D$ with a map to the cycligraph of objects and arrows of $\M$, assigning ``modes''.
+% \item Each $n$-ary multi-arrow of $\M$ acts as an $n$-ary operation on the objects of $D$ of appropriate modes.
+% \item Each 2-cell of $\M$ acts on the morphisms of $D$: given such a 2-cell $e$, and a $D$-labeling of its source that respects modes, we have an induced morphism of $D$ whose type is the target of $e$ and whose entries are obtained by the action of the multi-arrow entries of $e$ on objects of $D$.
+% \item This composition is appropriately associative and unital.
+% \end{enumerate}
 
 \begin{defn}
-  If $M$ is a virtual double hypercategory, an \textbf{$M$-algebra} consists of the following.
-  \begin{enumerate}
-  \item A polygraph $A$ with a map $A \to M_0$.
-  \item An action map $M_1 \times_{TM_0} TA \to A$ over $M_0$.
-  \item The action is associative and unital:
-    \[\hspace{-2cm}
-    \begin{tikzcd}
-      M_1 \times_{TM_0} TM_1 \times_{TTM_0} TTA \ar[r] \ar[d] &M_1 \times_{TM_0} TA \ar[d]\\
-      M_1 \times_{TM_0} TA \ar[r] & A
-    \end{tikzcd}
-    \qquad
-    \begin{tikzcd}
-      A \ar[r] \ar[dr,equals] & M_1 \times_{TM_0} TA\ar[d] \\ & A
-    \end{tikzcd}\hspace{-2cm}
-    \]
-  \end{enumerate}
+  We say that a virtual hypercategory is \textbf{weakly directed} if its underlying cycligraph is directed, i.e.\ the entries of each morphism are partitioned into a domain and a codomain.
+  We say that it is \textbf{strongly directed} if it is weakly directed and moreover its 2-cells are also directed compatibly with their sources and targets.
 \end{defn}
 
+In a weakly directed virtual hypercategory, all the hypergraphs appearing as sources of 2-cells are also directed.
+%, and also that (the underlying cycligraph of) any algebra over it is directed.
 
-\section{Undirected hypercategories and kits}
-\label{sec:kits}
+\begin{defn}
+  A virtual hypercategory is \textbf{reasonable} if all weak equivalences act by \emph{isomorphisms} on the 2-cells.
+\end{defn}
 
-Can define similar monad using undirected hypergraphs.
-The virtual undirected ones are a special case of directed virtual ones in which all sources are empty.
-Kits should be a virtual undirected ones living over a ``shape'' one that marks variance.
+Perhaps this ought to be part of the definition of virtual hypercategory.
+I certainly don't know any ``unreasonable'' examples, and it may be necessary for a good correspondence with the type theory.
 
 
-\section{Type theory of virtual double hypercategories}
+\section{Type theory for virtual hypercategories}
 \label{sec:type-theory}
 
-We adopt a ``type-theoretic rule'' notation for 2-cells in virtual double hypercategories.
-To describe a labeled hypergraph, we assign a variable to each edge, and declare the variables as having the corresponding objects as ``types'' with their genera as annotations on the typing declaration, for instance
+Suppose given ``generating data'' for a virtual hypercategory, consisting of collections of objects, multi-arrows, morphisms, and 2-cells with specified sources, targets, and entries as appropriate, plus perhaps axioms regarding their composites.
+We will describe two isomorphic type theories that present a virtual hypercategory from these data.
+
+We refer to the given objects and morphisms as \emph{modes} and \emph{mode morphisms}; there are no operations on them and hence no judgments necessary.
+The generating mode arrows give rise to both a \emph{linear} and a \emph{cartesian} type theory with judgments
+\[ \Delta \Vdash \xi:p \qquad\text{and}\qquad \Delta \types \xi:p \]
+respectively.
+The linear judgments $\Delta \Vdash \xi:p$ present the actual multi-arrows in the virtual hypercategory, whereas the cartesian ones $\Delta \types \xi:p$ will be used to describe the entries of 2-cells; this is due to the fact that edges in a hypergraph can be incident to the root more or fewer times than once.
+To justify this, we need a metatheorem that any cartesian judgment $\Delta \types \xi:p$ can be factored essentially uniquely as a linear one $\Phi \Vdash \xi':p$ composed with a cartesian substitution $\Delta \types \sigma : \Phi$.
+For instance, $x:p, y:q, z:r \types \omega(x,\varpi(y,x)) : s$ factors as $u:p, v:q, w:p \types \omega(u,\varpi(v,w)):s$ composed with $x:p, y:q, z:r \types (x,y,x) : (p,q,p)$.
+
+We extend the vertex typing judgment from \cref{sec:tt-hy} by allowing arbitrary cartesian mode-arrow \emph{terms} to appear in the entries:
 \begin{mathpar}
-  x :^0 p \and y:^1 p \and z:^0 q
+  \inferrule{\alpha\in M(p_1,\dots,p_n) \\ \Delta\types \xi_i : p_i}{\Delta \types \alpha(\xi_1,\dots,\xi_n) \extvertex}
 \end{mathpar}
-where $p,q,r$ are objects of $M$.
-In practice the genera will almost always be $0$, in which case we omit to notate them.
-We notate the vertices as sequents with their labeling horizontal arrow as a term, and with their incident edges as the input and output variables:
+(But in the graph judgment we still require the constituent vertices to be given in the original sense, using only variables.)
+As before, in the directed case we separate the entries into domain and codomain, writing $\alpha(\xi_1,\dots,\xi_n;\zeta_1,\dots,\zeta_m)$.
+
+We similarly extend the loop contexts by allowing them to equate arbitrary mode-arrow terms:
 \begin{mathpar}
-  (x,y,x) \types \alpha: (x,z) \and
-  (z,z,y) \types \beta:()
+  \inferrule{ }{\Delta \types \ec\extloopctx}
+  \and
+  \inferrule{\Delta\types\Upsilon\extloopctx \\ \Delta\types \xi:p \\ \Delta\types \zeta:p}{\Delta\types (\Upsilon,\xi\doteq \zeta) \extloopctx}
 \end{mathpar}
-Thus, we must have $\alpha:(p,p,p) \to (p,q)$ and $\beta : (q,q,p) \to ()$.
-These declarations all occur in the ``premises''.
-Finally, we treat vertical multi-arrows as function symbols and ``apply'' them to the variables denoting the corresponding edges, then place the resulting terms in a ``conclusion'' sequent, labeled again by a horizontal arrow:
+The intended meaning of this is that if $\xi$ and $\zeta$ can be unified, then $\xi\doteq\zeta$ stands for all the resulting equalities between variables appearing in them; otherwise it is ``junk''.
+We implement this with a \fxnote*{I can't decide on a good notation for this}{judgment}
+\begin{equation}
+  \unifies\Delta\Upsilon\Phi\Xi\sigma\label{eq:unifies}
+\end{equation}
+in which $\Delta\types \Upsilon\extloopctx$ and $\Phi\types \Xi\loopctx$, while $\sigma$ is a substitution $\Phi \types \sigma:\Delta$ consisting of cartesian mode-arrow terms, i.e.\ a set of assignations $[x \mapsto \xi]$ for each $(x:p)\in \Delta$ where $\Phi\types \xi:p$.
+The judgment~\eqref{eq:unifies} should be read as defining a (multi-valued, partial) function taking $\Delta,\Upsilon$ as input and proceeding upwards and then downwards to compute $\Phi,\Xi,\sigma$ as output; its rules are shown in \cref{fig:unifies}.
+(There should also be a symmetric version of the last rule, applying to $\omega(\vec\xi)\doteq y$.)
+\begin{figure}\centering
 \begin{mathpar}
-  (F(x,y),x) \types \gamma : (z,G())
+  \inferrule{ }{\unifies \Delta\ec\Delta\ec{1_\Delta}}
+  \and
+  \inferrule{\unifies\Delta\Upsilon\Phi\Xi\sigma}{\unifies \Delta{\Upsilon,x\doteq y}\Phi{\Xi,x\doteq y}{\sigma}}
+  \and
+  \inferrule{\omega : (p_1,\dots,p_n) \to q \text{ a generator} \\
+    \unifies\Delta{\Upsilon, \xi_1\doteq \zeta_1, \dots, \xi_n\doteq \zeta_n}\Phi\Xi\sigma
+  }{\unifies\Delta{\Upsilon, \omega(\xi_1,\dots,\xi_n) \doteq \omega(\zeta_1,\dots,\zeta_n)}\Phi\Xi\sigma}
+  \and
+  \inferrule{\omega : (p_1,\dots,p_n) \to q \text{ a generator} \\
+    \Delta\types \Xi\loopctx\\
+    \unifies{\Delta,x_1:p_1,\dots,x_n:p_n}{\Upsilon[\omega(x_1,\dots,x_n)/x], x_1\doteq \xi_1, \dots, x_n\doteq \xi_n}\Phi\Xi{\sigma,[x_1\mapsto \zeta_1],\dots,[x_n\mapsto \zeta_n]}
+  }{\unifies{\Delta,x:q}{\Upsilon, x\doteq \omega(\xi_1,\dots,\xi_n)}\Phi\Xi{\sigma,[x\mapsto\omega(\zeta_1,\dots,\zeta_n)]}}
 \end{mathpar}
-For vertical identity arrows, we simply write the variable itself, i.e.\ $x$ means $1_p(x)$ and $z$ means $1_q(z)$.
-If $F:(p,p)\to q$ and $G:() \to p$, then we must have $\gamma : (q,p) \to (q,p)$.
-Putting the above examples together, we obtain the rule
-\begin{mathpar}
-  \inferrule{x :^0 p \\ y:^1 p \\ z:^0 q \\
-    (x,y,x) \types \alpha: (x,z) \\ (z,z,y) \types \beta:()}
-  {(F(x,y),x) \types \gamma : (z,G())}
-\end{mathpar}
-which corresponds to the following graphically drawn 2-cell:
+\caption{Unification judgment}
+\label{fig:unifies}
+\end{figure}
+
+Finally, the \emph{mode 2-cells} are described by a judgment
+\[ \Delta \mid \Xi \mid \Theta \types M \]
+where $\Delta\mid\Xi\types \Theta\graph$ and $\Delta\types M \extvertex$.
+The intended meaning is that we factor the mode-arrow terms in $M$ into a linear part and a cartesian substitution, the linear part indicates the mode arrows in the entries of $e$, while the cartesian substitution describes the flags adjacent to the root of the labeled hypergraph that is the source of the 2-cell (of which $\Theta$ describes the non-root vertices).
+
+As an example, the following (directed) graphically drawn 2-cell:
 \begin{center}
   \begin{tikzpicture}
     \node[houter] (Fxy) at (.5,0) {};
@@ -1353,7 +1286,7 @@ which corresponds to the following graphically drawn 2-cell:
     \draw[edge] (idx) -- (gm);
     \draw[edge] (gm) -- (idz);
     \draw[edge] (gm) -- (G);
-    \node[kite,draw,inner sep=1pt] (Gin) at (10,1) {$G$};
+    \node[kite,draw,inner sep=1pt] (Gin) at (10,1) {$\zeta$};
     \draw[->] (Gin) -- (G);
     \node[houter] (zout) at (9,3) {};
     \draw[double,double equal sign distance] (zout) -- (idz);
@@ -1361,7 +1294,7 @@ which corresponds to the following graphically drawn 2-cell:
     \draw[double,double equal sign distance] (xin) -- (idx);
     \node[houter] (xyinx) at (0,3) {};
     \node[houter] (xyiny) at (1,2.5) {};
-    \node[kite,draw,inner sep=1pt] (F) at (.5,1.5) {$F$};
+    \node[kite,draw,inner sep=1pt] (F) at (.5,1.5) {$\xi$};
     \draw (xyinx) -- (F);
     \draw (xyiny) -- (F);
     \draw[->] (F) -- (Fxy);
@@ -1390,74 +1323,255 @@ which corresponds to the following graphically drawn 2-cell:
     \node at (5.5,1) {$\Downarrow$};
   \end{tikzpicture}
 \end{center}
+would be written with the following syntax:
+\begin{equation}
+  x:p, y:p, z:p \mid y\doteq y \mid \alpha(x,y,x;x,z), \beta(z,z,y;) \types \gamma(\xi(x,y),x;z,\zeta).\label{eq:2cell-eg}
+\end{equation}
 
-Identity 2-cells are easy:
-\[ \inferrule{ (x,y,z) \types \alpha : (u,v,w) }{ (x,y,z) \types \alpha : (u,v,w) }\]
-Composition of 2-cells is, thankfully, well-notated by combining rules in derivation trees, and \emph{substituting} the terms such as $F(x,y)$ in the conclusion of one rule into the variables occurring in the premises of another.
-We do have to be careful that the vertical arrow parts match up between all the 2-cells we are precomposing with.
-\fxnote{Some examples?}
+The action of weak equivalences on mode 2-cells consists of exchange rules allowing us to permute all the contexts, together with ``reduction'' or ``substitution'' rules as in~\eqref{eq:subst}:
+\begin{equation}\label{eq:reduction}
+  \inferrule{\Delta,y:p\mid\Xi,x\doteq y \mid \Theta \types M \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\mid \Theta[x/y] \types M[x/y]}
+  \qquad
+  \inferrule{\Delta,x:p\mid\Xi,x\doteq y \mid \Theta \types M \\ x\not\jdeq y}{\Delta\mid\Xi[y/x]\mid \Theta[y/x] \types M[y/x]}
+\end{equation}
+Note that the substitution $M[x/y]$ involves substitution into the mode arrow terms appearing in $M$.
+% Similarly, we implement the unification algorithm on loop contexts:
+% \begin{mathpar}
+%   \inferrule{\Delta\types \xi:p \\
+%     \Delta \mid \Xi \types \Theta \graph \\
+%     \Delta,y:p\mid\Xi,\xi\doteq y \mid \Theta \types e:M
+%   }{\Delta\mid\Xi[\xi/y]\mid \Theta \types e[\xi/y] : M[\xi/y]}
+%   \and
+%   \inferrule{\omega : (p_1,\dots,p_n) \to q \text{ a generator} \\
+%   \Delta \mid \Xi, \omega (\xi_1,\dots,\xi_n) \doteq \omega (\zeta_1,\dots,\zeta_n) \mid \Theta \types e:M
+%   }{\Delta \mid \Xi, \xi_1 \doteq\zeta_1,\dots, \xi_n\doteq\zeta_n \mid\Theta \types e:M}
+% \end{mathpar}
+% Note that in the first rule, $y$ is not allowed to occur in $\xi$ or $\Theta$.
+% There should also be a symmetric rule for $y\doteq\xi$.
+% I'm not entirely sure that these are the correct rules.
 
-It is important to note that when we write a 2-cell as a ``rule'' we are not ``deriving the conclusion from the premises''.
-Instead each ``rule'' is a datum, namely the 2-cell, and putting together rules into derivation trees is an operation on these data.
+The multi-substitution rule for mode 2-cells now looks like this:
+\begin{equation}\label{eq:multisub}
+  \inferrule{
+    \Delta_i \mid \Xi_i \mid \Psi_i \types \alpha_i(\vec \xi_i)
+    \\
+    \Delta \mid \Xi \mid \alpha_1(\vec x_1),\dots, \alpha_n(\vec x_n) \types M
+    \\
+    \unifies{\Delta,\Delta_1,\dots,\Delta_n}{\Xi, \Xi_1,\dots,\Xi_n,\vec x_1 \doteq \vec \xi_1, \dots, \vec x_n \doteq \vec \xi_n}{\Phi}{\Upsilon}{\sigma}
+  }
+  {\Phi
+    \mid
+    \Upsilon
+    \mid
+    \Psi_1[\sigma],\dots,\Psi_n[\sigma]
+    \types
+    M[\sigma]}
+\end{equation}
+I believe this really does correspond to the semantic composition operation in a virtual hypercategory.
+In particular, the unification judgment checks that the inputs are well-typed and inserts the appropriate new edges coming from the graph insertions.
 
-When we get to \emph{$M$-algebras}, however, the rules become operations on sequents.
-Here we notate the objects lying over an object $p$ by
-\[A \type_p \qquad\text{or}\qquad A_p,\]
-and the morphisms lying over $\alpha : (p,q,r) \to (u,v)$ by
-\[(A_p,B_q,C_r) \types_\alpha f : (D_u,E_v).\]
-Now the 2-cell considered above \emph{acts} on morphisms in the algebra, which we can interpret as a rule of the usual sort that produces a conclusion from the premises:
-\begin{mathpar}
-  \inferrule{A \type_p \\ B \type^1_p \\ C \type_q \\\\
-    (A,B,A) \types_\alpha f : (A,C) \\ (C,C,B) \types_\beta g :()}
-  {(F(A,B),A) \types_\gamma g\circ_\rho f : (C,G())}
-\end{mathpar}
-where $g\circ_\rho f$ denotes a sort of ``composition'' of $f$ and $g$ parametrized by the rule $\rho$.
-Note that the vertical arrows $F$ and $G$ act similarly on \emph{types}, which we can notate with type formation rules:
-\begin{mathpar}
-  \inferrule{A\type_p \\ B\type_p}{F(A,B) \type_q}
-  \and
-  \inferrule{ }{G() \type_p}
-\end{mathpar}
+% In fact, I think that the extended loop contexts should also mean that we can consider only a single-entry substitution rule:
+% \begin{equation}\label{eq:onevert}
+%   \inferrule{
+%     \Phi \mid \Upsilon \mid \Psi \types \alpha(\vec \xi)
+%     \\
+%     \Delta \mid \Xi \mid \Theta, \alpha(\vec x) \types M
+%   }
+%   {\Delta,\Phi
+%     \mid
+%     \Xi, \Upsilon, \vec x \doteq \vec \xi
+%     \mid
+%     \vec \Theta,\Phi
+%     \types
+%     M}
+% \end{equation}
+% This way we have to ``pass through junk'' in order to get to a meaningful judgment: a single substitution may yield a loop context that cannot be reduced to contain only equations between variables, yet further substitutions may add more equations making it reducible.
 
-In this way, we can interpret a virtual double hypercategory as a reasonably general sort of \emph{specification of a sequent calculus}.
-The objects are the \emph{modes} to which the types can belong.
-The horizontal arrows are the \emph{mode morphisms}, or \emph{sequent forms}.
-The vertical arrows are the \emph{type formation rules}.
-And the 2-cells are the \emph{derivation rules} for sequents.
-Each derivation rule takes as premises some number of types, each with a specified mode, and some number of sequents containing those types, each with a specified form, and yields as a conclusion a sequent with a specified form containing some of the types from the premises together with potentially other new types formed from them by the formation rules.
-We call this a ``sequent calculus'' because the type formation operators can only appear in the conclusion; all types in the premises must be (meta-)variables.
+We also need a rule of substitution into edges that are incident to no vertices (except possibly the root)
+\begin{equation}\label{eq:novert}
+  \inferrule{
+    \Delta \types \Gamma \graph \\
+    \Phi \types \xi : p \\
+    \Delta,x:p \mid \Xi \mid \Gamma \types M
+  }{\Delta,\Phi \mid \Xi[\xi/x] \mid \Gamma \types M[\xi/x]}
+\end{equation}
+It might be more type-theoretically consistent to phrase this rule by adding an equation $x\doteq \xi$ rather than immediately performing the substitution, but semantically the definition of virtual hypercategories actually does the substitution directly here, and there is no real reason not to since here there is no nondeterministic choice about which equation to substitute.
 
-Note that all the contraction, weakening, composition, and identities are performed formally in the vertical domain.
-We contract two types by making the corresponding flags incident on the same edge, and so on.
-In the type-theoretic notation, this is indicated by using the same (meta-)variable for the types in the corresponding places.
-Even the symmetric action (exchange) is performed formally in the domain, since the incoming and outgoing edges on the root are ordered, and the vertical multi-arrows preserve ordering --- but this ordering is not visible in the premises of the type-theoretic notation, instead being indicated by the order in which the (meta-)variables appear in the conclusion.
+We could also incorporate this as part of the multi-substitution rule~\eqref{eq:multisub}.
+I think it is natural to expect the following:
 
-The fact that vertical arrows and 2-cells have an algebraic structure of composition means that all \emph{derivable} rules are present on an equal footing with the primitive ones, along with all equations that hold between such derivations.
-The primitive rules and primitive equality axioms between composites of these form a \emph{presentation} of a virtual double hypercategory by generators and relations.
+\begin{conj}
+  If we represent the generating 2-cells by rules that build in both kinds of substitution~\eqref{eq:multisub} and~\eqref{eq:novert} and also arbitrary sequences of reductions~\eqref{eq:reduction} into the domain, then the general 2-cell rules~\eqref{eq:reduction},~\eqref{eq:multisub}, and~\eqref{eq:novert} are admissible.
+\end{conj}
+
+I will henceforth assume this to be true.
+
+
+
+
+
+This completes the first description of a type theory for virtual hypercategories.
+Now we reorganize the same structure to make it look different.
+We will refer to the variables in an edge context as \emph{types} (or, more precisely, \emph{type metavariables}), and write
+\[ A \type_p \]
+instead of $A:p$.
+We write each generating mode arrow $\xi : (p_1,\dots,p_n) \to q$ as a \emph{type formation rule}
+\[ \inferrule{A_1 \type_{p_1}\\ \dots \\ A_n \type_{p_n}}{\form{\xi}(A_1,\dots,A_n)} \]
+
+
+We will refer to a vertex $A_1:p_1, \dots ,A_n:p_n \types \alpha(A_1,\dots,A_n) \vertex$ as a \emph{sequent} and write it
+\[ \types_\alpha A_1,\dots,A_n \]
+
+
+Now, given a particular mode theory as above presenting a virtual hypercategory $\M$, we describe a type theory for an $\M$-algebra $D$.
+Each type (object of $D$) is assigned to an object of $\M$ as its mode; we write
+\[ A \type_p \]
+to mean that $A$ has mode $p$.
+More generally, if each $A_i$ has mode $p_i$, forming a type context $\Gamma$ and a mode context $\Delta$, we will write
+\[ (A_1,\dots,A_n) \ctx_{(p_1,\dots,p_n)} \qquad\text{or}\qquad \Gamma \ctx_\Delta. \]
+
+The other judgment of the type theory represents a morphism in $D$, which we write as
+\[ \types_\alpha A_1,\dots,A_n \]
+where $A_1,\dots,A_n$ are the entries and $\alpha$ is the morphism in $\M$ that it lies over.
+In particular, if each $A_i$ has mode $p_i$, then the entries of $\alpha$ must be $p_1,\dots,p_n$.
+If $\M$ (hence $D$) is directed, then the entries $A_i$ separate into a domain and codomain, and we can write this judgment as
+\[ A_1\dots,A_n \types_\alpha B_1,\dots,B_m\]
+If we want a term calculus, we can assign variables to each $A_i$ and pun them for the modes $p_i$, writing
+\[ \types_{\alpha(x_1,\dots,x_n)} f(x_1,\dots,x_n) : (x_1:A_1,\dots,x_n:A_n) \]
+or in the directed case
+\[ x_1:A_1\dots,x_n:A_n \types_{\alpha(\vec x;\vec y)} f(\vec x;\vec y) : (y_1:B_1,\dots,y_m:B_m).\]
+However, note that in this judgment, $\alpha$ cannot be a ``term''; indeed there are no ``morphism terms'' in $\M$.
+It is just a generating morphism that we might consider as formally ``applied'' to the variables $x_1,\dots,x_n$.
+
+The action of multi-arrows in $\M$ on the types gives the ``formation rules'' for type operations:
+\[\inferrule{\Delta \types \xi:p \\ \Gamma \ctx_{\Delta}}{\form{\xi}(\Gamma) \type_p }\]
+Finally, the action of 2-cells in $\M$ on the morphisms of $D$ gives the rules for the morphism judgment.
+\[
+\inferrule{
+  x_1:p_1,\dots,x_n:p_n \mid \Xi \mid u_1:\alpha_1(x_{j_{11}},\dots,x_{j_{1 k_1}}), \dots, u_m:\alpha_m(x_{j_{m1}},\dots,x_{j_{m k_m}})
+  \types e : \beta(\xi_1,\dots,\xi_l) \\
+  x_{v_{i1}}:p_{v_{i1}}, \dots, x_{v_{i w_i}}:p_{v_{i w_i}} \types \xi_i : q_i\\
+  A_i \type_{p_i} \\
+  \types_{\alpha_i} A_{j_{i1}}, \dots, A_{j_{i k_i}}
+}
+{ \types_{\beta} \form{\xi_1}(A_{v_{11}},\dots,A_{v_{1 w_1}}),\dots,\form{\xi_l}(A_{v_{l1}},\dots,A_{v_{l w_l}})}
+\]
+Note that the formation rules $\form{\xi_i}$ appear only in the conclusion.
+For this reason it seems reasonable to regard this as a (very generalized) sort of ``sequent calculus'', although perhaps properly that terminology should be restricted to the case when the formation rules all have ``companions'' as discussed below.
+
+For example, the 2-cell~\eqref{eq:2cell-eg} gives rise to the following rule:
+\[
+\inferrule{A \type_p \\ B \type_p \\ C \type_q \\ A,B,A\types_{\alpha} A,C \\ C,C,B \types_\beta}{\form{\xi}(A,B),A \types_{\gamma} C, \form{\zeta}}
+\]
+
+\begin{rmk}
+As mentioned in the introduction, the mode theory behaves like a ``logical framework'' for the type theory.
+The object-language judgments such as $A\type_p$ and $\Gamma\types_\alpha \Delta$ are represented by two kinds of ``types'' in the mode theory, which we actually call ``modes'' and ``mode morphisms'' respectively.
+Similarly, the object-language rules are represented by entailments in the mode theory: mode multi-arrows and 2-cells.
+Unlike an ordinary logical framework, a mode theory is very restricted in the kind of type dependency it allows --- mode morphisms can depend on modes, but that is all --- but the principle of the representation is analogous.
+\end{rmk}
+
+\begin{rmk}
+The fact that multi-arrows and 2-cells in a virtual hypercategory have an algebraic structure of composition means that all \emph{derivable} rules are present on an equal footing with the primitive ones, along with all equations that hold between such derivations.
+The primitive rules and primitive equality axioms between composites of these form a \emph{presentation} of a virtual hypercategory by generators and relations.
+\end{rmk}
 
 
 \section{Examples}
 \label{sec:examples}
 
-For now, we consider only examples without type formation rules.
+For now, we consider only examples without type formation rules, so that our virtual hypercategories have only identity multi-arrows.
+We begin with directed examples, which are more familiar.
 
-\subsection{Intuitionistic type theories}
-\label{sec:intuitionistic}
+\subsection{Ordered logic}
+\label{sec:ordered-logic}
 
-We obtain intuitionistic type theories simply by requiring all mode morphisms to have unary targets.
-If we have one mode $p$ and one such morphism $p^n \to p$ for each $n$, we can express the identity and cut rules of ordered logic:
+We have one mode $p$, and one mode morphism $\alpha_n(\overbrace{p,p,\dots,p}^n;p)$ for each $n$.
+The 2-cells are generated by the identity and composition
 \begin{mathpar}
-  \inferrule{A\type}{A\types A}
+  x:p \mid \cdot \mid \cdot \types 1_x : \alpha_1(x,x)
+\end{mathpar}
+\begin{multline*}
+  \Delta,\Phi_1,\Phi_2,y:p,z:p \mid\cdot \mid u:\alpha_n(\Delta;y), v:\alpha_{k+1+m}(\Phi_1,y,\Phi_2;z)\\
+  \types v\circ_i u : \alpha_{k+n+m}(\Phi_1,\Delta,\Phi_2;z)
+  % x_1:p,\dots,x_n:p,z:p,y_1:p,\dots,y_m:p \mid \cdot \mid u:\alpha_n(\vec x;y_i), v:\alpha_m(\vec y;z) \\
+  % \types v\circ_i u : \alpha_{n+m-1}(y_1,\dots,y_{i-1},x_1,\dots,x_n,y_{i+1},\dots,y_m;z)
+\end{multline*}
+which give rise to the usual identity and cut rules:
+\begin{mathpar}
+  \inferrule{A\type_p}{A\types A}
   \and
-  \inferrule{\Gamma\types A \\ \Delta,A,\Psi\types B}{\Delta,\Gamma,\Psi\types B}
+  \inferrule{\Gamma\types B \\ \Psi_1,B,\Psi_2 \types C}{\Psi_1,\Gamma,\Psi_2\types C}
 \end{mathpar}
-We can assert axioms on the composites of these to obtain the semantic structure of a non-symmetric multicategory.
+We also impose the axioms of a multicategory, as presented in the ``one-place composition'' style.
+Note that the order of the edge and vertex variables doesn't matter, since we always have exchange for those; what imposes the ordering on the object logic is the order of arguments to the $\alpha_n$'s.
 
-We can then add the exchange rule of intuitionistic linear logic:
+If we wanted, we could instead use 2-cells generating multi-composition:
+\begin{multline*}
+  \Phi_1,\dots,\Phi_m,y_1:p,\dots,y_m:p,z:p \mid\cdot\mid u_i:\alpha_{n_i}(\Phi_i;y_i), v : \alpha_m(y_1,\dots,y_m;z) \\
+  \types v\circ(u_1,\dots,u_m) : \alpha_{n_1+\cdots+n_m}(\Phi_1,\dots,\Phi_m;z)
+\end{multline*}
+with the appropriate axioms.
+The equivalence between the two definitions of multicategory can then be phrased as an isomorphism between the virtual hypercategories having these two presentations.
+
+A third possibility is to describe directly the entire mode theory, rather than presenting it with generators and relations.
+This amounts to either proving a coherence theorem for the relevant categorical structure, or else ``taking the coherence theorem as a definition''.
+In the case of multicategories, we can describe the mode theory directly by saying that there is exactly one 2-cell whose domain is any \emph{planar directed rooted tree} together with arbitrary orderings on its vertices and edges.
+
+
+\subsection{Intuitionistic linear logic}
+\label{sec:ill}
+
+To ordered logic we add a symmetry 2-cell
+\[ \Delta,x:p,y:p,\Phi,z:p \mid\cdot \mid u:\alpha_n(\Delta,x,y,\Phi;z) \types u^{x\leftrightarrow y} : \alpha_n(\Delta,y,x,\Phi;z) \]
+generating the exchange rule:
+\[ \inferrule{\Gamma,A,B,\Psi \types C}{\Gamma,B,A,\Psi \types C} \]
+together with axioms on its composites and relating it to the composition operations.
+The resulting $\M$-algebras are symmetric multicategories.
+
+We could instead add an unbiased exchange rule for any permutation $\sigma$:
+\[ \Delta,z:p \mid\cdot \mid u:\alpha_n(\Delta;z) \types u^\sigma : \alpha_n(\Delta^\sigma;z) \]
+and prove that it generates an isomorphic mode theory.
+If describing the entire mode theory at once, we would use non-planar directed rooted trees.
+
+
+\subsection{Intuitionistic nonlinear logic}
+\label{sec:intu-nonl-logic}
+
+Similarly, we can add contraction and weakening 2-cells:
 \begin{mathpar}
-  \inferrule{\Gamma,A,B,\Delta\types C}{\Gamma,B,A,\Delta\types C}
+  \Delta,x:p,z:p \mid\cdot \mid u:\alpha_{n+2}(\Delta,x,x;z) \types u^{\delta^*x} : \alpha_{n+1}(\Delta,x;z)
+  \and
+  \Delta,x:p,z:p \mid\cdot \mid u:\alpha_n(\Delta;z) \types u^{\epsilon^*x} : \alpha_{n+1}(\Delta,x;z)
 \end{mathpar}
-with axioms yielding a symmetric multicategory.
+generating the usual rules:
+\begin{mathpar}
+  \inferrule{\Gamma,A,A\types C}{\Gamma,A\types C}
+  \and
+  \inferrule{\Gamma\types C}{\Gamma,A\types C}.
+\end{mathpar}
+Note that every distinct type metavariable appearing in a premise or a conclusion of the rule corresponds to exactly one edge variable in the mode 2-cell.
+When we impose the appropriate axioms, we obtain the semantic notion of cartesian multicategory.
+Of course we could also use 2-cells parametrized by arbitrary functions of finite sets.
+But I don't know a description of the entire mode theory analogous to the directed trees used in the linear case.
+
+
+\subsection{Classical linear logic}
+\label{sec:cll}
+
+Still with only one mode $p$, suppose instead we have mode morphisms $\alpha_{n,m}(\overbrace{p,\dots,p}^n,\overbrace{p,\dots,p}^m)$ for each $n,m$.
+
+
+\subsection{Classical nonlinear logic}
+\label{sec:cl}
+
+
+
+\subsection{Props and their cousins}
+\label{sec:props}
+
+
+
 
 \subsection{Flavors of operad}
 \label{sec:operads}
@@ -1472,17 +1586,22 @@ Directed sorts:
 \item Properads~\cite{vallette:properads} use connected directed graphs with no directed loops.
 \item Wheeled properads use arbitrary connected directed graphs.
 \item Dioperads~\cite{gan:dioperads} / polycategories~\cite{szabo:polycats,koslowski:polycats,garner:polycats} have no directed loops and are connected and simply connected (no undirected loops either), or equivalently contractible.~\cite{markl:operads-props}
-\item Symmetric operads/multicategories use arbitrary directed trees.
-\item Non-symmetric operads/multicategories use planar directed trees.
+% \item Symmetric operads/multicategories use arbitrary directed trees.
+% \item Non-symmetric operads/multicategories use planar directed trees.
+\item Compact closed categories~\cite{kl:cpt}.
 \end{itemize}
 
 Undirected sorts:
 \begin{itemize}
-\item Cyclic operads~\cite{gk:cyclic-operads} use undirected trees; compare to~\cite{co:flang-cyclic}.
+\item Cyclic operads~\cite{gk:cyclic-operads} use undirected trees; compare to~\cite{co:flang-cyclic,co:cat-cyclic}.
 \item Modular operads~\cite{gk:modular-operads} use arbitrary connected graphs (plus a ``stability'' condition).
 \item Compact symmetric multicategories~\cite{jk:feynman} use arbitrary graphs.
   This is a somewhat misleading name as it doesn't indicate that the objects are actually \emph{self-}dual (the undirectedness).
 \end{itemize}
+
+All of these can be categorified (or virtualized) by considering non-discrete opfibrations (resp.\ just maps) of virtual hypercategories.
+In the case of compact closed categories, the virtualized result is kits; so a kit is really literally a ``virtual compact closed double category'' in this sense.
+
 
 \bibliography{../all.bib}
 \bibliographystyle{alpha}
