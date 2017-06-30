@@ -172,6 +172,8 @@
 
 \hyphenation{hyper-graph}
 \hyphenation{hyper-graphs}
+\hyphenation{pseudo-algebra}
+\hyphenation{pseudo-algebras}
 
 \title{One type theory to rule them all}
 \author{Dan Licata \and\ Mitchell Riley \and\ Patrick Schultz \and\ Michael Shulman}
@@ -372,7 +374,8 @@ On the other hand, if $\G$ is given as an ordered hypergraph, then to give a map
 Similar remarks apply to directed hypergraphs and polygraphs.
 
 \begin{defn}
-  A hypergraph is \textbf{rooted} if it is equipped with a specified vertex called the \textbf{root}.
+  A hypergraph $\G$ is \textbf{rooted} if it is equipped with a specified vertex $\ast_\G$ called the \textbf{root}.
+  A morphism $\G\to\H$ of rooted hypergraphs is \textbf{strongly rooted} if the preimage of $\ast_\H$ is $\{\ast_\G\}$, i.e.\ the root and only the root is mapped to the root.
 \end{defn}
 
 In general, we think of the root as ``not really there'' and the flags incident to it as ``free''.
@@ -604,7 +607,7 @@ This collapse exists as a \emph{morphism} of hypergraphs in one direction, but i
 Thus we introduce the following definition:
 
 \begin{defn}\label{defn:weq}
-  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every non-reflexivity edge is a singleton, and the preimage of every reflexivity edge is a (nonempty) undirected tree.
+  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every non-reflexivity edge is a singleton, and the preimage of every reflexivity edge is a nonempty undirected tree (equivalently, if its geometric realization is a homotopy equivalence).
   A morphism of hypergraphs is a \textbf{weak equivalence} if it is bijective on vertices (hence on flags) and its map on edges is a weak equivalence.
 \end{defn}
 
@@ -921,15 +924,17 @@ However, we may still be left with additional self-loops created by the insertio
 \section{Hypercategories and virtual hypercategories}
 \label{sec:hypercats}
 
-We now construct a monad $T$ out of hypergraphs.
+We now construct a monad $T$ (in fact, several monads) out of hypergraphs.
 Rather than an ordinary monad on a 1-category (such as polygraphs or cycligraphs), our monad must be a 2-monad on a 2-category, since it will incorporate the automorphisms of hypergraphs so that $T P$ will not be discrete even if $P$ is.
 In fact, $T P$ will also include the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
+
 In all the semantic examples that we know, these weak equivalences act as isomorphisms; so in constructing the monad we could formally invert them.
 But this would actually make our lives \emph{more} difficult, since it would be extra work to verify that the inversion is consistent everywhere, and from a syntactic point of view it is more natural to keep them directional (since substitution is more natural than its inverse).
+Moreover, we will also define ``cartesian'' variants of $T$ that include morphisms of hypergraphs that are not even weak equivalences, so it is more consistent to keep everything noninvertible.
 However, this choice does mean that $T$ will only be a lax monad, just as $\hyrel$ is only a lax bicategory.
 
 \begin{anfxnote}{Technology}
-  I am currently working on some technology (``parametric right 2-adjoints'') that should make it easier to construct this monad explicitly.
+  I am currently working on some technology (``parametric right 2-adjoints'') that should make it easier to construct these monads explicitly.
   For now let's not worry about the details.
 \end{anfxnote}
 
@@ -1006,26 +1011,28 @@ For a rooted hypergraph $\G$, we write $\G_0$ for the hypergraph obtained by rem
 Thus, $\G$ can be regarded as a morphism in $\hyrel$ from $\G_0$ to a corolla.
 
 \begin{thm}
-  There is a lax monad $T_1$ on the category of $\Cat$-cycligraphs such that:
+  There are lax monads $S_0$, $S_1$, and $S_2$ on the category of $\Cat$-cycligraphs such that:
   \begin{itemize}
-  \item The objects and arrows of $T_1 P$ are those of $P$.
-  \item A morphism in $T_1 P$ is a finite rooted ordered hypergraph $\G$ with a labeling $\G_0\to P$.
-    Its entries are the images of the edges incident to the root vertex.x
-    A 2-cell in $T_1 P$ from $\G_0\to P$ to $\H_0\to P$ is a weak equivalence of rooted ordered hypergraphs $\H\to \G$ (note the reversal of direction, corresponding to \cref{thm:hyctx}) and a transformation
+  \item The objects and arrows of each $S_i P$ are those of $P$.
+  \item A morphism in any $S_i P$ is a finite rooted ordered hypergraph $\G$ with a labeling $\G_0\to P$.
+    Its entries are the images of the edges incident to the root vertex.
+  \item A 2-cell in $S_2 P$ from $\G_0\to P$ to $\H_0\to P$ is a strongly rooted morphism of rooted ordered hypergraphs $\H\to \G$ (note the reversal of direction, corresponding to \cref{thm:hyctx}) and a transformation
     \[
     \begin{tikzcd}
       \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
     \end{tikzcd}
     \]
-  \item The unit transformation $P\to T_1 P$ sends each morphism of $P$ to a rooted corolla (the unit in $\hyrel$) labeled by that morphism.
-  \item The multiplication $T_1 T_1 P \to T_1 P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$ with labelings carried along.
+    In $S_1 P$ the morphism $\H\to\G$ is required to be bijective on vertices, while in $S_2 P$ it is required to be a weak equivalence.
+  \item The unit transformation $P\to S P$ sends each morphism of $P$ to a rooted corolla (the unit in $\hyrel$) labeled by that morphism.
+  \item The multiplication $S_i S_i P \to S_i P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$ with labelings carried along.
   \item The associativity constraint is an isomorphism, induced by the associativity constraint of $\hyrel$.
   \item The unit constraints are noninvertible weak equivalences, induced by the unit constraints of $\hyrel$.
   \end{itemize}
+  We have monad morphisms $S_0 \to S_1 \to S_2$.
 \end{thm}
 
-This monad suffices to describe various kinds of generalized multicategories, and the judgmental structure of the corresponding type theories.
-But to include information about the operations on objects (type formers), we need a monad $T$ that acts nontrivially on objects as well.
+These monads would suffice to describe various kinds of generalized multicategories.
+But to include information about the operations on objects (type formers), we need monads that act nontrivially on objects as well.
 
 We define a \textbf{bracketing} of $n$ things to be a list of natural numbers whose sum is $n$, regarded as as giving the number of things in each bracket.
 The \textbf{arity} of the bracketing is the length of the list.
@@ -1045,40 +1052,46 @@ Thus a bracketed rooted hypergraph has orderings on the flags incident to each n
 Morphisms of bracketed rooted hypergraphs must preserve the orderings and the bracketing, but can permute the flags incident to the root \emph{within} each block of the bracketing.
 
 \begin{thm}
-  There is a lax monad $T$ on the category of $\Cat$-cycligraphs such that:
+  There are lax monads $T_0$, $T_1$, and $T_2$ on the category of $\Cat$-cycligraphs such that:
   \begin{itemize}
-  \item The category of objects and arrows of $T P$ is the free symmetric strict monoidal category on the category of objects and arrows of $P$.
-    That is, an object of $T P$ is a finite list of objects of $P$, and an arrow is a finite list of arrows in $P$ together with a permutation.
-  \item A morphism in $T P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
+  \item The category of objects and arrows of $T_1 P$ and $T_2 P$ is the free cartesian strict monoidal category on the category of objects and arrows of $P$.
+    That is, an object of $T_1 P$ or $T_2 P$ is a finite list of objects of $P$, and an arrow $(A_1,\dots,A_n) \to (B_1,\dots,B_m)$ is a function $\sigma:m\to n$ together with arrows $A_{\sigma(i)} \to B_i$.
+
+    The category of objects and arrows of $T_0 P$ is instead the free \emph{symmetric} strict monoidal category, i.e.\ we restrict $\sigma$ to be an isomorphism.
+  \item A morphism in any $T_i P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
     Its entries are the images of the blocks within each bracketing of the edges incident to the root.
-    A 2-cell in $T P$ from $\G_0\to P$ to $\H_0\to P$ is a weak equivalence of bracketed rooted hypergraphs $\H\to \G$ and a transformation
+  \item A 2-cell in $T_2 P$ from $\G_0\to P$ to $\H_0\to P$ is a strongly rooted morphism of bracketed rooted hypergraphs $\H\to \G$ and a transformation
     \[
     \begin{tikzcd}
       \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
     \end{tikzcd}
     \]
-  \item The unit transformation $P\to T P$ sends each morphism of $P$ to the corresponding labeled rooted corolla, bracketed by $(1,1,\dots,1)$.
-  \item The multiplication $T T P \to T P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$, and on bracketings by removing parentheses.
+    In $T_1 P$ the morphism $\H\to\G$ is required to be bijective on vertices, and in $T_0 P$ it is required to be a weak equivalence.
+  \item The unit transformation $P\to T_i P$ sends each morphism of $P$ to the corresponding labeled rooted corolla, bracketed by $(1,1,\dots,1)$.
+  \item The multiplication $T_i T_i P \to T_i P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$, and on bracketings by removing parentheses.
   \item The associativity and unit constraints are again induced by those of $\hyrel$.
   \end{itemize}
+  We have monad morphisms $T_0 \to T_1 \to T_2$.
 \end{thm}
 
 Lax monads are perhaps not very familiar, but they are not much harder to deal with than pseudomonads.
-In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T$ to become invertible in any pseudoalgebra.
+In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T_i$ to become invertible in any pseudoalgebra.
 
 \begin{defn}
-  A $T$-pseudoalgebra is called a \textbf{hypercategory}.%
+  A $T_0$-pseudoalgebra is called a \textbf{hypercategory}.%
   \footnote{The word ``hypercategory'' was also used by~\cite{hmt:strict-n-hypercats,mt:omega-hypergraphs}.
     Our meaning is somewhat different, but not unrelated since they also use a kind of hypergraph.
     The ``hyperstructures'' of~\cite{baas:higher-structures} are also related, although in contrast to both of these references we consider here only one dimension of hyper-dependency.}
+  A $T_1$-pseudo\-algebra is called a \textbf{1-cartesian hypercategory}, and a $T_2$-pseudoalgebra is called a \textbf{2-cartesian hypercategory}.
 \end{defn}
 
 A hypercategory $\K$ consists of a $\Cat$-cycligraph together with:
 \begin{itemize}
 \item An (unbiased, non-strict) symmetric monoidal structure on the category $\K(\bullet)$ of objects and arrows.
+  (In the 1- or 2-cartesian case, this structure is cartesian monoidal.)
 \item An operation allowing us to ``compose'' any bracketed rooted hypergraph labeled by morphisms of $\K$, obtaining a new morphism whose entries are the $k$-ary monoidal products of those in the blocks of the bracketing.
 \item Composition is functorial, so we can compose hypergraphs labeled by 2-cells of $\K$ too.
-  Moreover, any weak equivalence of bracketed rooted hypergraphs induces a 2-cell in $\K$ in the opposite direction, naturally.
+\item Any weak equivalence (or bijective-on-vertices map in the 1-cartesian case, or strongly rooted map in the 2-cartesian case) of bracketed rooted hypergraphs induces a 2-cell in $\K$ in the opposite direction, naturally.
 \item Composition is associative up to coherent isomorphism, relative to graph insertion.
 \item Composition is unital up to coherent isomorphism: the composite of a labeled corolla is isomorphic to the unique labeling morphism.
 \end{itemize}
@@ -1119,11 +1132,12 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
 
 \begin{thm}
   Suppose $\V$ is an \bS-indexed symmetric monoidal category with indexed homotopy coproducts preserved by the tensor product on both sides, as studied in~\cite{shulman:frbi,ps:indexed}.
-  Then there is a hypercategory $\ten(\V)$ in which:
+  Then there is a 1-cartesian hypercategory $\ten(\V)$ in which:
   \begin{itemize}
   \item The objects and arrows are those of \bS.
   \item A morphism with entries $X_1,\dots,X_n$ is an object of $\V(X_1\times\cdots\times X_n)$.
   \end{itemize}
+  If $\V$ is fiberwise cartesian monoidal, then $\ten(\V)$ is 2-cartesian.
 \end{thm}
 \begin{proof}
   The composite of a labeled hypergraph $A:\G_0\to\ten(\V)$ is defined as follows.
@@ -1136,8 +1150,45 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
   induce morphisms in \bS in the opposite direction
   \[ \bigtimes_{f\in F_0} A_{\epsilon(f)} \ot \bigtimes_{e\in E_0} A_e \to \bigtimes_{i\in E_1} A_{i} \ot \bigtimes_{e\in E_0} A_e \to \bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}. \]
   Alternately pulling back (reindexing) and pushing forwards (taking indexed coproducts) along these morphisms, we obtain a functor
-  \[ \V\Big(\bigtimes_{f\in F_0} A_{\epsilon(f)}\Big) \to \V\Big(\bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}\Big). \]
-  We define the composite of $A$ to be this functor applied to $\bigboxtimes_{v\in V_0} A_v$.
+  \[ \mathsf{C}_\G : \V\Big(\bigtimes_{f\in F_0} A_{\epsilon(f)}\Big) \to \V\Big(\bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}\Big). \]
+  We define the composite of $A$ to be $\mathsf{C}_\G(\bigboxtimes_{v\in V_0} A_v)$.
+
+  To define the functorial action of hypergraph morphisms, suppose $\H = (V'\xot{\nu'} F' \xto{\epsilon'} E')$ and we have a strongly rooted morphism
+  \[
+  \begin{tikzcd}
+    V' \ar[d,"\phi_v"'] & F' \ar[d,"\phi_f"] \ar[r,"\epsilon'"] \ar[l,"\nu'"'] \dlpullback[dl] & E' \ar[d,"\phi_e"]\\
+    V  & F \ar[r,"\epsilon"'] \ar[l,"\nu"] & E
+  \end{tikzcd}
+  \]
+  inducing a composite labeling $A\phi : \H_0 \to \ten(\V)$.
+  Unless $\V$ is fiberwise cartesian, assume that this morphism is bijective on vertices, i.e.\ $\phi_v$ and hence $\phi_f$ are isomorphisms.
+  Then we have a commutative diagram
+  \[\hspace{-2cm}\small
+  \begin{tikzcd}[column sep=small]
+    \bigtimes_{f\in F_0} A_{\epsilon(f)} \ar[d,"\phi_F"'] &
+    \bigtimes_{e\in E_0} A_e \ar[l] \ar[r] \ar[d] &
+    \bigtimes_{i\in E_1} A_{i} \ar[d] &
+    \bigtimes_{e\in E_0} A_e \ar[l] \ar[r] \ar[d] &
+    \bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)} \ar[d,"\cong"] \\
+    \bigtimes_{f\in F'_0} A_{\phi(\epsilon'(f))}  &
+    \bigtimes_{e\in E'_0} A_{\phi e} \ar[l] \ar[r]  &
+    \bigtimes_{i\in E'_1} A_{\phi i}  &
+    \bigtimes_{e\in E'_0} A_{\phi e} \ar[l] \ar[r]  &
+    \bigtimes_{f\in (\nu')^{-1}(\ast)} A_{\phi(\epsilon'(f))} 
+  \end{tikzcd}\hspace{-2cm}
+  \]
+  in which the right-hand vertical map is always an isomorphism, whereas the left-hand vertical map $\phi_F$ is an isomorphism in the non-cartesian case.
+  Using pseudofunctoriality and Beck-Chevalley transformations for each of these commutative squares, we have an induced map $\mathsf{C}_\G \circ \phi_F^* \to \mathsf{C}_\H$.
+  Moreover, we have a map
+  \[ \bigboxtimes_{v\in V_0} A_v \to \phi_F^*\Big(\bigboxtimes_{v\in V'_0} A_{\phi v}\Big)\]
+  that in the non-cartesian case is simply the isomorphism induced by the isomorphism $V'_0 \cong V_0$, while in the cartesian case its component mapping into the factor $A_{\phi v}$ of the codomain is the projection from the domain mapping to $A_{\phi v}$.
+  Thus we have a composite
+  \[ \mathsf{C}_\G\Big( \bigboxtimes_{v\in V_0} A_v\Big)
+  \to \mathsf{C}_\G\phi_F^*\Big(\bigboxtimes_{v\in V'_0} A_{\phi v}\Big)
+  \to \mathsf{C}_\H\Big(\bigboxtimes_{v\in V'_0} A_{\phi v}\Big)
+  \]
+  from the composite of $A$ to the composite of $A\phi$.
+  \fxnote{I expect that if $\phi$ is a weak equivalence then this should be an isomorphism.}
   \fxnote{Check stuff to complete the proof.}
 \end{proof}
 
@@ -1163,11 +1214,12 @@ Our type-theoretic syntax, however, will be not for hypercategories but for \emp
 To define these we need:
 
 \begin{thm}
-  The lax monad $T$ extends to the double category of $\Cat$-cycligraphs and ``cycli-profunctors''.
+  The lax monads $T_i$ extend to the double category of $\Cat$-cycligraphs and ``cycli-profunctors''.
 \end{thm}
 
 \begin{defn}
-  A \textbf{virtual hypercategory} is a virtual $T$-algebra (i.e.\ a generalized $T$-multicategory in the sense of~\cite{cs:multicats}) in this double category.
+  A \textbf{virtual hypercategory} is a virtual $T_0$-algebra (i.e.\ a generalized $T_0$-multicategory in the sense of~\cite{cs:multicats}) in this double category.
+  Similarly, a \textbf{1-cartesian virtual hypercategory} is a virtual $T_1$-algebra, and a \textbf{2-cartesian virtual hypercategory} is a virtual $T_2$-algebra.
 \end{defn}
 
 In~\cite{cs:multicats} we defined virtual algebras only for strict monads on double categories, but the lax case works similarly.
@@ -1175,9 +1227,9 @@ Explicitly, a virtual hypercategory has the following structure.
 \begin{enumerate}
 \item A cycligraph of \emph{objects} and \emph{morphisms}.
 \item A set of \emph{multi-arrows}, with source a finite list of objects and target a single object.
-  These can be composed and permuted as in an ordinary symmetric multicategory.
+  These can be composed and permuted as in an ordinary symmetric multicategory (a cartesian multicategory if it is 1-cartesian or 2-cartesian).
 \item A set of \emph{2-cells}, each of which has a bracketed hypergraph labeled by morphisms as its source, a single morphism as its target, and lists of multi-arrows as its ``entries''.
-\item Weak equivalences of bracketed hypergraphs act on 2-cells contravariantly.
+\item Weak equivalences of bracketed hypergraphs (bijective-on-objects morphisms in the 1-cartesian case, and strongly rooted morphisms in the 2-cartesian case) act on 2-cells contravariantly.
   In particular, any reduction $\G\to \G'$ as in \cref{thm:reduction} induces a map from $\G$-labeled 2-cells to $\G'$-labeled ones.
   Moreover, 2-cells are also permuted by all automorphisms of hypergraphs.
 \item Each morphism has an identity 2-cell, with source a corolla.
@@ -1207,12 +1259,12 @@ We will see more examples momentarily.
 In a weakly directed virtual hypercategory, all the hypergraphs appearing as sources of 2-cells are also directed.
 %, and also that (the underlying cycligraph of) any algebra over it is directed.
 
-\begin{defn}
-  A virtual hypercategory is \textbf{reasonable} if all weak equivalences act by \emph{isomorphisms} on the 2-cells.
-\end{defn}
+% \begin{defn}
+%   A virtual hypercategory is \textbf{reasonable} if all weak equivalences act by \emph{isomorphisms} on the 2-cells.
+% \end{defn}
 
-Perhaps this ought to be part of the definition of virtual hypercategory.
-I certainly don't know any ``unreasonable'' examples, and it may be necessary for a good correspondence with the type theory.
+% Perhaps this ought to be part of the definition of virtual hypercategory.
+% I certainly don't know any ``unreasonable'' examples, and it may be necessary for a good correspondence with the type theory.
 
 
 \section{Type theory for virtual hypercategories}
