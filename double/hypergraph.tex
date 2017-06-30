@@ -262,41 +262,33 @@ We write $\pi E$ for the set of edges, i.e.\ the set of connected components of 
   \end{itemize}
 \end{defn}
 
-The ``hypergraphs'' used in combinatorics, such as~\cite{glpn:directed-hypergraphs}, are our finite simple reduced hypergraphs of genus zero.
+The ``hypergraphs'' of~\cite{glpn:directed-hypergraphs} are our finite simple reduced hypergraphs of genus zero.
 
 \begin{defn}
   A \textbf{morphism of hypergraphs} is a diagram
   \[
   \begin{tikzcd}
-    V' \ar[d,equals] & F' \ar[l] \ar[r] \ar[d,"\smash\bullet" description,"\phi_f"] & E' \ar[d,"\phi_e"]\\
-    V' \ar[d,"\phi_v"'] & \phi_v^* F \ar[d] \ar[r] \ar[l] \dlpullback[dl] & E \ar[d,equals]\\
+    V' \ar[d] & F' \ar[d] \ar[r] \ar[l] \dlpullback[dl] & E' \ar[d]\\
     V  & F \ar[r] \ar[l] & E
   \end{tikzcd}
   \]
-  in which $\phi_v : V'\to V$ is a function, $\phi_e : E'\to E$ is a map of reflexive directed graphs, the left-hand square is a pullback as shown, and $\phi_f$ is a fiberwise relation over $V'\times E$.
-  Such a morphism is:
-  \begin{itemize}
-  \item a \textbf{$v$-equivalence} if $\phi_v$ is an isomorphism.
-  \item an \textbf{$f$-equivalence} if $\phi_f$ is an isomorphism.
-  \item \textbf{$f$-covariant} if $\phi_f$ is a function $F' \to \phi_v^* F$.
-  \item \textbf{$f$-contravariant} if $\phi_f$ is a function $\phi_v^* F \to F'$.
-  \item an \textbf{$e$-equivalence} if $\phi_e$ has the properties that the preimage of every non-reflexivity edge is a singleton, and the preimage of every reflexivity edge is a nonempty undirected tree (equivalently, its geometric realization is a homotopy equivalence).
-  \end{itemize}
-  Each kind of morphism composes, so we have categories $\hy$, $\hy_v$, $\hy_f$, $\hy_{f_!}$, $\hy_{f^*}$, $\hy_e$, as well as combinations such as $\hy_{vfe}$ consisting of the $vfe$-equivalences (simultaneous $v$-, $f$-, and $e$-equivalences) and so on.
+  in which $V'\to V$ and $F'\to F$ are functions, $E'\to E$ is a map of reflexive directed graphs, and the left-hand square is a pullback.
+  This defines the category $\hy$.
 \end{defn}
 
-By definition, an $f$-equivalence preserves the degree of vertices, while an $e$-equivalence preserves the genus of edges; but only a $vfe$-equivalence necessarily preserves the rank of edges.
+The fact that the left-hand square is a pullback means in particular that a morphism of hypergraphs preserves the degree of vertices.
+However, it does not preserve the rank or the genus of edges.
 
 Usually we will want to assume that the flags incident to each vertex are ordered so that we can distinguish them.
 To say this precisely, let $\thy$ be the hypergraph with exactly one edge representative of genus zero, and for each natural number $n$ exactly one vertex incident to $n$ flags (each in turn incident to the unique edge representative).
 We fix a labeling of these $n$ flags $0,1,\dots,n-1$, so that they are ordered.
 
 \begin{defn}
-  The category of \textbf{ordered hypergraphs} is the slice category $\hy_f/\thy$.
+  The category of \textbf{ordered hypergraphs} is the slice category $\hy/\thy$.
 \end{defn}
 
-An $f$-equivalence $\G\to\thy$ is uniquely determined on edges and vertices, so it consists only of the data of an ordering on the flags incident to each vertex.
-Of course, such a morphism always exists, i.e.\ any hypergraph can be ordered; the point is that morphisms in $\hy_f/\thy$ must preserve the specified orderings.
+A hypergraph morphism $\G\to\thy$ is uniquely determined on edges and vertices, so it consists only of the data of an ordering on the flags incident to each vertex.
+Of course, such a morphism always exists, i.e.\ any hypergraph can be ordered; the point is that morphisms in $\hy/\thy$ must preserve the specified orderings.
 
 \begin{comment}
 Ordered hypergraphs have another convenient description.
@@ -338,18 +330,18 @@ Sometimes we want a further refinement of ordered hypergraphs to \emph{directed}
 Let $\dhy$ denote the hypergraph with $E=1$ and $V=\N\times \N$, with the vertex $(n,m)$ having $n+m$ flags, which we think of as partitioned into $n$ ordered elements and $m$ ordered elements.
 
 \begin{defn}
-  The category of \textbf{directed hypergraphs} is the slice category $\hy_f/\dhy$.
+  The category of \textbf{directed hypergraphs} is the slice category $\hy/\dhy$.
 \end{defn}
 
 Thus, a directed hypergraph is a hypergraph in which at each vertex the list of incident flags is partitioned into two linear orders, which we call the \textbf{incoming} and \textbf{outgoing} flags respectively.
 The numbers of incoming and outgoing flags are respectively called the \textbf{in-degree} and \textbf{out-degree} of the vertex.
 Similarly, the \textbf{in-rank} and \textbf{out-rank} of an edge are respectively the cardinalities of the sets of outgoing (from their vertices, hence incoming to the edge) and incoming (to their vertices, hence outgoing from the edge) flags incident to it.
 
-There is an obvious $f$-equivalence projection $\dhy\to\thy$ sending $(n,m)$ to $n+m$, with the incoming flags ordered before the outgoing ones.
-Moreover, this has an $f$-equivalence section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
+There is an obvious projection $\dhy\to\thy$ sending $(n,m)$ to $n+m$, with the incoming flags ordered before the outgoing ones.
+Moreover, this has a section $\thy\to\dhy$ that sends the vertex $n$ to $(0,n)$.
 Thus, we have
-\[\hy_f/\dhy \simeq (\hy_f/\thy)/(\dhy\to\thy) \]
-\[\hy_f/\thy \simeq (\hy_f/\dhy)/(\thy\to\dhy).\]
+\[\hy/\dhy \simeq (\hy/\thy)/(\dhy\to\thy) \]
+\[\hy/\thy \simeq (\hy/\dhy)/(\thy\to\dhy).\]
 Thus, ordered and directed hypergraphs are each special cases of each other.
 
 \begin{defn}
@@ -365,22 +357,18 @@ Similarly, a multigraph is the underlying data of a multicategory: each morphism
 And a cycligraph is the underlying data of a cyclic multicategory, in which sources and targets are not distinguished; we speak instead of the \textbf{entries} of a morphism.
 
 Our graph-theoretic representation of these objects invokes the Poincar\'e dual ``string diagram convention'', in which objects are 1-dimensional and morphisms are 0-dimensional.
-The categories of cycligraphs, polygraphs, and multigraphs, with $f$-equivalences between them, are presheaf toposes.
-Also, cycligraphs are a reflective subcategory of the category $\hy_f/\thy$ of ordered hypergraphs, and polygraphs are similarly a reflective subcategory of the category $\hy_f/\dhy$ of directed hypergraphs.
+The categories of cycligraphs, polygraphs, and multigraphs are presheaf toposes.
+Also, cycligraphs are a reflective subcategory of $\hy/\thy$, and polygraphs are a reflective subcategory of $\hy/\dhy$.
 We write $\pi \G$ for the cycligraph reflection of an ordered hypergraph $\G$, which has the same vertices and edges as $\G$ but its edge graph is the discrete set $\pi E$ of connected components of the edge graph $E$ of $\G$.
 
 The above definitions of cycligraphs, polygraphs, and multigraphs make the following definitions very easy.
 
 \begin{defn}\label{thm:labeled}
-  If $P$ is a cycligraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with an $f$-contravariant hypergraph morphism $\G\to P$.
-  It is \textbf{strictly labeled} if the morphism is an $f$-equivalence.
+  If $P$ is a cycligraph, then a \textbf{$P$-labeled hypergraph} is a hypergraph $\G$ equipped with a hypergraph morphism $\G\to P$.
 \end{defn}
 
-Thus a strict $P$-labeling of $\G$ assigns to each edge of $\G$ an object of $P$, and to each vertex of $\G$ a morphism of $P$ with the same degree.
-A non-strict labeling is similar, except that the labeling of a vertex can be related by a ``formal contraction and weakening'', i.e.\ the morphism of $P$ can have some of its entries combined (if they are the same object) and some new entries added in order to correspond to the vertex of $\G$ that it labels.
-
-Since a cycligraph is ordered, if $\G\to P$ is a strictly $P$-labeled hypergraph then $\G$ automatically inherits an ordering.
-On the other hand, if $\G$ is given as an ordered hypergraph, then to give an $f$-equivalence $\G\to P$ is equivalently to give a map of cycligraphs $\pi \G \to P$.
+Since a cycligraph is ordered, if $\G\to P$ is a $P$-labeled hypergraph then $\G$ automatically inherits an ordering.
+On the other hand, if $\G$ is given as an ordered hypergraph, then to give a map $\G\to P$ is equivalently to give a map of cycligraphs $\pi \G \to P$.
 Similar remarks apply to directed hypergraphs and polygraphs.
 
 \begin{defn}
@@ -610,22 +598,27 @@ The presence of nontrivial automorphisms means that in general, we cannot simply
 In~\cite{bb:htapm} isomorphism classes and polynomial monads are shown to work for certain subclasses of graphs, but even when it works such a restriction is technical and error-prone.
 Thus, we will generally work with categories instead of sets, never passing to isomorphism classes, and using a weak monad rather than a strict one.
 
-In fact, our definition of hypergraph does not support all the ``isomorphisms'' we would like to have.
+In addition, our definition of hypergraph does not support all the isoomorphisms we would like to have.
 For instance, we would like a non-reduced hypergraph to be isomorphic to a ``reduction'' in which distinct edge representatives of the same edge have been collapsed along an identification.
-This collapse does exist as a morphism, but rather than being invertible it is only a $vfe$-equivalence.
-Specifically, we have:
+This collapse exists as a \emph{morphism} of hypergraphs in one direction, but is not invertible.
+Thus we introduce the following definition:
+
+\begin{defn}\label{defn:weq}
+  A morphism of reflexive graphs is a \textbf{weak equivalence} if the preimage of every non-reflexivity edge is a singleton, and the preimage of every reflexivity edge is a (nonempty) undirected tree.
+  A morphism of hypergraphs is a \textbf{weak equivalence} if it is bijective on vertices (hence on flags) and its map on edges is a weak equivalence.
+\end{defn}
 
 \begin{lem}\label{thm:reduction}
-  Every hypergraph admits a $vfe$-equivalence to a reduced one.
-  Moreover, if $\G\to \G_1$ and $\G \to \G_2$ are $vfe$-equivalences with $\G_1$ and $\G_2$ reduced, then there is a non-unique isomorphism $\G_1 \cong \G_2$ (which need not commute with the $vfe$-equivalences from $\G$).
+  Every hypergraph admits a weak equivalence to a reduced one.
+  Moreover, if $\G\to \G_1$ and $\G \to \G_2$ are weak equivalences with $\G_1$ and $\G_2$ reduced, then there is a non-unique isomorphism $\G_1 \cong \G_2$ (which need not commute with the maps from $\G$).
 \end{lem}
 \begin{proof}
   To construct a reduction of $\G$, choose a spanning tree inside each edge and collapse it to a point.
-  The second statement follows since $vfe$-equivalences induce isomorphisms of sets of edges that preserve genera, and any two reduced hypergraphs with the same vertices, flags, edges, and genera are isomorphic.
+  The second statement follows since weak equivalences induce isomorphisms of sets of edges that preserve genera, and any two reduced hypergraphs with the same vertices, flags, edges, and genera are isomorphic.
 \end{proof}
 
 The non-uniqueness of ``reduction'' is the reason for including non-reduced graphs in the theory; as we will see, they arise naturally in the construction of insertion in \cref{sec:tt-insertion}, and without a canonical way to reduce them it is more natural to keep them around.
-If we represented the edges by a free groupoid rather than a reflexive graph, $vfe$-equivalences would be actual equivalences, but free groupoids also have additional automorphisms that we don't want.
+If we represented the edges by a free groupoid rather than a reflexive graph, weak equivalences would be actual equivalences, but free groupoids also have additional automorphisms that we don't want.
 
 % The directed version of the binary condition is a little kludgy to state due to our convention about the orientations of flags incident to the root.
 
@@ -732,7 +725,7 @@ This is essentially how binary rooted hypegraphs are encoded in~\cite{bb:htapm},
 Another possibility is to express the partial function $F\rightharpoonup V$ as a relation, i.e.\ a span $F \ot H \to V$ in which $H\to F$ is injective.
 If we exclude the possibility of exceptional loops, then the function $F\to E$ is a 2-to-1 surjection and hence can be encoded up to isomorphism by a fixed-point-free involution of $F$.
 This is the definition of graph from~\cite{jk:feynman} (though they call the elements $H$ the ``flags'' and those of $F$ the ``(directed) edges'').
-Their graph morphisms are roughly our $f$-covariant morphisms that are ``$f$-equivalences on all non-root vertices''.
+Their graph morphisms are similar to ours, although theirs are not required to preserve the ``degree of the root''.
 
 
 \section{Type theory for hypergraphs}
