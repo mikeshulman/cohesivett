@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist,xspace,braket,ifmtarg}
+\usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist,xspace,braket,ifmtarg,cancel}
 \usepackage[status=draft,author=]{fixme}
 \fxusetheme{color}
 \newtheorem{thm}{Theorem}[section]
@@ -164,7 +164,9 @@
 \def\ctx{\;\mathsf{ctx}}
 \def\graph{\;\mathsf{graph}}
 \def\type{\;\mathsf{type}}
+\def\weq{\;\mathsf{weq}}
 \let\types\vdash
+\let\Types\Vdash
 \let\jdeq\equiv
 \let\sametypes\approx
 \def\varsof#1{|#1|}
@@ -787,7 +789,7 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
     \Delta\mid\Xi\types \Theta\graph \and
     \Delta'\mid\Xi'\types \Theta'\graph \and
   \end{mathpar}
-  an \textbf{morphism} or \textbf{substitution} $\Theta\to\Theta'$ consists of:
+  a \textbf{context morphism} or \textbf{substitution} $(\sigma\mid\tau\mid\nu):(\Delta\mid\Xi\mid\Theta)\to(\Delta'\mid\Xi'\mid\Theta')$ consists of:
   \begin{enumerate}
   \item A function $\sigma : \Delta' \to \Delta$ that respects types.
   \item A partial function $\tau : \Xi' \rightharpoonup \Xi$ such that
@@ -810,11 +812,27 @@ In order to enhance \cref{thm:ctx-hy} to some sort of equivalence, we need to in
   The partial function $\tau$ corresponds to the action on edge identifications; where it is undefined, we send the corresponding edge to reflexivity.
 \end{proof}
 
-The weak equivalences from \cref{defn:weq} also have a natural type-theoretic interpretation.
-They are inductively obtained by substituting along equalities of \emph{distinct} variables:
+We should also be able to define the context morphisms more type-theoretically as an inductive judgment, but I will not do that right now.
+However, it is useful to characterize the weak equivalences from \cref{defn:weq} in such a way, and the result is quite natural: they are obtained by repeatedly substituting along equalities of \emph{distinct} variables.
 \begin{equation}\label{eq:subst}
   \inferrule{\Delta,y:p\mid\Xi,x\doteq y \types \Theta\graph \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\types \Theta[x/y] \graph}
 \end{equation}
+An inductive characterization of these context morphisms, using a judgment
+\begin{equation}
+  (\sigma\mid\tau\mid\nu):(\Delta\mid\Xi\mid\Theta)\to(\Delta'\mid\Xi'\mid\Theta') \weq\label{eq:weq}
+\end{equation}
+is given by
+\begin{mathpar}
+  \inferrule{ }{(1_\Delta\mid 1_\Xi\mid 1_\Theta) : (\Delta\mid\Xi\mid\Theta)\to (\Delta\mid\Xi\mid\Theta)\weq}
+  \and
+  \inferrule{(\sigma\mid\tau\mid\nu) : (\Delta\mid\Xi\mid\Theta)\to (\Delta'\mid\Xi'\mid\Theta')\weq
+  \\ x\not\jdeq y}
+  {(\sigma,[y\mapsto x]\mid \tau\mid\nu) : (\Delta,y:p\mid\Xi,x\doteq y\mid\Theta)\to (\Delta'\mid\Xi'\mid\Theta')\weq}
+  \and
+  \inferrule{(\sigma\mid\tau\mid\nu) : (\Delta\mid\Xi\mid\Theta)\to (\Delta'\mid\Xi'\mid\Theta')\weq
+  \\ x\not\jdeq y}
+  {(\sigma,[x\mapsto y]\mid \tau\mid\nu) : (\Delta,x:p\mid\Xi,x\doteq y\mid\Theta)\to (\Delta'\mid\Xi'\mid\Theta')\weq}
+\end{mathpar}
 
 
 \section{Insertion of hypergraphs}
@@ -1054,13 +1072,16 @@ Morphisms of bracketed rooted hypergraphs must preserve the orderings and the br
 \begin{thm}
   There are lax monads $T_0$, $T_1$, and $T_2$ on the category of $\Cat$-cycligraphs such that:
   \begin{itemize}
-  \item The category of objects and arrows of $T_1 P$ and $T_2 P$ is the free cartesian strict monoidal category on the category of objects and arrows of $P$.
+  \item The category of objects and arrows of $T_1 P$ and $T_2 P$ is the free \emph{cartesian} strict monoidal category on the category of objects and arrows of $P$.
     That is, an object of $T_1 P$ or $T_2 P$ is a finite list of objects of $P$, and an arrow $(A_1,\dots,A_n) \to (B_1,\dots,B_m)$ is a function $\sigma:m\to n$ together with arrows $A_{\sigma(i)} \to B_i$.
 
+    \fxnote{Would be nice to have a version where it isn't even symmetric, since that's what appears in Kelly's clubs.}
     The category of objects and arrows of $T_0 P$ is instead the free \emph{symmetric} strict monoidal category, i.e.\ we restrict $\sigma$ to be an isomorphism.
   \item A morphism in any $T_i P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
     Its entries are the images of the blocks within each bracketing of the edges incident to the root.
-  \item A 2-cell in $T_2 P$ from $\G_0\to P$ to $\H_0\to P$ is a strongly rooted morphism of bracketed rooted hypergraphs $\H\to \G$ and a transformation
+  \item A 2-cell in $T_2 P$ from $\G_0\to P$ to $\H_0\to P$ is a strongly rooted morphism of bracketed rooted hypergraphs $\H\to \G$
+    \fxerror{In order to have arrows of $T_1 P$ or $T_2 P$ as entries, I think the 2-cells have to be allowed to not preserve the degree of the root.  But we do want them to preserve the degrees of other vertices (though not be necessarily bijective on edges).  Does the map of flags of the root go forwards or backwards?}
+    and a transformation
     \[
     \begin{tikzcd}
       \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
@@ -1271,14 +1292,17 @@ In a weakly directed virtual hypercategory, all the hypergraphs appearing as sou
 \label{sec:type-theory}
 
 Suppose given ``generating data'' for a virtual hypercategory, consisting of collections of objects, multi-arrows, morphisms, and 2-cells with specified sources, targets, and entries as appropriate, plus perhaps axioms regarding their composites.
-We will describe two isomorphic type theories that present a virtual hypercategory from these data.
+We will describe two isomorphic type theories that present a virtual hypercategory from these data (each with 1-cartesian and 2-cartesian versions as well).
+We begin with the first one, which is a bit more obvious.
 
 We refer to the given objects and morphisms as \emph{modes} and \emph{mode morphisms}; there are no operations on them and hence no judgments necessary.
 The generating mode arrows give rise to both a \emph{linear} and a \emph{cartesian} type theory with judgments
-\[ \Delta \Vdash \xi:p \qquad\text{and}\qquad \Delta \types \xi:p \]
+\[ \Delta \Types \xi:p \qquad\text{and}\qquad \Delta \types \xi:p \]
 respectively.
-The linear judgments $\Delta \Vdash \xi:p$ present the actual multi-arrows in the virtual hypercategory, whereas the cartesian ones $\Delta \types \xi:p$ will be used to describe the entries of 2-cells; this is due to the fact that edges in a hypergraph can be incident to the root more or fewer times than once.
-To justify this, we need a metatheorem that any cartesian judgment $\Delta \types \xi:p$ can be factored essentially uniquely as a linear one $\Phi \Vdash \xi':p$ composed with a cartesian substitution $\Delta \types \sigma : \Phi$.
+In the 1-cartesian or 2-cartesian case, we can dispense with the linear judgment; but otherwise the linear judgments $\Delta \Types \xi:p$ present the actual multi-arrows in the virtual hypercategory, whereas the cartesian ones $\Delta \types \xi:p$ will be used to describe the entries of 2-cells.
+
+We need the cartesian judgments even in the non-cartesian case due to the fact that edges in a hypergraph can be incident to the root more or fewer times than once.
+To justify this, we need a metatheorem that any cartesian judgment $\Delta \types \xi:p$ can be factored essentially uniquely as a linear one $\Phi \Types \xi':p$ composed with a cartesian substitution $\Delta \types \sigma : \Phi$.
 For instance, $x:p, y:q, z:r \types \omega(x,\varpi(y,x)) : s$ factors as $u:p, v:q, w:p \types \omega(u,\varpi(v,w)):s$ composed with $x:p, y:q, z:r \types (x,y,x) : (p,q,p)$.
 
 We extend the vertex typing judgment from \cref{sec:tt-hy} by allowing arbitrary cartesian mode-arrow \emph{terms} to appear in the entries:
@@ -1295,13 +1319,17 @@ We similarly extend the loop contexts by allowing them to equate arbitrary mode-
   \inferrule{\Delta\types\Upsilon\extloopctx \\ \Delta\types \xi:p \\ \Delta\types \zeta:p}{\Delta\types (\Upsilon,\xi\doteq \zeta) \extloopctx}
 \end{mathpar}
 The intended meaning of this is that if $\xi$ and $\zeta$ can be unified, then $\xi\doteq\zeta$ stands for all the resulting equalities between variables appearing in them; otherwise it is ``junk''.
-We implement this with a \fxnote*{I can't decide on a good notation for this}{judgment}
+We implement this with a judgment
 \begin{equation}
   \unifies\Delta\Upsilon\Phi\Xi\sigma\label{eq:unifies}
 \end{equation}
 in which $\Delta\types \Upsilon\extloopctx$ and $\Phi\types \Xi\loopctx$, while $\sigma$ is a substitution $\Phi \types \sigma:\Delta$ consisting of cartesian mode-arrow terms, i.e.\ a set of assignations $[x \mapsto \xi]$ for each $(x:p)\in \Delta$ where $\Phi\types \xi:p$.
-The judgment~\eqref{eq:unifies} should be read as defining a (multi-valued, partial) function taking $\Delta,\Upsilon$ as input and proceeding upwards and then downwards to compute $\Phi,\Xi,\sigma$ as output; its rules are shown in \cref{fig:unifies}.
+
+The rules for the judgment~\eqref{eq:unifies} are shown in \cref{fig:unifies}, where $x,y$ denote variables and $\xi,\zeta$ denote cartesian mode-arrow terms.
 (There should also be a symmetric version of the last rule, applying to $\omega(\vec\xi)\doteq y$.)
+This judgment should be read as defining a partial function taking $\Delta,\Upsilon$ as input and proceeding upwards and then downwards to compute $\Phi,\Xi,\sigma$ as output.
+If we insist, as technically written, that it decompose only the last equality in $\Upsilon$, then it is a well-defined function; but even if we allow permutations in $\Upsilon$ it should still be single-valued up to $\alpha$-equivalence.
+
 \begin{figure}\centering
 \begin{mathpar}
   \inferrule{ }{\unifies \Delta\ec\Delta\ec{1_\Delta}}
@@ -1313,7 +1341,7 @@ The judgment~\eqref{eq:unifies} should be read as defining a (multi-valued, part
   }{\unifies\Delta{\Upsilon, \omega(\xi_1,\dots,\xi_n) \doteq \omega(\zeta_1,\dots,\zeta_n)}\Phi\Xi\sigma}
   \and
   \inferrule{\omega : (p_1,\dots,p_n) \to q \text{ a generator} \\
-    \Delta\types \Xi\loopctx\\
+    % \Delta\types \Xi\loopctx\\
     \unifies{\Delta,x_1:p_1,\dots,x_n:p_n}{\Upsilon[\omega(x_1,\dots,x_n)/x], x_1\doteq \xi_1, \dots, x_n\doteq \xi_n}\Phi\Xi{\sigma,[x_1\mapsto \zeta_1],\dots,[x_n\mapsto \zeta_n]}
   }{\unifies{\Delta,x:q}{\Upsilon, x\doteq \omega(\xi_1,\dots,\xi_n)}\Phi\Xi{\sigma,[x\mapsto\omega(\zeta_1,\dots,\zeta_n)]}}
 \end{mathpar}
@@ -1383,29 +1411,25 @@ would be written with the following syntax:
 The action of weak equivalences on mode 2-cells consists of exchange rules allowing us to permute all the contexts, together with ``reduction'' or ``substitution'' rules as in~\eqref{eq:subst}:
 \begin{equation}\label{eq:reduction}
   \inferrule{\Delta,y:p\mid\Xi,x\doteq y \mid \Theta \types M \\ x\not\jdeq y}{\Delta\mid\Xi[x/y]\mid \Theta[x/y] \types M[x/y]}
-  \qquad
-  \inferrule{\Delta,x:p\mid\Xi,x\doteq y \mid \Theta \types M \\ x\not\jdeq y}{\Delta\mid\Xi[y/x]\mid \Theta[y/x] \types M[y/x]}
+  % \qquad
+  % \inferrule{\Delta,x:p\mid\Xi,x\doteq y \mid \Theta \types M \\ x\not\jdeq y}{\Delta\mid\Xi[y/x]\mid \Theta[y/x] \types M[y/x]}
 \end{equation}
 Note that the substitution $M[x/y]$ involves substitution into the mode arrow terms appearing in $M$.
-% Similarly, we implement the unification algorithm on loop contexts:
-% \begin{mathpar}
-%   \inferrule{\Delta\types \xi:p \\
-%     \Delta \mid \Xi \types \Theta \graph \\
-%     \Delta,y:p\mid\Xi,\xi\doteq y \mid \Theta \types e:M
-%   }{\Delta\mid\Xi[\xi/y]\mid \Theta \types e[\xi/y] : M[\xi/y]}
-%   \and
-%   \inferrule{\omega : (p_1,\dots,p_n) \to q \text{ a generator} \\
-%   \Delta \mid \Xi, \omega (\xi_1,\dots,\xi_n) \doteq \omega (\zeta_1,\dots,\zeta_n) \mid \Theta \types e:M
-%   }{\Delta \mid \Xi, \xi_1 \doteq\zeta_1,\dots, \xi_n\doteq\zeta_n \mid\Theta \types e:M}
-% \end{mathpar}
-% Note that in the first rule, $y$ is not allowed to occur in $\xi$ or $\Theta$.
-% There should also be a symmetric rule for $y\doteq\xi$.
-% I'm not entirely sure that these are the correct rules.
+In the 1-cartesian or 2-cartesian case, we should have an action of more general hypergraph morphisms.
+We saw in \cref{thm:hyctx} that these can be represented by graph context morphisms, yielding the following rule:
+\begin{equation}\label{eq:hygph-action}
+  \inferrule{\Delta\mid\Xi\mid\Gamma \types M
+    \\ (\sigma\mid\tau\mid\nu) : (\Delta\mid\Xi\mid\Gamma) \to (\Delta'\mid\Xi'\mid\Gamma')
+    \\ (\sigma\mid\tau\mid\nu)\text{ is appropriate}}
+  {\Delta'\mid\Xi'\mid\Gamma' \types M[\sigma]}
+\end{equation}
+where the ``appropriate'' condition is empty in the 2-cartesian case, that $\nu$ is a bijection in the 1-cartesian case, and that $(\sigma\mid\tau\mid\nu)$ is a weak equivalence in the non-cartesian case.
+Using the inductive characterization of weak equivalences from~\eqref{eq:weq}, the latter becomes simply a ``big-step'' version of~\eqref{eq:reduction} and its dual.
 
-The multi-substitution rule for mode 2-cells now looks like this:
+The multi-substitution rule for mode 2-cells looks like this:
 \begin{equation}\label{eq:multisub}
   \inferrule{
-    \Delta_i \mid \Xi_i \mid \Psi_i \types \alpha_i(\vec \xi_i)
+    \Delta_i \mid \Xi_i \mid \Theta_i \types \alpha_i(\vec \xi_i)
     \\
     \Delta \mid \Xi \mid \alpha_1(\vec x_1),\dots, \alpha_n(\vec x_n) \types M
     \\
@@ -1415,10 +1439,11 @@ The multi-substitution rule for mode 2-cells now looks like this:
     \mid
     \Upsilon
     \mid
-    \Psi_1[\sigma],\dots,\Psi_n[\sigma]
+    \Theta_1[\sigma],\dots,\Theta_n[\sigma]
     \types
     M[\sigma]}
 \end{equation}
+Here each $\vec x_i$ is a list of variables occurring in $\Delta$, not necessarily distinct, while each $\vec\xi_i$ is a list of mode-arrow terms in context $\Delta_i$.
 I believe this really does correspond to the semantic composition operation in a virtual hypercategory.
 In particular, the unification judgment checks that the inputs are well-typed and inserts the appropriate new edges coming from the graph insertions.
 
@@ -1440,100 +1465,139 @@ In particular, the unification judgment checks that the inputs are well-typed an
 % This way we have to ``pass through junk'' in order to get to a meaningful judgment: a single substitution may yield a loop context that cannot be reduced to contain only equations between variables, yet further substitutions may add more equations making it reducible.
 
 We also need a rule of substitution into edges that are incident to no vertices (except possibly the root)
+\fxnote{Not entirely sure about the linearity of $\xi$ here (in the non-cartesian case only, of course)}
 \begin{equation}\label{eq:novert}
   \inferrule{
+    \Delta \types \Xi \edgectx \\
     \Delta \types \Gamma \graph \\
-    \Phi \types \xi : p \\
-    \Delta,x:p \mid \Xi \mid \Gamma \types M
-  }{\Delta,\Phi \mid \Xi[\xi/x] \mid \Gamma \types M[\xi/x]}
+    \Delta',x:p \types \Xi' \edgectx\\
+    \Psi \Types \xi : p \\
+    \Delta,\Delta',x:p \mid \Xi,\Xi' \mid \Gamma \types M\\
+    \unifies{\Delta',\Psi}{\Xi',x\doteq \xi}{\Phi}{\Upsilon}{\sigma}
+  }{\Delta,\Phi \mid \Xi,\Upsilon \mid \Gamma \types M[\sigma]}
 \end{equation}
-It might be more type-theoretically consistent to phrase this rule by adding an equation $x\doteq \xi$ rather than immediately performing the substitution, but semantically the definition of virtual hypercategories actually does the substitution directly here, and there is no real reason not to since here there is no nondeterministic choice about which equation to substitute.
 
 We could also incorporate this as part of the multi-substitution rule~\eqref{eq:multisub}.
-I think it is natural to expect the following:
 
-\begin{conj}
-  If we represent the generating 2-cells by rules that build in both kinds of substitution~\eqref{eq:multisub} and~\eqref{eq:novert} and also arbitrary sequences of reductions~\eqref{eq:reduction} into the domain, then the general 2-cell rules~\eqref{eq:reduction},~\eqref{eq:multisub}, and~\eqref{eq:novert} are admissible.
-\end{conj}
+\begin{thm}\label{thm:mode-adm}\fxnote{I'm going to assume this is true.}
+  If we represent the generating 2-cells by rules that build in~\eqref{eq:hygph-action},~\eqref{eq:multisub}, and~\eqref{eq:novert}, then these rules become admissible.
+\end{thm}
 
-I will henceforth assume this to be true.
-
-
-
-
+In the cartesian cases, probably we can build~\eqref{eq:hygph-action} into the variable rule in a way that looks more like usual cartesian type theory.
 
 This completes the first description of a type theory for virtual hypercategories.
-Now we reorganize the same structure to make it look different.
-We will refer to the variables in an edge context as \emph{types} (or, more precisely, \emph{type metavariables}), and write
+Now we reorganize it to make it look different.
+I will discuss this only in the non-cartesian case, since it is simpler and I think it is the one of most interest for this presentation.
+
+Recall that in traditional natural deduction, a hypothetical judgment such as $A,B\types C$ is (or at least, can be regarded as being) introduced as a shorthand for a derivation tree of $C$ that retains $A$ and $B$ as hypothesis leaves.
+That is, instead of writing
+\[ \inferrule{
+  {\begin{array}{c}
+    A \\ \vdots
+  \end{array}}
+  \\
+  {\begin{array}{c}
+    B \\ \vdots
+  \end{array}}}{C} \]
+and remembering that $A$ and $B$ were hypotheses in the derivation of $C$, we keep a list of all current hypotheses in the context at each node of the derivation tree:
+\[ \inferrule{
+  {\begin{array}{c}
+    \inferrule{ }{A\types A} \\ \vdots
+  \end{array}}
+  \\
+  {\begin{array}{c}
+    \inferrule{ }{B\types B} \\ \vdots
+  \end{array}}}{A,B\types C} \]
+One might say this is responsible for the characteristic feature of natural deduction theories when expressed in the $\Gamma\types C$ form, namely that the conclusion always has an arbitrary context $\Gamma$.
+
+What we are going to do now is pass \emph{backwards} along a similar equivalence, starting with the above-described type theory for virtual hypercategories.
+We will \emph{remove} the edge variables, loop equalities, and graph vertices from the context, placing them instead at leaves of the derivation tree.
+
+We also change the notation a bit.
+We will refer to the variables in an edge context as \emph{types} (or, more precisely, \emph{type metavariables}), and write their corresponding leaf hypotheses as
 \[ A \type_p \]
 instead of $A:p$.
-We write each generating mode arrow $\xi : (p_1,\dots,p_n) \to q$ as a \emph{type formation rule}
-\[ \inferrule{A_1 \type_{p_1}\\ \dots \\ A_n \type_{p_n}}{\form{\xi}(A_1,\dots,A_n)} \]
+We write each generating mode arrow $\omega : (p_1,\dots,p_n) \to q$ as a \emph{type formation rule}
+\[ \inferrule{A_1 \type_{p_1}\\ \cdots \\ A_n \type_{p_n}}{\form{\omega}(A_1,\dots,A_n)} \]
+The fact that the type theory for arrow terms $\Delta\types \xi:p$ is formulated in natural-deduction style means that we can represent any such term essentially uniquely as a derivation tree of type formation rules.
+For instance, the term
+\[x:p, y:q \types \omega(x,\varpi(y,x)) : s\]
+corresponds to the tree
+\[
+\inferrule*{A\type_p \\ \inferrule*{B\type_q \\ A\type_p}{\form\varpi(B,A)\type_r}}{\form\omega(A,\form\varpi(B,A))\type_s}
+\]
+If we need the linear version $\Delta\Types \xi :p$, we can stipulate that no type metavariable occurs more than once as a hypothesis.
 
+The equalities in the loop context we write unsurprisingly as $A\doteq B$.
+Note that these are never the conclusion of a rule; they appear only as hypotheses.
 
 We will refer to a vertex $A_1:p_1, \dots ,A_n:p_n \types \alpha(A_1,\dots,A_n) \vertex$ as a \emph{sequent} and write it
 \[ \types_\alpha A_1,\dots,A_n \]
-
-
-Now, given a particular mode theory as above presenting a virtual hypercategory $\M$, we describe a type theory for an $\M$-algebra $D$.
-Each type (object of $D$) is assigned to an object of $\M$ as its mode; we write
-\[ A \type_p \]
-to mean that $A$ has mode $p$.
-More generally, if each $A_i$ has mode $p_i$, forming a type context $\Gamma$ and a mode context $\Delta$, we will write
-\[ (A_1,\dots,A_n) \ctx_{(p_1,\dots,p_n)} \qquad\text{or}\qquad \Gamma \ctx_\Delta. \]
-
-The other judgment of the type theory represents a morphism in $D$, which we write as
-\[ \types_\alpha A_1,\dots,A_n \]
-where $A_1,\dots,A_n$ are the entries and $\alpha$ is the morphism in $\M$ that it lies over.
-In particular, if each $A_i$ has mode $p_i$, then the entries of $\alpha$ must be $p_1,\dots,p_n$.
-If $\M$ (hence $D$) is directed, then the entries $A_i$ separate into a domain and codomain, and we can write this judgment as
+In the directed case, the entries $A_i$ separate into a domain and codomain, and we write the sequent instead as
 \[ A_1\dots,A_n \types_\alpha B_1,\dots,B_m\]
-If we want a term calculus, we can assign variables to each $A_i$ and pun them for the modes $p_i$, writing
-\[ \types_{\alpha(x_1,\dots,x_n)} f(x_1,\dots,x_n) : (x_1:A_1,\dots,x_n:A_n) \]
-or in the directed case
-\[ x_1:A_1\dots,x_n:A_n \types_{\alpha(\vec x;\vec y)} f(\vec x;\vec y) : (y_1:B_1,\dots,y_m:B_m).\]
-However, note that in this judgment, $\alpha$ cannot be a ``term''; indeed there are no ``morphism terms'' in $\M$.
-It is just a generating morphism that we might consider as formally ``applied'' to the variables $x_1,\dots,x_n$.
+Sequents can appear as both hypotheses and conclusions, but when they appear as hypotheses all the types in them must be metavariables, whereas when they appear as conclusions the types can also involve type formers.
+(Thus, we are describing something that looks somewhat like a sequent calculus.)
 
-The action of multi-arrows in $\M$ on the types gives the ``formation rules'' for type operations:
-\[\inferrule{\Delta \types \xi:p \\ \Gamma \ctx_{\Delta}}{\form{\xi}(\Gamma) \type_p }\]
-Finally, the action of 2-cells in $\M$ on the morphisms of $D$ gives the rules for the morphism judgment.
+Finally, each generating 2-cell, expressed as in \cref{thm:mode-adm} with substitutions built in, yields a derivation rule for such sequents.
+I'm not sure exactly how to state this formally in general, but the idea is that given a generating 2-cell
+\[ \Delta \mid \Xi \mid \alpha_1(\vec x_1),\dots, \alpha_n(\vec x_n) \types M \]
+the corresponding derivation rule is obtained as follows:
+\begin{itemize}
+\item There is one premise of the form $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for each $1\le i\le n$.
+\item There is one premise of the form $B_j\type_{q_j}$ for each $\Xi$-connected component in $\Delta$ that $\Xi$ does not equate to any variable appearing in any $\alpha_i$.
+\item There is a type equality premise for each equality in $\Xi$.
+\item There is a side condition of unification that can produce more type equalities.
+\end{itemize}
+To apply such a rule in the course of constructing a derivation, we assume that we have constructed derivations of $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for some types $A_{i k}$ (not necessarily metavariables, they may involve type formers), and similarly of $B_j \type_{q_j}$ for some types $B_j$.
+We stipulate that each of these derivations must have disjoint hypotheses.
+We then have to perform the unification steps from~\eqref{eq:multisub} and~\eqref{eq:novert}, using the information about coincidence of variables in the $\vec x_i$'s to produce new type equalities that also appear as premises (new hypotheses).
+
+Finally, we can reduce away as many type equalities (between distinct type metavariables) as we want.
+In general, we can describe this in a ``canceled hypothesis'' style by crossing out the equality being reduced and similarly crossing out and replacing the sequents in which the substitution must be performed.
+For instance, reducing the equality $A\doteq B$ on the right in the following derivation:
+\begin{equation}
+\inferrule*{\types_\alpha A \\ A\doteq B \\
+\inferrule*{B\types_\beta B \\ C\type_q}{B\types_\gamma \form\varpi(C)}}{\types_\delta B, \form\omega(A),\form\varpi(C)}\label{eq:unreduced-eg}
+\end{equation}
+yields the following
 \[
-\inferrule{
-  x_1:p_1,\dots,x_n:p_n \mid \Xi \mid u_1:\alpha_1(x_{j_{11}},\dots,x_{j_{1 k_1}}), \dots, u_m:\alpha_m(x_{j_{m1}},\dots,x_{j_{m k_m}})
-  \types e : \beta(\xi_1,\dots,\xi_l) \\
-  x_{v_{i1}}:p_{v_{i1}}, \dots, x_{v_{i w_i}}:p_{v_{i w_i}} \types \xi_i : q_i\\
-  A_i \type_{p_i} \\
-  \types_{\alpha_i} A_{j_{i1}}, \dots, A_{j_{i k_i}}
-}
-{ \types_{\beta} \form{\xi_1}(A_{v_{11}},\dots,A_{v_{1 w_1}}),\dots,\form{\xi_l}(A_{v_{l1}},\dots,A_{v_{l w_l}})}
+\inferrule*{{\types_\alpha A} \\ \cancel{A\doteq B} \\
+\inferrule*{
+  \inferrule*{}{
+      A\types_\beta A \\\\
+      \cancel{B\types_\beta B}}
+    \\ C\type_q}{B\types_\gamma \form\varpi(C)}}{
+  \inferrule{}{
+    \cancel{\types_\delta B, \form\omega(A),\form\varpi(C)} \\\\
+    \types_\delta A, \form\omega(A),\form\varpi(C)
+  }}
 \]
-Note that the formation rules $\form{\xi_i}$ appear only in the conclusion.
-For this reason it seems reasonable to regard this as a (very generalized) sort of ``sequent calculus'', although perhaps properly that terminology should be restricted to the case when the formation rules all have ``companions'' as discussed below.
-
-For example, the 2-cell~\eqref{eq:2cell-eg} gives rise to the following rule:
+Usually, however, for any given generating 2-cell there will be only a few equalities that can be reduced in a canonical way, and so we don't need to notate this step explicitly; in the above example we can simply write
 \[
-\inferrule{A \type_p \\ B \type_p \\ C \type_q \\ A,B,A\types_{\alpha} A,C \\ C,C,B \types_\beta}{\form{\xi}(A,B),A \types_{\gamma} C, \form{\zeta}}
+\inferrule*{{\types_\alpha A} \\ 
+\inferrule*{A\types_\beta A \\ C\type_q}{A\types_\gamma \form\varpi(C)}}{\types_\delta A, \form\omega(A),\form\varpi(C)}
 \]
+Formally, the type theory for virtual hypercategories also includes the derivation~\eqref{eq:unreduced-eg} without any reduction.
+However, in most cases it should be possible to ignore this.
 
-\begin{rmk}
-As mentioned in the introduction, the mode theory behaves like a ``logical framework'' for the type theory.
+By reformulating the type theory of virtual hypercategories in this way, we see that it now looks like a sequent calculus for an ``object language'', where the \emph{generating arrows and 2-cells} of the virtual hypercategory correspond to \emph{type formation and sequent deduction rules} in the object language.
+Put differently, the mode theory behaves like a ``logical framework'' for the type theory.
 The object-language judgments such as $A\type_p$ and $\Gamma\types_\alpha \Delta$ are represented by two kinds of ``types'' in the mode theory, which we actually call ``modes'' and ``mode morphisms'' respectively.
 Similarly, the object-language rules are represented by entailments in the mode theory: mode multi-arrows and 2-cells.
 Unlike an ordinary logical framework, a mode theory is very restricted in the kind of type dependency it allows --- mode morphisms can depend on modes, but that is all --- but the principle of the representation is analogous.
-\end{rmk}
-
-\begin{rmk}
-The fact that multi-arrows and 2-cells in a virtual hypercategory have an algebraic structure of composition means that all \emph{derivable} rules are present on an equal footing with the primitive ones, along with all equations that hold between such derivations.
-The primitive rules and primitive equality axioms between composites of these form a \emph{presentation} of a virtual hypercategory by generators and relations.
-\end{rmk}
+(In fact, this restrictiveness is actually the whole point, in accord with the ``power of weak frameworks'' philosophy of LF: by restricting what we can say in the framework, we can prove more metatheorems about it.
+In our case, we can hopefully prove a fairly general cut-elimination theorem for these object-language sequent calculi.)
 
 
-\section{Examples}
+\section{Type-theoretic examples}
 \label{sec:examples}
 
 For now, we consider only examples without type formation rules, so that our virtual hypercategories have only identity multi-arrows.
 We begin with directed examples, which are more familiar.
+
+For the moment, we consider only the ``local picture'', i.e.\ how the derivation rules arising from specific generating 2-cells correspond to the structural rules of various well-known type theories.
+Later on we will consier global questions such as semantics and initiality.
+
 
 \subsection{Ordered logic}
 \label{sec:ordered-logic}
@@ -1541,50 +1605,61 @@ We begin with directed examples, which are more familiar.
 We have one mode $p$, and one mode morphism $\alpha_n(\overbrace{p,p,\dots,p}^n;p)$ for each $n$.
 The 2-cells are generated by the identity and composition
 \begin{mathpar}
-  x:p \mid \cdot \mid \cdot \types 1_x : \alpha_1(x,x)
-\end{mathpar}
-\begin{multline*}
-  \Delta,\Phi_1,\Phi_2,y:p,z:p \mid\cdot \mid u:\alpha_n(\Delta;y), v:\alpha_{k+1+m}(\Phi_1,y,\Phi_2;z)\\
-  \types v\circ_i u : \alpha_{k+n+m}(\Phi_1,\Delta,\Phi_2;z)
+  x:p \mid \cdot \mid \cdot \types \alpha_1(x,x)
+  \and
+  \Delta,\Phi_1,\Phi_2,y:p,z:p \mid\cdot \mid \alpha_n(\Delta;y), \alpha_{k+1+m}(\Phi_1,y,\Phi_2;z)
+  \types \alpha_{k+n+m}(\Phi_1,\Delta,\Phi_2;z)
   % x_1:p,\dots,x_n:p,z:p,y_1:p,\dots,y_m:p \mid \cdot \mid u:\alpha_n(\vec x;y_i), v:\alpha_m(\vec y;z) \\
   % \types v\circ_i u : \alpha_{n+m-1}(y_1,\dots,y_{i-1},x_1,\dots,x_n,y_{i+1},\dots,y_m;z)
-\end{multline*}
-which give rise to the usual identity and cut rules:
-\begin{mathpar}
-  \inferrule{A\type_p}{A\types A}
-  \and
-  \inferrule{\Gamma\types B \\ \Psi_1,B,\Psi_2 \types C}{\Psi_1,\Gamma,\Psi_2\types C}
 \end{mathpar}
 We also impose the axioms of a multicategory, as presented in the ``one-place composition'' style.
 Note that the order of the edge and vertex variables doesn't matter, since we always have exchange for those; what imposes the ordering on the object logic is the order of arguments to the $\alpha_n$'s.
 
+These generating 2-cells yield the identity and cut rules for the corresponding type theory:
+\begin{mathpar}
+  \inferrule{A\type_p}{A\types_{\alpha_1} A}
+  \and
+  \inferrule{\Gamma\types_{\alpha_n} B \\ B\doteq C \\ \Psi_1,C,\Psi_2 \types_{\alpha_{k+1+m}} D}
+  {\Psi_1,\Gamma,\Psi_2\types_{\alpha_{k+n+m}} D}
+\end{mathpar}
+Since there is exactly one mode morphism of each arity, the subscript of $\types_{\alpha_n}$ is uniquely determined by the number of types on the left, so we can omit it.
+Similarly, we can omit the subscript on $A\type_p$ since there is only one mode.
+If we additionally perform the obvious equality reduction in the cut rule, we obtain exactly the usual rules for ordered logic:
+\begin{mathpar}
+  \inferrule{A\type}{A\types A}
+  \and
+  \inferrule{\Gamma\types B \\ \Psi_1,B,\Psi_2 \types D}
+  {\Psi_1,\Gamma,\Psi_2\types D}
+\end{mathpar}
+
 If we wanted, we could instead use 2-cells generating multi-composition:
 \begin{multline*}
-  \Phi_1,\dots,\Phi_m,y_1:p,\dots,y_m:p,z:p \mid\cdot\mid u_i:\alpha_{n_i}(\Phi_i;y_i), v : \alpha_m(y_1,\dots,y_m;z) \\
-  \types v\circ(u_1,\dots,u_m) : \alpha_{n_1+\cdots+n_m}(\Phi_1,\dots,\Phi_m;z)
+  \Phi_1,\dots,\Phi_m,y_1:p,\dots,y_m:p,z:p \mid\cdot\mid\\
+  \alpha_{n_1}(\Phi_1;y_1),\dots,\alpha_{n_m}(\Phi_m;y_m), \alpha_m(y_1,\dots,y_m;z)\\
+  \types \alpha_{n_1+\cdots+n_m}(\Phi_1,\dots,\Phi_m;z)
 \end{multline*}
 with the appropriate axioms.
 The equivalence between the two definitions of multicategory can then be phrased as an isomorphism between the virtual hypercategories having these two presentations.
 
-A third possibility is to describe directly the entire mode theory, rather than presenting it with generators and relations.
-This amounts to either proving a coherence theorem for the relevant categorical structure, or else ``taking the coherence theorem as a definition''.
-In the case of multicategories, we can describe the mode theory directly by saying that there is exactly one 2-cell whose domain is any \emph{planar directed rooted tree} together with arbitrary orderings on its vertices and edges.
+In this case, as in some others, the virtual hypercategory presented by these generators and relations can be described directly in a global way: there is exactly one 2-cell whose domain is any \emph{planar directed tree}.
+This amounts to a coherence theorem for multicategories.
 
 
 \subsection{Intuitionistic linear logic}
 \label{sec:ill}
 
 To ordered logic we add a symmetry 2-cell
-\[ \Delta,x:p,y:p,\Phi,z:p \mid\cdot \mid u:\alpha_n(\Delta,x,y,\Phi;z) \types u^{x\leftrightarrow y} : \alpha_n(\Delta,y,x,\Phi;z) \]
+\[ \Delta,x:p,y:p,\Phi,z:p \mid\cdot \mid \alpha_n(\Delta,x,y,\Phi;z) \types \alpha_n(\Delta,y,x,\Phi;z) \]
 generating the exchange rule:
 \[ \inferrule{\Gamma,A,B,\Psi \types C}{\Gamma,B,A,\Psi \types C} \]
-together with axioms on its composites and relating it to the composition operations.
-The resulting $\M$-algebras are symmetric multicategories.
+together with axioms on its composites and relating it to the composition operations, as in the definition of symmetric multicategory.
+Note that with only one sequent premise, the unification step is trivial and no type equalities are generated.
 
 We could instead add an unbiased exchange rule for any permutation $\sigma$:
-\[ \Delta,z:p \mid\cdot \mid u:\alpha_n(\Delta;z) \types u^\sigma : \alpha_n(\Delta^\sigma;z) \]
+\[ \Delta,z:p \mid\cdot \mid \alpha_n(\Delta;z) \types \alpha_n(\Delta^\sigma;z) \]
 and prove that it generates an isomorphic mode theory.
-If describing the entire mode theory at once, we would use non-planar directed rooted trees.
+
+The corresponding coherence theorem involves \emph{non-planar} directed trees.
 
 
 \subsection{Intuitionistic nonlinear logic}
@@ -1592,18 +1667,19 @@ If describing the entire mode theory at once, we would use non-planar directed r
 
 Similarly, we can add contraction and weakening 2-cells:
 \begin{mathpar}
-  \Delta,x:p,z:p \mid\cdot \mid u:\alpha_{n+2}(\Delta,x,x;z) \types u^{\delta^*x} : \alpha_{n+1}(\Delta,x;z)
+  \Delta,x:p,z:p \mid\cdot \mid \alpha_{n+2}(\Delta,x,x;z) \types  \alpha_{n+1}(\Delta,x;z)
   \and
-  \Delta,x:p,z:p \mid\cdot \mid u:\alpha_n(\Delta;z) \types u^{\epsilon^*x} : \alpha_{n+1}(\Delta,x;z)
+  \Delta,x:p,z:p \mid\cdot \mid \alpha_n(\Delta;z) \types \alpha_{n+1}(\Delta,x;z)
 \end{mathpar}
 generating the usual rules:
 \begin{mathpar}
   \inferrule{\Gamma,A,A\types C}{\Gamma,A\types C}
   \and
-  \inferrule{\Gamma\types C}{\Gamma,A\types C}.
+  \inferrule{A\type \\ \Gamma\types C}{\Gamma,A\types C}.
 \end{mathpar}
 Note that every distinct type metavariable appearing in a premise or a conclusion of the rule corresponds to exactly one edge variable in the mode 2-cell.
-When we impose the appropriate axioms, we obtain the semantic notion of cartesian multicategory.
+We impose the axioms of a cartesian multicategory.
+
 Of course we could also use 2-cells parametrized by arbitrary functions of finite sets.
 But I don't know a description of the entire mode theory analogous to the directed trees used in the linear case.
 
@@ -1611,7 +1687,35 @@ But I don't know a description of the entire mode theory analogous to the direct
 \subsection{Classical linear logic}
 \label{sec:cll}
 
-Still with only one mode $p$, suppose instead we have mode morphisms $\alpha_{n,m}(\overbrace{p,\dots,p}^n,\overbrace{p,\dots,p}^m)$ for each $n,m$.
+Still with only one mode $p$, suppose instead we have mode morphisms
+\[\alpha_{n,m}(\overbrace{p,\dots,p}^n,\overbrace{p,\dots,p}^m)\]
+for each $n,m$.
+As before, since there is a unique mode morphism with each directed arity, we can omit the label on sequents without ambiguity.
+
+We have symmetry 2-cells on both sides
+\begin{mathpar}
+\Delta,x:p,y:p,\Phi,\Theta \mid\cdot \mid \alpha_{n,m}(\Delta,x,y,\Phi;\Theta) \types \alpha_{n,m}(\Delta,y,x,\Phi;\Theta)
+\and
+\Delta,x:p,y:p,\Phi,\Theta \mid\cdot \mid \alpha_{n,m}(\Delta;\Theta,x,y,\Phi) \types \alpha_{n,m}(\Delta;\Theta,y,x,\Phi)
+\end{mathpar}
+generating the exchange rules:
+\begin{mathpar}
+\inferrule{\Gamma,A,B,\Psi \types \Theta}{\Gamma,B,A,\Psi \types \Theta}
+\and
+\inferrule{\Gamma \types \Theta,A,B,\Psi}{\Gamma \types \Theta,B,A,\Psi}
+\end{mathpar}
+The same identity 2-cell
+\[ x:p \mid \cdot \mid \cdot \types \alpha_1(x,x) \]
+generates the identity rule
+\[ \inferrule{ }{A\types A}\]
+And the following family of 2-cells
+\[ \Delta,\Theta,x:p,\Gamma,\Psi \mid\cdot\mid \alpha_{n,m+1}(\Delta;\Theta,x), \alpha_{1+k,\ell}(x,\Gamma;\Psi) \types \alpha_{n+k,m+\ell}(\Delta,\Gamma;\Theta,\Psi) \]
+generates a cut rule with type equality
+\[ \inferrule{\Delta \types \Theta,A \\ A\doteq B \\ B,\Gamma \types \Psi}{\Delta,\Gamma \types \Theta,\Psi} \]
+that reduces canonically to the usual cut rule of linear logic:
+\[ \inferrule{\Delta \types \Theta,A \\ A,\Gamma \types \Psi}{\Delta,\Gamma \types \Theta,\Psi} \]
+We impose the usual axioms of a symmetric polycategory~\cite{szabo:polycats}, also known as a (colored) dioperad~\cite{gan:dioperads}.
+There is also a ``multi-composition'' definition of polycategory~\cite{koslowski:polycats,garner:polycats}, and the coherence theorem involves all directed (binary) graphs that are undirected trees.
 
 
 \subsection{Classical nonlinear logic}
