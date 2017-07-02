@@ -1253,7 +1253,7 @@ We will see more examples momentarily.
 % \item This composition is appropriately associative and unital.
 % \end{enumerate}
 
-\begin{defn}
+\begin{defn}\label{thm:wk-dir}
   We say that a virtual hypercategory is \textbf{weakly directed} if its underlying cycligraph is directed, i.e.\ the entries of each morphism are partitioned into a domain and a codomain.
   We say that it is \textbf{strongly directed} if it is weakly directed and moreover its 2-cells are also directed compatibly with their sources and targets.
 \end{defn}
@@ -1314,7 +1314,7 @@ in which $\Delta\types \Upsilon\extloopctx$ and $\Phi\types \Xi\loopctx$, while 
 The rules for the judgment~\eqref{eq:unifies} are shown in \cref{fig:unifies}, where $x,y$ denote variables and $\xi,\zeta$ denote cartesian mode-arrow terms.
 (There should also be a symmetric version of the last rule, applying to $\omega(\vec\xi)\doteq y$.)
 This judgment should be read as defining a partial function taking $\Delta,\Upsilon$ as input and proceeding upwards and then downwards to compute $\Phi,\Xi,\sigma$ as output.
-If we insist, as technically written, that it decompose only the last equality in $\Upsilon$, then it is a well-defined function; but even if we allow permutations in $\Upsilon$ it should still be single-valued up to $\alpha$-equivalence.
+If we insist, as technically written, that it decompose only the last equality in $\Upsilon$, then it is a single-valued function; otherwise it is technically multi-valued but I believe it should still be single-valued up to $\alpha$-equivalence (including permutations of the resulting contexts).
 
 \begin{figure}\centering
 \begin{mathpar}
@@ -1458,8 +1458,10 @@ We also need a rule of substitution into edges that are incident to no vertices 
     \unifies{\Delta',\Psi}{\Xi',x\doteq \xi}{\Phi}{\Upsilon}{\sigma}
   }{\Delta,\Phi \mid \Xi,\Upsilon \mid \Gamma \types M[\sigma]}
 \end{equation}
+To match precisely what happens in a virtual hypercategory, I think this rule should automatically reduce the equations arising from $x\doteq\xi$, since this sort of composition doesn't actually introduce new edge identifications.
+To make this happen formally, we would probably need a modified unification judgment.
 
-We could also incorporate this as part of the multi-substitution rule~\eqref{eq:multisub}.
+We could, of course, also incorporate~\eqref{eq:novert} as part of the multi-substitution rule~\eqref{eq:multisub}.
 
 \begin{thm}\label{thm:mode-adm}\fxnote{I'm going to assume this is true.}
   If we represent the generating 2-cells by rules that build in~\eqref{eq:hygph-action},~\eqref{eq:multisub}, and~\eqref{eq:novert}, then these rules become admissible.
@@ -1517,19 +1519,19 @@ In the directed case, the entries $A_i$ separate into a domain and codomain, and
 Sequents can appear as both hypotheses and conclusions, but when they appear as hypotheses all the types in them must be metavariables, whereas when they appear as conclusions the types can also involve type formers.
 (Thus, we are describing something that looks somewhat like a sequent calculus.)
 
-Finally, each generating 2-cell, expressed as in \cref{thm:mode-adm} with substitutions built in, yields a derivation rule for such sequents.
-I'm not sure exactly how to state this formally in general, but the idea is that given a generating 2-cell
+Finally, each generating 2-cell
 \[ \Delta \mid \Xi \mid \alpha_1(\vec x_1),\dots, \alpha_n(\vec x_n) \types M \]
-the corresponding derivation rule is obtained as follows:
+expressed as in \cref{thm:mode-adm} with substitutions built in, yields a derivation rule for such sequents.
+This will make more sense when we consider examples, but for completeness, the general principle is as follows.
 \begin{itemize}
-\item There is one premise of the form $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for each $1\le i\le n$.
-\item There is one premise of the form $B_j\type_{q_j}$ for each $\Xi$-connected component in $\Delta$ that $\Xi$ does not equate to any variable appearing in any $\alpha_i$.
-\item There is a type equality premise for each equality in $\Xi$.
-\item There is a side condition of unification that can produce more type equalities.
+\item There is one premise $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for each $1\le i\le n$.
+\item There is one premise $B_x\type_{q_x}$ for each variable $(x:q_x)\in \Delta$ (often these are omitted from the notation).
+\item For each $i,j$ there is a premise $B_{x} \doteq A_{ik}$, where the variable $x$ is the $k^{\mathrm{th}}$ argument of $\alpha_i$.
+\item There is an additional type equality premise for each equality in $\Xi$.
 \end{itemize}
-To apply such a rule in the course of constructing a derivation, we assume that we have constructed derivations of $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for some types $A_{i k}$ (not necessarily metavariables, they may involve type formers), and similarly of $B_j \type_{q_j}$ for some types $B_j$.
+To apply such a rule in the course of constructing a derivation, we assume that we have constructed derivations of $\types_{\alpha_i} A_{i1},\dots,A_{i m_i}$ for some types $A_{i k}$ (now not necessarily metavariables, they may involve type formers), and similarly of $B_x \type_{q_x}$ for each $B_x$ that is not connected to any $A_{i k}$ by a chain of equalities.
 We stipulate that each of these derivations must have disjoint hypotheses.
-We then have to perform the unification steps from~\eqref{eq:multisub} and~\eqref{eq:novert}, using the information about coincidence of variables in the $\vec x_i$'s to produce new type equalities that also appear as premises (new hypotheses).
+We then have to perform the unification steps from~\eqref{eq:multisub} and~\eqref{eq:novert}, which have the effect of splitting some of the type metavariables $B_x$ into multiple ones $B_{x_j}$, and similarly for the type equalities they appear in.
 
 Finally, we can reduce away as many type equalities (between distinct type metavariables) as we want.
 In general, we can describe this in a ``canceled hypothesis'' style by crossing out the equality being reduced and similarly crossing out and replacing the sequents in which the substitution must be performed.
@@ -1568,11 +1570,11 @@ Unlike an ordinary logical framework, a mode theory is very restricted in the ki
 In our case, we can hopefully prove a fairly general cut-elimination theorem for these object-language sequent calculi.)
 
 
-\section{Type-theoretic examples}
-\label{sec:examples}
+\section{Examples I}
+\label{sec:examples1}
 
 For now, we consider only examples without type formation rules, so that our virtual hypercategories have only identity multi-arrows.
-We begin with directed examples, which are more familiar.
+This means that the unification step is always trivial.
 
 For the moment, we consider only the ``local picture'', i.e.\ how the derivation rules arising from specific generating 2-cells correspond to the structural rules of various well-known type theories.
 Later on we will consier global questions such as semantics and initiality.
@@ -1581,7 +1583,7 @@ Later on we will consier global questions such as semantics and initiality.
 \subsection{Ordered logic}
 \label{sec:ordered-logic}
 
-We have one mode $p$, and one mode morphism $\alpha_n(\overbrace{p,p,\dots,p}^n;p)$ for each $n$.
+We have one mode $p$, and one directed mode morphism $\alpha_n(\overbrace{p,p,\dots,p}^n;p)$ for each $n$.
 The 2-cells are generated by the identity and composition
 \begin{mathpar}
   x:p \mid \cdot \mid \cdot \types \alpha_1(x,x)
@@ -1598,17 +1600,18 @@ These generating 2-cells yield the identity and cut rules for the corresponding 
 \begin{mathpar}
   \inferrule{A\type_p}{A\types_{\alpha_1} A}
   \and
-  \inferrule{\Gamma\types_{\alpha_n} B \\ B\doteq C \\ \Psi_1,C,\Psi_2 \types_{\alpha_{k+1+m}} D}
-  {\Psi_1,\Gamma,\Psi_2\types_{\alpha_{k+n+m}} D}
+  \inferrule{\Gamma\types_{\alpha_n} B' \\ B'\doteq B \\ \Psi_1,B,\Psi_2 \types_{\alpha_{k+1+m}} C \\\\
+    \Gamma'\doteq\Gamma \\ \Psi_1'\doteq\Psi_1 \\ \Psi_2'\doteq\Psi_2 \\ C'\doteq C}
+  {\Psi'_1,\Gamma',\Psi'_2\types_{\alpha_{k+n+m}} C'}
 \end{mathpar}
 Since there is exactly one mode morphism of each arity, the subscript of $\types_{\alpha_n}$ is uniquely determined by the number of types on the left, so we can omit it.
 Similarly, we can omit the subscript on $A\type_p$ since there is only one mode.
-If we additionally perform the obvious equality reduction in the cut rule, we obtain exactly the usual rules for ordered logic:
+Finally, the cut rule can obviously be reduced to eliminate all the primed metavariables; thus we obtain the usual identity and cut rules:
 \begin{mathpar}
   \inferrule{A\type}{A\types A}
   \and
-  \inferrule{\Gamma\types B \\ \Psi_1,B,\Psi_2 \types D}
-  {\Psi_1,\Gamma,\Psi_2\types D}
+  \inferrule{\Gamma\types B \\ \Psi_1,B,\Psi_2 \types C}
+  {\Psi_1,\Gamma,\Psi_2\types C}
 \end{mathpar}
 
 If we wanted, we could instead use 2-cells generating multi-composition:
@@ -1629,10 +1632,11 @@ This amounts to a coherence theorem for multicategories.
 
 To ordered logic we add a symmetry 2-cell
 \[ \Delta,x:p,y:p,\Phi,z:p \mid\cdot \mid \alpha_n(\Delta,x,y,\Phi;z) \types \alpha_n(\Delta,y,x,\Phi;z) \]
-generating the exchange rule:
+generating an exchange rule:
+\[ \inferrule{\Gamma,A,B,\Psi \types C \\ \Gamma'\doteq\Gamma \\ A'\doteq A \\ B'\doteq B \\ \Psi'\doteq\Psi \\ C'\doteq C}{\Gamma',B',A',\Psi' \types C'} \]
+that can be reduced to obtain the usual cut rule:
 \[ \inferrule{\Gamma,A,B,\Psi \types C}{\Gamma,B,A,\Psi \types C} \]
-together with axioms on its composites and relating it to the composition operations, as in the definition of symmetric multicategory.
-Note that with only one sequent premise, the unification step is trivial and no type equalities are generated.
+We impose axioms on its composites and that relate it to the composition operations, as in the definition of symmetric multicategory.
 
 We could instead add an unbiased exchange rule for any permutation $\sigma$:
 \[ \Delta,z:p \mid\cdot \mid \alpha_n(\Delta;z) \types \alpha_n(\Delta^\sigma;z) \]
@@ -1650,7 +1654,7 @@ Similarly, we can add contraction and weakening 2-cells:
   \and
   \Delta,x:p,z:p \mid\cdot \mid \alpha_n(\Delta;z) \types \alpha_{n+1}(\Delta,x;z)
 \end{mathpar}
-generating the usual rules:
+generating (after reduction) the usual rules:
 \begin{mathpar}
   \inferrule{\Gamma,A,A\types C}{\Gamma,A\types C}
   \and
@@ -1677,7 +1681,7 @@ We have symmetry 2-cells on both sides
 \and
 \Delta,x:p,y:p,\Phi,\Theta \mid\cdot \mid \alpha_{n,m}(\Delta;\Theta,x,y,\Phi) \types \alpha_{n,m}(\Delta;\Theta,y,x,\Phi)
 \end{mathpar}
-generating the exchange rules:
+generating (after reduction) the exchange rules:
 \begin{mathpar}
 \inferrule{\Gamma,A,B,\Psi \types \Theta}{\Gamma,B,A,\Psi \types \Theta}
 \and
@@ -1689,9 +1693,7 @@ generates the identity rule
 \[ \inferrule{ }{A\types A}\]
 And the following family of 2-cells
 \[ \Delta,\Theta,x:p,\Gamma,\Psi \mid\cdot\mid \alpha_{n,m+1}(\Delta;\Theta,x), \alpha_{1+k,\ell}(x,\Gamma;\Psi) \types \alpha_{n+k,m+\ell}(\Delta,\Gamma;\Theta,\Psi) \]
-generates a cut rule with type equality
-\[ \inferrule{\Delta \types \Theta,A \\ A\doteq B \\ B,\Gamma \types \Psi}{\Delta,\Gamma \types \Theta,\Psi} \]
-that reduces canonically to the usual cut rule of linear logic:
+generates (after reduction) the usual cut rule of linear logic:
 \[ \inferrule{\Delta \types \Theta,A \\ A,\Gamma \types \Psi}{\Delta,\Gamma \types \Theta,\Psi} \]
 We impose the usual axioms of a symmetric polycategory~\cite{szabo:polycats}, also known as a (colored) dioperad~\cite{gan:dioperads,markl:operads-props}.
 There is also a ``multi-composition'' definition of polycategory~\cite{koslowski:polycats,garner:polycats}, and the coherence theorem involves all directed (binary) graphs that are undirected trees.
@@ -1710,7 +1712,7 @@ To classical linear logic we add contraction and weakening 2-cells on both sides
 \and
 \Delta,x:p,\Phi,\Theta \mid\cdot \mid \alpha_{n,m}(\Delta;\Theta,\Phi) \types \alpha_{n,m}(\Delta;\Theta,x,\Phi)
 \end{mathpar}
-generating the contraction and weakening rules:
+generating (after reduction) the contraction and weakening rules:
 \begin{mathpar}
 \inferrule{\Gamma,A,A,\Psi \types \Theta}{\Gamma,A,\Psi \types \Theta}
 \and
@@ -1736,15 +1738,15 @@ However, there are other one-sided theories that we do include.
 If we simply ignore the negation:
 \[\inferrule{\types \Gamma,A \\ \types \Phi,A}{\types \Gamma,\Phi} \]
 we obtain the cut rule for the ``entries-only'' presentation of \emph{cyclic multicategories} (a.k.a. ``colored cyclic operads''~\cite{gk:cyclic-operads}).
-In an undirected mode theory with one mode $p$ and one morphism $\alpha_n(\overbrace{p,\dots,p}^n)$, this can be generated by 2-cells
-\[ \Delta,x:p \mid\cdot\mid \alpha_{n+1}(\Gamma,x), \alpha_{m+1}(\Phi,x) \types \alpha_{n+m}(\Gamma,\Phi) \]
-followed by a canonical reduction from
-\[\inferrule{\types \Gamma,A \\ A\doteq B \\ \types \Phi,B}{\types \Gamma,\Phi} \]
+In an undirected mode theory with one mode $p$ and one morphism $\alpha_n(\overbrace{p,\dots,p}^n)$, this can be generated (after reduction) by 2-cells
+\[ \Gamma,x:p,\Phi \mid\cdot\mid \alpha_{n+1}(\Gamma,x), \alpha_{m+1}(\Phi,x) \types \alpha_{n+m}(\Gamma,\Phi) \]
 The corresponding identity 2-cell is
 \[ x:p \mid\cdot \mid \cdot \types \alpha_2(x,x) \]
 yielding the rule
 \[ \inferrule{A\type}{\types A,A} \]
-One usually includes an exchange rule too, which can be done in the obvious way.
+One usually includes an exchange rule too:
+\[ \Gamma,x:p,y:p,\Phi \mid\cdot\mid \alpha_{n}(\Gamma,x,y,\Phi) \types \alpha_n(\Gamma,y,x,\Phi) \]
+\[ \inferrule{\types \Gamma,A,B,\Phi}{\types \Gamma,B,A,\Phi)} \]
 The result should be compared to the type theories for cyclic multicategories in~\cite{co:flang-cyclic,co:cat-cyclic}.
 
 Cyclic multicategories can also be presented by starting with ordinary (symmetric) multicategories and adding a 2-cell
@@ -1752,7 +1754,20 @@ Cyclic multicategories can also be presented by starting with ordinary (symmetri
 giving rise to a rule that exchanges an output with an input:
 \[ \inferrule{\Delta,A \types B}{B,\Delta\types A} \]
 plus additional axioms relating this operation to those of the (symmetric) multicategory.
-The coherence theorem for cyclic multicategories involves arbitrary undirected trees.
+Probably one can say that this arises from the above presentation by simply making it weakly directed (\cref{thm:wk-dir}) in an arbitrary way, and by decomposing the symmetric group on $n+1$ things into a free product of the symmetric group on $n$ things and the cyclic group on $n+1$ things.
+Unlike the other directed examples we have seen so far, it is not strongly directed, because the input-output exchange rule doesn't respect the directed structure.
+
+The coherence theorem for cyclic multicategories involves arbitrary \emph{undirected} trees.
+
+
+\section{Semantics}
+\label{sec:semantics}
+
+
+
+
+\section{Examples II}
+\label{sec:examples2}
 
 
 \subsection{Props and properads}
