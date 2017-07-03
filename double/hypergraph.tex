@@ -1,5 +1,9 @@
 \documentclass{article}
-\usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist,xspace,braket,ifmtarg,cancel}
+\usepackage{amsthm,mathtools,mathpartir,mathrsfs,amssymb,url,paralist,xspace,braket,ifmtarg,cancel}
+\usepackage{xcolor}
+\definecolor{darkgreen}{rgb}{0,0.45,0} 
+\usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+\usepackage{cleveref}
 \usepackage[status=draft,author=]{fixme}
 \fxusetheme{color}
 \newtheorem{thm}{Theorem}[section]
@@ -187,6 +191,8 @@
 \author{Dan Licata \and\ Mitchell Riley \and\ Patrick Schultz \and\ Michael Shulman}
 \begin{document}
 \maketitle
+\setcounter{tocdepth}{1}
+\tableofcontents
 
 
 \section{Hypergraphs}
@@ -912,7 +918,7 @@ Moreover, if $\G$ and each $\H_v$ are labeled by some cycligraph $P$, with label
 \fxnote{Add some examples.}
 
 
-
+\begin{comment}
 \section{Type theory for insertion}
 \label{sec:tt-insertion}
 
@@ -944,7 +950,7 @@ However, we may still be left with additional self-loops created by the insertio
   {x:p,u:p \mid x\doteq u, x\doteq u \types (\Theta_1,\Theta_2)\graph}}
 {x:p \mid x\doteq x \types \Theta_1,\Theta_2[x/u] \graph}
 \end{mathpar}
-
+\end{comment}
 
 \section{Hypercategories and virtual hypercategories}
 \label{sec:hypercats}
@@ -1271,8 +1277,8 @@ We will see more examples momentarily.
   We say that it is \textbf{strongly directed} if it is weakly directed and moreover its 2-cells are also directed compatibly with their sources and targets.
 \end{defn}
 
-In a weakly directed virtual hypercategory, all the hypergraphs appearing as sources of 2-cells are also directed.
-However, weak directedness without strong directedness has little mathematical content; it merely signals our intent to regard certain entries of certain morphisms as inputs or outputs.
+In a weakly directed virtual hypercategory, all the non-root portions of the hypergraphs appearing as sources of 2-cells are also directed.
+But weak directedness without strong directedness has little mathematical content; it merely signals our intent to regard certain entries of certain morphisms as inputs or outputs.
 
 The terminal virtual hypercategory has $\thy$ as its cycligraph of objects and morphisms, and unique arrows and 2-cells with every possible domain and codomain.
 Thus, its multicategory of objects and arrows is the terminal one, with exactly one multi-arrow of every arity, and it has a unique 2-cell with every possible bracketed hypergraph as domain.
@@ -1958,7 +1964,7 @@ For instance, the morphisms in the type theory for bunched implication are easil
 
 A \emph{(colored) prop} is like a polycategory but allows us to compose along multiple arrows at once:
 \[ \inferrule{\Gamma \types \Delta,\Phi \\ \Phi,\Psi\types \Theta}{\Gamma,\Psi\types \Delta,\Theta} \]
-We can decompose this into composing along all objects at once, placing two arrows side by side, and a monoidal nullary identity:
+We can decompose this into composing along all objects at once, placing two arrows side by side (binary monoidal product), and a monoidal nullary identity:
 \begin{mathpar}
   \inferrule{\Gamma\types\Delta \\ \Delta\types \Theta}{\Gamma\types\Theta}
   \and
@@ -1983,6 +1989,11 @@ The other way to make $A$ and $B$ ``the same'' is if they are both the same \emp
 But when we substitute a nullary arrow for an edge variable (that is, a type axiom for a type metavariable), the unification procedure makes all type equalities involving it vanish completely.
 So this does not produce any loops.
 
+It is also worth noting that in a prop, the composition and monoidal product on morphisms $\cdot\types\cdot$ coincide and are commutative.
+Given the above biased presentation with both of these as separate operations, and an interchange axiom relating them, this follows from the Eckmann--Hilton argument.
+In the unbiased presentation in terms of arbitrary loop-free directed graphs, there is only \emph{one} operation on pairs of morphisms $\cdot\types\cdot$, namely that parametrized by the graph with two vertices and no edges; but this operation is fixed by the obvious automorphism of this graph, and hence is commutative.\footnote{In~\cite{bb:htapm} it is claimed that in their context, which does not include graph automorphisms, the unicity of this graph means that the corresponding operation need not be commutative, yielding a different notion of ``prop'' from the classical one.
+I have doubts about whether their definition actually makes sense, however, since they pass to isomorphism classes in defining the graphs used, which makes it hard to distinguish vertices that are interchanged by an automorphism, thus I have trouble seeing how they can regard the two-vertices-zero-edges graph as really defining a \emph{binary} operation at all.}
+
 
 \subsection{Wheeled props}
 \label{sec:wheeled-props}
@@ -1991,7 +2002,8 @@ We finally see ``real'' loops in the theory of \emph{wheeled props}, which in ad
 \begin{equation}\label{eq:partial-trace-oops}
   \inferrule{\Gamma,A\types \Delta,A}{\Gamma\types \Delta}
 \end{equation}
-This rule itself doesn't create loops, but it does when combined with the identity rule:
+That is, wheeled props are a ``virtual'' version of a \emph{traced monoidal category}~\cite{jsv:traced-moncat}.
+The rule~\eqref{eq:partial-trace-oops} itself doesn't create loops, but it does when combined with the identity rule:
 \[ \inferrule{ }{A\types A} \]
 It may seem that we should be able to write
 \begin{equation}
@@ -2142,6 +2154,9 @@ Moreover, since we are in the 1-cartesian case, our 2-cells are acted on by arbi
 The 1-cartesian actions also allow us to collapse all loops to reflexivity, so that even when loops appear in composites (which they can), we can get rid of them to produce a result of genus zero.
 Thus our covariant clubs include Kelly's, but also allow ``operations parametrized by loops'' in a sense.
 
+Of course we also allow an arbitrary set of objects, which Kelly sometimes refers to as the ``many-category'' case.
+Note that he also uses the word ``polycategory'' to mean simply ``a family of categories'', in contrast to the more common modern usage in \cref{sec:cll}.
+
 \begin{anfxnote}{cut-elimination}
 In~\cite{kelly:abst-coh} there is a cut-elimination description of free clubs of a certain sort.
 We should compare it to our type theory for virtual hypercategories.
@@ -2153,6 +2168,15 @@ Kelly's purpose in defining clubs was to discuss coherence problems for categori
 In our case, the notion of structured category corresponding to a covariant club is easy, and indeed the same one we considered in \cref{sec:semantics}: a functor of virtual hypercategories into $\hspan(\Set)$.
 It may not be obvious that this yields structured \emph{categories}, but it does, because (like functors of all virtual algebras), functors of virtual hypercategories are ``lax'', hence take unit morphisms to ``monads'', which in $\hspan(\Set)$ are just small categories.
 More generally, we can consider functors into any $\ten(\V)$, obtaining ``enriched models'' of a covariant club.
+
+\begin{anfxnote}{free structures}
+  Say something about how Kelly used clubs to present free structures generated by families of categories.
+  Can we relate this to the use of type theory to present free structures?
+\end{anfxnote}
+
+\begin{anfxnote}{virtualization}
+  Is there some process of ``adding morphism companions for arrows'' that can be applied to a club, producing a version of the ``virtualization'' construction on a 2-monad from monadic generalized multicategory theory?
+\end{anfxnote}
 
 
 \section{Companions}
@@ -2259,10 +2283,14 @@ This sort of harmony should have both categorical and type-theoretic expressions
   \item The theory of $\M$-algebras (i.e.\ functors out of $\M$) is fully property-like~\cite{kl:property-like} over $\M_1$-algebras.
     In other words, any extension of an $\M_1$-algebra to an $\M$-algebra is unique up to unique isomorphism, any extension of an $\M_1$-algebra morphism to an $\M$-algebra morphism is unique, and any $\M_1$-algebra 2-cell between $\M$-algebra morphisms is already an $\M$-algebra 2-cell.
     Moreover, if every mode arrow in $\M$ is a companion, then $\M$-algebras are lax-idempotent over $\M_1$-algebras, and dually if every mode arrow is a conjoint then $\M$-algebras are colax-idempotent over $\M_1$-algebras.
-  \item Cuts in free $\M$-algebras can be eliminated to cuts in $\M_1$-algebras.
-    That is, we can present free $\M$-algebras in such a way (building certain cuts into the companion and conjoint 2-cells) that all cuts ``except those already coming from $\M_1$'' (i.e.\ not involving any of the type formers $\form\omega$) can be eliminated.
+  \item Cuts (and identities) in free $\M$-algebras can be eliminated to cuts (and identities) in $\M_1$-algebras.
+    That is, we can present free $\M$-algebras in such a way (building certain cuts into the companion and conjoint 2-cells) that all cuts and identities ``except those already coming from $\M_1$'' (i.e.\ not involving any of the type formers $\form\omega$) can be eliminated.
   \end{enumerate}
 \end{conj}
+
+Regarding cut-elimination, note that the two equations in the definition of a companion or conjoint essentially express respectively the reduction of the identity of $\form\omega(A_1,\dots A_n)$ to the identities of the $A_i$'s and the reduction of a cut with principal formula $\form\omega(A_1,\dots A_n)$ to cuts along the $A_i$'s.
+
+It is also reasonable to hope that both of these facts will be of relevance to coherence theorems, since both virtualization (e.g. in~\cite{hermida:coh-univ}) and cut-elimination have been used as coherence techniques.
 
 
 \section{Mixed-variance clubs and kits}
@@ -2273,12 +2301,13 @@ Let $\vhy$ denote the following weakly directed virtual hypercategory:
 \item Its underlying cycligraph is $\dhy$, i.e.\ there is one morphism of arity $(n,m)$ for each $n,m$.
 \item Its $n$-ary arrows are parametrized by length-$n$ lists of signs $(\pm,\pm,\cdots,\pm)$, so there are $2^n$ such arrows.
   They are composed by flipping signs on all inputs that get plugged into a minus sign.
-\item It has exactly one 2-cell whose domain is every $(n+m)$-bracketed labeled hypergraph that is binary directed (\cref{defn:binary}), for any $n,m$.
-  Note that the bracketing is \emph{not} required to be directed, i.e.\ incoming and outgoing flags of the root can appear together in the same bracket.
-  The entries of such a 2-cell are the multi-arrows labeled by $(\pm,\pm,\cdots,\pm)$, where if the block corresponds to an entry in the input of the codomain we write $+$ or $-$ according to whether the corresponding flag of the root is incoming or outgoing, and dually if it is in the output of the codomain we write $-$ or $+$ in the same situation.
+\item It has exactly one 2-cell whose domain is every $(n+m)$-bracketed hypergraph that is binary directed (\cref{defn:binary}), for any $n,m$.
+  Note that the entire hypergraph is directed, including the root; but the bracketing is \emph{not} required to be directed, i.e.\ incoming and outgoing flags of the root can appear together in the same bracket.
+  \fxnote{Clarify this.}
+  The entries are the multi-arrows labeled by $(\pm,\pm,\cdots,\pm)$, where if the block corresponds to an entry in the input of the codomain we write $+$ or $-$ according to whether the corresponding flag of the root is incoming or outgoing, and dually if it is in the output of the codomain we write $-$ or $+$ in the same situation.
 \end{itemize}
 
-A $\vhy$-algebra is a compact closed category~\cite{kl:cpt}.
+A $\vhy$-algebra (in $\hspan$) is essentially a ``strict'' compact closed category~\cite{kl:cpt}, i.e.\ one in which the monoidal structure is strict and moreover the dualization operation is strictly monoidal and strictly involutory.
 
 \begin{defn}
   A \textbf{kit} is a virtual hypercategory over $\vhy$.
