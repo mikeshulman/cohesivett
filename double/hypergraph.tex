@@ -31,6 +31,7 @@
 \tikzset{cross/.style={white,line width=3pt}}
 \let\sto\looparrowright
 \def\M{\mathbb{M}}
+\def\cM{\mathcal{M}}
 \def\A{\mathcal{A}}
 \def\B{\mathcal{B}}
 \def\C{\mathcal{C}}
@@ -118,6 +119,9 @@
 \def\bhy{\mathcal{B}}
 \def\fhy{\mathcal{F}}
 \def\ehy{\mathcal{E}\mathit{xt}\mathcal{H}\mathit{y}\mathcal{G}\mathit{ph}}
+\def\tvhy{\mathbb{O}}
+\def\dvhy{\mathbb{D}}
+\def\vhy{\mathbb{V}}
 
 % Get new symbols from mathabx without changing the old ones
 \DeclareFontFamily{U}{mathb}{\hyphenchar\font45}
@@ -580,11 +584,12 @@ In contrast to the former, the latter has no automorphisms that preserve an orde
 
 The most restrictive thing we can say about about automorphisms is the following.
 
-\begin{defn}
+\begin{defn}\label{defn:binary}
   A hypergraph is \textbf{binary}, or simply a \textbf{graph}, if % for each edge $e$ we have
   % \[ \rank(e) + 2 \cdot \genus(e)  = 2, \]
   % i.e.\ if
   every edge either has rank 2 and genus 0, or rank 0 and genus 1.
+  In the directed case, we additionally require that if we switched the direction of all flags incident to the root then every edge would have equal in-rank and out-rank.
 \end{defn}
 
 Amusingly, this condition can be reformulated by saying that the rank of an edge is the same as its ``Euler characteristic'' $\chi=2-2g$.
@@ -944,9 +949,9 @@ However, we may still be left with additional self-loops created by the insertio
 \section{Hypercategories and virtual hypercategories}
 \label{sec:hypercats}
 
-We now construct a monad $T$ out of hypergraphs.
+We now construct a monad $T$ out of hypergraphs (in fact, several monads).
 Rather than an ordinary monad on a 1-category (such as polygraphs or cycligraphs), our monad must be a 2-monad on a 2-category, since it will incorporate the automorphisms of hypergraphs so that $T P$ will not be discrete even if $P$ is.
-In fact, $T P$ will also include the weak equivalences from \cref{defn:weq}, so that it will not even be a groupoid.
+In fact, $T P$ will also include the weak equivalences from \cref{defn:weq} --- and, in some cases, even more hypergraph morphisms --- so that it will not even be a groupoid.
 
 In all the semantic examples that we know, these weak equivalences act as isomorphisms; so in constructing the monad we could formally invert them.
 But this would actually make our lives \emph{more} difficult, since it would be extra work to verify that the inversion is consistent everywhere, and from a syntactic point of view it is more natural to keep them directional (since substitution is more natural than its inverse).
@@ -1030,19 +1035,20 @@ For a rooted hypergraph $\G$, we write $\G_0$ for the hypergraph obtained by rem
 Thus, $\G$ can be regarded as a morphism in $\hyrel$ from $\G_0$ to a corolla.
 
 \begin{thm}
-  There is a lax monad $S$ on the category of $\Cat$-cycligraphs such that:
+  There are lax monads $S_0,S_1,S_2$ on the category of $\Cat$-cycligraphs, with inclusions $S_0 \hookrightarrow S_1 \hookrightarrow S_2$, such that:
   \begin{itemize}
-  \item The objects and arrows of $S P$ are those of $P$.
-  \item A morphism in $S P$ is a finite rooted ordered hypergraph $\G$ with a labeling $\G_0\to P$.
+  \item The objects and arrows of each $S_i P$ are those of $P$.
+  \item A morphism in each $S_i P$ is a finite rooted ordered hypergraph $\G$ with a labeling $\G_0\to P$.
     Its entries are the images of the edges incident to the root vertex.
-  \item A 2-cell in $S P$ from $\G_0\to P$ to $\H_0\to P$ is an ordered weak equivalence $\H\to \G$ (note the reversal of direction, corresponding to \cref{thm:hyctx}) and a transformation
+  \item A 2-cell in $S_2 P$ from $\G_0\to P$ to $\H_0\to P$ is an ordered strongly rooted hypergraph morphism $\H\to \G$ (note the reversal of direction, corresponding to \cref{thm:hyctx}) and a transformation
     \[
     \begin{tikzcd}
       \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
     \end{tikzcd}
     \]
-  \item The unit transformation $P\to S P$ sends each morphism of $P$ to a rooted corolla (the unit in $\hyrel$) labeled by that morphism.
-  \item The multiplication $S S P \to S P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$ with labelings carried along.
+    In $S_1 P$, the morphism $\H\to\G$ is required to be bijective on vertices, while in $S_0 P$ it is required to be a weak equvalence.
+  \item The unit transformation $P\to S_i P$ sends each morphism of $P$ to a rooted corolla (the unit in $\hyrel$) labeled by that morphism.
+  \item The multiplication $S_i S_i P \to S_i P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$ with labelings carried along.
   \item The associativity constraint is an isomorphism, induced by the associativity constraint of $\hyrel$.
   \item The unit constraints are noninvertible weak equivalences, induced by the unit constraints of $\hyrel$.
   \end{itemize}
@@ -1066,32 +1072,34 @@ Thus a bracketed rooted hypergraph has orderings on the flags incident to each v
 Morphisms of bracketed rooted hypergraphs must preserve the orderings and the bracketing.
 
 \begin{thm}
-  There is a lax monad $T$ on the category of $\Cat$-cycligraphs such that:
+  There are lax monads $T_0,T_1,T_2$ on the category of $\Cat$-cycligraphs, with inclusions $T_0 \hookrightarrow T_1 \hookrightarrow T_2$, such that:
   \begin{itemize}
-  \item The category of objects and arrows of $T P$ is the free (non-symmetric) strict monoidal category on the category of objects and arrows of $P$.
-    That is, an object or arrow in $T P$ is a finite list of objects or arrows in $P$.
-  \item A morphism in $T P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
+  \item The category of objects and arrows of each $T_i P$ is the free (non-symmetric) strict monoidal category on the category of objects and arrows of $P$.
+    That is, an object or arrow in $T_i P$ is a finite list of objects or arrows in $P$.
+  \item A morphism in each $T_i P$ is a finite bracketed rooted hypergraph $\G$ with a labeling $\G_0\to P$.
     Its entries are the images of the blocks within each bracketing of the edges incident to the root.
-  \item A 2-cell in $T P$ from $\G_0\to P$ to $\H_0\to P$ is an weak equivalence of bracketed rooted hypergraphs $\H\to \G$ and a transformation
+  \item A 2-cell in $T_2 P$ from $\G_0\to P$ to $\H_0\to P$ is a bracketed strongly rooted hypergraph morphism $\H\to \G$ and a transformation
     \[
     \begin{tikzcd}
       \G_0 \ar[dr] & ~ \ar[d,phantom,"\Rightarrow"] & \H_0 \ar[ll] \ar[dl]\\ &P
     \end{tikzcd}
     \]
-  \item The unit transformation $P\to T P$ sends each morphism of $P$ to the corresponding labeled rooted corolla, bracketed by $(1,1,\dots,1)$.
-  \item The multiplication $T T P \to T P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$, and on bracketings by removing parentheses.
+    In $T_1 P$, the morphism $\H\to \G$ is required to be bijective on vertices, and in $T_0 P$ it is required to be a weak equivalence.
+  \item The unit transformation $P\to T_i P$ sends each morphism of $P$ to the corresponding labeled rooted corolla, bracketed by $(1,1,\dots,1)$.
+  \item The multiplication $T_i T_i P \to T_i P$ acts by insertion $\ins{\G}{\G_0}{v}{\H_v}$, and on bracketings by removing parentheses.
   \item The associativity and unit constraints are again induced by those of $\hyrel$.
   \end{itemize}
 \end{thm}
 
 Lax monads are perhaps not very familiar, but they are not much harder to deal with than pseudomonads.
-In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T$ to become invertible in any pseudoalgebra.
+In particular, we can define pseudoalgebras for any lax monad; the coherence axioms still make sense, and indeed force the noninvertible constraints of $T_i$ to become invertible in any pseudoalgebra.
 
 \begin{defn}
-  A $T$-pseudoalgebra is called a \textbf{hypercategory}.%
+  A $T_0$-pseudoalgebra is called a \textbf{hypercategory}.%
   \footnote{The word ``hypercategory'' was also used by~\cite{hmt:strict-n-hypercats,mt:omega-hypergraphs}.
     Our meaning is somewhat different, but not unrelated since they also use a kind of hypergraph.
     The ``hyperstructures'' of~\cite{baas:higher-structures} are also related, although in contrast to both of these references we consider here only one dimension of hyper-dependency.}
+  A $T_1$-pseudoalgebra is called a \textbf{1-cartesian hypercategory}, and a $T_2$-pseudoalgebra is a \textbf{2-cartesian hypercategory}.
 \end{defn}
 
 A hypercategory $\K$ consists of a $\Cat$-cycligraph together with:
@@ -1099,7 +1107,7 @@ A hypercategory $\K$ consists of a $\Cat$-cycligraph together with:
 \item An (unbiased, non-strict) monoidal structure on the category $\K(\bullet)$ of objects and arrows.
 \item An operation allowing us to ``compose'' any bracketed rooted hypergraph labeled by morphisms of $\K$, obtaining a new morphism whose entries are the $k$-ary monoidal products of those in the blocks of the bracketing.
 \item Composition is functorial, so we can compose hypergraphs labeled by 2-cells of $\K$ too.
-\item Any weak equivalence of bracketed rooted hypergraphs induces a 2-cell in $\K$ in the opposite direction, naturally.
+\item Weak equivalences (or more general morphisms in the cartesian cases) of bracketed rooted hypergraphs (or more general morphism, in the 1-cartesian or 2-cartesian case) induces a 2-cell in $\K$ in the opposite direction, naturally.
 \item Composition is associative up to coherent isomorphism, relative to graph insertion.
 \item Composition is unital up to coherent isomorphism: the composite of a labeled corolla is isomorphic to the unique labeling morphism.
 \end{itemize}
@@ -1140,11 +1148,12 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
 
 \begin{thm}\label{thm:ten}
   Suppose $\V$ is an \bS-indexed symmetric monoidal category with indexed homotopy coproducts preserved by the tensor product on both sides, as studied in~\cite{shulman:frbi,ps:indexed}.
-  Then there is a hypercategory $\ten(\V)$ in which:
+  Then there is a 1-cartesian hypercategory $\ten(\V)$ in which:
   \begin{itemize}
   \item The objects and arrows are those of \bS.
   \item A morphism with entries $X_1,\dots,X_n$ is an object of $\V(X_1\times\cdots\times X_n)$.
   \end{itemize}
+  If each $\V(X)$ is cartesian monoidal, then $\ten(\V)$ is 2-cartesian.
 \end{thm}
 \begin{proof}
   The composite of a labeled hypergraph $A:\G_0\to\ten(\V)$ is defined as follows.
@@ -1160,7 +1169,7 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
   \[ \mathsf{C}_\G : \V\Big(\bigtimes_{f\in F_0} A_{\epsilon(f)}\Big) \to \V\Big(\bigtimes_{f\in \nu^{-1}(\ast)} A_{\epsilon(f)}\Big). \]
   We define the composite of $A$ to be $\mathsf{C}_\G(\bigboxtimes_{v\in V_0} A_v)$.
 
-  To define the functorial action of hypergraph morphisms, suppose $\H = (V'\xot{\nu'} F' \xto{\epsilon'} E')$ and we have a weak equivalence
+  To define the functorial action of hypergraph morphisms, suppose $\H = (V'\xot{\nu'} F' \xto{\epsilon'} E')$ and we have a strongly rooted morphism
   \[
   \begin{tikzcd}
     V' \ar[d,"\phi_v"'] & F' \ar[d,"\phi_f"] \ar[r,"\epsilon'"] \ar[l,"\nu'"'] \dlpullback[dl] & E' \ar[d,"\phi_e"]\\
@@ -1168,11 +1177,11 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
   \end{tikzcd}
   \]
   inducing a composite labeling $A\phi : \H_0 \to \ten(\V)$.
-  Since $\phi$ is a weak equivalence, in particular $\phi_v$ and $\phi_f$ are isomorphisms.
+  In the non-cartesian case, we assume $\phi_v$ and $\phi_f$ are isomorphisms.
   Then we have a commutative diagram
   \[\hspace{-2cm}\small
   \begin{tikzcd}[column sep=small]
-    \bigtimes_{f\in F_0} A_{\epsilon(f)} \ar[d,"\phi_F"',"\cong"] &
+    \bigtimes_{f\in F_0} A_{\epsilon(f)} \ar[d,"\phi_F"'] &
     \bigtimes_{e\in E_0} A_e \ar[l] \ar[r] \ar[d] &
     \bigtimes_{i\in E_1} A_{i} \ar[d] &
     \bigtimes_{e\in E_0} A_e \ar[l] \ar[r] \ar[d] &
@@ -1184,11 +1193,11 @@ The general notion of indexed monoidal category is a ``conceptual pushout'' of t
     \bigtimes_{f\in (\nu')^{-1}(\ast)} A_{\phi(\epsilon'(f))} 
   \end{tikzcd}\hspace{-2cm}
   \]
-  in which the left- and right-hand vertical maps are isomorphisms.
+  in which the right-hand vertical map is always an isomorphism, and the left-hand vertical map is an isomorphism in the non-cartesian case.
   Using pseudofunctoriality and Beck-Chevalley transformations for each of these commutative squares, we have an induced map $\mathsf{C}_\G \circ \phi_F^* \to \mathsf{C}_\H$.
   Moreover, we have a map
   \[ \bigboxtimes_{v\in V_0} A_v \to \phi_F^*\Big(\bigboxtimes_{v\in V'_0} A_{\phi v}\Big)\]
-  that is simply the isomorphism induced by the isomorphism $V'_0 \cong V_0$.
+  (an isomorphism in the non-cartesian case) induced by the identities of each $A_{\phi v}$.
   Thus we have a composite
   \[ \mathsf{C}_\G\Big( \bigboxtimes_{v\in V_0} A_v\Big)
   \to \mathsf{C}_\G\phi_F^*\Big(\bigboxtimes_{v\in V'_0} A_{\phi v}\Big)
@@ -1221,11 +1230,12 @@ Our type-theoretic syntax, however, will be not for hypercategories but for \emp
 To define these we need:
 
 \begin{thm}
-  The lax monad $T$ extends to the double category of $\Cat$-cycligraphs and ``cycli-profunctors''.
+  The lax monads $T_i$ extend to the double category of $\Cat$-cycligraphs and ``cycli-profunctors''.
 \end{thm}
 
 \begin{defn}
-  A \textbf{virtual hypercategory} is a virtual $T$-algebra (i.e.\ a generalized $T$-multicategory in the sense of~\cite{cs:multicats}) in this double category.
+  A \textbf{virtual hypercategory} is a virtual $T_0$-algebra (i.e.\ a generalized $T_0$-multicategory in the sense of~\cite{cs:multicats}) in this double category.
+  Similarly, a \textbf{$k$-cartesian virtual hypercategory} is a virtual $T_k$-algebra.
 \end{defn}
 
 In~\cite{cs:multicats} we defined virtual algebras only for strict monads on double categories, but the lax case works similarly.
@@ -1234,7 +1244,7 @@ Explicitly, a virtual hypercategory has the following structure.
 \item A cycligraph of \emph{objects} and \emph{morphisms}.
 \item A set of \emph{multi-arrows}, with source a finite list of objects and target a single object, forming an ordinary (non-symmetric) multicategory.
 \item A set of \emph{2-cells}, each of which has a bracketed hypergraph labeled by morphisms as its source, a single morphism as its target, and lists of multi-arrows as its ``entries''.
-\item Weak equivalences of bracketed hypergraphs act on 2-cells contravariantly.
+\item Weak equivalences (or more general morphisms in the cartesian case) of bracketed hypergraphs act on 2-cells contravariantly.
   In particular, any reduction $\G\to \G'$ as in \cref{thm:reduction} induces a map from $\G$-labeled 2-cells to $\G'$-labeled ones.
   Moreover, 2-cells are also permuted by all automorphisms of hypergraphs.
 \item Each morphism has an identity 2-cell, with source a corolla.
@@ -1262,19 +1272,25 @@ We will see more examples momentarily.
 \end{defn}
 
 In a weakly directed virtual hypercategory, all the hypergraphs appearing as sources of 2-cells are also directed.
-%, and also that (the underlying cycligraph of) any algebra over it is directed.
+However, weak directedness without strong directedness has little mathematical content; it merely signals our intent to regard certain entries of certain morphisms as inputs or outputs.
 
-% \begin{defn}
-%   A virtual hypercategory is \textbf{reasonable} if all weak equivalences act by \emph{isomorphisms} on the 2-cells.
-% \end{defn}
+The terminal virtual hypercategory has $\thy$ as its cycligraph of objects and morphisms, and unique arrows and 2-cells with every possible domain and codomain.
+Thus, its multicategory of objects and arrows is the terminal one, with exactly one multi-arrow of every arity, and it has a unique 2-cell with every possible bracketed hypergraph as domain.
 
-% Perhaps this ought to be part of the definition of virtual hypercategory.
-% I certainly don't know any ``unreasonable'' examples, and it may be necessary for a good correspondence with the type theory.
+The terminal \emph{weakly directed} virtual hypercategory has $\dhy$ as its cycligraph of objects and morphisms, and unique arrows and 2-cells with every possible domain and codomain.
+Whereas the terminal \emph{strongly directed} virtual hypercategory also has $\dhy$ as its cycligraph of objects and morphisms, and exactly one multi-arrow of every arity, but only those 2-cells in which the bracketing respects the incoming/outgoing partitions.
+In fact, weakly and strongly directed virtual hypercategories can be \emph{defined} by slicing over these terminal examples.
+
+\begin{defn}\label{thm:strong}
+  A virtual hypercategory is \textbf{strong} if all weak equivalences act by \emph{isomorphisms} on the 2-cells.
+\end{defn}
+
+In general, it seems that ``semantic'' examples such as $\ten(\V)$ are usually strong, whereas ``syntactic'' examples such as those freely generated by type theory need not be.
 
 \begin{rmk}
   It may seem as though the multicategory of objects and arrows in a virtual hypercategory ought to be \emph{cartesian} or at least \emph{symmetric} monoidal.
   In fact, such an enhancement seems to usually be unnecessary; our freedom to rearrange the flags incident to the root usually serves as a sufficient substitute.
-  However, in principle there should be enhanced variants of $T$ in which the multicategory of objects and arrows is symmetric or cartesian, and moreover there can also be additional cartesianness incorporated into the morphisms as well.
+  However, in principle there should be enhanced variants of $T$ in which the multicategory of objects and arrows is symmetric or cartesian.
 \end{rmk}
 
 
@@ -1282,7 +1298,7 @@ In a weakly directed virtual hypercategory, all the hypergraphs appearing as sou
 \label{sec:type-theory}
 
 Suppose given ``generating data'' for a virtual hypercategory, consisting of collections of objects, multi-arrows, morphisms, and 2-cells with specified sources, targets, and entries as appropriate, plus perhaps axioms regarding their composites.
-We will describe two isomorphic type theories that present a virtual hypercategory from these data.
+We will describe two isomorphic type theories that present a virtual hypercategory from these data (with variations for the cartesian cases).
 We begin with the first one, which is a bit more obvious.
 
 We refer to the given objects and morphisms as \emph{modes} and \emph{mode morphisms}; there are no operations on them and hence no judgments necessary.
@@ -1410,6 +1426,7 @@ Using the inductive characterization of weak equivalences from~\eqref{eq:weq}, w
     \\ (\sigma\mid\tau\mid\nu) : (\Delta\mid\Xi\mid\Gamma) \to (\Delta'\mid\Xi'\mid\Gamma') \weq}
   {\Delta'\mid\Xi'\mid\Gamma' \types M[\sigma]}
 \end{equation}
+In the 1-cartesian and 2-cartesian cases, this can be simply generalized to allow more general substitutions (those where $\nu$ is bijective, or completely arbitrary ones, respectively).
 
 The multi-substitution rule for mode 2-cells looks like this:
 \begin{equation}\label{eq:multisub}
@@ -1562,7 +1579,16 @@ Usually, however, for any given generating 2-cell there will be only a few equal
 \inferrule*{A\types_\beta A \\ C\type_q}{A\types_\gamma \form\varpi(C)}}{\types_\delta A, \form\omega(A),\form\varpi(C)}
 \]
 Formally, the type theory for virtual hypercategories also includes the derivation~\eqref{eq:unreduced-eg} without any reduction.
-However, in most cases it should be possible to ignore this.
+I would hope that in most cases it should be possible to ignore this, though I'm not sure exactly how to say that precisely.
+
+In the 1-cartesian case, we are also allowed to:
+\begin{itemize}
+\item ``contract'' any derivation by identifying any two type metavariables,
+\item ``weaken'' any derivation by adding a new unused type metavariable, and
+\item ``discard'' any loop hypothesis $A\doteq A$.
+\end{itemize}
+In the 2-cartesian case, we are also allowed to contract and weaken sequent hypotheses.
+This presumably requires some metavariables labeling such hypotheses so that we can tell when two of them are the same.
 
 By reformulating the type theory of virtual hypercategories in this way, we see that it now looks like a sequent calculus for an ``object language'', where the \emph{generating arrows and 2-cells} of the virtual hypercategory correspond to \emph{type formation and sequent deduction rules} in the object language.
 Put differently, the mode theory behaves like a ``logical framework'' for the type theory.
@@ -1664,16 +1690,29 @@ generating (after reduction) the usual rules:
   \inferrule{A\type \\ \Gamma\types C}{\Gamma,A\types C}.
 \end{mathpar}
 Note that every distinct type metavariable appearing in a premise or a conclusion of the rule corresponds to exactly one edge variable in the mode 2-cell.
-We impose the axioms of a cartesian multicategory.
 
-Of course we could also use 2-cells parametrized by arbitrary functions of finite sets.
-But I don't know a description of the entire mode theory analogous to the directed trees used in the linear case.
+We also want to impose the axioms of a cartesian multicategory.
+However, in order for this to make sense, we need to be in the 2-cartesian context, because these axioms involve duplication and discarding of morphisms.
+For instance, we want to identify the following two derivations:
+\begin{mathpar}
+  \inferrule*{\Gamma\types A \\
+    \inferrule*{\Delta,A,A\types B}{\Delta,A\types B}}{\Delta,\Gamma\types B}
+  \and
+  \inferrule*{\inferrule*{\Gamma\types A \\
+      \inferrule*{\Gamma\types A \\ \Delta,A,A\types B}{\Delta,\Gamma\types B}}{\Delta,\Gamma,\Gamma\types B}}
+  {\Delta,\Gamma\types B}
+  \and
+\end{mathpar}
+where on the right the two hypotheses of $\Gamma\types A$ are \emph{the same} (and therefore so are the types $\Gamma$ and $A$ occurring in them).
+
+Of course, we could also use ``unbiased contraction/weakening'' 2-cells parametrized by arbitrary functions of finite sets.
+I don't know a precise description of the entire mode theory analogous to the directed trees used in the linear case, but we may call the graphs that occur in it \emph{cartesian trees}.
 
 
 \subsection{Classical linear logic}
 \label{sec:cll}
 
-Still with only one mode $p$, suppose instead we have mode morphisms
+Still with only one mode $p$, but back in the non-cartesian case, suppose instead we have mode morphisms
 \[\alpha_{n,m}(\overbrace{p,\dots,p}^n,\overbrace{p,\dots,p}^m)\]
 for each $n,m$.
 As before, since there is a unique mode morphism with each directed arity, we can omit the label on sequents without ambiguity.
@@ -1725,14 +1764,15 @@ generating (after reduction) the contraction and weakening rules:
 \and
 \inferrule{\Gamma \types \Theta,\Psi}{\Gamma \types \Theta,A,\Psi}
 \end{mathpar}
-It is unclear what axioms to add, since the correct categorified notion of ``cartesian polycategory'' is not really established; but we at least obtain the correct type theory for derivability.
+It is unclear what axioms to add, since the correct categorified notion of ``cartesian polycategory'' is not really established, nor does it appear that anyone has constructed any non-posetal examples.
+However we at least obtain the correct type theory for derivability.
 
 
 \subsection{Cyclic multicategories}
 \label{sec:cyclic-operads}
 
 Classical linear and nonlinear logic are often presented in a ``one-sided sequent'' form.
-However, although our type theory naturally includes one-sided sequents, I don't immediately see how to include these presentations as examples, because their one-sided cut rule
+However, although our type theory naturally includes one-sided sequents (corresponding to undirected virtual hypercategories), I don't immediately see how to include these presentations as examples, because their one-sided cut rule
 \[\inferrule{\types \Gamma,A \\ \types \Phi,A^\perp}{\types \Gamma,\Phi} \]
 involves a type forming operation $(-)^\perp$ in a premise, which our type theory doesn't allow.
 It's possible there could be a way to get around this (perhaps by using a ``negation'' mode?)\ but I don't see it yet.
@@ -1755,12 +1795,29 @@ The result should be compared to the type theories for cyclic multicategories in
 Cyclic multicategories can also be presented by starting with ordinary (symmetric) multicategories and adding a 2-cell
 \[ \Delta,x:p,y:p \mid\cdot\mid \alpha_{n+1}(\Delta,x;y) \types \alpha_{1+n}(y,\Delta;x) \]
 giving rise to a rule that exchanges an output with an input:
-\[ \inferrule{\Delta,A \types B}{B,\Delta\types A} \]
+\begin{equation}
+  \inferrule{A,\Delta \types B}{\Delta,B\types A}\label{eq:inout}
+\end{equation}
 plus additional axioms relating this operation to those of the (symmetric) multicategory.
 Probably one can say that this arises from the above presentation by simply making it weakly directed (\cref{thm:wk-dir}) in an arbitrary way, and by decomposing the symmetric group on $n+1$ things into a free product of the symmetric group on $n$ things and the cyclic group on $n+1$ things.
 Unlike the other directed examples we have seen so far, it is not strongly directed, because the input-output exchange rule doesn't respect the directed structure.
 
-The coherence theorem for cyclic multicategories involves arbitrary \emph{undirected} trees.
+The coherence theorem for (symmetric) cyclic multicategories involves arbitrary \emph{undirected} trees.
+
+These cyclic multicategories are not quite those of~\cite{cgr:cyclic}.
+However, the cyclic multicategories of~\cite{cgr:cyclic} can also be described in our style, if in contrast to the rest of this section we include some nonidentity mode arrows.
+Specifically, in addition to the identity $1_p$ of our one mode $p$, we add an involution $\delta:p\to p$ (so that $\delta\circ \delta = 1_p$).
+This generates a ``duality'' type former
+\[ \inferrule{A\type}{\form\delta(A)\type} \]
+such that $\form\delta(\form\delta(A))=A$.
+The input-output exchange rule~\eqref{eq:inout} is replaced by
+\begin{mathpar}
+  \inferrule{A,\Delta \types B}{\Delta,\form\delta(B)\types \form\delta(A)}.
+\end{mathpar}
+generated after reduction by a 2-cell
+\[ \Delta,x:p,y:p \mid\cdot \mid \alpha_{1+n}(x,\Delta;y) \types \alpha_{n+1}(\Delta,\delta(y);\delta(x)). \]
+There are appropriate axioms, including an assumption that the exchange rule becomes the identity when repeated enough times, and hence in particular is an isomorphism.
+(Their cyclic multicategories are non-symmetric; of course there is also a symmetric version.)
 
 
 \section{Semantics}
@@ -1864,41 +1921,388 @@ So while the ordinary initiality theorem for type theory only allows us to reaso
 \section{Examples II}
 \label{sec:examples2}
 
+With this semantics in hand, we consider a few more examples.
+We still have no nonidentity mode arrows, except perhaps for the nullary ones that generate a particular theory as in \cref{sec:semantics}; but now we will start to see nontrivial loops.
+
+
+\subsection{2-multicategories}
+\label{sec:2-multicategories}
+
+The coherence theorem for multicategorical type theory, together with its semantics, tells us that if we have a map from a multigraph $P$ (which, recall, means a directed cycligraph with all out-degrees equal to one) into a multicategory $\cM$, then every $P$-labeled planar tree has a unique composite in $\cM$.
+Similarly, if $\cM$ is symmetric or cartesian, we can compose non-planar trees or cartesian trees respectively.
+
+\begin{thm}
+  Any symmetric 2-multicategory $\cM$ induces a strongly directed virtual hypercategory whose:
+  \begin{itemize}
+  \item Objects are those of $\cM$, and only arrows are identities,
+  \item Morphisms are those of $\cM$, and
+  \item All 2-cells have a non-planar tree as domain, and are given by 2-cells in $\cM$ from the composite of that domain to the codomain.
+  \end{itemize}
+  Similarly, any cartesian 2-multicategory induces a 2-cartesian strongly directed virtual hypercategory.
+\end{thm}
+
+In this way, the modal type theories of~\cite{lsr:multi} (hence also~\cite{ls:1var-adjoint-logic}) are included in our framework.
+The rules resulting from these 2-cells combine all possible cuts with all possible structural rules and 2-cell actions, so they are ``fully unbiased'' with all derivable rules taken as primitive.
+But if we have a generators-and-relations presentation of a particular 2-multicategory for which the codomains of all generating 2-cells and 2-cell axioms are generating morphisms (as often seems to be the case), we can translate it into a presentation of the corresponding virtual hypercategory and hence a generating set of primitive rules.
+
+The virtual hypercategory context has the advantage over the 2-multicategory one that we can restrict to any desired subclass of morphisms and still have a virtual hypercategory.
+For instance, the cartesian 2-multicategory for linear logic contains ``formal contractions and weakenings'' of all morphisms which we just ignore by an adequacy theorem; after passing to the corresponding virtual hypercategory we can literally throw away all these undesired morphisms.
+In this way we obtain easier adequacy and initiality theorems.
+
+This construction may be useful to keep around for practical use, in addition to its formal interest for relating the two frameworks.
+For instance, the morphisms in the type theory for bunched implication are easily described by giving a mode in a cartesian 2-multicategory with both a cartesian and a non-cartesian monoid structure; whereas if we go right to a virtual hypercategory we would have to either describe them all explicitly as trees or else resort to essentially the same inductive presentation in a different language.
+
 
 \subsection{Props and properads}
 \label{sec:props}
 
-A \emph{(colored) prop} is like a polycategory but allows us to compose along multiple arrows at once.
+A \emph{(colored) prop} is like a polycategory but allows us to compose along multiple arrows at once:
+\[ \inferrule{\Gamma \types \Delta,\Phi \\ \Phi,\Psi\types \Theta}{\Gamma,\Psi\types \Delta,\Theta} \]
+We can decompose this into composing along all objects at once, placing two arrows side by side, and a monoidal nullary identity:
+\begin{mathpar}
+  \inferrule{\Gamma\types\Delta \\ \Delta\types \Theta}{\Gamma\types\Theta}
+  \and
+  \inferrule{\Gamma\types\Delta \\ \Phi\types \Theta}{\Gamma,\Phi\types\Delta,\Theta}
+  \and
+  \inferrule{ }{\cdot\types\cdot}
+\end{mathpar}
+The coherence theorem for props involves arbitrary directed (binary) graphs with no directed loops.
+A variant known as \emph{properads}~\cite{vallette:properads} imposes the additional requirement that these graphs be connected.
+
+It may appear that the type theory for props should contain loops.
+For instance, the composition along two types at once formally introduces type equalities (in addition to others involving $\Gamma$ and $\Delta$ that we may reduce away)
+\[ \inferrule{\Gamma\types A,B \\ A\doteq A' \\ B\doteq B' \\ A',B'\types \Delta}{\Gamma\types\Delta} \]
+so it seems that ``if $A$ and $B$ are the same'' then this should become
+\[ \inferrule{\Gamma\types A,A \\ A\doteq A' \\ A\doteq A' \\ A',A'\types \Delta}{\Gamma\types\Delta} \]
+which reduces to
+\[ \inferrule{\Gamma\types A,A \\ A\doteq A \\ A,A\types \Delta}{\Gamma\types\Delta} \]
+This is true if our type theory is 1-cartesian, so that we can ``contract'' $A$ and $B$.
+However, in the non-cartesian case we cannot contract type metavariables.
+
+The other way to make $A$ and $B$ ``the same'' is if they are both the same \emph{generating} object of a prop, which according to the semantics of \cref{sec:semantics} for particular props means that they are both $\form{\omega}$ for a generating nullary arrow $\omega : () \to p$.
+But when we substitute a nullary arrow for an edge variable (that is, a type axiom for a type metavariable), the unification procedure makes all type equalities involving it vanish completely.
+So this does not produce any loops.
 
 
-\subsection{Flavors of operad}
-\label{sec:operads}
+\subsection{Wheeled props}
+\label{sec:wheeled-props}
 
-All of these use only binary directed graphs.
-A summary is in~\cite{bb:htapm}.
+We finally see ``real'' loops in the theory of \emph{wheeled props}, which in addition to the operations of a prop have a ``partial trace'' rule
+\begin{equation}\label{eq:partial-trace-oops}
+  \inferrule{\Gamma,A\types \Delta,A}{\Gamma\types \Delta}
+\end{equation}
+This rule itself doesn't create loops, but it does when combined with the identity rule:
+\[ \inferrule{ }{A\types A} \]
+It may seem that we should be able to write
+\begin{equation}
+  \inferrule*{\inferrule*{ }{A\types A}}{\cdot\types\cdot}\label{eq:pt-deriv-oops}
+\end{equation}
+but we need to step back and be more careful.
 
-Directed sorts:
-\begin{itemize}
-\item Wheeled props~\cite{mms:wheeled-props} use arbitrary directed graphs.
-\item Props use directed graphs with no directed loops.
-\item Properads~\cite{vallette:properads} use connected directed graphs with no directed loops.
-\item Wheeled properads use arbitrary connected directed graphs.
-\item Dioperads~\cite{gan:dioperads} / polycategories~\cite{szabo:polycats,koslowski:polycats,garner:polycats} have no directed loops and are connected and simply connected (no undirected loops either), or equivalently contractible.~\cite{markl:operads-props}
+The 2-cell generating the partial trace is
+\[ \Gamma,\Delta,x:p \mid \cdot \mid \alpha_{n+1,m+1}(\Gamma,x;\Delta,x) \types \alpha_{n,m}(\Gamma;\Delta) \]
+and more specifically when $n=m=0$
+\[ x:p \mid \cdot \mid \alpha_{1,1}(x;x) \types \alpha_{0,0}(;). \]
+The 2-cell generating the identity is
+\[ y:p\mid \cdot \mid \cdot \types \alpha_{1,1}(y;y) \]
+To compose these according to~\eqref{eq:multisub}, we concatenate the edge contexts and introduce a new equality for each \emph{occurrence} of a variable as an entry of the morphism being composed along.
+This yields
+\[ x:p,y:p \mid x\doteq y, x\doteq y \mid \cdot \types \alpha_{0,0}(;). \]
+We can reduce this once to get
+\[ x:p \mid x\doteq x \mid \cdot \types \alpha_{0,0}(;). \]
+which can an irreducible loop.
+
+Translating back to derivations, we see that it would really be more correct to write~\eqref{eq:partial-trace-oops} as
+\[ \inferrule{\Gamma,A\types \Delta,A \\ A\doteq A}{\Gamma\types\Delta} \]
+so that~\eqref{eq:pt-deriv-oops} becomes
+\[ \inferrule*{\inferrule*{ }{A\types A} \\ A\doteq A}{\cdot\types\cdot}
+\]
+
+The coherence theorem for wheeled props involves arbitrary directed (binary) graphs.
+A variant called \emph{wheeled properads} uses connected directed graphs.
+There are also undirected theories, related to wheeled props and properads in the same way that cyclic multicategories are related to symmetric multicategories: \emph{modular operads}~\cite{gk:modular-operads} use connected undirected graphs, while ``compact symmetric multicategories''~\cite{jk:feynman}\footnote{I find this terminology very confusing, as ``compact'' generally means that every object is dualizable, whereas these are not simply symmetric multicategories with this property; instead they have the additional stipulation that every object is \emph{self}-dual.} use arbitrary undirected graphs.
+
+
+% \subsection{Flavors of operad}
+% \label{sec:operads}
+
+% All of these use only binary directed graphs.
+% A summary is in~\cite{bb:htapm}.
+
+% Directed sorts:
+% \begin{itemize}
+% \item Wheeled props~\cite{mms:wheeled-props} use arbitrary directed graphs.
+% \item Props use directed graphs with no directed loops.
+% \item Properads~\cite{vallette:properads} use connected directed graphs with no directed loops.
+% \item Wheeled properads use arbitrary connected directed graphs.
+% \item Dioperads~\cite{gan:dioperads} / polycategories~\cite{szabo:polycats,koslowski:polycats,garner:polycats} have no directed loops and are connected and simply connected (no undirected loops either), or equivalently contractible.~\cite{markl:operads-props}
 % \item Symmetric operads/multicategories use arbitrary directed trees.
 % \item Non-symmetric operads/multicategories use planar directed trees.
-\item Compact closed categories~\cite{kl:cpt}.
-\end{itemize}
+% \item Compact closed categories~\cite{kl:cpt}.
+% \end{itemize}
 
-Undirected sorts:
+% Undirected sorts:
+% \begin{itemize}
+% \item Cyclic operads~\cite{gk:cyclic-operads} use undirected trees; compare to~\cite{co:flang-cyclic,co:cat-cyclic}.
+% \item Modular operads~\cite{gk:modular-operads} use arbitrary connected graphs (plus a ``stability'' condition).
+% \item Compact symmetric multicategories~\cite{jk:feynman} use arbitrary graphs.
+%   This is a somewhat misleading name as it doesn't indicate that the objects are actually \emph{self-}dual (the undirectedness).
+% \end{itemize}
+
+\subsection{Cartesian props}
+\label{sec:cartesian-props}
+
+In a 2-cartesian type theory, we can add contraction and weakening to the domains of morphisms in a prop.
+\[ \inferrule{\Gamma,A,A\types \Delta}{\Gamma,A\types \Delta} \]
+Just as a prop is equivalently a symmetric strict monoidal category with a free underlying monoid of objects, a \emph{cartesian prop} is such a category that is cartesian monoidal, also known as a \emph{Lawvere theory}~\cite{lawvere:functsem}.
+Semantically, Lawvere theories are equivalent to cartesian multicategories, since a morphism into a cartesian product is determined by its components.
+I can't think of anything more syntactic to say about the relationship, though.
+
+If we also add contraction and weakening to the codomains, we obtain a \emph{bicartesian prop}, in which the tensor product is a biproduct (both a product and a coproduct), and hence the category is enriched over abelian groups.
+In particular, we can ``add'' two morphisms with the same domain and codomain:
+\[
+\inferrule*{\inferrule*{A\types B \\ A\types B}{A,A\types B,B}}{A\types B}
+\]
+and we have a ``zero'' morphism obtained by weakening the nullary monoidal identity:
+\[ \inferrule*{\inferrule*{ }{\cdot\types \cdot}}{A\types B}\]
+
+
+
+\subsection{Virtual double generalized multicategories}
+\label{sec:gen-2-multi}
+
+The coherence theorems for these structures, that say their theories have a unique 2-cell with every possible domain of a given shape, can be viewed as identifying their syntactic virtual hypercategory as a subobject of the terminal strongly directed virtual hypercategory.
+For any such structure, it is natural to call an arbitrary virtual hypercategory \emph{over} their syntactic one a \emph{virtual double} version of the structure.
+
+Consider first the theory of ordinary categories, which is so simple we didn't mention it before.
+Here we have one mode $p$, one mode morphism $\alpha(p;p)$, and composition and identity 2-cells.
+\begin{mathpar}
+  x:p,y:p,z:p \mid \cdot \mid \alpha(x;y),\alpha(y;z) \types \alpha(x;z)
+  \and
+  x:p \mid\cdot\mid \cdot \types \alpha(x;x)
+\end{mathpar}
+subject to associativity and unitality axioms.
+The coherence theorem says that there is a unique 2-cell whose domain is any ``linear tree''.
+A virtual hypercategory \emph{over} this syntactic one, therefore, has:
 \begin{itemize}
-\item Cyclic operads~\cite{gk:cyclic-operads} use undirected trees; compare to~\cite{co:flang-cyclic,co:cat-cyclic}.
-\item Modular operads~\cite{gk:modular-operads} use arbitrary connected graphs (plus a ``stability'' condition).
-\item Compact symmetric multicategories~\cite{jk:feynman} use arbitrary graphs.
-  This is a somewhat misleading name as it doesn't indicate that the objects are actually \emph{self-}dual (the undirectedness).
+\item a set of objects (all over $p$).
+\item a category of (unary) arrows (all over $1_p$).
+\item a set of morphisms with a single object as source and a single object as target (all over $\alpha$).
+\item a set of 2-cells with domain a linear tree labeled by morphisms, i.e.\ a string of ``composable'' morphisms, with codomain a single morphism, and with two unary arrows as entries.
+\end{itemize}
+In sum, it is exactly a \emph{virtual double category} (or ``fc-multicategory'') as in~\cite{leinster:fc-multicategories,cs:multicats}.
+This justifies referring to virtual hypercategories over the free one containing an X as ``virtual double Xs''.
+
+We therefore obtain notions of \emph{virtual double multicategory}, \emph{virtual double prop}, and so on.
+Adding a \fxnote*{which we should discuss in general somewhere}{``representability'' criterion} we obtain ``double generalized multicategories'', and if the vertical arrows are trivial we obtain ``generalized 2-multicategories''.
+For instance, the \emph{cyclic double multicategories} of~\cite{cgr:cyclic} can be obtained in this way from ordinary cyclic multicategories (with duality), as described at the end of \cref{sec:cyclic-operads}.
+
+
+\section{Clubs}
+\label{sec:clubs}
+
+In \cref{sec:examples1,sec:examples2} we considered mainly examples that were degenerate in having no nonidentity arrows.
+Dually, we can consider degenerate examples that have hardly any \emph{morphisms}.
+A virtual hypercategory with no morphisms at all, of course, is nothing but an ordinary multicategory of objects and arrows.
+The next step beyond this is if all the morphisms are ``identities'' in the following sense.
+
+\begin{defn}\label{defn:unit}
+  A \textbf{unit} in a weakly directed and strong virtual hypercategory is a morphism $\iota(p;p)$ equipped with a 2-cell of the form
+  \[ x:p \mid \cdot \mid \cdot \types \iota(x;x) \]
+  such that precomposition with this 2-cell is, whenever possible, an isomorphism.
+\end{defn}
+
+We assume that the virtual hypercategory is strong (\cref{thm:strong})\fxerror{Need to generalize away from that.}
+ because otherwise it would be unclear whether the universality of the 2-cell should be expressed before or after reduction of composites.
+
+In derivation language, the unit 2-cell is an ``identity rule''
+\[ \inferrule{A\type_p}{A\types_\iota A} \]
+and its universal property yields, among other things, ``cut rules'' for all other morphisms:
+\[ \inferrule{\types_\alpha \Gamma,A \\ A\types_\iota B}{\types_\alpha \Gamma,B} \]
+determined uniquely by the fact that
+\[ \inferrule*{\types_\alpha \Gamma,A \\ \inferrule*{ }{A\types_\iota A}}{\types_\alpha \Gamma,A} \]
+is the identity.
+
+\begin{defn}
+  A \textbf{covariant club} is a strongly directed and strong 1-cartesian virtual hypercategory in which every object is equipped with a unit, and these units are the only morphisms.
+\end{defn}
+
+Various different notions of ``club'' appear in papers such as~\cite{kelly:mv-funct-calc,kelly:abst-coh,kelly:club-doc,kelly:club-dt}.
+Our covariant clubs are a slight generalization of the most general covariant sort defined in~\cite{kelly:mv-funct-calc,kelly:abst-coh}.
+
+To explain how this works, note that in a covariant club (of our sort) the 2-cells are uniquely determined by those whose domain hypergraph has no (non-root) vertices (using the universal property of units).
+A club in~\cite{kelly:abst-coh} similarly has a multicategory of arrows and a collection of 2-cells between them whose ``type'' is specified by a ``graph'' of some sort.
+In our representation the ``domain'' and ``codomain'' of a 2-cell in Kelly's sense are its multi-arrow entries, which split into a compatible domain and codomain by strong directednes, while the ``graph type'' is the vertex-free hypergraph that is its ``domain'' in the virtual hypercategory sense.
+
+Note that a rooted hypergraph with no non-root vertices consists of nothing but the reflexive directed graph $E$ of edges, together with the sets $F_i, F_o$ of incoming and outgoing flags at the root and a cospan $F_i \to E \ot F_o$.
+Since a covariant club is strong as a virtual hypercategory, we can moreover assume that $E$ is reduced; thus the data is essentially just a cospan of sets $F_i \to E_0 \ot F_o$ together with a set of loops at each element of $E_0$.
+
+If we ignore the loops, we obtain essentially the notion of ``club over $\mathbf{G}$'' from~\cite{kelly:mv-funct-calc,kelly:abst-coh}, and we can specialize to clubs over $\mathbf{S}$, $\mathbf{S}\op$, and $\mathbf{P}$ by asking that this cospan be the cograph of a function, the opposite of a function, or an isomorphism, respectively.
+Moreover, since we are in the 1-cartesian case, our 2-cells are acted on by arbitrary maps of these cospans; thus we have also the additional transformations $\mathcal{A}^\theta$ discussed in~\cite[\S4.1]{kelly:mv-funct-calc}.
+The 1-cartesian actions also allow us to collapse all loops to reflexivity, so that even when loops appear in composites (which they can), we can get rid of them to produce a result of genus zero.
+Thus our covariant clubs include Kelly's, but also allow ``operations parametrized by loops'' in a sense.
+
+\begin{anfxnote}{cut-elimination}
+In~\cite{kelly:abst-coh} there is a cut-elimination description of free clubs of a certain sort.
+We should compare it to our type theory for virtual hypercategories.
+This would probably require extending the latter with a ``morphism constructor'' for units, which in turn would probably require making sense of the universality condition in the non-strong case.
+We would also need to allow ``generators'' whose codomain is a unit (hence obtained by a morphism constructor), which is a bit more general than type theories usually allow; in particular it creates problems with building in cuts.
+\end{anfxnote}
+
+Kelly's purpose in defining clubs was to discuss coherence problems for categories equipped with structure.
+In our case, the notion of structured category corresponding to a covariant club is easy, and indeed the same one we considered in \cref{sec:semantics}: a functor of virtual hypercategories into $\hspan(\Set)$.
+It may not be obvious that this yields structured \emph{categories}, but it does, because (like functors of all virtual algebras), functors of virtual hypercategories are ``lax'', hence take unit morphisms to ``monads'', which in $\hspan(\Set)$ are just small categories.
+More generally, we can consider functors into any $\ten(\V)$, obtaining ``enriched models'' of a covariant club.
+
+
+\section{Companions}
+\label{sec:companions}
+
+In type theory we generally start with a judgmental structure and then introduce type formers that ``internalize'' aspects of it.
+That is, we start with a mode theory without any mode arrows, as in\cref{sec:examples1,sec:examples2}, and then add arrows in a ``natural'' way.
+On the other hand, in category theory one often starts with the algebraic operations, as in \cref{sec:clubs}, and then defines a notion of ``generalized multicategory'' in which these can be given a universal property.
+In our context, this ``harmonious'' relationship between the arrows and the morphisms can be expressed precisely as follows.
+
+\begin{defn}
+  In a weakly directed\fxnote{and strong?} virtual hypercategory, suppose $\omega : (p_1,\dots,p_n)\to q$ is an arrow and $\alpha(p_1,\dots,p_n,q)$ is a morphism, and suppose that $q$ has a unit as in \cref{defn:unit}.
+  We say $\alpha$ and $\omega$ are \textbf{companions} if we have 2-cells
+  \[ x_1:p_1,\dots,x_n:p_n,y:q \mid\cdot \mid \alpha(x_1,\dots,x_n,y) \types \iota_q(\omega(x_1,\dots,x_n);y) \]
+  \[ \hspace{-2cm} x_1:p_1,\dots,x_n:p_n \mid\cdot\mid \cdot \types \alpha(x_1,\dots,x_n, \omega(x_1,\dots,x_n)) \hspace{-2cm}\]
+  or equivalently
+  \begin{mathpar}
+    \inferrule{\types_\alpha A_1,\dots,A_n,B}{\form\omega(A_1,\dots,A_n) \types_{\iota_q} B}
+    \and
+    \inferrule{ }{\types_\alpha A_1,\dots,A_n,\form\omega(A_1,\dots,A_n)}
+  \end{mathpar}
+  that are ``inverses in both directions''.
+  In one direction this means that
+  \begin{equation*}
+    \inferrule*{
+      \inferrule*{ }{\types_\alpha A_1,\dots,A_n,\form\omega(A_1,\dots,A_n)}
+    }{\form\omega(A_1,\dots,A_n) \types_{\iota_q} \form\omega(A_1,\dots,A_n)}
+    \quad=\quad
+    \inferrule*{ }{\form\omega(A_1,\dots,A_n) \types_{\iota_q} \form\omega(A_1,\dots,A_n)}
+  \end{equation*}
+  In the other direction this means that
+  \begin{mathpar}
+    \inferrule*{
+      \inferrule*{ }{\types_\alpha A_1,\dots,A_n,\form\omega(A_1,\dots,A_n)}
+      \\
+      \inferrule*{\types_\alpha A_1,\dots,A_n,B}{\form\omega(A_1,\dots,A_n) \types_{\iota_q} B}
+    }{\types_\alpha A_1,\dots,A_n,B}
+  \end{mathpar}
+  is the identity (the cut rule on the bottom is induced by the universal property of the unit).
+\end{defn}
+
+For simplicity we have written the definition in the case that $q$ is the last entry of $\alpha$, but it is clearly possible to give an analogous definition wherever it appears, and however $\alpha$ is directed, and even if the $p_i$'s are not in the same order in $\alpha$ and $\omega$.
+In the strongly directed case, however, the $p_i$'s must be a inputs of $\alpha$ and $q$ an output, in order for the first 2-cell to be well-typed.
+
+We noted in \cref{sec:gen-2-multi} that virtual double categories can be viewed as particular virtual hypercategories.
+In this case, the above notion of companion reduces to the usual one from (virtual) double category theory (see for instance~\cite{cs:multicats}).
+
+In terms of the object-language, however, the companion 2-cells express the left and right sequent calculus rules (without built-in cuts) for a type former $\form\omega$ that ``internalizes'' a mode morphism $\alpha$ on the left.
+For instance, when $\alpha = \alpha_2(p,p;p)$ in a multicategory (where $\iota = \alpha_1$), and $q$ is the last entry of $\alpha_2$, the rules become
+\begin{mathpar}
+  \inferrule{A_1,A_2 \types B}{\form\omega(A_1,A_2) \types B}
+  \and
+  \inferrule{ }{A_1,A_2 \types \form\omega(A_1,A_2)}
+\end{mathpar}
+so that $\form\omega(A_1,A_2)$ is a tensor product $A_1\otimes A_2$.
+Similarly, in adjoint logic this yields the $F$-functor associated to a mode morphism.
+
+The dual notion of a companion is the following:
+
+\begin{defn}
+  In a weakly directed\fxnote{and strong?} virtual hypercategory, suppose $\omega : (p_1,\dots,p_n)\to q$ is an arrow and $\alpha(p_1,\dots,p_n,q)$ is a morphism, and suppose that $q$ has a unit as in \cref{defn:unit}.
+  We say $\alpha$ and $\omega$ are \textbf{conjoints} if we have 2-cells
+  \[ x_1:p_1,\dots,x_n:p_n,y:q \mid\cdot \mid \alpha(x_1,\dots,x_n,y) \types \iota_q(y;\omega(x_1,\dots,x_n)) \]
+  \[ \hspace{-2cm} x_1:p_1,\dots,x_n:p_n \mid\cdot\mid \cdot \types \alpha(x_1,\dots,x_n,\omega(x_1,\dots,x_n)) \hspace{-2cm}\]
+  or equivalently
+  \begin{mathpar}
+    \inferrule{\types_\alpha A_1,\dots,A_n,B}{B\types_{\iota_q}\form\omega(A_1,\dots,A_n) }
+    \and
+    \inferrule{ }{\types_\alpha A_1,\dots,A_n,\form\omega(A_1,\dots,A_n)}
+  \end{mathpar}
+  such that analogous equations hold.
+\end{defn}
+
+For instance, when $\alpha=\alpha_2(p,p;p)$ in a multicategory, and $q$ is the first $p$ occurring in $\alpha_2$, these rules become
+\begin{mathpar}
+  \inferrule{B,A_1 \types A_2}{B \types \form\omega(A_1,A_2)}
+  \and
+  \inferrule{ }{\form\omega(A_1,A_2),A_1\types A_2}
+\end{mathpar}
+so that $\form\omega(A_1,A_2)$ is a function-type $A_1\multimap A_2$.
+Similarly, in adjoint logic this yields the $U$-functor associated to a mode morphism.
+
+Note that the rules for function-types are not strongly directed, so we cannot assume strong directedness in general.
+It does seem sensible to assume for a companion that $q$ is \emph{among} the outputs of $\alpha$, and for a conjoint that $q$ is \emph{among} the inputs; but the definitions don't seem to require that.
+
+As another interesting example, consider a companion of $\alpha = \alpha_{0,2}(;p,p)$ in the theory of polycategories (classical linear logic).
+Then the rules are
+\begin{mathpar}
+  \inferrule{\types A,B}{\form\omega(A)\types B}
+  \and
+  \inferrule{ }{\types A, \form\omega(A)}
+\end{mathpar}
+so that $\form\omega(A)$ is the classical negation of $A$.
+We should get an isomorphic result from a conjoint for $\alpha_{2,0}$.
+The same rules in the theory of props should produce \emph{dual objects}.
+
+This sort of harmony should have both categorical and type-theoretic expressions.
+
+\begin{conj}
+  Suppose that in a virtual hypercategory $\M$ every mode arrow is the companion or conjoint of some mode morphism, and let $\M_1$ denote the maximal sub-virtual-hypercategory of $\M$ containing only identity arrows.
+  Suppose also that $\M$ has ``a good theory of cuts''.
+  Then:
+  \begin{enumerate}
+  \item The theory of $\M$-algebras (i.e.\ functors out of $\M$) is fully property-like~\cite{kl:property-like} over $\M_1$-algebras.
+    In other words, any extension of an $\M_1$-algebra to an $\M$-algebra is unique up to unique isomorphism, any extension of an $\M_1$-algebra morphism to an $\M$-algebra morphism is unique, and any $\M_1$-algebra 2-cell between $\M$-algebra morphisms is already an $\M$-algebra 2-cell.
+    Moreover, if every mode arrow in $\M$ is a companion, then $\M$-algebras are lax-idempotent over $\M_1$-algebras, and dually if every mode arrow is a conjoint then $\M$-algebras are colax-idempotent over $\M_1$-algebras.
+  \item Cuts in free $\M$-algebras can be eliminated to cuts in $\M_1$-algebras.
+    That is, we can present free $\M$-algebras in such a way (building certain cuts into the companion and conjoint 2-cells) that all cuts ``except those already coming from $\M_1$'' (i.e.\ not involving any of the type formers $\form\omega$) can be eliminated.
+  \end{enumerate}
+\end{conj}
+
+
+\section{Mixed-variance clubs and kits}
+\label{sec:kits}
+
+Let $\vhy$ denote the following weakly directed virtual hypercategory:
+\begin{itemize}
+\item Its underlying cycligraph is $\dhy$, i.e.\ there is one morphism of arity $(n,m)$ for each $n,m$.
+\item Its $n$-ary arrows are parametrized by length-$n$ lists of signs $(\pm,\pm,\cdots,\pm)$, so there are $2^n$ such arrows.
+  They are composed by flipping signs on all inputs that get plugged into a minus sign.
+\item It has exactly one 2-cell whose domain is every $(n+m)$-bracketed labeled hypergraph that is binary directed (\cref{defn:binary}), for any $n,m$.
+  Note that the bracketing is \emph{not} required to be directed, i.e.\ incoming and outgoing flags of the root can appear together in the same bracket.
+  The entries of such a 2-cell are the multi-arrows labeled by $(\pm,\pm,\cdots,\pm)$, where if the block corresponds to an entry in the input of the codomain we write $+$ or $-$ according to whether the corresponding flag of the root is incoming or outgoing, and dually if it is in the output of the codomain we write $-$ or $+$ in the same situation.
 \end{itemize}
 
-All of these can be categorified (or virtualized) by considering non-discrete opfibrations (resp.\ just maps) of virtual hypercategories.
-In the case of compact closed categories, the virtualized result is kits; so a kit is really literally a ``virtual compact closed double category'' in this sense.
+A $\vhy$-algebra is a compact closed category~\cite{kl:cpt}.
+
+\begin{defn}
+  A \textbf{kit} is a virtual hypercategory over $\vhy$.
+\end{defn}
+
+Thus a kit is a  ``virtual double compact closed category'' in the sense of \cref{sec:gen-2-multi}.
+Its objects (``cats'') and arrows (``functors'') form a ``multicategory with variance'': each object in the domain of an arrow has a ``variance'' attached (this is a property of the \emph{arrow}, not of the objects themselves), and composing into a contravariant spot flips variances.
+Its morphisms (``modules'') are parametrized by lists of objects, some covariant and some contravariant.
+And its 2-cells have as domain a binary directed graph labeled by these modules connecting up some of their parametrizing objects in pairs, and also perhaps containing loops at the root as well as free-living loops.
+
+Composition can produce free-living loops where none existed before.
+In particular, in contrast to other approaches to kits and extranatural transformation~\cite{ek:gen-funct-calc}, instead of forbidding loops, we embrace them (but in practical applications we rarely ever see them arising).
+
+\begin{defn}
+  A \textbf{non-cartesian mixed-variance club} is a kit in which every object has a unit and these units are the only morphisms.
+\end{defn}
+
+As with covariant clubs, in a mixed-variance club the 2-cells are determined by those whose domains have no non-root vertices.
+A $(1+1)$-bracketed graph in $\vhy$ without non-root vertices is just a collection of loops from the root to itself, with their flags partitioned into two disjoint lists.
+These are essentially the graphs drawn for the mixed-variance case in~\cite{kelly:mv-funct-calc,kelly:abst-coh}.
+They are also composed in the same way, except that our formalism keeps track of the loops that are produced, whereas Kelly was only able to discard or ignore the loops.
+
+Presumably a general (cartesian) mixed-variance club (which Kelly mentioned but did not even try to define vaguely), and also a ``cartesian kit'', can be similarly defined using a non-binary version of $\vhy$, probably 1- or 2-cartesian.
+However, I haven't tried to write out the details.
 
 
 \bibliography{../all.bib}
