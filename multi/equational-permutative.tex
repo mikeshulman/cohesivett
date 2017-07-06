@@ -1,0 +1,486 @@
+\section{Permutative Equality}
+\label{sec:equational-permutative}
+
+While the axiomatization of equality from Section~\ref{sec:equational}
+is quite concise, for adequacy proofs we will need an alternative
+characterization that is easier to reason from.  For example, in the
+above equational theory, it seems possible that an equation between two
+cut-free derivations can be proved using an intermediate term that
+introduces a cut at a completely unrelated formula.  It turns out that
+this is not the case, as we can show by relating the above equational
+theory to the following one.
+
+We say that a derivation is \emph{normal} if it uses only the rules 
+in Figure~\ref{fig:sequent}---i.e. it does not use the cut
+rule, and only uses the hypothesis rule and respect for
+transformations in the form ($\Trd{s}{x}$) where $x$ has a base type.
+In Figure~\ref{fig:admissible-rule-equations}, we write out the
+proofs of respect for transformation (Lemma~\ref{lem:respectspr}), 
+identity (Theorem~\ref{thm:identity}), 
+left-inversion (Lemma~\ref{lem:Finv}), and
+cut (Theorem~\ref{thm:cut}) as operations on normal derivations.  
+We also include a corresponding right inversion lemma for \Usymb, which takes a
+derivation of \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}
+to \seq{\Gamma}{\alpha[\beta/x]}{A}
+when $\Delta$ is isomorphic to a subcontext of $\Gamma$.
+
+\begin{figure}
+\begin{small}
+\[
+\begin{array}{rcll}
+\elim{\FLd{x}{\Delta.\D}} & := & \FLd{x}{\Delta.\elim \D}\\
+\elim{\URd{\Delta.\D}} & := & \URd{\Delta.\elim \D}\\
+\elim{\FRd{}{s}{\vec{\D/x}}} & := & \FRd{}{s}{\vec{\elim{\D}/x}}\\
+\elim{\ULd{x}{}{s}{\vec{\D/x}}{z.\D}} & := & {\ULd{x}{}{s}{\vec{\elim \D/x}}{z.\elim \D}}\\
+\elim{\Trd{s}{\D}} & := & \Trda{s}{\elim \D}\\
+\elim{\Cut{\E}{\D}{x}} & := & \Cuta{\elim \E}{\elim \D}{x}\\
+\elim{{x}} & := & \Identa{x}\\
+\\
+\Trda{s}{\FRd{}{s'}{\vec{\D/x}}} & := & \FRd{}{s;s'}{\vec{\D/x}}\\
+\Trda{s}{\FLd{x}{\Delta.\D}} & := & \FLd{x}{\Delta.\Trda{(s[1_\alpha/x])}{\D}}\\
+\Trda{s}{\ULd{x}{}{s'}{\vec{\D/y}}{z.\D'}} & := & {\ULd{x}{}{s;s'}{\vec{\D/y}}{z.\D'}}\\
+\Trda{s}{\URd{\Delta.\D}} & := & \URd{\Delta.\Trda{(1_\alpha[s/x])}{\D}} \\
+\\
+\Identa{x} :: (\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{x}{\F{\alpha}{\Delta}}) & := & \FLd{x}{\Delta.\FRd{\vec{\Identa{y}/y}}{1}{\vec{\Identa{y}/y}}}\\
+\Identa{x} :: (\seq{\Gamma,x:\U{\alpha}{\Delta}{A},\Gamma'}{x}{\U{\alpha}{\Delta}{A}}) & := & \URd{\Delta.\ULd{x}{}{\vec{\Identa{y}/y}}{1}{z.\Identa{z}}} \\
+\\
+\Cuta{\Trd{s}{x_0}}{d}{x_0} & := & \Trda{s}{d} & (x_0 : Q)\\
+\Cuta{\Trd{s}{y}}{d}{x_0} & := & \Trd{s}{y} & (x_0 \neq y)\\
+\Cuta{\FLd{x_0}{\Delta.\E}}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & := & \Trd{(1_\beta[s/x])}{\Cutta \E {\vec{\D_i/x_i}}} \\
+\Cuta{\ULd{x_0}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\URd{\Delta.\D}}{x_0} & := & \Trd{(s[1_{\alpha_0}])}{\Cuta{\E'}{(\Cutta \D {{\vec{\E_i/x_i}}})}{z}} &  \\
+\Cuta{\FRd{}{s}{\E}}{\D}{x_0} & := & {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cuta{\E}{\D}{x_0}}}\\
+\Cuta{\URd{\Delta.\E}}{\D}{x_0} & := & \URd{\Delta.\Cuta{\E}{\D}{x_0}}\\
+\Cuta{\FLd{x}{\Delta.\E}}{\D}{x_0} & := & \FLd{x}{\Delta.\Cuta{\E}{\Linv{\D}{\Delta}{x}}{x_0}} & (x \neq x_0) \\
+\Cuta{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} & := & {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cuta{\E_i}{\D}{x_0})/x_i}}{z.\Cuta{\E'}{\D}{x_0}}} & (x \neq x_0)\\
+\Cuta{\E}{\FLd{x}{\Delta.\D}}{x_0} & := & \FLd{x}{\Delta.\Cuta{\Linv{\E}{\Delta}{x}}{\D}{x_0}} & (\E = \FL^{x_0},\UL^{x_0})\\
+\Cuta{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} & := & \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{\E}{\D_2}{x_0}} & (\E = \FL^{x_0},\UL^{x_0}) \\
+\\
+\Linv{\Trd{s}{x}}{\vec{x}}{x_0} & := & {\Trd{s}{x}}\\
+\Linv{\FLd{x_0}{\Delta.\D}}{\vec{x}}{x_0} & := & \D[\Delta \leftrightarrow \vec{x}]\\
+\Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0} & := & \FLd{x}{\Delta.\Linv{\D}{\vec{x}}{x_0}} & (x \neq x_0)\\
+\Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0} & := & \FRd{}{s[1_\alpha/x_0]}{{{\Linv{\D_i}{\vec{x}}{y}}/x_i}} \\
+\Linv{\URd{\Delta.\D}}{\vec{x}}{x_0} & := & \URd{\Delta.\Linv{\D}{\vec{x}}{x_0}} & \\
+\Linv{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}{x_0} & := & \ULd{y}{}{s[1_{\alpha_0}/x_0]}{\Linv{\D_i}{\vec{x}}{x_0}/y_i}{z.\Linv{\D}{\vec{x}}{x_0}} & \\
+\\
+\Rinv{\URd{\Delta.\D}}{\vec{x}} & := & \D[\Delta \leftrightarrow \vec{x}]\\
+\Rinv{\FLd{x}{\Delta.\D}}{\vec{x}} & := & \FLd{x}{\Delta.\Rinv{\D}{\vec{x}}} \\
+\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}} & := & \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Rinv{\D}{\vec{x}}}\\
+\end{array}
+\]
+\end{small}
+\caption{Definitions of Admissible Rules}
+\label{fig:admissible-rule-equations}
+\end{figure}
+
+\begin{figure}
+\begin{small}
+\[
+\begin{array}{rcll}
+\D :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C} & \deqp & \FLd{x}{\Delta.\Linv{\D}{\Delta}{x}}\\
+\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deqp & \URd{\Delta.\Rinv{\D}{\Delta}}\\
+\Cuta{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} & \deqp & \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{c}{\D_2}{x_0}}  \\
+\\
+\FRd{}{s}{\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots} & \deqp & \FRd{}{s;(1_{\alpha[\alpha_1/x_1,\ldots,\alpha_{i-1}/x_{i-1},\ldots]}[s_i/x_i])}{\vec{\D_j/x_j}}\\
+\ULd{x}{}{s}{(\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots)}{z.\D} & \deqp & \ULd{x}{}{s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots,\alpha_{i-1}/x_{i-1},\ldots]/z]}[s_i/x_i])}{\vec{\D_j/x_j}}{z.\D}\\
+\ULd{x}{}{s}{\vec{\D/x}}{z.\Trd{s'}{\D}} & \deqp & \ULd{x}{}{(s;s'[1_{\alpha[\gamma]}/z])}{\vec{\D/x}}{z.\D} \\
+%% \\
+%% more specific UL permutations
+%% \ULd{x}{}{s}{\vec{\D/x}}{z.\D'} & \deqp & \Trd{s}{\D'} & (z \# \D')\\
+%% \ULd{x}{}{s}{\vec{\D/x}}{z.\D'[z/z']} & \deqp & \ULd{x}{}{s}{\vec{\D/x}}{z.\ULd{x}{}{1}{\vec{\D/x}}{z'.\D'}}\\
+%% \FRd{} %%{\vec{\alpha_j/x_j},\alpha_i/x_i}
+%%     {s}{(\vec{\D_j/x_j},\ULd{x}{}{s'}{\vec{\E_i/y_i}}{z.\E}/x_i)} & \deqp &
+%% \ULd{x}
+%%     {} %% {\vec{\alpha_j/x_j},\alpha_i'[\alpha'[\gamma']/z]/x_i}
+%%     {s;(1_{\alpha[\vec{\alpha_j/x_j}]}[s'/x_i])}{\vec{e_i/y_i}}{z.\FRd{}{1}{(\vec{\D_i/x_i},\E/x_j)}}\\
+%% \ULd{x}{}{s}{(\vec{\D_j/x_j},\ULd{x'}{}{s'}{\vec{\E_i/y_i}}{z'.\D_i}/x_i)}{z.\D} 
+%% & \deqp &
+%% \ULd{x'}{}{s;1[s'/x_i]}{\vec{\E_i/y_i}}{z'.\ULd{x}{}{1}{(\vec{\D_j/x_j},\D_i/x_i)}{z.\D}}\\
+%% \ULd{x}{}{s}{\vec{\D_i/x_i}}{z.\ULd{x'}{}{s'}{\vec{\E_j/y_j}}{z'.{\D}}}
+%% & \deqp &
+%% \ULd{x'}{}{s;(s'[1_{\alpha[\gamma]/z}])}{\vec{\E_j/y_j}}{z'.\ULd{x}{}{1}{\vec{\D_i/x_i}}{z.\D}} &
+%% (z \# x',e_j)
+\end{array}
+\]
+\end{small}
+\caption{Permutative Equality}
+\label{fig:permutative}
+\end{figure}
+
+Derivations where all cuts, identities, and transformations have been
+expanded are not unique representatives of \deq-equivalence classes:
+what remains is to move transformations around the derivation and
+permute the order of rules.  We define permutative equality as the least
+congruence on \emph{normal derivations} containing the rules in
+Figure~\ref{fig:permutative}.
+
+The first two rules are the uniqueness principles for \Fsymb\/ and
+\Usymb\/, which allow moving \FL\/ and \UR\/ to the bottom of any
+derivation.  
+
+The next rule allows permuting \UL.  We write $c$ for a \emph{context},
+which is an arbitrary normal derivation, except it is only allowed to
+use the variable $x_0$ in subterms of the form \Identa{x_0} at the leaf
+of a derivation, not in any other left/identity rule:
+\[
+c ::= \Identa{x_0} \mid \Trd{s}{x} \mid \FRd{}{s}{\vec{c_i/x_i}} \mid \FLd{x}{\Delta.c} \mid \URd{\Delta.c} \mid \ULd{x}{}{s}{\vec{c_i/x_i}}{z.c}
+\]
+The intention is a cut $\Cuta{c}{d}{x_0}$ is a simple substitution,
+which right-commutes into $c$, replacing all derivation leaves of
+$\Ident{x_0}$ with $d$.  
+%% (FIXME: could define a separate notion of hole
+%% and substitution for it if this doesn't actually work out nicely).  
+
+The next three rules correspond to instances of
+functoriality of the respect-for-transformations in \UL\/ and \FR\/.
+
+\begin{lemma}
+\[\FRd{}{s}{\vec{d/x}} \deq \Trd{s}{\FRs[\vec{d/x}]}\] and
+ \[\ULd{x}{}{s}{\vec{d/y}}{z.d'} \deq \Trd{s}{d'[\ULs{x}[\vec{d/y}]/z]}\]
+\end{lemma}
+\begin{proof}
+For $\FR$:
+\begin{align*}
+\FRd{}{s}{\vec{d/x}} 
+&\deq \Cut{y}{\FRd{}{s}{\vec{d/x}}}{y} \\
+&\deq \Cut{\FLd{y}{\Delta.\Cut{y}{\FRs}{y}}}{\FRd{}{s}{\vec{d/x}}}{y} \\
+&\deq \Cut{\FLd{y}{\Delta.\FRs}}{\FRd{}{s}{\vec{d/x}}}{y} \\
+&\deq \Trd{(1_y[s/y])}{\FRs[\vec{\D/x}]} \\
+&\deq \Trd{s}{\FRs[\vec{\D/x}]}
+\end{align*}
+using the $\eta$ rule, the $\beta$ rule, then the unit law for horizontal composition.
+
+For $\UL$:
+\begin{align*}
+\ULd{x}{}{s}{\vec{d/y}}{z.d'}
+&\deq \Cut{\ULd{x}{}{s}{\vec{d/y}}{z.d'}}{x}{x} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{d/y}}{z.d'}}{\URd{\Delta.\Cut{\ULs{x}}{x}{x}}}{x} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{d/y}}{z.d'}}{\URd{\Delta.\ULs{x}}}{x} \\
+&\deq \Trd{(\Cut{s}{x}{x})}{d'[\ULs{x}[\vec{d/y}]/z]} \\
+&\deq \Trd{s}{d'[\ULs{x}[\vec{d/y}]/z]}
+\end{align*}
+by $\eta$ and $\beta$ for $\Usymb$.
+\end{proof}
+
+\begin{lemma}
+\begin{align*}
+\Cut{\FLd{x}{\Delta.\D}}{d'}{x_0} &\deq \FLd{x}{\Delta.\Cut{\D}{d'}{x_0}} & \text{if } x \neq x_0 \\
+\Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{d'}{x_0} &\deq \FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{d'}{x_0})/x_i} \\
+\Cut{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{d'}{x_0} &\deq \ULd{x}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{d'}{x_0})/y_i}{z.\Cut{\D}{d'}{x_0}}  & \text{if } x \neq x_0 \\
+\Cut{\URd{\Delta.\D}}{d'}{x_0} &\deq \URd{\Delta.\Cut{\D}{d'}{x_0}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\FLd{x}{\Delta.\Cut{\D}{d'}{x_0}}
+&\deq \FLd{x}{\Delta.\Cut{\Trd{1}{\D}}{d'}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x}}{d'}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\D}}{d'}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\FLd{x}{\Delta.\D}}{d'}{x_0}
+\end{align*}
+where we use $\beta$, then associativity of cut (exploiting $x \neq x_0$), then $\eta$.
+
+\begin{align*}
+\FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{d'}{x_0})/x_i}
+&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\FRs}{(\Cut{\D_i}{d'}{x_0})}{x_i}} \\
+&\deq \Trd{(s[1_\alpha/x_0])}{\Cut{\Cut{\FRs}{\D_i}{x_i}}{d'}{x_0}} \\
+&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{\Trd{(1_\alpha)}{d'}}{x_0} \\
+&\deq \Cut{\Trd{s}{\Cut{\FRs}{\D_i}{x_i}}}{d'}{x_0} \\
+&\deq \Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{d'}{x_0}
+\end{align*}
+by the previous Lemma, associativity of cut, the interchange law and the previous Lemma again. 
+
+\begin{align*}
+\ULd{x}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{d'}{x_0})/y_i}{z.\Cut{\D}{d'}{x_0}}
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{d'}{x_0})[\Cut{\ULs{x}}{\Cut{\D_i}{d'}{x_0}}{y_i}/z]} \\
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{(\Cut{d}{d'}{x_0})[\Cut{\Cut{\ULs{x}}{\D_i}{y_i}}{d'}{x_0}/z]} \\
+&\deq \Trd{(s[1_{\alpha_0}/x_0])}{\Cut{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}{d'}{x_0}} \\
+&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{\Trd{1}{d'}}{x_0} \\
+&\deq \Cut{\Trd{s}{d[\Cut{\ULs{x}}{\D_i}{y_i}/z]}}{d'}{x_0} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{d'}{x_0}
+\end{align*}
+by the Lemma, associativity of cut twice, the interchange law, and the Lemma.
+
+\begin{align*}
+\URd{\Delta.\Cut{\D}{d'}{x_0}}
+&\deq \URd{\Delta.\Cut{\Trd{1}{\D}}{d'}{x_0}} \\
+&\deq \URd{\Delta.\Cut{\Cut{\ULs{x}}{\URd{\Delta.\D}}{x}}{d'}{x_0}} \\
+&\deq \URd{\Delta.\Cut{\ULs{x}}{(\Cut{\URd{\Delta.\D}}{d'}{x_0})}{x}}\\
+&\deq \Cut{\URd{\Delta.\D}}{d'}{x_0}
+\end{align*}
+by the $\beta$ rule, associativity of cut and the $\eta$ rule.
+\end{proof}
+
+\begin{lemma}
+\begin{align*}
+\Cut{d'}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0} &\deq \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{d'}{\D}{x_0}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{d'}{\D}{x_0}}
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{d'}{\D}{x_0}[\ULs{x}[\vec{d_i/y_i}]/z]} \\
+&\deq \Trd{(1_{\alpha_0}[s/x])}{\Cut{d'}{\D[\ULs{x}[\vec{d_i/y_i}]/z]}{x_0}} \\
+&\deq \Cut{\Trd{(1_\alpha)}{d'}}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{d'}{\Trd{s}{d[\ULs{x}[\vec{d_i/y_i}]/z]}}{x_0} \\
+&\deq \Cut{d'}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0}
+\end{align*}
+by the first Lemma, associativity of cut, the interchange law, and the first Lemma again.
+\end{proof}
+
+\begin{theorem}{Soundness of Permutative Equality} \label{thm:permutative-soundess}
+\begin{enumerate}
+\item $\Trda{s}{\D} \deq \Trd{s}{\D}$ (for normal \D)
+\item $x \deq \Identa{x}$
+\item $\Linv{\D}{\vec{y}}{x_0} \deq \Cut{\D}{\FRs}{x_0}$
+\item $\Rinv{\D}{\vec{y}} \deq \Cut{\ULs{x_0}}{\D}{x_0}$
+\item $\Cuta{\E}{\D}{x} \deq \Cut{\E}{\D}{x}$ (for normal \D,\E)
+\item $\D \deq \elim{\D}$
+\item If $\D \deqp \D'$ then $\D \deq \D'$
+\item If $\elim{\D} \deqp \elim{\D'}$ then $\D \deq \D'$.  
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\textbf{Respect for transformations}:
+\begin{align*}
+\Trda{s}{\FRd{}{s'}{\vec{\D/x}}} 
+&= \FRd{}{s;s'}{\vec{\D/x}} \\
+&\deq \Trd{(s;s')}{\FRs[\vec{\D/x}]} \\
+&\deq \Trd{s}{\Trd{s'}{\FRs[\vec{\D/x}]}} \\
+&\deq \Trd{s}{\FRd{}{s'}{\vec{\D/x}}}
+\end{align*}
+using the first Lemma and functoriality of $(-)_*$.
+\begin{align*}
+\Trda{s}{\FLd{x}{\Delta.\D}} 
+&= \FLd{x}{\Delta.\Trda{(s[1_\alpha/x])}{\D}} \\
+&\deq \FLd{x}{\Delta.\Trd{(s[1_\alpha/x])}{\D}} \\
+&\deq \FLd{x}{\Delta.\Trd{(s[1_\alpha/x])}{\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x}}}\\
+&\deq \FLd{x}{\Delta. \Cut{\Trd{s}{\FLd{x}{\Delta.\D}}}{\Trd{(1_\alpha)}{\FRs}}{x}}\\
+&\deq \FLd{x}{\Delta. \Cut{\Trd{s}{\FLd{x}{\Delta.\D}}}{\FRs}{x}}\\
+&\deq \Trd{s}{\FLd{x}{\Delta.\D}} 
+\end{align*}
+using the $\beta$ law, the interchange law, and the $\eta$ law.
+
+\begin{align*}
+\Trda{s}{\ULd{x}{}{s'}{\vec{\D/y}}{z.\D'}} 
+&= \ULd{x}{}{s;s'}{\vec{\D/y}}{z.\D'} \\
+&\deq \Trd{(s;s')}{d'[\ULs{x}[\vec{\D/y}]/z]} \\
+&\deq \Trd{s}{\Trd{s'}{d'[\ULs{x}[\vec{\D/y}]/z]}} \\
+&\deq \Trd{s}{\ULd{x}{}{s'}{\vec{\D/y}}{z.\D'}} 
+\end{align*}
+again by the first Lemma.
+
+\begin{align*}
+\Trda{s}{\URd{\Delta.\D}} 
+&= \URd{\Delta.\Trda{(1_\alpha[s/x])}{\D}} \\
+&\deq \URd{\Delta.\Trd{(1_\alpha[s/x])}{\D}} \\
+&\deq \URd{\Delta.\Trd{(1_\alpha[s/x])}{\Cut{\ULs x}{\UR(\Delta.d)}{x}}} \\
+&\deq \URd{\Delta. \Cut{\Trd{(1_\alpha)}{\ULs x}}{\Trd{s}{\UR(\Delta.d)}}{x}} \\
+&\deq \URd{\Delta. \Cut{\ULs x}{\Trd{s}{\UR(\Delta.d)}}{x}} \\
+&\deq \Trd{s}{\UR(\Delta.d)}
+\end{align*}
+again by $\beta$ followed by $\eta$.
+\\~\\
+\textbf{Identity:} This is straightforward: in both cases apply the induction hypothesis and then the $\eta$ law.
+ 
+If $x : \F{\alpha}{\Delta}$, then
+\begin{align*}
+\Identa{x} 
+&=\FLd{x}{\Delta.\FRd{\vec{\Identa{y}/y}}{1}{\vec{\Identa{y}/y}}}\\
+&\deq \FLd{x}{\Delta.\FRd{\vec{y/y}}{1}{\vec{y/y}}}\\
+&\deq \FLd{x}{\Delta.\FRs}\\
+&\deq x
+\end{align*}
+
+If $x : \U{\alpha}{\Delta}{A}$, then
+\begin{align*}
+\Identa{x} 
+&= \URd{\Delta.\ULd{x}{}{\vec{\Identa{y}/y}}{1}{z.\Identa{z}}}\\
+&\deq \URd{\Delta.\ULd{x}{}{\vec{y/y}}{1}{z.z}}\\
+&\deq \URd{\Delta.\ULs{x}}\\
+&\deq x
+\end{align*}
+\\~\\
+\textbf{Left invertibility:}
+\begin{align*}
+\Linv{\Trd{s}{x}}{\vec{x}}{x_0} 
+&= {\Trd{s}{x}} \\
+&\deq \Cut{\Trd{s}{x}}{\FRs}{x_0}
+\end{align*}
+as $x_0$ does not appear in $\Trd{s}{x}$.
+
+\begin{align*}
+\Linv{\FLd{x_0}{\Delta.\D}}{\vec{x}}{x_0} 
+&= \D[\Delta \leftrightarrow \vec{x}]\\
+&\deq \Cut{\FLd{x_0}{\Delta.\D}}{\FRs}{x_0}
+\end{align*}
+by $\eta$.
+
+If $x \neq x_0$: 
+\begin{align*}
+\Linv{\FLd{x}{\Delta.\D}}{\vec{x}}{x_0} 
+&= \FLd{x}{\Delta.\Linv{\D}{\vec{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\D}{\FRs}{x_0}} \\
+&\deq \Cut{\FLd{x}{\Delta.\D}}{\FRs}{x_0}
+\end{align*}
+by the second Lemma.
+
+\begin{align*}
+\Linv{\FRd{}{s}{\vec{\D_i/x_i}}}{\vec{x}}{x_0} 
+&= \FRd{}{s[1_\alpha/x_0]}{{{\Linv{\D_i}{\vec{x}}{y}}/x_i}} \\
+&\deq \FRd{}{s[1_\alpha/x_0]}{(\Cut{\D_i}{\FRs}{x_0})/x_i} \\
+&\deq \Cut{\FRd{}{s}{\vec{\D_i/x_i}}}{\FRs}{x_0}
+\end{align*}
+by the second Lemma.
+
+\begin{align*}
+\Linv{\URd{\Delta.\D}}{\vec{x}}{x_0} 
+&= \URd{\Delta.\Linv{\D}{\vec{x}}{x_0}} \\
+&\deq \URd{\Delta.\Cut{\D}{\FRs}{x_0}} \\
+&\deq \Cut{\URd{\Delta.\D}}{\FRs}{x_0}
+\end{align*}
+by the second Lemma.
+
+\begin{align*}
+\Linv{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}}{x_0} 
+&= \ULd{y}{}{s[1_{\alpha_0}/x_0]}{\Linv{\D_i}{\vec{x}}{x_0}/y_i}{z.\Linv{\D}{\vec{x}}{x_0}} \\
+&\deq \ULd{y}{}{s[1_{\alpha_0}/x_0]}{(\Cut{\D_i}{\FRs}{x_0})/y_i}{z.\Cut{\D}{\FRs}{x_0}} \\
+&\deq \Cut{\ULd{y}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\FRs}{x_0}
+\end{align*}
+by the second Lemma.
+\\~\\
+\textbf{Right invertibility:}
+
+\begin{align*}
+\Rinv{\URd{\Delta.\D}}{\vec{x}} &= \D[\Delta \leftrightarrow \vec{x}]\\
+&\deq \Cut{\ULs{x_0}}{\URd{\Delta.\D}}{x_0}
+\end{align*}
+by $\beta$.
+
+\begin{align*}
+\Rinv{\FLd{x}{\Delta.\D}}{\vec{x}} 
+&= \FLd{x}{\Delta.\Rinv{\D}{\vec{x}}} \\
+&\deq \FLd{x}{\Delta.\Cut{\ULs{x_0}}{\D}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\ULs{x_0}}{(\Cut{\FLd{x}{\Delta.\D}}{\FRs}{x})}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\ULs{x_0}}{\FLd{x}{\Delta.\D}}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\ULs{x_0}}{\FLd{x}{\Delta.\D}}{x_0}
+\end{align*}
+by $\beta$, associativity of cut and $\eta$.
+
+\begin{align*}
+\Rinv{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{\vec{x}} 
+&= \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Rinv{\D}{\vec{x}}}\\
+&\deq \ULd{x}{}{1_{\alpha_0}[s/x]}{\vec{\D_i/y_i}}{z.\Cut{\ULs{x_0}}{\D}{x_0}}\\
+&\deq \Cut{\ULs{x_0}}{\ULd{x}{}{s}{\vec{\D_i/y_i}}{z.\D}}{x_0}
+\end{align*}
+by the third Lemma.
+\\~\\
+\textbf{Cut:} The first few cases are immediate by applying the above. For the remainder:
+\begin{align*}
+\Cuta{\FRd{}{s}{\E}}{\D}{x_0}
+&= {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cuta{\E}{\D}{x_0}}}\\
+&\deq {\FRd{}{s[1_{\alpha_0}/x_0]}{\Cut{\E}{\D}{x_0}}}\\
+&\deq \Cut{\FRd{}{s}{\E}}{\D}{x_0}
+\end{align*}
+by the second Lemma.
+
+\begin{align*}
+\Cuta{\URd{\Delta.\E}}{\D}{x_0} 
+&= \URd{\Delta.\Cuta{\E}{\D}{x_0}}\\
+&\deq \URd{\Delta.\Cut{\E}{\D}{x_0}}\\
+&\deq \Cut{\URd{\Delta.\E}}{\D}{x_0} 
+\end{align*}
+by the second Lemma.
+
+If $x \neq x_0$
+\begin{align*}
+\Cuta{\FLd{x}{\Delta.\E}}{\D}{x_0} 
+&= \FLd{x}{\Delta.\Cuta{\E}{\Linv{\D}{\Delta}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\E}{\Cut{\D}{\FRs}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\E}}{\FRs}{x}}{\Cut{\D}{\FRs}{x}}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\FLd{x}{\Delta.\E}}{\D}{x_0}}{\FRs}{x}} \\
+&\deq \Cut{\FLd{x}{\Delta.\E}}{\D}{x_0} 
+\end{align*}
+by $\beta$ applied to $e$, associativity of cut, and $\eta$.
+
+If $x \neq x_0$
+\begin{align*}
+\Cuta{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} 
+&= {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cuta{\E_i}{\D}{x_0})/x_i}}{z.\Cuta{\E'}{\D}{x_0}}} \\
+&\deq {\ULd{x}{}{s[1_{\alpha_0}/x_0]}{\vec{(\Cut{\E_i}{\D}{x_0})/x_i}}{z.\Cut{\E'}{\D}{x_0}}} \\
+&\deq \Cut{\ULd{x}{}{s}{\vec{\E_i}/x_i}{z.\E'}}{\D}{x_0} 
+\end{align*}
+by the second Lemma.
+
+For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
+\begin{align*}
+\Cuta{\E}{\FLd{x}{\Delta.\D}}{x_0} 
+&= \FLd{x}{\Delta.\Cuta{\Linv{\E}{\Delta}{x}}{\D}{x_0}} \\
+&\deq \FLd{x}{\Delta.\Cut{\Cut{\E}{\FRs}{x}}{\D}{x_0}} \\
+&\deq \Cut{\E}{\FLd{x}{\Delta.\D}}{x_0} 
+\end{align*}
+by the second Lemma.
+
+For either $\E = \FL^{x_0} \text{ or } \UL^{x_0}$:
+\begin{align*}
+\Cuta{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+&= \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{\E}{\D_2}{x_0}} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{\E}{\D_2}{x_0}} \\
+&\deq \Cut{\E}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+\end{align*}
+by the third Lemma.
+\\~\\
+\textbf{Cut elimination:} This is immediate by induction and the previous equalities.
+\\~\\
+\textbf{Permutative equality:} 
+For this we verify that the given equations for $\deqp$ also hold for $\deq$. The first two equations are exactly the $\eta$ rules for $\Fsymb$ and $\Usymb$, after applying the above equations for $\mathsf{linv}$ and $\mathsf{rinv}$. For the remainder:
+
+\begin{align*}
+\Cuta{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} 
+&\deq \Cut{c}{\ULd{x}{}{s}{\vec{\D/y}}{z.\D_2}}{x_0} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cut{c}{\D_2}{x_0}} \\
+&\deq \ULd{x}{}{1_\beta[s/x_0]}{\vec{\D/y}}{z.\Cuta{c}{\D_2}{x_0}} \\
+\end{align*}
+by the third Lemma.
+
+For the following, let $\widehat{[d_j/x_j]}$ denote the substitution $[d_1/x_1, \dots, d_{i-1}/x_{i-1}, d_{i+1}/x_{i+1}, \dots]$ that drops $d_i/x_i$. In each case we apply the Lemma, then interchange, then the Lemma again.
+
+\begin{align*}
+\FRd{}{s}{\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots} 
+&\deq \Trd{s}{\Cut{\FRs\widehat{[d_j/x_j]}}{\Trd{{s_i}}{d_i}}{x_i}}\\
+&\deq \Trd{s}{\Cut{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]})}{\FRs\widehat{[d_j/x_j]}}}{\Trd{{s_i}}{d_i}}{x_i}}\\
+&\deq \Trd{s}{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\FRs\widehat{[d_j/x_j]}[d_i/x_i]}}\\
+&\deq \Trd{s}{\Trd{(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\FRs[\vec{d_j/x_j}]}}\\
+&\deq \Trd{(s;(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i]))}{\FRs[\vec{d_j/x_j}]} \\
+& \deq \FRd{}{s;(1_{\alpha[\alpha_1/x_1,\ldots]}[s_i/x_i])}{\vec{\D_j/x_j}} 
+\end{align*}
+
+For $\mathsf{UL}$:
+
+\begin{align*}
+\ULd{x}{}{s}{(\D_1/x_1,\ldots,\Trd{{s_i}}{\D_i}/x_i,\ldots)}{z.\D} 
+&\deq \Trd{s}{d[\ULs{x}\widehat{[d_j/x_j]}[\Trd{{s_i}}{d_i}/x_i]/z]} \\
+&\deq \Trd{s}{\Cut{d[\ULs{x}\widehat{[d_j/x_j]}/z]}{\Trd{{s_i}}{d_i}}{x_i}} \\
+&\deq \Trd{s}{\Cut{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]})}{d[\ULs{x}\widehat{[d_j/x_j]}/z]}}{\Trd{{s_i}}{d_i}}{x_i}} \\
+&\deq \Trd{s}{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{d[\ULs{x}\widehat{[d_j/x_j]}/z][d_i/x_i]}} \\
+&\deq \Trd{s}{\Trd{(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{d[\ULs{x}[\vec{d_j/x_j}]/z]}} \\
+&\deq \Trd{(s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i]))}{d[\ULs{x}[\vec{d_j/x_j}]/z]} \\
+&\deq \ULd{x}{}{s;(1_{\beta'[\alpha[\alpha_1/x_1,\ldots]/z]}[s_i/x_i])}{\vec{\D_j/x_j}}{z.\D}
+\end{align*}
+
+And finally:
+
+\begin{align*}
+\ULd{x}{}{s}{\vec{\D/x}}{z.\Trd{s'}{\D}} 
+&\deq \Trd{s}{\Cut{\Trd{s'}{d}}{\ULs{x}[\vec{d_i/y_i}]}{z}} \\
+&\deq \Trd{s}{\Cut{\Trd{s'}{d}}{\Trd{(1_{\alpha[\gamma]})}{\ULs{x}[\vec{d_i/y_i}]}}{z}} \\
+&\deq \Trd{s}{\Trd{(s'[1_{\alpha[\gamma]}/z])}{d[\ULs{x}[\vec{d_i/y_i}]/z]}} \\
+&\deq \Trd{(s;s'[1_{\alpha[\gamma]}/z])}{d[\ULs{x}[\vec{d_i/y_i}]/z]} \\
+& \deq \ULd{x}{}{(s;s'[1_{\alpha[\gamma]}/z])}{\vec{\D/x}}{z.\D}
+\end{align*}
+\end{proof}
+
+\begin{conjecture}{Completeness of Permutative Equality.}\\ \label{thm:permutative-completeness}
+If $\D \deq \D'$ then $\elim{\D} \deqp \elim{\D'}$
+\end{conjecture}
+
+%% FIXME: CITE: CLF, Scherer thesis Chapter 5

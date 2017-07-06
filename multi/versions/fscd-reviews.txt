@@ -1,0 +1,207 @@
+----------------------- REVIEW 1 ---------------------
+PAPER: 90
+TITLE: A Fibrational Framework for Substructural and Modal Logics
+AUTHORS: Daniel R. Licata, Michael Shulman and Mitchell Riley
+
+Overall evaluation: 2 (accept)
+
+----------- Overall evaluation -----------
+In 'A Fibrational Framework for Substructural and Modal Logics' the
+authors present a sequent calculus with cut elimination in which a
+variety of logics can be encoded, a term calculus, and a categorical
+semantics.
+
+The calculus is based on 'mode theories', first-order equational
+theories with rewrites between (equivalence classes of) terms. The
+sorts, or 'modes', of these theories allow one to state that
+propositions may exist at different levels, for example as in
+linear-non-linear logic where premises are divided between those that
+may be used any number of times and those that must be used exactly
+once. The terms, or 'context descriptors', of mode theories are
+attached to sequents and express the structure of its premises. The
+equations and rewrites of the theories govern how premises may be
+manipulated, for example with weakening or contraction. The only
+primitive connectives of the logic are an 'F' connective that gives a
+proposition-level expression of the structural connectives, as with
+comma and conjunction in standard sequents, and a 'U' connective which
+is the residuation of the F connective, for example implication.
+
+In assessing a paper such as this offering a general framework, we
+must consider how common important instances of this framework are,
+and what benefits the generalisation provides with respect to such
+instances. The paper presents an impressive range of examples to
+answer the first question in Section 3 (along with a few in the
+extended version), but there is no discussion of the limitations of
+the framework, which I will return to in the next paragraph. The
+second question is more imponderable because there is no compelling
+application of the framework yet developed, but the presentation of
+the structure of contexts and rules for their manipulation as a
+theory, and the categorical semantics, seem novel and intriguing
+enough to recommend publication.
+
+Returning to the strength and limitations of the framework, my reading
+is that the framework expresses very neatly various notions of
+structured premises, and rules for manipulating premises, that exist
+in the literature, and would be interested to know if the authors have
+found examples of structured contexts or structural rules that cannot
+be expressed in their framework. The use of F and U connectives to
+define all other connectives is a more serious restriction; examples
+such as sums must be added in an ad hoc fashion and there is obviously
+no guarantee that the theorems such as cut-elimination that come for
+free from using the general framework will continue to hold for
+arbitrary extensions. More seriously, only a very narrow notion of
+modal logic, in which the modality defines a (co)monad, can be
+expressed. I find the phrase of the paper, "modal logics describe
+monads and comonads", to be misleading; the basic categorical notion
+captured by a (necessity) modality is a !
+monoidal functor, which need not be, and often is not, a (co)monad.
+No mention is given to any notion of binding operation such as
+first-order quantifiers. Nor is there any notion of structured
+premises, as for example with classical logic, or more generally,
+display logic. This lack makes the decision to concentrate this paper
+on sequent calculus rather than natural deduction slightly surprising,
+as no benefit is received from exploiting the symmetries of sequent
+calculus, but the term calculus material of Section 4 might have been
+simpler if developed for natural deduction proofs. It is asserted that
+"everything can be translated to natural deduction in the usual way"
+but this is not demonstrated, even in the extended version, and given
+the novel features of this calculus I cannot take it for granted.
+
+Despite the above comments I believe the paper offers a substantial
+contribution with respect to its generality, and also with respect to
+the sheer volume of work indicated by the number of proofs and
+examples included only in the extended version. I would only like to
+see a better discussion of the limitations of the framework and some
+speculation on whether these limitations are innate or might be met by
+further work.
+
+Minor comments:
+
+Figures 1 and 2 both use 'ctx' as a binary connective, meaning
+different things, which is confusing.
+
+Page 7, "We sometimes write F_f(A) in this case...". I don't believe
+this abbreviation is ever used in (the 15 page version of) the paper.
+
+Page 10 and elsewhere, "we add a context descriptor from c to l (x :
+c|- f(x) : l)...". This may be a matter of taste, but I don't find the
+latter notation preferable to the more concise and standard "f : c ->
+l".
+
+Page 11 footnote, "flipped in paper" should be "flipped in this paper".
+
+Theorem 5.5 "mutilcategory" typo.
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 90
+TITLE: A Fibrational Framework for Substructural and Modal Logics
+AUTHORS: Daniel R. Licata, Michael Shulman and Mitchell Riley
+
+Overall evaluation: 2 (accept)
+
+----------- Overall evaluation -----------
+The paper provides a simply typed sequent calculus parametrized by a
+"mode theory", so that different choices of mode theories encode
+different intuitionistic substructural and modal type theories.  A
+mode theory is specified by a signature containing "modes"
+(i.e. sorts), constants, morphisms and equalities. The modes type
+first-order terms \alpha built out of the constants and
+applications. The morphisms and equalities specify respectively valid
+transformations and equalities between the terms. The entailment
+judgment of the sequent calculus is indexed by an \alpha, which
+is not however a proof term but rather describes how the proof is
+allowed to make use of the context. The sequent calculus comes with
+two type formers, a generalized product and a generalized arrow type
+also behaving according to their \alpha index. Various examples of
+type theories that fit this framework are provided, admissibility of
+cut is stated as a theorem (referring to a longer version), and
+finally a categorical semantics is given with soundness and
+completeness theorems.
+
+Overall this seems a novel and interesting approach to the development
+of a unified type system for various kinds of type theories that
+manipulate the typing context in some way other than structurally. The
+use of terms \alpha to index the typing judgment matches very closely
+the fact that the semantics are specified as bifibrations: the
+fibration indexes each arrow in the semantics by an arrow in the mode
+theory. This gives some reassurance that the calculus is not ad-hoc.
+
+However, having only a limited knowledge of multicategories and
+(bi)fibrations it's not very clear to me whether it is convenient to
+work with semantics structured like that. The authors could help by
+showing, for some logic they encode, how some concrete model supports
+the bifibration structure into the appropriate mode theory.
+
+Applicability is shown by examples, but a discussion of limitations
+would also be interesting, e.g. examples of logics not fitting the
+framework and what kind of issues there are when scaling to dependent
+types.
+
+Minor Comments:
+
+- The introduction mentions applications to homotopy type theory, so
+ it would help if it addressed the lack of dependent types in the
+  calculus.
+
+- Section 2.1 and Figure 1 describe in detail the syntax and typing
+ rules for the mode theory, but the risk is to lose the forest for
+  the trees and make it harder to see that we are dealing with a
+   multi-sorted first order theory.
+
+- In the paragraph before Theorem 3.1, the use of specialized names
+ vs. the more genering F and U is quite inconsistent, also between
+  the text and the inference trees.
+
+- Definition 5.2 mentions \pi while it only introduced F_0
+
+- Theorem 5.7, at the end, "D([[A_1]],...,[[A_n]]) -> [[C]]"
+ should be "D([[A_1]],...,[[A_n]];[[C]])"
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 90
+TITLE: A Fibrational Framework for Substructural and Modal Logics
+AUTHORS: Daniel R. Licata, Michael Shulman and Mitchell Riley
+
+Overall evaluation: 1 (weak accept)
+
+----------- Overall evaluation -----------
+This paper provides a generic framework that encompasses many aspects
+of intuitionistic substructural and modal logics. The start point is a
+simple type theory for the so-called modes used to describe the
+structure of contexts and their properties. In the categorical
+semantics provided in the last section of the paper, modes are
+organised in a cartesian 2-multicategory, in which the 0-cells are the
+base types, 1-morphisms are context descriptor terms and 2-morphisms
+are structural transformations, all up to congruence.
+
+Having fixed a mode theory, a generic sequent calculus is given
+featuring two type constructors for F-types and U-types that
+generalise multiplicative products, respectively implication. Types
+over a given mode, derivations along context descriptors and
+corresponding structural transformation can also be organised into a
+2-dimensional multicategory. The projection to the 2-multicategory of
+modes is shown to be a local discrete fibration, and furthermore a
+bifibration with opcartesian and cartesian lifts given using the FL
+and UR derivations.
+
+This submission is the condensed version of a 66-page paper that
+additionally contains proofs, detailed examples and work on (weak)
+logical adequacy of the translations of various logics into the
+generic framework. The authors explain carefully the syntax and the
+rules of
+the proposed framework and I found the paper well-written, despite its
+very syntactic nature.
+
+The authors should explain what are the difficulties of
+generalising the previous work of [Licata and Schulman, 2016] to a
+multi-assumption situation and what is the substantial technical
+contribution wrt the 2016 paper. It is clear that the scope of
+applications
+is  wider, but the idea of a bifibration over a 2-category of modes is
+already mentioned in that paper.
+
+I am also wondering how all this relates to other approaches to
+categorical semantics for specific logics, e.g. full Lambek
+hyperdoctrines (as considered by Maruyama).

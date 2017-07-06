@@ -1,0 +1,86 @@
+
+We thank the reviewers very much for their detailed and helpful
+feedback, which will greatly improve the next revision of this paper.
+We will add the discussion below to the paper.
+
+-- Review 1 --
+
+* What benefits does the framework provide relative to existing
+  instances of it?  We have found it quite useful for designing several
+  new "modal homotopy type theories", of which we included one
+  representative example (spatial type theory, Sec 3.5). But there are
+  others, involving modalities and products with different properties --
+  e.g. a variant of BI where one product has a map to the other.  
+
+* Can the framework express functors that are not monads or comonads?
+  Yes.  For a general unary mode morphism f, F_f and U_f are adjoint
+  functors, which are not necessarily monoidal but can be made monoidal
+  by adding structural rules.  If one considers proofs that avoid
+  mentioning one of either the F_f or U_f types, such proofs can be
+  interpreted in a setting with only a functor ! (with no adjoint).
+  Technically, in Definition 5.4, we first define what it means for a
+  local discrete fibration to "have \mu-products" and "have \mu-homs"
+  for a particular mode morphism \mu (independently from each other).  A
+  bifibration has all \mu products and homs, but one can consider only
+  some products and homs, when non-adjoint modalities are of interest.
+
+* Is it difficult to add sums?  We'd only emphasize that additive
+  coproducts and products do not need to be considered separately for
+  each mode theory.  The rules for coproducts are on page 7 of the
+  submission, and the admissible properties (cut) continue to hold for
+  these (and &), independently of the mode theory.  
+
+* Why sequent calculus as opposed to natural deduction?
+  We added the interderivability of natural deduction rules to page 24
+  of the publicly available version.  We chose to use a sequent
+  calculus only because of the simplicity of defining cut-free/normal
+  forms with a single judgement.
+
+* What are the prospects for extensions, e.g. to first order
+  quantifiers, and structured conclusions (as in classical or display
+  logic)?  Work on this is in progress, and it certainly seems possible,
+  though it is not obvious what the right syntactic or semantic
+  structures are.  We have developed the single-conclusioned case first
+  because our main motivating examples are extensions of intuitionistic
+  type theory.
+
+
+-- Review 2 --
+
+* Do concrete models support the bifibration structure?
+  Section 9 of the extended version can be read as a syntactic version
+  of such a result, showing that the syntax specialized to the ordered
+  logic mode theory (a monoid) presents the free monoidal category.
+
+* What limitations are there?  We will add a discussion of extensions to
+  quantifiers and multi-conclusioned sequents.  Scaling to dependent
+  types is challenging because the range of substructural and modal
+  dependent types that one would like to codify is not well-understood.
+  As a first step, we are currently considering a number of modal
+  homotopy type theories, including the spatial type theory described
+  here, variations on it, and a directed type theory.  In each of these,
+  we have used a mode theory to guide the simply-typed rules, and then
+  generalized to dependent types "manually".
+  
+-- Review 3 --
+
+* What were the difficulties in generalizing our previous work on
+  one-variable logic?  We can only say that it took several attempts to
+  come up with a well-behaved multi-variable generalization, and that
+  our early attempts (by adding products to the mode category instead of
+  using multicategories) did not satisfy cut admissibility or had other
+  explicit structural rules that could not be fused with the connective
+  rules.  The precise formulation of the equational theory on
+  derivations and the semantic structures also both took some care.
+  Finally, it was not obvious that encodings would be adequate in senses
+  we prove in the extended version, because these proofs rely on a
+  strengthening lemma showing that "unusable" variables (in the sense of
+  the context descriptor) do not matter.  All of these issues are new
+  relative to the single-variable logic.  Because of these challenges,
+  and because the multi-variable case has more potential applications
+  outside of homotopy type theory (e.g. to modal logics for
+  computational effects), we think this is a useful delta to disseminate
+  to the community.
+
+* Thank you as well for the reference to Maruyama; we will investigate.  
+

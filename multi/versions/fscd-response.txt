@@ -1,0 +1,95 @@
+
+We thank the reviewers very much for their detailed and helpful
+feedback, which will greatly improve the next revision of this paper.
+We will add the discussion below to the paper.
+
+-- Review 1 --
+
+* What benefits does the framework provides relative to existing
+  instances of it?  We can say that we have found it quite useful for
+  designing several new "modal homotopy type theories", of which we
+  included one representative example (spatial type theory, Sec
+  3.5). But there are others, involving modalities and products with
+  different properties, and which use mode theories with interesting
+  2 cells.
+
+* Can the framework express functors that are not monads or comonads?
+  Yes, and we apologize for the misleading phrasing.  For a general
+  unary mode morphism f, F_f and U_f are adjoint functors, which are not
+  necessarily monoidal but can be made monoidal by adding structural
+  rules.  For a functor ! without an adjoint, one can consider proofs
+  that avoid mentioning either F_f or U_f.  Such proofs can be
+  interpreted in a setting with only a functor ! (satsifying whatever
+  structural rules are asserted by the mode theory, e.g. monoidalness).
+  Technically, this is why, in Definition 5.4, we first define what it
+  means for a local discrete fibration to "have \mu-products" and "have
+  \mu-homs" for a particular mode morphism \mu (independently from each
+  other).  A bifibration has all \mu products and homs, but one can
+  consider a local discrete fibration with only some of them, when
+  non-adjoint modalities are of interest.
+
+* Is it difficult to add sums?  We would just emphasize that additive
+  coproducts and products do not need to be considered separately for
+  each mode theory.  The rules for coproducts are on page 7 of the
+  submission, and similar rules can be given for products, and the
+  admissible properties (cut) continue to hold for these connectives,
+  independently of the mode theory.  In our view, additives are
+  fundamentally different from F and U, which codify multiplicatives and
+  exponentials, because additives are about the choice between multiple
+  focus rules for a connective.
+
+* What are the prospects for extensions, e.g. to first order
+  quantifiers, and structured conclusions (as in classical or display
+  logic)?  Work on this is in progress, and it certainly seems possible
+  but not obvious.  We have focused on the single-conclusioned case
+  because our main motivating examples are extensions of intuitionistic
+  type theory.
+
+* Why sequent calculus as opposed to natural deduction?  We chose to use
+  a sequent calculus only because of the simplicity of defining
+  cut-free/normal forms---in natural deduction, we would need two
+  "normal" and "neutral" judgements, whereas here left and right rules
+  play that role.  We can include the natural deduction rules in the revision.
+
+-- Review 2 --
+
+* Do concrete models support the bifibration structure?
+  Section 9 of the extended version can be read as a syntactic version
+  of such a result, showing that the syntax specialized to the ordered
+  logic mode theory (a monoid) presents the free monoidal category.
+
+* What limitations are there?  We will add a discussion of first-order
+  quantifiers and multi-conclusioned sequents to the conclusion.
+  Scaling to dependent types is challenging because it is not even clear
+  what the patterns of substructural and modal type dependency that a
+  framework should capture are.  We are in the process of considering a
+  number of examples of modal homotopy type theories, including the
+  spatial type theory described here, variations on it, and a directed
+  type theory where types are categories rather than groupoids.  In each
+  of these, we have used a mode theory to guide the simply-typed rules,
+  and then generalized to dependent types "manually".  We plan to codify
+  these examples once we have enough instances to know what a successful
+  framework should cover.
+  
+-- Review 3 --
+
+* What were the difficulties in generalizing our previous work on
+  one-variable logic?  We can only say that it took several tries to
+  come up with a well-behaved multi-variable generalization, and that
+  our early attempts (by adding products to the mode category instead of
+  using multicategories) did not satisfy cut admissibility or had other
+  explicit structural rules that could not be fused with the connective
+  rules.  In addition to the design of the sequent calculus itself, the
+  precise formulation of the equational theory and the semantic
+  structures both took some care.  Finally, it was not obvious that
+  encodings would be adequate in senses we prove in the extended
+  version, because these proofs rely on a strengthening lemma showing
+  that "unusable" variables (in the sense of the context descriptor) do
+  not matter.
+
+* How does our semantics compare to full Lambek hyperdoctrines as
+  considered by Maruyama?  Thanks for the reference!  We can add a
+  comparison in the revision, though at a quick skim this looks more
+  relevant to a first-order generalization of our current propositional
+  framework.  
+  
