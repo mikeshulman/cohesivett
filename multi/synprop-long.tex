@@ -745,6 +745,89 @@ and then cutting for $x$ in the above gives the result:
 \]
 \end{proof}
 
+\subsection{Natural Deduction Rules}
+
+We show that natural-deduction-style rules are interderivable with the
+sequent calculus rules presented above (a sharper result would be to
+compare cut-free proofs with normal/neutral natural deduction).  In a
+natural deduction style, the hypothesis and right/intro rules are
+unchanged, except the hypothesis rule is not restricted to atoms:
+\[
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{A}}
+      {x:A \in \Gamma & \beta \spr x}
+\quad
+\infer[\Fsymb I]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
+        \beta \spr \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+\qquad
+\infer[\Usymb I]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\]
+The extended hypothesis rule is justified in the sequent calculus by
+Theorem~\ref{thm:identity} and Lemma~\ref{lem:respectspr}, and clearly
+includes the atom-restricted sequent rule as a special case.  
+
+We build in a cut to the \FL-rule to obtain the \Fsymb-elimination rule:
+\[
+\infer[\Fsymb E]{\seq{\Gamma}{\beta}{C}}
+      {\beta \spr \beta_2[\beta_1/x] &
+        \seq{\Gamma}{\beta_1}{\F{\alpha}{\Delta}} &
+        \seq{\Gamma,\Delta}{\beta_2[\alpha/x]}{C}}
+\]
+and build in a pre-composition and remove the post-composition from the
+\UL-rule to obtain the \Usymb-elimination rule:
+\[
+\infer[\Usymb E]{\seq{\Gamma}{\beta}{A}}
+      {\begin{array}{llll}
+          \beta \spr \alpha[\gamma,\beta_1/c] &
+          \seq{\Gamma}{\beta_1}{\U{c.\alpha}{\Delta}{A}} &
+          \seq{\Gamma}{\gamma}{\Delta} 
+       \end{array}
+      }
+\]
+
+These are implemented in the sequent calculus as follows:
+\[
+\infer[Lem~\ref{lem:respectspr}]
+      {\seq{\Gamma}{\beta}{C}}
+      {\beta \spr \beta_2[\beta_1/x] &
+        \infer[Thm~\ref{thm:cut}]{\seq{\Gamma}{\beta_2[\beta_1/x]}{C}}
+              {\seq{\Gamma}{\beta_1}{\F{\alpha}{\Delta}} &
+                \infer[\FL]{\seq{\Gamma,z:\F{\alpha}{\Delta}}{\beta_2}{C}}
+                      {\seq{\Gamma,\Delta}{\beta_2[\alpha/x]}{C}}}}
+\]
+and 
+\[
+\infer[Lem~\ref{lem:respectspr}]
+      {\seq{\Gamma}{\beta}{A}}
+      {\beta \spr \alpha[\gamma,\beta_1/c] &
+        \infer[Thm~\ref{thm:cut}]{\seq{\Gamma}{\alpha[\gamma,\beta_1/c]}{C}}
+              {\seq{\Gamma}{\beta_1}{\U{c.\alpha}{\Delta}{A}} &
+                \infer[\UL]{\seq{\Gamma,c:\U{c.\alpha}{\Delta}{A}}{\alpha[\gamma]}{A}}
+                      { 
+                        \alpha[\gamma] \spr z[\alpha[\gamma]/z] &
+                        \seq{\Gamma}{\gamma}{\Delta} &
+                        \infer[Thm~\ref{thm:identity}]{\seq{\Gamma,z:A}{z}{A}}{}
+                      }}}
+\]
+
+For the natural deduction calculus consisting of primitive rules
+$\dsd{v},\Fsymb I, \Fsymb E, \Usymb I, \Usymb E$, the analogues of
+respect for transformations (Lemma~\ref{lem:respectspr}) and cut
+(Theorem~\ref{thm:cut}) hold by induction on derivations, though the
+latter has a much weaker meaning --- simple replacement rather than
+normaliation --- because we allow non-normal forms in these rules.
+
+Conversely, translating sequent calculus to natural deduction, \FL\/ is
+the special case of $\Fsymb E$ where the first premise is the identity
+and the second premise is a variable. For \UL\/, we take the special
+case of $\Usymb E$ where the first premise is the identity and the
+second premise is a variable, and then use the admissible substitution
+and structural transformation principles of natural deduction to compose
+with the third and then first premises of \UL.  
+
 \subsection{General Properties}
 
 We give a couple of general constructions that were used in several
