@@ -1,0 +1,434 @@
+\documentclass{article}
+\usepackage{amsthm,hyperref,mathtools,mathpartir,cleveref,mathrsfs,amssymb,url,paralist}
+\usepackage[status=draft]{fixme}
+\newtheorem{thm}{Theorem}%[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conj}[thm]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{eg}[thm]{Example}
+\theoremstyle{remark}
+\newtheorem{rmk}[thm]{Remark}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\let\sto\looparrowright
+\def\M{\mathcal{M}}
+\def\N{\mathcal{N}}
+\def\C{\mathcal{C}}
+\def\K{\mathcal{K}}
+\def\Q{\mathcal{Q}}
+\def\D{\mathcal{D}}
+\def\Cat{\mathcal{C}\mathit{at}}
+\def\Fib{\mathcal{F}\mathit{ib}}
+\def\Prof{\mathcal{P}\mathit{rof}}
+\def\dom{\mathrm{dom}}
+\def\cod{\mathrm{cod}}
+\def\id{\mathrm{id}}
+\def\side#1{{\scriptstyle(#1)}}
+\def\sid{\side{\id}}
+\def\twocell#1#2#3#4{\inferrule*[Left={$\side{#1}$},Right={$\side{#4}$}]{#2}{#3}}
+\def\twocelll#1#2#3#4{\inferrule*[left={$\side{#1}$},Right={$\side{#4}$}]{#2}{#3}}
+\def\twocellr#1#2#3#4{\inferrule*[Left={$\side{#1}$},right={$\side{#4}$}]{#2}{#3}}
+\def\twocelllr#1#2#3#4{\inferrule*[left={$\side{#1}$},right={$\side{#4}$}]{#2}{#3}}
+\let\ot\leftarrow
+\let\xto\xrightarrow
+\let\xot\xleftarrow
+\let\tot\leftrightarrow
+\def\o{^{\circ}}
+\def\type{\;\mathsf{type}}
+\let\types\vdash
+\tikzset{horiz/.style={"\mathclap\bullet" description}}
+\title{Simple type theory over virtual double categories}
+\begin{document}
+\maketitle
+
+A \textbf{virtual double category}~\cite{cs:multicats} (also called an ``fc-multicategory''~\cite{leinster:higher-opds,leinster:fc-multicategories}) is a Leinster generalized multicategory for the free-category monad on directed graphs.
+It has a category of objects and vertical arrows, a directed graph of horizontal arrows with the same objects, and a collection of 2-cells that look like this:
+\[
+\begin{tikzcd}
+  A_0 \ar[r,horiz] \ar[d] \ar[drrr,phantom,"\Downarrow"] & A_1 \ar[r,horiz] & \cdots \ar[r,horiz] & A_n \ar[d] \\
+  B_0 \ar[rrr,horiz] &&& B_n
+\end{tikzcd}
+\]
+The 2-cells can be composed in unsurprising ways:
+\[\hspace{-2cm}
+\begin{tikzcd}
+  \cdot \ar[r,horiz] \ar[d] \ar[drrr,phantom,"\Downarrow"] & \cdot \ar[r,horiz] & \cdots \ar[r,horiz] &
+  \cdot \ar[r,horiz] \ar[d] \ar[drrr,phantom,"\Downarrow"] & \cdot \ar[r,horiz] & \cdots \ar[r,horiz] &
+  \cdot \ar[r,phantom,"\cdots"] \ar[d] &
+  \cdot \ar[r,horiz] \ar[d] \ar[drrr,phantom,"\Downarrow"] & \cdot \ar[r,horiz] & \cdots \ar[r,horiz] &
+  \cdot \ar[d]\\
+  \cdot \ar[rrr,horiz] \ar[d] \ar[drrrrrrrrrr,phantom,"\Downarrow"] &&& \cdot \ar[rrr,horiz] &&& \cdot \ar[r,phantom,"\cdots"] & \cdot \ar[rrr,horiz] &&& \cdot \ar[d]\\
+  \cdot \ar[rrrrrrrrrr,horiz] &&&&&&&&&& \cdot
+\end{tikzcd}\hspace{-2cm}
+\]
+The vertical arrows on the left and right get composed in the category of vertical arrows.
+This is associative in a straightforward sense, and unital with respect to identity 2-cells of horizontal arrows, which have identity vertical arrows on their boundary:
+\[
+\begin{tikzcd}
+  A \ar[r,horiz,"m"] \ar[d,equals] \ar[dr,phantom,"="] & B \ar[d,equals] \\ A \ar[r,horiz,"m"'] & B
+\end{tikzcd}
+\]
+These are ``unary'' 2-cells where $n=1$; note that there also exist ``nullary'' 2-cells where $n=0$:
+\[
+\begin{tikzcd}[column sep=small]
+  & A \ar[dl] \ar[dr] \ar[d,phantom,"\Downarrow"] \\ B \ar[rr,horiz] & ~ & C
+\end{tikzcd}
+\]
+If $\M$ is a virtual double category, we write $\M_0$ for the category of objects and vertical arrows, and $\M_1$ for the category whose objects are horizontal arrows and whose morphisms are unary 2-cells.
+
+A \textbf{functor} between virtual double categories is the only possible thing: it takes objects, both kinds of arrow, and 2-cells to objects, arrows, and 2-cells, preserving all identities and compositions.
+We similarly have \textbf{transformations}, with a vertical component for every object and a unary 2-cell component for every horizontal arrow, forming a 2-category of virtual double categories.
+
+\begin{defn}
+  A \textbf{strict cocartesian virtual double category} is a strict cocartesian monoid in the 2-category of virtual double categories.
+  That is, it has left adjoints to the functors $\M \to \M\times\M$ and $\M\to 1$ such that the induced pseudo-monoid structure on $\M$ is in fact strict.
+  A \textbf{strict cocartesian functor} between such virtual double categories is one that strictly respects these adjunctions.
+\end{defn}
+
+Concretely, a virtual double category is strict cocartesian if:
+\begin{itemize}
+\item The vertical category $\M_0$ is strict cocartesian, i.e. has specified finite coproducts inducing a strict monoidal structure,
+\item The category $\M_1$ is also strict cocartesian,
+\item The source and target functors $\M_1 \rightrightarrows \M_0$ are strict cocartesian, and
+\item The codiagonals and counits of horizontal arrows commute with arbitrary 2-cells.
+\end{itemize}
+We write monoidal products as lists; thus the third condition above implies that the product of horizontal arrows $A\to B$ and $C\to D$ has the form $(A,C)\to (B,D)$, and so on.
+The cocartesian structure gives us a specified vertical arrow $(A_{\sigma 1},\dots, A_{\sigma m}) \to (A_1,\dots, A_n)$ for any function $\sigma:\mathbf{m}\to \mathbf{n}$ and any objects $(A_1,\dots, A_n)$, and similarly specified unary 2-cells for lists of horizontal arrows.
+We will refer to these as \textbf{generalized codiagonals}.
+
+\begin{defn}\label{defn:difib}
+  Let $\M$ be a strict cocartesian virtual double category, with a specified class of 2-cells that we call \textbf{structural}, which includes all identities and is closed under composition.
+  A strict cocartesian functor $\pi:\D\to\M$ of virtual double categories is a \textbf{cocartesian local discrete difibration} if:
+  \begin{enumerate}
+  \item The induced functor $\D_0 \to \M_0$ on vertical categories is a discrete fibration.
+    That is, for any object $\Gamma\in \D$ and vertical arrow $\sigma:\Delta\to \pi A$ in $\M$, there exists a unique vertical arrow $\overline\sigma_A : \sigma^*\Gamma \to \Gamma$ with target $\Gamma$ such that $\pi(\overline\sigma_A)=\sigma$.\label{item:difib1}
+  \item The pullback of $\D_1\to\M_1$ to the subcategory of generalized codiagonals in $\M_1$ is a discrete fibration.\label{item:difib2}
+  \item For any structural 2-cell in $\M$:
+    \[
+    \begin{tikzcd}
+      \Delta_0 \ar[r,horiz,"\alpha_1"] \ar[d,"\sigma_0"'] \ar[drrr,phantom,"\Downarrow e"] & \Delta_1 \ar[r,horiz,"\alpha_2"] & \cdots \ar[r,horiz,"\alpha_n"] & \Delta_n \ar[d,"\sigma_n"] \\
+      \Psi_0 \ar[rrr,horiz,"\beta"'] &&& \Psi_n
+    \end{tikzcd}
+    \]
+    and objects and arrows in $\D$ lying over all of its boundary except the horizontal arrow target:
+    \[
+    \begin{tikzcd}
+      \sigma_0^*\Gamma_0 \ar[r,horiz,"f_1"] \ar[d,"\overline\sigma_0"'] & \Gamma_1 \ar[r,horiz,"f_2"] & \cdots \ar[r,horiz,"f_n"] & \sigma_n^*\Gamma_n \ar[d,"\overline\sigma_n"] \\
+      \Gamma_0  &&& \Gamma_n
+    \end{tikzcd}
+    \]
+    (that is, $\pi(\overline\sigma_i)=\sigma_i$ and $\pi(f_i)=\alpha_i$) there exists a unique 2-cell
+    \[
+    \begin{tikzcd}
+      \sigma_0^*\Gamma_0 \ar[r,horiz,"f_1"] \ar[d,"\overline\sigma_0"'] \ar[drrr,phantom,"\Downarrow \overline e"] & \Gamma_1 \ar[r,horiz,"f_2"] & \cdots \ar[r,horiz,"f_n"] & \sigma_n^*\Gamma_n \ar[d,"\overline\sigma_n"] \\
+      \Gamma_0 \ar[rrr,horiz,"{e_!(f_1,\dots,f_n)}"'] &&& \Gamma_n
+    \end{tikzcd}
+    \]
+    with $\pi(\overline e)=e$ (hence also $\pi(e_!(f_1,\dots,f_n))=\beta$).\label{item:difib3}
+  \end{enumerate}
+\end{defn}
+
+I'm not sure exactly what to call these; ``difibration'' is intended to suggest ``both a fibration and an opfibration'' but in a different way from a ``bifibration''.
+
+\begin{defn}
+  A \textbf{semantic mode theory} is a strict cocartesian virtual double category $\M$ with a specified class of structural 2-cells.
+  A \textbf{semantic type theory} over such an $\M$ is a cocartesian local discrete difibration $\pi:\D\to\M$.
+\end{defn}
+
+When we start adding $F$ and $U$ functors, we may want to also equip $\M$ with a specified class of horizontal arrows paired with an ``input or output slot''. 
+In order for ``slots'' to make sense, we may need to require that the monoid of objects be freely generated.
+
+In general, the vertical category of the semantic mode theory will be the free cocartesian strict monoidal category on the set of modes.
+That means its objects will be finite lists of modes $(p_1,\dots,p_k)$ and its morphisms $(p_1,\dots,p_k) \to (q_1,\dots,q_m)$ are functions $\sigma:\mathbf{k}\to \mathbf{m}$ such that $q_{\sigma(i)} = p_i$ for all $i\in\mathbf{k}$.
+In other words, $\sigma$ exhibits its codomain as obtained from its domain by exchange, weakening, and contraction.
+
+The full syntactic mode theory will be specified relative to some generating modes, some generating horizontal arrows (mode morphisms), some generating structural 2-cells, and some axioms on the composites of those 2-cells.
+The corresponding semantic mode theory should be the free semantic mode theory presented by these data.
+In particular, note that we do not include any ``generating vertical arrows''.
+
+Syntactically, each structural mode 2-cell can be thought of as a ``rule scheme''
+\[\twocell{\sigma_0:\Delta_0 \to \Psi_0}
+{\Delta_0 \types \alpha_1:\Delta_1 \\ \Delta_1 \types \alpha_2:\Delta_2 \\ \cdots \\ \Delta_{n-1}\types \alpha_n :\Delta_n}
+{\Psi_0 \types \beta:\Psi_1}
+{\sigma_n:\Delta_n\to\Psi_n}. \]
+We have to be careful with this notation because the term $\beta$ in the conclusion is \emph{not} a term describing how this rule produces $\Psi_0\types \Psi_n$ from the $\alpha_i$'s.
+Instead $\beta$ is a horizontal arrow that's given just like the $\alpha_i$'s.
+If we want to add a term that describes the rule, it would be better to put it outside somehow like
+\begin{equation}
+  \twocell{\sigma_0:\Delta_0 \to \Psi_0}
+  {\Delta_0 \types \alpha_1:\Delta_1 \\ \Delta_1 \types \alpha_2:\Delta_2 \\ \cdots \\ \Delta_{n-1}\types \alpha_n :\Delta_n}
+  {e:(\Psi_0 \types \beta:\Psi_1)}
+  {\sigma_n:\Delta_n\to\Psi_n}.\label{eq:mode-2cell}
+\end{equation}
+The composites of 2-cells can then be written as derivations in a usual way, although we have to be careful that the vertical arrow parts match up (see e.g.~\eqref{eq:sym-mult-ax} below).
+
+We may also want a separate syntactic system for generating the horizontal arrows in terms of basic ones.
+This is a little weird because in a general virtual double category there are no ``operations'' on the horizontal arrows at all.
+In our situation we do have a monoidal product of horizontal arrows, but we might want to be able to generate horizontal arrows from less than this.
+For instance, in the examples below I put in $n$-ary mode morphisms for all $n$ manually, whereas in the multicategorical case we were able to generate these from the binary and nullary version with associativity axioms.
+
+The syntactic type theory will be specified relative to some generating types (each with an assigned mode), some generating judgments (each with an assigned mode morphism), and some generating 2-cells (each with an assigned mode 2-cell).
+The corresponding semantic type theory will be the free one generated by these data.
+
+Its vertical category will be the free cocartesian strict monoidal category on the types.
+The fibration condition on vertical categories in $\pi:\D\to\M$ will then hold automatically; it says that given a context of types $\Gamma$ with corresponding mode context $\Psi$, and a function $\sigma:\Delta\to\Psi$ exhibiting $\Psi$ as obtained by exchange, contraction, and weakening from $\Delta$, there is a unique context $\sigma^*\Gamma$ of types with mode context $\Delta$ such that $\Gamma$ is obtained from $\sigma^*\Gamma$ by the same structural rules described by $\sigma$.
+For instance, if $\sigma : (p,q,q) \to (p,q,r)$ is the only possible morphism, and $\Gamma = (A_p,B_q,C_r)$, then $\sigma^*\Gamma = (A_p,B_q,B_q)$.
+
+Note that this operation on type \emph{contexts} exists regardless of whether the theory ``has structural rules''.
+The existence or nonexistence of mode 2-cells with $\sigma$ on the boundary is what specifies whether judgments with domain or codomain $\sigma^*\Gamma$ can be exchanged/contracted/weakened to have $\Gamma$ instead.
+
+As usual, the mode morphism parametrizing a judgment indicates how the types in the domain and codomain can be used.
+When the mode morphism is a monoidal product, then we think of it as parametrizing formal lists of judgments.
+Condition~\ref{item:difib2} in \cref{defn:difib} says that we can also duplicate and omit elements of such lists.
+
+Condition~\ref{item:difib3} in \cref{defn:difib} says that each structural mode 2-cell induces a structural rule on judgments.
+That is, given a structural mode 2-cell $e$ as in~\eqref{eq:mode-2cell}, we have an induced rule in the type theory:
+\[
+\inferrule{\sigma_0^*\Gamma_0 \types_{\alpha_1} \Gamma_1 \\ \Gamma_1\types_{\alpha_2} \Gamma_2 \\ \cdots \\\Gamma_{n-1} \types_{\alpha_n} \sigma_n^*\Gamma_n}{\Gamma_0 \types_\beta \Gamma_n}
+\]
+When $n=2$, and the $\sigma$'s are identities, this specializes to a cut-like rule:
+\[ \inferrule{\Gamma_0 \types_{\alpha_1} \Gamma_1 \\ \Gamma_1 \types_{\alpha_2} \Gamma_2}{\Gamma_0\types_\beta \Gamma_2}. \]
+When $n=1$, it looks like
+\[\inferrule{\sigma_0^*\Gamma_0 \types_{\alpha} \sigma_1^*\Gamma_1}{\Gamma_0 \types_\beta \Gamma_1}
+\]
+which will include structural operations such as exchange, contraction, weakening for appropriately chosen $\sigma$'s.
+When the $\sigma$'s are identities here, we find things like the action of the units and counits of mode adjunctions.
+(We restrict these rules to the subclass of ``structural'' mode 2-cells so that we can exclude the generalized codiagonals from producing rules in this way, which wouldn't make sense.)
+Finally, the case $n=0$ looks like
+\[ \inferrule{\sigma_0^*\Gamma_0 = \sigma_1^*\Gamma_1}{\Gamma_0 \types_\beta \Gamma_1}\]
+which is an identity-like operation: it says that we get $\Gamma_0 \types_\beta \Gamma_1$ if we can identify some specified part of $\Gamma_0 $ with some specified part of $\Gamma_1$ (for instance, if they share a type in common).
+The other operation on judgments in the type theory is the strict monoidal structure, which in the binary and nullary cases looks like
+\begin{mathpar}
+\inferrule{\Gamma_0 \types_{\alpha} \Gamma_1 \\ \Delta_0 \types_{\beta} \Delta_1}
+{(\Gamma_0,\Delta_0) \types_{(\alpha,\beta)} (\Gamma_1,\Delta_1)}
+\and
+\inferrule{ }{() \types_{()} ()}
+\end{mathpar}
+This isn't usually present in the type theories we are trying to model, but we should be able to make it disappear in the adequacy theorems.
+Hopefully that won't be too bad; I think it's the price to pay for having a single framework that can handle both single-conclusion and multiple-conclusion sequents.
+
+\begin{eg}
+  Let the mode theory have one mode $p$, one generating $n$-ary morphism $p^n \types \alpha_n : p$ for each $n$, and the following generating structural 2-cells:
+  \begin{mathpar}
+    \twocell{\id}{ }{p \types \alpha_1 : p}{\id}
+    \and
+    \twocell{\id}{p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n  \\
+      p^n \types \alpha_n :p }
+    {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}
+  \end{mathpar}
+  The resulting type theory should be ordered logic.
+  The nullary 2-cell gives an identity rule:
+  \[ \inferrule{ }{A \types_{\alpha_1} A} \]
+  and the binary one, when combined with the monoidal structure, gives a multi-cut rule:
+  \[ \inferrule{
+    \inferrule*{\Gamma_1\types_{\alpha_{k_1}} A_1 \\ \cdots \\ \Gamma_n \types_{\alpha_{k_n}} A_n}
+    {(\Gamma_1,\dots,\Gamma_n) \types_{(\alpha_{k_1},\dots,\alpha_{k_n})} (A_1,\dots,A_n)} \\
+    (A_1,\dots,A_n) \types_{\alpha_n} \Psi}
+  {(\Gamma_1,\dots,\Gamma_n) \types_{\alpha_{k_1+\cdots+k_n}} \Psi}
+  \]
+  To characterize derivations and not just provability, we should include associativity and unit axioms on the composites of these 2-cells.
+  For instance, one unit axiom is that the composite
+  \[\twocell{\id}{p^k \types \alpha_k : p  \\
+    \twocelll{\id}{ }{p \types \alpha_1 :p}{\id} }
+  {p^k \types \alpha_k : p}{\id}
+  \]
+  is the identity 2-cell.
+  Since structural 2-cells are closed under identities and compositions, a semantic type theory has unique liftings along these composites, implying that its cut rule is associative and unital.
+  Thus it has an underlying multicategory, whose $n$-ary morphisms are those lying above $\alpha_n$, and whose composition is defined by going through the monoidal structure as above.
+  But in general there might be morphisms with non-unary domain that aren't monoidal products of $n$ morphisms with unary domain.
+  However, I believe that the forgetful functor from these objects to multicategories is a coreflection, i.e.\ it has a fully faithful left adjoint, and that therefore the \emph{free} structures (generated by the syntactic type theory) will in fact be just multicategories.
+  This is of course a semantic version of the adequacy theorem.
+\end{eg}
+
+\begin{eg}
+  In the previous example, instead of the 2-cell generating multi-cut, we can have a 2-cell generating a one-formula cut:
+  \[\inferrule{p^{m+k+n} \types (\alpha_1^m,\alpha_k,\alpha_1^n) : p^{m+1+n} \\ p^{m+1+n} \types \alpha_{m+1+n} : p}
+  {p^{m+k+n} \types \alpha_{m+k+n} : p}
+  \]
+  with appropriate axioms (essentially, the axioms of a multicategory presented using $\circ_i$-operations rather than multi-composition).
+  The resulting rule in the type theory can be combined with identities and the monoidal structure to get the usual one-formula cut rule:
+  \[
+  \inferrule{
+    \inferrule*{
+      \inferrule*{ }{\Gamma\types_{\alpha_1^m} \Gamma}\\
+      \Psi \types_{\alpha_k} A \\
+      \inferrule*{ }{\Delta\types_{\alpha_1^n} \Delta}
+    }{(\Gamma,\Psi,\Delta) \types_{(\alpha_1^m,\alpha_k,\alpha_1^n)} (\Gamma,A,\Delta)}\\
+    (\Gamma,A,\Delta) \types_{\alpha_{m+1+n}} B}
+  {(\Gamma,\Psi,\Delta) \types_{\alpha_{m+k+n}} B}
+  \]
+\end{eg}
+
+\begin{eg}
+  Now suppose we add a structural 2-cell for any permutation $\sigma$:
+  \[\twocell{\sigma}{p^n \types \alpha_n : p}{p^n \types \alpha_n : p}{\id}
+  \]
+  with axioms making them functorial under composition of permutations.
+  This gives rise to a general exchange rule:
+  \[ \inferrule{\sigma^*\Gamma \types_{\alpha_n} A}{\Gamma \types_{\alpha_n} A} \]
+  Alternatively, we could add only the binary exchange 2-cells
+  \[\twocell{\id^m,\tau,\id^n}{p^{m+2+n} \types \alpha_{m+2+n} :p}{p^{m+2+n} \types \alpha_{m+2+n} :p}{\id}
+  \]
+  where $\tau : (p,p) \to (p,p)$ is the transposition, with axioms coming from the presentation of symmetric groups using transpositions.
+  This would yield two-formula exchange rules
+  \[ \inferrule{(\Gamma,A,B,\Delta) \types_{\alpha_{m+2+n}} C}{(\Gamma,B,A,\Delta) \types_{\alpha_{m+2+n}} C} \]
+  We should also impose equivariance axioms with respect to the cut 2-cells, mimicking the axioms of a symmetric multicategory.
+  For instance, if we permute and then postcompose, that should be the same as postcomposing and then permuting.
+  That is, the composite
+  \[
+  \twocell{\sigma_1\oplus\cdots\oplus\sigma_n}
+  {\twocell{\id}{p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n  \\
+      p^n \types \alpha_n :p }
+    {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}}
+  {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}
+  \]
+  should equal
+  \begin{equation}
+    \twocell{\id}{
+      \twocell{\sigma_1\oplus\cdots\oplus\sigma_n}
+      {p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n}
+      {p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n}{\id}  \\
+      p^n \types \alpha_n :p }
+    {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}\label{eq:sym-mult-ax-0}
+  \end{equation}
+  And if we permute and then precompose with permuted inputs, that should be the same as precomposing and then permuting.
+  That is,
+  \begin{equation}
+    {\twocell{\id}{
+        \twocellr{\sigma(k_1,\dots,k_n)}
+        {p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n}
+        {p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n}{\sigma}
+        \\
+        \twocelll{\sigma}{p^n \types \alpha_n :p}{p^n \types \alpha_n :p}{\id} }
+      {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}}\label{eq:sym-mult-ax}
+  \end{equation}
+  should equal
+  \begin{equation}
+    \twocell{\sigma(k_1,\dots,k_n)}{\twocell{\id}{p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n  \\
+        p^n \types \alpha_n :p }
+      {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}}{p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}\label{eq:sym-mult-ax-2}
+  \end{equation}
+  The composite in~\eqref{eq:sym-mult-ax} illustrates something to be aware of when using derivation syntax for 2-cell composites, namely that the vertical arrows have to match up in the middle: in this case the two $\sigma$'s.
+  (Similarly, in~\eqref{eq:sym-mult-ax-0} we ought formally to include an identity 2-cell in the upper right.)
+  Also, the upper-left 2-cell in~\eqref{eq:sym-mult-ax} is \emph{not} one of the structural exchange 2-cells, but rather a generalized codiagonal.
+  With these axioms imposed, the semantic type theories should coreflect into symmetric multicategories.
+\end{eg}
+
+\begin{eg}
+  If we generalize this to arbitrary functions $\sigma:\mathbf{m}\to \mathbf{n}$, we obtain contraction and weakening rules, and cartesian multicategories.
+  We can do this unbiasedly:
+  \[\twocell{\sigma}{p^m \types \alpha_n : p}{p^n \types \alpha_n : p}{\id}
+  \]
+  or biasedly, with only binary and nullary operations:
+  \begin{mathpar}
+    \twocelll{\id^m,\mu,\id^n}{p^{m+2+n} \types \alpha_{m+2+n} :p}{p^{m+1+n} \types \alpha_{m+1+n} :p}{\id}
+    \and
+    \twocelll{\id^m,\eta,\id^n}{p^{m+n} \types \alpha_{m+n} :p}{p^{m+1+n} \types \alpha_{m+1+n} :p}{\id}
+  \end{mathpar}
+  The axioms are essentially the same.
+  Note in particular that the analogue of~\eqref{eq:sym-mult-ax} is
+  \begin{equation*}
+    {\twocell{\id}{
+        \twocellr{\sigma(k_1,\dots,k_n)}
+        {p^{k_{\sigma 1}+\cdots+k_{\sigma m}} \types (\alpha_{k_{\sigma 1}},\dots,\alpha_{k_{\sigma m}}) : p^m}
+        {p^{k_1+\cdots+k_n} \types (\alpha_{k_1},\dots,\alpha_{k_n}) : p^n}{\sigma}
+        \\
+        \twocelll{\sigma}{p^m \types \alpha_n :p}{p^n \types \alpha_n :p}{\id} }
+      {p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}}
+  \end{equation*}
+  In the resulting rule it is important that we transport \emph{backwards} along generalized codiagonals but \emph{forwards} along structural 2-cells, so that in the corresponding analogue of~\eqref{eq:sym-mult-ax-2}
+  \begin{equation*}
+    \twocell{\sigma(k_1,\dots,k_n)}{\twocell{\id}{p^{k_{\sigma 1}+\cdots+k_{\sigma m}} \types (\alpha_{k_{\sigma 1}},\dots,\alpha_{k_{\sigma m}}) : p^m  \\
+        p^m \types \alpha_n :p }
+      {p^{k_{\sigma 1}+\cdots+k_{\sigma m}} \types \alpha_{k_{\sigma 1}+\cdots+k_{\sigma m}} : p}{\id}}{p^{k_1+\cdots+k_n} \types \alpha_{k_1+\cdots+k_n} : p}{\id}
+  \end{equation*}
+  the first composition is with a list of morphisms that contains duplicates and omissions, i.e.\ is contraction/weaken-able.
+\end{eg}
+
+\begin{eg}
+  More generally, any (non-cartesian, non-symmetric) 2-multicategory $\M$ can be regarded as a semantic mode theory.
+  Its vertical category is the free cocartesian strict monoidal category on the objects of $\M$, its horizontal arrows are finite lists of 1-morphisms of $\M$, and its 2-cells are lists of 2-cells in $\M$ whose domain is decomposed as a composite.
+  We take the vertical-arrow source and target of such 2-cells to always be identities.
+  In particular, any composable string of horizontal arrows in such a mode theory is the domain of at least one 2-cell, namely the identity in $\M$.
+
+  Thus the semantic type theories have multicategorical structure over that of $\M$, together with an action by the 2-cells of $\M$; so they should coreflect into local discrete opfibrations of 2-multicategories.
+  So we obtain examples like two ordered logics related by a functor or an adjunction, ordered cohesive logic, and so on.
+  Then we can add additional 2-cells for the desired structural rules at each mode, with nonidentity vertical arrow boundary, and axioms commuting them with the other 2-cells.
+\end{eg}
+
+\begin{eg}
+  Now suppose we have one mode $p$, and take the mode morphisms $p^m \types p^n$ to be cospans $\mathbf{m} \to \mathbf{k}\ot \mathbf{n}$ of order-preserving maps, with monoidal structure given by disjoint union.
+  There is always a unique such morphism with $k=1$, which parametrizes the usual sort of judgment $\Gamma\types\Delta$ of classical linear logic; let us write this morphism as $\alpha_{m,n}$.
+  The mode morphisms for $k\neq 1$ are formal monoidal products (lists) of these.
+  The unbiased exchange rule
+  \[\inferrule{\sigma^* \Gamma \types_{\alpha_{m,n}} \tau^* \Delta}{\Gamma\types_{\alpha_{m,n}}\Delta} \]
+  comes from a family of 2-cells
+  \[ \twocell{\sigma}{p^m \types \alpha_{m,n}: p^n}{p^m \types \alpha_{m,n}: p^n}{\tau} \]
+  for any permutations $\sigma$ and $\tau$ of $\mathbf{m}$ and $\mathbf{n}$ respectively.
+  The linear logic one-formula cut rule can be generated by 2-cells of the following form:
+  \[ \twocell{\id}
+  {p^{k+m} \types (\alpha_{1,1}^k,\alpha_{m,1+q}) : p^{k+1+q} \\ p^{k+1+q} \types (\alpha_{k+1,n},\alpha_{1,1}^q) : p^{n+q}}
+  {p^{k+m} \types \alpha_{k+m,n+q} : p^{n+q}}
+  {\id}
+  \]
+  % where the cospans are
+  % \begin{mathpar}
+  %   \mathbf{k+m} \xto{\alpha} \mathbf{k+1} \xot{\beta} \mathbf{k+1+q}
+  %   \and
+  %   \mathbf{k+1+q} \xto{\gamma} \mathbf{1+q} \xot{\delta} \mathbf{n+q}
+  % \end{mathpar}
+  % with $\alpha$ and $\beta$ being the identity on $\mathbf{k}$, and $\gamma$ and $\delta$ the identity on $\mathbf{q}$.
+  % 
+  % \[ \twocell{\id}{p^m \types (\alpha,\beta) : p^q \\ p^q \types (\gamma,\delta) : p^n}{p^m \types (\phi,\psi) : p^n}{\id} \]
+  % where in the cospans $\mathbf{m} \xto{\alpha} \mathbf{k}\xot{\beta} \mathbf{q}$ and $\mathbf{q} \xto{\gamma} \mathbf{l}\xot{\delta} \mathbf{n}$ there are specified elements $i_0\in \mathbf{k}$ and $j_0\in\mathbf{l}$ such that
+  % \begin{itemize}
+  % \item If $i\neq i_0$ then $\alpha^{-1}(i)$ and $\beta^{-1}(i)$ are singletons,
+  % \item If $j\neq j_0$ then $\gamma^{-1}(j)$ and $\delta^{-1}(j)$ are singletons, and
+  % \item $\beta^{-1}(i_0) \cap \gamma^{-1}(j_0)$ is a singleton.
+  % \end{itemize}
+  % The conclusion cospan is then the pushout
+  % \[
+  % \begin{tikzcd}[row sep=small,column sep=small]
+  %   \mathbf{k+m} \ar[dr,"\alpha"] \ar[ddrr,bend right,"\phi"'] &&
+  %   \mathbf{k+1+q} \ar[dl,"\beta"'] \ar[dr,"\gamma"] &&
+  %   \mathbf{n+q} \ar[dl,"\delta"'] \ar[ddll,bend left,"\psi"] \\
+  %   & \mathbf{k+1} \ar[dr] && \mathbf{1+q} \ar[dl] \\
+  %   && \bullet
+  % \end{tikzcd}
+  % \]
+  The resulting rule can be combined with identities and the monoidal structure to give the usual linear logic cut rule:
+  \[\inferrule*{
+    \inferrule*{\inferrule*{ }{\Psi\types_{\alpha_{1,1}^k} \Psi} \\ \Gamma\types_{\alpha_{m,1+q}} A,\Phi}
+    {\Psi,\Gamma \types_{\alpha_{1,1}^k,\alpha_{m,1+q}} \Psi,A,\Phi} \\
+    \inferrule*{\Psi,A\types_{\alpha_{k+1,n}} \Delta \\ \inferrule*{ }{\Phi \types_{\alpha_{1,1}^q} \Phi}}
+    {\Psi,A,\Phi \types_{\alpha_{k+1,n},\alpha_{1,1}^q} \Delta,\Phi}}
+  {\Psi,\Gamma \types_{\alpha_{k+m,n+q}} \Delta,\Phi}
+  \]
+  We should impose on these 2-cells associativity and equivariance axioms corresponding to those of a polycategory.
+  The semantic type theories should then coreflect into polycategories.
+
+  If we add also contraction and weakening, then it's not clear what axioms should be imposed, but at least we should get a type theory for derivability in classical nonlinear logic.
+\end{eg}
+
+\begin{eg}
+  If we keep the same mode morphisms and exchange rules as in the previous example, but replace the cut 2-cell by
+  \[ \twocell{\id}
+  {p^{m} \types \alpha_{m,k} : p^{k} \\ p^{k} \types \alpha_{k,n} : p^{n}}
+  {p^{k} \types \alpha_{k,n} : p^{n}}
+  {\id}
+  \]
+  and also add structural 2-cells that ``internalize the formal monoidal structure''
+  \begin{mathpar}
+    \twocellr{\id}{p^{m+q} \types (\alpha_{m,k},\alpha_{q,n}) : p^{k+n}}{p^{m+q} \types \alpha_{m+q,k+n} : p^{k+n}}{\id}
+    \and
+    \twocelll{\id}{p^0 \types () : p^0}{p^0 \types \alpha_{0,0} : p^0}{\id}
+  \end{mathpar}
+  with appropriate axioms, then we should get a type theory for props.
+\end{eg}
+
+
+\bibliography{../all.bib}
+\bibliographystyle{alpha}
+
+\end{document}
