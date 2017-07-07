@@ -1,31 +1,38 @@
-\documentclass[letterpaper,USenglish,numberwithinsect]{lipics-v2016}
+
+%% TODO:
+%% - include here
+%% - remove comments/ifdef
+%% - prune bibtex?
+%% - change wording on citet's
+
+%% - add review comments
+%% - uncompress intro formatting to fill to 15
+
+%% - appendix: 5 pages?
+
+%% - arxiv link? too late
+
+%% - look up cites
+%% - say something about restall's book, both resource algebras and
+%%   display logic
+
+\documentclass[a4paper,USenglish]{lipics-v2016}
 \usepackage{microtype}%if unwanted, comment out or use option "draft"
 
-%%SHORT \documentclass[conference,compsoconf]{../drl-common/IEEEtran}
-%%SHORT \IEEEoverridecommandlockouts
-
-\usepackage{microtype}
-
-%% \usepackage{times}
 \usepackage{authblk}
-%% \usepackage{fullpage}
 
 \usepackage[all]{xy}
 \usepackage{multicol}
 \usepackage{mathptmx}
 \usepackage{color}
-%% \usepackage[cmex10]{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{stmaryrd}
 \usepackage{../drl-common/proof}
 \usepackage{../drl-common/typesit}
 \usepackage{../drl-common/typescommon}
-%% \usepackage{../drl-common/theorem-envs}
-\usepackage[sort]{natbib}
-%% \usepackage{arydshln}
 \usepackage{graphics}
-\usepackage{natbib}
+
 \usepackage{url}
 \usepackage{relsize}
 \usepackage{tipa}
@@ -109,6 +116,9 @@
 \newcommand\Linv[3]{\ensuremath{\dsd{linv}(#1,#2,#3)}}
 \newcommand\Rinv[2]{\ensuremath{\dsd{rinv}(#1,#2)}}
 
+\newcommand\citep[1]{\cite{#1}}
+\newcommand\citet[1]{\cite{#1}}
+
 \usepackage{ifthen}
 \newboolean{short}
 \setboolean{short}{true}
@@ -121,17 +131,36 @@
 \author[1]{{Daniel R. Licata}}
 \author[2]{{Michael Shulman}}
 \author[1]{{Mitchell Riley}}
-\affil[1]{Wesleyan University\thanks{This material is based on research
+\affil[1]{Wesleyan University,\thanks{This material is based on research
     sponsored by The United States Air Force Research Laboratory under
-    agreement number FA9550-15-1-0053 and FA9550-16-1-0292.  The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright notation thereon.  The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of the United States Air Force Research Laboratory, the U.S. Government, or Carnegie Mellon University.}}
-\affil[2]{University of San Diego$^*$}
+    agreement number FA9550-15-1-0053 and FA9550-16-1-0292.  The
+    U.S. Government is authorized to reproduce and distribute reprints
+    for Governmental purposes notwithstanding any copyright notation
+    thereon.  The views and conclusions contained herein are those of
+    the authors and should not be interpreted as necessarily
+    representing the official policies or endorsements, either expressed
+    or implied, of the United States Air Force Research Laboratory, the
+    U.S. Government, or Carnegie Mellon University.} Middletown, CT, USA}
+\affil[2]{University of San Diego,$^*$ San Diego, CA, USA}
 
 \Copyright{Daniel R. Licata, Michael Shulman, Mitchell Riley}
 
 \authorrunning{D. Licata and M. Shulman and M. Riley} 
 
-%% \subjclass{Dummy classification -- please refer to \url{http://www.acm.org/about/class/ccs98-html}}% mandatory: Please choose ACM 1998 classifications from http://www.acm.org/about/class/ccs98-html . E.g., cite as "F.1.1 Models of Computation". 
-%% \keywords{Dummy keyword -- please provide 1--5 keywords}% mandatory: Please provide 1-5 keywords
+\subjclass{F.4.1 Mathematical Logic}
+\keywords{type theory, modal logic, substructural logic, homotopy type theory}
+
+\EventEditors{Dale Miller}
+\EventNoEds{1}
+\EventLongTitle{2nd International Conference on Formal Structures for Computation and Deduction (FSCD 2017)}
+\EventShortTitle{FSCD 2017}
+\EventAcronym{FSCD}
+\EventYear{2017}
+\EventDate{September 3--9, 2017}
+\EventLocation{Oxford, UK}
+\EventLogo{}
+\SeriesVolume{84}
+\ArticleNo{24} 
 
 \maketitle
 
@@ -140,37 +169,272 @@ We define a general framework that abstracts the common features of many
 intuitionistic substructural and modal logics / type theories.  The
 framework is a sequent calculus / normal-form type theory parametrized
 by a \emph{mode theory}, which is used to describe the structure of
-contexts and the structural properties they obey.  
-%% The makes use of
-%% resource annotations, where we pair the context itself, which obeys
-%% standard structural properties, with a term, drawn from the mode theory,
-%% that constrains how the context can be used.
-%% Product types, implications,
-%% and modalities are defined as instances of two general connectives, one
-%% positive and one negative, that manipulate these resource annotations.
-%% We show that specific mode theories can express non-associative,
-%% ordered, linear, affine, relevant, and cartesian products and
-%% implications; monoidal and non-monoidal comonads and adjunctions; strong
-%% and non-strong monads; n-linear variables; bunched implications; and the
-%% adjunctions that arose in our work on homotopy type theory.  
-We prove cut (and identity) admissibility independently of the mode
-theory, obtaining it for many different logics at once. Further, we
-give a general equational theory on derivations / terms that, in
-addition to the usual $\beta\eta$-rules, characterizes when two derivations
-differ only by the placement of structural rules.  Finally, we give an
-equivalent semantic presentation of these ideas, in which a mode theory
-corresponds to a 2-dimensional cartesian multicategory, the
-framework corresponds to another such multicategory with a functor to
-the mode theory, and the logical connectives make this into a bifibration.
-%% The logical connectives have universal properties
-%% relative to this functor, making it into a bifibration.  The sequent
-%% calculus rules and the equational theory on derivations are sound and
-%% complete for this.  
-We show how the framework can be used both to encode existing existing
-logics / type theories and to design new ones.
+contexts and the structural properties they obey.  In this sequent
+calculus, the context itself obeys standard structural properties, while
+a term, drawn from the mode theory, constrains how the context can be
+used.  Product types, implications, and modalities are defined as
+instances of two general connectives, one positive and one negative,
+that manipulate these terms.  Specific mode theories can express a range
+of substructural and modal connectives, including non-associative,
+ordered, linear, affine, relevant, and cartesian products and
+implications; monoidal and non-monoidal functors, (co)monads and
+adjunctions; n-linear variables; and bunched implications.  We prove cut
+(and identity) admissibility independently of the mode theory, obtaining
+it for many different logics at once. Further, we give a general
+equational theory on derivations / terms that, in addition to the usual
+$\beta\eta$-rules, characterizes when two derivations differ only by the
+placement of structural rules.  Additionally, we give an equivalent
+semantic presentation of these ideas, in which a mode theory corresponds
+to a 2-dimensional cartesian multicategory, the framework corresponds to
+another such multicategory with a functor to the mode theory, and the
+logical connectives make this into a bifibration.  Finally, we show how
+the framework can be used both to encode existing existing logics / type
+theories and to design new ones.
 \end{abstract}
 
-\input{intro} 
+%% ----------------------------------------------------------------------
+
+\section{Introduction}
+
+In ordinary intuitionistic logic or $\lambda$-calculus, assumptions or
+variables can go unused (weakening), be used in any order (exchange), be
+used more than once (contraction), and be used in any position in a
+term.  \emph{Substructural} logics, such as linear logic, ordered logic,
+relevant logic, and affine logic, omit some of these structural
+properties of weakening, exchange, and contraction, while \emph{modal
+  logics} place restrictions on where variables may be used---e.g. a
+formula $\Bx{} C$ can only be proved using assumptions of $\Bx{} A$,
+while an assumption of $\Dia{}{A}$ can only be used when the conclusion
+is $\Dia{}{C}$.  Substructural and modal logics have had many
+applications to both functional and logic programming, modeling concepts
+such state, staging, distribution, and concurrency.
+They are also used as \emph{internal languages} of categories, where one
+uses an appropriate logical language to do constructions ``inside'' a
+particular mathematical setting, which often results in shorter
+statements than working ``externally''.  For example, to define a
+function externally in domains, one must first define the underlying
+set-theoretic function, and then prove that it is continuous; when using
+untyped $\lambda$-calculus as an internal language of domains, one
+writes what looks like only the function part, and continuity follows
+from a general theorem about the language itself.  Substructural logics
+extend this idea to various forms of monoidal categories, while modal
+logics describe monads and comonads.  Recently,
+\citet{schreibershulman12cohesive,shulman15realcohesion} proposed using
+modal operators to add a notion of \emph{cohesion} to homotopy type
+theory/univalent foundations~\citep{voevodsky06homotopy,uf13hott-book}.
+Without going into the precise details of this application, the idea is
+to add a triple $\sh{} \la \Flat{} \la \Sharp{}$ of type operators,
+where for example $\Sharp{}$ is a monad (like a modal possibility
+$\Diamond$ or $\bigcirc$), $\Flat{}$ is a comonad (like a modal
+necessity $\Box$), and there is an adjunction structure between them
+($\flat{A} \to B$ is the same as $A \to \Sharp{B}$).  This raised the
+question of how to best add modalities with these properties to type
+theory.
+
+Because other similar applications rely on functors with different
+properties, we would like general tools for going from a semantic
+situation of interest to a well-behaved logic/type theory for
+it---e.g. one with cut admissibility / normalization and identity
+admissibility / $\eta$-expansion.  In previous work~\citep{ls16adjoint},
+we considered the special case of a single-assumption logic, building
+most directly on the adjoint logics of
+\citet{benton94mixed,bentonwadler96adjoint,reed09adjoint}.  Here we
+extend this previous work to the multi-assumption case.  The resulting
+framework is quite general and covers many existing intuitionistic
+substructural and modal connectives: non-associative, ordered, linear,
+affine, relevant, and cartesian products and implications; combinations
+thereof such as bunched logic~\citep{ohearnpym99bunched} and resource
+separation~\citep{atkey04separation}; $n$-linear
+variables~\citep{reed08namessubstructural,abel15modal,mcbride16nuttin};
+the comonadic $\Box$ and linear exponential $!$ and
+subexponentials~\citep{nigammiller09subexponentials,danos+93subexponentials};
+monadic $\Diamond$ and $\bigcirc$ modalities; and adjoint logic $F$ and
+$G$~\citep{benton94mixed,bentonwadler96adjoint,reed09adjoint}, including
+the single-assumption 2-categorical version from our previous
+work~\citep{ls16adjoint}.  A central syntactic result is that cut and
+identity are admissible for our framework itself, and this implies cut
+admissibility for any logic that can be described in the framework,
+including all of the above, as well as any new logics that one designs
+using it.  When we view the derivations in the framework as terms in a
+type theory, this gives an immediate normalization (and
+$\eta$-expansion) result.
+
+At a high level, the framework makes use of the fact that all of the
+above logics / type theories are a restriction on how variables can be
+used in ordinary structural/cartesian proofs.  We express these
+restrictions using a first layer, which is a simple type theory for what
+we will call \emph{modes} and \emph{context descriptors}.  The modes are
+just a collection of base types, which we write as $p,q,r$, while a
+context descriptor $\alpha$ is a term built from variables and
+constants.  The next layer is the main logic.  Each proposition/type is
+assigned a mode, and the basic sequent is \seq{x_1 : A_1, \ldots, x_n :
+  A_n}{\alpha}{C}, where if $A_i$ has mode $p_i$, and $C$ has mode $q$,
+then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$ (we use a sequent
+calculus to concisely describe cut-free derivations/normal forms, but
+everything can be translated to natural deduction in the usual way).  We
+write ${\Gamma}$ for $x_1 : A_1, \ldots, x_n : A_n$, and $\Gamma$ itself
+behaves like an ordinary structural/cartesian context, while the
+substructural and modal aspects are enforced by the \emph{term}
+$\alpha$, which constrains how the resources from $\Gamma$ may be used.
+For example, in linear logic/ordered logic/BI, the context is usually
+taken to be a multiset/list/tree.  We represent this by a pair of an
+ordinary structural context $\Gamma$, together with a term $\alpha$ that
+describes the multiset or list or tree structure, labeled with variables
+from the ordinary context at the leaves.  We pronounce a sequent
+\seq{\Gamma}{\alpha}{A} as ``$\Gamma$ proves $A$ \{along,over,using\}
+$\alpha$''.
+
+For example, if we have a mode $\dsd{n}$, together with a context
+descriptor constant $x : \dsd{n}, y:\dsd{n} \vdash x \odot y : \dsd{n}$,
+then an example sequent \seq{x:A, y:B, z:C, w:D}{(y \odot x) \odot z}{E}
+should be read as saying that we must prove $E$ using the resources $y$
+and $x$ and $z$ (but not $w$) according to the particular tree structure
+${(y \odot x) \odot z}$.  If we say nothing else, the framework will
+treat $\odot$ as describing a non-associative, linear, ordered
+context~\citep{lambek58calculus}: if we have a product-like type $A
+\odot B$ internalizing this context operation,\footnote{We overload
+  binary operations to refer both to context descriptors and
+  propositional connectives, because it is clear from whether it is
+  applied to variables $x,y,z$ or propositions $A,B,C$ which we mean.}
+then we will \emph{not} be able to prove associativity ($(A \odot B)
+\odot C \dashv\vdash A \odot (B \odot C)$) or exchange ($A \odot B
+\vdash B \odot A$) etc.  
+To get from this basic structure to a linear or affine or relevant or
+cartesian system, we provide a way to add structural properties governing
+the context descriptor term $\alpha$.  We analyze structural properties
+as \emph{equations}, or more generally \emph{directed transformations},
+on such terms.  For example, to specify linear logic, we will add a unit
+element $1 : \dsd{n}$ together with equations making $(\odot,1)$ into a
+commutative monoid ($x \odot (y \odot z) = (x \odot y) \odot z$ and 
+$x \odot 1 = x = 1 \odot x$ and 
+$x \odot y = y \odot x$)
+so that the context descriptors ignore associativity and order.  To get
+BI, we add an additional commutative monoid $(\times,\top)$ (with
+weakening and contraction, as discussed below), so that a BI context
+tree $(x:A,y:B);(z:C,w:D)$ can be represented by the ordinary context
+$x:A,y:B,z:C,w:D$ with the term $(x \odot y) \times (z \odot w)$
+describing the tree.  Because the context descriptors are themselves
+ordinary structural/cartesian terms, the same variable can occur more
+than once or not at all.  A descriptor such as $x \odot x$ captures the
+idea that we can use the \emph{same} variable $x$ twice, expressing
+$n$-linear types.  Thus, we can express contraction for a particular
+context descriptor $\odot$ as a transformation $x \spr x \odot x$ (one
+use of $x$ allows two).  Weakening, on the other hand, is represented by
+a transformation $x \spr 1$, which is oriented to allow throwing away an
+allowed use of $x$, but not creating an allowed use from nothing.  We
+refer to these as \emph{structural transformations}, to evoke their use
+in representing the structural properties of object logics that are
+embedded in our framework.  The main sequent $\seq{\Gamma}{\alpha}{A}$
+respects the specified structural properties in the sense that when
+$\alpha = \beta$, we regard $\seq{\Gamma}{\alpha}{A}$ and
+$\seq{\Gamma}{\beta}{A}$ as the same sequent (so a derivation of one is
+a derivation of the other), while when $\alpha \spr
+\beta$, there will be an operation that takes a derivation of
+\seq{\Gamma}{\beta}{A} to a derivation of
+\seq{\Gamma}{\alpha}{A}---i.e. uses of transformations are explicitly
+marked in the term.  
+
+Modal logics will generally involve a mode theory with more than one
+mode.  For example, a context descriptor $x : \dsd{c} \vdash \dsd{f}(x)
+: \dsd{l}$ will generate an adjoint pair of functors between the two
+modes, as in the adjoint syntax for linear logic's
+$!$~\citep{bentonwadler96adjoint} or other modal
+operators~\citep{reed09adjoint}.  Using this, a context descriptor
+$\dsd{f}(x) \odot y$ expresses permission to use $x$ in a cartesian way
+and $y$ in a linear way.  Structural transformations are used to
+describe how these modal operators interact with each other and with the
+products, and for some systems~\citep{ls16adjoint} it is important that
+there can be more than one transformation between a given pair of
+context descriptors.
+
+A guiding principle of the framework is a meta-level notion of
+\emph{structurality over structurality}.  For example, we always have
+\emph{weakening over weakening}: if \seq{\Gamma}{\alpha}{A} then
+\seq{\Gamma,y:B}{\alpha}{A}, where $\alpha$ itself is weakened with $y$.
+This does not prevent encodings of relevant logics: though we might
+weaken a derivation of \seq{\Gamma}{x_1 \odot \ldots \odot x_n}{A}
+(``use $x_1$ through $x_n$'') to a derivation of \seq{\Gamma,y:B}{x_1
+  \odot \ldots \odot x_n}{A}, the (weakened) context descriptor
+does not allow the use of $y$.  Similarly, we have exchange over
+exchange and contraction over contraction.  The \emph{identity-over-identity}
+principle says that we should be able to prove $A$ using exactly an
+assumption $x:A$ ({\seq{\Gamma,x:A}{x}{A}}).  The cut principle says
+that from \seq{\Gamma,x:A}{\beta}{B} and \seq{\Gamma}{\alpha}{A} we get
+{\seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}---the context descriptor for
+the result of the cut is the substitution of the context descriptor used
+to prove $A$ into the one used to prove $B$.  For example, together with
+weakening-over-weakening, this captures the usual cut principle of
+linear logic, which says that cutting $\Gamma,x:A \vdash B$ and $\Delta
+\vdash A$ yields $\Gamma,\Delta \vdash B$: if $\Gamma$ binds
+$x_1,\ldots,x_n$ and $\Delta$ binds $y_1,\ldots,y_n$, then we will
+represent the two derivations to be cut together by sequents with $\beta
+= x_1 \odot \ldots \odot x_n \odot x$ and $\alpha = y_1 \odot \ldots
+\odot y_n$, so $\beta[\alpha/x] = x_1 \odot \ldots \odot x_n \odot y_1
+\odot \ldots \odot y_n$ correctly deletes $x$ and replaces it with the
+variables from $\Delta$.  In more subtle situations such as BI, the
+substitution will insert the resources used to prove the cut formula in
+the correct place in the tree.
+
+The framework has two main logical connectives / type constructors.  The
+first, \F{\alpha}{\Delta}, generalizes the \dsd{F} of adjoint logic and
+the multiplicative products (e.g. $\otimes$ of linear logic).  The
+second, \U{x.\alpha}{\Delta}{A}, generalizes the $\dsd{G}/\dsd{U}$ of
+adjoint logic and implication (e.g. $A \lolli B$ in linear logic).  Here
+$\Delta$ is a context of assumptions $x_i:A_i$, and trivializing the
+context descriptors (i.e. adding an equation $\alpha = \beta$ for all
+$\alpha$ and $\beta$) degenerates $\F{\alpha}{\Delta}$ into the ordinary
+intuitionistic product $A_1 \times \ldots \times A_n$, while
+\U{x.\alpha}{\Delta}{A} becomes $A_1 \to \ldots \to A_n \to A$.  
+As one would expect, \dsd{F} is left-invertible and \dsd{U} is right-invertible.
+In linear logic terms, our \dsd{F} and \dsd{U} cover both the
+multiplicatives and exponentials; additives can be added separately by
+the usual rules.  We discuss many examples of \emph{logical adequacy}
+theorems, showing that a sequent can be proved in a standard sequent
+calculus for a logic iff its embedding using these connectives can be
+proved in the framework.
+
+Being a very general theory, our framework treats the object-logic
+structural properties in a general but na\"ive way, allowing an
+arbitrary structural transformation to be applied at the non-invertible
+rules for $\dsd{F}$ and $\dsd{U}$ and at the leaves of a derivation.
+For specific embedded logics, there is often a more refined discipline
+that suffices---e.g. for cartesian logic, always contract all
+assumptions in all premises, and only weaken at the leaves.  We view our
+framework as a tool for bridging the gap between an intended semantic
+situation (such as the cohesion example mentioned, ``a comonad and a
+monad which are themselves adjoint'') and a proof theory: the framework
+gives \emph{some} proof theory for the semantics, and the placement of
+structural rules can then be optimized purely in syntax.  To support
+this mode of use, we give an equational theory on derivations/terms
+that identifies different placements of the same structural rules.  This
+can be used to prove correctness of such optimizations not just at the
+level of provability, but also identity of derivations---which matters
+for our intended applications to internal languages.  We discuss some
+preliminary work on \emph{equational adequacy}, which extends the
+logical correspondence to isomorphisms of definitional-equality-classes
+of derivations.
+
+Semantically, the logic corresponds to a functor between
+\emph{2-dimensional cartesian multicategories} which is a fibration in
+various senses.  Multicategories are a generalization of categories
+which allow more than one object in the domain, and cartesianness means
+that the multiple domain objects are treated structurally.  The
+2-dimensionality supplies a notion of morphism between (multi)morphisms.
+A \emph{mode theory} specifying context descriptors and structural
+properties is analyzed as a cartesian 2-multicategory, with the
+descriptors as 1-cells and the structural properties as 2-cells.  The
+functor relates the sequent judgement to the mode theory, specifying the
+mode of each proposition and the context descriptor of a sequent.  The
+fibration conditions (similar to
+\citep{hermida02fibrations,hormann15multicategories}) give respect for
+the structural transformations and the presence of \dsd{F} and \dsd{U}
+types.  We prove that the sequent calculus and the equational theory are
+sound and complete for this semantics: the syntax can be interpreted in
+any bifibration, and itself determines one.  This semantics shows that
+an interesting class of type theories can be identified with a class of
+more mathematical objects, fibrations of cartesian 2-multicategories,
+thus providing some progress towards characterizing substructural
+and modal type theories in mathematical terms.
 
 In Section~\ref{sec:syntax}, we present the syntax of the framework.  In
 Section~\ref{sec:exampleencodings}, we discuss how a number of logics
@@ -180,23 +444,1241 @@ Section~\ref{sec:semantics}, we discuss the framework's categorical
 semantics.  Proofs (of cut and identity admissibility, soundness and
 completeness of the semantics, and adequacy of encodings) and additional
 examples (subexponentials, modal S4 $\Box$, and strong/$\Box$-strong
-monads) are available in an extended version of this paper, from
-\url{http://dlicata.web.wesleyan.edu/pubs.html}.
+monads) are available in an extended version of this paper~\citep{lsr17multi-extended}.
 
-\input{syntax}
-\input{synprop-short}
-\input{examples-short}
-\input{equations-short}
-\input{semantics-very-short}
-%% \input{adequacy-appendix}
-%% \input{adequacy-eq}
-\input{conclusion-short}
+%% ----------------------------------------------------------------------
 
-\setlength{\bibsep}{-2pt} %% dirty trick: make this negative
-{ \small
-\linespread{0.70}
-\bibliographystyle{abbrvnat}
-\bibliography{../drl-common/cs}
+\newcommand\wfsp[4]{\ensuremath{#1 \vdash #2 \spr_{#4} #3}}
+
+\section{Sequent Calculus}
+\label{sec:syntax}
+
+\newcommand\wfsig[1]{\ensuremath{#1 \, \dsd{sig}}}
+\newcommand\deqtms[5]{\ensuremath{#1 \vdash_{#2} #3 \deq #4 : #5}}
+\newcommand\wfsps[5]{\ensuremath{#1 \vdash_{#2} #3 \spr_{#5} #4}}
+
+\subsection{Mode Theories}
+
+\begin{figure}
+\begin{small}
+\[
+\begin{array}{l}
+\framebox{Signatures \wfsig{\Sigma}}
+\qquad
+\infer{\wfsig{\cdot}}
+      {}
+\qquad
+\infer{\wfsig{(\Sigma,p \, \dsd{mode})}}
+      {\wfsig{\Sigma}}
+\qquad
+\infer{\wfsig{(\Sigma,c : \, p_1,\ldots,p_n \to q)}}
+      {\wfsig{\Sigma} &
+        (p_1 \, \dsd{mode},\ldots,p_n \, \dsd{mode},q \, \dsd{mode}) \in \Sigma
+      }
+\\ \\
+\infer{\wfsig{(\Sigma, (\alpha \deq \alpha' : \psi \to p))}}
+      {\wfsig{\Sigma} &
+        \psi \dsd{ctx}_\Sigma & 
+        p \, \dsd{mode} \in \Sigma &
+        \oftps{\psi}{\Sigma}{\alpha}{p} & 
+        \oftps{\psi}{\Sigma}{\alpha'}{p} 
+      }
+\qquad
+\infer{\wfsig{(\Sigma, (\alpha \spr \alpha' : \psi \to p))}}
+      {\wfsig{\Sigma} &
+        \psi \dsd{ctx}_\Sigma & 
+        p \, \dsd{mode} \in \Sigma &
+        \oftps{\psi}{\Sigma}{\alpha}{p} & 
+        \oftps{\psi}{\Sigma}{\alpha'}{p} 
+      }
+\\\\
+\framebox{Context descriptors \oftps{\psi}{\Sigma}{\alpha}{p},
+  where $\psi \, \dsd{ctx}_\Sigma$ and $p \, \dsd{mode} \in \Sigma$}
+\qquad
+\infer{\oftps{\psi}{\Sigma}{x}{p}}
+      {x:p \in \psi}
+\quad
+\infer{\oftps{\psi}{\Sigma}{\dsd{c}(\alpha_1,\ldots,\alpha_n)}{q}}
+      {(\dsd{c} : p_1,\ldots,p_n \to q) \in \Sigma &
+       \oftps{\psi}{\Sigma}{\alpha_i}{p_i}
+      }
+\\\\
+\framebox{Mode Substitutions \oftps{\psi}{\Sigma}{\gamma}{\psi'}, where
+  $\psi \, \dsd{ctx}_\Sigma$ and $\psi' \, \dsd{ctx}_\Sigma$ }
+\qquad
+\infer{\oftps{\psi}{\Sigma}{\cdot}{\cdot}}{}
+\qquad
+\infer{\oftps{\psi}{\Sigma}{\gamma,\alpha/x}{\psi',x:p}}
+      {\oftps{\psi}{\Sigma}{\gamma}{\psi'} &
+        \oftps{\psi}{\Sigma}{\alpha}{p}}
+\\\\
+\framebox{Structural transformations \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p},
+where \oftps{\psi}{\Sigma}{\alpha}{p}
+and \oftps{\psi}{\Sigma}{\alpha'}{p}
 }
+\qquad
+\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha}{p}}{}
+\\\\
+\infer{\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_3}{p}}
+      {\wfsps{\psi}{\Sigma}{\alpha_1}{\alpha_2}{p} &
+       \wfsps{\psi}{\Sigma}{\alpha_2}{\alpha_3}{p} &
+      }
+\qquad
+\infer{\wfsps{\psi,\psi'}{\Sigma}{\subst{\beta}{\alpha}{x}}{\subst{\beta'}{\alpha'}{x}}{q}}
+      {\wfsps{\psi,x:p,\psi'}{\Sigma}{\beta}{\beta'}{q} &
+       \wfsps{\psi,\psi'}{\Sigma}{\alpha}{\alpha'}{p}}
+\qquad
+\infer{\wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p}}
+      {(\alpha \spr \alpha' : \psi \to p) \in \Sigma}
+\end{array}
+\]
+\end{small}
+\caption{Syntax for mode theories}
+\label{fig:2multicategory}
+\end{figure}
+
+The first layer of our framework is a type theory whose types we will call
+\emph{modes}, and whose terms we will call \emph{context descriptors} or
+\emph{mode morphisms}.  The only modes are atomic/base types $p$.  A
+term is either a variable (bound in a context $\psi$) or a typed $n$-ary
+constant (function symbol) \dsd{c} applied to terms of the appropriate
+types.
+
+This is formalized in the notion of signature, or \emph{mode theory},
+defined in Figure~\ref{fig:2multicategory}.  The judgement $\wfsig
+\Sigma$ means that $\Sigma$ is a well-formed signature.  The top line
+says that a signature is either empty, or a signature extended with a
+new mode declaration, or a signature extended with a typed
+constant/function symbol, all of whose modes are declared previously in
+the signature.  The notation $p_1,\ldots,p_n \to q$ is not itself a
+mode, but notation for declaring a function symbol in the signature (it
+cannot occur on the right-hand side of a typing judgement).  For
+example, the type and term constructors for a monoid $(\odot,1)$ are
+represented by a signature $\dsd{p} \, \dsd{mode}, \dsd{\odot} :
+(\dsd{p},\dsd{p} \to \dsd{p}), 1 : (\to \dsd{p})$.
+
+We elide the rules for the judgement $\psi \, \dsd{ctx}_\Sigma$, which
+simply says that each mode used in the context of variable declarations
+$\psi$ is declared in $\Sigma$.  The judgement
+$\oftps{\psi}{\Sigma}{\alpha}{p}$ defines well-typedness of context
+descriptor terms, which are either a variable declared in the context,
+or a constant declared in the signature applied to arguments of the
+correct types.  The judgement $\oftps{\psi}{\Sigma}{\gamma}{\psi'}$
+defines a substitution as a tuple of terms in the standard way.  The
+context $\psi$ in these judgements enjoys the cartesian structural
+properties (associativity, unit, weakening, exchange, contraction).
+Simultaneous substitution into terms and substitutions is defined as
+usual (e.g.  $x[\gamma,\alpha/x] := \alpha$ and
+$\dsd{c}(\vec{\alpha_i})[\gamma] := \dsd{c}(\alpha_i[\gamma])$).
+
+Returning to the top of the figure, the final two rules of the judgement
+$\wfsig{\Sigma}$ permit two additional forms of signature declaration.
+The first of these extends a signature with an equational axiom between
+two terms $\alpha$ and $\alpha'$ that have the same mode $p$, in the
+same context $\psi$, relative to the prior signature $\Sigma$.  These
+equational axioms will be used to encode reversible object language
+structural properties, such as associativity, commutativity, and unit
+laws.  For example, to specify the right unit law for the above monoid
+$(\odot,1)$, we add an axiom $(x \odot 1 \deq x : (x : \dsd{p}) \to
+\dsd{p})$ to the signature, which can be read as ``$x \odot 1$ is equal
+to $x$ as a morphism from $(x : \dsd{p})$ to \dsd{p}''.  The judgement
+\deqtms{\psi}{\Sigma}{\alpha}{\alpha'}{p} (omitted from the figure; the
+rules are the same as for $\spr$ plus symmetry) is the least congruence
+closed under these axioms.
+
+The second of these extends a signature with a directed structural
+transformation axiom between two terms $\alpha$ and $\alpha'$ that have
+the same mode $p$, in the same context $\psi$, relative to the prior
+signature $\Sigma$.  As discussed above, these structural
+transformations will be used to represent object language structural
+properties such as weakening and contraction that are not invertible.
+The judgement \wfsps{\psi}{\Sigma}{\alpha}{\alpha'}{p} defines these
+transformations: it is the least precongruence (preorder compatible with
+the term formers) closed under the axioms specified in the signature
+$\Sigma$.  For example, to say that the above monoid $(\odot,1)$ is
+affine, we add in $\Sigma$ a transformation axiom $(x \spr 1 : (x:\dsd{p}) \to
+{\dsd{p}})$.
+
+Because context descriptors $\alpha$ and their equality $\alpha_1 \deq
+\alpha_2$ are defined prior to the subsequent judgements, we suppress
+this equality by using $\alpha$ to refer to a term-modulo-\deq---that
+is, we assume a metatheory with quotient sets/types, and use meta-level
+equality for object-level equality, as recently advocated by
+\citet{altenkirchkaposi16qit}.  For example, because the judgement
+\wfsp{\psi}{\alpha}{\beta}{p} is indexed by equivalence classes of
+context descriptions, the reflexivity rule above implicitly means
+$\alpha \deq \beta$ implies $\alpha \spr \beta$.  In examples, we will
+notate a signature declaration introducing a term constant/function
+symbol by showing the function symbol applied to variables, rather than
+writing the formal $\dsd{c} : p_1,\ldots,p_n \to q$. For example, we
+write $x : \dsd{p}, y : \dsd{p} \vdash x \odot y : \dsd{p}$ for $\odot :
+\dsd{p},\dsd{p} \to \dsd{p}$.  We also suppress the signature $\Sigma$.
+
+\subsection{Sequent Calculus Rules}
+
+\begin{figure}
+\begin{small}
+\[
+\begin{array}{l}
+%% \begin{array}{llll}
+%% \text{Types} & A & ::= & P \mid \F{\alpha}{\Delta} \mid \U{\alpha}{\Delta}{A} \\
+%% \end{array}
+%% \\ \\
+\framebox{Types $A,B,C$ \quad \wftype{A}{p}}
+\qquad
+\infer{\wftype{P}{p}}{}
+\qquad
+\infer{\wftype{\F{\alpha}{\Delta}}{q}}
+      {\oftp{\psi}{\alpha}{q} &
+        \wfctx{\Delta}{\psi}}
+\qquad
+\infer{\wftype{\U{x.\alpha}{\Delta}{A}}{q}}
+      {\oftp{\psi,x:q}{\alpha}{p} &
+        \wfctx{\Delta}{\psi} &
+        \wftype{A}{p}
+      }
+\\ \\
+\framebox{Contexts $\Gamma,\Delta$ \quad \wfctx{\Gamma}{\psi}}
+\qquad
+\infer{\wfctx{\cdot}{\cdot}}{}
+\qquad
+\infer{\wfctx{\Gamma,x:A}{\psi,x:p}}
+      {\wfctx{\Gamma}{\psi} &
+        \wftype{A}{p}}
+\\ \\
+\framebox{\seq{\Gamma}{\alpha}{A} where $\wfctx{\Gamma}{\psi}$ and $\wftype{A}{q}$ and  $\oftp{\psi}{\alpha}{q}$}
+\quad
+\infer[\FL]{\seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',\Delta}{\subst \beta {\alpha}{x}}{C}}
+\quad
+\infer[\FR]{\seq{\Gamma}{\beta}{\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
+        \beta \spr \tsubst{\alpha}{\gamma} &
+        \seq{\Gamma}{\gamma}{\Delta} 
+      }
+%% \infer{\seq{\Gamma}{\beta}{C}}
+%%       {{x}:{\F{\alpha}{\Delta}} \in \Gamma & 
+%%         \oftp{\modeof{\Gamma},{x'} : {\modeof{\F{\alpha}{\Delta}}}}{\beta'}{\modeof{C}} &
+%%         \beta \deq \tsubst{\beta'}{x/x'} &
+%%         \seq{\Gamma,\Delta}{\subst {\beta'} {\alpha}{x'}}{C}}
+\\ \\
+\infer[\UL]{\seq{\Gamma}{\beta}{C}}
+      {\begin{array}{llll}
+          x:\U{x.\alpha}{\Delta}{A} \in \Gamma &
+          \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+          \seq{\Gamma}{\gamma}{\Delta} &
+          \seq{\Gamma,\tptm{z}{A}}{\beta'}{C}
+       \end{array}
+      }
+\quad
+\infer[\UR]{\seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}}}
+      {\seq{\Gamma,\Delta}{\subst{\alpha}{\beta}{x}}{A}}
+\quad
+\infer[\dsd{v}]{\seq{\Gamma}{\beta}{P}}
+      {x:P \in \Gamma & \beta \spr x}
+\\ \\
+\framebox{\seq{\Gamma}{\gamma}{\Delta} where $\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and  $\oftp{\psi}{\gamma}{\psi'}$}
+\qquad
+\infer[\cdot]{\seq{\Gamma}{\cdot}{\cdot}}
+      {}
+\qquad
+\infer[\_,\_]{\seq{\Gamma}{\gamma,\alpha/x}{\Delta,x:A}}
+      {\seq{\Gamma}{\gamma}{\Delta} &
+       \seq{\Gamma}{\alpha}{A}
+      }
+\end{array}
+\]    
+\caption{Sequent Calculus}
+\label{fig:sequent}
+\hrule
+\end{small}
+\end{figure}
+
+For a fixed mode theory $\Sigma$, we define a second layer of judgements
+in Figure~\ref{fig:sequent}.  The first judgement assigns each
+proposition/type $A$ a mode $p$.  Encodings of non-modal logics will
+generally only make use of one mode, while modal logics use different
+modes to represent different notions of truth, such as the linear and
+cartesian categories in the adjoint decomposition of linear
+logic~\citep{benton94mixed,bentonwadler96adjoint} and the true/valid/lax
+judgements in modal logic~\citep{pfenningdavies}.  The next judgement
+assigns each context $\Gamma$ a mode context $\psi$.  Formally, we think
+of contexts as ordered: we do not regard $x:A,y:B$ and $y:B,x:A$ as the
+same context, though we will have an admissible exchange rule that
+passes between derivations in one and the other.
+
+The sequent judgement \seq{\Gamma}{\alpha}{A} relates a context
+$\wfctx{\Gamma}{\psi}$ and a type $\wftype{A}{p}$ and context descriptor
+\oftp{\psi}{\alpha}{p}, while the substitution judgement \seq{\Gamma}{\gamma}{\Delta} relates
+$\wfctx{\Gamma}{\psi}$ and $\wfctx{\Delta}{\psi'}$ and
+$\oftp{\psi}{\gamma}{\psi'}$. Because $\wfctx{\Gamma}{\psi}$ means that
+each variable in $\Gamma$ is in $\psi$, where $x : A_i \in \Gamma$
+implies $x : p_i$ in $\psi$ with \wftype{A_i}{p_i}, we think of $\Gamma$
+as binding variable names both in $\alpha$ and for use in the
+derivation.
+
+We now explain the rules for the sequent calculus; the reader may wish
+to refer to the examples in Section~\ref{sec:exampleencodings} in
+parallel with this abstract description.  We assume atomic propositions
+$P$ are given a specified mode $p$, and state identity as a primitive
+rule only for them with the \dsd{v} rule.  This says that
+\seq{\Gamma,x:P}{x}{P}, and additionally composes with a structural
+transformation $\beta \spr x$.  Using a structural property at a leaf of
+a derivation is common in e.g. affine logic, where the derivation of
+$\beta \spr x$ would use weakening to forget any additional resources
+besides $x$.
+
+Next, we consider the \F{\alpha}{\Delta} type, which ``internalizes''
+the context operation $\alpha$ as a type/proposition.  Syntactically, we
+view the context $\Delta = x_1:A_1,\ldots,x_n:A_n$ where
+\wftype{A_i}{p_i} as binding the variables $x_i:p_i$ in $\alpha$, so for
+example \F{\alpha}{x:A,y:B} and \F{\alpha[x \leftrightarrow
+    x']}{x':A,y:B} are $\alpha$-equivalent types (in de Bruijn form we
+would write \F{\alpha}{A_1,\ldots,A_n} and use indices in $\alpha$).
+The type formation rule says that \dsd{F} moves covariantly along a mode
+morphism $\alpha$, representing a ``product'' (in a loose sense) of the
+types in $\Delta$ structured according to the context descriptor
+$\alpha$. A typical binary instance of \dsd{F} is a multiplicative
+product ($A \otimes B$ in linear logic), which, given a binary context
+descriptor $\odot$ as in the introduction, is written \F{x \odot
+  y}{x:A,y:B}.  A typical nullary instance is a unit (1 in linear
+logic), written \F{1}{}.  A typical unary instance is the \dsd{F}
+connective of adjoint logic, which for a unary context descriptor
+constant $\dsd{f} : \dsd{p} \to \dsd{q}$ is written \F{\dsd{f}(x)}{x:A}.
+We sometimes write \F{\dsd{f}}{A} in this case, eliding the variable
+name, and similarly for a unary \dsd{U}.
+
+The rules for our \dsd{F} connective capture a pattern common to all of
+these examples.  The left $\FL$ rule says that \F{\alpha}{\Delta}
+``decays'' into $\Delta$, but \emph{structuring the uses of resources in
+  $\Delta$ with $\alpha$ by the substitution \subst{\beta}{\alpha}{x}}.
+We assume that $\Delta$ is $\alpha$-renamed to avoid collision with
+$\Gamma$ (the proof term here is a ``\dsd{split}'' that binds
+variables for each position in $\Delta$).  The placement of $\Delta$ at
+the right of the context is arbitrary (because we have
+exchange-over-exchange), but we follow the convention that new variables
+go on the right to emphasize that $\Gamma$ behaves mostly as in ordinary
+cartesian logic.  The right \FR\/ rule says that you must rewrite (using
+structural transformations) the context descriptor to have an $\alpha$
+at the outside, with a mode substitution $\gamma$ that divides the
+existing resources up between the positions in $\Delta$, and then prove
+each formula in $\Delta$ using the specified resources.  We leave the
+typing of $\gamma$ implicit, though there is officially a requirement
+$\oftp{\psi}{\gamma}{\psi'}$ where $\wfctx{\Gamma}{\psi}$ and
+$\wfctx{\Delta}{\psi'}$, as required for the second premise to be a
+well-formed sequent.  Another way to understand this rule is to begin
+with the ``axiomatic \FR'' instance 
+$\FR^* :: {\seq{\Delta}{\alpha}{\F{\alpha}{\Delta}}}{}$
+which says that there is a map from $\Delta$ to \F{\alpha}{\Delta} along
+$\alpha$.  Then, in the same way that a typical right rule for
+coproducts builds a precomposition into an ``axiomatic injection'' such
+as $\dsd{inl} :: A \vdash A + B$, the \FR\/ rule builds a precomposition
+with $\seq{\Gamma}{\gamma}{\Delta}$ and then an application of a
+structural rule $\beta \spr \alpha[\gamma]$ into the ``axiomatic''
+version, in order to make cut and respect for transformations
+admissible.
+
+Next, we turn to $\U{x.\alpha}{\Delta}{A}$.  As a first approximation,
+if we ignore the context descriptors and structural properties,
+\U{-}{\Delta}{A} behaves like $\Delta \to A$, and the \UL\/ and \UR\/
+rules are an annotation of the usual structural/cartesian rules for
+implication.  In a formula \U{x.\alpha}{\Delta}{A}, the context
+descriptor $\alpha$ has access to the variables from $\Delta$ as well as
+an extra variable $x$, whose mode is the same as the \emph{overall mode
+  of \U{x.\alpha}{\Delta}{A}}, while the mode of $A$ itself is the mode
+of the conclusion of $\alpha$---in terms of typing, \dsd{U} is
+contravariant where \dsd{F} is covariant.  It is helpful to think of $x$
+as standing for the context that will be used to prove
+\U{x.\alpha}{\Delta}{A}.  For example, a typical function type $A \lolli
+B$ is represented by \U{x.x \otimes y}{y:A}{B}, which says to extend the
+``current context'' $x$ with a resource $y$.  In \UR, the context
+descriptor $\beta$ being used to prove the \dsd{U} is substituted
+\emph{for $x$} in $\alpha$ (dual to \FL, which substituted $\alpha$ into
+$\beta$).  The ``axiomatic'' \UL\/ instance
+$\UL^* :: {\seq{\Delta,x:\U{x.\alpha}{\Delta}{A}}{\alpha}{A}}$
+says that \U{x.\alpha}{\Delta}{A} together with $\Delta$ has a map to
+$A$ along $\alpha$.  (The bound $x$ in $x.\alpha$ subscript is tacitly
+renamed to match the name of the assumption in the context, in the same
+way that the typing rule for $\lambda x.e : \Pi x:A.B$ requires
+coordination between two variables in different scopes).  The full rule
+builds in precomposition with \seq{\Gamma}{\gamma}{\Delta},
+postcomposition with \seq{\Gamma,z:A}{\beta'}{C}, and precomposition
+with $\beta \spr \beta'[\alpha[\gamma]/z]$.
+
+Finally, the rules for substitutions are pointwise.  In examples, we
+will write the components of a substitution directly as multiple
+premises of \FR\/ and \UL\/, rather than packaging them with 
+$\_,\_$ and $\cdot$.
+
+Additives can be added to this sequent calculus; e.g. a mode $p$ has
+sums $\wftype{A_p + B_p}{p}$ if
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma}{\alpha}{A + B}}
+      {\seq{\Gamma}{\alpha}{A}}
+\quad
+\infer{\seq{\Gamma}{\alpha}{A + B}}
+      {\seq{\Gamma}{\alpha}{B}}
+\quad
+\infer{\seq{\Gamma,x:A+B,\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',y:A}{\subst \beta y x}{C} &
+       \seq{\Gamma,\Gamma',z:B}{\subst \beta z x}{C} 
+      }
+%% \infer{\wftype{A \& B}{p}}
+%%       {\wftype{A}{p} &
+%%        \wftype{B}{p}}
+%% \qquad
+%% \infer{\seq{\Gamma,x:A \& B}{\alpha}{C}}
+%%       {\seq{\Gamma,y:A}{\alpha[y/x]}{C}}
+%% \quad
+%% \infer{\seq{\Gamma}{\alpha}{A + B}}
+%%       {\seq{\Gamma}{\alpha}{B}}
+\end{array}
+\]
+
+%% ----------------------------------------------------------------------
+
+\begin{theorem}[Admissibility of cut, identity,
+    structurality-over-structurality, and respect for 2-cells]
+The following rules are admissible:
+\[
+\begin{array}{c}
+\infer{\seq{\Gamma}{\subst{\beta}{\alpha}{x}}{B}}
+    {\seq{\Gamma,x:A}{\beta}{B} &
+     \seq{\Gamma}{\alpha}{A}}
+\quad
+\infer{\seq{\Gamma,x:A}{x}{A}}{}
+\quad
+\infer{\seq{\Gamma,y:A}{\alpha}{C}}
+      {\seq{\Gamma}{\alpha}{C}}
+\quad
+\infer{\seq{\Gamma,y:B,x:A}{\alpha}{C}}
+      {\seq{\Gamma,x:A,y:B}{\alpha}{C}}
+\quad
+\infer{\seq{\Gamma}{\alpha}{A}}
+      {\alpha \spr \beta &
+       \seq{\Gamma}{\beta}{A}}
+%% \quad
+%% \infer{\seq{\Gamma,x:A}{\subst \alpha x y}{C}}
+%%       {\seq{\Gamma,x:A,y:A}{\alpha}{C}}
+\end{array}
+\]
+\end{theorem}
+
+The following general constructions can be helpful for understanding how
+the types behave.  We write $A \vdash B$ for $\seq{x:A}{x}{B}$.  The
+three ``fusion'' rules on the left (which are type isomorphisms, not
+just interprovabilities) relate $\Fsymb$ and $\Usymb$.  Special cases
+include: $A \times (B \times C)$ is isomorphic to a primitive triple
+product $\{x:A,y:B,z:C\}$; currying; and associativity of $n$-ary
+functions ($A_1,\ldots,A_n \to (B_1,\ldots,B_m \to C)$ is isomorphic to
+$A_1,\ldots,A_n,B_1,\ldots,B_m \to C$).  Second, the types respect a
+transformation covariantly for \Fsymb\/ and contravariantly for
+\Usymb\/.
+\begin{theorem}[Fusion and Respect Laws]~\label{lem:fusion-respect}
+\begin{small}
+\[
+\begin{array}{rcl}
+\F{\alpha}{\Delta,x:\F{\beta}{\Delta'},\Delta''} & \dashv \vdash & \F{\subst{\alpha}{\beta}{x}}{\Delta,\Delta',\Delta''}\\
+\U{x.\alpha}{\Delta,y:\F{\beta}{\Delta'},\Delta''}{A} & \dashv \vdash & \U{x.\subst{\alpha}{\beta}{y}}{\Delta,\Delta',\Delta''}{A}\\
+\U{x.\alpha}{\Delta}{\U{y.\beta}{\Delta'}{A}} & \dashv \vdash & \U{x.\subst{\beta}{\alpha}{y}}{\Delta,\Delta'}{A}\\
+\end{array}
+\qquad
+\begin{array}{rcll}
+\F{\alpha}{\Delta} & \vdash & \F{\beta}{\Delta} & \text { if } \alpha \spr \beta \\
+\U{x.\beta}{\Delta}{A} & \vdash & \U{x.\alpha}{\Delta}{A} & \text { if } \alpha \spr \beta \\
+\end{array}
+\]
+\end{small}
+\end{theorem}
+
+%% ----------------------------------------------------------------------
+
+\newcommand\truej[1]{#1 \,\, \dsd{true}}
+\newcommand\possj[1]{#1 \,\, \dsd{poss}}
+\newcommand\validj[1]{#1 \,\, \dsd{valid}}
+\newcommand\crispj[1]{#1 \,\, \dsd{crisp}}
+\newcommand\cohesivej[1]{#1 \,\, \dsd{coh}}
+
+\section{Examples}
+\label{sec:exampleencodings}
+
+\subsection{Products and Implications}
+
+First, we show how to encode substructural products and implications
+with various structural properties.  A mode theory with one mode \dsd{m}
+and a constant \oftp{x : \dsd{m}, y : \dsd{m}}{x \odot y}{\dsd{m}}
+specifies a completely astructural context (no weakening, exchange,
+contraction, associativity), as in non-associative Lambek
+calculus~\citep{lambek58calculus}.  To pass to \emph{ordered logic}
+(associativity and unit laws but none of exchange, weakening, and
+contraction), we add a constant $1 : \dsd{m}$ and equational axioms $x
+\odot (y \odot z) \deq (x \odot y) \odot z$ and $x \odot 1 \deq x \deq 1
+\odot x$---i.e. $(\odot,1)$ is a monoid.  To get linear logic, we
+additionally add commutativity $x \odot y \deq y \odot x$.  As a first
+example of using the sequent calculus, we show how commutativity of
+$\odot$ in the mode theory for linear logic generates commutativity of
+the corresponding $A \otimes B$ type, which is represented by $\F{x
+  \odot y}{x:A,y:B}$:
+\begin{small}
+\[
+\infer[\FL]
+      {\seq{q:\F{x\odot y}{x:A,y:B}}{q}{\F{z\odot w}{z:B,w:A}}}
+      {\infer[\FR]{\seq{x:A,y:B}{x \odot y}{\F{z\odot w}{z:B,w:A}}}
+        {
+            x \odot y \spr (z \odot w) [y/z,x/w] &
+            \seq{x:A,y:B}{y}{B} &
+            \seq{x:A,y:B}{x}{A} 
+      }}
+\]
+\end{small}%
+First, we use \FL\/ to split the product type on the left up, obtaining
+permission to use its pieces by substituting $(x \odot y)$ for the
+variable $q$ we began with.  Next, to use \FR\/, we must transform the
+current context descriptor $x \odot y$ into a substitution instance of
+the one from the type $z \odot w$---dividing our resources in the form
+dictated by the type.  We take $y/z,x/w$, which requires a
+transformation $x \odot y \spr y \odot x$, which is given by reflexivity
+because of the commutativity axiom in the mode theory.  Then we can
+prove each of $A$ and $B$ by identity, because we have the correct
+resources in each branch.  In the mode theory for ordered logic, without
+commutativity, the only possible division is $x/z,y/w$, and with
+permission only to use $x$ the first premise and $y$ in the second, the
+derivation fails.
+
+Returning to the mode theory of a non-symmetric $\odot$, we show how the
+two implications of ordered logic are modeled by \Usymb-types; the
+expected rules are
+\begin{small}
+\[
+\begin{array}{l}
+\infer{\seql{\Gamma}{o}{ A \rightharpoonup B}}
+      {\seql{\Gamma,A}{o}B}
+\qquad
+\infer{\seql{\Gamma,A \rightharpoonup B,\Delta,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+       \seql{\Gamma,B,\Gamma'}{o}{C}
+      }
+\qquad
+\infer{\seql{\Gamma}{o}{A \leftharpoonup B}}
+      {\seql{A,\Gamma}{o}{B}}
+\qquad
+\infer{\seql{\Gamma,\Delta,A \leftharpoonup B,\Gamma'}{o}{C}}
+      {\seql{\Delta}{o}{A} &
+        \seql{\Gamma,B,\Gamma'}{o}{C}
+      }
+\end{array}
+\]
+\end{small}%
+We represent these by the \Usymb-types $A \rightharpoonup B := \U{c.c
+  \odot x}{x:A}{B}$ and $A \leftharpoonup B := \U{c.x \odot c}{x:A}{B}$.
+The \UL\/ and \UR\/ rules specialize as follows:
+\begin{small}
+\[
+\infer{\seq{\Gamma}{\beta}{\U{c.c \odot x}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{\beta \odot x}{B}}
+\qquad
+\infer{\seq{\Gamma} {\beta} {C}}
+      {\begin{array}{l}
+          c:\U{c.c \odot x}{x:A}{B} \in \Gamma \\
+          \beta \spr \beta'[c \odot \alpha/z] \\
+          \seq{\Gamma}{\alpha}{A} \\
+          \seq{\Gamma,z:A}{\beta'}{C}
+        \end{array}
+      }
+\qquad
+\infer{\seq{\Gamma}{\beta}{\U{c.x \odot c}{x:A}{B}}}
+      {\seq{\Gamma,x:A}{x \odot \beta}{B}}
+\qquad
+\infer{\seq{\Gamma} {\beta} {C}}
+      {\begin{array}{l}
+          c:\U{c.x \odot c}{x:A}{B} \in \Gamma \\
+          \beta \spr \beta'[\alpha \odot c/z] \\
+          \seq{\Gamma}{\alpha}{A} \\
+          \seq{\Gamma,z:A}{\beta'}{C}
+       \end{array}
+      }
+\]
+\end{small}%
+The \UR\, instances put $x$ on the left or right of the current context
+descriptor $\beta$, by the substitution $\beta/c$ in \UR.  Consider the
+left rule for $\rightharpoonup$/\U{c.c \odot x}{x:A}{B}, and suppose
+that the $\beta$ in the conclusion is of the form $x_1 \odot \ldots c
+\ldots \odot x_n$ for distinct variables $x_i$.  Because the only
+structural transformations are the associativity and unit equations, the
+transformation must reassociate $\beta$ as $\beta_1 \odot (c \odot
+\alpha) \odot \beta_2$, with $\beta' = \beta_1 \odot z \odot \beta_2$,
+for some $\beta_1$ and $\beta_2$.  Here $\alpha$ plays the role of
+$\Delta$ in the ordered logic rule---the resources used to prove $A$,
+which occur to the right of the implication being eliminated.  Reading
+the substitution backwards, the resources $\beta'$ used for the
+continuation are ``$\beta$ with $c \odot \alpha$ replaced by the result
+of the implication,'' as desired.  While $c$ and any variables used in
+$\alpha$ are still in $\Gamma$, permission to use them has been removed
+from $\beta'$---and there is no way to restore such permissions in this
+mode theory.  The rule for $\leftharpoonup$ is the same, but with
+$\alpha$ on the opposite side of $c$.  For the linear logic mode theory,
+\U{c.c \odot x}{x:A}{B} and \U{c.x \odot c}{x:A}{B} are equal types
+(because commutativity is an equation, and types are parametrized by
+equivalence-classes of context descriptors), and both represent $A
+\lolli B$.
+
+Weakening (affine logic) is modeled by adding a directed structural
+transformation $\dsd{w} :: x \spr 1$, while contraction (relevant logic)
+is modeled by $\dsd{c} :: x \spr x \odot x$.  These transformations in
+the mode theory induce sequents $A \odot B \vdash A$ and $A \vdash A \odot A$:
+\begin{small}
+\[
+\infer[\FL]{\seq{z : \F{x \odot y}{x:A,y:B}}{z}{A}}
+           {
+             \infer{\seq{x:A,y:B}{x \odot y}{A}}
+             {\infer{x \odot y \spr x \odot 1 \deq x}
+                    {w :: y \spr 1}
+               &
+               \infer{\seq{x:A,y:B}{x}{A}}{}
+           }}
+\qquad
+\infer[\FR]{\seq{z : A}{z}{\F{x \odot y}{x:A,y:A}}}
+           {c :: z \spr (x \odot y)[z/x,z/y] &
+            \infer{\seq{z:A}{z}{A}}{}
+           }
+\]
+\end{small}%
+If we have both $\dsd{w} :: x \spr 1$ and $\dsd{c} :: x \spr x \odot x$
+(with some equations relating them), then $x \odot y$ is a cartesian
+product in the mode theory, and consequently $A \odot B$ will behave
+like a cartesian product type, and $\U{c.c \otimes x}{x:A}{B}$ like the
+usual structural $A \to B$.  We refer to this mode theory as an
+\emph{cartesian monoid} and write $(\times,\top)$ for it.
+
+These encodings are adequate in the following sense:
+\begin{theorem}[Logical Adequacy for Products and Implications]
+Write $A^*$ for the encoding of a type as above and extend this
+pointwise to contexts $\Gamma^*$.  Further, define
+$\vars{x_1:A_1,\ldots,x_n:A_n} = x_1 \odot \ldots \odot x_n$.  Then
+$\seql{\Gamma}{}{A}$ in the standard sequent calculus iff
+$\seq{\Gamma^*}{\vars{\Gamma}}{A^*}$.
+\end{theorem}
+\begin{proof}
+Proofs for ordered logic (products), affine logic, and cartesian logic
+are in the extended version. Encoding an object-language derivation is
+straightforward, because the mode theory is chosen to make each rule
+derivable.  The back-translation from the framework relies on
+cut-freeness (so that we only need to back-translate normal forms), and
+a lemma that, for these mode theories, left-rules on variables that are
+in the framework context $\Gamma$ but do not occur in the context
+descriptor $\alpha$ can be strengthened away.
+\end{proof}
+
+This approach extends to contexts with more than one type of tree node,
+as in bunched implication~\citep{ohearnpym99bunched}, which has two
+context-forming operations $\Gamma,\Gamma'$ and $\Gamma;\Gamma'$, along
+with corresponding products and implications.  Both are associative,
+unital, and commutative, but $;$ has weakening and contraction while $,$
+does not.  A context is represented by a tree such as $(x:A, y:B);(z :
+C, w : D)$ (considered modulo the laws), and the notation
+$\Gamma[\Delta]$ is used to refer to a tree with a hole $\Gamma[-]$ that
+has $\Delta$ as a subtree at the hole.  In sequent calculus style, the
+rules for the product and implication corresponding to $,$ are
+\begin{small}
+\[
+\begin{array}{l}
+\infer{\Gamma[A * B] \vdash C}
+      {\Gamma[A , B] \vdash C}
+\quad
+\infer{\Gamma,\Delta \vdash A * B}
+      {\Gamma \vdash A &
+       \Delta \vdash B}
+\quad
+\infer{\Gamma \vdash A \magicwand B}
+      {\Gamma, A \vdash B}
+\quad
+\infer{\Gamma[A \magicwand B, \Delta] \vdash C}
+      {\Delta \vdash A &
+       \Gamma[B] \vdash C}
+\end{array}
+\]
+\end{small}%
+We model BI by a mode \dsd{m} with both a commutative monoid $(*,I)$ and
+a cartesian monoid $(\times,\top)$.  We define the BI products and
+implications using the monoids as above: $A * B := \F{x * y}{x : A, y :
+  B}$ and $A \times B := \F{x \times y}{x:A,y:B}$ and $A \magicwand B :=
+\U{c.c * x}{x : A}{B}$ and $A \to B := \U{c.c \times x}{x : A}{B}$.  A
+context descriptor such as $(x \times y) * (z \times w)$ captures the
+``bunched'' structure of a BI context, and substitution for a variable
+models the hole-filling operation $\Gamma[\Delta]$.  The derived left
+rules for $*$ and $\magicwand$ are
+\begin{small}
+\[
+\infer{\seq{\Gamma,z:A*B,\Gamma'}{\beta}{C}}
+      {\seq{\Gamma,\Gamma',x:A,y:B}{\subst{\beta}{x * y}{z}}{C}}
+\qquad
+\infer{\seq{\Gamma}{\beta}{C}}
+      {
+        c : A \magicwand B \in \Gamma &
+        \beta \spr \beta'[ c * \alpha / z] & 
+        \seq{\Gamma}{\alpha}{A} &
+        \seq{\Gamma,z:B}{\beta'}{C} 
+      }
+\]
+\end{small}%
+The rule for $*$ (and similarly $\times$) acts on a leaf $z$ and replaces
+the leaf where $z$ occurs in the tree $\beta$ with the correct bunch
+$x*y$. The left rule for $\magicwand$ (and similarly for $\to$) isolates
+a subtree containing the implication $c$ and resources $*$'ed with it,
+uses those resources to prove $A$, and then replaces the subtree with
+the variable $z$ standing for the result of the implication.
+
+%% We assume the BI sequent is given as a judgement $\Gamma \vdash A$ where
+%% $\Gamma$ is a tree and there are explicit equality premises for the
+%% algebraic laws on bunches.  Then we define $\Gamma^*$ as an in-order
+%% flattening of the tree into one of our contexts (e.g.  $(x:A)^* = x:A^*$ and
+%% $(\Gamma,\Delta)^* = (\Gamma;\Delta)^*=\Gamma^*,\Delta^*$), while we
+%% define $\vars{\Gamma}$ as a context descriptor that preserves the tree
+%% structure (e.g. $\vars{x:A} = x$ and $\vars{(\Gamma,\Delta)} =
+%% \vars{\Gamma}*\vars{\Delta}$ and
+%% $\vars{\Gamma;\Delta}=\vars{\Gamma}\times\vars{\Delta}$).  Then we have
+%% the usual adequacy statement $\Gamma \vdash A$ iff
+%% \seq{\Gamma^*}{\vars{\Gamma}}{A^*}.
+
+\subsection{Multi-use variables}
+\label{sec:ex:nlinear}
+
+An $n$-use
+variable~\citep{reed08namessubstructural,abel15modal,mcbride16nuttin} is
+a variable that is used ``exactly $n$ times'' (modulo additives), as
+expressed by the following sequent calculus rules for $n$-use functions
+\begin{small}
+\[
+\infer{{0\cdot \Gamma,x:^1 P} \vdash {P}}
+      {}
+\qquad
+\infer{\Gamma \vdash A \to^n B}
+      {{\Gamma, x :^n A} \vdash {B}}
+\qquad
+\infer{\Gamma + f:^k A \to^n B + (nk \cdot \Delta) \vdash C}
+      {\Delta \vdash A &
+       {\Gamma, z :^k B} \vdash {C}}
+\]
+\end{small}%
+where $\Gamma + \Delta$ acts pointwise by $x :^{n} A + x :^{m}
+A = x :^{n+m} A$ and $n \cdot \Delta$ acts pointwise by $n \cdot x^{m} A
+= x :^{nm} A$.  In the left rule, $\Gamma$ and $\Delta$ have the same
+underlying variables and types (but potentially different counts), and
+$f:^kA \to^n B$ abbreviates a context with the same variables and types
+but $0$'s for all counts besides $f$'s.  The left rule says that if you
+spend $k$ ``uses'' of a function that takes $n$ uses of an
+argument, then you need $nk$ uses of whatever you use to
+construct the argument, in order to get $k$ uses of the result.  
+
+We can model this in the mode theory of a commutative monoid by using
+context descriptors that are themselves non-linear: we define $A \to^n B
+:= \U{c.c \odot (x^n)}{x:A}{B}$ where $x^n := x \odot x \odot \ldots
+\odot x$ ($n$ times).  This has the following instances of \UL{}{} and
+\UR{}:
+\begin{small}
+\[
+\infer{\seq{\Gamma}{\beta}{A \to^n B}}
+      {\seq{\Gamma, x:A}{\beta \odot x^n}{B}}
+\qquad
+\infer{\seq{\Gamma}{\beta}{C}}
+      {f : \U{f.f \odot x^n}{x : A}{B} \in \Gamma &
+        \beta \spr \beta'[f \odot (\alpha)^n/z] &
+        \seq{\Gamma}{\alpha}{A} &
+        \seq{\Gamma, z:B}{\beta'}{C} 
+      }
+\]
+\end{small}%
+In the left rule, $\beta'$ must be equal to some term $\beta'' \odot
+z^k$ for some $k$ and $\beta''$ not mentioning $z$ (for this mode
+theory, any term is a polynomial of variables), and the only structural
+transformations are the commutative monoid equations, so the premise is
+$\beta \deq (\beta'' \odot z^k) [f \odot (\alpha)^n/z] \deq \beta''
+\odot f^k \odot (\alpha)^{nk}$.  Here $\beta''$ corresponds to the
+$\Gamma$ in the above left rule (the resources of the continuation,
+besides $z^k$) and $\alpha$ corresponds to $\Delta$.  The full proof of
+adequacy is in the extended version:
+\begin{theorem}[Logical adequacy for $n$-use variables]
+$x_1:^{k_1} A_1,\ldots,x_n :^{k_n} A_n \vdash C$ iff
+  \seq{x_1:A_1^*,\ldots,x_n:A_n^*}{x_1^{k_1} \odot \ldots \odot
+    x_n^{k_n}}{C^*}, where $A^*$ translates $A \to^n B$ to 
+$\U{c.c \odot (x^n)}{x:A^*}{B^*}$
+\end{theorem}
+
+\subsection{Comonads}  
+\label{sec:example:bang}
+
+Following \citet{benton94mixed,bentonwadler96adjoint}, we decompose the
+$!$ exponential of intuitionistic linear logic as the comonad of an
+adjunction between ``linear'' and ``cartesian'' categories.  We start
+with two modes \dsd{l} (linear) and \dsd{c} (cartesian), along with a
+commutative monoid $(\otimes,1)$ on \dsd{l} and a cartesian monoid
+$(\times,\top)$ on \dsd{c}.  Next, we add a context descriptor from
+\dsd{c} to \dsd{l} ($x : \dsd{c} \vdash \dsd{f}(x) : \dsd{l}$) that we
+think of as including a cartesian context in a linear context.  This
+generates types \wftype {\F{\dsd{f}(x)}{x : A_{\dsd{c}}}}{\dsd{l}} and
+\wftype {\U{x.\dsd{f}(x)}{\cdot}{A_{\dsd{l}}}}{\dsd{c}} which are
+adjoint $\F{\dsd{f}(x)}{x:-} \la {\U{x.\dsd{f}(x)}{\cdot}{-}}$.  The
+bijection on hom-sets is defined using \FL\/ and \UR\/ and their
+invertibility.  The comonad of the adjunction
+\F{\dsd{f}(x)}{x:\U{c.\dsd{f}(c)}{\cdot}{A}} is the linear logic $!A$.
+
+In LNL~\citep{benton94mixed}, $F(A \times B) \cong F(A) \otimes F(B)$
+and $F(\top) \cong 1$ (these properties of $F$ are necessary to
+prove that $!  A$ has weakening and contraction with respect to
+$\otimes$, for example), which we can add to the mode theory by
+equations $\dsd{f}(x \times y) \deq \dsd{f}(x) \otimes \dsd{f}(y)$ and
+$\dsd{f}(\top) \deq 1$. By Theorem~\ref{lem:fusion-respect}, these
+equations induce type isomorphisms because all of $F,\otimes,\times$ are
+represented by \Fsymb-types in our framework.  For example, $F(A \times
+B) \vdash F(A) \otimes F(B)$ is derived as follows:
+\begin{small}
+\[
+\infer[\FL]{\seq{q:\F{\dsd{\dsd{f}(x)}}{x:\F{y \times z}{y:A,z:B}}}{q}{\F{z \otimes w}{z:\F{\dsd{f}(x)}{x:A},w:\F{\dsd{f}(x)}{x:B}}}}
+      {\infer[\FL]{\seq{x:{\F{y \times z}{y:A,z:B}}}{\dsd{f}{(x)}}{\F{z \otimes w}{z:\F{\dsd{f}(x)}{x:A},w:\F{\dsd{f}(x)}{x:B}}}}
+        {\infer[\FR]{\seq{y:A,z:B}{\dsd{f}{(y \times z)}}{\F{z \otimes w}{z:\F{\dsd{f}(x)}{x:A},w:\F{\dsd{f}(x)}{x:B}}}}
+          {\dsd{f}{(y \times z)} \deq \dsd{f}(y) \otimes \dsd{f}(z) &
+            \infer[\FR^*]{\seq{y:A,z:B}{\dsd{f}{(y)}}{\F{x.\dsd{f}(x)}{x:A}}}{} & 
+            \infer[\FR^*]{\seq{y:A,z:B}{\dsd{f}{(z)}}{\F{x.\dsd{f}(x)}{x:B}}}{} & 
+          }}}
+\]
+\end{small}%
+Omitting these equations allows us to describe non-monoidal (or lax
+monoidal, if we add only one direction) left adjoints: in the extended
+version, we consider S4 $\Box$, and prove adequacy for it.
+
+%% \begin{theorem}[Logical adequacy for Adjoint $!$]
+%% Translate $F(A)^* = \F{\dsd{f}(x)}{x:A^*}$ and $G(A)^* =
+%% \U{x.\dsd{f}(x)}{\cdot}{A}$ and products and functions as usual.  Then
+%% $x_1:C_1,\ldots,x_n:C_n \vdash C$ in the cartesian category iff
+%% \seq{x_1:C_1^*,\ldots,x_n:C_n^*}{x_1 \times \ldots \times x_n}{C^*}, and
+%% a mixed sequent with cartesian and linear assumptions and a linear
+%% conclusion $x_1:C_1,\ldots,x_n:C_n;y_1:A_1,\ldots,y_m:A_m \vdash A$
+%% holds iff
+%% \seq{x_1:C_1^*,\ldots,y_1:A_1^*,\ldots}{\dsd{f}(x_1)
+%%   \otimes\ldots\otimes \dsd{f}(x_n) \otimes y_1 \otimes \ldots \otimes
+%%   y_n}{A^*}.
+%% \end{theorem}
+
+\subsection{Monads}
+\label{sec:example:monad}
+
+We model a \Dia{}{A} modality with rules in the style of
+\citet{pfenningdavies}
+%% \[
+%% \infer{\Gamma \vdash \possj{A}}
+%%       {\Gamma \vdash \truej{A}}
+%% \qquad
+%% \infer{\Gamma \vdash \truej{\Dia{}{A}}}
+%%       {\Gamma \vdash \possj{A}}
+%% \qquad
+%% \infer{\Gamma,\truej{\Dia{}{A}} \vdash \possj{C}}
+%%       {\truej{A} \vdash \possj{C}}
+%% \]
+by a mode theory with two modes \dsd{t} and \dsd{p}
+and context descriptor \oftp{x:\dsd{t}}{\dsd{g}(x)}{\dsd{p}}; we define
+$\Dia{}{A} := \U{c.\dsd{g}(c)}{\cdot}{\F{\dsd{g}(x)}{x:A}}$.
+This is always a monad, but it does not automatically have a tensorial
+strength.  For example, if we have a monoid $(\otimes,1)$ on mode
+\dsd{t} and try to derive strength
+\[
+\infer[\UR]
+      {\seq{x : A, y : \Dia{\dsd{g}}{B}}{x \otimes y}{\Dia{\dsd{g}}{(A \otimes B)}}}
+      {\infer[\UL]
+        {\seq{x : A, y : \Dia{\dsd{g}}{B}}{\dsd{g}(x \otimes y)}{\F{\dsd{g}}{A \otimes B}}}
+        {\dsd{g}(x \otimes y) \spr \subst{\beta'}{\dsd{g}(y)}{z} &
+          \seq{x:A,y : \Dia{\dsd{g}}{B},z:\F{\dsd{g}}{B}}{\beta'}{\F{\dsd{g}}{A \otimes B}}
+        }}
+\]
+\noindent we are stuck, because there is no way to rewrite $\dsd{g}(x
+\otimes y)$ as a term containing $\dsd{g}(y)$.  If $\otimes$ is affine,
+then we can weaken away $x$ and take $\beta' = z$---corresponding to the
+context-clearing in the left rule for $\Dia{}{A}$ in
+\citet{pfenningdavies}---but then in the right-hand premise we will only
+have access to $z$, not $x$, so $\Diamond$ correctly represents a
+non-strong monad in this setting.  In the extended version, we prove
+adequacy for this and extend the mode theory to express strong monads.
+
+\begin{theorem}[Logical adequacy for a monad]
+We translate all types at mode \dsd{t}, representing
+\Dia{}{A} as above. Then $\truej{A_1}, \ldots,
+\truej{A_1} \vdash \truej{C}$ iff
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{x_1\otimes\ldots\otimes x_n}{C^*}, and 
+$\truej{A_1}, \ldots, \truej{A_n} \vdash \possj{C}$ iff 
+\seq{x_1:A_1^*,\ldots,x_1:A_n^*}{\dsd{g}(x_1\otimes\ldots\otimes
+  x_n)}{\F{\dsd{g}}{C^*}}.  
+%% The three ``native'' rules above are
+%% \FR, \UR, and a composite of \UL\/ followed by \FL, respectively.
+\end{theorem}
+
+\subsection{Spatial Type Theory}
+
+The spatial type theory for cohesion~\citep{shulman15realcohesion}
+which motivated this work has an adjoint pair $\flat \la \sharp$,
+where $\flat$ is a comonad and $\sharp$ is a monad, with some additional
+properties.  In the one-variable case~\citep{ls16adjoint}, we analyzed
+this as arising from an idempotent comonad\footnote{There it was an
+  idempotent monad; the variance of \dsd{F} and \dsd{U} has been flipped
+  in paper.} in the mode theory: we have a mode \dsd{c} with a cartesian
+monoid $(\times,\top)$ and a context descriptor
+\oftp{x:\dsd{c}}{\dsd{r}(x)}{\dsd{c}} such that $\dsd{r}(\dsd{r}(x))
+\deq \dsd{r}(x)$ and there is a directed transformation $\dsd{r}(x) \spr
+x$.  Then we define $\flat A := \F{\dsd{r}}{A}$ and $\sharp A :=
+\Uempty{\dsd{r}}{A}$. These are adjoint, and the transformation gives
+the counit $\F{\dsd{r}}{A} \vdash A$ and the unit $A \vdash
+\Uempty{\dsd{r}}{A}$.  Now that we have a multi-assumptioned logic, we
+can model the fact that $\flat{A}$ preserves products by the equational
+axiom $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.  Overall,
+we encode a simply-typed spatial type theory judgement $x_1 :
+\crispj{A_1},\ldots;y_1:\cohesivej{B_1} \vdash \cohesivej{C}$ as
+$\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
+  y_1\times\ldots}{C}$.  As a sequent calculus, the rules
+from~\citep{shulman15realcohesion} are
+\begin{small}
+\[
+\begin{array}{c}
+\infer{\Delta;\Gamma \vdash C}
+      {A \in \Delta &
+       \Delta;\Gamma,A \vdash C}
+\quad
+\infer{\Delta; \Gamma \vdash {\Flat A}}
+      {\Delta; \cdot \vdash {A}}
+\quad
+\infer{\Delta; \Gamma,\Flat{A} \vdash C}
+      {\Delta,A; \Gamma \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash {\Sharp C}}
+      {\Delta,\Gamma; \cdot \vdash C}
+\quad
+\infer{\Delta;\Gamma \vdash C}
+      {\Sharp A \in \Delta &
+        \Delta;\Gamma,A \vdash {C}}
+\quad
+\end{array}
+\]
+\end{small}
+In order, these correspond to (1) the action of the contraction and
+$\dsd{r}(x) \spr x$ transformations; (2) \FR\/ with weakening, using
+monoidalness of \dsd{r} in one direction; (3) \FL; (4) \UR, using
+monoidalness of \dsd{r} in the other direction and idempotence; (5) \UL,
+with contraction.  This provides a satisfying explanation for the
+unusual features of these rules, such as promoting all cohesive
+variables to crisp in \Sharp{}-right, and eliminating a crisp \Sharp{}
+in \Sharp{}-left, and illustrates how our framework can be used in
+investigating extensions of homotopy type theory.
+
+%% ----------------------------------------------------------------------
+
+\section{Equational Theory on Derivations}
+\label{sec:equational}
+
+In this section we give an equational theory describing $\beta\eta$-equality of
+derivations.  We use this equational theory in the categorical semantics
+below, and to reason about terms in encoded languages (for example, to
+prove that a pair of entailments is an isomorphism, we show that the
+maps compose to the identity up to these equations).
+
+First, we need a notation for derivations of the $\alpha \spr \beta$
+judgement in Figure~\ref{fig:2multicategory}.  We assume names for
+constants are given in the signature $\Sigma$, and write $1_\alpha$ for
+reflexivity, $s_1;s_2$ for transitivity (in diagramatic order), and
+$s_1[s_2/x]$ for congruence.  We extend the signature $\Sigma$ to allow
+axioms for equality of transformations $s_1 \deq s_2$ (for two
+derivations of the same judgement $s_1,s_2 ::
+\wfsp{\psi}{\alpha}{\beta}{p}$), and define equality to be the least
+congruence closed under those axioms and some associativity, unit, and
+interchange laws, which are the 2-category axioms extended to the
+multicategorical case (see the extended version for details).  As with
+equality of context descriptors, we think of all definitions as being
+parametrized by \deq-equivalence-classes of transformations, not raw
+syntax.
+
+To simplify the axiomatic description of equality, we use a notation for
+derivations where the admissible transformation, identity, and cut rules
+are internalized as explicit rules---so the calculus has the flavor of
+an explicit substitution one.
+%% \[
+%% \begin{array}{rcl}
+%% \D & ::= & \Ident{x} \mid \Trd{s}{\D} \mid \Cut{\D_1}{\D_2}{x} \mid
+%%  \FLd{x}{\Delta}{\D} \mid \FRd{\gamma}{s}{\vec{\D_i/x_i}} \mid \ULd{x}{}{s}{\vec{\D_i/x_i}}{z}{\D} \mid \URd{\Delta}{\D} 
+%% \end{array}
+%% \]
+We write proof terms for these plus the 4 \Usymb/\Fsymb\, rules (the
+hypothesis rule for atoms is derivable from these) as follows:
+\begin{small}
+\[
+\begin{array}{c}
+\infer{{\Gamma,x:A} \vdash_{x} x : {A}}{}
+\qquad
+\infer{{\Gamma} \vdash_{\alpha} \Trd{s}{d} : {A}}
+      {s :: \alpha \spr \beta &
+        {\Gamma} \vdash_{\beta} d : {A}}
+\qquad
+\infer{{\Gamma} \vdash_{\subst{\beta}{\alpha}{x}} \Cut{e}{d}{x} : {B}}
+      {{\Gamma,x:A} \vdash_{\beta} e : {B} &
+        {\Gamma} \vdash_{\alpha} d : {A}}
+\\\\ 
+\infer{{\Gamma,x:\F{\alpha}{\Delta},\Gamma'} \vdash_{\beta} (\FLd{x}{\Delta}{d}) : {C}}
+      {{\Gamma,\Gamma',\Delta} \vdash_{\subst \beta {\alpha}{x}} d : {C}}
+\quad
+\infer{{\Gamma} \vdash_{\beta} \FRd{}{s}{\vec{d_i/x_i}} : {\F{\alpha}{\Delta}}}
+      {%% \modeof{\Gamma} \vdash \gamma : \modeof{\Delta} & 
+        s :: \beta \spr \tsubst{\alpha}{\gamma} &
+        {\Gamma} \vdash_{\gamma} \vec{d_i/x_i} : {\Delta} 
+      }
+\\\\
+\infer{{\Gamma} \vdash_{\beta} \ULd{x}{}{s}{\vec{d_i/x_i}}{z}{d} : {C}}
+      {
+        x:\U{x.\alpha}{\Delta}{A} \in \Gamma &
+        s :: \beta \spr \subst{\beta'}{\tsubst{\alpha}{\gamma}}{z} &
+        {\Gamma} \vdash_{\gamma} {\vec{d_i/x_i}} : {\Delta} &
+        {\Gamma,\tptm{z}{A}} \vdash_{\beta'} d' : {C}
+      }
+\quad
+\infer{{\Gamma} \vdash_{\beta} \URd{\Delta}{d} : {\U{x.\alpha}{\Delta}{A}}}
+      {{\Gamma,\Delta} \vdash_{\subst{\alpha}{\beta}{x}} d : {A}}
+\end{array}
+\]
+\end{small}
+
+%% We write \FRs\/ for $\FRd{\vec{x/x}}{1_\alpha}{\Ident{x}/x} ::
+%% \seq{\Gamma}{\alpha}{\F{\alpha}{\Delta}}$ when $\Delta \subseteq \Gamma$
+%% and we write and \ULs{x} for $\ULd{x}{\vec{x/x}}{1_\alpha}{\Ident{x}/x}{z.z} ::
+%% \seq{\Gamma}{\alpha}{A}$ when $x:\U{x.\alpha}{\Delta}{A} \in \Gamma$ and
+%% $\Delta \subseteq \Gamma$.  
+
+The equational theory of derivations is the least congruence containing
+the following equations.  
+\begin{small}
+\[
+\begin{array}{rcll} 
+\Cut{\D}{\Ident{x}}{x} & \deq & \D \\
+\Cut{\Ident{x}}{\D}{x} & \deq & \D \\
+\Cut{\D_1}{\D_2}{x} & \deq & \D_1 \text{ if $x \# \D_1$}\\
+\Cut{(\Cut{\D_1}{\D_2}{x})}{\D_3}{y} & \deq & \Cut{(\Cut{\D_1}{\D_3}{y})}{\Cut{\D_2}{\D_3}{y}}{x}\\
+\end{array}
+\qquad
+\begin{array}{rcll}
+\Trd{1}{\D} & \deq & \D\\
+\Trd{(s_1;s_2)}{\D} & \deq & \Trd{{s_1}}{\Trd{{s_2}}{\D}} \\
+\Trd{(\subst{s_2}{s_1}{x})}{\Cut{\D_2}{\D_1}{x}} & \deq & \Cut{\Trd{{s_2}}{\D_2}}{\Trd{{s_1}}{\D_1}}{x} \\
+\end{array}
+\]
+\[
+\begin{array}{rcll}
+\Cut{(\FLd{x_0}{\Delta}{\D})}{\FRd{}{s}{\vec{\D_i/x_i}}}{x_0} & \deq & \Trd{(1_\beta[s/x_0])}{\D[\vec{\D_i/x_i}]} & \dsd{F\beta} \\
+\Cut{(\ULd{x_0}{}{s}{\vec{\D_i}/x_i}{z}{\D'})}{\URd{\Delta}{\D}}{x_0} & \deq & \Trd{(s[1_{\alpha}/{x_0}])}{\Cut{\D'}{(\D[{\vec{d_i}/x_i}])}{z}} & \dsd{U\beta} \\
+\D :: \seq{\Gamma,x:\F{\alpha}{\Delta},\Gamma'}{\beta}{C} & \deq &
+\FLd{x}{\Delta}{\Cut{\D}{\FRd{}{1}{\Delta/\Delta}}{x}} & \dsd{F\eta}\\
+\D :: \seq{\Gamma}{\beta}{\U{x.\alpha}{\Delta}{A}} & \deq & \URd{\Delta}{\Cut{(\ULd{x}{}{1}{\Delta/\Delta}{z}{z})}{\D}{x}} & \dsd{U\eta}\\
+\end{array}
+\]
+\end{small}
+
+In the top-left, the first two equations say that identity is a unit for
+cut.  The third says that non-occurrence of a variable is a projection.
+The fourth is functoriality of cut.  In the top-right, the first two
+rules say that the action of a transformation is functorial, and the
+third says that it commutes with cut.  The typing in the third rule is
+$\D_1 :: \seq{\Gamma}{\alpha'}{A}$ and $\D_2 ::
+\seq{\Gamma,x:A}{\beta'}{C}$ and $s_1 :: \alpha \spr \alpha'$ and $s_2
+:: \beta \spr \beta'$, so both sides are derivations of as derivations
+of \seq{\Gamma}{\subst{\beta}{\alpha}{x}}{C}.  Finally, we have the
+$\beta\eta$-laws for \dsd{F} and \dsd{U}.  The $\beta$ laws are the
+principal cut cases from our cut admissibility proof.  The $\eta$ laws
+witness left-invertibility of \Fsymb\, and right-invertibility of
+\Usymb.
+
+%% ----------------------------------------------------------------------
+
+\newcommand\cD{\ensuremath{\mathcal{D}}}
+\newcommand\IndF[3]{\ensuremath{{#1}^\Fsymb_{{#2},{#3}}}}
+\newcommand\IndU[4]{\ensuremath{{#1}^\Usymb_{{#2},{#3},{#4}}}}
+
+\section{Categorical Semantics}
+\label{sec:semantics}
+
+In this section, we give a category-theoretic structure corresponding to
+the above syntax.  First, we define a cartesian 2-multicategory as a
+semantic analogue of the syntax in Figure~\ref{fig:2multicategory}. 
+
+%The
+%semantics uses total substitutions (for the entire context at once)
+%instead of single-variable substitutions, and explicit weakening and
+%exchange instead of named variables.
+
+\begin{definition}
+  A \textbf{(strict) cartesian 2-multicategory} consists of
+  \begin{enumerate}
+  \item A set $\M_0$ of \emph{objects}.
+  \item For every object $B$ and every finite list of objects $(A_1,\dots,A_n)$, a category $\M(A_1,\dots,A_n;B)$.
+    The objects of this category are \emph{1-morphisms} and its morphisms are \emph{2-morphisms}; we write composition of 2-morphisms as $\compv{s_1}{s_2}$.
+  \item For each object $A$, an identity arrow $1_A\in\M(A;A)$.
+  \item For any object $C$ and lists of objects $(B_1,\dots,B_m)$ and
+    $(A_{i1},\dots,A_{in_i})$ for $1\le i\le m$, a composition functor
+    $(g,(f_1,\dots,f_m)) \mapsto g\circ (f_1,\dots,f_m) : 
+    \M(B_1,\dots,B_m;C) \times \prod_{i=1}^m \M(A_{i1},\dots,A_{in_i};B_i) \longrightarrow \M(A_{11},\dots,A_{mn_m};C)$.
+    We write the action of this functor on 2-cells as $\comph{d}{(e_1,\dots,e_m)}$.
+  \item For any function $\sigma : \{1,\dots,m\} \to \{1,\dots,n\}$ and
+    objects $A_1,\dots,A_n,B$, a \emph{renaming} functor $f \mapsto
+    f\sigma^* : \M(A_{\sigma 1},\dots,A_{\sigma m}; B) \to \M(A_1,\dots,A_n;B)$
+  \item satisfying some equalities (see the extended version)
+  \end{enumerate}
+% satisfying some equations that we elide here.  
+\end{definition}
+
+The next three definitions will be used to describe the
+\seq{\Gamma}{\alpha}{A} judgement.  
+
+\begin{definition}
+  A \textbf{functor of cartesian 2-multicategories} $F:\cD\to\M$
+  consists of a function $F_0 : \cD_0 \to \M_0$ and functors
+  $\cD(A_1,\ldots,A_n;B) \to \M(F_0(A_1),\ldots,F_0(A_n);F_0(B))$ such
+  that the chosen identities, compositions, and renamings are preserved
+  (strictly).  We write $\cD_\alpha(A_1,\dots,A_n;B)$ for the fiber of
+  such a functor over $\alpha \in \M(\pi A_1,\dots,\pi A_n;\pi B)$.
+\end{definition}
+
+\begin{definition}
+  A functor of cartesian 2-multicategories $\pi:\cD\to\M$ is a
+  \textbf{local discrete fibration} if each induced functor of ordinary
+  categories $\cD(A_1,\dots,A_n;B)\to\M(\pi A_1,\dots,\pi A_n;\pi B)$ is
+  a discrete fibration.  When $\pi$ is a local discrete fibration, each
+  fiber is a discrete set.
+\end{definition}
+
+\begin{definition}
+  If $\pi:\cD\to\M$ is a local discrete fibration, then a morphism
+  $\xi\in\cD(A_1,\dots,A_n;B)$ is \textbf{opcartesian} if all diagrams
+  of the lefthand form are pullbacks of categories, and a morphism
+  $\xi\in\cD(\vec C,B,\vec D;E)$ is \textbf{cartesian at $B$} if all
+  diagrams of the right-hand form are pullbacks of categories: 
+  \[ \xymatrix{
+    \cD(\vec C,B,\vec D;E) \ar[r]^-{(-)\circ_B \xi} \ar[d]_\pi &
+    \cD(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
+    \M(\pi\vec C,\pi B, \pi\vec D; \pi E) \ar[r]_-{(-)\circ_{\pi B} \pi\xi} &
+    \M(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)
+  }
+  \qquad
+  \xymatrix{
+    \cD(\vec A;B) \ar[r]^-{\xi\circ_B (-)} \ar[d]_\pi &
+    \cD(\vec C,\vec A,\vec D;E) \ar[d]^\pi \\
+    \M(\pi\vec A;\pi B) \ar[r]_-{\pi\xi\circ_{\pi B} (-)} &
+    \cD(\pi\vec C,\pi\vec A,\pi\vec D;\pi E)}
+  \]
+  Given $\mu:(p_1,\dots,p_n) \to q$ in $\M$, we say that $\pi$ \textbf{has $\mu$-products} if for any $A_i$ with $\pi A_i = p_i$, there exists a $B$ with $\pi B = q$ and an opcartesian morphism in $\cD_\mu(A_1,\dots,A_n;B)$.
+  Dually, we say $\pi$ \textbf{has $\mu$-homs} if for any $i$, any $B$ with $\pi B = q$, and any $A_j$ with $\pi A_j = p_j$ for $j\neq i$, there exists an $A_i$ with $\pi A_i = p_i$ and a cartesian morphism in $\cD_\mu(A_1,\dots,A_n;B)$.
+  We say that $\pi$ is an \textbf{opfibration} if it has $\mu$-products for all $\mu$, a \textbf{fibration} if it has $\mu$-homs for all $\mu$, and a \textbf{bifibration} if it is both an opfibration and a fibration.
+\end{definition}
+
+The proofs of the following soundness and completeness results are in
+the extended version:
+
+\begin{theorem}[Mode theory presents a mutilcategory]
+\label{thm:completeness-mode-theory}
+A mode theory $\Sigma$ presents a cartesian 2-multicategory $\M$, where
+$\M_0$ is the set of modes, and an object of $\M(p_1,\ldots,p_n;q)$ is a
+term $\oftp{x_1:p_1,\ldots,x_n:p_n}{\alpha}{q}$ and a morphism of $\M(p_1,\ldots,p_n;q)$ is a structural transformation
+$s :: \wfsp{\psi}{\alpha}{\beta}{q}$, both considered modulo $\deq$.
+\end{theorem}
+
+\begin{theorem}[Completeness/Syntactic Bifibration]
+For a fixed mode theory $\M$, the syntax presents a bifibration $\pi : \cD \to \M$, where:
+\begin{itemize}
+\item Objects of $\cD$ are pairs $(p, \wftype{A}{p})$;
+\item 1-morphisms $\Gamma \to B$, i.e., objects of $\cD(\Gamma; B)$, are pairs $(\alpha, d :: \seq{\Gamma}{\alpha}{B})$ (up to \deq); 
+\item 2-morphisms $(\alpha, d) \to (\alpha', d')$ are structural
+  transformations $s :: \alpha \spr \alpha'$ such that $\Trd{s}{d'} \deq d$;
+\item the $\mu$-products are \Fsymb-types, and the $\mu$-homs are \Usymb-types.
+\end{itemize}
+The functor $\pi : \cD \to \M$ is given by first projection on objects and 1-morphisms, and sends 2-morphisms to the underlying structural transformations.
+\end{theorem}
+
+\begin{theorem}[Soundness/Interpretation in any bifibration]
+Fix a bifibration $\pi : \cD \to \M$.  Then there is a function $\llb -
+\rrb$ from types \wftype{A}{p} to $\llb A \rrb \in \cD_0$ with $\pi(\llb
+A \rrb) = p$ and from $\deq$-classes of derivations $\seq{x:A_1, \ldots,
+  x_n:A_n}{\alpha}{C}$ to morphisms $d \in \cD(\llb A_1 \rrb, \dots, \llb
+A_n \rrb) \to \llb C \rrb$, such that $\pi(d) = \alpha$.
+\end{theorem}
+
+%% ----------------------------------------------------------------------
+
+\section{Related and Future Work}
+
+We have described a sequent calculus that can express a variety of
+substructural and modal logics through a suitable choice of mode theory.
+Our framework builds on many approaches to substructural and modal logic
+in the literature.  Logical rules that act at a leaf of a
+tree-structured context go back to the Lambek
+calculus~\citep{lambek58calculus}.  A rich collection of context
+structures that correspond to type constructors plays a central role in
+display logic~\citep{belnap82display}.  \citet{atkey04separation}'s
+$\lambda$-calculus for resource separation is similar to mode theories
+with one mode, where there is at most one 2-cell between a given pair of
+1-cells; at the logical level, our calculus is a unification of this
+with the multimode adjoint logic of \citet{reed09adjoint}.  Algebraic
+resource annotations on variables are used to track modalities in Agda's
+implementation~\citep{abel15modal} and in \citet{mcbride16nuttin}'s
+approach to linear dependent types.  LF representations of modal or
+substructural logics work by restricting the use of cartesian
+variables~\citep{crary10substructural}.  Relative to all of these
+approaches, we believe that the analysis of the context
+structures/resources as a \emph{term} in a base type theory, and the
+fibrational structure of the derivations over them, is a new and useful
+observation.  For example, rather than needing extra-logical conditions
+on proof rules to ensure cut admissibility, as in display logic, the
+conditions are encoded in the language of context descriptors and the
+definition of types from them.  Moreover, none of these existing
+approaches allow for proof-relevant 2-cells/structural rules, and their
+presence (and the equational theory we give for them) is important for
+our applications to extensions of homotopy type theory.  A point of
+contrast with substructural logical
+frameworks~\citep{cervesatopfenning02llf,watkins+03clf-tr,reed09thesis}
+is that logics are ``embedded'' in our calculus (giving a type
+translation such that provability in the object logic corresponds to
+provability in ours), rather than ``encoding'' the structure of
+derivations.  This way, we obtain cut elimination for object languages
+as a corollary of framework cut elimination.  The semantic structure of
+a bifibration has also been used recently to model refinement types and
+logical
+relations~\citep{zeilberger14functors,zeilbergermelies17presheaf,johannXXbifibrational};
+it would be interesting to combine these with substructural and modal
+types.
+
+In future work, we plan to continue a preliminary investigation of
+equational adequacy that is discussed in the extended version,
+investigating whether that the logical adequacy proofs are an
+isomorphism on $\beta\eta$-classes of derivations.  It is generally easy
+to show that object-language equations are true in the framework.  We
+conjecture that the converse is true for the mode theories we have
+described here, which says that the ``extra'' types and judgements
+available in the framework do not add to the equations between terms in
+the image of encoded sequents.  
+Proving this is challenging because the
+equational theory of Section~\ref{sec:equational} does not itself
+obviously have the subformula property---we can in principle prove
+equations by introducing and then eliminating cuts.  We have sketched a
+proof of equational adequacy for the simplest case (ordered logic
+products), assuming a lemma that the equational theory from
+Section~\ref{sec:equational} can be characterized as some ``permuting
+conversions'' on cut-free derivations (i.e. that one can first
+$\beta$-reduce and then rearrange the normal form).  We proved this
+lemma for one-variable sequents~\citep{ls16adjoint}, and have checked
+one direction here.
+
+Additionally, we plan to apply our framework to investigate more
+extensions of homotopy type theory like the spatial type theory
+considered here; in current work with Eric Finster, we are designing a
+variant of cohesion that is an internal language for spectra.  We also
+plan to consider encodings of programming-focused type theories, such as
+specialized effect calculi.  Finally, our adequacy proofs require
+reasoning about the 1- and 2-cells in the mode theory, which we have
+currently done entirely na\"ively; we would like to investigate using
+techniques from higher-dimensional rewriting to simplify and possibly
+automate these proofs.
+
+\bibliographystyle{plainurl}
+\bibliography{../drl-common/cs}
 
 \end{document}
