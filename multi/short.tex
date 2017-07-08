@@ -207,13 +207,13 @@ work~\cite{schreibershulman12cohesive,shulman15realcohesion} proposed
 using modal operators to add a notion of \emph{cohesion} to homotopy
 type theory/univalent
 foundations~\cite{voevodsky06homotopy,uf13hott-book}.  Without going
-into the precise details of this application, the idea is to add a
-triple $\sh{} \la \Flat{} \la \Sharp{}$ of type operators, where for
-example $\Sharp{}$ is a monad (like a modal possibility $\Diamond$ or
-$\bigcirc$), $\Flat{}$ is a comonad (like a modal necessity $\Box$), and
-there is an adjunction structure between them ($\flat{A} \to B$ is the
-same as $A \to \Sharp{B}$).  This raised the question of how to best add
-modalities with these properties to type theory.
+into the precise details, the idea is to add a triple $\sh{} \la \Flat{}
+\la \Sharp{}$ of type operators, where for example $\Sharp{}$ and
+$\sh{}$ are monads (like a modal possibility $\Diamond$ or $\bigcirc$),
+$\Flat{}$ is a comonad (like a modal necessity $\Box$), and there is an
+adjunction structure between them ($\flat{A} \to B$ is the same as $A
+\to \Sharp{B}$).  This raised the question of how to best add modalities
+with these properties to type theory.
 
 Because other similar applications rely on functors with different
 properties, we would like general tools for going from a semantic
@@ -252,22 +252,22 @@ used in ordinary structural/cartesian proofs.  We express these
 restrictions using a first layer, which is a simple type theory for what
 we will call \emph{modes} and \emph{context descriptors}.  The modes are
 just a collection of base types, which we write as $p,q,r$, while a
-context descriptor $\alpha$ is a term built from variables and
-constants.  The next layer is the main logic.  Each proposition/type is
-assigned a mode, and the basic sequent is \seq{x_1 : A_1, \ldots, x_n :
-  A_n}{\alpha}{C}, where if $A_i$ has mode $p_i$, and $C$ has mode $q$,
-then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$ (we use a sequent
-calculus to concisely describe cut-free derivations/normal forms, but
-everything can be translated to natural deduction in the usual way).  We
-write ${\Gamma}$ for $x_1 : A_1, \ldots, x_n : A_n$, and $\Gamma$ itself
-behaves like an ordinary structural/cartesian context, while the
-substructural and modal aspects are enforced by the \emph{term}
-$\alpha$, which constrains how the resources from $\Gamma$ may be used.
-For example, in linear logic/ordered logic/BI, the context is usually
-taken to be a multiset/list/tree.  We represent this by a pair of an
-ordinary structural context $\Gamma$, together with a term $\alpha$ that
-describes the multiset or list or tree structure, labeled with variables
-from the ordinary context at the leaves.  We pronounce a sequent
+context descriptor $\alpha$ is a first-order term built from variables
+and function symbols.  The next layer is the main logic.  Each
+proposition/type is assigned a mode, and the basic sequent is \seq{x_1 :
+  A_1, \ldots, x_n : A_n}{\alpha}{C}, where if $A_i$ has mode $p_i$, and
+$C$ has mode $q$, then $\oftp{x_1 : p_1,\ldots, x_n : p_n}{\alpha}{q}$.
+We use a sequent calculus to concisely describe cut-free
+derivations/normal forms, but everything can be translated to natural
+deduction.  We write ${\Gamma}$ for $x_1 : A_1, \ldots, x_n : A_n$, and
+$\Gamma$ itself behaves like an ordinary structural/cartesian context,
+while the substructural and modal aspects are enforced by the
+\emph{term} $\alpha$, which constrains how the resources from $\Gamma$
+may be used.  For example, in linear logic/ordered logic/BI, the context
+is usually taken to be a multiset/list/tree.  We represent this by a
+pair of an ordinary structural context $\Gamma$, together with a term
+$\alpha$ that describes the multiset or list or tree structure, labeled
+with variables from the ordinary context at the leaves.  We pronounce
 \seq{\Gamma}{\alpha}{A} as ``$\Gamma$ proves $A$ \{along,over,using\}
 $\alpha$''.
 
@@ -364,11 +364,11 @@ the correct place in the tree.  Our cut algorithm follows cut
 admissibility for structural (cartesian) intuitionistic
 logic~\cite{pfenning94cut}, and applies the same cut reductions to all
 mode theories.  In substructural situations, certain portions of this
-general algorithm are unnecessary but not harmful.  For example, without
-contraction, our algorithm will recursively cut into all premises of a
-rule, even though the variable can only occur in one premise---but the
-extra recursive cuts for variables that do not occur will leave the
-derivation unchanged, as desired.
+general algorithm are unnecessary, but not harmful.  For example, in a
+setting without contraction, our algorithm will recursively cut into all
+premises of a rule, even though the variable can only occur in one
+premise---but the extra recursive cuts for variables that do not occur
+will leave the derivation unchanged, as desired.
 
 The framework has two main logical connectives / type constructors.  The
 first, \F{\alpha}{\Delta}, generalizes the left-adjoint \dsd{F} of
@@ -383,7 +383,7 @@ product $A_1 \times \ldots \times A_n$, while \U{x.\alpha}{\Delta}{A}
 becomes $A_1 \to \ldots \to A_n \to A$.  As one would expect, \dsd{F} is
 left-invertible and \dsd{U} is right-invertible.  In linear logic terms,
 our \dsd{F} and \dsd{U} cover both the multiplicatives and exponentials;
-additives can be added separately by the usual rules.  Moreover, though
+additives can be defined separately by the usual rules.  Moreover, though
 \dsd{F} and \dsd{U} form an adjoint pair, the subset of derivations that
 use either $\dsd{F}_\alpha$ or $\dsd{U}_\alpha$ but not both (for a
 particular $\alpha$) describe constructions on functors that do not have
@@ -400,7 +400,7 @@ For specific embedded logics, there is often a more refined discipline
 that suffices---e.g. for cartesian logic, always contract all
 assumptions in all premises, and only weaken at the leaves.  We view our
 framework as a tool for bridging the gap between an intended semantic
-situation (such as the cohesion example mentioned, ``a comonad and a
+situation (in the cohesion example mentioned, ``a comonad and a
 monad which are themselves adjoint'') and a proof theory: the framework
 gives \emph{some} proof theory for the semantics, and the placement of
 structural rules can then be optimized purely in syntax.  To support
@@ -571,7 +571,7 @@ context $\psi$ in these judgements enjoys the cartesian structural
 properties (associativity, unit, weakening, exchange, contraction).
 Simultaneous substitution into terms and substitutions is defined as
 usual (e.g.  $x[\gamma,\alpha/x] := \alpha$ and
-$\dsd{c}(\vec{\alpha_i})[\gamma] := \dsd{c}(\alpha_i[\gamma])$).
+$\dsd{c}(\vec{\alpha_i})[\gamma] := \dsd{c}(\vec{\alpha_i[\gamma]})$).
 
 Returning to the top of the figure, the final two rules of the judgement
 $\wfsig{\Sigma}$ permit two additional forms of signature declaration.
@@ -752,8 +752,8 @@ name, and similarly for a unary \dsd{U}.
 
 The rules for our \dsd{F} connective capture a pattern common to all of
 these examples.  The left $\FL$ rule says that \F{\alpha}{\Delta}
-``decays'' into $\Delta$, but \emph{structuring the uses of resources in
-  $\Delta$ with $\alpha$ by the substitution \subst{\beta}{\alpha}{x}}.
+``decays'' into $\Delta$, but structuring the uses of resources in
+  $\Delta$ with $\alpha$ by the substitution \subst{\beta}{\alpha}{x}.
 We assume that $\Delta$ is $\alpha$-renamed to avoid collision with
 $\Gamma$ (the proof term here is a ``\dsd{split}'' that binds
 variables for each position in $\Delta$).  The placement of $\Delta$ at
@@ -812,11 +812,9 @@ will write the components of a substitution directly as multiple
 premises of \FR\/ and \UL\/, rather than packaging them with 
 $\_,\_$ and $\cdot$.
 
-Additives are different than multiplicatives and exponentials because
-the context is unchanged in the premise of the focus rules.  In our
-framework, this means the context descriptor is not modified---for
-example, a mode $p$ has coproducts/disjunction $\wftype{A_p + B_p}{p}$
-if
+For additives, the context descriptor is not modified; for example, a
+coproduct/disjunction $\wftype{A_p + B_p}{p}$ for a mode $p$ is given by
+the following rules:
 \[
 \begin{array}{c}
 \infer{\seq{\Gamma}{\alpha}{A + B}}
@@ -1031,13 +1029,13 @@ can show $A \vdash A \odot A$ (formally {\seq{z : A}{z}{\F{x \odot
            {
              \infer{\seq{x:A,y:B}{x \odot y}{A}}
              {\infer{x \odot y \spr x \odot 1 \deq x}
-                    {w :: y \spr 1}
+                    {\dsd{w} :: y \spr 1}
                &
                \infer{\seq{x:A,y:B}{x}{A}}{}
            }}
 \qquad
 \infer[\FR]{\seq{z : A}{z}{\F{x \odot y}{x:A,y:A}}}
-           {c :: z \spr (x \odot y)[z/x,z/y] &
+           {\dsd{c} :: z \spr (x \odot y)[z/x,z/y] &
             \infer{\seq{z:A}{z}{A}}{}
            }
 \]
@@ -1322,7 +1320,7 @@ the counit $\F{\dsd{r}}{A} \vdash A$ and the unit $A \vdash
 can model the fact that $\flat{A}$ preserves products by the equational
 axiom $\dsd{r}(x \times y) \deq \dsd{r}(x) \times \dsd{r}(y)$.  Overall,
 we encode a simply-typed spatial type theory judgement $x_1 :
-\crispj{A_1},\ldots;y_1:\cohesivej{B_1} \vdash \cohesivej{C}$ as
+\crispj{A_1},\ldots;y_1:\cohesivej{B_1},\ldots \vdash \cohesivej{C}$ as
 $\seq{x_1:A_1,\ldots,y_1:B_1,\ldots}{\dsd{r}(x_1)\times\ldots\times
   y_1\times\ldots}{C}$.  As a sequent calculus, the rules
 from~\cite{shulman15realcohesion} are
@@ -1594,7 +1592,7 @@ with one mode, where there is at most one 2-cell between a given pair of
 1-cells; at the logical level, our calculus is a unification of this
 with multimodal adjoint logic~\cite{reed09adjoint}.  Algebras of
 resources play a central role in semantics of substructural and modal
-logics~\cite{restall00introduction} and in encodings in first-order
+logics~\cite{restall00introduction} and in their encodings in first-order
 logic~\cite{reed09constructiveresource}, and resources on variables are
 used to track modalities in Agda's implementation~\cite{abel15modal} and
 in linear dependent types~\cite{mcbride16nuttin}.  LF representations of
@@ -1626,32 +1624,33 @@ Superficially, this seems to be a different use of the same semantic
 structure, because the base and domain categories of the bifibration
 play a different role.  Here, the base mode theory describes different
 categories of types and functors (type constructors) between between
-them, and the domain represents types and terms; whereas in the related
-work, the base category represents types and terms, and the domain
-represents a further notion of predicate/specification.  It would be
-interesting to investigate deeper connections and combine the two
-notions.
+them, and the domain represents types and terms; whereas in refinement
+types/logical relations, the base category represents types and terms,
+and the domain represents a further notion of predicate/specification.
+It would be interesting to investigate deeper connections and combine
+the two notions.
 
 One direction for future work is to continue a preliminary investigation
 of equational adequacy that is discussed in the extended version,
 investigating whether the logical adequacy proofs are an isomorphism on
 $\beta\eta$-classes of derivations---or, phrased semantically, that a
-bifibration over the ordered logic mode theory (a monoid) presents the
-free monoidal category.  It is generally easy to show that
-object-language equations are true in the framework.  We conjecture that
-the converse is true for the mode theories we have described here, which
-says that the ``extra'' types and judgements available in the framework
-do not add to the equations between terms in the image of encoded
-sequents.  Proving this is challenging because the equational theory of
-Section~\ref{sec:equational} does not itself obviously have the
-subformula property.  We have sketched a proof of equational adequacy
-for a simple case (ordered logic products), assuming a lemma that the
-equational theory from Section~\ref{sec:equational} can be characterized
-as some ``permuting conversions'' on cut-free derivations.
-Additionally, our adequacy proofs require reasoning about the 1- and
-2-cells in the mode theory, which we have currently done entirely
-na\"ively, but could benefit from higher-dimensional rewriting
-techniques.
+bifibration over the mode theory is the usual notion of categorical
+model for a particular logic (e.g. a bifibration over the ordered logic
+mode theory presents the free monoidal category).  It is generally easy
+to show that object-language equations are true in the framework.  We
+conjecture that the converse is true for the mode theories we have
+described here, which says that the ``extra'' types and judgements
+available in the framework do not add to the equations between terms in
+the image of encoded sequents.  Proving this is challenging because the
+equational theory of Section~\ref{sec:equational} does not itself
+obviously have the subformula property.  We have sketched a proof of
+equational adequacy for a simple case (ordered logic products), assuming
+a lemma that the equational theory from Section~\ref{sec:equational} can
+be characterized by permuting conversions on cut-free derivations.  A
+related avenue for improvement is that our adequacy proofs require
+reasoning about the 1- and 2-cells in the mode theory, which we have
+currently done entirely na\"ively, but could possibly benefit from
+higher-dimensional rewriting techniques.
 
 Additionally, we plan to apply our framework to investigate more
 extensions of homotopy type theory, such as an internal language for
