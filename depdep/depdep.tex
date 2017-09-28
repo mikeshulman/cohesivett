@@ -1,0 +1,89 @@
+\documentclass[10pt]{article}
+
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\cbar}{\, | \,}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\ctx}{\,\,\mathsf{ctx}}
+\newcommand{\mctx}{\,\,\mathsf{mctx}}
+\newcommand{\type}{\,\,\mathsf{type}}
+\newcommand{\tele}{\,\,\mathsf{tele}}
+\newcommand{\mtele}{\,\,\mathsf{mtele}}
+\newcommand{\mode}{\,\,\mathsf{mode}}
+
+\title{Dependent Adjoint Logic}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+Capital things live above, lowercase things live below. Not sure how to do the annotations and keep them legible.
+
+Judgements: 
+\begin{itemize}
+\item $\yields \Gamma \ctx_\gamma$ lives over $\yields \gamma \mctx$
+\item $\Gamma \yields_\alpha A \type$ lives over $\gamma \yields \alpha \mode$
+\item $\Gamma \yields_\mu M : A$ lives over $\gamma \yields \mu : \alpha$
+\item Telescopes $\Gamma \yields_\delta \Delta \tele$ lying over $\gamma \yields \delta \mtele$
+\item Substitutions $\Gamma \yields_\theta \Theta : \Delta$ lying over $\gamma \yields \theta : \delta$
+\item 2-cells $\gamma \yields (\mu \Rightarrow \nu) : \alpha$
+\end{itemize}
+
+Rules so far:
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{
+    \yields \Gamma \ctx_\gamma 
+    \and \gamma \yields \alpha \mode
+  	\and \Gamma \yields_\alpha A \type }
+  {\yields \Gamma, x : A \ctx_{\gamma, x : \alpha}  } \\
+
+  \inferrule*[Left = F-form]{\yields \Gamma \ctx_\gamma \and \gamma, \delta \yields \mu : \beta \and \Gamma \yields_\delta \Delta \tele}{\Gamma \yields_\beta F_\mu(\Delta) \type  } \\
+  
+  \inferrule*[Left = F-left]{\Gamma, \Delta \yields_{\nu [\mu / x]} N : C [FR(\Delta)/x] \and (\text{where } \gamma, \delta \yields \nu [\mu / x] : \alpha [\mu / x] )}{ \Gamma, x : F_\mu(\Delta) \yields_\nu \mathrm{let...} : C  \and (\text{where } \gamma, \beta \yields \nu : \alpha)} \\
+  
+  \inferrule*[Left = F-right]{\Gamma \yields_{\theta} \Theta : \Delta \and \gamma \yields \nu : \beta \and \gamma \yields \mu[\theta] : \beta \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : \beta}{\Gamma \yields_\nu ... : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta)} 
+\end{mathpar}
+
+How do we recover ordinary dependent type theory with $\Pi$ and $\Sigma$? Idea:
+\begin{align*}
+&\yields p_0 \mode \\
+x_0 : p_0 &\yields p_1(x_0) \mode \\
+x_0 : p_0, x_1 : p_1(x_0) &\yields p_2(x_0, x_1) \mode \\
+&\vdots \\
+x_0 : p_0, x_1 : p_1(x_0) &\yields x_0 \times x_1 : p_0 \\
+x_0 : p_0, x_1 : p_1(x_0), x_2 : p_2(x_0, x_1) &\yields x_1 \times x_2 : p_1(x_0) \\
+&\vdots \\
+x_0 : p_0, x_1 : p_1(x_0), x'_0 : p_0,  &\yields w(x'_0) : p_1(x_0) \\
+x_0 : p_0, x_1 : p_1(x_0), x_2 : p_2(x_0, x_1), x'_1 : p_1(x_0) &\yields w(x'_1) : p_2(x_0, x_1) \\
+&\vdots
+\end{align*}
+So $p_n \mode$ is the mode of types that depend on exactly $n$ previous things. Then $\times$ hopefully gives the correct rules for $\Pi$ and $\Sigma$, and weakening using $w(-)$ allows not depending on a variable if you don't want to.
+
+So how does this recover the coherence triangles for the modal stuff? Suppose we add:
+\begin{align*}
+x_0 : p_0 &\yields f_0(x_0) : p_0 \\ 
+x_0 : p_0, x_1 : p_1(x_0) &\yields f_1(x_0, x_1) : p_1(f_0(x_0)) \\
+&\vdots
+\end{align*}
+(These could land in some different $q_i$ if we wanted). And similarly for $g_i$ and $h_i$. Now suppose we want to construct something like \[x:p_0, y : p_1(f(x)), z : p_2(g(x), h(y))\] so $y$ depends on $x$ through $f$, and $z$ depends on $x$ and $y$ through $g$ and $h$. More carefully, we can only directly get
+\begin{align*}
+x : p_0, y : p_1(f_0(x)) \yields h_1(f_0(x), y) : p_1(h_0(f_0(x))
+\end{align*}
+and 
+\begin{align*}
+x : p_0, y : p_1(g_0(x)) \yields p_2(g_0(x), y) \mode
+\end{align*}
+so to write 
+\begin{align*}
+x : p_0, y : p_1(f_0(x)) \yields p_2(g_0(x), h_1(f_0(x), y))) \mode
+\end{align*}
+we would need to be able two rewrite a $p_1(h_0(f_0(x))$ to a $p_1(g_0(x))$ using a 2-cell $h_0(f_0(x)) \Rightarrow g_0(x)$
+
+\end{document}
