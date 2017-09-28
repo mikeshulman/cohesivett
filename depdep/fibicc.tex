@@ -1,0 +1,1101 @@
+\documentclass{amsart}
+\newif\ifcref\creftrue
+\input{decls}
+\autodefs{\sFib\cFib\cCat\cProf\cCAT\cPROF\cFin\nSet\nFinSet\cOpf\cCart\cSpan}
+\def\sCart{\ensuremath{\mathscr{C}\!\mathit{art}\xspace}}
+\def\bprof{\sB\text{-}\cProf}
+\def\dmprof{\daym\text{-}\cProf}
+\def\dmprofh{\daym\text{-}\widehat{\cProf}}
+\let\To\Rightarrow
+\let\xTo\xRightarrow
+\mdef\twocat{2\text{-}\cCat}
+\mdef\fibc{\sFib_{\sC}}
+\mdef\fibm{\sFib_{\sM}}
+\mdef\fibp{\sFib_P}
+\mdef\cod{\mathrm{cod}}
+\mdef\dom{\mathrm{dom}}
+\mdef\arm{\mathscr{M}\!\mathit{or}_{\sM}}
+\def\ar#1{\mathscr{M}\!\mathit{or}_{#1}}
+\def\rep#1{{#1}_\bullet}
+\def\corep#1{{#1}^\bullet}
+\mdef\mh{\widehat{\sM}}
+\mdef\daym{\widehat{\cM}}
+\let\mylim\lim
+\def\lim{{\textstyle\mylim}}
+\mdef\shape{\mathrm{sh}}
+\let\types\vdash
+\def\type{\;\mathsf{type}}
+\def\mode{\;\mathsf{mode}}
+\def\ctx{\;\mathsf{ctx}}
+\def\modectx{\;\mathsf{modectx}}
+\def\ec{\diamond}
+\let\jdeq\equiv
+\def\pr{\mathsf{pr}}
+\def\chiphat{\widehat{\chi_p}}
+\def\f{_{\mathbf{f}}}
+\let\extent\epsilon
+\def\yon{\mathbf{y}}
+\title{Fibred comprehension bicategories}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+\label{sec:introduction}
+
+Unary type theories have semantics in categories, and the corresponding mode theory in~\cite{ls:1var-adjoint-logic} was a 2-category.
+Simple type theories have semantics in multicategories, and the corresponding mode theory in~\cite{lsr:multi} was a 2-multicategory.
+These are both instances of the ``microcosm principle'' of Baez and Dolan~\cite{bd:hda3}: a general notion of ``type theory'' is parametrized by a ``2-type theory''.
+Continuing the pattern, since a dependent type theory has semantics in comprehension categories, the corresponding mode theory should be a ``comprehension 2-category''.
+In fact, we will weaken a little bit and consider comprehension \emph{bicategories}, since the naturally occurring examples are not completely strict.
+
+The system will be like~\cite{lsr:multi} in that the structural rules are decomposed into a ``structurality over structurality'' (which is always present) followed by the action of a structural mode 2-cell (which may or may not be present in a given mode theory).
+(Indeed, at least some instances of~\cite{lsr:multi} will be degenerate cases of the present theory in which all dependencies are trivial.)
+This means that even in the encoding of ``ordinary'' dependent type theories, there are judgments present that don't appear in the original presentation, such as $x:A \types_{(x,x)} t:B$ in which a single copy of $A$ is used twice (which is distinct from $x:A \types_x t:B$ in which it is used once, and also from $x:A,y:A \types_{(x,y)} t:B$ in which two copies of $A$ are used once each).
+
+As in~\cite{lsr:multi}, this probably makes the syntactic adequacy proofs less trivial.
+However, from a semantic point of view I find it \emph{less} worrying than the corresponding problem was in~\cite{lsr:multi}, because for dependent type theory the ``standard'' semantic construct (a comprehension category or whatever else you call it) is already fairly artificial, with naturally-occuring examples having to be massaged in order to take the appropriate form.
+Thus, from a semantic point of view all we need to do is \emph{replace} this massaging by a new kind of massaging to produce instead the natural semantics of our theory (which we will call ``fibred comprehension bicategories'').
+
+
+\section{A view of comprehension categories}
+\label{sec:compcat}
+
+We presume the reader is familiar with the notion of cartesian arrow and fibration for ordinary categories.
+For a fixed category $\cC$, let $\cCart_{/\cC}$ denote the 2-category whose objects are functors with codomain \cC (not necessarily fibrations) and whose morphisms are functors over \cC that preserve cartesian arrows (i.e.\ any cartesian arrows that exist in the domain are preserved).
+
+\begin{thm}
+  The 2-category $\cFib_{/\cC}$ of fibrations over \cC is a coreflective full sub-2-category of $\cCart_{/\cC}$.
+\end{thm}
+\begin{proof}
+  Fullness of the inclusion is clear.
+  The coreflection of a functor $p:\cT\to\cC$ is the full subcategory of \cT consisting of those objects $x\in \cT$ such that any arrow $u\to p x$ has a cartesian lifting.
+\end{proof}
+
+We denote the coreflection by $\cT\f \to \cC$ and call its objects \textbf{fibrant} in \cT.
+The fibrant objects in $\cod: \cC^\to \to \cC$ are the \emph{pullbackable} morphisms, i.e.\ those of which every pullback exists.
+
+A \textbf{comprehension category}, usually defined as a fibration $p:\cT\to\cC$ along with a functor $\cT\to\cC^\to$ that preserves cartesian arrows, can equivalently be defined as a fibration $p$ with a morphism of fibrations $\cT\to\cC^\to\f$.
+
+When describing the type theory corresponding to a comprehension category, we usually ignore the morphisms in \cT.
+This can be done formally by requiring $\cT\to\cC$ to be a discrete fibration, but it turns out to categorify better to require the functor $\cT\to\cC^\to$, or equivalently $\cT\to\cC^\to\f$, to be fully faithful.
+In this case we call the comprehension category \textbf{full}.
+Unlike discreteness, this does not automatically make $\cT\to\cC$ a \emph{split} fibration (so that substitution is strictly functorial), but we can also add this assumption if we want it.
+
+
+\section{Fibrations of bicategories}
+\label{sec:fib-bicat}
+
+In general, in a bicategory or 2-category we will write composition along 0-cells with $\circ$, and composition along 1-cells with juxtaposition.
+Thus, for instance, the middle-four interchange law is $(\delta\circ\gamma)(\beta\circ \alpha) = \delta\beta\circ \gamma\alpha$.
+
+\begin{defn}[\cite{hermida:2fib,buckley:2fib}]
+  Let $P:\sT\to\sC$ be a strict functor of bicategories.
+  \begin{itemize}
+  \item $P$ is a \textbf{local fibration} if each functor
+    \[ P_{x,y}:\sT(x,y) \to \sC(Px,Py) \]
+    is a fibration \emph{and} each composition functor
+    \[
+    \begin{tikzcd}
+      \sT(y,z) \times \sT(x,y) \ar[r] \ar[d] & \sT(x,z) \ar[d] \\
+      \sC(Py,Pz) \times \sC(Px,Py) \ar[r] & \sC(Px,Pz)
+    \end{tikzcd}
+    \]
+    is a morphism of fibrations (preserves cartesian morphisms).
+    Note that this square commutes strictly since $P$ is a strict functor.
+    We similarly have \textbf{local discrete fibrations} (in which case the second condition is automatic) and \textbf{local opfibrations}.
+  % \item If $P$ is a local fibration, it is \textbf{locally cloven} if the above fibrations have a choice of cartesian lifts.
+  %   It is moreover \textbf{locally split} if these choices are closed under composition and identities.
+  %   It is \textbf{horizontally split} if the composition functor preserves the chosen lifts strictly, and moreover the associativity and unit isomorphisms of $\sT$ (which lie strictly over those of $\sC$, since $P$ is a strict functor) are chosen cartesian lifts.
+  \item A morphism $f:x\to y$ in \sC is \textbf{cartesian} if for any $z$ the following square (which commutes strictly since $P$ is a strict functor) is a bipullback (a weak bicategorical pullback):
+    \[
+    \begin{tikzcd}
+      \sT(z,x) \ar[r,"f\circ\blank"]\ar[d] & \sT(z,y) \ar[d]\\
+      \sC(Pz,Px) \ar[r,"Pf\circ \blank"'] & \sC(Pz,Py)
+    \end{tikzcd}
+    \]
+    % The morphism $f$ is \textbf{strongly cartesian} if all such squares are strict pullbacks.
+    % If $P$ is a local fibration, then strongly cartesian arrows are also weakly cartesian, since strict pullbacks of fibrations are bipullbacks.
+  \item $P$ is a \textbf{fibration} if it is a local fibration and for any $a\in\sT$ and $f:x\to Pa$ in \sC there is a cartesian morphism $h$ in $\sT$ such that $Ph=f$.
+    % It is a \textbf{strong fibration} if it is a locally split and horizontally split local fibration, and for any $a$ and $f$ there is a strongly cartesian lifting.
+    % Thus a strong fibration is also a weak fibration, and moreover every weakly cartesian arrow is equivalent to a strongly cartesian one.
+  % \item A strong fibration is \textbf{cloven} if it has a choice of strongly cartesian 1-cell lifts (a strong fibration always has chosen cartesian 2-cell lifts, for local splitness to make sense).
+  %   It is moreover \textbf{split} if these chosen lifts are closed under identities and composition.
+  % \item A commutative square between strong fibrations is a \textbf{strong morphism of strong fibrations} if it preserves strongly cartesian 1-cells and cartesian 2-cells, and a \textbf{strict morphism} if preserves the chosen such lifts strictly.
+  \end{itemize}
+\end{defn}
+
+%In~\cite{buckley:2fib}, our ``weakly cartesian morphisms'' and ``weak fibrations'' are called simply ``cartesian morphisms'' and ``fibrations'', respectively.
+In~\cite{buckley:2fib}, fibrations and cartesian morphisms are defined first for not-necessarily-strict functors of bicategories, but the local fibration condition ensures that any such fibration is isomorphic to one that is a strict functor; thus it does no harm to assume strictness from the outset.
+(In a type-theoretic setting, it would be more natural to define these conditions for a sort of ``displayed bicategory'' along the lines of~\cite{al:displayed}.)
+It is shown in~\cite[Theorem 3.3.12]{buckley:2fib} that fibrations over a bicategory \sC are equivalent to pseudo-3-functors $\sC\coop\to \mathrm{Bicat}$.
+
+% In~\cite{hermida:2fib}, our ``strongly cartesian morphisms'' and ``strong fibrations'' over strict 2-categories are called \emph{2-cartesian 1-cells} and \emph{fibrations}, respectively (except that the necessary assumption that postcomposition is a morphism of fibrations on hom-categories was omitted).
+% And it was observed in~\cite[Remark 3.3.13]{buckley:2fib} that strong fibrations over a strict 2-category \sC are equivalent to pseudofunctors $\sC\coop\to\twocat$.
+% In fact the same argument applies even when \sC is a bicategory:
+
+% \begin{thm}\label{thm:strong-grothendieck}
+%   For any bicategory \sC, strong fibrations $P:\sT\to\sC$ are equivalent to pseudofunctors $\sC\coop\to\twocat$, and split ones to strict 2-functors.
+% \end{thm}
+% \begin{proof}[Sketch of proof]
+%   We simply sketch how~\cite[Construction 3.3.5]{buckley:2fib} when applied to a strong fibration yields such a pseudofunctor.
+%   The fiber $\sT_c$ is defined to consist of the objects, arrows, and 2-cells in \sT that lie (strictly) over $c$, $1_c$, and $1_{1_c}$ respectively.
+%   Composition of 1-cells is not strictly inherited from \sT, since the composite of two arrows over $1_c$ no longer lies over $1_c$ but rather $1_c\circ 1_c$; thus we have to use the local fibration structure to transport along the coherence isomorphism $1_c \cong 1_c\circ 1_c$.
+%   The local splitness of $P$, together with the assumption in horizontal splitness that the associativity and unit isomorphisms of \sT are chosen lifts, ensures that the thereby-defined fiber $\sT_c$ is actually a strict 2-category.
+
+%   Since our 1-cell lifts are strongly cartesian, the induced reindexing pseudofunctors $\sT_c \to \sT_{c'}$ are actually strict 2-functors, and the induced pseudonatural transformations are strict 2-natural transformations.
+%   Finally, horizontal splitness ensures that this is functorial up to 2-natural isomorphism.
+% \end{proof}
+
+In any local fibration we have a notion of when a 2-cell is ``cartesian'', namely when it is cartesian for the corresponding ordinary fibration of hom-categories $\sT(x,y) \to \sC(Px,Py)$.
+However, for a functor that is not necessarily a local fibration it is more appropriate to use the following stronger notion of cartesian 2-cell.
+This is a generalization of~\cite[Definition 2.2]{hermida:2fib} to the cartesian case.
+
+\begin{defn}\label{defn:2cart}
+  Let $P:\sT\to\sC$ be any strict functor of bicategories, and $\si:f\To g:x\to y$ a 2-cell in \sT.
+  We say that $\si$ is \textbf{stably cartesian} if for any morphism $v:z\to y$ and 2-cell $\al:h\To g\circ v:z\to y$ in \sT, and any 2-cell $\gm : Ph \To Pf \circ Pv$ in \sC such that $P\alpha = (P\sigma \circ u)\gm$, there exists a unique 2-cell $\phi:h\To f\circ v$ such that $P\phi = \gm$ and $\alpha = (\sigma\circ v)\phi$.
+
+  We say that $\si$ is \textbf{stably 2-cartesian} if it is stably cartesian and additionally its codomain $g$ is a cartesian morphism.
+  And we call it \textbf{stably precartesian} (or \textbf{stably 2-precartesian}) if it satisfies the above condition only when $\gm$ is an identity.
+\end{defn}
+\[
+\begin{tikzcd}
+  z \ar[rr,bend left,"h"] \ar[dd,dotted] \ar[dr,"v"']
+  \ar[rr,phantom,shift left=3,""{name=al1}]
+  \ar[rr,phantom,shift right=3,""'{name=al2}]
+  \ar[from=al1,to=al2,Rightarrow,"\al"]
+  && x \ar[dd,dotted]\\
+  & y \ar[ur,"g"']\\
+  Pz \ar[rr,near end,"Ph" description,bend left] \ar[dr,"Pv"']
+  \ar[rr,phantom,shift left=3,near start,""{name=gm1}]
+  \ar[rr,phantom,shift right=3,near start,""'{name=gm2}]
+  \ar[from=gm1,to=gm2,Rightarrow,"\gm"]
+  && Px\\
+  & Py\ar[ur,shift left=2,"Pf"{name=Pf}] \ar[ur,shift right=2,"Pg"'{name=Pg}] \ar[from=Pf,to=Pg,Rightarrow,"P\si"]\\
+\end{tikzcd}
+\qquad=\qquad
+\begin{tikzcd}
+  z \ar[dr,"v"'] \ar[rr,bend left,"h"] \ar[dd,dotted]
+  \ar[rr,phantom,shift left=3,near start,""{name=phi1}]
+  \ar[rr,phantom,shift right=3,near start,""'{name=phi2}]
+  \ar[from=phi1,to=phi2,Rightarrow,dashed,"\phi"]
+  && x \ar[dd,dotted]\\
+  & y \ar[ur,shift left=2,"f"{name=f}] \ar[ur,shift right=2,"g"'{name=g}] \ar[from=f,to=g,Rightarrow,"\si"]
+  \ar[dd,dotted,crossing over]\\
+  Pz \ar[rr,near end,"Ph" description,bend left] \ar[dr,"Pv"']
+  \ar[rr,phantom,shift left=3,near start,""{name=gm1}]
+  \ar[rr,phantom,shift right=3,near start,""'{name=gm2}]
+  \ar[from=gm1,to=gm2,Rightarrow,"\gm"]
+  && Px\\
+  & Py\ar[ur,shift left=2,"Pf"{name=Pf}] \ar[ur,shift right=2,"Pg"'{name=Pg}] \ar[from=Pf,to=Pg,Rightarrow,"P\si"]\\
+\end{tikzcd}
+\]
+
+Recall that a \emph{precartesian} morphism for an ordinary fibration $P$ is an $f:x\to y$ such that any $g:w\to y$ with $Pg = Pf$ (rather than $Pg = Pf \circ h$) factors uniquely through $f$ by a morphism over $1_x$.
+
+\begin{lem}\label{thm:stabcart}
+  A 2-cell $\si:f\To g:x\to y$ is stably cartesian (resp.\ stably precartesian) if and only if it is cartesian (resp.\ precartesian) for the ordinary functor $\sT(x,y) \to \sC(Px,Py)$ and moreover for any $v:z\to y$ its (pre)cartesianness is preserved by the commutative square
+  \[
+  \begin{tikzcd}
+    \sT(x,y) \ar[d] \ar[r] & \sT(z,y) \ar[d] \\
+    \sC(Px,Py) \ar[r] & \sC(Pz,Py)
+  \end{tikzcd}
+  \]
+\end{lem}
+\begin{proof}
+  Stable (pre)cartesianness is exactly ordinary (pre)cartesianness of $\si\circ v$ in $\sT(z,y)$ for any $v:z\to y$.
+\end{proof}
+
+\begin{lem}\label{thm:stabcart-cart}
+  If $g:x\to y$ is a morphism in \sT such that there exists a cartesian morphism $h:w\to y$ over $Pg:Px \to Py$, and $\si:f\To h$ is a stably 2-cartesian (resp.\ stably 2-precartesian) 2-cell, then there exists a stably cartesian (resp.\ stably precartesian) 2-cell over $P \si$ with codomain $g$.
+\end{lem}
+\begin{proof}
+  Since $h$ is cartesian, we have $g \cong h\circ k$ for some $k:x\to w$ over $1_{Px}$.
+  And stably (pre)cartesian 2-cells are closed under precomposition with any morphism and composition with any invertible 2-cell, so the composite $f\circ k \xto{\si\circ k} h\circ k \cong g$ is stably (pre)cartesian.
+\end{proof}
+
+Stably cartesian 2-cells are of course closed under composition (along 1-cells).
+It doesn't really make sense to ask this about stably 2-cartesian 2-cells, since the domain of a stably 2-cartesian 2-cell may no longer be a cartesian morphism and hence not the target of any stably 2-cartesian 2-cell.
+However, if its $P$-image also has a cartesian lift, then we can factor it through that.
+
+\begin{lem}\label{thm:2cart-compose}
+  Suppose $\si:f\To g:x\to y$ is stably 2-cartesian, so that in particular $g$ is cartesian.
+  Suppose also that $h:z\to y$ is a cartesian morphism with $P h = P f$, so that we have $f \cong h f'$ for some essentially unique $f':x\to z$.
+  Finally, suppose $\tau : k\To h$ is another stably 2-cartesian 2-cell.
+  Then the composite $\si (\tau\circ f')$ is again stably 2-cartesian.
+\end{lem}
+\begin{proof}
+  By stability, $\tau\circ f'$ is again stably cartesian, hence $\si(\tau\circ f')$ is also stably cartesian, and thus stably 2-cartesian.
+\end{proof}
+
+This lemma is not true in the precartesian case.
+In fact, as for ordinary categories, if precartesian 2-cells are closed under composition then they are cartesian.
+This is condition~\ref{item:f4} of the following lemma.
+
+\begin{lem}\label{thm:fibrant}
+  Let $P:\sT\to\sC$ be a strict functor, and suppose that $a\in \sT$ has the property that every $f:x\to Pa$ in \sC has a cartesian lifting with codomain $a$.
+  Then the following additional conditions are equivalent:
+  \begin{enumerate}
+  \item The functor $\sT(b,a) \to \sC(Pb,Pa)$ is a fibration for all $b\in\sT$, and every commutative square
+  \[
+  \begin{tikzcd}
+    \sT(b,a) \ar[d] \ar[r] & \sT(c,a) \ar[d] \\
+    \sC(Pb,Pa) \ar[r] & \sC(Pc,Pa)
+  \end{tikzcd}
+  \]
+  is a morphism of fibrations.\label{item:f3}
+  \item Every $\be : f\To g : x\to Pa$ has a stably 2-cartesian lifting with codomain $a$.\label{item:f1}
+  \item For any $g:b\to a$ and $\be : f\To Pg : Pb \to Pa$ there is a stably cartesian lifting with codomain $g$.\label{item:f2}
+  \item Every $\be : f\To g : x\to Pa$ has a stably 2-precartesian lifting with codomain $a$, and if $\si$ and $\tau$ are stably 2-precartesian as in \cref{thm:2cart-compose} then so is $\si (\tau\circ f')$.\label{item:f4}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  The equivalence~\ref{item:f3}$\Leftrightarrow$\ref{item:f1} follows from \cref{thm:stabcart}, while~\ref{item:f1}$\Leftrightarrow$\ref{item:f2} follows from \cref{thm:stabcart-cart}.
+  Finally, condition~\ref{item:f4} is equivalent to saying that the composite of a stably 2-precartesian 2-cell with a stably precartesian 2-cell is stably 2-precartesian; by the construction of \cref{thm:stabcart-cart} this implies that stably precartesian 2-cells are closed under composition, hence are all stably cartesian.
+\end{proof}
+
+We call an object $a$ \textbf{fibrant} if it satisfies the equivalent conditions of \cref{thm:fibrant}.
+By a straightforward extension of~\ref{item:f3}, $P:\sT\to\sC$ is a fibration if and only if every object of $\sT$ is fibrant \emph{and} stably cartesian 2-cells are closed under \emph{post}composition with morphisms.
+
+\begin{thm}\label{thm:fibrant-corefl}
+  Let $\sCart_{/\sC}$ be the 2-category whose objects are strict functors $P:\sT\to\sC$, whose morphisms are pseudofunctors strictly over $\sC$ that preserve cartesian morphisms and stably cartesian 2-cells, and whose 2-cells are transformations over $\sC$.
+  Let $\sFib_{/\sC}$ be the locally full sub-2-category of $\sCart_{/\sC}$ whose objects are fibrations $P:\sT\to\sC$ and whose morphisms are morphisms of fibrations over $\sC$.
+  Then $\sFib_{/\sC}$ is coreflective in $\sCart_{/\sC}$.
+\end{thm}
+\begin{proof}
+  The coreflection $\sT\f$ consists of the fibrant objects of $\sT$ together with all the morphisms $f$ such that postcomposition with $f$ preserves stably cartesian 2-cells.
+\end{proof}
+
+For a bicategory $\sC$, we write $\sC^\to$ for the bicategory whose objects are morphisms of \sC, whose morphisms are pseudo-commutative squares (i.e.\ squares filled with a specified isomorphism), and whose 2-cells are commuting cylinders.
+There is a strict functor $\cod : \sC^\to\to\sC$ sending each arrow to its codomain.
+The cartesian morphisms in $\sC^\to$ (with respect to $\cod$) are exactly the bipullback squares.
+
+\begin{defn}
+  A \textbf{fibration in $\sC$} is a fibrant object of $\sC^\to$, i.e.\ an object of $\sC^\to\f$.
+  A \textbf{morphism of fibrations} is a morphism in $\sC^\to\f$.
+\end{defn}
+
+Thus in particular every bipullback of a fibration exists.
+Given a morphism of which every bipullback exists, the additional conditions of \cref{thm:fibrant} can be checked without loss of generality only in the case when $b$ is an identity morphism.
+Condition~\ref{item:f3} then becomes the usual ``representable'' characterization of fibrations in a bicategory~\cite{street:fibi,street:conspectus}.\footnote{Street's fibrations in a bicategory are defined representably using a weak ``up to isomorphism'' notion of fibration of ordinary categories.
+Our approach avoids this by working more abstractly with $\sC^\to$ whose morphisms are \emph{pseudo}-commutative squares, so that the functors we are looking at representably are actually the ``isofibrant replacements'' of the more na\"ive ones, and hence they can be on-the-nose fibrations.}
+And if we separate the stability of the 2-precartesian 2-cells in condition~\ref{item:f4} into separate precomposition with cartesian morphisms and with morphisms lying over identities in $\sC$, then it becomes essentially the characterization of fibrations in~\cite{ptj:fib-pprod}.
+
+\begin{thm}
+  If we write $\fibc=\sC^\to\f$ for the bicategory of fibrations in \sC and morphisms of fibrations, then
+  the strict functor $\cod : \fibc \to \sC$ is a fibration.
+\end{thm}
+\begin{proof}
+  By definition, since $(-)\f$ coreflects into $\sFib_\sC$.
+\end{proof}
+
+This is also proven in~\cite[Example 3.4.6]{buckley:2fib}, using the representable definition of fibration and assuming that all bipullbacks exist in \sC.
+
+We end with the following observation:
+
+\begin{thm}\label{thm:ldopf-span}
+  For any bicategory \sC, local discrete opfibrations over \sC are equivalent to lax functors $F:\sC \to \cSpan$, and also to normal lax functors $\sC\to\cProf$.
+\end{thm}
+\begin{proof}[Sketch of proof]
+  The data of a discrete local opfibration $P:\sT\to\sC$ consists of
+  \begin{itemize}
+  \item For each $x\in \sC$ a set of objects over $x$ (corresponding to the set $F(x)$).
+  \item For each $f:x\to y$ in $\sC$, a set of morphisms over $f$, each with a domain over $x$ and a codomain over $y$ (corresponding to the span $F(f)$).
+  \item The 2-cells in $\sC$ act covariantly on the morphisms over morphisms (the local functoriality of $F$).
+  \item A morphism over $f$ and one over $g$ can be composed to give one over $gf$ (the composition constraints of the lax functor $F$).
+  \item An identity morphism over $1_x$ for each object over $x$ (the unit constraints of $F$).
+  \item Suitable naturality and associativity conditions.
+  \end{itemize}
+  We leave it to the reader to check the details.
+  The second statement follows since $\cProf$ is the ``coreflection'' of $\cSpan$ from the 2-category of lax functors to the 2-category of normal lax ones (see~\cite[Prop.5.14]{cs:multicats}).
+\end{proof}
+
+When $\sC$ is a 1-category, a discrete local opfibration over it is just any functor at all whose domain is a 1-category.
+Thus this theorem includes as a special case the observation of~\cite{benabou:dist-at-work} that arbitrary functors over a category are classified by lax functors into \cSpan (see also~\cite{street:powerful,al:displayed}).
+
+
+\section{Comprehension bicategories}
+\label{sec:comp-bicat}
+
+An object $1$ of a bicategory \sM is \textbf{(bicategorically) terminal} if $\sM(A,1)$ is a contractible groupoid for all $A$.
+
+\begin{defn}
+  A \textbf{comprehension bicategory} is a strictly commuting triangle of functors of bicategories:
+  \[
+  \begin{tikzcd}
+    \sD \ar[dr,"P"'] \ar[rr,"\chi"] && \sM^\to \ar[dl,"\cod"] \\
+    & \sM
+  \end{tikzcd}
+  \]
+  in which:
+  \begin{enumerate}
+  \item \sM has a bicategorical terminal object,
+  \item $P$ is a fibration (hence in particular a strict functor), and
+  \item $\chi$ (not assumed to be a strict functor) preserves cartesian 1-cells and stably cartesian 2-cells.
+  \end{enumerate}
+\end{defn}
+
+As in the 1-categorical case, we have:
+
+\begin{lem}\label{thm:bicc-fib}
+  In any comprehension bicategory, the functor $\chi$ factors essentially uniquely through $\fibm$.
+\end{lem}
+\begin{proof}
+  Since $\fibm = \sM^\to\f$, this follows immediately from \cref{thm:fibrant-corefl}.
+\end{proof}
+
+Thus, we could equivalently have defined a comprehension bicategory by using $\fibm$ instead of $\sM^\to$.
+However, the definition using $\sM^\to$ will be convenient in \cref{sec:fib-comp-bicat}.
+On the other hand, since (unlike in the 1-categorical case) the inclusion $\fibm \to \sM^\to$ is not fully faithful, we must use $\fibm$ in the following definition:
+
+\begin{defn}
+  A comprehension bicategory is \textbf{full} if $\chi:\sD\to \fibm$ is bicategorically fully faithful (an equivalence on hom-categories).
+\end{defn}
+
+Explicitly, the data of a full comprehension bicategory consists of the following.
+We write some of them in a quasi-type-theoretic syntax, but I do not have a good type theory in mind to generate them from axioms, nor do I know a set of axioms that could be used to generate the important examples (\cref{sec:prof,sec:prof-modal}).
+\begin{itemize}
+\item The objects of the bicategory \sM we call \textbf{mode contexts}.
+  Its morphisms we call \textbf{mode context morphisms} and its 2-cells are \textbf{mode context 2-cells}:
+  \begin{mathpar}
+    \Xi\modectx \and
+    \Xi'\types k:\Xi \and
+    \Xi' \types \xi:k\To k':\Xi
+  \end{mathpar}
+  We have the usual bicategory compositions such as $k'\circ k$, $\xi'\circ \xi$, and $\xi'\xi$, with associativity and unit isomorphisms satisfying the usual laws.
+  We denote the terminal object of $\sM$ by
+  \[\inferrule{ }{\ec\modectx}\]
+\item The objects of \sD over a mode context $\Xi\in\sM$ we call \textbf{dependent modes in context $\Xi$}:
+  \[ \Xi\types p\mode  \]
+\item Choosing cartesian morphisms in $\sD\to\sM$ gives us a reindexing operation:
+  \begin{mathpar}
+    \inferrule{\Xi\types p\mode \\ \Xi' \types k:\Xi}{\Xi' \types p[k] \mode}
+    \and
+  \end{mathpar}
+\item A dependent mode $\Xi\types p\mode$ has a \textbf{comprehension}, written $\Xi.p$ or $(\Xi,p)$, that is a mode context:
+  \begin{mathpar}
+    \inferrule{\Xi\modectx \\ \Xi\types p\mode}{(\Xi,p) \modectx}
+  \end{mathpar}
+  together with a mode context morphism $(\Xi,p)\types \pr_p:\Xi$.
+\item A section of $(\Xi,p)\types \pr_p:\Xi$ (that is, a morphism $\al:\Xi\to \Xi.p$ \emph{equipped with} an isomorphism $\pr_p \circ \al \cong 1_{\Xi}$) a is called a \textbf{mode term}:
+  \[ \Xi \types \al:p. \]
+  Given two such sections, a 2-cell $e:\al\To \be$ such that the composite $1 \cong \pr_p \circ \al \to \pr_p \circ \be \cong 1$ is the identity is called a \textbf{mode 2-cell}:
+  \[ \Xi \types e: \al\To \be : p. \]
+  In particular, we can talk about two mode terms being \emph{isomorphic}.
+\item Although \sM may not have all bipullbacks, the reindexing of any dependent mode $\Xi\types p\mode$ along $\Xi' \types k:\Xi$ induces a bipullback square
+  \begin{equation}
+    \begin{tikzcd}
+      \Xi'.p[k] \ar[d] \ar[r] \ar[dr,phantom,"\cong"] & \Xi.p \ar[d] \\ \Xi' \ar[r,"k"'] & \Xi
+    \end{tikzcd}\label{eq:modecomp-pb}
+  \end{equation}
+  pseudofunctorially in $k$.
+  In particular, if also $\Xi''\types k':\Xi'$ then $\Xi''.p[k\circ k']$ is equivalent (not isomorphic, which doesn't really make sense in a bicategory) to $\Xi''.p[k][k']$ over $\Xi''$.
+\item The universal property of bipullbacks implies in particular that a mode context morphism $\Xi' \to \Xi.p$ is determined essentially uniquely by a mode context morphism $\Xi' \types k:\Xi$ together with a section $\Xi' \types \al:p[k]$:
+  \begin{mathpar}
+    \inferrule{\Xi' \types k:\Xi \\ \Xi' \types \al:p[k]}{\Xi' \types (k,\al):(\Xi,p)}
+  \end{mathpar}
+  Thus, as in ordinary dependent type theory, as long as all mode contexts are built up inductively out of modes, we can reduce mode context morphisms (up to isomorphism) to tuples of mode terms.
+\item The stably 2-precartesian lift, as in \cref{thm:fibrant}\ref{item:f4}, of a mode context 2-cell $\Xi' \types \xi:k\To k' : \Xi$ at a mode $\Xi\types p\mode$ consists of a mode term
+  \begin{equation}
+  \Xi', x:p[k'] \types \xi^*(x) : p[k]\label{eq:mode-xistar}
+  \end{equation}
+  and a mode context 2-cell
+  \[ \Xi', x:p[k'] \types \xibar(x) : (k,\xi^*(x)) \To (k',x) : (\Xi,p). \]
+  Stability means that $\xi^*(x)$ and $\xibar(x)$ are preserved, up to isomorphism, by substitution into $\xi$ and $x$.
+\item The universal property of 2-precartesianness says in particular that liftings of a mode context 2-cell $\xi$ to a context extension of its codomain are determined uniquely by mode 2-cells involving $\xi^*$:
+  \begin{mathpar}
+    \inferrule{\Xi' \types \xi : k \To k' : \Xi\\
+      \Xi' \types \al:p[k] \\
+      \Xi' \types \be:p[k']\\
+      \Xi' \types e : \al \To \xi^*(\be) : p[k]}
+    {\Xi' \types (\xi,e) : (k,\al) \To (k',\be) : (\Xi,p)}
+  \end{mathpar}
+  Categorically, $(\xi,e)$ is just given by postcomposition of $(k,e)$ with $\xibar$.
+  Syntactically, it seems better to have the above rule and omit mention of $\xibar$, since it can be recovered simply as $(\xi,1)$.
+
+  The fact that $e$ is uniquely determined by $(\xi,e)$ is the type-theoretic explanation of 2-cartesianness, or equivalently the reason that comprehensions must be internal fibrations: it allows us to reduce mode context \emph{2-cells} to mode 2-cells in the same way that we reduce mode context morphisms to mode terms.
+\item The composition condition in \cref{thm:fibrant}\ref{item:f4} says that if also $\Xi' \types \xi' : k'\To k'' : \Xi$ then $\xi^*({\xi'}^*(x)) \cong (\xi'\xi)^*(x)$ and that the composite
+  \[ (\xi'\xi)^*(x) \cong (k,\xi^*({\xi'}^*(x))) \xTo{\xibar({\xi'}^*(x))} (k',{\xi'}^*(x)) \xTo{\overline{\xi'}(x)} (k'',x) \]
+  is equal to $\overline{\xi'\xi}(x)$.
+\end{itemize}
+
+
+\section{Fibred comprehension bicategories}
+\label{sec:fib-comp-bicat}
+
+% \begin{defn}\label{defn:opf-over}
+%   Suppose $q:B\to C$ is an ordinary fibration of ordinary categories.
+%   A functor $p:A\to B$ is an \textbf{opfibration over $C$} if the following hold.
+%   \begin{enumerate}
+%   \item The composite $qp$ is a fibration.
+%   \item The functor $p$ is a morphism of fibrations, i.e.\ it takes $qp$-cartesian arrows to $q$-cartesian arrows.
+%   \item For each $c\in C$ the functor between fibers $p_c : A_c \to B_c$ is an opfibration.
+%   \item For any commutative squares of the following form:
+%     \[\begin{tikzcd}[row sep=small]
+%       a \ar[r,"f"] \ar[dr,"g"'] & b \ar[dr,"h"] \\
+%       & c \ar[r,"k"'] & d & \mathllap{\in\,} A\ar[dd,dashed,"p"] \\
+%       x \ar[r,"r"] \ar[dr,"s"'] & y \ar[dr,"t"] \\
+%       & z \ar[r,"u"'] & w & \mathllap{\in\,} B\ar[dd,dashed,"q"] \\
+%       m \ar[r,"l"] \ar[dr,equals] & n \ar[dr,equals] \\
+%       & m \ar[r,"l"'] & n & \mathllap{\in\,} C
+%     \end{tikzcd}\]
+%     in which $s$ and $t$ are $q$-vertical as shown (lie over identities in $C$), $r$ and $u$ are $q$-cartesian (so that $s$ is uniquely determined by the commutativity $us=tr$), $f$ and $k$ are $qp$-cartesian (so that $g$ is uniquely determined by the commutativity $kg=hf$), and $h$ is $p_n$-opcartesian, it follows that $g$ is also $p_m$-opcartesian.\label{item:opf-over-commute}
+%   \end{enumerate}
+% \end{defn}
+
+% Informally, condition~\ref{item:opf-over-commute} says that pullback in $A$ along morphisms in $C$ commutes, up to isomorphism, with pushforward along morphisms in the fibers of $B$.
+% There is an analogous notion of \emph{fibration over $C$}, but it is equivalent to simply saying that the functor $p$ itself is a fibration (which, in particular, implies that the composite $qp$ is a fibration).
+% Both definitions are also equivalent to asking that $p$ be an internal opfibration or fibration, respectively, in the 2-category $\cFib_{/C}$ of fibrations over $C$.
+% On the other hand, if $q$ is a product projection $C\times D \to C$, then $p:A\to C\times D$ is an opfibration over $q$ if and only if the span $C \ot A \to D$ is a \emph{two-sided fibration} in the sense of~\cite{street:fib-yoneda-2cat}.
+
+% Note that if $q$ is a cloven fibration and $p$ is an opfibration over $q$, then we can chose a cleavage for $qp$ making $p$ into a strict morphism of fibrations.
+% First choose any cartesian lifts for $qp$, whose images in $B$ are still cartesian and hence isomorphic to the chosen cartesian lifts there.
+% These isomorphisms lie in fibers of $q$, so the opfibration condition allows us to modify the $qp$-cartesian lifts to lie strictly above the chosen $q$-cartesian ones.
+% In this case we will say that $p$ is \textbf{strictly cloven}.
+
+% \begin{defn}
+%   Given a commutative diagram of functors
+%   \[
+%   \begin{tikzcd}
+%     A' \ar[d,"p'"'] \ar[r,"f"] & A \ar[d,"p"] \\
+%     B' \ar[d,"q'"'] \ar[r,"g"] & B \ar[d,"q"] \\
+%     C' \ar[r,"h"] & C
+%   \end{tikzcd}
+%   \]
+%   in which $p'$ and $p$ are opfibrations over $q'$ and $q$, respectively, we say that $(f,g)$ is a \textbf{morphism of opfibrations over $h$} if
+%   \begin{itemize}
+%   \item $g$ is a morphism of fibrations from $q'$ to $q$ over $h$,
+%   \item $f$ is a morphism of fibrations from $q'p'$ to $qp$ over $h$, and
+%   \item $f$ takes opcartesian arrows in the fibers of $q'$ to opcartesian arrows in the fibers of $q$.
+%   \end{itemize}
+% \end{defn}
+
+% The Grothendieck construction for opfibrations over $p$ is:
+
+% \begin{thm}
+%   For a category $C$, the 2-category of pairs consisting of a cloven fibration $q:B\to C$ and a strictly cloven opfibrations $p:A\to B$ over $q$ is bicategorically equivalent to the 2-category of pseudofunctors $C\op \to \cOpf$, where $\cOpf$ is the 2-category of opfibrations and strictly commuting squares that are morphisms of opfibrations.\qed
+% \end{thm}
+
+% \begin{defn}
+%   Given a local fibration $Q:\sB\to\sC$ of bicategories, a functor $P:\sA\to\sB$ is a \textbf{local opfibration over $Q$} if each functor $P_{x,y}:\sA(x,y) \to\sB(Px,Px)$ is an opfibration over the fibration $Q_{Px,Px}:\sB(Px,Py)\to \sC(QPx,QPy)$ and composition in \sA is a morphism of opfibrations over composition in \sC.
+%   \[
+%   \begin{tikzcd}
+%     \sA(y,z)\times \sA(x,y) \ar[d] \ar[r] & \sA(x,z) \ar[d] \\
+%     \sB(Py,Pz)\times \sB(Px,Py) \ar[d] \ar[r] & \sB(Px,Pz) \ar[d] \\
+%     \sC(QPy,QPz)\times\sC(QPx,QPy) \ar[r] & \sC(QPx,QPz).
+%   \end{tikzcd}
+%   \]
+% \end{defn}
+
+% \begin{defn}
+%   Let $P:\sC\to\sM$ be a strict functor of bicategories, and $q:B\to C$ a fibration \emph{in} $\sC$.
+%   We say that \textbf{$P$ preserves the fibration $q$} if $P(q) : PB \to PC$ is a fibration in \sM \emph{and} for any $X\in\sC$ the following square is a morphism of fibrations:
+%   \[
+%   \begin{tikzcd}
+%     \sC(X,B) \ar[r] \ar[d] & \sM(PX,PB) \ar[d]\\
+%     \sC(X,C) \ar[r] & \sM(PX,PC)
+%   \end{tikzcd}
+%   \]
+%   We write $\fibp$ for the bicategory whose objects are fibrations in \sC that are preserved by $P$ and whose morphisms are morphisms of fibrations in \sC whose image in \sM is again a morphism of fibrations.
+%   There is a commutative square
+%   \[
+%   \begin{tikzcd}
+%     \fibp \ar[r] \ar[d] & \fibc \ar[r,"\cod"] & \sC \ar[d,"P"] \\
+%     \fibm \ar[rr,"\cod"'] && \sM
+%   \end{tikzcd}
+%   \]
+% \end{defn}
+
+\begin{defn}\label{defn:fibicc}
+  A \textbf{fibred comprehension bicategory} is a strictly commuting diagram of functors of bicategories:
+  \[
+  \begin{tikzcd}[row sep=small]
+    \sT \ar[rr] \ar[dr] \ar[dd] && \sC^\to \ar[dl] \ar[dd] \\
+                                   % \fibp \ar[dd] \ar[r] & \fibc \ar[dll,crossing over] \\
+    & \sC \\
+    \sD \ar[rr] \ar[dr] && \sM^\to \ar[dl] \\
+    & \sM \ar[from=uu,crossing over,"P" near start]
+  \end{tikzcd}
+  \]
+  in which:\fxnote{I'm not entirely sure of the details of this definition, what should be what kind of fibration and how they interact.}
+  \begin{enumerate}
+  \item The top and bottom triangles are comprehension bicategories.
+  \item $P:\sC\to\sM$ is a local discrete opfibration and preserves terminal objects.
+  \item $\sT\to\sD$ is a strict morphism of cloven fibrations over $P$.
+  \item The induced functor $\sT\to\sC\times_{\sM}\sD$ is a discrete opfibration on all fibers of hom-categories.
+    That is, for any morphism $\sigma\in\sC(\Gamma,\Delta)$, and any objects $A,B\in\sT$ lying over $\Gamma,\Delta\in \sC$ and $p,q\in\sD$ respectively, the induced functor of ordinary categories is a discrete opfibration:\label{item:fibicc4}
+    \[ \sT(A,B)_\sigma \to (\sC\times_{\sM}\sD)((\Gamma,p),(\Delta,q))_\sigma \]
+  \end{enumerate}
+  A fibred comprehension bicategory is \textbf{full} if both its constituent comprehension bicategories are.
+\end{defn}
+
+\begin{rmk}
+The codomain of the functor in~\ref{item:fibicc4} is a strict pullback, which exists since all the functors involved are strict (the only non-strict functors in the diagram above are the horizontal ones).
+If we omitted the discreteness condition on this opfibration, we would have to impose extra conditions that the composition functors preserve its opcartesian arrows and that they commute with the local fibration structures, but in the discrete case these are automatic.
+\end{rmk}
+
+\begin{rmk}
+  As noted in \cref{sec:comp-bicat}, the functors $\sD\to\sM^\to$ and $\sT\to\sC^\to$ factor through $\fibm$ and $\fibc$ respectively, and the commutativity of the above diagram implies that any fibration in \sC in the image of \sT is mapped to a fibration in \sM.
+  However, there seems no reason that \emph{all} fibrations in \sC should be mapped to fibrations in \sM, so that there is no functor $\fibc\to\fibm$ and we could not write the above commutative diagram using $\fibm$ and $\fibc$ instead of $\sM^\to$ and $\sC^\to$.
+  This is our reason for defining comprehension bicategories using the latter instead of the former.
+\end{rmk}
+
+Given a full comprehension bicategory $\sD\to\sM$, we describe a full fibred comprehension bicategory $\sT\to\sC$ suggestively in type-theoretic style.
+Firstly, recall that by \cref{thm:ldopf-span}, the local discrete opfibration $\sC\to\sM$ is equivalently a lax functor from $\sM$ into \cSpan; this yields the following data.
+\begin{itemize}
+\item For each mode context $\Xi\in\sM$, a collection of \textbf{contexts with shape $\Xi$} (the objects of \sC lying over $\Xi$):
+  \[ \Gamma \ctx_\Xi \]
+\item A terminal context with terminal shape:
+  \[ \inferrule{ }{\ec \ctx_{\ec}} \]
+\item For any two contexts $\Gamma$ and $\Delta$ of shapes $\Xi'$ and $\Xi$ respectively, and any context mode morphism $k:\Xi'\to \Xi$ in \sM, a set of \textbf{context morphisms of shape $k$ from $\Gamma$ to $\Delta$}:
+  \[\Gamma\types_k \sigma: \Delta\]
+\item A covariantly functorial action of mode context 2-cells on such context morphisms, which will give the structural rules and mode transformations:
+  \[ \inferrule{
+    \Xi' \types \xi : k\To l : \Xi \\
+    \Gamma \ctx_{\Xi'} \\ \Delta\ctx_{\Xi}\\
+    \Gamma \types_k \sigma :\Delta \\ }{\Gamma\types_l \xi_*\sigma:\Delta} \]
+  Functoriality means
+  \begin{mathpar}
+    (1_k)_* \sigma \jdeq \sigma
+    \and
+    (\ze\xi)_* \sigma \jdeq \ze_* \xi_* \sigma
+  \end{mathpar}
+\item For each context $\Gamma$ of shape $\Xi$, an identity morphism:
+  \[ \inferrule{\Gamma \ctx_\Xi}{\Gamma \types_{1_\Xi} 1_\Gamma : \Gamma}\]
+\item A composition (cut/substitution) operation on context morphisms
+  \[
+  \inferrule{\Gamma\types_k \sigma:\Delta \\ \Delta\types_l \tau:\Psi}{\Gamma\types_{l\circ k} \tau[\sigma] : \Psi}
+  \]
+  This respects the action of mode context 2-cells.
+  That is, given the above and also $\al:k\To k'$ and $\be:l\To l'$, we have
+  \[ (\ze\circ\xi)_* \tau[\sigma] \jdeq (\ze_*\tau)[\xi_* \sigma] \]
+  It is also associative and unital modulo the associativity and unit isomorphisms for composition of mode context morphisms.
+  That is, if we also have $\Psi \types_m \mu :\Phi$, then
+  \[\Gamma\types_{m\circ (l\circ k)} \mu[\tau[\sigma]] : \Phi
+  \qquad\text{and}\qquad
+  \Gamma\types_{(m\circ l)\circ k} \mu[\tau][\sigma] : \Phi
+  \]
+  cannot literally be compared since they have different shapes, but the action of the associativity isomorphism $m\circ (l\circ k) \cong (m\circ l) \circ k$ takes one to the other, and similarly for identities.
+\end{itemize}
+Secondly, $\sT$ and its functors yield the following additional data.
+\begin{itemize}
+\item For any $\Gamma\ctx_\Xi$ and any dependent mode $\Xi\types p\mode$, a set of \textbf{types in context $\Gamma$ with mode $p$}:
+  \[\Gamma\types A\type_p\]
+  These are the objects of the fiber of $\sT$ over $(\Gamma,p)\in \sC\times_{\sM}\sD$.
+\item The cartesian lifts for $\sT\to\sC$ lying over those of $\sD\to\sM$ yield substitution of context morphisms into types lying over substitution of mode context morphisms into modes:
+  \begin{mathpar}
+    \inferrule{\Gamma\types A\type_p \\ \Delta \ctx_{\Xi'} \\ \Gamma \ctx_\Xi \\ \Xi' \types k:\Xi \\ \Delta \types_k \sigma:\Gamma}{\Delta \types A[\sigma] \type_{p[k]}} \and
+    % (e_* f) [\sigma] \jdeq (e[k])_* f[\sigma]
+  \end{mathpar}
+\item A dependent type $\Gamma\types A\type_p$ has a \textbf{comprehension} $\Gamma.A$ or $(\Gamma,A)$, lying over the corresponding mode context comprehension:
+  \[ \inferrule{\Gamma \ctx_{\Xi} \\ \Gamma\types A\type_p}{(\Gamma,A) \ctx_{(\Xi,p)}} \]
+  We also have a projection context morphism $(\Gamma,A) \types_{\pr_p} \pr_A \Gamma$.
+\item If we also have a mode term $\Xi \types \al : p$, then a section of $\pr_A$ lying over $\al$ is called a \textbf{term}:
+  \[ \Gamma \types_\al t:p \]
+\item Although not all pullbacks of context morphisms exist, reindexing of $\Gamma\types A\type_p$ along $\Gamma' \types_k \si:\Gamma$ does induce a ``pullback''
+  \begin{equation}
+    \begin{tikzcd}
+      \Gamma'.A[\si] \ar[d] \ar[r] & \Gamma.A \ar[d] \\
+      \Gamma' \ar[r] & \Gamma
+    \end{tikzcd}\label{eq:typecomp-pb}
+  \end{equation}
+  in the following sense.
+  The morphisms in~\eqref{eq:typecomp-pb} lie over those in~\eqref{eq:modecomp-pb}, and~\eqref{eq:typecomp-pb} ``commutes'' in the sense that the isomorphism in~\eqref{eq:modecomp-pb} transports the composite along one side of~\eqref{eq:typecomp-pb} to the other.
+  Moreover, given any mode context morphism $l:\Xi''\to\Xi'.p[k]$ (which, by the universal property of the bipullback~\eqref{eq:modecomp-pb}, is determined uniquely up to isomorphism by a pseudo-commutative square over $k$ and $\Xi.p\to \Xi$), and any context $\Gamma''$ with shape $\Xi''$, any square
+  \[\begin{tikzcd}
+    \Gamma'' \ar[d] \ar[r] & \Gamma.A \ar[d] \\
+    \Gamma' \ar[r] & \Gamma
+  \end{tikzcd}
+  \]
+  that ``commutes'' modulo $l$ in the evident sense factors through~\eqref{eq:typecomp-pb} by a unique context morphism $\Gamma'' \to \Gamma'.A[\si]$ with shape $l$.
+  These pullbacks are pseudofunctorial in an appropriate sense: $\Phi.A[\sigma\circ \sigma']$ is ``isomorphic'' to $\Phi.A[\sigma][\sigma']$ over the equivalence $\Xi''.p[k\circ k'] \simeq \Xi''.p[k][k']$.
+\item The universal property of bipullbacks implies in particular that a context morphism $\Delta \to \Gamma.p$ lying over $(k,\al)$ is uniquely determined by a context morphism $\Delta \types_k \sigma:\Gamma$ and a term $\Delta \types_\al t:p[\si]$:
+  \begin{mathpar}
+    \inferrule{\Delta \types_k \sigma:\Gamma \\ \Delta \types_\al t:p[\si]}{\Delta \types_{(k,\al)} (\sigma,t):(\Gamma,p)}
+  \end{mathpar}
+  So again we have that context morphisms can be reduced to tuples of terms.
+\item The 2-dimensional universal property of bipullbacks implies that mode 2-cells act covariantly on terms.
+  Specifically, if we have a mode 2-cell $\Xi \types e : \al\To \be : p$ (where $\Xi\types p\mode$ and so on), corresponding to a mode context 2-cell $\Xi \types (1,e) : (1,\al) \To (1,\be) : (\Xi,p)$, and a term $\Gamma \types_\al t:A$ over $\al$ corresponding to a context morphism $\Gamma \types_{(1,\al)} (1,t) : (\Gamma,A)$, then by the context 2-cell action we have $\Gamma \types_{(1,\be)} (1,e)_*(1,t) : (\Gamma,A)$, which factors through the bipullback to yield a section $\Gamma \types_\be e_*(t) : A$.
+  \begin{mathpar}
+    \inferrule{\Xi \types e : \al\To \be : p \\ \Gamma \types_\al t:A}{\Gamma \types_\be e_*(t) : A}
+    \and
+    (1,e_*(t)) \jdeq (1,e)_*(1,t)
+  \end{mathpar}
+  We would like the action of all mode context 2-cells on all context morphisms to be determined inductively by tuples of such dependent 2-cell actions, in the same way that all other context data is determined by tuples.
+  However, the action as formulated above is too simple to ensure this, because its construction only involves the action of mode context 2-cells of the form $(1,e)$ rather than the more general $(\xi,e)$.
+
+  To describe a more general action, we use the stably 2-precartesian lifts in the fibration $\sT\to\sC$.
+  Suppose we are given a mode context 2-cell $\Xi' \types \xi : k\To k' : \Xi$ and a context morphism $\Gamma' \types_k \si:\Gamma$ (hence also $\Gamma' \types_{k'} \xi_*(\si) : \Gamma$), and a type $\Gamma \types A \type_p$ with mode $\Xi\types p\mode$.
+  Then the stably 2-precartesian lift yields a morphism $\Gamma'.A[\xi_*(\si)] \to \Gamma'.A[\si]$ over $\Gamma'$, and a 2-cell in $\sC$ from the composite $\Gamma'.A[\xi_*(\si)] \to \Gamma'.A[\si] \to \Gamma.A$ to $\Gamma'.A[\xi_*(\si)] \to \Gamma.A$ lying over $\xibar$ in \sM:
+  \begin{mathpar}
+    \inferrule{\Xi' \types \xi : k\To k' : \Xi\\ \Gamma' \types_k \si:\Gamma \\ \Gamma \types A \type_p}{\Gamma',x:A[\xi_*(\si)] \types_{\xi^*} \xi^*(x) : A[\si]}
+  \end{mathpar}
+  The subscript $\xi^*$ on the conclusion turnstile refers to the mode term~\eqref{eq:mode-xistar}.
+  Stability means that we can substitute into $\xi$, $\si$, and $x$, while the composition condition on precartesian 2-cells says that $\xi^*({\xi'}^*(x))$ and $(\xi'\xi)^*(x)$ are equal modulo the composition isomorphism for the mode-level $\xi^*$.
+  
+  Now, if we have a mode term $\Xi' \types \al:p[k]$ and also a term $\Gamma' \types_\al t:A[\si]$ over it, we can form $\Gamma' \types_{(k,\al)} (\si,t) : (\Gamma,A)$.
+  And if we also have a mode term $\Xi' \types \be:p[k']$ and a mode 2-cell $\Xi'\types e : \al \To \xi^*(\be) : p[k]$, we can form the mode context 2-cell $\Xi' \types (\xi,e) : (k,\al) \To (k',\be) : (\Xi,p)$, which acts on $(\si,t)$ to yield $\Gamma' \types_{(k',\be)} (\xi,e)_*(\si,t) : (\Gamma,A)$.
+
+  The universal property of the bipullback $\Gamma'.A[\xi_*(\si)]$ now tells us that there is a term $\Gamma' \types_{\be} e^\xi_*(t) : A[\xi_*(\si)]$ such that $(\xi,e)_*(\si,t) = (\xi_*(\si),e^\xi_*(t))$ (modulo appropriate isomorphisms in $\sM$).
+  And the universal property of the 2-precartesian lifting gives us a 2-cell in $\sC$ from $t$ to $\xi^*\circ e^\xi_*(t)$ lying over $e$, so that we have $e_*(t) = \xi^*(e^\xi_*(t))$.
+  In other words, the above ``na\"{\i}ve'' action of mode 2-cells on terms factors through the type-level $\xi^*$ whenever the mode 2-cell $e$ factors through the mode-level $\xi^*$.
+  We can recover $e_*(t)$ in terms of this more general action as $e^1_*(t)$, so instead of the above rule we adopt
+  \begin{mathpar}
+    \inferrule{\Xi' \types \xi : k \To k' : \Xi \\
+      \Xi' \types e : \al\To \xi^*(\be) : p[k] \\
+      \Gamma' \types \si : \Gamma \\
+      \Gamma \types A\type_p \\
+      \Gamma' \types_\al t:A[\si]}{\Gamma \types_\be e^\xi_*(t) : A[\xi_*(\si)]}
+    \and
+    (\xi_*(\si),e^\xi_*(t)) \jdeq (\xi,e)_*(\si,t)
+  \end{mathpar}
+  along with a generalization of the rule $e_*(t) = \xi^*(e^\xi_*(t))$ to a ``functoriality'' condition:
+  \[ e^\xi_*(t) = {\xi'}^*(e^{\xi'\xi}_*(t)). \]
+\end{itemize}
+
+% The projection $\sC\to\sM$ should ``preserve the fibrations''
+% meaning its action on homs is a morphism of fibrations; this is not
+% automatic from being a local discrete opfibration, but if true then
+% it does imply that something or other is a pullback square.
+% Possibly that implies that maps between fibrations upstairs lying
+% over morphisms of fibrations downstairs are automatically morphisms
+% of fibrations upstairs, so that we don't need to worry about that
+% condition?
+
+
+\section{Lax limits in bicategories}
+\label{sec:laxlim}
+
+The central semantic construction of comprehension bicategories is the following, which has essentially no analogue for comprehension 1-categories.
+
+\begin{defn}
+  Suppose $f:a\to b$ is a morphism in a bicategory \sM.
+  A \textbf{lax limit} of $f$ is a 2-cell
+  \[
+  \begin{tikzcd}
+    l \ar[d,"p"'] \ar[dr,"\underset{\lambda}{\To}"',"q"] \\ a \ar[r,"f"'] & b
+  \end{tikzcd}
+  \]
+  that is universal, in the sense that for any object $x$, the functor defined by ``pasting with $\lambda$'' is an equivalence of categories
+  \[ \sM(x,l) \toiso \mathrm{LaxCones}(x,f) \]
+  where the objects of $\mathrm{LaxCones}(x,f)$ are 2-cells
+  \[
+  \begin{tikzcd}
+    x \ar[d,"g"'] \ar[dr,"\underset{\al}{\To}"',"h"] \\ a \ar[r,"f"'] & b
+  \end{tikzcd}
+  \]
+  and its morphisms are pairs of 2-cells $g\to g'$ and $h\to h'$ making an evident diagram commute.
+  In the internal dependent type theory of $\mathrm{Cat}$, we can write
+  \[\mathrm{LaxCones}(f)\coloneqq
+  \tsm{g:\sM(x,a)}{h:\sM(x,b)} \hom_{\sM(a,b)}(f\circ g,h).
+  \]
+\end{defn}
+
+\begin{lem}
+  In a lax limit as above, the morphism $p$ is a fibration.
+\end{lem}
+\begin{proof}
+  Suppose given $g:x\to l$ and $\al:h\to p\circ g : x\to a$.
+  Then we have a composite 2-cell
+  \[
+  \begin{tikzcd}
+    x \ar[r,"g"] \ar[dr,"h"',"\underset{\al}{\To}"] &
+    \ar[d,"p" description] \ar[dr,"\underset{\lambda}{\To}"',"q"] \\
+    & a \ar[r,"f"'] & b
+  \end{tikzcd}
+  \]
+  so the universal property of a lax limit gives a morphism $k:x\to l$ and isomorphisms $p\circ k \cong h$ and $q\circ k\cong q\circ g$ such that modulo these isomorphisms, the above pasting composite $(\lambda\circ h)(f\circ \alpha)$ coincides with $\lambda\circ k$.
+  This coincidence means exactly that the 2-cells $p\circ k \cong h \to p\circ g$ and $q\circ k \cong q\circ g$ form a morphism in $\mathrm{LaxCones}(f)$, hence are induced by a unique 2-cell $\be:k\to g$.
+  This is the cartesian lifting of $\al$ along $p$; we leave the proof of its universality to the reader.
+\end{proof}
+
+\begin{defn}
+  Given a bicategory \sM, let \arm denote the bicategory whose:
+  \begin{itemize}
+  \item Objects are morphisms $f:a\to b$ in \sM.
+  \item Morphisms from $f':a'\to b'$ to $f:a\to b$ are 2-cells in \sM (not necessarily invertible):
+    \[
+    \begin{tikzcd}
+      a' \ar[d,"f'"'] \ar[r,"g"] \ar[dr,phantom,"\Downarrow \gm"] & a \ar[d,"f"] \\
+      b' \ar[r,"h"'] & b
+    \end{tikzcd}
+    \]
+  \item 2-cells are pairs of 2-cells $g\to g'$ and $h\to h'$ making an evident cylinder commute.
+  \end{itemize}
+\end{defn}
+
+(By contrast, in \cref{sec:fib-bicat} we defined $\sM^\to$ to be the locally full subcategory of $\arm$ containing all the objects but only those morphisms for which $\gm$ is invertible.)
+
+\begin{lem}
+  The functor $\dom:\arm \to\sM$ is a fibration, with a canonical cleaving.
+\end{lem}
+\begin{proof}
+  A 2-cell is cartesian if its codomain part is an isomorphism.
+  Therefore, a canonical cartesian lift of $\gm$ as above along $\al:g'\to g$ is the pair $(\al,1_h)$ with domain $\gm(f\circ\al)$.
+  Such cartesian 2-cells are preserved by horizontal composition, so $\dom$ is a local fibration.
+
+  A 1-cell $\gm$ as above is cartesian if $h$ is an equivalence and $\gm$ is an isomorphism.
+  Therefore, a canonical cartesian lift of $f:a\to b$ along $g:a'\to a$ has domain $f\circ g$ and consists of $1_b$ with the coherence isomorphism $f\circ g \cong 1_b\circ (f\circ g)$.
+\end{proof}
+
+\begin{prob}\label{thm:arm-ccbicat}
+  If \sM has lax limits of morphisms and a terminal object, then there is a comprehension bicategory
+  \[
+  \begin{tikzcd}
+    \arm \ar[rr,"\mathrm{laxlim}"] \ar[dr,"\dom"'] && \fibp \ar[dl,"\cod"] \\
+    &\sM
+  \end{tikzcd}
+  \]
+  where the functor $\mathrm{laxlim}$ takes a morphism $f:a\to b$ to the morphism $p:l\to a$ in its lax limit as above.
+\end{prob}
+\begin{constr}
+  Given a morphism $\gm$ in \arm as above, with $\lambda$ and $\lambda'$ the lax limits of $f'$ and $f$ as above, the composite 2-cell
+  \[
+  \begin{tikzcd}
+    l' \ar[r,"p'"]\ar[dr,"q'"',"\Downarrow\lambda'"] &
+    a' \ar[d,"f'" description] \ar[r,"g"] \ar[dr,phantom,"\Downarrow \gm"] & a \ar[d,"f"] \\
+    & b' \ar[r,"h"'] & b
+  \end{tikzcd}
+  \]
+  factors (up to isomorphism) as the composite
+  \[
+  \begin{tikzcd}
+    l' \ar[r,"\chi_f"] & l \ar[r,"p"] \ar[dr,"q"',"\Downarrow\lambda"] & a \ar[d,"f"] \\ && b
+  \end{tikzcd}
+  \]
+  It is straightforward to check that the pseudo-commutative square
+  \[
+  \begin{tikzcd}
+    l' \ar[r,"\chi_f"] \ar[d,"p'"'] \ar[dr,phantom,"\cong"] & l \ar[d,"p"] \\ a' \ar[r,"g"'] & a
+  \end{tikzcd}
+  \]
+  is a morphism of fibrations.
+  We leave it to the reader to extend this to a (pseudo) functor of bicategories and show that it preserves cartesian morphisms and 2-cells.
+  \fxnote{Should probably give more details.}
+\end{constr}
+
+
+\section{Collages in proarrow equipments}
+\label{sec:equip}
+
+We now describe our main construction of fibred comprehension bicategories.
+
+\begin{defn}[\cite{wood:proarrows-i}]
+  A \textbf{proarrow equipment} is an identity-on-objects and locally fully faithful functor of bicategories $\rep{(\blank)} : \sK\to\sM$ such that each 1-morphism $\rep f$ in its image has a right adjoint $\corep f$.
+\end{defn}
+
+In a proarrow equipment, we write $A\to B$ for morphisms in \sK and $A\hto B$ for morphisms in \sM, and call the former \textbf{arrows} and the latter \textbf{proarrows}.
+
+\begin{eg}
+  The canonical example is when \sK is the bicategory \cCat of categories and functors, \sM is the bicategory \cProf of categories and profunctors, and $\rep f$ and $\corep f$ are the representable and corepresentable profunctors associated to a functor.
+  Our convention is that a profunctor $A\hto B$ is a functor $B\op\times A\to\mathrm{Set}$, so that for $f:A\to B$ we have $\rep f(b,a) = B(b,fa)$ and $\corep f(a,b) = B(fa,b)$.
+
+  Note that coproducts of categories are both bicategorical products and coproducts in \cProf.
+  In particular, the empty category is a terminal object of \cProf.
+\end{eg}
+
+Motivated by this example, we sometimes refer to a proarrow in a general equipment as being \textbf{representable} it is (isomorphic to) one of the form $\rep f$ for some arrow $f$.
+
+\begin{defn}
+  A \textbf{collage} of a proarrow $m:A\hto B$ is a lax colimit that respects representability.
+  That is, it consists of arrows $i:A\to C$ and $j:B\to C$ and a 2-cell $\kappa:\rep j \circ m \to \rep i$, i.e.\
+  \[
+  \begin{tikzcd}
+    A \ar[r,"\mathclap{|}" description,"m"] \ar[dr,"\rep i"',"\overset\kappa\Leftarrow"] & B \ar[d,"\rep j"] \\ & C
+  \end{tikzcd}
+  \]
+  such that composing with $\ka$ induces equivalences of categories
+  \begin{align*}
+    \sM(C,X) &\toiso \tsm{f:\sM(A,X)}{g:\sM(B,X)} \sM(B,X)(g\circ m,f)\\
+    \sK(C,X) &\toiso \tsm{f:\sK(A,X)}{g:\sK(B,X)} \sM(B,X)(\rep g\circ m,\rep f).
+  \end{align*}
+  A collage is \textbf{good} if the mate of $\kappa$ also exhibits $C$ as a lax limit of $m$:
+  \[
+  \begin{tikzcd}
+    C \ar[d,"\corep i"'] \ar[dr,"\To"',"\corep j"] \\ A \ar[r,"\mathclap{|}" description,"m"'] & B
+  \end{tikzcd}
+  \]
+\end{defn}
+
+In particular, if a proarrow equipment has good collages, then \sM has lax limits of morphisms.
+
+\begin{eg}
+  In \cProf, the collage of a profunctor $M:A\hto B$ is the category whose objects are the disjoint union of those of $A$ and $B$, with $A$ and $B$ included as full subcategories (these inclusions are $i$ and $j$), and with $M$ supplying the arrows from objects of $B$ to objects of $A$ (and no arrows in the other direction).
+\end{eg}
+
+One of the main uses of proarrow equipments is to do ``formal category theory'', and in particular to talk about limits and colimits in a context that includes all different ``category theories''.
+Since this includes enriched category theory, the appropriate notion of limit is a \emph{weighted} one.
+
+\begin{defn}
+  Let $k:A\hto B$ be a proarrow in a proarrow equipment and $f:A\to C$ an arrow.
+  A \textbf{$k$-weighted limit of $f$} is an arrow $l:B\to C$ together with a 2-cell $\rep l \circ k \to \rep f$ that is a right extension, i.e.\ such that for any $g:B\hto C$ the precomposition map is a bijection:
+  \[ \sM(g,\rep l) \to \sM(g\circ k,\rep f) \]
+  We write $\lim^k f$ for such an $l$ if it exists.
+\end{defn}
+
+\begin{eg}\label{eg:lim-comp}
+  Suppose $f:A\to C$ and $h:B\to A$ are arrows.
+  Then we have
+  \[ \sM(g,\rep{(f\circ h)}) \cong \sM(g,\rep f \circ \rep h) \cong \sM(g\circ \corep h, \rep f) \]
+  by the mate correspondence for the adjunction $\rep h \adj \corep h$; thus $f\circ h$ is the $\corep h$-weighted limit of $f$.
+\end{eg}
+
+However, for specific ``conical'' limits there is also a more direct ``representable'' definition that makes sense in any bicategory.
+
+\begin{defn}
+  Let $\sK$ be a bicategory and $C$ an object of it.
+  Given 2-cells $a:f\to g$ and $b:h\to g$ in $\sK(A,C)$, a \textbf{pullback} of them is a pullback in the category $\sK(A,C)$ that is preserved by precomposition with any arrow $B\to A$.
+  We say \textbf{$C$ has pullbacks} if such a pullbacks always exist.
+  Similarly, we say \textbf{$C$ has a terminal object} if each category $\sK(A,C)$ has a terminal object preserved by precomposition.
+\end{defn}
+
+In defining a notion of ``complete object'' we will include both of these kinds of limits.
+As usual, a ``complete object'' will only have ``small'' limits, so in the abstract context we need a subclass of ``small weights'' to parametrize the notion of completeness.
+In fact we will change notation and write $\mh$ instead of $\sM$ for the bicategory of proarrows, now reserving $\sM$ for the bicategory of such \emph{small} proarrows.
+
+\begin{defn}
+  Given a proarrow equipment $\sK\to\mh$ and a locally full sub-bicategory $\sM\subseteq \mh$, we say an object $\bC$ is \textbf{\sM-complete} if
+  \begin{enumerate}
+  \item $\bC$ has pullbacks and a terminal object, and
+  \item For any $k:A\hto B$ in \sM and any $f:A\to \bC$, the $k$-weighted limit $\lim^k f$ of $f$ exists.
+  \end{enumerate}
+\end{defn}
+
+We write an \sM-complete object in boldface to indicate that it is ``larger'' than the objects of \sM.
+
+\begin{prob}\label{thm:arm-fibicc}
+  Suppose $\rep{(\blank)}:\sK\to\mh$ is a proarrow equipment with good collages, $\sM\subseteq \mh$ is a locally full sub-bicategory closed under collages, \sK has an initial object whose image in \mh is terminal, and $\bC$ is an \sM-complete object.
+  Then there is a fibred comprehension bicategory
+  \[
+  \begin{tikzcd}[row sep=small]
+    \sT \ar[rr] \ar[dr] \ar[dd] && \fibc \ar[dd] \ar[dl] \\
+    & \sC \\
+    \arm \ar[rr] \ar[dr] && \fibm \ar[dl] \\
+    & \sM \ar[from=uu,crossing over]
+  \end{tikzcd}
+  \]
+  in which:
+  \begin{itemize}
+  \item $\arm\to\sM$ is the comprehension bicategory constructed in \cref{thm:arm-ccbicat}.
+  \item The objects of \sC are (representable) arrows $f:A\to \bC$ with $A\in\sM$, and a morphism in \sC from $f:A\to \bC$ to $g:B\to \bC$ consists of a proarrow $k:A\hto B$ and a 2-cell $r:\lim^k f \to g$.
+  \item \sT is the ``lax arrow slice bicategory'' of \sM over $\bC$, whose objects are diagrams of the following shape with $A,B\in\sM$:
+    \[
+    \begin{tikzcd}
+      A \ar[r,"\mathclap{|}" description,"k"] \ar[dr,"\rep f"',"\overset\kappa\Leftarrow"] & B \ar[d,"\rep g"] \\ & \bC
+    \end{tikzcd}
+    \]
+    The functor $\sT\to\sC$ takes such a diagram to $f:A\to\bC$.
+  \item The comprehension functor $\sT\to\fibc$ is defined on an object $\mu:\rep g \circ k \to \rep f$ as follows.
+    Let the collage of $k$ be
+    \[
+    \begin{tikzcd}
+      A \ar[r,"\mathclap{|}" description,"k"] \ar[dr,"\rep i"',"\overset\kappa\Leftarrow"] & B \ar[d,"\rep j"] \\ & K
+    \end{tikzcd}
+    \]
+    and let $l:K\to \bC$ be determined by the universal property of the collage, so that $l \circ \ka = \mu$ modulo isomorphisms $l\circ i\cong f$ and $l\circ j \cong g$.
+    By \cref{eg:lim-comp}, the first of these isomorphisms exhibits $f$ as the $\corep i$-weighted limit of $l$, giving an isomorphism $\lim^{\corep i} l \toiso f$ that we can regard as a morphism from $l$ to $f$ in \sC; we take this to be the comprehension of $\mu$.
+  \end{itemize}
+\end{prob}
+\begin{constr}
+  We have to complete the definitions of the bicategories \sC and \sT, construct the comprehension bicategory structure on $\sT\to\sC$, and show that the appropriate functors are fibrations of the appropriate sort.
+
+  To complete the definition of \sC, we note first that weighted limits are contravariantly functorial in the weight.
+  That is, given a 2-cell $\al:m\to k:A\hto B$, if $\lim^k f$ and $\lim^m f$ exist then there is a map $\lim^k f\to\lim^m f$ induced by the universal property of $\lim^m f$, varying functorially.
+  Now, we define a 2-cell in \sC from $r:\lim^m f \to g$ to $s:\lim^k f \to g$ to be a 2-cell $\al:m\to k$ such that the composite $\lim^k f\to\lim^m f \xto{r} g$ is equal to $s$.
+  To compose 2-cells, we compose the underlying 2-cells in \sM and use the functoriality of limits.
+
+  The projection $\sC\to\sM$ takes an object $f:A\to \bC$ to $A$, a morphism $r:\lim^k f \to g$ to $k$, and a 2-cell as above to $\al$.
+  This is functorial on hom-categories by definition of composition in \sC, and indeed a discrete opfibration, since for any morphism $r:\lim^m f \to g$ in \sC and 2-cell $\al:m\to k$ in \sM there is a unique 2-cell in \sC with source $r$ lying over $\al$, namely the one whose target is the composite $\lim^k f\to\lim^m f \xto{r}$.
+
+  To compose 1-cells in \sC, we use the dual fact that weighted limits are covariantly functorial in their weights: given $f,g:A\to \bC$, if the limits $\lim^k f$ and $\lim^k g$ exist, there is an induced map $\lim^k f\to\lim^k g$.
+  Moreover, they are also functorial with respect to composition of weights: if $\lim^k f$ exists, then $\lim^m \lim^k f$ and $\lim^{m\circ k} f$ have the same universal property, hence one exists if and only if the other does and they are isomorphic.
+  Now we define the composite of morphisms $r:\lim^m f \to g$ with $s:\lim^k g\to h$ in \sC to be
+  \[ \lim^{m\circ k} f \cong \lim^m \lim^k f \to \lim^m g \to h. \]
+  This makes the projection $\sC\to\sM$ strictly functorial as well.
+  Finally, associativity, unitality, and horizontal composition of 2-cells are lifted from \sM straightforwardly.
+  This construction of the bicategory \sC and the local discrete opfibration $\sC\to\sM$.
+
+  If $0$ is the initial object of \sK, then we have a unique (up to isomorphism) arrow $0\to \bC$.
+  Since $0$ is also terminal in \sM, for any $A$ there is a unique (up to isomorphism) proarrow $k:B\hto 0$, and for any $f:A\to \bC$ the arrow $\lim^k f$ is uniquely isomorphic to the arrow $0\to\bC$.
+  Thus, $0\to \bC$ is terminal in \sC, and lies over the terminal object $0\in\sM$.
+
+  To complete the definition of \sT, first note that a 2-cell $\rep g \circ k \to \rep f$ is equivalent to a 2-cell $g\to\lim^k f$.
+  Thus, we can equivalently take the objects of \sT to be 2-cells of the latter sort.
+  Now, we define a morphism from one such object $g'\to\lim^{k'} f'$ to another $g\to\lim^k f$ to consist of:
+  \begin{itemize}
+  \item proarrows $m:A'\hto A$ and $n:B'\hto B$ in \sM,
+  \item 2-cells $\lim^m f' \to f$ and $\lim^n g' \to g$, and
+  \item a 2-cell $\gm : k\circ m  \to n\circ k'$, such that
+  \item the following diagram commutes (omitting functoriality isomorphisms of $\lim$):
+    \begin{equation}
+      \begin{tikzcd}
+        \lim^n g' \ar[rr] \ar[d] && g \ar[d] \\
+        \lim^n \lim^{k'} f' \ar[r] & \lim^k \lim^m  f' \ar[r] & \lim^k f.
+      \end{tikzcd}\label{eq:Tax}
+    \end{equation}
+  \end{itemize}
+  The projection $\sT\to\arm$ sends $g\to\lim^k f$ to $k$, and a morphism as above to the 2-cell $\gm$, while the projection $\sT\to\sC$ sends $g\to\lim^k f$ to $f$ and a morphism as above to the 2-cell $\lim^m f' \to f$.
+  A 2-cell in \sT consists of a pair of 2-cells $m\to m'$ and $n \to n'$ in \sM that together form a 2-cell in \arm and commute with the 2-cells $\lim^m f' \to f$ and $\lim^n g' \to g$ (the first of these says that $m\to m'$ is also a 2-cell in \sC).
+
+  With these definitions we have an evident map $\sT\to\sC\times_{\sM}\sD$, and we define all kinds of composition in \sT so as to make this into a strict functor (which is in fact locally faithful).
+  In defining composition of 1-morphisms, the composite 2-cell of the form $\lim^m f' \to f$ is determined by composition in \sC, and we compose the 2-cells of the form $\lim^n g' \to g$ in the same way.
+  And we need to check that composition of 1-morphisms preserves the axiom~\eqref{eq:Tax}; but if~\eqref{eq:Tax} commutes and so does
+  \begin{equation*}
+    \begin{tikzcd}
+      \lim^{n'} g'' \ar[rr] \ar[d] && g' \ar[d] \\
+      \lim^{n'} \lim^{k''} f'' \ar[r] & \lim^{k'} \lim^{m'}  f'' \ar[r] & \lim^{k'} f'
+    \end{tikzcd}
+  \end{equation*}
+  then it suffices to consider the following:
+  \begin{cd}
+    \lim^n \lim^{n'} g'' \ar[rr] \ar[d] && \lim^n g' \ar[d] \ar[rr] && g \ar[d] \\
+    \lim^n \lim^{n'} \lim^{k''} f'' \ar[r] \ar[drr] & \lim^n \lim^{k'} \lim^{m'}  f'' \ar[r] \ar[dr] & 
+    \lim^n \lim^{k'} f' \ar[r] & \lim^k \lim^m  f' \ar[r] & \lim^k f\\
+    && \lim^k \lim^m \lim^{m'}  f'' \ar[ur] \ar[urr]
+  \end{cd}
+  Finally, we also need to check that composition of 2-cells preserves the property that they commute with $\lim^n g' \to g$, but this follows just as it does for \sC.
+  This completes the construction of \sT and the strict functor $\sT\to\sC\times_{\sM}\sD$.
+
+  Now, a 2-cell in \sT is cartesian for the projection $\sT\to\sC$ if the 2-cell $n\to n'$ is an identity (or, more generally, an isomorphism) in \sM.
+  And given a morphism in \sT as above and a 2-cell $m'\to m$ whose target is its image $\lim^m f' \to f$ in \sC, we lift it to \sT by taking $n'=n$ and $\gm'$ the composite $k\circ m' \to k\circ m \to n\circ k'$.
+  The analogue of~\eqref{eq:Tax} commutes because we assumed $m'\to m$ was a morphism in \sC, and this is a cartesian lift.
+  Morphisms of this sort are evidently closed under horizontal composition, so $\sT\to\sC$ is a local fibration.
+
+  On the other hand, a 2-cell in \sT lies in a fiber over \sC if the 2-cell $m\to m'$ is an identity.
+  Given a morphism in \sT as above and a 2-cell $n\to n'$ giving a 2-cell in $\sC\times_{\sM}\arm$, we lift this to a 2-cell in \sT by defining $\lim^{n'} f'\to f$ to be the composite $\lim^{n'} f'\to \lim^n f' \to f$.
+  The conditions for this to be a 2-cell in \sT and for its domain to be a 1-morphism therein hold by definition, and it is clearly the unique possible such lifting.
+  Moreover, by associativity of 2-cell composition, this covariant lifting commutes with the preceding contravariant lifting; thus $\sT\to\sC\times_{\sM}\sD$ is a local discrete opfibration over \sC.
+
+  We also need to show that cartesian 1-morphism lifts exist for $\sT\to\sC$.
+  Given an object $g\to\lim^k f$ in \sT and a morphism $\lim^m f'\to f$ in \sC, let $g'$ be the pullback
+  \[
+  \begin{tikzcd}
+    g' \ar[rr] \ar[d] && g\ar[d] \\
+    \lim^{k\circ m} f' \ar[r,"\cong"'] & \lim^k\lim^m f' \ar[r] & \lim^k f
+  \end{tikzcd}
+  \]
+  Then if we define $k'=k\circ m$, take $n$ to be an identity, and $\gm:k\circ m \cong 1\circ (k\circ m)$ the coherence isomorphism, we obtain a lifted morphism in \sT with the correct codomain and image in \sC.
+  It is straightforward to check that $n$ being an identity (or more generally an equivalence) and $\gm$ an isomorphism implies that such a morphism is cartesian.
+
+  Now we have to deal with the comprehension functor $\sT\to\fibc$.
+  We first need to show that it takes values in fibrations in \sC, and moreover that $\sC\to\sM$ preserves fibrations.
+  In fact \fxnote*{do that}{we will show} that the functor $\sC\to\sM$ preserves and reflects fibrations, i.e.\ a morphism in $\sC$ is a fibration if and only if its image in \sM is so.
+  
+  \fxnote*{TODO}{Define it on morphisms and 2-cells and show it is functorial.}
+  Finally, the construction of this functor involves a choice of collages and factorizations in \mh.
+  But if we choose the same collages and factorizations that we did in defining the comprehension functor $\sD\to\fibm$, then the necessary square will commute strictly.
+\end{constr}
+
+
+\section{Profunctors and ordinary dependent type theory}
+\label{sec:prof}
+
+We specialize to the following case:
+\begin{itemize}
+\item \sK is the bicategory \cCat of categories and functors.
+\item \mh is the bicategory \cProf of categories and profunctors.
+\item \sM is the bicategory $\cFin\cProf$ of finite categories and finite-set-valued profunctors.
+\item \sD is the full sub-bicategory of $\arm$ whose objects are (finite-set-valued) profunctors with codomain $1$ (i.e.\ covariant functors to \nFinSet).
+\end{itemize}
+Since \sD is closed in \arm under reindexing (precomposition) by morphisms in \sM, by restriction of the structure from \cref{thm:arm-ccbicat} we obtain a comprehension bicategory.
+The restriction from $\arm$ to \sD corresponds to saying that types (as opposed to contexts) have no ``internal dependency structure''.
+
+Furthermore, since the contexts in syntactic type theory are inductively generated by comprehensions of types starting with the empty context, the only objects of \sM that will ever occur as shapes of such contexts are the categories inductively generated by collages of profunctors to $1$ starting with the empty category.
+Thus, we might as well restrict \sM to consist only of these categories, which are precisely the \textbf{finite inverse categories}.
+
+A fibred comprehension bicategory over this comprehension bicategory has the following structure.
+\begin{itemize}
+\item For each finite inverse category $\cI$, a collection of \textbf{contexts with shape $\cI$} (the objects of \sC lying over $\cI$).
+  We think of each context $\Gamma$ as a collection of ``types'', one for each object of $\cI$, with each morphism in $\cI$ representing a ``dependency'' from its domain type to its codomain type.
+  The fact that $\cI$ is a category rather than, say, a directed graph, means that dependency is transitive (in a specified way).
+  In fact, usually $\cI$ is a poset, and very often it is just a finite linear order; the latter corresponds to the usual sort of linear context in which each type is considered to depend on all of those previous.
+\item For any two contexts $\Gamma$ and $\Delta$ of shapes $\cI$ and $\cJ$ respectively, and every profunctor $k:\cI\hto \cJ$, a collection of \textbf{context morphisms of shape $k$ from $\Gamma$ to $\Delta$}, written $\Gamma\types_k \sigma: \Delta$.
+  We think of a context morphism as a collection of ``terms'', one for each type in $\Delta$ (i.e.\ each object of $\cJ$), with each element of $k$ indicating an ``occurrence'' of a domain variable in such a term.
+  The profunctorial nature of $k$ means that if a domain variable $x$ occurs in a term, then so does any variable on which the type of $x$ depends; while if a codomain type $B$ depends on some other type $A$, then every variable occurring in a term of type $A$ must also occur in a term of type $B$.
+  Very often $k$ is just the terminal profunctor, meaning that every variable occurs exactly once in each term.
+\item A covariantly functorial action of profunctor transformations on context morphisms.
+  This means that we can ``add new occurrences'' and ``contract duplicate occurrences'' of variables.
+  In particular, a context morphism with any shape can be uniquely pushed forward to a context morphism with terminal shape (which partly explains the importance of the latter kind of morphism).
+\item For each context $\Gamma$ of shape \cI, an identity morphism $\Gamma \types_{1_\cI} 1 : \Gamma$.
+\item A composition operation on context morphisms: given $\Gamma\types_k \sigma:\Delta$ and $\Delta\types_l \tau:\Psi$ we have $\Gamma\types_{l\circ k} \tau[\sigma] : \Psi$.
+  This respects the action of profunctor transformations, and is associative and unital modulo the associativity and unit isomorphism of profunctor composition.
+  That is, if we also have $\Psi \types_m \mu :\Phi$, then
+  \[\Gamma\types_{m\circ (l\circ k)} \mu[\tau[\sigma]] : \Phi
+  \qquad\text{and}\qquad
+  \Gamma\types_{(m\circ l)\circ k} \mu[\tau][\sigma] : \Phi
+  \]
+  cannot literally be compared since they have different shapes, but the action of the profunctor isomorphism $m\circ (l\circ k) \cong (m\circ l) \circ k$ takes one to the other, and similarly for units.
+\item For any context $\Gamma$ of shape $\cI$ and functor $k:\cI\to\nFinSet$, a category of \textbf{types in context $\Gamma$ with shape $k$}, written $\Gamma\types_k A\type$.
+  This category is the fiber of $\sT$ over $\Gamma\in\sC$ and $k\in \sD$; 
+  We think of $k$ as indicating the occurrences of each variable of $\Gamma$ in $A$; often it is the terminal functor.
+\item \fxnote{TODO}
+\end{itemize}
+
+By \cref{thm:arm-fibicc}, we can obtain such a fibred comprehension bicategory from any $\sM$-complete category $\bC$.
+In this example, ``$\sM$-complete'' just means having finite limits in the usual sense.
+Tracing through the construction, we find that:
+
+\begin{itemize}
+\item The contexts with shape $\cI$ are precisely functors $\cI\to\bC$.
+\item \fxnote{TODO}
+\end{itemize}
+
+
+\section{Enriched profunctors and modal dependent type theory}
+\label{sec:prof-modal}
+
+Let $\cM$ be a small 2-category; we would like a sort of dependent type theory that uses ``$\cM$ as the modes''.
+In other words, we need to construct from $\cM$ a comprehension bicategory.
+By \cref{thm:arm-ccbicat}, it suffices to construct a bicategory $\sM$ having lax limits of morphisms and a terminal object, and with \cref{thm:arm-fibicc} in mind we should want $\sM$ to extend to a proarrow equipment.
+
+A standard source of proarrow equipments consists of \emph{enriched} categories.
+The most common sort of enrichment is enrichment in a monoidal category, but there is a more general notion of enrichment in a \emph{bicategory} \cB, regarded as a ``many-object monoidal category''.
+Specifically, a $\cB$-enriched category has:
+\begin{itemize}
+\item A collection of objects $x,y,\dots$, each assigned to an object $\extent x, \extent y, \dots$ of $\cB$ that we will call its \textbf{mode}.
+\item For each $x,y$, a hom-object $C(x,y)\in \cB(\extent y, \extent x)$.
+\item For each $x,y,z$, a composition 2-cell $C(x,y) \circ C(y,z)  \to C(x,z)$ in \cB.
+\item For each $x$, an identity-assigning 2-cell $1_{\extent x}\to C(x,x)$ in \cB.
+\item Associativity and unit axioms.
+\end{itemize}
+There are evident notions of \cB-enriched functor (which must preserve extents of objects strictly), transformation, and profunctor, though the latter has to be defined explicitly as a ``bimodule'' rather than as a functor ``$D\op\otimes C\to \cB$'' since \cB is not itself a \cB-enriched category.
+This yields a proarrow equipment $\bprof$; a good reference is~\cite{bcsw:variation-enr}.
+It is best-behaved when \cB is locally cocomplete, i.e.\ the hom-categories $\cB(p,q)$ are cocomplete and the composition functors preserve colimits in each variable.
+
+Now, given our small 2-category $\cM$, define $\daym$ to be the following bicategory:
+\begin{itemize}
+\item Its objects are those of $\cM$.
+\item Its hom-categories are $\daym(p,q) = \nSet^{\cM(p,q)\op}$, the presheaf categories (i.e.\ free cocompletions) of the hom-categories of $\cM$.
+\item Its identity arrow $1_p\in \daym(p,p)$ is the representable presheaf on $1_p\in \cM(p,p)$.
+\item Its composition functor $\daym(q,r) \times \daym(p,q) \to \daym(p,r)$ is the (essentially) unique cocontinuous-in-each-variable functor that extends the composition of $\cM$ on representables.
+  It can be given an explicit formula as a convolution; see~\cite{day:closed} for the case of monoidal categories.
+\end{itemize}
+
+Now, consider the special case of a $\daym$-enriched category whose hom-objects $C(x,y)$ are coproducts of representables; let us call these \textbf{locally representable}.
+Such a category consists of the following structure:
+\begin{itemize}
+\item A collection of objects $x,y,\dots$, each assigned to an object $\extent x, \extent y,\dots$ of \cM as its \emph{mode}.
+\item For each objects $x,y$, the hom-object in $\daym$ is a coproduct $\sum_{f\in C(x,y)} \yon(\extent f)$, where $\yon$ denotes the Yoneda embedding, for some set $C(x,y)$ of ``actual'' morphisms each assigned to a morphism $\extent f$ of $\cM$ as its mode.
+\item The identity-assigning 2-cell is for each $x$ a natural transformation $\yon(1_{\extent x}) \to \sum_{f\in C(x,x)} \yon(\extent f)$, which therefore (by the Yoneda lemma) selects a particular $f\in C(x,x)$ to call ``$1_x$'' and a 2-cell $1_{\extent x}\to \extent 1_x$ in \cM.
+\item Similarly, the composition 2-cell
+  \[ \left(\sum_{g\in C(y,z)} \yon(\extent g)\right) \times \left(\sum_{f\in C(x,y)} \yon(\extent f)\right) \to \left(\sum_{h\in C(x,z)} \yon(\extent h)\right) \]
+  selects for each $g,f$ a particular ``$g\circ f$'' in $C(x,z)$, along with a 2-cell $\extent g \circ \extent f \to \extent (g\circ f)$ in \cM.
+\item The associativity and unit axioms become evident axioms on these comparison 2-cells.
+\end{itemize}
+This is equivalently an ordinary category $C$ equipped with a \emph{lax functor} $C\to\cM$.
+Similarly, we have locally representable $\daym$-enriched profunctors.
+
+Let $\dmprofh$ be the bicategory of $\daym$-enriched categories, and $\dmprof$ the locally full sub-bicategory determined by the locally representable $\daym$-categories and profunctors whose corresponding lax functors $C\to\cM$ has finite domain.
+
+\begin{conj}
+  Let $\bC:\cM\to\cCat$ be a pseudofunctor such that each category $\bC_p$ has finite limits and each transition functor preserves finite limits.
+  Then the corresponding fibration over $\cM$ is a $\dmprof$-complete object of the proarrow equipment of $\daym$-categories.
+\end{conj}
+
+Thus, by \cref{thm:arm-fibicc} we obtain a fibred comprehension bicategory; this is the semantic ``modal dependent type theory'' of $\bC$.
+
+
+\bibliography{all}
+\bibliographystyle{alpha}
+
+\end{document}
