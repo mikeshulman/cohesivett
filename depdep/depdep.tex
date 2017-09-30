@@ -1,5 +1,6 @@
 \documentclass[10pt]{article}
 
+\usepackage{fullpage}
 \usepackage{amssymb,amsthm,bbm}
 \usepackage[centertags]{amsmath}
 \usepackage[mathscr]{euscript}
@@ -17,7 +18,13 @@
 \newcommand{\TELE}{\,\,\mathsf{TELE}}
 \newcommand{\tele}{\,\,\mathsf{tele}}
 
-\title{Dependent Adjoint Logic}
+\newcommand\FE[3]{\ensuremath{\mathsf{split} \, #2 \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+
+\title{Adjoint Type Theory}
 \author{}
 \date{}
 
@@ -28,75 +35,113 @@ Capital things live above, lowercase things live below. Not sure how to do the a
 
 Judgements: 
 \begin{itemize}
-\item $\yields \Gamma \CTX_\gamma$ lives over $\yields \gamma \ctx$
+\item $\yields_\gamma \Gamma \CTX$ lives over $\yields \gamma \ctx$
 \item $\Gamma \yields_\alpha A \TYPE$ lives over $\gamma \yields \alpha \type$
 \item $\Gamma \yields_\mu M : A$ lives over $\gamma \yields \mu : \alpha$
 \item Telescopes $\Gamma \yields_\delta \Delta \TELE$ lying over $\gamma \yields \delta \tele$
 \item Substitutions $\Gamma \yields_\theta \Theta : \Delta$ lying over $\gamma \yields \theta : \delta$
-\item 2-cells $\gamma \yields (\mu \Rightarrow \nu) : \alpha$
+\item 2-cells $\gamma \yields s : (\mu \Rightarrow \nu) : \alpha$
 \end{itemize}
 
-Rules so far:
-\begin{mathpar}
-  \inferrule*[Left = ctx-form]{
-    \yields \Gamma \CTX_\gamma 
-    \and \gamma \yields \alpha \type
-  	\and \Gamma \yields_\alpha A \TYPE }
-  {\yields \Gamma, x : A \CTX_{\gamma, x : \alpha}  } \\
-  
-  \inferrule*[Left = var]{
-    \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : \alpha, \gamma'}
-    \and \gamma, x : \alpha, \gamma' \yields (\mu \Rightarrow x) : \alpha
-  }
-  {\Gamma, x : A, \Gamma' \yields_\mu x : A} \\  
-
-  \inferrule*[Left = F-form]{
-    \yields \Gamma \CTX_\gamma 
-    \and \gamma, \delta \yields \mu : \beta 
-    \and \Gamma \yields_\delta \Delta \TELE}
-  {\Gamma \yields_\beta F_\mu(\Delta) \TYPE  } \\
-  
-  \inferrule*[Left = F-left]{
-    \Gamma, \Delta \yields_{\nu [\mu / x]} N : C [FR(\Delta)/x] 
-    \and (\text{where } \gamma, \delta \yields \nu [\mu / x] : \alpha [\mu / x] )}
-  {\Gamma, x : F_\mu(\Delta) \yields_\nu \mathrm{let...} : C  \and (\text{where } \gamma, \beta \yields \nu : \alpha)} \\
-  
-  \inferrule*[Left = F-right]{
-    \Gamma \yields_{\theta} \Theta : \Delta 
-    \and \gamma \yields \nu : \beta 
-    \and \gamma \yields \mu[\theta] : \beta 
-    \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : \beta}
-  {\Gamma \yields_\nu ... : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta)} 
-  
-  \inferrule*[Left = U-form]{
-    \Gamma \yields \Delta \TELE 
-  	\and \Gamma, \Delta \yields A \TYPE
-  	\and \gamma \yields \beta \type
-  	\and \gamma, \delta, c : \beta \yields \mu : \alpha
-  	}{\Gamma \yields_\beta U_{c.\mu}(\Delta \vert A) \TYPE} \\
-
-  \inferrule*[Left = U-intro]{
-    \Gamma, \Delta \yields_{\mu[\nu/c]} A}
-  {\Gamma \yields_{\nu} (\lambda x.\, ...) : U_{c.\mu}(\Delta \vert A)} \\
-  
-  \inferrule*[Left = U-elim??]{
-    \Gamma \yields_\nu M : U_{c.\mu}(\Delta \vert A)
-    \and \Gamma \yields_\theta \Theta : \Delta
-    \and \gamma \yields (\mu' \Rightarrow \mu[\nu/c][\theta]) : \alpha[\theta]
-  }{
-    \Gamma \yields_{\mu'} M \Theta : A[\Theta] 
-  } \\
-\end{mathpar}
-Note that at the moment in $U$-FORM, $\beta$ can only depend on things in $\gamma$. Not sure if this is the right thing to do?
+Note: we could build $s_*$ into the other rules, but not much
+reason to in natural deduction.  
 
 Some intended admissible rules:
 \begin{mathpar}
- \inferrule*{
-   \Gamma \yields_\mu M : A 
-   \and \gamma \yields s : (\nu \Rightarrow \mu)
-  }
-  {\Gamma \yields_\nu s_*(M) : A} \\  
+\inferrule*[Left = weaken-over]
+           {\Gamma,\Gamma' \yields_\mu M : A (\text{where } \gamma,\gamma' \vdash \mu : \alpha)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A (\text{where } \gamma,y:\beta,\gamma' \vdash \mu : \alpha)}
+
+\inferrule*[Left = subst-over]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \and (\text{where } \gamma,x:\alpha,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \and (\text{where } \gamma \vdash \mu : \alpha)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \and (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : \alpha[\mu/x])}
+           
 \end{mathpar}
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+  {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
+    \Gamma \yields_\alpha A \TYPE \and (\text{where }  \gamma \yields \alpha \type)}
+  {\yields_{\gamma, x : \alpha} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:\alpha \ctx)  } \\
+
+  \inferrule*[Left = tele-form]{ }
+             {\Gamma \yields \cdot \TELE_{\cdot}  } \and
+
+  \inferrule*[Left = tele-form]{
+    \Gamma \yields_\delta \Delta \TELE \and  (\text{where } \gamma \yields \delta \tele) \\\\
+    \Gamma,\Delta \yields_\alpha A \TYPE \and (\text{where } \gamma,\delta \yields \alpha \type)}
+  {\Gamma \yields_{\delta, x : \alpha} \Delta, x : A \TELE  \and (\text{where } \gamma \yields \delta,x:\alpha \tele)} \\ \\
+
+  \and
+
+  \inferrule*[Left = sub1]{ }
+             {\Gamma \yields_\cdot \cdot : {\cdot}  } \and 
+  \inferrule*[Left = sub2]{
+    \Gamma \yields_\theta \Theta : \Delta  \and (\text{where } \gamma \yields \theta : \delta) \\\\
+    \Gamma \yields_{\mu} M : A[\Theta] \and (\text{where } \gamma,\delta \yields \mu : \alpha[\theta])}
+  {\Gamma \yields_{\theta, \mu/x } (\Theta,M/x) : \Delta, x : A  \and (\text{where } \gamma \yields (\theta,\mu/x) : \delta,x:\alpha)} \\ \\
+  
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : \alpha, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:\alpha,\gamma' \yields x : \alpha)} \and
+
+ \inferrule*[Left = 2cell]{
+   \Gamma \yields_\mu M : A 
+   \and \gamma \yields s : (\nu \Rightarrow \mu) : \alpha
+  }
+  {\Gamma \yields_\nu s_*(M) : A} \\ \\
+
+  \inferrule*[Left = F-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele) \\\\
+    \gamma, \delta \yields \mu : \beta 
+  }
+  {\Gamma \yields_\beta F_\mu(\Delta) \TYPE  } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\theta} \Theta : \Delta 
+    \and (\text{where } \gamma \yields {\theta} : \delta)
+    %% \and \gamma \yields \nu : \beta 
+    %% \and \gamma \yields \mu[\theta] : \beta 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : \beta
+  }
+  {\Gamma \yields_{\mu[\theta]} \FI{\Theta} : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \mu[\theta] : \beta)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, x : F_{\mu}(\Delta) \yields_{\alpha} C : \TYPE \and (\text{where } \gamma, x : \beta \yields \alpha : \type) \and \\
+    \Gamma \yields_{\nu} M : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta) \and \\
+    \Gamma, \Delta \yields_{\nu' [\mu / x]} N : C [\FI{\Delta/\Delta}/x]
+    \and (\text{where } \gamma, \delta \yields \nu' [\mu / x] : \alpha [\mu / x] )}
+  {\Gamma \yields_{\nu'[\nu/x]} \FE{M}{\Delta}{N} : C[M/x]  \and (\text{where } \gamma, \beta \yields {\nu'[\nu/x]} : \alpha[\nu/x])} \\
+    \\ \\
+
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele)\\\\
+    \Gamma, \Delta \yields_\alpha A \TYPE \and (\text{where } \gamma, \delta \yields \alpha \type)\\\\
+    \and \gamma, \delta, c : \beta \yields \mu : \alpha
+  }{\Gamma \yields_\beta U_{c.\mu}(\Delta \vert A) \TYPE \and (\text{where } \gamma \yields \beta \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma, \Delta \yields_{\mu[\nu/c]} N : A \and (\text{where } \gamma,\delta \yields {\mu[\nu/c]} : \alpha)
+  }
+  {\Gamma \yields_{\nu} \UI \Delta N : U_{c.\mu}(\Delta \vert A)
+    \and (\text{where } \gamma \yields \nu : \beta)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_\nu M : U_{c.\mu}(\Delta \vert A) \and (\text{where } \gamma \yields \nu : \beta)\\\\
+    \Gamma \yields_\theta \Theta : \Delta \and (\text{where } \gamma \yields \theta : \delta)\\
+  }{
+    \Gamma \yields_{\mu[\theta,\nu/c]} \UE{M}{\Theta} : A[\Theta] \and (\text{where } \gamma \yields \mu[\theta,\nu/c] : \alpha[\theta])
+  } \\
+\end{mathpar}
+Note that at the moment in $U$-FORM, $\beta$ can only depend on things in $\gamma$. Not sure if this is the right thing to do?
 
 How do we recover ordinary dependent type theory with $\Pi$ and $\Sigma$? Idea:
 \begin{align*}
