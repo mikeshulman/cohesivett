@@ -181,4 +181,19 @@ x : p_0, y : p_1(f_0(x)) \yields p_2(g_0(x), h_1(f_0(x), y))) \type
 \end{align*}
 we would need to be able to rewrite a $p_1(h_0(f_0(x))$ to a $p_1(g_0(x))$ using a 2-cell $h_0(f_0(x)) \Rightarrow g_0(x)$
 
+\subsection*{Mode Theory Redux}
+For ordinary MLTT:
+\begin{align*}
+&\yields \emptyset_0 : p_0 \\
+c : p_0, x : p_1(c) &\yields c.x : p_0 \\
+&\yields \emptyset_1 : p_1(\emptyset_0) \\
+c : p_0, x : p_1(c), y : p_1(c) &\yields w_x(y) : p_1(c.x) \\
+c : p_0, x : p_1(c), y : p_1(c.x) &\yields \Sigma_c(x,y) : p_1(c) \\
+c.\Sigma_c(x,y) &\equiv c.x.y \\
+&?
+\end{align*}
+For $\sum$ types we use the mode morphism \[ c : p_0, x : p_1(c), y : p_1(c.x) \yields \Sigma_c(x,y) : p_1(c) \]
+For $\prod$ types we use???
+ \[ c : p_0, x : p_1(c), z : p_1(c) \yields w_x(\Sigma_c(x,w_x(z))) : p_1(c.x) \]
+
 \end{document}
