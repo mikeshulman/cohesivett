@@ -5,11 +5,15 @@
 \newcommand\truej[1]{#1 \,\, \dsd{true}}
 \newcommand\possj[1]{#1 \,\, \dsd{poss}}
 \newcommand\validj[1]{#1 \,\, \dsd{valid}}
+\newcommand\irrj[1]{#1 \,\, \dsd{irr}}
 \newcommand\crispj[1]{#1 \,\, \dsd{crisp}}
 \newcommand\cohesivej[1]{#1 \,\, \dsd{coh}}
 
 \newcommand\later{\blacktriangleright}
 \newcommand\now{\raisebox{-0.5pt}{$\blacksquare$}}
+
+\def\dotminus{\mathbin{\ooalign{\hss\raise1ex\hbox{.}\hss\cr
+  \mathsurround=0pt$-$}}}
 
 \section{Examples}
 \label{sec:exampleencodings}
@@ -928,23 +932,78 @@ explanation for the unusual features of these rules, such as promoting
 all cohesive variables to crisp in \Sharp{}-right, and eliminating a
 crisp \Sharp{} in \Sharp{}-left.  
 
+\subsection{Applicative Functors}
+
+We can also capture modalities that are not formed as an adjoint pair by including only one of the $\dsd{F}$ or the $\dsd{U}$ types for a mode morphism. As an example we have applicative functors~\citep{mcbride2008applicative}, originally introduced to encapsulate a common pattern for effectful programming in functional languages. Categorically these correspond to endofunctors that are lax monoidal and equipped with a tensorial strength, both with respect to the product.
+
+The same pattern also appears in a calculus for proof irrelevance~\citep{pfenning08proofirrel}. Proof irrelevant assumptions in a context are written ``$\irrj{A}$'', and there is a modality $[A]$ that internalises this judgement. As a sequent calculus, the rules are as follows:
+\[
+\infer{\Gamma \vdash \truej{[A]}}
+      {\Gamma^\oplus \vdash \truej{A}}
+\qquad
+\infer{\Gamma, \truej{[A]} \vdash \truej{C}}
+      {\Gamma, \irrj{A} \vdash \truej{C}}
+\qquad
+%\qquad % Elimination rule
+%\infer{\Gamma \vdash \truej{C}}
+%      {\Gamma \vdash \truej{[A]} & 
+%       \Gamma, \irrj{A} \vdash \truej{C}}
+\]
+where $\Gamma^\oplus$ promotes all $\irrj{A}$ assumptions in $\Gamma$ to $\truej{A}$ assumptions.
+
+We can model the modality $[-]$ as an $\dsd{F}$-type. Begin with a mode $\dsd{p}$ equipped with a cartesian product $\times$. We add a mode morphism $x : \dsd{p} \vdash \dsd{i}(x) : \dsd{p}$ together with transformations $x \Rightarrow \dsd{i}(x)$ and $\dsd{i}(x) \times \dsd{i}(y) \Rightarrow \dsd{i}(x \times y)$. Note that a transformation $\dsd{i}(x \times y) \Rightarrow \dsd{i}(x) \times \dsd{i}(y)$ always exists by projection, but we typically do not want this to be an inverse.
+
+We then define $[A] := \F{\dsd{i}}{A}$. A native sequent $\irrj{A_1}, \dots, \irrj{A_n}, \truej{B_1}, \dots, \truej{B_m} \vdash C$ is translated as \[x_1 : A_1, \dots, x_n : A_n, y_1 : B_1, \dots, y_m : B_m \vdash_{\dsd{i}(x_1) \times \dots \times \dsd{i}(x_n) \times y_1 \times \dots \times y_m} C,\] so $\dsd{i}$ marks the irrelevant assumptions. Then the first rule corresponds to a use of $\FR$, where both transformations are used to write \[\dsd{i}(x_1) \times \dots \times \dsd{i}(x_n) \times y_1 \times \dots \times y_m \Rightarrow \dsd{i}(x_1 \times \dots \times x_n \times y_1 \times \dots \times y_m).\] The second rule is exactly $\FL$.
+
+TODO? One can prove that $[-]$ distributes over $\to$, this is often given as a defining property of an applicative functor.
+
+Note that the native type system has no judgemental notion of ``double irrelevance'', and so there is no left rule for an assumption of the form $\irrj{[A]}$. If we wish, we can track this information; one possibility is to annotate each assumption $\irrj{A}^n$, corresponding to an $\dsd{i}^n(x)$ in the context descriptor. The rules are then:
+\[
+\infer{\Gamma \vdash \truej{[A]}}
+      {\Gamma^{\dotminus 1} \vdash \truej{A}}
+\qquad
+\infer{\Gamma, \irrj{[A]}^n \vdash \truej{C}}
+      {\Gamma, \irrj{A}^{n+1}\vdash \truej{C}}
+\qquad
+\]
+where $\Gamma^{\dotminus 1}$ subtracts 1 from every assumption in $\Gamma$ (truncating at 0), and where $\irrj{A}^0$ is the same as $\truej{A}$.
+
+We can also model $[-]$ as a $\Usymb$-type. With $\dsd{p}$ as before, add a mode morphism $x : \dsd{p} \vdash \dsd{j}(x) : \dsd{p}$ and a transformation $\dsd{j}(x) \Rightarrow x$. As mentioned above, there is a transformation $\dsd{j}(x \times y) \Rightarrow \dsd{j}(x) \times \dsd{j}(y)$ given by projection.
+
+In contrast to the mode theory for the $\Fsymb$-type, marking a variable with $\dsd{j}$ now gives you permission to remove a $[-]$ on that assumption. As a possible native calculus, let us write $x_1 :^{n_1} A_1, \dots, x_m :^{n_m} A_m \vdash C$ for a sequent living over $\dsd{j}^{n_1}(x_1) \times \dots \times \dsd{j}^{n_m}(x_m)$. The rules for $\Usymb$-types yield:
+\[
+\infer{\Gamma \vdash [A]}
+      {\Gamma^{+1} \vdash A}
+\qquad
+\infer{\Gamma, x :^{n+1} [A] \vdash C}
+      {\Gamma, x :^n A\vdash C}
+\qquad
+\infer{\Gamma, x :^{n+1} A \vdash C}
+      {\Gamma, x :^n A\vdash C}
+\qquad
+\]
+where $\Gamma^{+1}$ increments all the annotations in $\Gamma$. The first rule is an application of structurality for $\dsd{j}(x \times y) \Rightarrow \dsd{j}(x) \times \dsd{j}(y)$ followed by $\UR$. The second rule is precisely $\UL$. Finally, we may use $\dsd{j}(x) \Rightarrow x$ to forget a permission.
+
+TODO: talk about additives
+
 \subsection{Guarded Type Theory}
 
-We can also capture modalities that are not formed as an adjoint pair by including only one of the $\dsd{F}$ or the $\dsd{U}$ types for a mode morphism. As an example, we have the guarded lambda calculus~\citep{clouston2015programming,bizjak2016guarded}, which allows recursive and coinductive types so long as any self-reference in type definitions occurs underneath the `later' modality $\later$. To allow controlled removal of this modality there is also the `everything now' modality $\now$, beneath which $\later$ can be removed. The catch is that in order to introduce a term of $\now A$, we may only use `constant' assumptions where we indeed have everything now: these are assumptions for which every $\later$ occurs beneath a $\now$.
+The guarded lambda calculus~\citep{clouston2015programming,bizjak2016guarded} allows recursive and coinductive types so long as any self-reference in type definitions occurs underneath the `later' modality $\later$. To allow controlled removal of this modality there is also the `everything now' modality $\now$, beneath which $\later$ can be removed. The catch is that in order to introduce a term of $\now A$, we may only use `constant' assumptions where we indeed have everything now: these are assumptions for which every $\later$ occurs beneath a $\now$.
 
 The behaviour of these modalities is captured in the following mode theory. We have two modes, $\dsd{c}$ and $\dsd{n}$, corresponding to the constant and non-constant types. Each is equipped with a cartesian monoid, $(\times_\dsd{c}, \top_\dsd{c})$ and $(\times_\dsd{n}, \top_\dsd{n})$, and there is a morphism $x : \dsd{c} \vdash \dsd{b}(x) : \dsd{n}$ together with equalities $\dsd{b}(x \times_\dsd{c} y) \equiv \dsd{b}(x) \times_\dsd{n} \dsd{b}(y)$ and $\dsd{b}(\top_\dsd{c}) \equiv \top_\dsd{n}$. Then we define $\now A := \F{\dsd{b}}{\Uempty{\dsd{b}}{A}}$. This is nearly identical to the definition of $!A$ in the LNL calculus described above, the difference being that both modes are cartesian.
 
 Now we add an additional mode morphism $x : \dsd{n} \vdash \dsd{t}(x) : \dsd{n}$, an equation $\dsd{t}(\dsd{b}(x)) \equiv \dsd{b}(x)$ and a transformation $\dsd{t}(x) \Rightarrow x$. Because $\dsd{c}$ and $\dsd{n}$ are cartesian, there exists an additional transformation $\dsd{t}(x \times_\dsd{n} y) \Rightarrow \dsd{t}(x) \times_\dsd{n} \dsd{t}(y)$. We define $\later A := \Uempty{\dsd{t}}{A}$, and omit $\F{\dsd{t}}{A}$ from the theory entirely. The transformations give $\later$ the structure of a lax monoidal functor, and via Lemma \ref{lem:fusion}, the equation $\dsd{t}(\dsd{b}(x)) \equiv \dsd{b}(x)$ guarantees that $\now \later A \cong \now\,A$ as desired.
 
-A sequent in this type theory will be written $\Gamma \mid \Delta \vdash C$, with the constant types $\Gamma$ separated from the non-constant types $\Delta$. Similar to the case of the S4 $\Box$ modality, we represent a sequent 
+A sequent in this type theory will be written $\Gamma \mid \Delta \vdash C$, with the constant types $\Gamma$ separated from the non-constant types $\Delta$. Similar to the case of the S4 $\Box$ modality, we represent a guarded lambda calculus sequent 
 \[
  x_1:A_1,\ldots,x_n:A_n \mid y_1: B_1,\ldots, y_m : B_m \vdash C
 \]
-by 
+by the sequent
 \[
 \seq{x_1:\Uempty{\dsd{b}}{A_1},\ldots,x_n:\Uempty{\dsd{b}}{A_n},y_1:B_1,\ldots, y_m : B_m}
     {\dsd{b}(x_1) \times \ldots \times \dsd{b}(x_n) \times y_1 \times \ldots \times y_m}{C}
 \]
+in the framework.
 
 We derive the following rules:
 \[
