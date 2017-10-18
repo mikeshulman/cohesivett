@@ -988,73 +988,50 @@ TODO: talk about additives
 
 \subsection{Guarded Type Theory}
 
-The guarded lambda calculus~\citep{clouston2015programming,bizjak2016guarded} allows recursive and coinductive types so long as any self-reference in type definitions occurs underneath the `later' modality $\later$. To allow controlled removal of this modality there is also the `everything now' modality $\now$, beneath which $\later$ can be removed. The catch is that in order to introduce a term of $\now A$, we may only use `constant' assumptions where we indeed have everything now: these are assumptions for which every $\later$ occurs beneath a $\now$.
+The guarded lambda calculus~\citep{clouston2015programming,bizjak2016guarded} allows recursive and coinductive types so long as any self-reference in type definitions occurs underneath the `later' modality $\later$, which is an applicative functor. To allow controlled removal of this modality there is also the `everything now' modality $\now$, beneath which $\later$ can be removed. The catch is that in order to introduce a term of $\now A$, we may only use `constant' assumptions where we indeed have everything now: these are assumptions for which every $\later$ occurs beneath a $\now$.
 
-The behaviour of these modalities is captured in the following mode theory. We have two modes, $\dsd{c}$ and $\dsd{n}$, corresponding to the constant and non-constant types. Each is equipped with a cartesian monoid, $(\times_\dsd{c}, \top_\dsd{c})$ and $(\times_\dsd{n}, \top_\dsd{n})$, and there is a morphism $x : \dsd{c} \vdash \dsd{b}(x) : \dsd{n}$ together with equalities $\dsd{b}(x \times_\dsd{c} y) \equiv \dsd{b}(x) \times_\dsd{n} \dsd{b}(y)$ and $\dsd{b}(\top_\dsd{c}) \equiv \top_\dsd{n}$. Then we define $\now A := \F{\dsd{b}}{\Uempty{\dsd{b}}{A}}$. This is nearly identical to the definition of $!A$ in the LNL calculus described above, the difference being that both modes are cartesian.
+What follows is one possible mode theory for these modalities, which combines the features of both the S4 $\Box$ and an applicative functor. We have two modes, $\dsd{c}$ and $\dsd{n}$, corresponding to the constant and non-constant types. Each is equipped with a cartesian monoid, $(\times_\dsd{c}, \top_\dsd{c})$ and $(\times_\dsd{n}, \top_\dsd{n})$, and there is a morphism $x : \dsd{c} \vdash \dsd{b}(x) : \dsd{n}$ together with equalities $\dsd{b}(x \times_\dsd{c} y) \equiv \dsd{b}(x) \times_\dsd{n} \dsd{b}(y)$ and $\dsd{b}(\top_\dsd{c}) \equiv \top_\dsd{n}$. Then we define $\now A := \F{\dsd{b}}{\Uempty{\dsd{b}}{A}}$. 
 
-Now we add an additional mode morphism $x : \dsd{n} \vdash \dsd{t}(x) : \dsd{n}$, an equation $\dsd{t}(\dsd{b}(x)) \equiv \dsd{b}(x)$ and a transformation $\dsd{t}(x) \Rightarrow x$. Because $\dsd{c}$ and $\dsd{n}$ are cartesian, there exists an additional transformation $\dsd{t}(x \times_\dsd{n} y) \Rightarrow \dsd{t}(x) \times_\dsd{n} \dsd{t}(y)$. We define $\later A := \Uempty{\dsd{t}}{A}$, and omit $\F{\dsd{t}}{A}$ from the theory entirely. The transformations give $\later$ the structure of a lax monoidal functor, and via Lemma \ref{lem:fusion}, the equation $\dsd{t}(\dsd{b}(x)) \equiv \dsd{b}(x)$ guarantees that $\now \later A \cong \now\,A$ as desired.
+We now add the mode theory for an applicative functor as a $\Usymb$-type given in the previous section, i.e., an additional mode morphism $x : \dsd{n} \vdash \dsd{t}(x) : \dsd{n}$ and a transformation $\dsd{t}(x) \Rightarrow x$. We define $\later A := \Uempty{\dsd{t}}{A}$, and omit $\F{\dsd{t}}{A}$ from the theory. 
 
-A sequent in this type theory will be written $\Gamma \mid \Delta \vdash C$, with the constant types $\Gamma$ separated from the non-constant types $\Delta$. Similar to the case of the S4 $\Box$ modality, we represent a guarded lambda calculus sequent 
+To relate $\later$ and $\now$, we also add an equation $\dsd{t}(\dsd{b}(x)) \equiv \dsd{b}(x)$. Via Lemma \ref{lem:fusion}, this guarantees that $\now \later A \cong \now\,A$ as desired.
+
+A sequent in this type theory will be written $\Gamma \mid \Delta \vdash C$, with the constant types $\Gamma$ separated from the non-constant types $\Delta$, and where the variables in $\Delta$ are annotated $x :^n A$ as in the previous section. A sequent
 \[
- x_1:A_1,\ldots,x_n:A_n \mid y_1: B_1,\ldots, y_m : B_m \vdash C
+ x_1:A_1,\ldots,x_n:A_n \mid y_1:^{n_1} B_1,\ldots, y_m :^{n_m} B_m \vdash C
 \]
-by the sequent
+in the native calculus is represented by
 \[
 \seq{x_1:\Uempty{\dsd{b}}{A_1},\ldots,x_n:\Uempty{\dsd{b}}{A_n},y_1:B_1,\ldots, y_m : B_m}
-    {\dsd{b}(x_1) \times \ldots \times \dsd{b}(x_n) \times y_1 \times \ldots \times y_m}{C}
+    {\dsd{b}(x_1) \times \ldots \times \dsd{b}(x_n) \times \dsd{t}^{n_1}(y_1) \times \ldots \times \dsd{t}^{n_m}(y_m)}{C}
 \]
-in the framework.
-
-We derive the following rules:
+in the framework. We derive the rules:
 \[
-\begin{array}{c}
-\infer{\Delta \mid \Gamma \vdash {\now A}}
-      {\Delta \mid \cdot \vdash {A}}
-\quad
-\infer{\Delta \mid \Gamma \vdash {A}}
-      {\Delta \mid \Gamma \vdash {\now A}}
-\quad
-\infer{\Delta \mid \Gamma \vdash {\later A}}
-      {\Delta \mid \Gamma \vdash {A}}
-\quad
-\infer{\Delta \mid \Gamma \vdash {A}}
-      {\Delta \mid \cdot \vdash {\later A}}
-\quad
-\end{array}
-\]
-
-TODO: This isn't right, the $\later$ on the right decays into a ``permission to remove $\later$'' on the left, I don't know how to capture that in the rules properly.
-
-With three zones, where the last zone is marked by $\dsd{t}$:
-\[
-\begin{array}{c}
 \infer{\Delta \mid \Gamma \mid \Theta \vdash {\now A}}
       {\Delta \mid \cdot \mid \cdot \vdash {A}}
 \quad
 \infer{\Delta\mid \Gamma \mid \Theta \vdash {A}}
       {\Delta \mid \Gamma \mid \Theta \vdash {\now A}}
 \quad
-\infer{\Delta \mid \Gamma \mid \Theta \vdash {\later A}}
-      {\Delta \mid \cdot \mid \Gamma, \Theta \vdash {A}}
-\quad
-\infer{\Delta \mid \Gamma \mid \Theta, \later A \vdash {C}}
-      {\Delta \mid \Gamma, A \mid \Theta \vdash {C}}
-\quad
-\infer{\Delta, \later A \mid \Gamma \mid \Theta \vdash {C}}
-      {\Delta, A  \mid \Gamma \mid \Theta \vdash {C}}
-\quad
-%\infer{\Delta \mid \Gamma \mid \Theta \vdash {A}}
-%      {\Delta \mid \cdot \mid \cdot \vdash {\later A}}
-%\quad
-%\infer{\Delta \mid \Gamma \mid \Theta \vdash {A}}
-%      {\cdot \mid \Theta \mid \cdot \vdash {\later A}}
-%\quad
-\end{array}
+\infer{\Gamma \mid \Delta \vdash {\later A}}
+      {\Gamma \mid \Delta^{+1} \vdash A}
+\qquad
+\infer{\Gamma \mid \Delta, x :^{n+1} \later A \vdash C}
+      {\Gamma \mid \Delta, x :^n A \vdash C}
+\qquad
+\infer{\Gamma, \later A \mid \Delta \vdash C}
+      {\Gamma, A \mid \Delta \vdash C}
+\qquad
+\infer{\Gamma \mid \Delta, x :^{n+1} A \vdash C}
+      {\Gamma \mid \Delta, x :^n A\vdash C}
+\qquad
 \]
 
 The presentation of the guarded lambda calculus given in~\citep{clouston2015programming} uses side-conditions on its rules to enforce constancy where it is needed in $\now$-introduction and $\later$-elimination. As mentioned in the conclusion of that paper, this could just as well have been enforced by using a dual context structure as we have done here.
 
 \subsection{Graded Effects}
+
+
 
 %% \subsection{Non-adjoints}
 
