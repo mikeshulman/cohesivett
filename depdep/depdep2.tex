@@ -1,0 +1,430 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\cbar}{\, | \,}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{CTX}}
+\newcommand{\ctx}{\,\,\mathsf{ctx}}
+\newcommand{\TYPE}{\,\,\mathsf{TYPE}}
+\newcommand{\type}{\,\,\mathsf{type}}
+\newcommand{\TELE}{\,\,\mathsf{TELE}}
+\newcommand{\tele}{\,\,\mathsf{tele}}
+
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\St[2]{\ensuremath{{#1}_*(#2)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}(#1,#2)}}
+\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\FE[3]{\ensuremath{\mathsf{split} \, #2 \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+
+\title{Adjoint Type Theory}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Syntax}
+
+\subsection{Overview of Judgements}
+
+Mode theory judgements:
+\begin{itemize}
+\item $\gamma \ctx$ (empty, extension)
+\item $\gamma \yields \alpha \type$ (generators)
+\item $\gamma \yields \delta \tele$ (empty, extension)
+\item $\gamma \yields \mu : \alpha$ (variables, generators, ``coercion''
+  along $s : \alpha \Rightarrow \beta \type$)
+\item $\gamma \yields \theta : \delta$ (tuples)
+\item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ (identity,
+  composition, horizontal composition, generators)
+\item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples)
+\item $\gamma \yields s : \alpha \Rightarrow \beta \type$ (identity,
+  composition, ap of a type constant on a telescope of 2-cells)
+\end{itemize}
+Top judgements: 
+\begin{itemize}
+\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
+\item $\Gamma \yields_\alpha A \TYPE$ over $\gamma \yields \alpha \type$
+\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : \alpha$
+\item Telescopes $\Gamma \yields_\delta \Delta \TELE$ over $\gamma \yields \delta \tele$
+\item Substitutions $\Gamma \yields_\theta \Theta : \Delta$ over $\gamma \yields \theta : \delta$
+\end{itemize}
+
+Coercion along 2-cells $s : \alpha \Rightarrow \beta \type$ is
+\emph{contravariant} in the mode theory, but $s : \alpha \Rightarrow
+\beta \type$ and $s : \mu \Rightarrow \mu : \alpha$ act \emph{covariantly}
+on the subcripts of the term.
+
+We expect structurality to be admissible for the base, and structurality
+over that to be admissible for the top, e.g.:
+
+\begin{mathpar}
+\inferrule*[Left = weaken-over]
+           {\Gamma,\Gamma' \yields_\mu M : A (\text{where } \gamma,\gamma' \vdash \mu : \alpha)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A (\text{where } \gamma,y:\beta,\gamma' \vdash \mu : \alpha)}
+
+\inferrule*[Left = subst-over]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \and (\text{where } \gamma,x:\alpha,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \and (\text{where } \gamma \vdash \mu : \alpha)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \and (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : \alpha[\mu/x])}
+\end{mathpar}
+
+\subsection{Mode Theory}
+
+Some of the less obvious rules:
+
+\begin{mathpar}
+\inferrule*
+    {\gamma \yields \mu : \beta \\
+     \gamma \yields \alpha \Rightarrow \beta : \type
+    }
+    {\gamma \yields s_*(\mu) : \alpha}
+
+\inferrule*
+    {\gamma \yields s : \theta \Rightarrow \theta' : \delta \\
+      \gamma \yields t : \mu \Rightarrow (\alpha[s])_*(\mu') : \alpha[\mu]}
+    {\gamma \yields (s,t/x) : (\theta,\mu/x) \Rightarrow (\theta', \mu'/x) : \delta,x:\alpha}
+
+\inferrule*
+    {\gamma, \delta \yields \alpha : \type \\
+     \gamma \yields s : \theta \Rightarrow \theta' : \delta}
+    {\gamma \yields \alpha[s] : \alpha[\theta] \Rightarrow \alpha[\theta'] : \type}
+
+\inferrule*
+    {\gamma, \delta \yields s_1 : \mu \Rightarrow \mu' : \alpha \\
+      \gamma \yields s_2 : \theta \Rightarrow \theta' : \delta}
+    {\gamma \yields s_1[s_2] : \mu[\theta] \Rightarrow (\alpha[s_1])_*(\mu'[\theta']) : \mu[\theta]}
+\end{mathpar}
+
+Equations for $s_*(\alpha)$ are identity, composition -- anything else?
+
+\subsection{Contexts and telescopes (boring lifting to tuples)}
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+  {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
+    \Gamma \yields_\alpha A \TYPE \and (\text{where }  \gamma \yields \alpha \type)}
+  {\yields_{\gamma, x : \alpha} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:\alpha \ctx)  } \\
+
+  \inferrule*[Left = tele-form]{ }
+             {\Gamma \yields \cdot \TELE_{\cdot}  } \and
+
+  \inferrule*[Left = tele-form]{
+    \Gamma \yields_\delta \Delta \TELE \and  (\text{where } \gamma \yields \delta \tele) \\\\
+    \Gamma,\Delta \yields_\alpha A \TYPE \and (\text{where } \gamma,\delta \yields \alpha \type)}
+  {\Gamma \yields_{\delta, x : \alpha} \Delta, x : A \TELE  \and (\text{where } \gamma \yields \delta,x:\alpha \tele)} \\ \\
+
+  \and
+
+  \inferrule*[Left = sub1]{ }
+             {\Gamma \yields_\cdot \cdot : {\cdot}  } \and 
+  \inferrule*[Left = sub2]{
+    \Gamma \yields_\theta \Theta : \Delta  \and (\text{where } \gamma \yields \theta : \delta) \\\\
+    \Gamma \yields_{\mu} M : A[\Theta] \and (\text{where } \gamma,\delta \yields \mu : \alpha[\theta])}
+  {\Gamma \yields_{\theta, \mu/x } (\Theta,M/x) : \Delta, x : A  \and (\text{where } \gamma \yields (\theta,\mu/x) : \delta,x:\alpha)} \\ \\
+\end{mathpar}
+
+
+\subsection{Types and Terms}
+
+Note: we could build $s_*$ into the other rules, but there's not much
+reason to in natural deduction.  
+
+\begin{mathpar}
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : \alpha, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:\alpha,\gamma' \yields x : \alpha)} \and
+
+ \inferrule*[Left = 2cell]{
+   \Gamma \yields_\mu M : A 
+   \and \gamma \yields s : (\mu \Rightarrow \nu) : \alpha
+  }
+  {\Gamma \yields_\nu s_*(M) : A} \\ \\
+
+  \inferrule*[Left = *-form]{
+    \Gamma, \yields_\alpha A \TYPE \and (\text{where } \gamma \yields \alpha \type)\\\\
+    \and \gamma \yields s : \alpha \Rightarrow \beta : \type
+  }{\Gamma \yields_\beta \St{s}{A} \TYPE \and (\text{where } \gamma \yields \beta \type)} \\
+
+  \inferrule*[Left = *-intro]{
+    \Gamma \yields_{s_*(\mu)} M : A \and (\text{where } \gamma \yields s_*(\mu) : \alpha)
+  }
+  {\Gamma \yields_{\mu} \StI{s}{M} : \St{s}{A}
+    \and (\text{where } \gamma \yields \mu : \beta)
+  } \\
+  
+  \inferrule*[Left = *-elim]{
+    \Gamma \yields_\mu M : \St{s}{A} \and (\text{where } \gamma \yields \mu : \beta)
+  }{
+    \Gamma \yields_{s_*(\mu)} \StE{s}{M} : A \and (\text{where } \gamma \yields s_*(\mu) : \alpha)
+  } \\
+  
+  \\
+  \inferrule*[Left = F-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele) \\\\
+    \gamma, \delta \yields \mu : \beta 
+  }
+  {\Gamma \yields_\beta F_\mu(\Delta) \TYPE \and (\text{where } \gamma \yields \beta \type) } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\theta} \Theta : \Delta 
+    \and (\text{where } \gamma \yields {\theta} : \delta)
+    %% \and \gamma \yields \nu : \beta 
+    %% \and \gamma \yields \mu[\theta] : \beta 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : \beta
+  }
+  {\Gamma \yields_{\mu[\theta]} \FI{\Theta} : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \mu[\theta] : \beta)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, x : F_{\mu}(\Delta) \yields_{\alpha} C : \TYPE \and (\text{where } \gamma, x : \beta \yields \alpha : \type) \and \\
+    \Gamma \yields_{\nu} M : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta) \and \\
+    \Gamma, \Delta \yields_{\nu' [\mu / x]} N : C [\FI{\Delta/\Delta}/x]
+    \and (\text{where } \gamma, \delta \yields \nu' [\mu / x] : \alpha [\mu / x] )}
+  {\Gamma \yields_{\nu'[\nu/x]} \FE{M}{\Delta}{N} : C[M/x]  \and (\text{where } \gamma, \beta \yields {\nu'[\nu/x]} : \alpha[\nu/x])} \\
+    \\ \\
+
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele)\\\\
+    \Gamma, \Delta \yields_\alpha A \TYPE \and (\text{where } \gamma, \delta \yields \alpha \type)\\\\
+    \and \gamma, \delta, c : \beta \yields \mu : \alpha
+  }{\Gamma \yields_\beta U_{c.\mu}(\Delta \vert A) \TYPE \and (\text{where } \gamma \yields \beta \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma, \Delta \yields_{\mu[\nu/c]} N : A \and (\text{where } \gamma,\delta \yields {\mu[\nu/c]} : \alpha)
+  }
+  {\Gamma \yields_{\nu} \UI \Delta N : U_{c.\mu}(\Delta \vert A)
+    \and (\text{where } \gamma \yields \nu : \beta)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_\nu M : U_{c.\mu}(\Delta \vert A) \and (\text{where } \gamma \yields \nu : \beta)\\\\
+    \Gamma \yields_\theta \Theta : \Delta \and (\text{where } \gamma \yields \theta : \delta)\\
+  }{
+    \Gamma \yields_{\mu[\theta,\nu/c]} \UE{M}{\Theta} : A[\Theta] \and (\text{where } \gamma \yields \mu[\theta,\nu/c] : \alpha[\theta])
+  } \\
+\end{mathpar}
+
+Note that \St{s}{A} and \U{x.s_*(x)}{\cdot}{A} have the same intro/elim,
+but \St{s}{A} has more definitional equalities:
+\[
+\begin{array}{rcl}
+\St{1}{A} & \equiv & A \\
+\St{(s;t)}{A} & \equiv & \St{t}{\St{s}{A}}\\
+\St{\alpha[s]}{A[\Theta]} & \equiv & A[s_*(\Theta)]
+\end{array}
+\]
+
+We should also have term definitional equalities over these (like
+$\StI{1}{M} \equiv M$, $\StE{1}{M} \equiv M$).
+
+In the final equation, the typing is
+\begin{mathpar}
+\gamma,\delta \yields \alpha : \type \and 
+\Gamma,\Delta \yields_\alpha A : \type \and 
+\Gamma \yields s : \theta \Rightarrow \theta' : \delta \and
+\Gamma \yields_\theta \Theta : \Delta 
+\end{mathpar}
+This equation uses the operation
+\begin{mathpar}
+ \inferrule*[Left = 2cell-subst]{
+   \Gamma \yields_\theta \Theta : \Delta 
+   \and \gamma \yields s : (\theta \Rightarrow \theta') : \delta
+  }
+  {\Gamma \yields_{\theta'} s_*(\Theta) : A} 
+\end{mathpar}
+is admissible. The extension case is given
+\begin{mathpar}
+(s,t/x) : (\theta,\mu/x) \Rightarrow (\theta',\mu'/x) : \delta,x:\alpha
+\and
+\yields_{\theta,\mu/x} (\Theta,M/x) : \Delta,x:A
+\end{mathpar}
+as in the typing rules for these above, and constructs
+\[
+(s_*(\Theta), \StI{\alpha[s]}{t_*(M)})
+\]
+Note that the second component uses the same third equation above (at a
+smaller context) to type check, because the term is supposed to have
+type $A[s_*(\Theta)]$, which we construct via the intro rule for
+$\St{(\alpha[s])}{A[\Theta]}$.
+
+\subsection*{Mode Theories}
+
+Here's an idea for how mode theories could work.
+
+\paragraph{Contexts}
+
+In the simply-typed framework, to make a mode $p$ have (tensor)
+products, we made it an internal monoid with e.g. a 1-cell $\odot : p,p
+\to p$.  Here, to make a mode $p$ ``have dependent types,'' we'll make
+it an ``internal display category'' or something like that.
+
+For normal dependent type theory, we'll use two base mode types $p_0
+\type$ and $c : p_0 \yields p_1(c) \type$.  Think of $p_0$ as the closed
+types/contexts associated with mode $p$, and $p_1(c)$ as the dependent
+types (dependent on $c$).  The mode theory says that ``contexts'' are
+generated by the empty context, context extension, and projection:
+\begin{align*}
+&\yields \emptyset_0 : p_0 \\
+c : p_0, x : p_1(c) &\yields c.x : p_0 \\
+c : p_0, x : p_1(c) & \yields w : c \Rightarrow (c.x) : p_0 \\
+\end{align*}
+(Note that weakening is in the ``inclusion'' rather than ``projection''
+direction, which makes sense 2-cells act covariantly on the top
+judgements.)
+
+A typical object-language type formation judgement like 
+\[
+x : A, y : B, z : C \vdash D \type
+\]
+is over
+\[
+x : p_1(\emptyset_0), y : p_1(\emptyset.x), z : p_1(\emptyset.x.y) \vdash p_1(\emptyset.x.y.z) \type
+\]
+(``$x$ can't use anything, $y$ can use $x$, $z$ can use $x$ and $y$,'' etc.) 
+
+\paragraph{$\Sigma$ types}
+The $F$-type for context extension is a ``closed'' $\Sigma$-type:
+$\yields_{p_0} \F{x.y}{x : A, y : B}$, if $\yields_{p_0} A \type$ and $x
+: A \vdash_{p_1(x)} B \type$ ($A$ is a closed type and $B$ depends only
+on it).  To get a $\Sigma$ in context, we need another mode morphism
+\[
+c : p_0, x : p_1(c), y : p_1(c.x) \yields \Sigma_c(x,y) : p_1(c) 
+\]
+and then we have $\vdash_{p_1(c)} \F{\Sigma_c(x,y)}{x : A, y : B} \type$
+when $\yields_{p_1(c)} A \type$ and $x : A \vdash_{p_1(c.x)} B \type$
+relative to an ambient context in which $c : p_0$.
+
+Note:
+\[
+c : p_0, x : p_1(c), y : p_1(c.x) \yields (p_1[w : c \Rightarrow c.x])_*(y) : p_1(c) 
+\]
+has that type; is that a $\Sigma$ type?
+
+However $\Sigma$ is defined, we'll probably want various equations about
+these, such as associativity
+\begin{align*}
+c.\Sigma_c(x,y) &\equiv c.x.y \\
+\Sigma_c(\Sigma_c(x,y),z) & \equiv \Sigma_c(x,\Sigma_{c.x}(y,z))
+\end{align*}
+(where the second uses the first to type check)
+and that there is a unit 
+\[
+c : p_0 \yields \emptyset_1 : p_1(c) \\
+\]
+that has unit laws with $\Sigma$:  
+\begin{align*}
+c.(\emptyset_1) \equiv c\\
+c : p_0, x : p_1(c) \yields \Sigma_c(\emptyset_1,x) \equiv x\\
+c : p_0, x : p_1(c) \yields \Sigma_c(x,\emptyset_1) \equiv x
+\end{align*}
+
+TODO: cumulativity/projection
+
+TODO: contraction
+%% And we'll usually want contraction, e.g.
+%% \[
+%% c : p_0, x : p_1(c) \yields \Sigma_{c}(x,w_x^*(x)) \equiv x
+%% \]
+%% (or a directed cell if that's preferable).  
+
+\paragraph{Modalities}
+
+Suppose we have two modes $(p_0,p_1)$ and $(q_0,q_1)$ as above, then an
+example modality between them has both 
+\begin{align*}
+c : p_0 \vdash f_0(c) : q_0\\
+c : p_0, x : p_1(c) \vdash f_1(c,x) : q_1(f_0(c))
+\end{align*}
+$f_0$ says that the modality $f$ acts on contexts/closed types, and
+$f_1$ says that the modality also acts on open types (we could omit
+$f_1$ if it doesn't), and that the action on types depends through $f_0$
+(but of course there's nothing that forces this; it just seems like a
+common pattern).
+
+For example, for a Pfenning-Davies style $\Box$ decomposed as
+$F(U A)$ between modes $v$ and $t$, the $F$ and $U$ types for $f_1$ give
+have formation rules like
+\begin{mathpar}
+\inferrule*{\Delta \yields A \type_v}
+           {\Delta \mid \cdot \yields F(A) \type_t}
+
+\inferrule*{\Delta \mid \cdot \yields A \type_t}
+           {\Delta \yields U(A) \type_v}
+\end{mathpar}
+where $f_0(\Delta)$ is $\Delta \mid \cdot$
+
+We could add product-preserving axioms like:
+\begin{align*}
+f_0(\emptyset_0) \equiv \emptyset_0\\
+f_1(\emptyset_1) \equiv \emptyset_1\\
+f_0(c.x) \equiv f_0(c).f_1(x) \\
+f_1(\Sigma_c(x,y)) \equiv \Sigma_{f_0(c)}(f_1(x), f_1(y)) \\
+\end{align*}
+
+So how does this recover the coherence triangles for the modal stuff? Suppose we have:
+\begin{align*}
+x_0 : p_0 &\yields f_0(x_0) : p_0 \\ 
+x_0 : p_0, x_1 : p_1(x_0) &\yields f_1(x_0, x_1) : p_1(f_0(x_0)) \\
+\end{align*}
+(These could land in some different $q_i$ if we wanted). And similarly
+for $g_i$ and $h_i$. Now suppose we want to construct something
+like \[x:p_0, y : p_1(f(x)), z : p_2(g(x), h(y))\] so $y$ depends on $x$
+through $f$, and $z$ depends on $x$ and $y$ through $g$ and $h$. More
+carefully, we can only directly get
+\begin{align*}
+x : p_0, y : p_1(f_0(x)) \yields h_1(f_0(x), y) : p_1(h_0(f_0(x))
+\end{align*}
+and 
+\begin{align*}
+x : p_0, y : p_1(g_0(x)) \yields p_1(g_0(x).y) \type
+\end{align*}
+so to write 
+\begin{align*}
+x : p_0, y : p_1(f_0(x)) \yields p_1(g_0(x).h_1(f_0(x), y))) \type
+\end{align*}
+we would need to be able to rewrite a $p_1(h_0(f_0(x))$ to a $p_1(g_0(x))$ using a 2-cell $h_0(f_0(x)) \Rightarrow g_0(x)$
+
+\paragraph{Base Types}
+
+I'm assuming that base types (and identity types, $\mathsf{El}(a)$ for
+$a : U$, etc.) ``declare their variables'', e.g. $x : P, y : Q
+\vdash_{p_1(\emptyset.x.y)} R(x,y) \type$.  Otherwise, the way that
+$\Sigma$, $\Pi$ propogate contexts ($p_0$) wouldn't actually stop
+anything from type checking, because you could make all of your types
+elements of $p_1(\emptyset)$, which can be weakened to whatever you
+want.
+
+\paragraph{$\Pi$-types}
+
+For $\Pi$ types, the guess is $\U{z.\Pi_c(z,x)}{x : A}{B}$ for something
+of the following type:
+\[ 
+c : p_0, x : p_1(c), z : p_1(c) \yields \Pi_c(z,x) : p_1(c.x) 
+\]
+
+TODO: fill in triple-adjunction idea
+
+\paragraph{Term Judgements}  
+
+TODO: fill in
+
+\end{document}
