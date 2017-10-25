@@ -29,6 +29,11 @@
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
 \newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
 
+\newcommand\Set[0]{\ensuremath{\textbf{Set}}}
+\newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
+\newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
+\newcommand\Dt[2]{\ensuremath{#1.#2}}
+
 \title{Adjoint Type Theory}
 \author{}
 \date{}
@@ -426,5 +431,196 @@ TODO: fill in triple-adjunction idea
 \paragraph{Term Judgements}  
 
 TODO: fill in
+
+\subsection*{Non-$p_0/p_1$ Try at Mode Theory}
+
+We have the following judgements and intended semantics:
+
+\begin{itemize}
+\item $\gamma \ctx$ : $\gamma$ is a finite inverse category.  
+
+\item We won't use it in the syntax, but the derived notion $\gamma
+  \yields \theta : \gamma'$ of a morphism between contexts would be
+  interpreted as a profunctor $\gamma \nrightarrow \gamma'$,
+  i.e. $\gamma'^{op} \times \gamma \to \Set$
+
+\item $\gamma \yields \alpha \type$ : a functor $\alpha : \gamma \to
+  \Set$, which is equivalent to a profunctor $\gamma \nrightarrow 1$.  
+
+\item $\gamma \yields \mu : \alpha$ : There is a projection profunctor
+  $\gamma,x:\alpha \yields \mathsf{p} : \gamma$ and a term is
+  equivalently (1) a section of this, or (2) this unpacks to a functor
+  $\mu : \gamma \to \Set$ and a natural transformation $\alpha
+  \Rightarrow \mu$.  (I.e. the term bundle bounds the type bundle, as
+  Jason suggested way back at the beginning.)
+
+\item $\gamma \yields s : \alpha \Rightarrow \beta \type$ : 
+(guess) natural transformations $\alpha \Rightarrow \beta$ --
+or is it supposed to be only some natural transformations? 
+They seem inclusiony/mono, though I don't think it comes
+out that way in this semantics.    
+
+\item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ : (guess) a
+  natural transformation $s : \mu \Rightarrow \nu$ that makes a triangle
+  with the $\alpha \Rightarrow \mu$ and $\alpha \Rightarrow \nu$ parts
+  of the term.
+
+%% TODO: 
+\item $\gamma \yields \delta \tele$ (tuples, semantically the same as
+  a type?)
+\item $\gamma \yields \theta : \delta$ (tuples, semantically the same as
+  a term?)
+\item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples,
+  semantically the same as a term 2-cell?)
+\end{itemize}
+
+Structural rules:
+\begin{itemize}
+
+\item The empty finite inverse category:
+\begin{mathpar}
+\inferrule{ } 
+{\emptyset \ctx}
+\end{mathpar}
+
+\item The collage of $\alpha$:
+\begin{mathpar}
+\inferrule{ \gamma \ctx \and \gamma \yields \alpha}
+          { \gamma, x:\alpha \ctx}
+\end{mathpar}
+I.e. the category whose objects are $\gamma + 1$, with
+$\Hom{}{\mathsf{inr}()}{\mathsf{inl}(y)}$ given by $\alpha(y)$, no maps
+in the other direction, only the identity for ${\mathsf{inr}()}$, and
+agreeing with $\gamma$ on $\mathsf{inl}s$.  
+Note that $\gamma,x:\alpha$ is disjunctive rather than conjunctive,
+which is why some of the rules are weird.  I.e. adding a new object with
+maps to things chosen from $\gamma$ by $\alpha$. 
+
+\item Semantically, there is a \textbf{functor} $i : \gamma \rightarrow
+  \gamma,x:\alpha$ given by the inclusion $\mathsf{inl}$ of $\gamma$
+  into the collage of $\alpha$.  As with any functor, this determines
+  profunctors
+\begin{align*}
+i : \gamma \nrightarrow (\gamma,x:\alpha) := (a : {\gamma,x:\alpha} ,b : \gamma) \mapsto \Hom{\gamma,x:\alpha}{a}{\mathsf{inl}(b)}\\
+p :  (\gamma,x:\alpha) \nrightarrow \gamma := (a : \gamma, b : {\gamma,x:\alpha}) \mapsto \Hom{\gamma,x:\alpha}{\mathsf{inl}(a)}{b}
+\end{align*}
+with $i \dashv p$.  Using the definition of the collage, we can show
+that $p \circ i : \gamma \nrightarrow \gamma$ is (naturally isomorphic
+to?) the identity profunctor (hom) (while $i \circ p : (\gamma,x:\alpha)
+\nrightarrow (\gamma,x:\alpha)$ is not, but it has a natural
+transformation to the identity, which the counit of the adjunction).
+Thus, $i$ is a section of $p$, and therefore should determine a term.
+
+Syntactically, we make $p$ implicit by an admissible structural rule
+\[
+\inferrule*[Left = admissible]
+          { \gamma,\delta \vdash J }
+          { \gamma,x:\alpha,\delta \vdash J}
+\]
+
+We write $i$ as 
+\[
+\inferrule{ }
+          {\gamma \vdash \just{\alpha} : \alpha}
+\]
+because, under the semantics of a term as a functor $\gamma \to \Set$
+with a natural transformation to $\alpha$, it is $\alpha$ and the
+identity natural transformation. (TODO: check this)
+
+\item Tranformations between types act contravariantly:
+\[
+\inferrule{ \gamma \yields \mu : \beta \and \gamma \yields s : \alpha
+  \Rightarrow \beta \type }
+{ \gamma \yields s_*(\mu) : \alpha }
+\]
+
+Semantically, if we have $\beta \Rightarrow \mu$ and $\alpha \Rightarrow
+\beta$ we can compose the two natural transformations.  That is, we are
+weakening the ``type bundle'' without changing the ``term bundle''.
+
+\item Since a term is (equivalent to) a section of the projection,
+  substitution should act as usual:
+\[
+\inferrule*[Left = admissible]
+           {\gamma,x:\alpha,\delta \yields J \and \gamma \yields \mu : \alpha}
+           {\gamma,\delta[\mu/x] \yields J[\mu/x]}
+\]
+ 
+\item We should have identity, composition, and horizontal compostion
+  rules for $\alpha \Rightarrow \beta \type$ and $\mu \Rightarrow \nu :
+  \alpha$, since they're natural transformations, or triangles of
+  natural transformations.
+ 
+\end{itemize}
+
+Types:
+\begin{itemize}
+
+\item The constantly $\emptyset$ functor
+\begin{mathpar}
+\inferrule{ }
+          { \gamma \yields \emptyset_1 \type }
+
+\inferrule{ }
+          {! : \emptyset_1 \Rightarrow \alpha \type}
+\end{mathpar}
+
+FIXME: this seems like the right place to put $!$, but it's weirdly not
+analogous to the pushout.  
+
+\item The semantics of a term judgement $\gamma \yields \mu : \alpha$ is
+  the same as the semantics of a ``subtyping'' judgement $\gamma \yields
+  \alpha \Rightarrow \beta$ (unless it's not supposed to be?): a term
+  $\mu$ denotes a functor $\mu : \gamma \to \Set$ which \emph{is} a
+  type, along with a natural transformation $\alpha \rightarrow \mu$.
+  That is, all terms determine types, or all types are universes?  We do
+  this ``a la Tarski'' with
+
+\begin{mathpar}
+\inferrule{\gamma \yields \mu : \alpha}
+          {\gamma \yields \Dt \alpha \mu \type}
+
+\inferrule{ } 
+          {\mathsf{w} : \alpha \Rightarrow \alpha.\mu \type}
+\end{mathpar}
+
+Note $\gamma,x:\alpha$ is the collage of $\alpha$, $\alpha.\mu$ is an
+extended profunctor to 1, like $c.x$ in the old version.  The 2-cell
+acts to give 
+\[
+\inferrule*[Left = derivable]
+           {\gamma \yields \nu : \alpha.\mu }
+           {\gamma \yields \mathsf{w}_*(\nu) : \alpha}
+\]
+i.e. $\alpha \Rightarrow \nu$ because $\alpha.\mu \Rightarrow \nu$ and
+$\alpha \Rightarrow \alpha.\mu$.  
+
+We probably have
+\[
+\Dt{\alpha}{\just{\alpha}} \equiv \alpha
+\]
+because $\just{\alpha}$ denotes $\alpha \Rightarrow \alpha$ and
+$\Dt{\alpha}{\just{\alpha}}$ takes the right-hand side of that natural
+transformation.
+
+With this, we can do linear dependency, e.g. the context
+\[
+a : A, b : B(a), c : C(a,b), d : D(a,b,c) 
+\]
+is 
+\[
+a : (\emptyset_1), b : (\emptyset_1.a), c : (\emptyset_1.a.b), d : (\emptyset_1.a.b.c)
+\]
+
+I was trying to think of ways to make elements of $\alpha.\mu$.  Any
+element of $\alpha$ that is bigger than $\mu$ is (determines) an
+element of it:
+\[
+\inferrule*[Left = derivable]
+           {\gamma \vdash \nu : \alpha \and \gamma \vdash s: \mu \Rightarrow \nu : \alpha}
+           {\gamma \vdash (\alpha.s)_*(\just{\alpha.\nu}) : \alpha.\mu}
+\]
+
+\end{itemize}
 
 \end{document}
