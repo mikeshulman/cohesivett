@@ -6,6 +6,8 @@
 \usepackage[mathscr]{euscript}
 \usepackage{tikz-cd}
 \usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
 
 \newcommand{\yields}{\vdash}
 \newcommand{\cbar}{\, | \,}
@@ -456,22 +458,27 @@ We have the following judgements and intended semantics:
   $\mu : \gamma \to \Set$ and a natural transformation $\alpha
   \Rightarrow \mu$.  (I.e. the term bundle bounds the type bundle, as
   Jason suggested way back at the beginning.)
+  \msnote{Note that (1) and (2) form equivalent, but not isomorphic, categories.  The 2-categorically correct notion of ``section'' is a profunctor $\mathsf{s}: \gamma \nrightarrow (\gamma,x:\alpha)$ together with an isomorphism from its composite with $\mathsf{p}$ to the identity on $\gamma$.  This involves a bunch of extra data, but up to isomorphism it is uniquely determined by the value of $\mathsf{s}$ on $x$, which is $\mu$, and the profunctorial action on ``identities'' of arrows out of $\mathsf{inr}()$ in the collage landing in $\mu$, which is the transformation $\alpha\Rightarrow \mu$.}
 
 \item $\gamma \yields s : \alpha \Rightarrow \beta \type$ : (guess)
   natural transformations $\alpha \Rightarrow \beta$ -- or is it
   supposed to be only some natural transformations?  Syntactically, we
   only want the ones that should induce structural rules upstairs.
-
+  \msnote{I think any natural transformation \emph{could} be one of these, but in particular (e.g. substructural) mode theories we may not want to include rules that generate all of them.}
+  
 \item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ : (guess) a
   natural transformation $s : \mu \Rightarrow \nu$ that makes a triangle
   with the $\alpha \Rightarrow \mu$ and $\alpha \Rightarrow \nu$ parts
   of the term.
+  \msnote{Sounds right.}
 
 %% TODO: 
 \item $\gamma \yields \delta \tele$ (tuples, semantically the same as
   a type?)
+  \msnote{I think this should be an inverse category $\delta$, representing the internal dependencies among the types in $\delta$, together with a profunctor $\gamma\nrightarrow \delta$ representing their dependencies on the types in $\gamma$.}
 \item $\gamma \yields \theta : \delta$ (tuples, semantically the same as
   a term?)
+  \msnote{A section of the collage of the above profunctor}
 \item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples,
   semantically the same as a term 2-cell?)
 \end{itemize}
@@ -503,12 +510,12 @@ maps to things chosen from $\gamma$ by $\alpha$.
   into the collage of $\alpha$.  As with any functor, this determines
   profunctors
 \begin{align*}
-i : \gamma \nrightarrow (\gamma,x:\alpha) := (a : {\gamma,x:\alpha} ,b : \gamma) \mapsto \Hom{\gamma,x:\alpha}{a}{\mathsf{inl}(b)}\\
-p :  (\gamma,x:\alpha) \nrightarrow \gamma := (a : \gamma, b : {\gamma,x:\alpha}) \mapsto \Hom{\gamma,x:\alpha}{\mathsf{inl}(a)}{b}
+i : \gamma \nrightarrow (\gamma,x:\alpha) := (a : ({\gamma,x:\alpha}) ,b : \gamma) \mapsto \Hom{\gamma,x:\alpha}{a}{\mathsf{inl}(b)}\\
+p :  (\gamma,x:\alpha) \nrightarrow \gamma := (a : \gamma, b : ({\gamma,x:\alpha})) \mapsto \Hom{\gamma,x:\alpha}{\mathsf{inl}(a)}{b}
 \end{align*}
 with $i \dashv p$.  Using the definition of the collage, we can show
 that $p \circ i : \gamma \nrightarrow \gamma$ is (naturally isomorphic
-to?) the identity profunctor (hom) (while $i \circ p : (\gamma,x:\alpha)
+to) the identity profunctor (hom) (while $i \circ p : (\gamma,x:\alpha)
 \nrightarrow (\gamma,x:\alpha)$ is not, but it has a natural
 transformation to the identity, which the counit of the adjunction).
 Thus, $i$ is a section of $p$, and therefore should determine a term.
@@ -525,11 +532,11 @@ We write $i$ as
 \inferrule{ }
           {\gamma \vdash \just{\alpha} : \alpha}
 \]
-because, under the semantics of a term as a functor $\gamma \to \Set$
-with a natural transformation to $\alpha$, it is $\alpha$ and the
-identity natural transformation. (TODO: check this)
+because, under the semantics of a term as a functor $\mu:\gamma \to \Set$
+with a natural transformation from $\alpha$, it is $\alpha$ and the
+identity natural transformation.  In fact, by definition $\mu$ is $\Hom{\gamma,x:\alpha}{\mathsf{inl}()}{\mathsf{inl}(b)}$, which is just $\alpha(b)$ by definition of the collage, and the transformation is directly seen to be the identity.
 
-\item Tranformations between types act contravariantly:
+\item Transformations between types act contravariantly:
 \[
 \inferrule{ \gamma \yields \mu : \beta \and \gamma \yields s : \alpha
   \Rightarrow \beta \type }
@@ -539,6 +546,7 @@ identity natural transformation. (TODO: check this)
 Semantically, if we have $\beta \Rightarrow \mu$ and $\alpha \Rightarrow
 \beta$ we can compose the two natural transformations.  That is, we are
 weakening the ``type bundle'' without changing the ``term bundle''.
+\msnote{Since things are backwards, I would say we are \emph{strengthening} the type bundle: $\alpha$ might depend on \emph{less} than $\beta$ does.  In other words, if $\mu$ is an allowable sort of dependency for terms belonging to types with dependencies $\beta$, then it is also an allowable dependency for terms belonging to types with fewer (or duplicated) dependencies.  It may not be allowable for terms belonging to types with \emph{more} dependencies.}
 
 \item Since a term is (equivalent to) a section of the projection,
   substitution should act as usual:
@@ -595,7 +603,7 @@ acts to give
 i.e. $\alpha \Rightarrow \nu$ because $\alpha.\mu \Rightarrow \nu$ and
 $\alpha \Rightarrow \alpha.\mu$.  
 
-We probably have
+We have
 \[
 \Dt{\alpha}{\just{\alpha}} \equiv \alpha
 \]
@@ -603,14 +611,17 @@ because $\just{\alpha}$ denotes $\alpha \Rightarrow \alpha$ and
 $\Dt{\alpha}{\just{\alpha}}$ takes the right-hand side of that natural
 transformation.
 
-With this, we can do linear dependency, e.g. the context
+\item A variable use $\gamma, x:\alpha \yields x:\alpha$ represents the representable profunctor $\Hom{}{\mathsf{inr}()}{-}$ on the collage $(\gamma,x:\alpha)$, together with a natural transformation $p^*\alpha \Rightarrow \Hom{}{\mathsf{inr}()}{-}$, where $p^*\alpha$ denotes the weakening of $\alpha$ from $\gamma$ to $\gamma,x:\alpha$.  The latter is by definition the profunctor composite of $\alpha$ with $p$, which means that it acts as $\alpha$ on $\mathsf{inl}(a)$ and as the empty set on $\mathsf{inr}()$.  Thus the transformation $p^*\alpha \Rightarrow \Hom{}{\mathsf{inr}()}{-}$ is the identity at $\mathsf{inl}(a)$ and the inclusion $\emptyset \to 1$ at $\mathsf{inr}()$.
+
+\item With this, we can do linear dependency, e.g. the context
 \[
 a : A, b : B(a), c : C(a,b), d : D(a,b,c) 
 \]
-is 
+is moded by
 \[
 a : (\emptyset_1), b : (\emptyset_1.a), c : (\emptyset_1.a.b), d : (\emptyset_1.a.b.c)
 \]
+Semantically, such a context is the linear inverse category $a \leftarrow b \leftarrow c \leftarrow d$.  This follows inductively from the above description of variable use, since the representable functor at the top element of a linear inverse category is constant at $1$, hence its collage is the linear inverse category with one more object on top.
 
 I was trying to think of ways to make elements of $\alpha.\mu$.  Any
 element of $\alpha$ that is bigger than $\mu$ is (determines) an
