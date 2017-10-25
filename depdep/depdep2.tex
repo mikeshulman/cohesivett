@@ -34,6 +34,9 @@
 \newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
 \newcommand\Dt[2]{\ensuremath{#1.#2}}
 
+\newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
+\newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
+
 \title{Adjoint Type Theory}
 \author{}
 \date{}
@@ -271,7 +274,7 @@ smaller context) to type check, because the term is supposed to have
 type $A[s_*(\Theta)]$, which we construct via the intro rule for
 $\St{(\alpha[s])}{A[\Theta]}$.
 
-\subsection*{Mode Theories}
+\subsection{Mode Theories (Old)}
 
 Here's an idea for how mode theories could work.
 
@@ -432,7 +435,7 @@ TODO: fill in triple-adjunction idea
 
 TODO: fill in
 
-\subsection*{Non-$p_0/p_1$ Try at Mode Theory}
+\subsection{Non-$p_0/p_1$ Try at Mode Theory}
 
 We have the following judgements and intended semantics:
 
@@ -454,11 +457,10 @@ We have the following judgements and intended semantics:
   \Rightarrow \mu$.  (I.e. the term bundle bounds the type bundle, as
   Jason suggested way back at the beginning.)
 
-\item $\gamma \yields s : \alpha \Rightarrow \beta \type$ : 
-(guess) natural transformations $\alpha \Rightarrow \beta$ --
-or is it supposed to be only some natural transformations? 
-They seem inclusiony/mono, though I don't think it comes
-out that way in this semantics.    
+\item $\gamma \yields s : \alpha \Rightarrow \beta \type$ : (guess)
+  natural transformations $\alpha \Rightarrow \beta$ -- or is it
+  supposed to be only some natural transformations?  Syntactically, we
+  only want the ones that should induce structural rules upstairs.
 
 \item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ : (guess) a
   natural transformation $s : \mu \Rightarrow \nu$ that makes a triangle
@@ -563,18 +565,16 @@ Types:
 
 \inferrule{ }
           {! : \emptyset_1 \Rightarrow \alpha \type}
-\end{mathpar}
 
-FIXME: this seems like the right place to put $!$, but it's weirdly not
-analogous to the pushout.  
+s \equiv \mathord{!} : \emptyset_1 \Rightarrow \alpha
+\end{mathpar}
 
 \item The semantics of a term judgement $\gamma \yields \mu : \alpha$ is
   the same as the semantics of a ``subtyping'' judgement $\gamma \yields
-  \alpha \Rightarrow \beta$ (unless it's not supposed to be?): a term
-  $\mu$ denotes a functor $\mu : \gamma \to \Set$ which \emph{is} a
-  type, along with a natural transformation $\alpha \rightarrow \mu$.
-  That is, all terms determine types, or all types are universes?  We do
-  this ``a la Tarski'' with
+  \alpha \Rightarrow \beta$: a term $\mu$ denotes a functor $\mu :
+  \gamma \to \Set$ which \emph{is} a type, along with a natural
+  transformation $\alpha \rightarrow \mu$.  That is, all terms determine
+  types, or all types are universes?  We do this ``a la Tarski'' with
 
 \begin{mathpar}
 \inferrule{\gamma \yields \mu : \alpha}
@@ -621,6 +621,53 @@ element of it:
            {\gamma \vdash (\alpha.s)_*(\just{\alpha.\nu}) : \alpha.\mu}
 \]
 
+\item Pushouts: Given a cospan of types and natural transformations, we
+  can take the pushout in $\gamma \to \Set$:
+
+\begin{mathpar}
+\inferrule{\gamma \vdash \beta, \alpha_1, \alpha_2  \type \and
+           \gamma \vdash s_i : \beta \Rightarrow \alpha_i}
+          {\gamma \vdash \Pushout{\alpha_1}{\beta}{\alpha_2}{s_1}{s_2} \type}
+
+\inferrule{ }
+      {\gamma \vdash \mathsf{inl} : \alpha \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
+
+\inferrule{ }
+      {\gamma \vdash \mathsf{inr} : \alpha \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
+
+\inferrule{ 
+      \gamma \vdash s_1' : \alpha_1 \Rightarrow \beta \and 
+      \gamma \vdash s_2' : \alpha_2 \Rightarrow \beta \and
+      s_1;s_1' = s_2;s_2'
+      }
+      {\gamma \vdash {[s_1',s_2']} : \Pushout{\alpha_1}{\alpha}{\alpha_2}{s_1}{s_2} \Rightarrow \beta}
+\end{mathpar}
+Plus $\beta/\eta$ equations.  
+
+TODO: Now we can do DAGs of dependencies, which do and don't (take
+$\alpha = \emptyset_1$ to get a coproduct) commute.  
+
+%% maybe this doesn't make sense:
+%% We have a way of constructing terms that comes from the universal
+%% property of the pushout: to give something bigger than $\alpha_1 +_\beta
+%% \alpha_2$, we give two things bigger than $\alpha_1$ and $\alpha_2$
+%% that agree:
+%% \[
+%% \inferrule{\gamma \vdash \mu_1 : \alpha_1 \and 
+%%            \gamma \vdash \mu_2 : \alpha_2 \and 
+%%            \gamma \vdash {s_1}_*(\mu_1) \equiv {s_2}_*(\mu_2) : \beta}
+%%           {\gamma \vdash \mu_1 +_1 \mu_2 : \Pushout{\alpha_1}{\alpha}{\alpha_2}{s_1}{s_2}}
+%% \]
 \end{itemize}
+
+Note: cell gluing seems like it could be
+\[
+\infer{\gamma \vdash \mu : \alpha \and
+       \gamma \vdash s : \alpha \rightarrow \beta}
+      { 
+        \gamma \vdash (\beta +_s \mu) :=
+        \Pushout{\beta}{\alpha}{(\alpha.\mu)}{s}{\mathsf{w}} \type
+      }
+\]
 
 \end{document}
