@@ -336,13 +336,13 @@ c.\Sigma_c(x,y) &\equiv c.x.y \\
 (where the second uses the first to type check)
 and that there is a unit 
 \[
-c : p_0 \yields \emptyset_1 : p_1(c) \\
+c : p_0 \yields \emptyset_0 : p_1(c) \\
 \]
 that has unit laws with $\Sigma$:  
 \begin{align*}
-c.(\emptyset_1) \equiv c\\
-c : p_0, x : p_1(c) \yields \Sigma_c(\emptyset_1,x) \equiv x\\
-c : p_0, x : p_1(c) \yields \Sigma_c(x,\emptyset_1) \equiv x
+c.(\emptyset_0) \equiv c\\
+c : p_0, x : p_1(c) \yields \Sigma_c(\emptyset_0,x) \equiv x\\
+c : p_0, x : p_1(c) \yields \Sigma_c(x,\emptyset_0) \equiv x
 \end{align*}
 
 TODO: cumulativity/projection
@@ -383,7 +383,7 @@ where $f_0(\Delta)$ is $\Delta \mid \cdot$
 We could add product-preserving axioms like:
 \begin{align*}
 f_0(\emptyset_0) \equiv \emptyset_0\\
-f_1(\emptyset_1) \equiv \emptyset_1\\
+f_1(\emptyset_0) \equiv \emptyset_0\\
 f_0(c.x) \equiv f_0(c).f_1(x) \\
 f_1(\Sigma_c(x,y)) \equiv \Sigma_{f_0(c)}(f_1(x), f_1(y)) \\
 \end{align*}
@@ -561,19 +561,19 @@ Types:
 \item The constantly $\emptyset$ functor
 \begin{mathpar}
 \inferrule{ }
-          { \gamma \yields \emptyset_1 \type }
+          { \gamma \yields \emptyset_0 \type }
 
 \inferrule{ }
-          {! : \emptyset_1 \Rightarrow \alpha \type}
+          {! : \emptyset_0 \Rightarrow \alpha \type}
 
-s \equiv \mathord{!} : \emptyset_1 \Rightarrow \alpha
+s \equiv \mathord{!} : \emptyset_0 \Rightarrow \alpha
 \end{mathpar}
 
 \item The semantics of a term judgement $\gamma \yields \mu : \alpha$ is
   the same as the semantics of a ``subtyping'' judgement $\gamma \yields
   \alpha \Rightarrow \beta$: a term $\mu$ denotes a functor $\mu :
   \gamma \to \Set$ which \emph{is} a type, along with a natural
-  transformation $\alpha \rightarrow \mu$.  That is, all terms determine
+  transformation $\alpha \Rightarrow \mu$.  That is, all terms determine
   types, or all types are universes?  We do this ``a la Tarski'' with
 
 \begin{mathpar}
@@ -595,7 +595,7 @@ acts to give
 i.e. $\alpha \Rightarrow \nu$ because $\alpha.\mu \Rightarrow \nu$ and
 $\alpha \Rightarrow \alpha.\mu$.  
 
-We probably have
+We probably have (not sure about strictness)
 \[
 \Dt{\alpha}{\just{\alpha}} \equiv \alpha
 \]
@@ -603,13 +603,19 @@ because $\just{\alpha}$ denotes $\alpha \Rightarrow \alpha$ and
 $\Dt{\alpha}{\just{\alpha}}$ takes the right-hand side of that natural
 transformation.
 
+We probably also have
+\[
+\alpha.s_*(\mu) \equiv \beta.\mu
+\]
+because both are just selecting the ``top'' of $\mu$.  
+
 With this, we can do linear dependency, e.g. the context
 \[
 a : A, b : B(a), c : C(a,b), d : D(a,b,c) 
 \]
 is 
 \[
-a : (\emptyset_1), b : (\emptyset_1.a), c : (\emptyset_1.a.b), d : (\emptyset_1.a.b.c)
+a : (\emptyset_0), b : (\emptyset_0.a), c : (\emptyset_0.a.b), d : (\emptyset_0.a.b.c)
 \]
 
 I was trying to think of ways to make elements of $\alpha.\mu$.  Any
@@ -630,10 +636,10 @@ element of it:
           {\gamma \vdash \Pushout{\alpha_1}{\beta}{\alpha_2}{s_1}{s_2} \type}
 
 \inferrule{ }
-      {\gamma \vdash \mathsf{inl} : \alpha \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
+      {\gamma \vdash \mathsf{inl} : \alpha_1 \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
 
 \inferrule{ }
-      {\gamma \vdash \mathsf{inr} : \alpha \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
+      {\gamma \vdash \mathsf{inr} : \alpha_2 \Rightarrow \Push{\alpha_1}{\beta}{\alpha_2}}
 
 \inferrule{ 
       \gamma \vdash s_1' : \alpha_1 \Rightarrow \beta \and 
@@ -645,7 +651,7 @@ element of it:
 Plus $\beta/\eta$ equations.  
 
 TODO: Now we can do DAGs of dependencies, which do and don't (take
-$\alpha = \emptyset_1$ to get a coproduct) commute.  
+$\alpha = \emptyset_0$ to get a coproduct) commute.  
 
 %% maybe this doesn't make sense:
 %% We have a way of constructing terms that comes from the universal
@@ -669,5 +675,39 @@ Note: cell gluing seems like it could be
         \Pushout{\beta}{\alpha}{(\alpha.\mu)}{s}{\mathsf{w}} \type
       }
 \]
+
+Write $\alpha + \beta$ for \Pushout{\alpha}{\emptyset_0}{\beta}{!}{!}.
+From the universal properties of $\emptyset_0,+$ we get:
+\begin{itemize}
+\item ! : $\emptyset \Rightarrow \alpha$
+\item associativity: $(\alpha_1 + \alpha_2) + \alpha_3  \Leftrightarrow \alpha_1 + (\alpha_2 + \alpha_3)$
+\item unit: $\emptyset + \alpha \Leftrightarrow \alpha \Leftrightarrow \alpha + \emptyset$
+\item exchange: $\alpha + \beta \Leftrightarrow \beta + \alpha$
+\item contraction: $\mathsf{c} : \alpha + \alpha \Rightarrow \alpha$
+\end{itemize}
+so the mode theory has something that (because the variance is flipped)
+will induce a structural product on types.  
+
+We also have ``in context'' versions that could be used to give
+fiberwise product types that depend through the corresponding products:
+\begin{itemize}
+\item $\just{\emptyset_0} : \emptyset_0$ (like $u : p_1(\cdot)$ from before)
+\item $x : \alpha, y : \beta \vdash x +_1 y : \alpha + \beta$, where 
+\[x + y := (\mathsf{w} + \mathsf{w})_* (\just{\alpha.x + \beta.y})
+\]
+using $\mathsf{w} + \mathsf{w} : \alpha + \beta \Rightarrow {\alpha.x +
+  \beta.y}$ This satisifes $(\alpha+\beta).(x +_1 y) \equiv \alpha.x +
+\beta.y$ because the 2-cell doesn't change the ``top'' of the \just{}.
+\end{itemize}
+
+
+  
+%% c : p0, x : p1(c), y : p1(c) ⊢ ↑_x(y) : p1(c.x)
+%% --> if x is the kind of thing that can be dotted with c,
+%%     and y bounds c, then ↑_x(y) bounds c.x
+
+%% Is this the pushout?  We have c ⇒ x and c ⇒ y and we want c.x = x ⇒
+%% ↑_x(y), so we can pushout x and y under c?  In the sets = bool case
+%% this would again just be the union of x and y.
 
 \end{document}
