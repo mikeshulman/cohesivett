@@ -6,6 +6,9 @@
 \usepackage[mathscr]{euscript}
 \usepackage{tikz-cd}
 \usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{todo}{andrl}{\color{red} }
 
 \newcommand{\yields}{\vdash}
 \newcommand{\cbar}{\, | \,}
@@ -456,22 +459,27 @@ We have the following judgements and intended semantics:
   $\mu : \gamma \to \Set$ and a natural transformation $\alpha
   \Rightarrow \mu$.  (I.e. the term bundle bounds the type bundle, as
   Jason suggested way back at the beginning.)
+  \msnote{Note that (1) and (2) form equivalent, but not isomorphic, categories.  The 2-categorically correct notion of ``section'' is a profunctor $\mathsf{s}: \gamma \nrightarrow (\gamma,x:\alpha)$ together with an isomorphism from its composite with $\mathsf{p}$ to the identity on $\gamma$.  This involves a bunch of extra data, but up to isomorphism it is uniquely determined by the value of $\mathsf{s}$ on $x$, which is $\mu$, and the profunctorial action on ``identities'' of arrows out of $\mathsf{inr}()$ in the collage landing in $\mu$, which is the transformation $\alpha\Rightarrow \mu$.}
 
 \item $\gamma \yields s : \alpha \Rightarrow \beta \type$ : (guess)
   natural transformations $\alpha \Rightarrow \beta$ -- or is it
   supposed to be only some natural transformations?  Syntactically, we
   only want the ones that should induce structural rules upstairs.
-
+  \msnote{I think any natural transformation \emph{could} be one of these, but in particular (e.g. substructural) mode theories we may not want to include rules that generate all of them.}
+  
 \item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ : (guess) a
   natural transformation $s : \mu \Rightarrow \nu$ that makes a triangle
   with the $\alpha \Rightarrow \mu$ and $\alpha \Rightarrow \nu$ parts
   of the term.
+  \msnote{Sounds right.}
 
 %% TODO: 
 \item $\gamma \yields \delta \tele$ (tuples, semantically the same as
   a type?)
+  \msnote{I think this should be an inverse category $\delta$, representing the internal dependencies among the types in $\delta$, together with a profunctor $\gamma\nrightarrow \delta$ representing their dependencies on the types in $\gamma$.}
 \item $\gamma \yields \theta : \delta$ (tuples, semantically the same as
   a term?)
+  \msnote{A section of the collage of the above profunctor}
 \item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples,
   semantically the same as a term 2-cell?)
 \end{itemize}
@@ -503,12 +511,12 @@ maps to things chosen from $\gamma$ by $\alpha$.
   into the collage of $\alpha$.  As with any functor, this determines
   profunctors
 \begin{align*}
-i : \gamma \nrightarrow (\gamma,x:\alpha) := (a : {\gamma,x:\alpha} ,b : \gamma) \mapsto \Hom{\gamma,x:\alpha}{a}{\mathsf{inl}(b)}\\
-p :  (\gamma,x:\alpha) \nrightarrow \gamma := (a : \gamma, b : {\gamma,x:\alpha}) \mapsto \Hom{\gamma,x:\alpha}{\mathsf{inl}(a)}{b}
+i : \gamma \nrightarrow (\gamma,x:\alpha) := (a : ({\gamma,x:\alpha}) ,b : \gamma) \mapsto \Hom{\gamma,x:\alpha}{a}{\mathsf{inl}(b)}\\
+p :  (\gamma,x:\alpha) \nrightarrow \gamma := (a : \gamma, b : ({\gamma,x:\alpha})) \mapsto \Hom{\gamma,x:\alpha}{\mathsf{inl}(a)}{b}
 \end{align*}
 with $i \dashv p$.  Using the definition of the collage, we can show
 that $p \circ i : \gamma \nrightarrow \gamma$ is (naturally isomorphic
-to?) the identity profunctor (hom) (while $i \circ p : (\gamma,x:\alpha)
+to) the identity profunctor (hom) (while $i \circ p : (\gamma,x:\alpha)
 \nrightarrow (\gamma,x:\alpha)$ is not, but it has a natural
 transformation to the identity, which the counit of the adjunction).
 Thus, $i$ is a section of $p$, and therefore should determine a term.
@@ -525,11 +533,11 @@ We write $i$ as
 \inferrule{ }
           {\gamma \vdash \just{\alpha} : \alpha}
 \]
-because, under the semantics of a term as a functor $\gamma \to \Set$
-with a natural transformation to $\alpha$, it is $\alpha$ and the
-identity natural transformation. (TODO: check this)
+because, under the semantics of a term as a functor $\mu:\gamma \to \Set$
+with a natural transformation from $\alpha$, it is $\alpha$ and the
+identity natural transformation.  In fact, by definition $\mu$ is $\Hom{\gamma,x:\alpha}{\mathsf{inl}()}{\mathsf{inl}(b)}$, which is just $\alpha(b)$ by definition of the collage, and the transformation is directly seen to be the identity.
 
-\item Tranformations between types act contravariantly:
+\item Transformations between types act contravariantly:
 \[
 \inferrule{ \gamma \yields \mu : \beta \and \gamma \yields s : \alpha
   \Rightarrow \beta \type }
@@ -539,6 +547,19 @@ identity natural transformation. (TODO: check this)
 Semantically, if we have $\beta \Rightarrow \mu$ and $\alpha \Rightarrow
 \beta$ we can compose the two natural transformations.  That is, we are
 weakening the ``type bundle'' without changing the ``term bundle''.
+\msnote{Since things are backwards, I would say we are \emph{strengthening} the type bundle: $\alpha$ might depend on \emph{less} than $\beta$ does.  In other words, if $\mu$ is an allowable sort of dependency for terms belonging to types with dependencies $\beta$, then it is also an allowable dependency for terms belonging to types with fewer (or duplicated) dependencies.  It may not be allowable for terms belonging to types with \emph{more} dependencies.}
+
+\item A variable use $\gamma, x:\alpha \yields x:\alpha$ represents the
+  representable profunctor $\Hom{}{\mathsf{inr}()}{-}$ on the collage
+  $(\gamma,x:\alpha)$, together with a natural transformation $p^*\alpha
+  \Rightarrow \Hom{}{\mathsf{inr}()}{-}$, where $p^*\alpha$ denotes the
+  weakening of $\alpha$ from $\gamma$ to $\gamma,x:\alpha$.  The latter
+  is by definition the profunctor composite of $\alpha$ with $p$, which
+  means that it acts as $\alpha$ on $\mathsf{inl}(a)$ and as the empty
+  set on $\mathsf{inr}()$.  Thus the transformation $p^*\alpha
+  \Rightarrow \Hom{}{\mathsf{inr}()}{-}$ is the identity at
+  $\mathsf{inl}(a)$ and the inclusion $\emptyset \to 1$ at
+  $\mathsf{inr}()$.
 
 \item Since a term is (equivalent to) a section of the projection,
   substitution should act as usual:
@@ -558,17 +579,6 @@ weakening the ``type bundle'' without changing the ``term bundle''.
 Types:
 \begin{itemize}
 
-\item The constantly $\emptyset$ functor
-\begin{mathpar}
-\inferrule{ }
-          { \gamma \yields \emptyset_0 \type }
-
-\inferrule{ }
-          {! : \emptyset_0 \Rightarrow \alpha \type}
-
-s \equiv \mathord{!} : \emptyset_0 \Rightarrow \alpha
-\end{mathpar}
-
 \item The semantics of a term judgement $\gamma \yields \mu : \alpha$ is
   the same as the semantics of a ``subtyping'' judgement $\gamma \yields
   \alpha \Rightarrow \beta$: a term $\mu$ denotes a functor $\mu :
@@ -582,6 +592,10 @@ s \equiv \mathord{!} : \emptyset_0 \Rightarrow \alpha
 
 \inferrule{ } 
           {\mathsf{w} : \alpha \Rightarrow \alpha.\mu \type}
+
+\Dt{\alpha}{\just{\alpha}} \equiv \alpha
+
+\alpha.s_*(\mu) \equiv \beta.\mu
 \end{mathpar}
 
 Note $\gamma,x:\alpha$ is the collage of $\alpha$, $\alpha.\mu$ is an
@@ -595,37 +609,22 @@ acts to give
 i.e. $\alpha \Rightarrow \nu$ because $\alpha.\mu \Rightarrow \nu$ and
 $\alpha \Rightarrow \alpha.\mu$.  
 
-We probably have (not sure about strictness)
-\[
-\Dt{\alpha}{\just{\alpha}} \equiv \alpha
-\]
-because $\just{\alpha}$ denotes $\alpha \Rightarrow \alpha$ and
-$\Dt{\alpha}{\just{\alpha}}$ takes the right-hand side of that natural
-transformation.
+The first equation holds because $\just{\alpha}$ denotes $\alpha
+\Rightarrow \alpha$ and $\Dt{\alpha}{\just{\alpha}}$ takes the
+right-hand side of that natural transformation.
 
-We probably also have
-\[
-\alpha.s_*(\mu) \equiv \beta.\mu
-\]
-because both are just selecting the ``top'' of $\mu$.  
+The second holds because both are just selecting the ``top'' of $\mu$.
 
-With this, we can do linear dependency, e.g. the context
-\[
-a : A, b : B(a), c : C(a,b), d : D(a,b,c) 
-\]
-is 
-\[
-a : (\emptyset_0), b : (\emptyset_0.a), c : (\emptyset_0.a.b), d : (\emptyset_0.a.b.c)
-\]
+\item The constantly $\emptyset$ functor
+\begin{mathpar}
+\inferrule{ }
+          { \gamma \yields \emptyset_0 \type }
 
-I was trying to think of ways to make elements of $\alpha.\mu$.  Any
-element of $\alpha$ that is bigger than $\mu$ is (determines) an
-element of it:
-\[
-\inferrule*[Left = derivable]
-           {\gamma \vdash \nu : \alpha \and \gamma \vdash s: \mu \Rightarrow \nu : \alpha}
-           {\gamma \vdash (\alpha.s)_*(\just{\alpha.\nu}) : \alpha.\mu}
-\]
+\inferrule{ }
+          {! : \emptyset_0 \Rightarrow \alpha \type}
+
+s \equiv \mathord{!} : \emptyset_0 \Rightarrow \alpha
+\end{mathpar}
 
 \item Pushouts: Given a cospan of types and natural transformations, we
   can take the pushout in $\gamma \to \Set$:
@@ -650,9 +649,6 @@ element of it:
 \end{mathpar}
 Plus $\beta/\eta$ equations.  
 
-TODO: Now we can do DAGs of dependencies, which do and don't (take
-$\alpha = \emptyset_0$ to get a coproduct) commute.  
-
 %% maybe this doesn't make sense:
 %% We have a way of constructing terms that comes from the universal
 %% property of the pushout: to give something bigger than $\alpha_1 +_\beta
@@ -666,7 +662,43 @@ $\alpha = \emptyset_0$ to get a coproduct) commute.
 %% \]
 \end{itemize}
 
-Note: cell gluing seems like it could be
+Here are some things we can do this mode theory.  
+
+\begin{itemize}
+
+\item With just $\emptyset_0$ and $\alpha.\mu$, we can do linear
+  dependency, e.g. the context
+\[
+a : A, b : B(a), c : C(a,b), d : D(a,b,c) 
+\]
+is moded by
+\[
+a : (\emptyset_0), b : (\emptyset_0.a), c : (\emptyset_0.a.b), d : (\emptyset_0.a.b.c)
+\]
+Semantically, such a context is the linear inverse category $a
+\leftarrow b \leftarrow c \leftarrow d$.  This follows inductively from
+the above description of variable use, since the representable functor
+at the top element of a linear inverse category is constant at $1$,
+hence its collage is the linear inverse category with one more object on
+top.
+
+\item 
+\todonote{With pushouts we can do DAGs of dependencies, which do and
+  don't (take $\alpha = \emptyset_0$ to get a coproduct) commute.}
+
+\item 
+
+Any element of $\alpha$ that is bigger than $\mu$ is (determines) an
+element of it:
+\[
+\inferrule*[Left = derivable]
+           {\gamma \vdash \nu : \alpha \and \gamma \vdash s: \mu \Rightarrow \nu : \alpha}
+           {\gamma \vdash (\alpha.s)_*(\just{\alpha.\nu}) : \alpha.\mu}
+\]
+
+\item 
+
+Cell gluing is
 \[
 \infer{\gamma \vdash \mu : \alpha \and
        \gamma \vdash s : \alpha \rightarrow \beta}
@@ -675,6 +707,8 @@ Note: cell gluing seems like it could be
         \Pushout{\beta}{\alpha}{(\alpha.\mu)}{s}{\mathsf{w}} \type
       }
 \]
+
+\item 
 
 Write $\alpha + \beta$ for \Pushout{\alpha}{\emptyset_0}{\beta}{!}{!}.
 From the universal properties of $\emptyset_0,+$ we get:
@@ -688,10 +722,15 @@ From the universal properties of $\emptyset_0,+$ we get:
 so the mode theory has something that (because the variance is flipped)
 will induce a structural product on types.  
 
-We also have ``in context'' versions that could be used to give
-fiberwise product types that depend through the corresponding products:
+\item 
+
+We also have term versions of $\emptyset$ and $+$ that, when fed into
+$F/U$, will give product types that depend through the corresponding
+products:
 \begin{itemize}
-\item $\just{\emptyset_0} : \emptyset_0$ (like $u : p_1(\cdot)$ from before)
+\item $\just{\emptyset_0} : \emptyset_0$ (like $u : p_1(\cdot)$ from
+  before)
+
 \item $x : \alpha, y : \beta \vdash x +_1 y : \alpha + \beta$, where 
 \[x + y := (\mathsf{w} + \mathsf{w})_* (\just{\alpha.x + \beta.y})
 \]
@@ -700,14 +739,30 @@ using $\mathsf{w} + \mathsf{w} : \alpha + \beta \Rightarrow {\alpha.x +
 \beta.y$ because the 2-cell doesn't change the ``top'' of the \just{}.
 \end{itemize}
 
+\item Using the pushout, we can make a term that will generate a product type
+that shares the same context.
+\[
+x : \alpha, y : \alpha \vdash x +_2 y := 
+\mathsf{inm}_*(\just{\Pushout{\alpha.x}{\alpha}{\alpha.y}{\mathsf{w}}{\mathsf{w}}})
+: \alpha
+\]
+where $\mathsf{inm}$ is $\mathsf{inl};\mathsf{w} =
+\mathsf{inr};\mathsf{w}$.  \todonote{is it wrong to just use a coproduct
+instead of the pushout and pick one?  That certainly feels weird.} Then 
+\[
+x : \alpha, y : \alpha.x \vdash \Sigma(x,y) := x +_2 \mathsf{w}_*(y) : \alpha
+\]
+will have $\Sigma$-types as its $F$.  
 
-  
-%% c : p0, x : p1(c), y : p1(c) ⊢ ↑_x(y) : p1(c.x)
-%% --> if x is the kind of thing that can be dotted with c,
-%%     and y bounds c, then ↑_x(y) bounds c.x
+\item If we instead do 
+\[
+x : \alpha, y : \alpha \vdash \Pi(x,y) := 
+\mathsf{inl}_*(\just{\Pushout{\alpha.x}{\alpha}{\alpha.y}{\mathsf{w}}{\mathsf{w}}})
+: \alpha.x
+\]
+then \U{z.\Pi(x,z)}{x:A}{B} type will be $\Pi x:A.B$.  
+\todonote{check that these are adjoint}
 
-%% Is this the pushout?  We have c ⇒ x and c ⇒ y and we want c.x = x ⇒
-%% ↑_x(y), so we can pushout x and y under c?  In the sets = bool case
-%% this would again just be the union of x and y.
+\end{itemize}
 
 \end{document}
