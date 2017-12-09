@@ -773,11 +773,19 @@ We need a couple of extra judgements that don't correspond directly to anything 
 \newcommand{\dep}{\,\,\mathsf{dep}}
 \begin{itemize}
 \item $\gamma \yields \sigma : \alpha \leadsto \beta$
-\item $\gamma \mid \alpha \yields (a : M\sigma) \dep$ means that $\alpha$ depends on $M$ via $\sigma$
+\item $\gamma \mid \alpha \yields (a : M\sigma) \dep$ means that $\alpha$ has an $M$ attached along $\sigma$
 \end{itemize}
 where $\alpha$ and $\beta$ are types.
 
-Then, how about something like:
+The idea is that every type consists of a list of things that it depends on, and each entry in that list comes with a $\sigma$ explaining how its sub-dependencies are attached. Some example contexts:
+\begin{align*}
+&x : (), y : (), z : (a : x[], b : y[])\\
+&x : (), y : (a : x[]), z : (a : x[], b : y[a]) \\
+&x : (), y : (a_1 : x[], a_2 : x[]), z : (a_1 : x[], a_2 : x[], b : y[a_1, a_2]) \\
+&x : (), y : (a_1 : x[], a_2 : x[]), z : (a : x[], b : y[a, a]) \\
+\end{align*}
+
+Rules:
 \begin{mathpar}
 \infer{\gamma \yields \beta \type \and \gamma \yields M : \alpha \and \gamma \yields \sigma : \alpha \leadsto \beta }
       { 
@@ -789,7 +797,7 @@ Then, how about something like:
       } \and 
 \infer{ \gamma \yields \sigma : \alpha \leadsto \beta \and \gamma \mid \beta \yields (a : M(\tau ; \sigma)) \dep }
       { 
-      \gamma \yields [\sigma, b \mapsto a] : (\alpha, b : M\tau) \leadsto \beta
+      \gamma \yields [\sigma, a] : (\alpha, b : M\tau) \leadsto \beta
       } \\
 \infer{ ~ }
       { 
@@ -811,18 +819,18 @@ Why not use $\Rightarrow$ instead of inventing a new $\leadsto$? If we want to g
 \end{mathpar}
 or merge the two judgements together.
 
-We now need to figure out how to build terms, so that the corresponding context substitutions are exactly the profunctors between the associated FICs. From the semantics, the obvious first guess for what the terms should be is just:
+We now need to figure out how to build terms, so that the corresponding context substitutions are exactly the profunctors between the associated FICs. From the semantics, the obvious first guess for what the terms should be is:
 \begin{mathpar}
 \infer{ \gamma \yields \sigma : \alpha \leadsto \beta }
       { 
       \gamma \yields u(\sigma) : \alpha
       }
 \end{mathpar}
-It's a annoying to have the extra $\alpha \leadsto \beta$ judgement when it is so similar to just having a term of $\beta$... The problem is that we need to know the domain of $\sigma : \alpha \leadsto \beta$ to use it in the rule for $(\beta, M\sigma) \type$. 
+It's annoying to have the extra $\alpha \leadsto \beta$ judgement when it is so similar to just having a term of $\beta$... The problem is that we need to know the domain of $\sigma : \alpha \leadsto \beta$ to use it in the rule for $(\beta, M\sigma) \type$. 
 
 If we want this type theory to line up closely with the signatures stuff, we want a normal form for types where all the $M$s that are used to build $(\beta, M\sigma)$ are actually variables from the context. So it seems to me the critical missing piece is some equation that explains what should happen when you use a term like $u(\sigma)$ to build a new type: $(\beta, u(\sigma)\tau) \equiv \text{???}$. 
 
-I'm not exactly sure what should happen... Say $\sigma : \alpha \leadsto \beta'$. Should we then substitute the contents of the type $\beta'$ in, so $(\beta, u(\sigma)\tau) \equiv (\beta, \beta', \text{??})$. Maybe a rule that does that sort of substitution is already admissible.
+I'm not exactly sure what should happen... Say $\sigma : \alpha \leadsto \beta'$. Should we then substitute the contents of the type $\beta'$ in, so $(\beta, u(\sigma)\tau) \equiv (\beta, \beta', \text{??})$. Maybe a rule that does that sort of substitution is already admissible. Or maybe there's a way to rearrange things so this doesn't come up at all.
 
 An aside: It may be that the signature stuff generalises more easily to the modal type theory than the pushout version. This might mean: having one version of $()_p$ for each mode $p$, annotating the $\gamma \mid \alpha \yields (a : M\sigma) \dep$ judgement with a 1-cell from the mode 2-category, and somehow providing coherent 2-cells when building $\alpha \leadsto \beta$s.
 
