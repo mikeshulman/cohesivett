@@ -765,4 +765,66 @@ then \U{z.\Pi(x,z)}{x:A}{B} type will be $\Pi x:A.B$.
 
 \end{itemize}
 
+\subsection{Signatures}
+
+As an alternative strategy from the two-sided pushouts as above, we could try to import the type theory from the signatures paper, which seems to correspond more directly to cell-gluing. We have to remember that for them everything is shifted up a level: their signatures are our contexts, their contexts are our types. 
+
+We need a couple of extra judgements that don't correspond directly to anything in the comprehension bicategory. (Maybe they can be simplified/removed?):
+\newcommand{\dep}{\,\,\mathsf{dep}}
+\begin{itemize}
+\item $\gamma \yields \sigma : \alpha \leadsto \beta$
+\item $\gamma \mid \alpha \yields (a : M\sigma) \dep$ means that $\alpha$ depends on $M$ via $\sigma$
+\end{itemize}
+where $\alpha$ and $\beta$ are types.
+
+Then, how about something like:
+\begin{mathpar}
+\infer{\gamma \yields \beta \type \and \gamma \yields M : \alpha \and \gamma \yields \sigma : \alpha \leadsto \beta }
+      { 
+      \gamma \yields (\beta, M\sigma) \type
+      } \\
+\infer{ ~ }
+      { 
+      \gamma \yields [] : () \leadsto \beta
+      } \and 
+\infer{ \gamma \yields \sigma : \alpha \leadsto \beta \and \gamma \mid \beta \yields (a : M(\tau ; \sigma)) \dep }
+      { 
+      \gamma \yields [\sigma, b \mapsto a] : (\alpha, b : M\tau) \leadsto \beta
+      } \\
+\infer{ ~ }
+      { 
+      \gamma \mid (\alpha, a : M\sigma) \yields (a : M\sigma) \dep
+      } \and
+\infer{ \gamma \mid \alpha \yields (a : M\sigma) \dep }
+      { 
+      \gamma \mid (\alpha, b : N\tau) \yields (a : M\sigma) \dep
+      }
+\end{mathpar}
+The composite $(\tau ; \sigma)$ would be given by an admissible rule. 
+
+Why not use $\Rightarrow$ instead of inventing a new $\leadsto$? If we want to get ``substructural dependency'', whatever that means, we may want to be selective about which $\leadsto$s can be used as $\Rightarrow$s. If we want full structural dependent type theory, we can just add a rule like
+\begin{mathpar}
+\infer{ \gamma \yields \sigma : \alpha \leadsto \beta }
+      { 
+      \gamma \yields \sigma : \alpha \Rightarrow \beta
+      } \and
+\end{mathpar}
+or merge the two judgements together.
+
+We now need to figure out how to build terms, so that the corresponding context substitutions are exactly the profunctors between the associated FICs. From the semantics, the obvious first guess for what the terms should be is just:
+\begin{mathpar}
+\infer{ \gamma \yields \sigma : \alpha \leadsto \beta }
+      { 
+      \gamma \yields u(\sigma) : \alpha
+      }
+\end{mathpar}
+It's a annoying to have the extra $\alpha \leadsto \beta$ judgement when it is so similar to just having a term of $\beta$... The problem is that we need to know the domain of $\sigma : \alpha \leadsto \beta$ to use it in the rule for $(\beta, M\sigma) \type$. 
+
+If we want this type theory to line up closely with the signatures stuff, we want a normal form for types where all the $M$s that are used to build $(\beta, M\sigma)$ are actually variables from the context. So it seems to me the critical missing piece is some equation that explains what should happen when you use a term like $u(\sigma)$ to build a new type: $(\beta, u(\sigma)\tau) \equiv \text{???}$. 
+
+I'm not exactly sure what should happen... Say $\sigma : \alpha \leadsto \beta'$. Should we then substitute the contents of the type $\beta'$ in, so $(\beta, u(\sigma)\tau) \equiv (\beta, \beta', \text{??})$. Maybe a rule that does that sort of substitution is already admissible.
+
+An aside: It may be that the signature stuff generalises more easily to the modal type theory than the pushout version. This might mean: having one version of $()_p$ for each mode $p$, annotating the $\gamma \mid \alpha \yields (a : M\sigma) \dep$ judgement with a 1-cell from the mode 2-category, and somehow providing coherent 2-cells when building $\alpha \leadsto \beta$s.
+
 \end{document}
+
