@@ -6,86 +6,116 @@ data _∈_ {A : Set} : A -> List A -> Set where
   here  : ∀ {x xs} -> x ∈ (x ∷ xs)
   there : ∀ {x y xs} -> (d : x ∈ xs) → x ∈ (y ∷ xs)
 
-delete : {A : Set} -> {x : A} -> {l : List A} -> (a : x ∈ l) -> List A
-delete {l = []} ()
-delete {l = x ∷ l} here = l
-delete {l = y ∷ l} (there a') = y ∷ delete a'
-
 merge : {A : Set} -> {x : A} -> {l : List A} -> (a b : x ∈ l) -> List A
 merge {l = []} () ()
 merge {l = x ∷ l} here here = x ∷ l
-merge {l = x ∷ l} here (there b) = x ∷ delete b
+merge {l = x ∷ l} here (there b) = l
 merge {l = x ∷ l} (there a) here = l
 merge {l = x ∷ l} (there a) (there b) = x ∷ merge a b
 
-merged : {A : Set} -> {x : A} -> {l : List A} -> (a b : x ∈ l) -> (x ∈ merge a b)
-merged {l = []} () ()
-merged {l = x ∷ l} here here = here
-merged {l = x ∷ l} here (there b) = here
-merged {l = x ∷ l} (there a) here = a
-merged {l = x ∷ l} (there a) (there b) = there (merged a b)
+in-merge : {A : Set} -> {x y : A} -> {l : List A} -> (a b : x ∈ l) -> y ∈ l -> (y ∈ merge a b)
+in-merge here here i = i
+in-merge here (there b) here = b
+in-merge (there a) here here = a
+in-merge (there a) (there b) here = here
+in-merge here (there b) (there i) = i
+in-merge (there a) here (there i) = i
+in-merge (there a) (there b) (there i) = there (in-merge a b i)
+
+in-append-first : {A : Set} -> {x : A} -> {l l' : List A} -> (i : x ∈ l) -> x ∈ (l ++ l')
+in-append-first {l = []} ()
+in-append-first {l = x ∷ l} here = here
+in-append-first {l = x₁ ∷ l} (there i) = there (in-append-first i)
+
+in-append-second : {A : Set} -> {x : A} -> {l l' : List A} -> (i : x ∈ l') -> x ∈ (l ++ l')
+in-append-second {l = []} i = i
+in-append-second {l = x ∷ l} i = there (in-append-second {l = l} i)
+
+in-map : {A B : Set} -> {l : List A} -> (f : A -> B) -> {x : A} -> x ∈ l -> (f x ∈ map f l)
+in-map f here = here
+in-map f (there e) = there (in-map f e)
+
+ListSub : {A : Set} (a b : List A) -> Set
+ListSub a b = ∀ x -> (x ∈ a -> x ∈ b)
+
+sub-wk : {A : Set} {x : A} {dl1 dl2 : List A} -> ListSub dl1 dl2 -> ListSub dl1 (x ∷ dl2)
+sub-wk l x i = there (l x i)
+
+sub-wkl : {A : Set} {x : A} {dl1 dl2 : List A} -> ListSub (x ∷ dl1) dl2 -> ListSub dl1 dl2
+sub-wkl l x i = l x (there i)
+
+sub-id : {A : Set} {dl1 : List A} -> ListSub dl1 dl1
+sub-id x i = i
+
+sub-append-first : {A : Set} -> (l l' : List A) -> ListSub l (l ++ l')
+sub-append-first [] l' x ()
+sub-append-first (x ∷ l) l' .x here = here
+sub-append-first (x ∷ l) l' x₁ (there i) = there (sub-append-first _ _ _ i)
+
+sub-append-second : {A : Set} -> (l l' : List A) -> ListSub l' (l ++ l')
+sub-append-second [] l' = sub-id
+sub-append-second (x ∷ l) l' x' i = there (sub-append-second l l' x' i)
+
+sub-map : {A B : Set} -> (f : A → B) -> {l l' : List A} -> (s : ListSub l l') -> ListSub (map f l) (map f l')
+sub-map f {l = []}  s x ()
+sub-map f {l = x ∷ l} s .(f x) here = in-map f (s x here)
+sub-map f {l = x ∷ l} s x₁ (there i) = sub-map f (sub-wkl s) x₁ i
+
+pushout-list : {A : Set} {a b b' : List A} -> ListSub a b -> ListSub a b' -> List A
+inl-list : {A : Set} {a b b' : List A} -> ( s1 : ListSub a b ) -> ( s2 : ListSub a b' ) -> ListSub b (pushout-list s1 s2)
+inr-list : {A : Set} {a b b' : List A} -> ( s1 : ListSub a b ) -> ( s2 : ListSub a b' ) -> ListSub b' (pushout-list s1 s2)
+
+pushout-list {a = []} {b} {b'} s s' = b ++ b'
+pushout-list {a = x ∷ a} s s' = merge (inl-list (sub-wkl s) (sub-wkl s') x (s x here)) (inr-list (sub-wkl s) (sub-wkl s') x (s' x here))
+
+inl-list {a = []} {b} {b'} s1 s2 x i = sub-append-first b b' x i
+inl-list {a = x ∷ a} s1 s2 x' i = in-merge _ _ (inl-list (sub-wkl s1) (sub-wkl s2) x' i)
+
+inr-list {a = []} {b} {b'} s1 s2 x i = sub-append-second b b' x i
+inr-list {a = x ∷ a} s1 s2 x' i = in-merge _ _ (inr-list (sub-wkl s1) (sub-wkl s2) x' i)
 
 data Con : Set
 data Ty : Con → Set
 data Squig : {γ : Con} → Ty γ → Ty γ → Set
-data ListSub : {γ : Con} → {α β δ : Ty γ} → Squig α β → List (Squig δ α) → List (Squig δ β) → Set
--- data Tm : {γ : Con} → Ty γ → Set
+
+-- -- data Tm : {γ : Con} → Ty γ → Set
 
 data Con where
   · : Con
   _,_ : (γ : Con) → Ty γ → Con
 
 _&_ : {γ : Con} → {α β δ : Ty γ} → Squig α β → Squig β δ → Squig α δ
-
-data ListSub where
-  · : {γ : Con} → {α β δ : Ty γ} → {dl' : List (Squig δ β)} → {σ : Squig α β} → ListSub σ [] dl'
-  _,_ : {γ : Con} {α β δ : Ty γ} {dl : List (Squig δ α)} {dl' : List (Squig δ β)} {σ : Squig α β} {τ : Squig δ α} -> ListSub σ dl dl' -> (τ & σ) ∈ dl' -> ListSub σ (τ ∷ dl) dl'
-
-wk-sub : {γ : Con} → {α β δ : Ty γ} → {σ : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} -> {w : Squig δ β} → ListSub σ dl1 dl2 -> ListSub σ dl1 (w ∷ dl2)
-wk-sub {dl1 = []} · = ·
-wk-sub {dl1 = x ∷ dl1} (l , d) = (wk-sub l) , (there d)
+squig-id : {γ : Con} → {α : Ty γ} → Squig α α
 
 data Ty where
   · : Ty ·
-  _,_ : ∀ {γ α} → (β : Ty γ) -> List (Squig α β) → Ty (γ , α)
+  _,_ : ∀ {γ α} β -> List (Squig α β) → Ty (γ , α)
 
 data Squig where
   · : Squig · ·
-  _,_ : {γ : Con} → {α β δ : Ty γ} → (σ : Squig α β) → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → ListSub σ dl1 dl2 → Squig (α , dl1) (β , dl2)
+  _,_ : {γ : Con} → {α β δ : Ty γ} → (σ : Squig α β) → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → ListSub (map (λ x → x & σ) dl1) dl2 → Squig (α , dl1) (β , dl2)
 
-_&&_ : {γ : Con} → {α β δ ε : Ty γ} {σ : Squig α β} {τ : Squig β ε} {dl1 : List (Squig δ α) } {dl2 : List (Squig δ β) } {dl3 : List (Squig δ ε)} → ListSub σ dl1 dl2 -> ListSub τ dl2 dl3 -> ListSub (σ & τ) dl1 dl3
-
-transp-sub : {γ : Con} → {α β δ : Ty γ} → (σ : Squig β δ) -> (dl1 : List (Squig α β)) → ListSub σ dl1 (map (λ x → x & σ) dl1)
-transp-sub σ [] = ·
-transp-sub σ (x ∷ dl1) = wk-sub (transp-sub σ dl1) , here
-
-pushforward-dep : {γ : Con} -> {α β δ : Ty γ} -> {σ : Squig α β} {τ : Squig δ α} {dl1 : List (Squig δ α)} -> {dl2 : List (Squig δ β)} -> ListSub σ dl1 dl2 -> τ ∈ dl1 -> (τ & σ) ∈ dl2
-pushforward-dep (ls , x) here = x
-pushforward-dep (ls , x) (there d) = pushforward-dep ls d
+squig-id {α = ·} = ·
+squig-id {α = α , x} = squig-id , {!!}
 
 _&_ {·} {·} {·} · · = ·
-_&_ (σ , dl1) (τ , dl2) = (σ & τ) , (dl1 && dl2)
-
-· && dl2 = ·
-(dl1 , x) && dl2 = (dl1 && dl2) , {!assoc of & and then pushforward-dep!}
+_&_ (σ , dl1) (τ , dl2) = (σ & τ) , {!!} -- (σ & τ) , (dl1 && dl2)
 
 pushout : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Ty γ
 inl : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β (pushout σ σ')
 inr : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β' (pushout σ σ')
+pushout-prop : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (σ & inl σ σ') ≡ (σ' & inr σ σ')
 
-pushout {α = ·} · · = ·
-pushout {α = α , []} {β , l} {β' , l'} (σ , ·) (σ' , ·)
-  = (pushout σ σ') , ((map (λ x → x & inl σ σ') l) ++ (map (λ x → x & inr σ σ') l'))
-pushout {α = α , (τ ∷ dl)} {β , l} {β' , l'} (σ , (s , d)) (σ' , (s' , d'))
-        with (pushout (σ , s) (σ' , s'))
-...     | p , lp = p , merge leftdep rightdep
-  where leftdep  = pushforward-dep (transp-sub {!inl σ σ'!} {!l!}) {!d!}
-        rightdep = pushforward-dep (transp-sub {!inr σ σ'!} {!l'!}) {!d'!}
--- And the equation σ ; inl == σ' ; inr
+pushout {·} σ σ' = ·
+pushout {γ , δ} {α , αl} {β , βl} {β' , βl'} (σ , s) (σ' , s') = (pushout σ σ') , (pushout-list newβl {!functoriality of map, then pushout-prop !})
+  where newβl  = sub-map (λ x → x & inl σ σ') s
+        newβl' = sub-map (λ x → x & inr σ σ') s'
 
-inl = {!!}
-inr = {!!}
+inl {·} {β = ·} σ σ' = ·
+inl {γ , δ} {β = β , βl} (σ , s) (σ' , s') = (inl _ _) , {!!}
 
--- data Tm where
---   var : {γ : Con} → {α : Ty γ} → Var γ α → Tm α
---   u : {γ : Con} → {α β : Ty γ} → Squig α β → Tm α
+inr {·} {β' = ·} σ σ' = ·
+inr {γ , δ} {β = β' , βl'} (σ , s) (σ' , s') = (inr _ _) , {!!}
+
+pushout-prop {·} · · = refl
+pushout-prop {γ , x} (σ , s) (σ' , s') = {!!}
