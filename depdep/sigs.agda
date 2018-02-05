@@ -1,5 +1,10 @@
+{-# OPTIONS --no-positivity-check #-}
 open import Relation.Binary.PropositionalEquality
+open Relation.Binary.PropositionalEquality.≡-Reasoning
 open import Data.List
+open import Data.List.Properties
+open import Data.Product hiding (map)
+open import Function
 
 -- The Agda membership uses setoid equality, yuck
 data _∈_ {A : Set} : A -> List A -> Set where
@@ -35,6 +40,7 @@ in-map : {A B : Set} -> {l : List A} -> (f : A -> B) -> {x : A} -> x ∈ l -> (f
 in-map f here = here
 in-map f (there e) = there (in-map f e)
 
+-- Test positivity with inductive definition
 ListSub : {A : Set} (a b : List A) -> Set
 ListSub a b = ∀ x -> (x ∈ a -> x ∈ b)
 
@@ -46,6 +52,9 @@ sub-wkl l x i = l x (there i)
 
 sub-id : {A : Set} {dl1 : List A} -> ListSub dl1 dl1
 sub-id x i = i
+
+eq-to-sub : {A : Set} {dl1 dl2 : List A} -> dl1 ≡ dl2 -> ListSub dl1 dl2
+eq-to-sub refl = sub-id
 
 sub-append-first : {A : Set} -> (l l' : List A) -> ListSub l (l ++ l')
 sub-append-first [] l' x ()
@@ -85,7 +94,6 @@ data Con where
   _,_ : (γ : Con) → Ty γ → Con
 
 _&_ : {γ : Con} → {α β δ : Ty γ} → Squig α β → Squig β δ → Squig α δ
-squig-id : {γ : Con} → {α : Ty γ} → Squig α α
 
 data Ty where
   · : Ty ·
@@ -95,27 +103,89 @@ data Squig where
   · : Squig · ·
   _,_ : {γ : Con} → {α β δ : Ty γ} → (σ : Squig α β) → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → ListSub (map (λ x → x & σ) dl1) dl2 → Squig (α , dl1) (β , dl2)
 
-squig-id {α = ·} = ·
-squig-id {α = α , x} = squig-id , {!!}
+
+adjust-postcomp : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → σ ≡ σ' → ListSub (map (λ x → x & σ') dl1) dl2 → ListSub (map (λ x → x & σ) dl1) dl2
+adjust-postcomp {dl1 = dl1} refl s = s
+
+squig-eq : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → {s : ListSub (map (λ x → x & σ) dl1) dl2} -> {s' : ListSub (map (λ x → x & σ') dl1) dl2} -> (p : σ ≡ σ') → ((x : _) → s x ≗ adjust-postcomp p s' x) → _≡_ {A = Squig (α , dl1) (β , dl2)} (σ , s) (σ' , s')
+squig-eq refl x = {!!} -- <- HERE!
+
+squig-assoc : ∀ {γ : Con} → {α β δ ε : Ty γ} → {σ : Squig α β} {τ : Squig β δ} {θ : Squig δ ε} → (σ & τ) & θ ≡ σ & (τ & θ)
+squig-id : {γ : Con} → {α : Ty γ} → Squig α α
+squig-right-unit : ∀ {γ : Con} → {α β : Ty γ} → {σ : Squig α β} → σ & squig-id ≡ σ
 
 _&_ {·} {·} {·} · · = ·
-_&_ (σ , dl1) (τ , dl2) = (σ & τ) , {!!} -- (σ & τ) , (dl1 && dl2)
+_,_ σ {dl1} {dl2} s & (_,_ τ {dl1'} {dl2'} s') = (σ & τ) , (λ x → s' x ∘ sub-map (λ y → y & τ) s x ∘ eq-to-sub path x)
+  where path : map (λ x₁ → x₁ & (σ & τ)) dl1 ≡ map (λ y → y & τ) (map (λ x₁ → x₁ & σ) dl1)
+        path = begin
+                 map (λ x₁ → x₁ & (σ & τ)) dl1
+               ≡⟨ sym (map-cong (λ x → squig-assoc) dl1) ⟩
+                 map (λ x₁ → (x₁ & σ) & τ) dl1
+               ≡⟨ map-compose dl1 ⟩
+                 map (λ y → y & τ) (map (λ x₁ → x₁ & σ) dl1)
+               ∎
+
+squig-id {α = ·} = ·
+squig-id {α = α₁ , l} = squig-id , eq-to-sub path
+  where path : map (λ x → x & squig-id) l ≡ l
+        path = begin
+                 map (λ x → x & squig-id) l
+               ≡⟨ map-cong (λ x → squig-right-unit) l ⟩
+                 map (λ x → x) l
+               ≡⟨ map-id l ⟩
+                 l
+               ∎
+
+squig-right-unit {·} {σ = ·} = refl
+squig-right-unit {γ , x} {σ = σ , l} = {!!}
+
+squig-assoc {·} {σ = ·} {·} {·} = refl
+squig-assoc {γ , x} {σ = σ , x₁} {τ , x₂} {θ , x₃} = {!!}
 
 pushout : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Ty γ
 inl : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β (pushout σ σ')
 inr : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β' (pushout σ σ')
 pushout-prop : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (σ & inl σ σ') ≡ (σ' & inr σ σ')
 
+pushout-prop-lemma : {γ : Con} → {α β β' δ : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (l : List (Squig δ {!!})) -> map (λ x → x & inl σ σ') (map (λ x → x & σ) l) ≡  map (λ x → x & inr σ σ') (map (λ x → x & σ') l)
+pushout-prop-lemma {α = α} {β} {β'} {δ} σ σ' l = begin
+    map (λ x → x & inl σ σ') (map (λ x → x & σ) l)
+  ≡⟨ sym (map-compose l) ⟩
+    map (λ x → (x & σ) & inl σ σ') l
+  ≡⟨ map-cong useprop l ⟩
+    map (λ x → (x & σ') & inr σ σ') l
+  ≡⟨ map-compose l ⟩
+    map (λ x → x & inr σ σ') (map (λ x → x & σ') l)
+  ∎
+    where
+      useprop : (x : Squig δ α) → ((x & σ) & inl σ σ' ≡ (x & σ') & inr σ σ')
+      useprop x = begin
+          (x & σ) & inl σ σ'
+        ≡⟨ squig-assoc ⟩
+           x & (σ & inl σ σ')
+        ≡⟨ cong (λ y → x & y) (pushout-prop σ σ') ⟩
+           x & (σ' & inr σ σ')
+        ≡⟨ sym squig-assoc ⟩
+           (x & σ') & inr σ σ'
+        ∎
+
 pushout {·} σ σ' = ·
-pushout {γ , δ} {α , αl} {β , βl} {β' , βl'} (σ , s) (σ' , s') = (pushout σ σ') , (pushout-list newβl {!functoriality of map, then pushout-prop !})
+pushout {γ , δ} {α , αl} {β , βl} {β' , βl'} (σ , s) (σ' , s') = (pushout σ σ') , (pushout-list newβl transpβl')
   where newβl  = sub-map (λ x → x & inl σ σ') s
         newβl' = sub-map (λ x → x & inr σ σ') s'
 
+        transpβl' : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) αl)) (map (λ x → x & inr σ σ') βl')
+        transpβl' i = newβl' i ∘ eq-to-sub (pushout-prop-lemma σ σ' αl) i
+
 inl {·} {β = ·} σ σ' = ·
-inl {γ , δ} {β = β , βl} (σ , s) (σ' , s') = (inl _ _) , {!!}
+inl {γ , δ} {β = β₁ , βl} (_,_ σ {dl1 = dl1} s) (_,_ σ' {dl2 = dl2'} s') = (inl _ _) , inl-list (sub-map (λ x → x & inl σ σ') s) rsub
+  where rsub : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) dl1)) (map (λ x → x & inr σ σ') dl2')
+        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-prop-lemma σ σ' dl1) i
 
 inr {·} {β' = ·} σ σ' = ·
-inr {γ , δ} {β = β' , βl'} (σ , s) (σ' , s') = (inr _ _) , {!!}
+inr {γ , δ} {β = β' , βl'} (_,_ σ {dl1 = dl1}  s) (_,_ σ' {dl2 = dl2'} s') = (inr _ _) , inr-list (sub-map (λ x → x & inl σ σ') s) rsub
+  where rsub : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) dl1)) (map (λ x → x & inr σ σ') dl2')
+        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-prop-lemma σ σ' dl1) i
 
 pushout-prop {·} · · = refl
-pushout-prop {γ , x} (σ , s) (σ' , s') = {!!}
+pushout-prop {γ , x} (σ , s) (σ' , s') = squig-eq (pushout-prop σ σ') {!!}
