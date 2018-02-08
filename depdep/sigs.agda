@@ -6,6 +6,8 @@ open import Data.List.Properties
 open import Data.Product hiding (map)
 open import Function
 
+postulate ext : ∀ {l1 l2} -> Extensionality l1 l2
+
 -- The Agda membership uses setoid equality, yuck
 data _∈_ {A : Set} : A -> List A -> Set where
   here  : ∀ {x xs} -> x ∈ (x ∷ xs)
@@ -26,6 +28,13 @@ in-merge (there a) (there b) here = here
 in-merge here (there b) (there i) = i
 in-merge (there a) here (there i) = i
 in-merge (there a) (there b) (there i) = there (in-merge a b i)
+
+in-merge-eq : {A : Set} -> {x : A} -> {l : List A} -> (a b : x ∈ l) -> (in-merge a b a ≡ in-merge a b b)
+in-merge-eq {l = []} () ()
+in-merge-eq {l = x₁ ∷ l} here here = refl
+in-merge-eq {l = x₁ ∷ l} here (there b) = refl
+in-merge-eq {l = x₁ ∷ l} (there a) here = refl
+in-merge-eq {l = x₁ ∷ l} (there a) (there b) = cong there (in-merge-eq a b)
 
 in-append-first : {A : Set} -> {x : A} -> {l l' : List A} -> (i : x ∈ l) -> x ∈ (l ++ l')
 in-append-first {l = []} ()
@@ -54,7 +63,13 @@ sub-id : {A : Set} {dl1 : List A} -> ListSub dl1 dl1
 sub-id x i = i
 
 eq-to-sub : {A : Set} {dl1 dl2 : List A} -> dl1 ≡ dl2 -> ListSub dl1 dl2
-eq-to-sub refl = sub-id
+eq-to-sub refl x i = i
+
+eq-to-sub-comp : {A : Set} {dl1 dl2 dl3 : List A} -> (p : dl1 ≡ dl2) → (q : dl2 ≡ dl3) -> ({x : A} → eq-to-sub q x ∘ eq-to-sub p x ≗ eq-to-sub (trans p q) x)
+eq-to-sub-comp refl refl x = refl
+
+sub-eq : {A : Set} {dl1 dl2 : List A} -> {s s' : ListSub dl1 dl2} -> ({x : A} -> s x ≗ s' x) -> s ≡ s'
+sub-eq f = ext (λ x → ext f)
 
 sub-append-first : {A : Set} -> (l l' : List A) -> ListSub l (l ++ l')
 sub-append-first [] l' x ()
@@ -83,6 +98,15 @@ inl-list {a = x ∷ a} s1 s2 x' i = in-merge _ _ (inl-list (sub-wkl s1) (sub-wkl
 inr-list {a = []} {b} {b'} s1 s2 x i = sub-append-second b b' x i
 inr-list {a = x ∷ a} s1 s2 x' i = in-merge _ _ (inr-list (sub-wkl s1) (sub-wkl s2) x' i)
 
+pushout-prop-list : {A : Set} {a b b' : List A} -> (s1 : ListSub a b ) -> ( s2 : ListSub a b' ) -> ({x : A} → inl-list s1 s2 x ∘ s1 x ≗ inr-list s1 s2 x ∘ s2 x)
+pushout-prop-list {a = []} s1 s2 ()
+pushout-prop-list {a = x ∷ a} s1 s2 here
+  = in-merge-eq
+      (inl-list (sub-wkl s1) (sub-wkl s2) x (s1 x here))
+      (inr-list (sub-wkl s1) (sub-wkl s2) x (s2 x here))
+pushout-prop-list {a = x ∷ a} s1 s2 {x'} (there i) = cong (in-merge _ _) (pushout-prop-list (sub-wkl s1) (sub-wkl s2) i)
+
+
 data Con : Set
 data Ty : Con → Set
 data Squig : {γ : Con} → Ty γ → Ty γ → Set
@@ -104,20 +128,22 @@ data Squig where
   _,_ : {γ : Con} → {α β δ : Ty γ} → (σ : Squig α β) → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → ListSub (map (λ x → x & σ) dl1) dl2 → Squig (α , dl1) (β , dl2)
 
 
-adjust-postcomp : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → σ ≡ σ' → ListSub (map (λ x → x & σ') dl1) dl2 → ListSub (map (λ x → x & σ) dl1) dl2
-adjust-postcomp {dl1 = dl1} refl s = s
+fix-map : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → σ ≡ σ' → map (λ x → x & σ) dl1 ≡ map (λ x → x & σ') dl1
+fix-map refl = refl
 
-squig-eq : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → {s : ListSub (map (λ x → x & σ) dl1) dl2} -> {s' : ListSub (map (λ x → x & σ') dl1) dl2} -> (p : σ ≡ σ') → ((x : _) → s x ≗ adjust-postcomp p s' x) → _≡_ {A = Squig (α , dl1) (β , dl2)} (σ , s) (σ' , s')
-squig-eq refl x = {!!} -- <- HERE!
+adjust-postcomp : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → σ ≡ σ' → ListSub (map (λ x → x & σ') dl1) dl2 → ListSub (map (λ x → x & σ) dl1) dl2
+adjust-postcomp p s x = s x ∘ eq-to-sub (fix-map p) x
+
+squig-eq : {γ : Con} → {α β δ : Ty γ} → {σ σ' : Squig α β} → {dl1 : List (Squig δ α)} → {dl2 : List (Squig δ β)} → {s : ListSub (map (λ x → x & σ) dl1) dl2} -> {s' : ListSub (map (λ x → x & σ') dl1) dl2} -> (p : σ ≡ σ') → s ≡ adjust-postcomp p s' → _≡_ {A = Squig (α , dl1) (β , dl2)} (σ , s) (σ' , s')
+squig-eq {σ = σ} {s' = s'} refl p = cong (λ y -> σ , y) p
 
 squig-assoc : ∀ {γ : Con} → {α β δ ε : Ty γ} → {σ : Squig α β} {τ : Squig β δ} {θ : Squig δ ε} → (σ & τ) & θ ≡ σ & (τ & θ)
 squig-id : {γ : Con} → {α : Ty γ} → Squig α α
 squig-right-unit : ∀ {γ : Con} → {α β : Ty γ} → {σ : Squig α β} → σ & squig-id ≡ σ
 
-_&_ {·} {·} {·} · · = ·
-_,_ σ {dl1} {dl2} s & (_,_ τ {dl1'} {dl2'} s') = (σ & τ) , (λ x → s' x ∘ sub-map (λ y → y & τ) s x ∘ eq-to-sub path x)
-  where path : map (λ x₁ → x₁ & (σ & τ)) dl1 ≡ map (λ y → y & τ) (map (λ x₁ → x₁ & σ) dl1)
-        path = begin
+abstract
+  &-lemma : {γ : Con} → {θ α β δ : Ty γ} → {σ : Squig α β} → {τ : Squig β δ} -> {dl1 : List (Squig θ α)} -> map (λ x₁ → x₁ & (σ & τ)) dl1 ≡ map (λ y → y & τ) (map (λ x₁ → x₁ & σ) dl1)
+  &-lemma {σ = σ} {τ} {dl1} = begin
                  map (λ x₁ → x₁ & (σ & τ)) dl1
                ≡⟨ sym (map-cong (λ x → squig-assoc) dl1) ⟩
                  map (λ x₁ → (x₁ & σ) & τ) dl1
@@ -125,49 +151,43 @@ _,_ σ {dl1} {dl2} s & (_,_ τ {dl1'} {dl2'} s') = (σ & τ) , (λ x → s' x �
                  map (λ y → y & τ) (map (λ x₁ → x₁ & σ) dl1)
                ∎
 
+_&_ {·} {·} {·} · · = ·
+(σ , s) & (τ , s') = (σ & τ) , (λ x → s' x ∘ sub-map (λ y → y & τ) s x ∘ eq-to-sub &-lemma x)
+
+
 squig-id {α = ·} = ·
 squig-id {α = α₁ , l} = squig-id , eq-to-sub path
-  where path : map (λ x → x & squig-id) l ≡ l
-        path = begin
-                 map (λ x → x & squig-id) l
-               ≡⟨ map-cong (λ x → squig-right-unit) l ⟩
-                 map (λ x → x) l
-               ≡⟨ map-id l ⟩
-                 l
-               ∎
+  where
+    abstract path : map (λ x → x & squig-id) l ≡ l
+             path = begin
+                    map (λ x → x & squig-id) l
+                 ≡⟨ map-cong (λ x → squig-right-unit) l ⟩
+                   map (λ x → x) l
+                 ≡⟨ map-id l ⟩
+                   l
+                 ∎
 
 squig-right-unit {·} {σ = ·} = refl
-squig-right-unit {γ , x} {σ = σ , l} = {!!}
+squig-right-unit {γ , x} {σ = σ , s} = squig-eq squig-right-unit (sub-eq (λ x₂ → {!!}))
 
-squig-assoc {·} {σ = ·} {·} {·} = refl
-squig-assoc {γ , x} {σ = σ , x₁} {τ , x₂} {θ , x₃} = {!!}
+squig-assoc {·} {·} {·} {·} {·} {σ = ·} {·} {·} = refl
+squig-assoc {γ , α} {σ = σ , s1} {τ , s2} {θ , s3} = squig-eq squig-assoc (sub-eq (λ {x} i → cong (λ y → s3 x y) {!!}))
 
 pushout : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Ty γ
 inl : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β (pushout σ σ')
 inr : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') → Squig β' (pushout σ σ')
 pushout-prop : {γ : Con} → {α β β' : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (σ & inl σ σ') ≡ (σ' & inr σ σ')
 
-pushout-prop-lemma : {γ : Con} → {α β β' δ : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (l : List (Squig δ {!!})) -> map (λ x → x & inl σ σ') (map (λ x → x & σ) l) ≡  map (λ x → x & inr σ σ') (map (λ x → x & σ') l)
-pushout-prop-lemma {α = α} {β} {β'} {δ} σ σ' l = begin
+pushout-lemma : {γ : Con} → {α β β' δ : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') -> (l : List (Squig δ α)) -> map (λ x → x & inl σ σ') (map (λ x → x & σ) l) ≡  map (λ x → x & inr σ σ') (map (λ x → x & σ') l)
+pushout-lemma {α = α} {β} {β'} {δ} σ σ' l = begin
     map (λ x → x & inl σ σ') (map (λ x → x & σ) l)
-  ≡⟨ sym (map-compose l) ⟩
-    map (λ x → (x & σ) & inl σ σ') l
-  ≡⟨ map-cong useprop l ⟩
-    map (λ x → (x & σ') & inr σ σ') l
-  ≡⟨ map-compose l ⟩
+  ≡⟨ sym &-lemma ⟩
+    map (λ x → x & (σ & inl σ σ')) l
+  ≡⟨ map-cong (λ x → cong (λ y → x & y) (pushout-prop σ σ')) l ⟩
+    map (λ x → x & (σ' & inr σ σ')) l
+  ≡⟨ &-lemma ⟩
     map (λ x → x & inr σ σ') (map (λ x → x & σ') l)
   ∎
-    where
-      useprop : (x : Squig δ α) → ((x & σ) & inl σ σ' ≡ (x & σ') & inr σ σ')
-      useprop x = begin
-          (x & σ) & inl σ σ'
-        ≡⟨ squig-assoc ⟩
-           x & (σ & inl σ σ')
-        ≡⟨ cong (λ y → x & y) (pushout-prop σ σ') ⟩
-           x & (σ' & inr σ σ')
-        ≡⟨ sym squig-assoc ⟩
-           (x & σ') & inr σ σ'
-        ∎
 
 pushout {·} σ σ' = ·
 pushout {γ , δ} {α , αl} {β , βl} {β' , βl'} (σ , s) (σ' , s') = (pushout σ σ') , (pushout-list newβl transpβl')
@@ -175,17 +195,72 @@ pushout {γ , δ} {α , αl} {β , βl} {β' , βl'} (σ , s) (σ' , s') = (push
         newβl' = sub-map (λ x → x & inr σ σ') s'
 
         transpβl' : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) αl)) (map (λ x → x & inr σ σ') βl')
-        transpβl' i = newβl' i ∘ eq-to-sub (pushout-prop-lemma σ σ' αl) i
+        transpβl' i = newβl' i ∘ eq-to-sub (pushout-lemma σ σ' αl) i
 
 inl {·} {β = ·} σ σ' = ·
 inl {γ , δ} {β = β₁ , βl} (_,_ σ {dl1 = dl1} s) (_,_ σ' {dl2 = dl2'} s') = (inl _ _) , inl-list (sub-map (λ x → x & inl σ σ') s) rsub
   where rsub : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) dl1)) (map (λ x → x & inr σ σ') dl2')
-        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-prop-lemma σ σ' dl1) i
+        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-lemma σ σ' dl1) i
 
 inr {·} {β' = ·} σ σ' = ·
 inr {γ , δ} {β = β' , βl'} (_,_ σ {dl1 = dl1}  s) (_,_ σ' {dl2 = dl2'} s') = (inr _ _) , inr-list (sub-map (λ x → x & inl σ σ') s) rsub
   where rsub : ListSub (map (λ x → x & inl σ σ') (map (λ x → x & σ) dl1)) (map (λ x → x & inr σ σ') dl2')
-        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-prop-lemma σ σ' dl1) i
+        rsub i = sub-map (λ x → x & inr σ σ') s' i ∘ eq-to-sub (pushout-lemma σ σ' dl1) i
+
+pushout-prop-lemma : {γ : Con} → {α β β' δ : Ty γ} → (σ : Squig α β) → (σ' : Squig α β') ->
+                     {dl1 : List (Squig δ α)} -> {dl2 : List (Squig δ β')} -> {dl3 : List (Squig δ β)} ->
+                     {s : ListSub (map (λ y → y & σ) dl1) dl3} -> {s' : ListSub (map (λ y → y & σ') dl1) dl2} ->
+                     {x : Squig δ (pushout σ σ')} -> (x₁ : x ∈ map (λ x₂ → x₂ & (σ & inl σ σ')) dl1) →
+      inl-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+      (λ i x₂ →
+         sub-map (λ x₃ → x₃ & inr σ σ') s' i
+         (eq-to-sub (pushout-lemma σ σ' dl1) i x₂))
+      x (sub-map (λ y → y & inl σ σ') s x (eq-to-sub &-lemma x x₁))
+      ≡
+      inr-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+      (λ i x₂ →
+         sub-map (λ x₃ → x₃ & inr σ σ') s' i
+         (eq-to-sub (pushout-lemma σ σ' dl1) i x₂))
+      x
+      (sub-map (λ y → y & inr σ σ') s' x
+       (eq-to-sub &-lemma x
+        (eq-to-sub (fix-map (pushout-prop σ σ')) x x₁)))
+pushout-prop-lemma σ σ' {dl1 = dl1} {s = s} {s'} {x} x₁
+  = begin
+      inl-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+               (λ i x₂ → sub-map (λ x₃ → x₃ & inr σ σ') s' i (eq-to-sub (pushout-lemma σ σ' dl1) i x₂))
+               x
+               (sub-map (λ y → y & inl σ σ') s x (eq-to-sub &-lemma x x₁))
+    ≡⟨ pushout-prop-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+                         (λ i x₂ → sub-map (λ x₃ → x₃ & inr σ σ') s' i (eq-to-sub (pushout-lemma σ σ' dl1) i x₂))
+                         (eq-to-sub &-lemma x x₁) ⟩
+      inr-list _
+               ((λ i x₂ → sub-map (λ x₃ → x₃ & inr σ σ') s' i (eq-to-sub (pushout-lemma σ σ' dl1) i x₂)))
+               x
+               ((sub-map (λ x₃ → x₃ & inr σ σ') s' x (eq-to-sub (pushout-lemma σ σ' dl1) x (eq-to-sub &-lemma x x₁))))
+    ≡⟨ cong (λ x₂ → inr-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+                             _
+                             x
+                             (sub-map (λ x₃ → x₃ & inr σ σ') s' x x₂)) t ⟩
+      inr-list (sub-map (λ x₂ → x₂ & inl σ σ') s)
+               (λ i x₂ → sub-map (λ x₃ → x₃ & inr σ σ') s' i (eq-to-sub (pushout-lemma σ σ' dl1) i x₂))
+               x
+               (sub-map (λ y → y & inr σ σ') s' x
+                 (eq-to-sub &-lemma x (eq-to-sub (fix-map (pushout-prop σ σ')) x x₁)))
+    ∎
+  where t : (eq-to-sub (pushout-lemma σ σ' dl1) x (eq-to-sub &-lemma x x₁))
+            ≡
+            (eq-to-sub &-lemma x (eq-to-sub (fix-map (pushout-prop σ σ')) x x₁))
+        t = begin
+              eq-to-sub (pushout-lemma σ σ' dl1) x (eq-to-sub &-lemma x x₁)
+            ≡⟨ eq-to-sub-comp &-lemma (pushout-lemma σ σ' dl1) x₁ ⟩
+              eq-to-sub (trans &-lemma (pushout-lemma σ σ' dl1)) x x₁
+            ≡⟨ cong (λ y -> eq-to-sub y x x₁) (proof-irrelevance (trans &-lemma (pushout-lemma σ σ' dl1))
+                                              (trans (fix-map (pushout-prop σ σ')) &-lemma)) ⟩
+              eq-to-sub (trans (fix-map (pushout-prop σ σ')) &-lemma) x x₁
+            ≡⟨ sym (eq-to-sub-comp (fix-map (pushout-prop σ σ')) &-lemma x₁) ⟩
+              eq-to-sub &-lemma x (eq-to-sub (fix-map (pushout-prop σ σ')) x x₁)
+            ∎
 
 pushout-prop {·} · · = refl
-pushout-prop {γ , x} (σ , s) (σ' , s') = squig-eq (pushout-prop σ σ') {!!}
+pushout-prop {γ , δ} (_,_ σ {dl1} s) (σ' , s') = squig-eq (pushout-prop σ σ') (sub-eq (pushout-prop-lemma σ σ'))
