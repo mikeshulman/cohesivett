@@ -365,11 +365,17 @@ And presumably $\id_{(\alpha, z)}[\sigma_x(y)/z] = \id_{(\alpha, x, y)}$, as the
 
 And the $F$-intro rule 
 \begin{mathpar}
-\inferrule*[Left=F-right$^*$]{~}{\Gamma, x : A, y: B(x) \yields_{\sigma_x(y)} \FI{x,y} : F_{\sigma_x(y)}(x:A, y : B(x))}
+\inferrule*[Left=F-right$^*$]{~}{\Gamma, x : A, y: B(x) \yields_{\sigma_x(y)} \mathsf{pair}(x,y) : F_{\sigma_x(y)}(x:A, y : B(x))}
 \end{mathpar}
 could be read as saying that the term $\mathsf{pair}(x,y) := \FI{x,y}$ uses exactly what the type $A$ does, plus one usage of $x$ and one usage of $y$.
 
 $\Pi$ ought to be the $U$ type for \[\gamma, x : \alpha, y : \alpha \yields (\alpha, i : x[\id_\alpha], j : y[\id_{\alpha}] \mid \alpha / \alpha, i / i) : (\alpha, i : x[\id_\alpha])\]
+If we call this $\pi_x(y)$, we can try the $U$-right rule in a simple case:
+\begin{mathpar}
+  \inferrule*[Left = U-right]{\Gamma, x : A \yields_{\pi_x(y)[(\alpha \mid \id_\alpha) / y]} N : B}
+  {\Gamma \yields_{(\alpha \mid \id_\alpha)} \UI \Delta N : U_{y.\pi_x(y)}(A \vert B)} \\
+\end{mathpar}
+And then $\pi_x(y)[(\id_\alpha\vert \alpha)/y] = (\alpha, i : x[\id_\alpha] \mid \id) : (\alpha, i : x[\id_\alpha])$, as the $\alpha$ from the $y$ has been glued to the existing one.
 
 \subsubsection{Structurality}
 We can change what structural rules are available by fiddling with the final three rules, and only allowing some renamings to be used in each.
@@ -388,6 +394,7 @@ These choices cannot be totally arbitrary: if we want type 2-cells to act on ter
 As an example, it appears these choices could allow a type system where the types behave fully structurally and the terms behave linearly, but not vis versa.
 
 \subsection{Modal Type Theories}
+\subsection{Bunchy Type Theories}
 
 \end{document}
 
