@@ -51,6 +51,7 @@
 \newcommand{\inr}{\mathsf{inr}}
 
 \newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
 
 \title{Adjoint Type Theory}
 \author{}
@@ -521,6 +522,30 @@ These choices cannot be totally arbitrary: if we want type 2-cells to act on ter
 As an example, it appears these choices could allow a type system where the types behave fully structurally and the terms behave linearly, but not vis versa.
 
 \subsection{Modal Type Theories}
+\newcommand{\Modes}{\mathcal{M}}
+
+Now let's try to match the idea where we have a small 2-category $\Modes$, and we want a dependent type theory that uses $\Modes$ as the modes. It seems that we want to annotate
+\begin{itemize}
+\item Types with a mode $p \in \ob \Modes$ so $\gamma \yields \alpha \type_p$
+\item Dependencies in a type with a morphism $f : p \to q$, so $\gamma \mid \beta \yields_f \sigma : \alpha$.
+\item Variable usages in a renaming with a 2-cell $s : f \Rightarrow g$.
+\end{itemize}
+
+A first naive attempt, that doesn't work, is:
+
+\begin{mathpar}
+  \inferrule*[]{p \in \ob \Modes}
+  {\gamma \yields \emptyset_p \type_p  } \and 
+  \inferrule*[]{ \gamma \yields \beta \type_p \and \gamma \yields \alpha \type_q \and f : p \to q \in \Modes \and \gamma \mid \beta \yields_f \sigma : \alpha \and (x : \alpha) \in \gamma }
+  {\gamma \yields (\beta, i : x_f[\sigma]) \type_p  } \\
+
+  \inferrule*[]{ \gamma \yields \beta \type_p \and f : p \to q \in \Modes}
+  {\gamma \mid \beta \yields_f () : \emptyset_q  } \and
+  \inferrule*[]{ \gamma \mid \beta \yields_f \sigma : \alpha \and  \gamma \mid \alpha \yields_g \tau : \delta \and (j : x_h[\tau[\sigma]]) \in \beta \and s : gf \Rightarrow h \in \Modes}
+  {\gamma \mid \beta \yields_f (\sigma, j_s/i) : (\alpha, i : x_g[\tau])} \\
+\end{mathpar}
+But above, saying $x_h[\tau[\sigma]]$ doesn't make sense, as presumably $\tau[\sigma]$ is a renaming that is mapped to $gf$. I think we may need an inductively defined way to extend the $s : f \Rightarrow g$ 2-cells in $\Modes$ to a kind of 2-cell between renamings. 
+
 \subsection{Bunchy Type Theories}
 
 \end{document}
