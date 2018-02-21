@@ -11,6 +11,10 @@
 \FXRegisterAuthor{todo}{andrl}{\color{red} }
 \FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
 
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 
@@ -313,6 +317,8 @@ Weakening and exchange in the context and weakening the minicontext should be st
   {\gamma \yields s : (\beta \mid \sigma) \Rightarrow (\beta' \mid \sigma[\tau]) : \alpha} \\
 \end{mathpar}
 
+Where $\tau[\sigma]$ is an admissible substitution rule for renamings, defined below.
+
 \subsubsection{Substitution}
 
 It will take a bit of work to show that substitution is admissible. A substitution $\alpha[(\beta \mid \sigma) / x_0]$ (roughly) expands out to calculating the `pushout' of two natural transformations between types in terms of cell gluing. (Although it looks like an operation on two maps \emph{into} $\alpha$ using the substitution notation.) Intuitively is gluing the list $\beta$ into $\alpha$ everywhere that $x_0$ is used, identifying things as specified by $\sigma$.
@@ -342,9 +348,9 @@ To prove substitution is admissible, the main steps would be:
 \item An identity renaming: $\gamma \mid \alpha \yields \id : \alpha$.
 \item A `pushout' operation: 
 \begin{mathpar}
-\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \delta \yields \tau : \alpha}{\gamma \yields \Pushout{\beta}{\alpha}{\delta}{\sigma}{\tau}\type}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha}{\gamma \yields \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}\type}
 \end{mathpar}
-with associated $\gamma \mid \Pushout{\beta}{\alpha}{\delta}{\sigma}{\tau} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\delta}{\sigma}{\tau} \yields \inr : \delta$, so that $\sigma[\inl] = \tau[\inr]$.
+with associated $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inr : \beta'$, so that $\sigma[\inl] = \sigma'[\inr]$.
 \item The following Lemma, which looks morally like a more complicated version of $\inl$, (to be proven simultaneously with substitution I suppose)
 \begin{mathpar}
 \inferrule*[]{\gamma, x_0 : \alpha_0 \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \mid \beta \yields \sigma : \alpha_0}{\gamma \mid \alpha[(\beta \mid \sigma) / x_0] \yields \sigma' : \beta}
@@ -352,6 +358,127 @@ with associated $\gamma \mid \Pushout{\beta}{\alpha}{\delta}{\sigma}{\tau} \yiel
 such that $\sigma[\sigma'] = \tau[(\beta \mid \sigma)/x_0]$
 \item Substitution itself, for types, terms, renamings.
 \end{enumerate}
+
+So here we go:
+
+\begin{lemma}
+Weakening and exchange are admissible for the minicontext in renamings.
+\end{lemma}
+
+\begin{lemma}
+Renamings actually work: 
+\begin{mathpar}
+\inferrule*[]{(i : x[\sigma]) \in \alpha \and \gamma \mid \beta \yields \tau : \alpha}{(i : x[\sigma[\tau]]) \in \beta}
+\end{mathpar}
+\end{lemma}
+\mvrnote{This is already sloppy, I suppose we need to properly define $(i : x[\sigma]) \in \alpha$, and deal with prefixes $\alpha' \leq \alpha$ of types...}
+
+\begin{lemma}
+Composition for renamings is admissible:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \delta \yields \tau : \beta}{\gamma \mid \delta \yields \sigma[\tau] : \alpha}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+Induction on $\alpha$. When $\alpha = \emptyset$, we have the empty renaming $()$. 
+
+If instead $\alpha = (\alpha', i : x[\theta])$, where $\gamma \mid \alpha' \yields \theta : \kappa$, we must have obtained $\gamma \mid \beta \yields \sigma : (\alpha', i : x[\theta])$ via the renaming-extension rule applied to $\gamma \mid \beta \yields \sigma' : \alpha'$ and $(j : x[\theta[\sigma']]) \in \beta$.
+
+Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$. \mvrnote{Here we have to use associativity of substitution}
+\end{proof}
+
+\begin{lemma}
+For any type there is an identity renaming $\gamma \mid \alpha \yields \id_\alpha : \alpha$, and $\sigma[\id] = \sigma = \id[\sigma]$.
+\end{lemma}
+\begin{proof}
+When $\alpha = \emptyset$, use the empty renaming.
+
+When $\alpha = (\alpha', i : x[\tau])$, inductively form $\id_{\alpha'}$, weaken the minicontext with $i : x[\tau]$, and apply the renaming-extension rule with $(i : x[\tau[\id_{\alpha'}]]) \in (\alpha', i : x[\tau]) $
+
+\mvrnote{todo the properties}
+\end{proof}
+
+\begin{lemma}
+Given $(i : x[\tau]) \in \alpha$ and $(i' : x[\tau]) \in \alpha$, there is a type $\alpha_{i=i'}$ where the two variables have been identified.  \mvrnote{Is there any difference in what we did compared to just using a contraction renaming?}
+\end{lemma}
+
+\begin{lemma}
+We can construct pushouts of renamings:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha}{\gamma \yields \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}\type}
+\end{mathpar}
+with associated $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inr : \beta'$, so that $\sigma[\inl] = \sigma'[\inr]$.
+\end{lemma}
+\begin{proof}
+Again induction on $\alpha$. If $\alpha = \emptyset$, then we must have $\sigma = \tau = ()$. We define $\Pushout{\beta}{\emptyset}{\beta'}{()}{()}$ to be just $\beta$ and $\beta'$ concatenated. There are evident $\inl$ and $\inr$ renamings that pick out the $\beta$ or $\beta'$ part, and $\sigma[\inl] = \sigma'[\inr]$ is vacuously true as renamings into $\emptyset$.
+
+For the inductive case, suppose:
+\begin{align*}
+\alpha &= (\alpha, i : x[\tau]) \\
+\sigma &= (\sigma, j/i) && \text{where } (j : x [\tau[\sigma]]) \in \beta \\
+\sigma' &= (\sigma', j'/i) && \text{where } (j' : x [\tau[\sigma']]) \in \beta'
+\end{align*}
+Inductively we have $\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$ and the corresponding $\inl/\inr$. Pushing $j$ and $j'$ forward along $\inl$ and $\inr$, and using associativity of renamings, we have 
+\begin{align*}
+(j[\inl] : x[\tau[\sigma[\inl]]]) &\in \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \\
+(j'[\inr] : x[\tau[\sigma'[\inr]]]) &\in \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}
+\end{align*}
+Because $\sigma[\inl] = \sigma'[\inr]$, these variables are a pair that can be identified, and so we do:
+\begin{align*}
+\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma, j'/i)} := (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}
+\end{align*}
+
+Now to define $\inl$, we compose the inductively given $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ with the contraction substitution $\gamma \mid (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]} \yields \nabla : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$. Define $\inr$ similarly.
+
+Checking the equation amounts to verifying $\sigma[\inl[\nabla]] = \sigma'[\inr[\nabla]]$, but this is clear by associativity and the inductive hypothesis.
+\end{proof}
+
+\begin{lemma}
+Universal property for pushout.
+\end{lemma}
+\begin{proof}
+\mvrnote{todo}
+\end{proof}
+
+The following all simultaneously. In what follows, if $\gamma \yields \mu : \alpha$ is a term, let $\gamma \yields \bar \mu \yields \mu : \alpha$ be its underlying renaming.
+
+\begin{lemma}
+$\inl$ for substitution:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0 \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \mid \beta \yields \sigma : \alpha_0}{\gamma \mid \alpha[(\beta \mid \sigma) / x_0] \yields \sigma' : \beta}
+\end{mathpar}
+such that $\sigma[\sigma'] = \tau[(\beta \mid \sigma)/x_0]$
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
+\begin{lemma}
+Substitution into types:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \yields \beta \type \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+If $\beta = \emptyset$ there is nothing to do. \mvrnote{except deal with $\gamma'$}
+
+If $\beta = (\beta, i : x[\sigma])$ for $x \neq x_0$, by the inductive step we have $\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type$. We can then find $(x : \alpha[\mu_0/x_0]) \in \gamma, \gamma'[\mu_0/x_0]$ and reapply the rule.
+
+If $\beta = (\beta, i : x_0[\sigma])$, then $\sigma$ here is $\gamma, x_0 : \alpha_0, \gamma'\mid \beta \yields \sigma : \alpha_0$. Again we inductively have $\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type$ and $\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha_0[\mu_0/x_0]$. Note here that $\alpha_0[\mu_0/x_0] = \alpha_0$ because $x_0$ does not occur in $\alpha_0$. 
+
+We then form the pushout of this $\sigma[\mu_0/x_0]$ along the renaming underlying $\mu_0$, yielding the type \[\Pushout{\beta[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\sigma[\mu_0/x_0]}{\mu_0}\] as our answer.
+\end{proof}
+
+\begin{lemma}
+Substitution into renamings:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \beta \yields \sigma : \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha[\mu_0/x_0]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
 
 \subsubsection{$\Sigma$ and $\Pi$}
 
