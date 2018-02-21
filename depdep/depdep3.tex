@@ -385,7 +385,7 @@ Induction on $\alpha$. When $\alpha = \emptyset$, we have the empty renaming $()
 
 If instead $\alpha = (\alpha', i : x[\theta])$, where $\gamma \mid \alpha' \yields \theta : \kappa$, we must have obtained $\gamma \mid \beta \yields \sigma : (\alpha', i : x[\theta])$ via the renaming-extension rule applied to $\gamma \mid \beta \yields \sigma' : \alpha'$ and $(j : x[\theta[\sigma']]) \in \beta$.
 
-Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$. \mvrnote{Here we have to use associativity of substitution}
+Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$. \mvrnote{Here we have to use associativity of reaming composition}
 \end{proof}
 
 \begin{lemma}
@@ -411,7 +411,7 @@ We can construct pushouts of renamings:
 with associated $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inr : \beta'$, so that $\sigma[\inl] = \sigma'[\inr]$.
 \end{lemma}
 \begin{proof}
-Again induction on $\alpha$. If $\alpha = \emptyset$, then we must have $\sigma = \tau = ()$. We define $\Pushout{\beta}{\emptyset}{\beta'}{()}{()}$ to be just $\beta$ and $\beta'$ concatenated. There are evident $\inl$ and $\inr$ renamings that pick out the $\beta$ or $\beta'$ part, and $\sigma[\inl] = \sigma'[\inr]$ is vacuously true as renamings into $\emptyset$.
+Again induction on $\alpha$. If $\alpha = \emptyset$, then we must have $\sigma = \tau = ()$. We define $\Pushout{\beta}{\emptyset}{\beta'}{()}{()}$ to be just $\beta$ and $\beta'$ concatenated. There are evident $\inl$ and $\inr$ renamings that pick out the $\beta$ or $\beta'$ part, and $\sigma[\inl] = \sigma'[\inr]$ is vacuously true as these are renamings into $\emptyset$.
 
 For the inductive case, suppose:
 \begin{align*}
@@ -443,15 +443,28 @@ Universal property for pushout.
 
 The following all simultaneously. In what follows, if $\gamma \yields \mu : \alpha$ is a term, let $\gamma \yields \bar \mu \yields \mu : \alpha$ be its underlying renaming.
 
-\begin{lemma}
+\begin{lemma}\label{inl-sub}
 $\inl$ for substitution:
 \begin{mathpar}
-\inferrule*[]{\gamma, x_0 : \alpha_0 \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \mid \beta \yields \sigma : \alpha_0}{\gamma \mid \alpha[(\beta \mid \sigma) / x_0] \yields \sigma' : \beta}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \sigma' : \bar \mu_0}
 \end{mathpar}
-such that $\sigma[\sigma'] = \tau[(\beta \mid \sigma)/x_0]$
+such that $\mu_0[\sigma'] = \tau[\mu_0/x_0]$
 \end{lemma}
 \begin{proof}
+%Induction on $\bar \mu_0$. If $\bar \mu_0 = \emptyset$, then also $\alpha_0 = \emptyset$, and the equation holds trivially.
 
+Induction on $\alpha_0$. If $\alpha_0 = \emptyset$, then $\tau$ is the empty renaming, and the equation holds trivially as renamings into $\emptyset$.
+
+In the inductive case we have
+\begin{align*}
+\alpha_0 &= (\alpha_0, i : x[\theta]) && \text{where } (x : \beta) \in \gamma \text{ and } \gamma \mid \alpha_0 \yields \theta : \beta \\
+\mu_0 &= (\mu_0, j/i) && \text{where } (j : x[\theta[\mu_0]]) \in \bar \mu_0
+\end{align*}
+(Note that we cannot have $x = x_0$ as $\alpha_0$ is only a type in context $\gamma$.)
+
+Inductively we have $\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \sigma' : \bar \mu_0$.
+
+\mvrnote{todo}
 \end{proof}
 
 \begin{lemma}
@@ -461,7 +474,7 @@ Substitution into types:
 \end{mathpar}
 \end{lemma}
 \begin{proof}
-If $\beta = \emptyset$ there is nothing to do. \mvrnote{except deal with $\gamma'$}
+Induction on $\beta$. If $\beta = \emptyset$ there is nothing to do. \mvrnote{except deal with $\gamma'$}
 
 If $\beta = (\beta, i : x[\sigma])$ for $x \neq x_0$, by the inductive step we have $\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type$. We can then find $(x : \alpha[\mu_0/x_0]) \in \gamma, \gamma'[\mu_0/x_0]$ and reapply the rule.
 
@@ -477,7 +490,20 @@ Substitution into renamings:
 \end{mathpar}
 \end{lemma}
 \begin{proof}
+Induction on $\sigma$. If $\sigma$ is the empty renaming there is nothing to do.
 
+So suppose we have just applied the renaming-extension rule to get $\gamma, x_0 : \alpha_0, \gamma' \mid \beta \yields (\sigma, j/i) : (\alpha, i : x[\tau])$, where $(j : x[\tau[\sigma]]) \in \beta$. Inductively we have $\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha[\mu_0/x_0]$. 
+
+Again there are two cases. If $x \neq x_0$, we can reapply the rule with $(j : x[\tau[\mu_0/x_0][\sigma[\mu_0/x_0]]]) \in \beta[\mu_0/x_0]$. (Here we have to use an interchange rule for renamings and substitution: $\tau[\mu_0/x_0][\sigma[\mu_0/x_0]]] = \tau[\sigma][\mu_0/x_0]$)
+
+If $x = x_0$, our goal is a renaming into $(\alpha, i : x_0[\tau])[\mu_0/x_0]$, which is $\Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0}$. For this we use the universal property of pushouts, applied to the following diagram (where confusingly the arrows go the opposite direction of renamings):
+\[
+\begin{tikzcd}
+\alpha_0 \ar[r, "{\tau[\mu_0/x_0]}"] \ar[d, "\mu_0" swap] & \alpha[\mu_0/x_0] \ar[d] \ar[ddr, bend left, "{\sigma[\mu_0/x_0]}"] & \\
+\bar \mu_0 \ar[r] \ar[drr, bend right, "\text{Lemma \ref{inl-sub}}" swap]& \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0} \ar[dr, dashed] & \\
+& & \beta[\mu_0/x_0]
+\end{tikzcd}
+\]
 \end{proof}
 
 
