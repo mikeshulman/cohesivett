@@ -75,7 +75,8 @@ For a fixed category $\cC$, let $\cCart_{/\cC}$ denote the 2-category whose obje
 We denote the coreflection by $\cT\f \to \cC$ and call its objects \textbf{fibrant} in \cT.
 The fibrant objects in $\cod: \cC^\to \to \cC$ are the \emph{pullbackable} morphisms, i.e.\ those of which every pullback exists.
 
-A \textbf{comprehension category}, usually defined as a fibration $p:\cT\to\cC$ along with a functor $\cT\to\cC^\to$ that preserves cartesian arrows, can equivalently be defined as a fibration $p$ with a morphism of fibrations $\cT\to\cC^\to\f$.
+A \textbf{comprehension category} is defined as a fibration $p:\cT\to\cC$ along with a functor $\cT\to\cC^\to$ in $\cCart_{/\cC}$.
+Thus, this is equivalent to giving a fibration $p:\cT\to\cC$ along with a morphism of fibrations $\cT\to\cC^\to\f$.
 
 When describing the type theory corresponding to a comprehension category, we usually ignore the morphisms in \cT.
 This can be done formally by requiring $\cT\to\cC$ to be a discrete fibration, but it turns out to categorify better to require the functor $\cT\to\cC^\to$, or equivalently $\cT\to\cC^\to\f$, to be fully faithful.
@@ -107,10 +108,10 @@ Thus, for instance, the middle-four interchange law is $(\delta\circ\gamma)(\bet
   % \item If $P$ is a local fibration, it is \textbf{locally cloven} if the above fibrations have a choice of cartesian lifts.
   %   It is moreover \textbf{locally split} if these choices are closed under composition and identities.
   %   It is \textbf{horizontally split} if the composition functor preserves the chosen lifts strictly, and moreover the associativity and unit isomorphisms of $\sT$ (which lie strictly over those of $\sC$, since $P$ is a strict functor) are chosen cartesian lifts.
-  \item A morphism $f:x\to y$ in \sC is \textbf{cartesian} if for any $z$ the following square (which commutes strictly since $P$ is a strict functor) is a bipullback (a weak bicategorical pullback):
+  \item A morphism (i.e.\ a 1-cell) $f:x\to y$ in \sC is \textbf{cartesian} if for any $z$ the following square (which commutes strictly since $P$ is a strict functor) is a bipullback (a weak bicategorical pullback):
     \[
     \begin{tikzcd}
-      \sT(z,x) \ar[r,"f\circ\blank"]\ar[d] & \sT(z,y) \ar[d]\\
+      \sT(z,x) \ar[r,"f\circ\blank"]\ar[d,"P"'] & \sT(z,y) \ar[d,"P"]\\
       \sC(Pz,Px) \ar[r,"Pf\circ \blank"'] & \sC(Pz,Py)
     \end{tikzcd}
     \]
@@ -149,7 +150,7 @@ It is shown in~\cite[Theorem 3.3.12]{buckley:2fib} that fibrations over a bicate
 
 In any local fibration we have a notion of when a 2-cell is ``cartesian'', namely when it is cartesian for the corresponding ordinary fibration of hom-categories $\sT(x,y) \to \sC(Px,Py)$.
 However, for a functor that is not necessarily a local fibration it is more appropriate to use the following stronger notion of cartesian 2-cell.
-This is a generalization of~\cite[Definition 2.2]{hermida:2fib} to the cartesian case.
+This is a generalization of~\cite[Definition 2.2]{hermida:2fib}.
 
 \begin{defn}\label{defn:2cart}
   Let $P:\sT\to\sC$ be any strict functor of bicategories, and $\si:f\To g:x\to y$ a 2-cell in \sT.
@@ -376,7 +377,8 @@ We write some of them in a quasi-type-theoretic syntax, but I do not have a good
   \begin{mathpar}
     \inferrule{\Xi\modectx \\ \Xi\types p\mode}{(\Xi,p) \modectx}
   \end{mathpar}
-  together with a mode context morphism $(\Xi,p)\types \pr_p:\Xi$.
+  together with a ``weakening'' mode context morphism $(\Xi,p)\types \pr_p:\Xi$ or
+  \[\vec{x}:\Xi, y:p \types (\vec{x}) :\Xi.\]
 \item A section of $(\Xi,p)\types \pr_p:\Xi$ (that is, a morphism $\al:\Xi\to \Xi.p$ \emph{equipped with} an isomorphism $\pr_p \circ \al \cong 1_{\Xi}$) a is called a \textbf{mode term}:
   \[ \Xi \types \al:p. \]
   Given two such sections, a 2-cell $e:\al\To \be$ such that the composite $1 \cong \pr_p \circ \al \to \pr_p \circ \be \cong 1$ is the identity is called a \textbf{mode 2-cell}:
@@ -700,7 +702,7 @@ The central semantic construction of comprehension bicategories is the following
   \[
   \begin{tikzcd}
     x \ar[r,"g"] \ar[dr,"h"',"\underset{\al}{\To}"] &
-    \ar[d,"p" description] \ar[dr,"\underset{\lambda}{\To}"',"q"] \\
+    l \ar[d,"p" description] \ar[dr,"\underset{\lambda}{\To}"',"q"] \\
     & a \ar[r,"f"'] & b
   \end{tikzcd}
   \]
@@ -742,7 +744,7 @@ The central semantic construction of comprehension bicategories is the following
   If \sM has lax limits of morphisms and a terminal object, then there is a comprehension bicategory
   \[
   \begin{tikzcd}
-    \arm \ar[rr,"\mathrm{laxlim}"] \ar[dr,"\dom"'] && \fibp \ar[dl,"\cod"] \\
+    \arm \ar[rr,"\mathrm{laxlim}"] \ar[dr,"\dom"'] && \fibm \ar[dl,"\cod"] \\
     &\sM
   \end{tikzcd}
   \]
@@ -905,7 +907,7 @@ We write an \sM-complete object in boldface to indicate that it is ``larger'' th
   To compose 2-cells, we compose the underlying 2-cells in \sM and use the functoriality of limits.
 
   The projection $\sC\to\sM$ takes an object $f:A\to \bC$ to $A$, a morphism $r:\lim^k f \to g$ to $k$, and a 2-cell as above to $\al$.
-  This is functorial on hom-categories by definition of composition in \sC, and indeed a discrete opfibration, since for any morphism $r:\lim^m f \to g$ in \sC and 2-cell $\al:m\to k$ in \sM there is a unique 2-cell in \sC with source $r$ lying over $\al$, namely the one whose target is the composite $\lim^k f\to\lim^m f \xto{r}$.
+  This is functorial on hom-categories by definition of composition in \sC, and indeed a discrete opfibration, since for any morphism $r:\lim^m f \to g$ in \sC and 2-cell $\al:m\to k$ in \sM there is a unique 2-cell in \sC with source $r$ lying over $\al$, namely the one whose target is the composite $\lim^k f\to\lim^m f \xto{r} g$.
 
   To compose 1-cells in \sC, we use the dual fact that weighted limits are covariantly functorial in their weights: given $f,g:A\to \bC$, if the limits $\lim^k f$ and $\lim^k g$ exist, there is an induced map $\lim^k f\to\lim^k g$.
   Moreover, they are also functorial with respect to composition of weights: if $\lim^k f$ exists, then $\lim^m \lim^k f$ and $\lim^{m\circ k} f$ have the same universal property, hence one exists if and only if the other does and they are isomorphic.
