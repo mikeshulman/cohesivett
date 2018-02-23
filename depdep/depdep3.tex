@@ -47,8 +47,10 @@
 
 \newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
 \newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
+\newcommand{\case}{\mathsf{case}}
 \newcommand{\inl}{\mathsf{inl}}
 \newcommand{\inr}{\mathsf{inr}}
+\newcommand{\ini}{\mathsf{in}}
 
 \newcommand{\id}{\mathsf{id}}
 \DeclareMathOperator{\ob}{ob}
@@ -324,20 +326,20 @@ Where $\tau[\sigma]$ is an admissible substitution rule for renamings, defined b
 
 It will take a bit of work to show that substitution is admissible. A substitution $\alpha[(\beta \mid \sigma) / x_0]$ (roughly) expands out to calculating the `pushout' of two natural transformations between types in terms of cell gluing. (Although it looks like an operation on two maps \emph{into} $\alpha$ using the substitution notation.) Intuitively is gluing the list $\beta$ into $\alpha$ everywhere that $x_0$ is used, identifying things as specified by $\sigma$.
 
-This is not too hard to do by hand in simple cases, here are some examples. Let $!$ denotes the unique renaming into $\emptyset$. 
+This is not too hard to do by hand in simple cases, here are some examples. To reduce the clutter we will denote the unique renaming into $\emptyset$ by $\cdot$, and when it is used to attach a dependency, omit entirely.
 
 Working in the context $x : \emptyset, y : \emptyset, z : \emptyset$ we have things like:
 \begin{align*}
-(i : x[!])[(j : y[!], k : y[!] \mid\, !)/x] &= (j : y[!], k : y[!]) \\
-(i : x[!], m : z[!])[(y[!], y[!] \mid\, !)/x] &= (j : y[!], k : y[!], m : z[!])
+(i : x)[(j : y, k : y \mid\, \cdot)/x] &= (j : y, k : y) \\
+(i : x, m : z)[(j : y, k : y \mid\, \cdot)/x] &= (j : y, k : y, m : z)
 \end{align*}
-In context $x : \emptyset, y : \emptyset, z : (i : y[!])$ we can do:
+In context $x : \emptyset, y : \emptyset, z : (i : y)$ we can do:
 \begin{align*}
-(i : y[!], j : z[i/i])[(i_1 : x[!], i_2 : x[!] \mid\, !)/ y] = (i_1 : x[!], i_2 : x[!], j : z[i_1/i_1, i_2/i_2])
+(i : y, j : z[i/i])[(i_1 : x, i_2 : x \mid\, \cdot)/ y] = (i_1 : x, i_2 : x, j : z[i_1/i_1, i_2/i_2])
 \end{align*}
-as the type of $z$ is now $(i_1 : x[!], i_2 : x[!])$. And as an example of some actual gluing, take the context $x : \emptyset, y : (i : x[!]), z : (i : x[!])$, we can do
+as the type of $z$ is now $(i_1 : x, i_2 : x)$. And as an example of some actual gluing, take the context $x : \emptyset, y : (i : x), z : (i : x)$, we can do
 \begin{align*}
-(i : x[!], j : y[i/i])[(i : x[!] k : z[i/i] \mid i/i ) / y] = (i : x[!], k : z[i/i])
+(i : x, j : y[i/i])[(i : x k : z[i/i] \mid i/i ) / y] = (i : x, k : z[i/i])
 \end{align*}
 
 To prove substitution is admissible, the main steps would be:
@@ -369,13 +371,15 @@ Weakening and exchange are admissible for the minicontext in renamings.
 \begin{lemma}
 Renamings actually work: 
 \begin{mathpar}
-\inferrule*[]{(i : x[\sigma]) \in \alpha \and \gamma \mid \beta \yields \tau : \alpha}{(i : x[\sigma[\tau]]) \in \beta}
+\inferrule*[]{(i : x[\sigma]) \in \alpha \and \gamma \mid \beta \yields \tau : \alpha}{(j : x[\sigma[\tau]]) \in \beta}
 \end{mathpar}
 \end{lemma}
-\mvrnote{This is already sloppy, I suppose we need to properly define $(i : x[\sigma]) \in \alpha$, and deal with prefixes $\alpha' \leq \alpha$ of types...}
+\begin{proof}
+Note that in the judgement $(i : x[\sigma]) \in \alpha$, the $\sigma$ is being implicitly weakened from some prefix of $\alpha$.
+\end{proof}
 
 \begin{lemma}
-Composition for renamings is admissible:
+Composition for renamings is admissible, and this composition is associative.
 \begin{mathpar}
 \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \delta \yields \tau : \beta}{\gamma \mid \delta \yields \sigma[\tau] : \alpha}
 \end{mathpar}
@@ -385,7 +389,9 @@ Induction on $\alpha$. When $\alpha = \emptyset$, we have the empty renaming $()
 
 If instead $\alpha = (\alpha', i : x[\theta])$, where $\gamma \mid \alpha' \yields \theta : \kappa$, we must have obtained $\gamma \mid \beta \yields \sigma : (\alpha', i : x[\theta])$ via the renaming-extension rule applied to $\gamma \mid \beta \yields \sigma' : \alpha'$ and $(j : x[\theta[\sigma']]) \in \beta$.
 
-Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$. \mvrnote{Here we have to use associativity of reaming composition}
+Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$ (using associativity).
+
+\mvrnote{todo associativity}
 \end{proof}
 
 \begin{lemma}
@@ -400,8 +406,17 @@ When $\alpha = (\alpha', i : x[\tau])$, inductively form $\id_{\alpha'}$, weaken
 \end{proof}
 
 \begin{lemma}
-Given $(i : x[\tau]) \in \alpha$ and $(i' : x[\tau]) \in \alpha$, there is a type $\alpha_{i=i'}$ where the two variables have been identified.  \mvrnote{Is there any difference in what we did compared to just using a contraction renaming?}
+Given $(i : x[\tau]) \in \alpha$ and $(i' : x[\tau]) \in \alpha$, there is a type $\alpha_{i=i'}$ where the two variables have been identified. This comes with a renaming $\gamma \mid \alpha_{i=i'} \yields \nabla_{i=i'} : \alpha$, and if $\gamma \mid \beta \yields \sigma : \alpha$ identifies $i$ and $i'$, then it factors through $\nabla_{i=i'}$, let us write this factorisation $\sigma = \nabla_{i=i'}[\sigma_{i=i'}]$.
 \end{lemma}
+\begin{proof}
+Without loss of generality $\alpha$ is of the form $\alpha = (\alpha_1, i : x[\tau], \alpha_2, i' : x[\tau], \alpha_3)$. Set 
+\begin{align*}
+\alpha_{i=i'} &:= (\alpha_1, i : x[\tau], \alpha_2, \alpha_3[i/i']) \\
+\nabla_{i=i'} &:= [\alpha_1/\alpha_1, i / i, \alpha_2/\alpha_2, i / i', \alpha_3/\alpha_3]
+\end{align*}
+
+\mvrnote{The factorisation thing seems clear to me but annoying to write down}
+\end{proof}
 
 \begin{lemma}
 We can construct pushouts of renamings:
@@ -426,7 +441,7 @@ Inductively we have $\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$ and the c
 \end{align*}
 Because $\sigma[\inl] = \sigma'[\inr]$, these variables are a pair that can be identified, and so we do:
 \begin{align*}
-\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma, j'/i)} := (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}
+\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma', j'/i)} := (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}
 \end{align*}
 
 Now to define $\inl$, we compose the inductively given $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ with the contraction substitution $\gamma \mid (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]} \yields \nabla : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$. Define $\inr$ similarly.
@@ -435,36 +450,40 @@ Checking the equation amounts to verifying $\sigma[\inl[\nabla]] = \sigma'[\inr[
 \end{proof}
 
 \begin{lemma}
-Universal property for pushout.
+Universal property for pushout, i.e.:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha \\\\ 
+\gamma \mid \delta \yields \theta : \beta \and \gamma \mid \delta \yields \theta' : \beta' \\\\ 
+\sigma[\theta] = \sigma'[\theta']}
+{\gamma \mid \delta \yields \case^{\sigma, \sigma'}_\alpha(\theta, \theta') : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}}
+\end{mathpar}
 \end{lemma}
 \begin{proof}
-\mvrnote{todo}
+If $\alpha = \emptyset$, then the pushout is $(\beta, \beta')$, and we have the renaming $\gamma \mid \delta \yields (\theta / \beta, \theta' / \beta') : (\beta, \beta')$.
+
+If $\alpha = (\alpha, i : x[\tau])$, we inductively have $\case(\theta, \theta') : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$. To get the renaming into $(\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}$, we just have to show that $\case(\theta, \theta')$ identifies $j[\inl]$ and $j'[\inr]$. This follows from the equation $\sigma[\theta] = \sigma'[\theta']$, as $j$ and $j'$ are $i$ pushed forward along $\sigma$ and $\sigma'$. \mvrnote{This is sketchy}. We then have an induced renaming $\case(\theta, \theta')_{j[\inl] = j'[\inr]}$.
+
+Note: it appears we only need existence, not uniqueness.
 \end{proof}
 
-The following all simultaneously. In what follows, if $\gamma \yields \mu : \alpha$ is a term, let $\gamma \yields \bar \mu \yields \mu : \alpha$ be its underlying renaming.
+The following three lemmas all refer to each other so will be proven by mutual induction. In what follows, if $\gamma \yields \mu : \alpha$ is a term, let $\gamma \mid \bar \mu \yields \mu : \alpha$ be its underlying renaming.
 
 \begin{lemma}\label{inl-sub}
-$\inl$ for substitution:
+$\inr$ for substitution:
 \begin{mathpar}
-\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \sigma' : \bar \mu_0}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \alpha \yields \tau : \alpha_0 \and (i_0 : x_0[\tau]) \in \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \ini_{i_0 \in \alpha}(\mu_0) : \bar \mu_0}
 \end{mathpar}
-such that $\mu_0[\sigma'] = \tau[\mu_0/x_0]$
+such that $\mu_0[\ini_{i_0}(\mu_0)] = \tau[\mu_0/x_0]$
 \end{lemma}
 \begin{proof}
-%Induction on $\bar \mu_0$. If $\bar \mu_0 = \emptyset$, then also $\alpha_0 = \emptyset$, and the equation holds trivially.
 
-Induction on $\alpha_0$. If $\alpha_0 = \emptyset$, then $\tau$ is the empty renaming, and the equation holds trivially as renamings into $\emptyset$.
+Note that because $\tau$ is a substitution for $\alpha_0$, and $x_0$ is not used in $\alpha_0$, $\tau$ can't use any variable in $x_0 : \alpha_0, \gamma'$. This premise could be replaced by something like $\gamma \mid \alpha' \yields \tau : \alpha_0$ where $\alpha'$ the subset of $\alpha$ only containing variables from $\gamma$.
 
-In the inductive case we have
-\begin{align*}
-\alpha_0 &= (\alpha_0, i : x[\theta]) && \text{where } (x : \beta) \in \gamma \text{ and } \gamma \mid \alpha_0 \yields \theta : \beta \\
-\mu_0 &= (\mu_0, j/i) && \text{where } (j : x[\theta[\mu_0]]) \in \bar \mu_0
-\end{align*}
-(Note that we cannot have $x = x_0$ as $\alpha_0$ is only a type in context $\gamma$.)
+Induction on $\alpha$. We cannot have $\alpha = \emptyset$, as we have assumed $(i_0 : x_0[\tau]) \in \alpha$.
 
-Inductively we have $\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \sigma' : \bar \mu_0$.
+If $\alpha = (\alpha, i : x[\tau])$ with $i \neq i_0$, then $i_0$ must appear earlier in $\alpha$ somewhere and inductively we know $\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \ini_{i_0 \in \alpha}(\mu_0) : \bar \mu_0$, and we can just weaken the minicontext to $(\alpha[\mu_0 / x_0], i : x[\tau[\mu_0 / x_0]])$. Inductively the equation holds, and weakening doesn't change this.
 
-\mvrnote{todo}
+If instead $\alpha = (\alpha, i_0 : x[\tau])$, then by definition $(\alpha, i_0 : x[\tau])[\mu_0/x_0] = \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0}$ and we can use $\inr$. \mvrnote{todo equation}
 \end{proof}
 
 \begin{lemma}
@@ -500,13 +519,34 @@ If $x = x_0$, our goal is a renaming into $(\alpha, i : x_0[\tau])[\mu_0/x_0]$, 
 \[
 \begin{tikzcd}
 \alpha_0 \ar[r, "{\tau[\mu_0/x_0]}"] \ar[d, "\mu_0" swap] & \alpha[\mu_0/x_0] \ar[d] \ar[ddr, bend left, "{\sigma[\mu_0/x_0]}"] & \\
-\bar \mu_0 \ar[r] \ar[drr, bend right, "\text{Lemma \ref{inl-sub}}" swap]& \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0} \ar[dr, dashed] & \\
+\bar \mu_0 \ar[r] \ar[drr, bend right, "\ini_j(\mu_0)" swap]& \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0} \ar[dr, dashed] & \\
 & & \beta[\mu_0/x_0]
 \end{tikzcd}
 \]
-Where Lemma \ref{inl-sub} is applied to $(j : x_0[\tau[\sigma]]) \in \beta$.
 \end{proof}
 
+In summary:
+\begin{align*}
+\Pushout{\beta}{\emptyset}{\beta'}{()}{()} &:= (\beta, \beta') \\
+\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma, j'/i)} &:= (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]} \\
+\inl^{(), ()}_\emptyset(\beta, \beta') &:= [\beta/\beta] \\
+\inl^{(\sigma, j/i), (\sigma', j'/i)}_{(\alpha, i:x[\tau])} (\beta, \beta') &:= \inl^{\sigma, \sigma'}_\alpha (\beta, \beta') [\nabla_{j, j'}] \\
+\inr^{(), ()}_\emptyset(\beta, \beta') &:= [\beta'/\beta'] \\
+\inr^{(\sigma, j/i), (\sigma', j'/i)}_{(\alpha, i:x[\tau])} (\beta, \beta') &:= \inr^{\sigma, \sigma'}_\alpha (\beta, \beta') [\nabla_{j, j'}] \\
+\case^{(),()}_\emptyset(\theta, \theta') &:= (\theta / \beta, \theta' / \beta') \\
+\case^{(\sigma,j/i),(\sigma', j'/i)}_{(\alpha,i:x[\tau])}(\theta, \theta') &:= \case^{\sigma, \sigma'}_{\alpha}(\theta, \theta')_{j[\inl]=j'[\inr]} \\
+\ini_{i_0 \in (\alpha, i : x[\sigma])}(\mu_0) &:= \ini_{i_0 \in \alpha}(\mu_0)\\
+\ini_{i_0 \in (\alpha, i_0 : x[\sigma])}(\mu_0) &:= \inr^{\sigma[\mu_0/x_0],\mu_0}_{\alpha_0}(\alpha[\mu_0/x_0], \bar \mu_0) \\
+\\
+\emptyset[\mu_0/x_0] &:= \emptyset \\
+(\beta, i : x[\sigma])[\mu_0/x_0] &:= (\beta[\mu_0/x_0], i : x_0[\sigma[\mu_0/x_0]]) \\
+(\beta, i : x_0[\sigma])[\mu_0/x_0] &:= \Pushout{\beta[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\sigma[\mu_0/x_0]}{\mu_0} \\
+\\
+()[\mu_0/x_0] &:= () \\
+(\sigma, j/i)[\mu_0/x_0] &:= (\sigma[\mu_0/x_0], j[\mu_0/x_0]/i) && \text{where } (j : x[\tau[\sigma]]) \in \beta, x \neq x_0 \\
+(\sigma, j/i)[\mu_0/x_0] &:= \case(\sigma[\mu_0/x_0], \ini_j(\mu_0)) && \text{where } (j : x_0[\tau[\sigma]]) \in \beta \\
+\\
+\end{align*}
 
 \subsubsection{$\Sigma$ and $\Pi$}
 
