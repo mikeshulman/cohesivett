@@ -42,7 +42,9 @@
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
 \newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{ty} #2 : #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{tele} #2 : #4}}
 \newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{tm} #2 : #4}}
+\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{sub} #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
 \newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
 
@@ -82,9 +84,10 @@ Mode theory judgements:
 \item $\gamma \yields \theta : \delta$ (tuples)
 \item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ (identity,
   composition, ap of a type constant on a telescope of 2-cells)
+\item $\TeleTwo{\gamma}{s}{\delta}{\delta'}$ (tupled up type 2-cells)
 \item $\TermTwo{\gamma}{s}{\mu}{\nu}$ (identity,
   composition, horizontal composition, generators)
-% \item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples)
+\item $\SubTwo{\gamma}{s}{\theta}{\theta'}$ (tupled up term 2-cells)
 \end{itemize}
 Top judgements: 
 \begin{itemize}
@@ -128,24 +131,7 @@ Rules for 2-cells:
      \TypeTwo{\gamma}{s}{\alpha}{\beta}
     }
     {\gamma \yields \TrCirc{s}{\mu} : \beta}
-\\
-\inferrule*
-    {\TermTwo{\gamma}{s}{\theta}{\theta'} \\
-     \TermTwo{\gamma}{t}{\TrCirc{(\alpha[s])}{\mu}}{\mu'}}
-    {\TermTwo{\gamma}{(s,t/x)}{(\theta, \mu/x)}{(\theta',\mu'/x)}}
-
-\inferrule*
-    {\gamma, \delta \yields \alpha \type \\
-     \TermTwo{\gamma}{s}{\theta}{\theta'}}
-    {\TypeTwo{\gamma}{\alpha[s]}{\alpha[\theta]}{\alpha[\theta']}}
-
-\inferrule*
-    {\TermTwo{\gamma, \delta}{s_1}{\mu}{\mu'} \\
-      \TypeTwo{\gamma}{s_2}{\theta}{\theta'}}
-    {\TermTwo{\gamma}{s_1[s_2]}{\TrCirc{(\alpha[s])}{\mu[\theta]}}{\mu'[\theta']}}
 \end{mathpar}
-
-These telescope 2-cell things could equivalently be expressed using $s^+$, by adjointness.
 
 Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity, composition. In LSR/renaming direction, these two should end up adjoint as $s^\circ \dashv s^+$. 
 
@@ -161,6 +147,34 @@ Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity, composition.
     {\TermTwo{\gamma}{\eta}{y}{\TrPlus{s}{\TrCirc{s}{y}}}}
 \end{mathpar}
 Satisfying the triangle identities. \mvrnote{Is there a better way to enforce adjointness?}
+
+We can also tuple up both term 2-cells and type 2-cells:
+
+\begin{mathpar}
+\inferrule*
+    {\TeleTwo{\gamma}{s}{\delta}{\delta'} \\
+     \TypeTwo{\gamma, \delta}{t}{\alpha}{\alpha'[\TrPlus{s}{\delta}/\delta']}}
+    {\TeleTwo{\gamma}{(s,t)}{(\delta, \alpha)}{(\delta',\alpha')}} 
+    
+    \\\\
+
+\inferrule*
+    {\SubTwo{\gamma}{s}{\theta}{\theta'} \\
+     \TermTwo{\gamma}{t}{\TrCirc{(\alpha[s])}{\mu}}{\mu'}}
+    {\SubTwo{\gamma}{(s,t/x)}{(\theta, \mu/x)}{(\theta',\mu'/x)}}
+
+\inferrule*
+    {\gamma, \delta \yields \alpha \type \\
+     \SubTwo{\gamma}{s}{\theta}{\theta'}}
+    {\TypeTwo{\gamma}{\alpha[s]}{\alpha[\theta]}{\alpha[\theta']}}
+
+\inferrule*
+    {\TermTwo{\gamma, \delta}{s_1}{\mu}{\mu'} \\
+      \SubTwo{\gamma}{s_2}{\theta}{\theta'}}
+    {\TermTwo{\gamma}{s_1[s_2]}{\TrCirc{(s_1[\theta];\mu[s_2])}{\mu[\theta]}}{\mu'[\theta']}} 
+\end{mathpar}
+
+Both kinds of tupling could equivalently be expressed using the other of $s^+$ or $s^\circ$, by adjointness.
 
 \subsection{Contexts and telescopes (boring lifting to tuples)}
 
@@ -277,8 +291,8 @@ Note that the intro/elim rules for \St{s}{A} only apply to base types $X$, and t
 \St{s}{\St{t}{X}} &\equiv \St{t[s]}{X} \\
 \St{\id_\xi}{X} &\equiv X \\
 ~\\
-\F{\mu}{\Delta, x : \St{s}{A}, \Delta'} &\equiv \F{\mu[\TrPlus{s}{x} / x]}{\Delta, x : A, \Delta'} \\
-\U{c.\mu}{\Delta, x : \St{s}{B}, \Delta'}{A} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{\Delta, B, \Delta'}{A} \\
+\F{\mu}{s(\Delta)} &\equiv \F{\mu[\TrPlus{s}{\delta}/\delta]}{\Delta} \\
+\U{c.\mu}{s(\Delta)}{A} &\equiv \U{c.\mu[\TrPlus{s}{\delta}/\delta]}{\Delta}{A} \\
 \U{c.\mu}{\Delta}{\St{s}{A}} &\equiv \U{c.\TrCirc{s}{\mu}}{\Delta}{A}
 \end{align*}
 
