@@ -3,6 +3,8 @@
 \usepackage{fullpage}
 \usepackage{amssymb,amsthm,bbm}
 \usepackage[centertags]{amsmath}
+\usepackage{stackengine}
+\stackMath
 \usepackage[mathscr]{euscript}
 \usepackage{tikz-cd}
 \usepackage{mathpartir}
@@ -31,14 +33,18 @@
 
 \newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
 \newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
-\newcommand\St[2]{\ensuremath{{#1}_*(#2)}}
+\newcommand\St[2]{\ensuremath{{#1}(#2)}}
 \newcommand\StI[2]{\ensuremath{\mathsf{st}(#1,#2)}}
-\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+%\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#2}{#3} \, = \, {#1} \, \mathsf{in} \, #4}}
 \newcommand\FE[3]{\ensuremath{\mathsf{split} \, #2 \, = \, {#1} \, \mathsf{in} \, #3}}
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
-\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{ty} #2 : #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{tm} #2 : #4}}
+\newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
 
 \newcommand\Set[0]{\ensuremath{\textbf{Set}}}
 \newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
@@ -74,11 +80,11 @@ Mode theory judgements:
 \item $\gamma \yields \mu : \alpha$ (variables, generators, ``coercion''
   along $s : \alpha \Rightarrow \beta \type$)
 \item $\gamma \yields \theta : \delta$ (tuples)
-\item $\gamma \yields s : \mu \Rightarrow \nu : \alpha$ (identity,
-  composition, horizontal composition, generators)
-\item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples)
-\item $\gamma \yields s : \alpha \Rightarrow \beta \type$ (identity,
+\item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ (identity,
   composition, ap of a type constant on a telescope of 2-cells)
+\item $\TermTwo{\gamma}{s}{\mu}{\nu}$ (identity,
+  composition, horizontal composition, generators)
+% \item $\gamma \yields s : \theta \Rightarrow \theta' : \delta$ (tuples)
 \end{itemize}
 Top judgements: 
 \begin{itemize}
@@ -89,10 +95,7 @@ Top judgements:
 \item Substitutions $\Gamma \yields_\theta \Theta : \Delta$ over $\gamma \yields \theta : \delta$
 \end{itemize}
 
-Coercion along 2-cells $s : \alpha \Rightarrow \beta \type$ is
-\emph{contravariant} in the mode theory, but $s : \alpha \Rightarrow
-\beta \type$ and $s : \mu \Rightarrow \nu : \alpha$ act \emph{covariantly}
-on the subcripts of the term.
+Coercion along 2-cells $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ acts in \emph{both directions} in the mode theory, but $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ and $\TermTwo{\gamma}{s}{\mu}{\nu}$ act \emph{contravariantly} on the subscripts of upstairs terms.
 
 We expect structurality to be admissible for the base, and structurality
 over that to be admissible for the top, e.g.:
@@ -111,32 +114,53 @@ over that to be admissible for the top, e.g.:
 
 \subsection{Mode Theory}
 
-Some of the less obvious rules:
+Rules for 2-cells:
 
 \begin{mathpar}
 \inferrule*
     {\gamma \yields \mu : \beta \\
-     \gamma \yields \alpha \Rightarrow \beta : \type
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
     }
-    {\gamma \yields s_*(\mu) : \alpha}
+    {\gamma \yields \TrPlus{s}{\mu} : \alpha}
+    
+\inferrule*
+    {\gamma \yields \mu : \alpha \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} : \beta}
+\\
+\inferrule*
+    {\TermTwo{\gamma}{s}{\theta}{\theta'} \\
+     \TermTwo{\gamma}{t}{\TrCirc{(\alpha[s])}{\mu}}{\mu'}}
+    {\TermTwo{\gamma}{(s,t/x)}{(\theta, \mu/x)}{(\theta',\mu'/x)}}
 
 \inferrule*
-    {\gamma \yields s : \theta \Rightarrow \theta' : \delta \\
-      \gamma \yields t : \mu \Rightarrow (\alpha[s])_*(\mu') : \alpha[\mu]}
-    {\gamma \yields (s,t/x) : (\theta,\mu/x) \Rightarrow (\theta', \mu'/x) : \delta,x:\alpha}
+    {\gamma, \delta \yields \alpha \type \\
+     \TermTwo{\gamma}{s}{\theta}{\theta'}}
+    {\TypeTwo{\gamma}{\alpha[s]}{\alpha[\theta]}{\alpha[\theta']}}
 
 \inferrule*
-    {\gamma, \delta \yields \alpha : \type \\
-     \gamma \yields s : \theta \Rightarrow \theta' : \delta}
-    {\gamma \yields \alpha[s] : \alpha[\theta] \Rightarrow \alpha[\theta'] : \type}
-
-\inferrule*
-    {\gamma, \delta \yields s_1 : \mu \Rightarrow \mu' : \alpha \\
-      \gamma \yields s_2 : \theta \Rightarrow \theta' : \delta}
-    {\gamma \yields s_1[s_2] : \mu[\theta] \Rightarrow (\alpha[s_1])_*(\mu'[\theta']) : \mu[\theta]}
+    {\TermTwo{\gamma, \delta}{s_1}{\mu}{\mu'} \\
+      \TypeTwo{\gamma}{s_2}{\theta}{\theta'}}
+    {\TermTwo{\gamma}{s_1[s_2]}{\TrCirc{(\alpha[s])}{\mu[\theta]}}{\mu'[\theta']}}
 \end{mathpar}
 
-Equations for $s_*(\alpha)$ are identity, composition -- anything else?
+These telescope 2-cell things could equivalently be expressed using $s^+$, by adjointness.
+
+Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity, composition. In LSR/renaming direction, these two should end up adjoint as $s^\circ \dashv s^+$. 
+
+\begin{mathpar}
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (x : \beta \in \gamma)
+    }
+    {\TermTwo{\gamma}{\varepsilon}{\TrCirc{s}{\TrPlus{s}{x}}}{x}}
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (y : \alpha \in \gamma)
+    }
+    {\TermTwo{\gamma}{\eta}{y}{\TrPlus{s}{\TrCirc{s}{y}}}}
+\end{mathpar}
+Satisfying the triangle identities. \mvrnote{Is there a better way to enforce adjointness?}
 
 \subsection{Contexts and telescopes (boring lifting to tuples)}
 
@@ -170,9 +194,6 @@ Equations for $s_*(\alpha)$ are identity, composition -- anything else?
 
 \subsection{Types and Terms}
 
-Note: we could build $s_*$ into the other rules, but there's not much
-reason to in natural deduction.  
-
 \begin{mathpar}
   \inferrule*[Left = var]{
     % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : \alpha, \gamma'}
@@ -181,27 +202,27 @@ reason to in natural deduction.
 
  \inferrule*[Left = 2cell]{
    \Gamma \yields_\mu M : A 
-   \and \gamma \yields s : (\mu \Rightarrow \nu) : \alpha
+   \and \TermTwo{\gamma}{s}{\nu}{\mu}
   }
-  {\Gamma \yields_\nu s_*(M) : A} \\ \\
+  {\Gamma \yields_\nu s(M) : A} \\ \\
 
-  \inferrule*[Left = *-form]{
-    \Gamma, \yields_\alpha A \TYPE \and (\text{where } \gamma \yields \alpha \type)\\\\
-    \and \gamma \yields s : \alpha \Rightarrow \beta : \type
+  \inferrule*[Left = s-form]{
+    \Gamma \yields_\alpha A \TYPE \and (\text{where } \gamma \yields \alpha \type)\\\\
+    \and \TypeTwo{\gamma}{s}{\beta}{\alpha}
   }{\Gamma \yields_\beta \St{s}{A} \TYPE \and (\text{where } \gamma \yields \beta \type)} \\
 
-  \inferrule*[Left = *-intro]{
-    \Gamma \yields_{s_*(\mu)} M : A \and (\text{where } \gamma \yields s_*(\mu) : \alpha)
+  \inferrule*[Left = S-intro]{
+    \Gamma \yields_{\mu} M : X
+    \and (\text{where } \gamma \yields {\mu} : \xi)
   }
-  {\Gamma \yields_{\mu} \StI{s}{M} : \St{s}{A}
-    \and (\text{where } \gamma \yields \mu : \beta)
-  } \\
-  
-  \inferrule*[Left = *-elim]{
-    \Gamma \yields_\mu M : \St{s}{A} \and (\text{where } \gamma \yields \mu : \beta)
-  }{
-    \Gamma \yields_{s_*(\mu)} \StE{s}{M} : A \and (\text{where } \gamma \yields s_*(\mu) : \alpha)
-  } \\
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{s}{M} : \St{s}{X} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : \beta)} \\
+
+  \inferrule*[Left = S-elim]{
+    \Gamma, y : \St{s}{X} \yields_{\alpha} C \TYPE \and (\text{where } \gamma, y : \beta \yields \alpha \type) \and \\\\
+    \Gamma \yields_{\nu} M : \St{s}{X} \and (\text{where } \gamma \yields \nu : \beta) \\\\
+    \Gamma, x : X \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
+    \and (\text{where } \gamma, x : \xi \yields \nu' [\TrPlus{s}{x} / y] : \alpha [\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{s}{x}{N} : C[M/y]  \and (\text{where } \gamma, \beta \yields {\nu'[\nu/y]} : \alpha[\nu/y])} \\
   
   \\
   \inferrule*[Left = F-form]{
@@ -221,8 +242,8 @@ reason to in natural deduction.
   {\Gamma \yields_{\mu[\theta]} \FI{\Theta} : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \mu[\theta] : \beta)} \\
 
   \inferrule*[Left = F-elim]{
-    \Gamma, x : F_{\mu}(\Delta) \yields_{\alpha} C : \TYPE \and (\text{where } \gamma, x : \beta \yields \alpha : \type) \and \\
-    \Gamma \yields_{\nu} M : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta) \and \\
+    \Gamma, x : F_{\mu}(\Delta) \yields_{\alpha} C \TYPE \and (\text{where } \gamma, x : \beta \yields \alpha \type) \\\\
+    \Gamma \yields_{\nu} M : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : \beta) \\\\
     \Gamma, \Delta \yields_{\nu' [\mu / x]} N : C [\FI{\Delta/\Delta}/x]
     \and (\text{where } \gamma, \delta \yields \nu' [\mu / x] : \alpha [\mu / x] )}
   {\Gamma \yields_{\nu'[\nu/x]} \FE{M}{\Delta}{N} : C[M/x]  \and (\text{where } \gamma, \beta \yields {\nu'[\nu/x]} : \alpha[\nu/x])} \\
@@ -249,48 +270,59 @@ reason to in natural deduction.
   } \\
 \end{mathpar}
 
-Note that \St{s}{A} and \U{x.s_*(x)}{\cdot}{A} have the same intro/elim,
-but \St{s}{A} has more definitional equalities:
+Note that the intro/elim rules for \St{s}{A} only apply to base types $X$, and they are just the rules for $F$-types specialised to $\TrPlus{s}{-}$. For all other types the $s$ will push in via the following equalities:
+\begin{align*}
+\St{s}{\F{\mu}{\Delta}} &\equiv \F{\TrPlus{s}{\mu}}{\Delta} \\
+\St{s}{\U{c.\mu}{\Delta}{A}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{\Delta}{A} \\
+\St{s}{\St{t}{X}} &\equiv \St{t[s]}{X} \\
+\St{\id_\xi}{X} &\equiv X \\
+~\\
+\F{\mu}{\Delta, x : \St{s}{A}, \Delta'} &\equiv \F{\mu[\TrPlus{s}{x} / x]}{\Delta, x : A, \Delta'} \\
+\U{c.\mu}{\Delta, x : \St{s}{B}, \Delta'}{A} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{\Delta, B, \Delta'}{A} \\
+\U{c.\mu}{\Delta}{\St{s}{A}} &\equiv \U{c.\TrCirc{s}{\mu}}{\Delta}{A}
+\end{align*}
+
+Then we should also be able to prove:
 \[
 \begin{array}{rcl}
-\St{1}{A} & \equiv & A \\
-\St{(s;t)}{A} & \equiv & \St{t}{\St{s}{A}}\\
-\St{\alpha[s]}{A[\Theta]} & \equiv & A[s_*(\Theta)]
+\St{\id_\alpha}{A} & \equiv & A \\
+\St{s}{\St{t}{A}} &\equiv & \St{t[s]}{A} \\
+\St{\alpha[s]}{A[\Theta]} & \equiv & A[\St{s}{\Theta}]
 \end{array}
 \]
 
 We should also have term definitional equalities over these (like
-$\StI{1}{M} \equiv M$, $\StE{1}{M} \equiv M$).
-
-In the final equation, the typing is
-\begin{mathpar}
-\gamma,\delta \yields \alpha : \type \and 
-\Gamma,\Delta \yields_\alpha A : \type \and 
-\Gamma \yields s : \theta \Rightarrow \theta' : \delta \and
-\Gamma \yields_\theta \Theta : \Delta 
-\end{mathpar}
-This equation uses the operation
-\begin{mathpar}
- \inferrule*[Left = 2cell-subst]{
-   \Gamma \yields_\theta \Theta : \Delta 
-   \and \gamma \yields s : (\theta \Rightarrow \theta') : \delta
-  }
-  {\Gamma \yields_{\theta'} s_*(\Theta) : A} 
-\end{mathpar}
-is admissible. The extension case is given
-\begin{mathpar}
-(s,t/x) : (\theta,\mu/x) \Rightarrow (\theta',\mu'/x) : \delta,x:\alpha
-\and
-\yields_{\theta,\mu/x} (\Theta,M/x) : \Delta,x:A
-\end{mathpar}
-as in the typing rules for these above, and constructs
-\[
-(s_*(\Theta), \StI{\alpha[s]}{t_*(M)})
-\]
-Note that the second component uses the same third equation above (at a
-smaller context) to type check, because the term is supposed to have
-type $A[s_*(\Theta)]$, which we construct via the intro rule for
-$\St{(\alpha[s])}{A[\Theta]}$.
+$\StI{\id_\alpha}{M} \equiv M$, $\StE{M}{\id_\alpha}{x}{x} \equiv M$).
+%
+%In the final equation, the typing is
+%\begin{mathpar}
+%\gamma,\delta \yields \alpha \type \and 
+%\Gamma,\Delta \yields_\alpha A \type \and 
+%\Gamma \yields s : \theta \Rightarrow \theta' : \delta \and
+%\Gamma \yields_\theta \Theta : \Delta 
+%\end{mathpar}
+%This equation uses the operation
+%\begin{mathpar}
+% \inferrule*[Left = 2cell-subst]{
+%   \Gamma \yields_\theta \Theta : \Delta 
+%   \and \gamma \yields s : (\theta \Rightarrow \theta') : \delta
+%  }
+%  {\Gamma \yields_{\theta'} s_*(\Theta) : A} 
+%\end{mathpar}
+%is admissible. The extension case is given
+%\begin{mathpar}
+%(s,t/x) : (\theta,\mu/x) \Rightarrow (\theta',\mu'/x) : \delta,x:\alpha
+%\and
+%\yields_{\theta,\mu/x} (\Theta,M/x) : \Delta,x:A
+%\end{mathpar}
+%as in the typing rules for these above, and constructs
+%\[
+%(s_*(\Theta), \StI{\alpha[s]}{t_*(M)})
+%\]
+%Note that the second component uses the same third equation above (at a
+%smaller context) to type check, because the term is supposed to have
+%type $A[s_*(\Theta)]$, which we construct via the intro rule for
+%$\St{(\alpha[s])}{A[\Theta]}$.
 
 \subsection{Recovering Ordinary TT}
 
