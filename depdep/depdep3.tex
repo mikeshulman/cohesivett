@@ -10,8 +10,8 @@
 \usepackage{mathpartir}
 \usepackage[status=draft,inline,nomargin]{fixme}
 \FXRegisterAuthor{ms}{anms}{\color{blue}MS}
-\FXRegisterAuthor{todo}{andrl}{\color{red} }
 \FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{red}DRL}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
@@ -24,12 +24,12 @@
 \newcommand{\cbar}{\, | \,}
 
 \newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
-\newcommand{\CTX}{\,\,\mathsf{CTX}}
-\newcommand{\ctx}{\,\,\mathsf{ctx}}
-\newcommand{\TYPE}{\,\,\mathsf{TYPE}}
-\newcommand{\type}{\,\,\mathsf{type}}
-\newcommand{\TELE}{\,\,\mathsf{TELE}}
-\newcommand{\tele}{\,\,\mathsf{tele}}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\ctx}{\,\,\mathsf{mctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\type}{\,\,\mathsf{mtype}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+\newcommand{\tele}{\,\,\mathsf{mtele}}
 
 \newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
 \newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
@@ -41,10 +41,11 @@
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
-\newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{ty} #2 : #4}}
-\newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{tele} #2 : #4}}
-\newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{tm} #2 : #4}}
-\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \yields_\mathsf{sub} #2 : #4}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{ty} #2 : #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tele} #2 : #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tm} #2 : #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tm} #2 :_{#5} #4}}
+\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{sub} #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
 \newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
 
@@ -75,20 +76,18 @@
 \subsection{Overview of Judgements}
 
 Mode theory judgements:
-\begin{itemize}
+\begin{enumerate}
 \item $\gamma \ctx$ (empty, extension)
-\item $\gamma \yields \alpha \type$ (generators)
+\item $\gamma \yields \alpha \type$ 
 \item $\gamma \yields \delta \tele$ (empty, extension)
-\item $\gamma \yields \mu : \alpha$ (variables, generators, ``coercion''
-  along $s : \alpha \Rightarrow \beta \type$)
-\item $\gamma \yields \theta : \delta$ (tuples)
-\item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ (identity,
-  composition, ap of a type constant on a telescope of 2-cells)
-\item $\TeleTwo{\gamma}{s}{\delta}{\delta'}$ (tupled up type 2-cells)
+\item $\gamma \yields \mu : \alpha$ (variables, action of mode type 2-cells)
+\item $\gamma \yields \theta : \delta$ (empty, extension)
+\item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ (horizontal and vertical composition)
+\item $\TeleTwo{\gamma}{s}{\delta}{\delta'}$ (empty, extension)
 \item $\TermTwo{\gamma}{s}{\mu}{\nu}$ (identity,
-  composition, horizontal composition, generators)
+  composition, horizontal composition)
 \item $\SubTwo{\gamma}{s}{\theta}{\theta'}$ (tupled up term 2-cells)
-\end{itemize}
+\end{enumerate}
 Top judgements: 
 \begin{itemize}
 \item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
@@ -117,9 +116,42 @@ over that to be admissible for the top, e.g.:
 
 \subsection{Mode Theory}
 
-Rules for 2-cells:
+\begin{enumerate}
+
+\item Contexts are as usual:
 
 \begin{mathpar}
+  \inferrule*{ }
+             {\cdot \ctx}
+             
+  \inferrule*
+    {\gamma \ctx \and
+     \gamma \yields \alpha \type}
+    {\gamma,x:\alpha \ctx}
+\end{mathpar}
+
+\item
+  There are no types $\alpha$ stipulated for all mode theories; see below
+for specific cases.  
+
+\item Telescopes are tuples of types:
+
+  \begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields \cdot \tele}
+             
+  \inferrule*
+      {\gamma \yields \delta \tele \and
+        \gamma,\delta \yields \alpha \type}
+      {\gamma \yields \delta,x:\alpha \tele}
+  \end{mathpar}
+
+\item In all mode theories, terms must have: 
+
+\begin{mathpar}
+\inferrule*{ }
+             {\gamma,x : \alpha, \gamma' \yields x : \alpha}
+             
 \inferrule*
     {\gamma \yields \mu : \beta \\
      \TypeTwo{\gamma}{s}{\alpha}{\beta}
@@ -133,7 +165,69 @@ Rules for 2-cells:
     {\gamma \yields \TrCirc{s}{\mu} : \beta}
 \end{mathpar}
 
-Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity, composition. In LSR/renaming direction, these two should end up adjoint as $s^\circ \dashv s^+$. 
+Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity,
+composition.
+
+These are adjoint as $s^\circ \dashv s^+$---see the rules for term
+2-cells below.  
+
+\item Substitutions for telescopes
+
+\begin{mathpar}
+
+    \inferrule{ }
+              {\gamma \yields \cdot : \cdot}
+    
+    \inferrule
+    { \gamma \yields \theta : \delta \and 
+      \gamma,\delta \yields \mu : \alpha[\theta]}
+    {\gamma \yields (\theta,\mu/x) : \delta,x:\alpha}
+\end{mathpar}
+
+\item 2-cells between types:
+
+  \begin{mathpar}
+    \inferrule*{ }
+          {\TypeTwo{\gamma}{\alpha/\alpha}{\alpha}{\alpha}}
+
+    \inferrule*{{\TypeTwo{\gamma}{s_1}{\alpha_1}{\alpha_2}} \and
+                {\TypeTwo{\gamma}{s_2}{\alpha_2}{\alpha_3}}
+          }
+          {\TypeTwo{\gamma}{s_2[s_3]}{\alpha_1}{\alpha_3}}
+
+\inferrule*{\gamma,x:\alpha,\gamma' \yields {\beta} : \type \and
+             \TermTwoT{\gamma}{t}{\mu}{\mu'}{\alpha}
+           } 
+           {\TypeTwo{\gamma,?}{\beta[\mu/x]}{\beta[t/x]}{\beta[\mu'/x]}}
+\end{mathpar}
+
+  %%% FIXME: make n-ary admissible?
+  %% \inferrule*
+  %%   {\gamma, \delta \yields \alpha \type \\
+  %%    \SubTwo{\gamma}{s}{\theta}{\theta'}}
+  %%   {\TypeTwo{\gamma}{\alpha[s]}{\alpha[\theta]}{\alpha[\theta']}}
+
+
+  \drlnote{What happens to $\gamma'$ in the last rule?}
+
+In LSR/renaming direction, these two should end up adjoint
+as $s^\circ \dashv s^+$:
+
+\item 2-cells between telescopes:
+
+  \begin{mathpar}
+
+    \inferrule*
+    {\TeleTwo{\gamma}{s}{\delta}{\delta'} \\
+     \TypeTwo{\gamma, \delta}{t}{\alpha}{\alpha'[\TrPlus{s}{\delta}/\delta']}}
+    {\TeleTwo{\gamma}{(s,t)}{(\delta, \alpha)}{(\delta',\alpha')}} 
+    
+  \end{mathpar}
+
+  Both kinds of tupling could equivalently be expressed using the other
+  of $s^+$ or $s^\circ$, by adjointness.
+
+\item 2-cells between terms:
 
 \begin{mathpar}
 \inferrule*
@@ -148,15 +242,9 @@ Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity, composition.
 \end{mathpar}
 Satisfying the triangle identities. \mvrnote{Is there a better way to enforce adjointness?}
 
-We can also tuple up both term 2-cells and type 2-cells:
+\item 2-cells between substitutions for telescopes:
 
-\begin{mathpar}
-\inferrule*
-    {\TeleTwo{\gamma}{s}{\delta}{\delta'} \\
-     \TypeTwo{\gamma, \delta}{t}{\alpha}{\alpha'[\TrPlus{s}{\delta}/\delta']}}
-    {\TeleTwo{\gamma}{(s,t)}{(\delta, \alpha)}{(\delta',\alpha')}} 
-    
-    \\\\
+  \begin{mathpar}
 
 \inferrule*
     {\SubTwo{\gamma}{s}{\theta}{\theta'} \\
@@ -164,17 +252,13 @@ We can also tuple up both term 2-cells and type 2-cells:
     {\SubTwo{\gamma}{(s,t/x)}{(\theta, \mu/x)}{(\theta',\mu'/x)}}
 
 \inferrule*
-    {\gamma, \delta \yields \alpha \type \\
-     \SubTwo{\gamma}{s}{\theta}{\theta'}}
-    {\TypeTwo{\gamma}{\alpha[s]}{\alpha[\theta]}{\alpha[\theta']}}
-
-\inferrule*
     {\TermTwo{\gamma, \delta}{s_1}{\mu}{\mu'} \\
       \SubTwo{\gamma}{s_2}{\theta}{\theta'}}
     {\TermTwo{\gamma}{s_1[s_2]}{\TrCirc{(s_1[\theta];\mu[s_2])}{\mu[\theta]}}{\mu'[\theta']}} 
 \end{mathpar}
 
-Both kinds of tupling could equivalently be expressed using the other of $s^+$ or $s^\circ$, by adjointness.
+\end{enumerate}
+
 
 \subsection{Contexts and telescopes (boring lifting to tuples)}
 
