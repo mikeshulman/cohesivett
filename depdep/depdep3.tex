@@ -168,7 +168,7 @@ for specific cases.
 Equations for $\TrPlus{s}{\mu}$ and $\TrCirc{s}{\mu}$ are identity,
 composition.
 
-These are adjoint as $s^\circ \dashv s^+$---see the rules for term
+These are adjoint as $s^\circ \dashv s^+$, this is the direction that identifies $F_{s^+}$ and $U_{s^\circ}$---see the rules for term
 2-cells below.  
 
 \item Substitutions for telescopes
@@ -444,10 +444,6 @@ Weakening and exchange in the context and weakening the minicontext should be st
   \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha}
   {\gamma \yields (\beta \mid \sigma)
    : \alpha} \\
-   
-  \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha}
-  {\gamma \yields \sigma : \alpha \Rightarrow \beta}  \and   \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \tau : \beta}
-  {\gamma \yields s : (\beta \mid \sigma) \Rightarrow (\beta' \mid \sigma[\tau]) : \alpha} \\
 \end{mathpar}
 
 Where $\tau[\sigma]$ is an admissible substitution rule for renamings, defined below.
@@ -678,6 +674,76 @@ In summary:
 \\
 \end{align*}
 
+\subsubsection{The Variable Rule}
+This isn't built in, but we can define it:
+\begin{lemma}
+Variable rule:
+\begin{mathpar}
+\inferrule*[]{~}{\gamma, x : \alpha, \gamma' \yields x : \alpha}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+This term is built as a renaming into $\alpha$. For this use \[\gamma, x : \alpha, \gamma' \mid \alpha, i : x[\alpha/\alpha]\yields (\alpha/\alpha) : \alpha\]
+\end{proof}
+Note that this is a projection, so whatever term rule we have must allow projections.
+
+\subsubsection{Defining $\TrPlus{s}{-}$ and $\TrCirc{s}{-}$}
+Continue to use the convention that $\bar \mu$ denotes the type underlying a term $\mu : \alpha$. As suggested by their names, type 2-cells $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ act in the mode theory as follows:
+\begin{lemma}
+\begin{mathpar}
+\inferrule*
+    {\gamma \yields \mu : \beta \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : \alpha}
+
+\inferrule*
+    {\gamma \yields \mu : \alpha \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} : \beta}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+For $s^+$, construct the pushout $\Pushout{\bar \mu}{\beta}{\alpha}{\mu}{s}$. The renaming $\gamma \mid \Pushout{\bar \mu}{\beta}{\alpha}{\mu}{s} \yields \inr : \alpha$ is the desired term. 
+
+For $s^\circ$, we compose the renaming $s$ with $\mu$, so: $\gamma \mid \bar \mu \yields s[\mu] : \beta$.
+\end{proof}
+
+And we build the unit and counit:
+\begin{lemma}
+\begin{mathpar}
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (x : \beta \in \gamma)
+    }
+    {\TermTwo{\gamma}{\varepsilon}{\TrCirc{s}{\TrPlus{s}{x}}}{x}}
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (y : \alpha \in \gamma)
+    }
+    {\TermTwo{\gamma}{\eta}{y}{\TrPlus{s}{\TrCirc{s}{y}}}}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+The counit is the upper right triangle in the following pushout diagram (written in natural transformation direction):
+\[
+\begin{tikzcd}[column sep={2cm,between origins},row sep={2cm,between origins}]
+\beta \ar[r, "x"] \ar[d, "s" swap]  \ar[dr, "\TrCirc{s}{\TrPlus{s}{x}}" near start] & \bar x \ar[d, "\inl"] \\
+\alpha \ar[r, "\TrPlus{s}{x}" swap] & \overline{\TrPlus{s}{x}} \\
+\end{tikzcd}
+\]
+
+The unit is the triangle on the right:
+\[
+\begin{tikzcd}
+\beta \ar[d, "s" swap] \ar[r, "s"]& \alpha \ar[dd, "\TrPlus{s}{\TrCirc{s}{x}}"] \ar[dddr, bend left = 40, "x"] &  \\
+\alpha \ar[d, "x" swap] & & \\
+\bar x \ar[r, "\inl" swap]  \ar[drr, "\id" swap, bend right] & \overline{\TrPlus{s}{\TrCirc{s}{x}}} \ar[dr, dashed]& \\
+& & \bar x
+\end{tikzcd}
+\]
+\end{proof}
+
 \subsubsection{$\Sigma$ and $\Pi$}
 
 $\Sigma$ ought to be the $F$ type for \[\gamma, x : \alpha, y : (\alpha, i : x[\id_\alpha]) \yields (\alpha, i : x[\id_\alpha], j : y[\id_{(\alpha, x)}] \mid \alpha / \alpha) : \alpha\]
@@ -698,12 +764,13 @@ $\Pi$ ought to be the $U$ type for \[\gamma, x : \alpha, y : \alpha \yields (\al
 If we call this $\pi_x(y)$, we can try the $U$-right rule in a simple case:
 \begin{mathpar}
   \inferrule*[Left = U-right]{\Gamma, x : A \yields_{\pi_x(y)[(\alpha \mid \id_\alpha) / y]} N : B}
-  {\Gamma \yields_{(\alpha \mid \id_\alpha)} \UI \Delta N : U_{y.\pi_x(y)}(A \vert B)} \\
+  {\Gamma \yields_{(\alpha \mid \id_\alpha)} \UI x N : U_{y.\pi_x(y)}(A \vert B)} \\
 \end{mathpar}
 And then $\pi_x(y)[(\id_\alpha\vert \alpha)/y] = (\alpha, i : x[\id_\alpha] \mid \id) : (\alpha, i : x[\id_\alpha])$, as the $\alpha$ from the $y$ has been glued to the existing one.
 
 \subsubsection{Structurality}
-We can change what structural rules are available by fiddling with the final three rules, and only allowing some renamings to be used in each.
+
+We can change what structural rules are available by changing which renamings we are permitted to promote to 2-cells.
 
 \begin{enumerate}
 \item The term rule controls how the dependencies of a term relate to the dependencies of its type. By construction, the dependencies of a term bound the dependencies of the type, but we could restrict this further: Allowing only `relevant' renamings here would say that terms can't use variables that their types didn't.
@@ -714,7 +781,21 @@ We could choose to not consider types `up to ordering', so that the order of dep
 \item The term 2-cells control the structural rules in the terms
 \end{enumerate}
 
-These choices cannot be totally arbitrary: if we want type 2-cells to act on terms, the renamings used for terms must be closed under composition with those for type 2-cells. Similarly, if we want term 2-cells to induce type 2-cells via substitution, \mvrnote{What exactly was required? Enough that term 2-cells are included in type 2-cells?}
+E.g., for full structurality, we would use:
+
+\begin{mathpar}
+  \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha}
+  {\TypeTwo{\gamma}{\sigma}{\beta}{\alpha}}  \and   \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \tau : \beta}
+  {
+  \TermTwo{\gamma}{s}{(\beta \mid \sigma)}{(\beta' \mid \sigma[\tau])}}
+\end{mathpar}
+
+These choices cannot be totally arbitrary: 
+\begin{enumerate}
+\item The variable rule requires that the term rule at least permits projections. Also, we need a type 2-cell $\TypeTwo{\gamma}{s}{\alpha} {\beta}$ to act on terms via $\TrCirc{s}{-}$ and $\TrPlus{s}{-}$. This means, terms must be closed under composition with and pushout along type 2-cells.
+\item We need term 2-cells $\TermTwo{\gamma}{s}{\mu}{\mu'}$ to induce type 2-cells via substitution: $\TypeTwo{\gamma}{s}{\alpha[\mu/x]}{\alpha[\mu'/x]}$. \mvrnote{What exactly is required for this? Enough that term 2-cells are included in type 2-cells?}
+\item For each type 2-cell $\TypeTwo{\gamma}{s}{\alpha} {\beta}$, the corresponding unit and counit term 2-cells must exist.
+\end{enumerate}
 
 As an example, it appears these choices could allow a type system where the types behave fully structurally and the terms behave linearly, but not vis versa.
 
