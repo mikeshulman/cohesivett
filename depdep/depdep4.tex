@@ -1,0 +1,374 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm,stmaryrd}
+\usepackage[centertags]{amsmath}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{todo}{andrl}{\color{red} }
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\newcommand{\yields}{\vdash}
+\newcommand{\cbar}{\mid}
+\newcommand{\sub}[2]{{#1}\llbracket {#2}\rrbracket}
+\newcommand{\xt}{\triangleright}
+\let\ec\diamond
+
+%\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{CTX}}
+\newcommand{\ctx}{\,\,\mathsf{ctx}}
+\newcommand{\TYPE}{\,\,\mathsf{TYPE}}
+\newcommand{\type}{\,\,\mathsf{type}}
+\newcommand{\mode}{\,\,\mathsf{mode}}
+\newcommand{\asp}{\,\,\mathsf{asp}}
+\newcommand{\TELE}{\,\,\mathsf{TELE}}
+\newcommand{\tele}{\,\,\mathsf{tele}}
+
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}(#1,#2)}}
+\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\FE[3]{\ensuremath{\mathsf{split} \, #2 \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\Trd[2]{\ensuremath{#1_*(#2)}}
+
+\newcommand\Set[0]{\ensuremath{\textbf{Set}}}
+\newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
+\newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
+\newcommand\Dt[2]{\ensuremath{#1.#2}}
+
+\newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
+\newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
+\newcommand{\case}{\mathsf{case}}
+\newcommand{\inl}{\mathsf{inl}}
+\newcommand{\inr}{\mathsf{inr}}
+\newcommand{\ini}{\mathsf{in}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand{\A}{\mathscr{A}}
+\newcommand{\B}{\mathscr{B}}
+\newcommand{\C}{\mathscr{C}}
+\newcommand{\T}{\mathscr{T}}
+\newcommand{\atA}{A}
+\newcommand{\atB}{B}
+\newcommand{\atC}{C}
+\newcommand{\atG}{G}
+\newcommand{\atX}{X}
+\newcommand{\atY}{Y}
+\newcommand{\atZ}{Z}
+\newcommand{\tma}{a}
+\newcommand{\unit}{\mathbf{1}}
+\newcommand{\Id}{\mathsf{Id}}
+
+\title{Complicial syntax for dependent type 2-theory}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+\label{sec:overview}
+
+As I described in another file, we can incorporate the ``type theory over the mode theory'' into the mode theory itself as the empty-context fragment, leading to a 2-simplex-based syntax mode theory.
+Here is an attempt at doing this for dependent type theory.
+
+Even if we don't want to discard the separate ``type theory over the mode theory'', we could still use this presentation for the mode theory itself.
+It might have advantages over the ``globular'' presentation, perhaps in terms of its own computational / cut-elimination behavior.
+The separate ``type theory over the mode theory'' has the advantage of being able to represent type theories in which not all \textsf{F}-types exist (which incorporating it into the mode theory cannot), and might also be easier to make substructural.
+
+The attempt below also returns to the ``universe'' approach to recovering ordinary type theory, where instead of rules for building up types as profunctors we have a ``comprehension category object'' inside our comprehension bicategory.
+I don't remember any more exactly why I was against this approach before, but now I am for it again.
+And I think I understand it better now, mainly due to the following additional change:
+
+I'm not thinking about finite inverse categories and profunctors any more, at least not very much.
+I brought those in because I was thinking about the modes as directly encoding ``dependency structures'', but now I think that that was too syntactic.
+Instead, now I want to think about the semantics going all the way to $\mathbf{Cat}$.
+That is, objects of the comprehension bicategory (``mode contexts'') correspond to categories (which, in the ordinary case, will be categories of \emph{diagrams} on finite inverse categories), and dependent objects (previously ``modes'', which I'm now experimenting with calling ``aspects'') represent fibrations over them.
+This resolves the weird backwardness as everything now goes in the ``real'' direction, and it also makes it clear to me how to represent term dependencies using $\Sigma$s (which we had trouble with before).
+
+
+\section{Syntax}
+\label{sec:syntax}
+
+\begin{itemize}
+\item $\aleph \ctx$ (empty, extension).
+\item $\aleph \yields \A \asp$ (generators).  We call $\A$ an ``aspect''.
+\item $\aleph \yields \beth \tele$ (empty, extension). %  We call $\beth$ an ``aspect telescope''.
+\item $\aleph \yields \atA : \A$ (variables, generators, substitutions of terms -- below).  We call $a:\A$ an ``attribute''.
+\item $\aleph \yields \Gamma : \beth$ (tuples). % We call $\Gamma$ an ``attribute context''.
+\item $\aleph \cbar \Gamma_\beth \yields_B \tma : \atA_\A$ (generators, $\mathsf{F}/\mathsf{U}$ intro and elim -- below).  We call $\tma$ a ``term''.
+\item $\aleph \cbar \Gamma_\beth \yields_\Delta \omega : \Theta_\daleth$ (tuples).
+\end{itemize}
+In the term judgment $\aleph \cbar \Gamma_\beth \yields_B \tma : \atA_\A$ the preconditions are:
+\begin{mathpar}
+  \aleph\ctx \and
+  \aleph \yields \beth \tele\and
+  \aleph \yields \Gamma:\beth \and
+  \aleph,\beth \yields \A\asp\and
+  \aleph,\beth \yields \atB:\A\and
+  \aleph \yields \atA : \A[\Gamma].
+\end{mathpar}
+In particular, note that $\Gamma$ represents a tuple of \emph{attributes}.
+To express the dependence of $\tma$ on $\Gamma$ (and indeed of later attributes in $\Gamma$ on earlier ones), each of these attributes should also be assigned a variable.
+%It would be nice if we could pun these with the variables in $\beth$, but I'm doubtful.
+This judgment represents a 2-simplex
+\[
+\begin{tikzcd}
+  & \aleph.\beth \ar[dr,"\atB"] \ar[d,phantom,"\Downarrow\scriptstyle \tma"] \\
+  \aleph \ar[ur,"\Gamma"] \ar[rr,"\Gamma.\atA"'] & {} & \aleph.\beth.\A
+\end{tikzcd}
+\]
+subject to commutativity with the projections of the context extensions.
+It includes as particular cases both ``globular mode 2-cells $\aleph \yields \tma : \atB \Rightarrow \atA$'', represented as:
+\[
+\aleph \cbar \cdot \yields_\atB \tma : \atA_\A \qquad
+\begin{tikzcd}
+  & \aleph \ar[dr,"\atB"] \ar[d,phantom,"\Downarrow\scriptstyle \tma"] \\
+  \aleph \ar[ur,equals] \ar[rr,"\Gamma.\atA"'] & {} & \aleph.\A
+\end{tikzcd}
+\]
+and also ``terms in the type theory over the mode theory'', represented as:
+\[
+\cdot \cbar \Gamma_\beth \yields_\atB \tma : \atA_\A \qquad
+\begin{tikzcd}
+  & \beth \ar[dr,"\atB"] \ar[d,phantom,"\Downarrow\scriptstyle \tma"] \\
+  1 \ar[ur,"\Gamma"] \ar[rr,"\Gamma.\atA"'] & {} & \beth.\A
+\end{tikzcd}
+\]
+This latter is the reason for the funny notation: I'm trying to keep the common letters $\Gamma$ for contexts of types (= tuples of attributes in the empty aspect context), $\atA,\atB$ for types, and $\tma$ for terms in such types.
+
+Similarly, the tuple judgment $\aleph \cbar \Gamma_\beth \yields_\Delta \omega : \Theta_\daleth$ requires
+\begin{mathpar}
+  \aleph\ctx \and
+  \aleph \yields \beth \tele\and
+  \aleph \yields \Gamma:\beth \and
+  \aleph,\beth \yields \daleth\tele\and
+  \aleph,\beth \yields \Delta:\daleth\and
+  \aleph \yields \Theta : \daleth[\Gamma].
+\end{mathpar}
+The tupling rule for terms into tuples requires substitution of terms into attributes, which is explained below.
+
+Substitution of attributes into aspects and attributes is as usual, and should be admissible.
+Substitution of terms into terms, which should also be admissible, is something like this:
+\begin{mathpar}
+  \inferrule{\aleph \cbar \Gamma_\beth \yields_\Delta \omega:\Theta_\daleth \\ 
+    \aleph \cbar \Gamma_\beth, \Delta_{\daleth} \yields_\atB \tma: \atA_\A}
+  { \aleph \cbar \Gamma_\beth \yields_{B[\Delta]} \tma[\omega] : \atA[\Theta]_{\A[\Theta]} }
+\end{mathpar}
+This represents a 2-simplex composite
+\[
+\begin{tikzcd}[row sep=large]
+  \aleph.\beth \ar[rr,"\Delta"] & {} &
+  \aleph.\beth.\daleth \ar[d,"\atB"] \ar[dl,phantom,"\Downarrow\scriptstyle \tma"] \\
+  \aleph \ar[u,"\Gamma"] \ar[ur,phantom,"\Downarrow\scriptstyle\omega"]
+  \ar[urr,"\Gamma.\Theta" description] \ar[rr,"\Gamma.\Theta.\atA"'] & {} & \aleph.\beth.\daleth.\A
+\end{tikzcd}
+\qquad\leadsto\qquad
+\begin{tikzcd}
+  & \aleph.\beth \ar[dr,"{\atB[\Delta]}"] \ar[d,phantom,"{\Downarrow\scriptstyle \tma[\omega]}"] \\
+  \aleph \ar[ur,"\Gamma"] \ar[rr,"{\Gamma.\atA[\Theta]}"'] & {} & \aleph.\beth.\A[\Theta]
+\end{tikzcd}
+\]
+(The notation is hard to get right, so it's probably wrong somewhere.)
+
+Since the judgment $\aleph \yields \atA:\A$ includes the types in the object language, $\mathsf{F}$- and $\mathsf{U}$-types are given by operations on such judgments in our 2-theory.
+The \textsf{F}-types are the simplest: they are just \emph{substitution}.
+That is, given
+\begin{mathpar}
+  \cdot \yields \atA:\A \and \atX:\A \yields \atC:\C
+\end{mathpar}
+with $\atA$ regarded as a type of mode $\A$, and $\atX.\atC$ regarded as a mode morphism, the \textsf{F}-type $\F{\atX.\atC}{\atA}$ is just $\cdot \yields \atC[\atA/\atX]:\C$.
+The intro and elim rules for terms in \textsf{F}-types then generalize to rules for terms that look something like these:
+\begin{mathpar}
+  \inferrule{
+    \aleph \yields \Gamma:\beth \\
+    \aleph,\beth \yields \C\asp\\
+    \aleph,\beth \yields \atC:\C}
+  {\aleph \cbar \Gamma_\beth \yields_\atC \mathsf{FI} : \atC[\Gamma]_\C}
+  \and
+  \inferrule{
+    \aleph \yields \Gamma:\beth\\
+    \aleph,\beth,\C \yields \atB:\A\\
+    \aleph,\beth \yields \atC : \C\\
+    \aleph \yields \atA : \A[\atC][\Gamma]\\
+    \aleph \cbar \Gamma_\beth \yields_{\atB[\atC]} a : \atA_{\A[\atC]}
+  }{\aleph \cbar \Gamma_\beth,\atC[\Gamma]_{\C[\Gamma]} \yields_{\atB} \mathsf{FE}(a) : \atA_\A}
+\end{mathpar}
+The eventual \textsf{F}-intro rule should also build in a substitution and a 2-cell action (below) to make them admissible, but the above is simpler to see first.
+It represents a ``universal'' composition 2-simplex
+\[
+\begin{tikzcd}
+  & \aleph.\beth \ar[dr,"\atC"] \ar[d,phantom,"\Downarrow\scriptstyle\mathsf{id}"] \\
+  \aleph \ar[ur,"\Gamma"] \ar[rr,"{\Gamma.\atC}"'] & {} & \aleph.\beth.\C
+\end{tikzcd}
+\]
+The \textsf{F}-elim rule represents the other kind of 2-simplex composite with one of these universal 2-simplices:
+\[
+\begin{tikzcd}[row sep=large]
+  \aleph.\beth \ar[drr,"{\atC.\atB}" description] \ar[rr,"\atC"] \ar[dr,phantom,"\Downarrow\scriptstyle\mathsf{id}.a"] &
+  {} \ar[dr,phantom,"\Downarrow\scriptstyle\mathsf{id}"] & \aleph.\beth.\C \ar[d,"\atB"] \\
+  \aleph \ar[u,"\Gamma"] \ar[rr,"{\Gamma.\atC.\atA}"'] & {} & \aleph.\beth.\C.\A
+\end{tikzcd}
+\qquad\leadsto\qquad
+\begin{tikzcd}
+  & \aleph.\beth.\C \ar[dr,"\atB"] \ar[d,phantom,"\Downarrow\scriptstyle\mathsf{FE}(a)"] \\
+  \aleph \ar[ur,"{\Gamma.\atC}"] \ar[rr,"\Gamma.\atC.\atA"'] & {} & \aleph.\beth.\C.\A
+\end{tikzcd}
+\]
+Of course, there are $\beta$ and $\eta$ rules connecting these two.
+(Actually, I suspect we should probably assert all of these rules only when $\atB$ is a generator, and obtain the one for general $\atB$ admissibly.)
+
+To get a 2-categorical structure, we need to ensure that \emph{all} the 2-simplex composites of this form exist, not just those with universal 2-simplices.
+Since any 2-simplex can be factored as a universal one composed with a ``globular'' one, it remains to deal with the globular case:
+\[
+\begin{tikzcd}[row sep=large]
+  \aleph.\beth \ar[drr,"{b}" description] \ar[rr,equals] \ar[dr,phantom,"\Downarrow\scriptstyle\alpha"] &
+  {} \ar[dr,phantom,"\Downarrow\scriptstyle\beta"] & \aleph.\beth \ar[d,"c"] \\
+  \aleph \ar[u,"\Gamma"] \ar[rr,"{\Gamma.a}"'] & {} & \aleph.\beth.\A
+\end{tikzcd}
+ \]
+This yields the following ``structural 2-cell action'' rule, familiar from LS and LSR modal type theory, which should also be admissible (as long as we build it into things like \textsf{F}-intro):
+\[ \inferrule{
+  \aleph \cbar \Gamma_\beth \yields_b \alpha: a_\A \\
+  \aleph,\beth \cbar \cdot \yields_c \beta: b_\A
+}{\aleph \cbar \Gamma_\beth \yields_c \beta^*\alpha : a_\A}
+\]
+Of course, this action should satisfy functoriality laws and so on.
+
+It remains to explain how to substitute terms into attributes.
+As a special case, this includes substitution of terms into types, so it should be admissible as long as we build it into things sufficiently.
+But it also includes as a different special case a ``structural 2-cell action'' on \emph{types}, which in earlier versions was called ``coercion''.
+The general rule is the following:
+\begin{mathpar}
+  \inferrule{
+    \aleph \cbar \Gamma_\beth \yields_\Delta \omega : \Theta_\daleth\\
+    \aleph,\beth,\daleth \yields \A \asp \\
+    \aleph \yields \atA:\A[\Gamma][\Theta]
+  }{ \aleph \yields \sub \atA\omega : \A[\Delta][\Gamma] }
+  \and
+  % a lifted 2-cell (elim)
+  % a factorization through it (intro)
+  % beta/eta
+\end{mathpar}
+If $\aleph$ is empty, this yields substitution of terms into types.
+But if $\Gamma$ is empty, it instead yields the ``coercion'' $\A[\Theta]\to \A[\Delta]$ induced by the globular 2-cell $\omega : \Delta\Rightarrow\Theta$.
+Thus this coercion is an ``$\mathsf{F}$-type'' associated to this morphism $\A[\Theta]\to \A[\Delta]$, but since it's not a generator it's not ``really'' an $\mathsf{F}$-type (i.e.\ its intro and elim rules are probably not primitive).
+
+I'm not sure whether $\sub\atA\omega$ really deserves a different notation than any other kind of substitution, but for now I'm keeping it distinct to avoid confusing myself.
+To make it admissible (if that is possible), we will probably need to be careful about having ``base'' attributes express their dependency on a term variable, i.e.\ building this kind of substitution into the right places.
+
+With substitution of terms into attributes, we can now explain how terms get tupled up to land in contexts:
+\[
+\inferrule{\aleph \cbar \Gamma_\beth \yields_\Delta \omega : \Theta_\daleth \\
+  \aleph,\beth,\daleth \yields \A\asp\\
+  \aleph,\beth \yields \atB : \A[\Delta] \\
+  \aleph \yields \atA : \A[\Gamma][\Theta]\\
+  \aleph \cbar \Gamma_\beth \yields_{\atB} \tma : {\sub \atA \omega}_{\A[\Delta]}
+}{\aleph \cbar \Gamma_\beth \yields_{(\Delta,\atB)} (\omega,\tma) : (\Theta,\atA)_{(\daleth,\A)}}
+\]
+
+Categorically, substituting terms into attributes is what ensures that the projections $\aleph.\A\to \aleph$ are internal fibrations.
+Johnstone's characterization of such fibrations using a ``semi-lax right adjoint'' involves a universal 2-cell lift that should look something like this:
+\[
+\begin{tikzcd}
+  & \aleph.\beth.\A[\Delta][\Gamma] \ar[dr,"\Delta.\mathsf{id}"] \ar[d,phantom,"\Downarrow\scriptstyle\omega.\mathsf{SE}"] \\
+  \aleph.\A[\Gamma][\Theta] \ar[ur,"{\Gamma.(\lambda \atX.\sub \atX\omega)}"] \ar[rr,"\Theta.\mathsf{id}" description] \ar[dd,dashed] &
+  {} \ar[d,dashed] & 
+  \aleph.\beth.\daleth.\A \ar[dd,dashed]\\
+  & \aleph.\beth \ar[dr,"\Delta"] \ar[d,phantom,"\Downarrow\scriptstyle\omega"] \\
+  \aleph \ar[ur,"\Gamma"] \ar[rr,"\Theta"'] & {} & \aleph.\beth.\daleth
+\end{tikzcd}
+\]
+If we write this out, using the above rule to deduce what the type of \textsf{SE} should be in order to permit this tupling, we get
+\[
+  \inferrule{
+    \aleph \cbar \Gamma_\beth \yields_\Delta \omega : \Theta_\daleth\\
+    \aleph,\beth,\daleth \yields \A \asp
+  }{\aleph, \atX:\A[\Gamma][\Theta] \cbar \Gamma_\beth, \sub \atX\omega_{\atY:\A[\Delta][\Gamma]} \yields_{\atY} \mathsf{SE} : {\sub \atX \omega}_{\A[\Delta]}}
+\]
+This looks it should be just a ``variable use'', with the $\sub X\omega$ in the context matching that in the conclusion.
+Which makes sense: in the universal pullback square for a substitution in ordinary type theory
+\[
+\begin{tikzcd}
+  \Gamma'.A[\gamma] \ar[r] \ar[d] & \Gamma.A \ar[d] \\
+  \Gamma' \ar[r,"\gamma"'] & \Gamma
+\end{tikzcd}
+\]
+the top arrow is a tupling of $\Gamma \yields \gamma :\Gamma$ with the variable use $\Gamma',x:A[\gamma] \yields x:A[\Gamma]$.
+It seems like if we take this seriously, then the syntax ought automatically to ensure the universal property of the above universal 2-cell lift, just as it ensures that the ordinary square above is a pullback; but I have not checked that.
+
+
+
+\section{Recovering ordinary type theory}
+\label{sec:ordinary}
+
+Recalling that the intended semantics is now directly in $\mathbf{Cat}$, we don't need to turn anything around in defining an internal comprehension-category object.
+However, I do want to shift our point of view on a comprehension category a bit.
+
+Normally, we regard the \emph{terms} $\Gamma\yields a:A$ in the type theory presented by a comprehension category $\T \to \C^{\mathbf{2}}$ as represented by the sections of the comprehension projection $\pi_A : \Gamma.A \to \Gamma$, which is in particular a morphism in the base ``category of contexts'' $\C$.
+However, in natural semantic models, such sections are in natural bijection with morphisms $1 \to A$ in the fiber category $\T(\Gamma)$.
+I want to shift perspective and regard \emph{these} as the terms.
+
+This does require assuming that the fibers have terminal objects (unit types) $\unit_\Gamma \in\T(\Gamma)$.
+In previous language, these unit types are the ``generic section'', which we use to parametrize the dependency of the ``generic'' term.
+
+To express more complex dependencies, we need our comprehension-category object to have $\Sigma$-types and $\Id$-types.
+This makes sense semantically because just as a ``mode'' in LSR ``has finite products'' as an object in the mode 2-category, here each ``mode'' should ``have finite limits'' in an appropriate sense.
+However, our changed perspective on terms means that the rules for $\Sigma$- and $\Id$-types should be different.
+In fact, I think they become the more natural category-theoretic rules, namely that $\Sigma_A : \T(\Gamma.A) \to \T(\Gamma)$ is left adjoint to weakening $\pi_A^* : \T(\Gamma) \to \T(\Gamma.A)$, and likewise $\Id_A \in \T(\Gamma.A.A)$ is the image of $\unit_{\Gamma.A}$ under a left adjoint to contraction $\Delta_A^* : \T(\Gamma.A.A) \to \T(\Gamma.A)$.
+We probably need to assert Beck-Chevalley conditions as well, and we may need to assert that these adjoints are preserved by comprehension, i.e.\ that the projection $\Gamma.\Sigma_A(B) \to \Gamma$ is (isomorphic to) the composite $\Gamma.A.B \to \Gamma.A \to \Gamma$.
+
+I'm not going to try to write down the complete definition of a comprehension-category object with this structure right now.
+However, the basic judgments are:
+\begin{mathpar}
+  \cdot\yields \C\asp\and
+  \cdot \yields \ec:\C\and
+  \atG:\C \yields \T(\atG) \asp\and
+  \atG:\C, \atX:\T(\atG) \yields \atG.\atX : \C\and
+  \atG:\C, \atX:\T(\atG) \yields \pi_\atX : \atG.\atX \Rightarrow \atG : \C\and
+  \atG:\C \yields \unit_{\atG} : \T(\atG)\and
+  \atG:\C, \atX:\T(\atG), \atY:\T(\atG.\atX) \yields \Sigma_\atX(\atY) : \T(\atG)\and
+  \atG:\C, \atX:\T(\atG) \yields \Id_\atX : \T(\atG.\atX.\atX)
+\end{mathpar}
+Of course, as ``generators'' these should build in substitutions (i.e.\ substitutions into them are stuck).
+But for substitution of \emph{terms} into attributes, we should probably make them compute:
+\[
+\inferrule{
+  \aleph \cbar \Gamma_\beth \yields_\Delta g : \Theta_\C
+}{ \aleph \yields \sub{\unit_\Theta}{g} \equiv \unit_\Delta : \T(\Delta) }
+\]
+
+Now the ``standard'' sort of dependency in ordinary DTT:
+\[ x:A, y:B(x), z:C(x,y) \yields t(x,y,z) : D(x,y,z) \]
+is represented by
+\[ \cdot \cbar x:A_{\atX:\T(\ec)}, y:B(x)_{\atY:\T(\ec.\atX)}, z:C(x,y)_{\atZ:\T(\ec.\atX.\atY)} \yields_{\unit_{\ec.\atX.\atY.\atZ}} t(x,y,z) : D(x,y,z)_{\T(\ec.\atX.\atY.\atZ)}
+\]
+(I think the notation $B(x)$ means that a substitution of terms-into-attributes may be applied to $B$, being built in at base types.)
+For a term that depends on some type more times than its own type does (corresponding to a non-surjective map of profunctors):
+\[ x:A,\, y,y':B(x) \yields t(x,y,y') : C(x,y) \]
+we can use $\Sigma$-types:
+\[ \cdot \cbar x:A_{\atX:\T(\ec)}, y:B(x)_{\atY:\T(\ec.\atX)} \yields_{\Sigma_{\atY}(\unit_{\ec.\atX.\atY.\atY})} t(x,y,y) : C(x,y)_{\T(\ec.\atX.\atY)}
+\]
+I think that $\Id$-types are for terms that collapse some dependencies of their type (corresponding to a non-injective map of profunctors), but I haven't quite made that out in syntax yet.
+I also think that by putting all these together we should be able to show that we can represent all profunctors if we need to.
+
+
+\end{document}
+
