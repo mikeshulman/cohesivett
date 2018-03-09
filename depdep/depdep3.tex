@@ -114,6 +114,7 @@ over that to be admissible for the top, e.g.:
            {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \and (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : \alpha[\mu/x])}
 \end{mathpar}
 
+
 \subsection{Mode Theory}
 
 \begin{enumerate}
@@ -462,6 +463,171 @@ $\StI{\id_\alpha}{M} \equiv M$, $\StE{M}{\id_\alpha}{x}{x} \equiv M$).
 %smaller context) to type check, because the term is supposed to have
 %type $A[s_*(\Theta)]$, which we construct via the intro rule for
 %$\St{(\alpha[s])}{A[\Theta]}$.
+
+\subsection{Algebraic Internal-Comprehension-Category Mode Theory (no
+  strict equations on mode types)}
+
+Just to make the point that we \emph{could} do it, here's what it looks
+like to literally use standard dependent type theory with $\Sigma$ and
+$=$ types as the mode theory.  I think it would be pretty unusable in
+practice, because $\Sigma$ is only weakly associative, etc, so it would
+be like using a weak monoid for linear logic, only with dependency.      
+But it's a nice spec for the profunctor one.  
+
+We need to give the rules for
+\begin{enumerate}
+\item $\gamma \ctx$ 
+\item $\gamma \yields \alpha \type$ 
+\item $\gamma \yields \mu : \alpha$ 
+\item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ 
+\item $\TermTwo{\gamma}{s}{\mu}{\nu}$ 
+\end{enumerate}
+
+\begin{enumerate}
+
+\item Mode \emph{types} are like contexts: if a mode is itself a
+  comprehension category, then the \emph{types} are the objects of that
+  comprehension category's category of contexts.  The mode \emph{terms}
+  are the dependent types (note the level switch).
+
+  \begin{mathpar}
+  \inferrule*[]{~}
+  {\gamma \yields \emptyset \type  } \and 
+
+  \inferrule*[]{ \gamma \yields \beta \type \and \gamma \yields \mu : \beta}
+               {\gamma \yields (\alpha, i : \mu) \type  } 
+  \end{mathpar}
+
+\item All mode theories must have the following rules for terms 
+\begin{mathpar}
+  \inferrule*{x : \alpha \in \gamma}
+             {\gamma \yields x : \alpha}
+             \qquad
+  \inferrule*
+    {\gamma \yields \mu : \beta \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : \alpha}
+\end{mathpar}
+which here are the variable rule given by the comprehension
+category, and the ``substitution'' of a dependent type
+along a morphism in the category of contexts of the comprehension
+category.  
+
+The signature should say that the internal comprehension category has
+$1,\Sigma,=$ types:
+\begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields 1 : \alpha}
+             \qquad
+  \inferrule*
+      {\gamma \yields \mu : \alpha \\
+        \gamma \yields \mu' : (\alpha, i:\mu)
+      }
+      {\gamma \yields \Sigma i:\mu.\mu' : \alpha}
+   \qquad
+  \inferrule*
+      {\gamma \mid \alpha \yields t : \mu \\
+        \gamma \mid \alpha \yields t' : \mu
+      }
+      {\gamma \yields t =_\mu t' : \alpha}
+\end{mathpar}
+with equations like
+\begin{mathpar}
+\TrPlus{s}{1} = 1
+\and
+\TrPlus{s}{\Sigma i:\mu.\mu'} = \Sigma i':\TrPlus{s}{\mu}. \TrPlus{(s,i'/i)}{\mu'}
+\and
+\TrPlus{s}{t =_\mu t'} = \TrPlus{s}{t} =_{\TrPlus{s}{\mu}} \TrPlus{s}{t}
+\end{mathpar}
+We'd have to define \TrPlus{s}{t}
+\[
+  \inferrule*
+    {\gamma \mid \beta \vdash t : \mu \\
+      \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrPlus{s}{t} : \TrPlus{s}{\mu}}
+\]
+too (which will also be the usual substitution rules).  
+
+All mode theories must also have 
+\[
+\inferrule*
+    {\gamma \yields \mu : \alpha \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} : \beta}
+\]
+but this can be defined s in the categorical left-adjoint-to-pullback existential quantifier
+$\exists_{f : A \to B}(P : A \to Prop) := \exists a:A. P(a) \times f(a) = b$.
+In full this would need some iterated $\Sigma / =$ types but if  $\alpha$ and $\beta$ each have a single
+variables, this is
+\[
+\inferrule*
+    {\gamma \yields \mu : (i:\nu) \\
+     \TypeTwo{\gamma}{s}{(i : \nu)}{(j:\nu')}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} := (\Sigma i:\nu. \mu \times \TrPlus{s}{i} =_{\nu'} j) : j:\nu'}
+\]
+This is well-formed because
+$\gamma \vdash \nu : (j : \mu')$ by weakening ($\nu$ has no free $i$ variables),
+$\gamma \vdash \mu : (j:\nu', i:\nu)$ by weakening, 
+and $\TrPlus{s}{i} =_{\nu'} j$ because both sides have type $\nu'$.
+This should make the adjunction $s^\circ \dashv s^+$ true for the usual
+reasons.  
+
+\item For this mode theory, we take
+  we take \TypeTwo{\gamma}{s}{\beta}{\alpha}
+  to be all substitutions
+  $\gamma \mid \beta \yields \sigma : \alpha$.  
+  \begin{mathpar}
+  \inferrule{ }
+            { \gamma \mid \beta \yields \cdot : \cdot }
+  \and 
+  \inferrule{ \gamma \mid \beta \yields s : \alpha \and 
+              \gamma \mid \beta \yields t : \TrPlus{\sigma}{\mu} }
+            { \gamma \mid \beta \yields (s, t/i) : (\alpha, i : \mu) }
+  \end{mathpar}
+
+\item The substitution extension uses the following term-in-a-mode-term
+  judgement $\gamma \mid \alpha \vdash t : \mu$ (for
+  $\gamma \vdash \mu : \alpha$), which just has the familiar rules:
+\begin{mathpar}
+  \inferrule{  i : \mu \in \alpha  }
+            { \gamma \mid \alpha \vdash i : {\mu} }
+  \and
+  \inferrule{ }
+            { \gamma \mid \beta \vdash {()} : {1} }
+  \\ \\
+  \inferrule{ \gamma \mid \alpha \vdash {t} : {\alpha} \and 
+              \gamma \mid \alpha \vdash {t'} : {\TrPlus{(t/i)}{\mu'}} }
+            { \gamma \mid \alpha \vdash {(t,t')} : {\Sigma i:\mu.\mu'}  }
+   \and 
+  \inferrule{ \gamma \mid \alpha \vdash t : {\Sigma i:\mu.\mu'} }
+            { \gamma \mid \alpha \vdash {\mathsf{fst}(t)} : {\mu} }
+    \and 
+  \inferrule{ \gamma \mid \alpha \vdash t : {\Sigma i:\mu.\mu'} }
+            { \gamma \mid \alpha \vdash {\mathsf{snd}(t)} : {\TrPlus{(t/i)}{\mu'}} }
+\end{mathpar}
+where the $\Sigma$ rules use the following special case of
+$\TrPlus{s}{\mu}$:
+\[
+  \inferrule*
+    {\gamma \yields \mu' : \alpha,i:\mu \\
+     \gamma \mid \alpha \yields t : \mu'
+    }
+    {\gamma \yields \TrPlus{(t/i)}{\mu'} : \alpha}
+\]
+
+The rules for $t =_\mu t'$ should presumably be refl, equality
+reflection, UIP.  What happens if you put HoTT here?  :-)
+
+Define a term 2-cell $\TermTwoT{\gamma}{t}{\mu}{\mu'}{\alpha}$ to be a
+term $\gamma \mid \alpha,i:\mu \yields t : \mu'$.  
+
+\end{enumerate}
+
+
 
 \subsection{Recovering Ordinary TT}
 
