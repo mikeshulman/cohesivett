@@ -679,6 +679,41 @@ saying that the \emph{types} (mode terms) are exactly the
 (renamings) between mode contexts, and doing ``hereditary substitution''
 to keep things in normal form all the time.  
 
+\subsection{Modalities}
+
+It seems like the $f_0, f_1$ idea from before fits here.  Suppose you
+have two modes $p$ and $q$ that each are internal comprehension
+categories, then we can have
+\[
+\inferrule*[]{ \gamma \vdash \alpha : \type_p}
+             { \gamma \vdash f_0(\alpha) : \type_{q}} 
+\]
+for a modality on contexts, and 
+\[
+\inferrule*[]{ \gamma \vdash \mu : \alpha}
+             { \gamma \vdash f_1(\mu) : f_0(\alpha)}
+\]
+if it's a fiberwise modality with
+\begin{mathpar}
+f_0(\alpha, i : \mu) = f_0(\alpha), i : f_1(\mu) \and
+f_1(\Sigma i : \mu.\mu') = \Sigma i:f_1(\mu), f_1(\mu')
+\end{mathpar}
+
+Q: what does $f_1(t =_\mu t')$ do?
+
+A binary constructor on mode types would get something bunchy where the bunches can't
+depend on each other (this came up for the smash prodcut in the Eric
+S-cohesion I think)
+\[
+\inferrule*[]{ \gamma \vdash \alpha : \type_p \and
+               \gamma \vdash \beta : \type_p }
+             { \gamma \vdash \alpha \otimes \beta : \type_{p} }
+\]
+but here we wouldn't want a corresponding version on mode terms.  
+
+Q: if you do the profunctory kind of presentation, where do the $f_1's$
+go, if it's something like $\flat$ that pushes all the way inside?
+
 
 \subsection{Profunctory Internal-Comprehension-Category Mode Theory}
 
