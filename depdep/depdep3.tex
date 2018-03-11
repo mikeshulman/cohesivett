@@ -772,6 +772,85 @@ saying that the \emph{types} (mode terms) are exactly the
 to keep things in normal form all the time.  
 
 
+\subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory
+(Universey, de Bruijn, Strict Contraction)}
+
+Fix a base mode $p$.  
+
+\begin{enumerate}
+
+\item The mode \emph{types} are
+\begin{mathpar}
+  \inferrule{ }
+            {\gamma \yields p \type}
+  \and
+  \inferrule{\gamma \yields \mu : p}
+            {\gamma \yields \El{p}{\mu} \type}
+\end{mathpar}
+
+\item The things that were mode types above are now mode terms of mode
+  $p$:
+  \begin{mathpar}
+  \inferrule*[]{~}
+               {\gamma \yields \emptyset : p} \and 
+
+   \inferrule*[]{ \gamma \yields \mu : p \and
+                  \gamma \yields \nu : \El{p}{\mu}}
+               {  \gamma \yields (\mu.\nu) : p } 
+  \end{mathpar}
+
+\item The things that were mode terms of type $\alpha$ above are now
+  mode terms of type $\El{p}{\mu}$ where $\mu : p$:
+  \begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields 1 : \alpha}
+             \qquad
+  \inferrule*
+      {\gamma \yields \nu : \El{p}{\mu} \\
+        \gamma \yields \nu' : \El{p}{\mu.\nu}
+      }
+      {\gamma \yields \Sigma_\nu(\nu') : \El{p}{\mu}}
+  \end{mathpar}
+
+  We leave off $=$ because $\TermTwoT{\gamma}{-}{1}{\nu}{\El{p}{\mu}}$
+  will be a mere proposition (set containment).
+  
+\item To define $\Sigma,1$ give equations between mode terms of type $p$
+  (representing contexts) 
+\[
+\begin{array}{c}
+  \mu.(\Sigma_\nu(\nu')) \equiv \mu.\nu.\nu' \\
+  \mu.\nu.\TrPlus{w}{\nu'} \equiv \mu.\nu'.\TrPlus{w}{\nu} \\
+  \mu.\nu.\TrPlus{w}{\nu} \equiv \mu.\nu \\
+  \mu.1 \equiv \mu \\
+\end{array}
+\]
+
+As well as equations between mode terms of type $\El{p}{\mu}$ pushing
+substitution inside, and 
+\[
+\inferrule{\mu.\nu \equiv \mu.\nu' : p}
+          {\nu \equiv \nu' : \El{p}{\mu}}
+\]
+to inherit associativity, etc.  
+
+For $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$, first rewrite both contexts
+into normal form according to the above, so that both sides are of the
+form $x_1,\TrPlus{w_2}{x_2},\ldots,\TrPlus{w_n}{x_n}$, where $w_i$ shows
+that all dependencies of $x_i$ are in the prefix, and then check that
+each $x_i'$ in $\mu'$ is also in $\mu$.  
+
+For $\TermTwoT{\gamma}{s}{\nu}{\nu'}{\El{p}{\mu}}$, just check
+$\TermTwoT{\gamma}{s}{\mu.\nu}{\mu.\nu'}{p}$, because if it's
+propositional, then it will commute with the projections to $\mu$
+automatically.
+
+It should be possible to phrase this as a quotienting of the syntax.
+\end{enumerate}
+
+
+
+
 
 \subsection{Modalities}
 
