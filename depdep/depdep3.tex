@@ -464,8 +464,8 @@ $\StI{\id_\alpha}{M} \equiv M$, $\StE{M}{\id_\alpha}{x}{x} \equiv M$).
 %type $A[s_*(\Theta)]$, which we construct via the intro rule for
 %$\St{(\alpha[s])}{A[\Theta]}$.
 
-\subsection{Axiomatic Internal-Comprehension-Category Mode Theory (no
-  strict equations on mode types (besides substitution))}
+\subsection{Axiomatic Internal-Comprehension-Category Mode Theory for
+  One Mode (no strict equations on mode types (besides substitution))}
 
 Just to make the point that we \emph{could} do it, here's what it looks
 like to literally use standard dependent type theory with $\Sigma$ and
@@ -482,6 +482,8 @@ We need to give the rules for
 \item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ 
 \item $\TermTwo{\gamma}{s}{\mu}{\nu}$ 
 \end{enumerate}
+
+FIXME: describe the connection with the universey view
 
 \begin{enumerate}
 
@@ -678,6 +680,98 @@ Then the profunctory one seems like it's taking the additonal step of
 saying that the \emph{types} (mode terms) are exactly the 
 (renamings) between mode contexts, and doing ``hereditary substitution''
 to keep things in normal form all the time.  
+
+\subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory
+(Universey, de Bruijn Form)}
+
+\newcommand{\El}[2]{\mathcal{T}_{#1}(#2)}
+
+Fix a base mode $p$.  
+
+\begin{enumerate}
+
+\item The mode \emph{types} are
+\begin{mathpar}
+  \inferrule{ }
+            {\gamma \yields p \type}
+  \and
+  \inferrule{\gamma \yields \mu : p}
+            {\gamma \yields \El{p}{\mu} \type}
+\end{mathpar}
+
+\item The things that were mode types above are now mode terms of mode
+  $p$:
+  \begin{mathpar}
+  \inferrule*[]{~}
+               {\gamma \yields \emptyset : p} \and 
+
+   \inferrule*[]{ \gamma \yields \mu : p \and
+                  \gamma \yields \nu : \El{p}{\mu}}
+               {  \gamma \yields (\mu.\nu) : p } 
+  \end{mathpar}
+
+\item The things that were mode terms of type $\alpha$ above are now
+  mode terms of type $\El{p}{\mu}$ where $\mu : p$:
+  \begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields 1 : \alpha}
+             \qquad
+  \inferrule*
+      {\gamma \yields \nu : \El{p}{\mu} \\
+        \gamma \yields \nu' : \El{p}{\mu.\nu}
+      }
+      {\gamma \yields \Sigma_\nu(\nu') : \El{p}{\mu}}
+   \qquad
+  \inferrule*
+      {\TermTwoT{\gamma}{t}{1}{\nu}{\El{p}{\mu}} \\
+       \TermTwoT{\gamma}{t'}{1}{\nu}{\El{p}{\mu}} 
+      }
+      {\gamma \yields t =_\nu t' : \El{p}{\mu}}
+  \end{mathpar}
+
+\item To define $\Sigma,1,=$, add equations between mode terms of type
+ $p$ (representing contexts) like
+\[
+\begin{array}{c}
+  \mu.(\Sigma_\nu(\nu')) \equiv \mu.\nu.\nu' \\
+  \mu.\nu.\TrPlus{w}{\nu'} \equiv \mu.\nu'.\TrPlus{w}{\nu} \\
+  \mu.1 \equiv \mu \\
+  (\mu.t = t') \equiv ? \\
+\end{array}
+\]
+(for $=$ present unification via rewrite rules; not sure what that looks
+like in de Bruijn form)
+
+As well as equations between mode terms of type $\El{p}{\mu}$ pushing
+substitution inside, and maybe
+\[
+\inferrule{\mu.\nu \equiv \mu.\nu' : p}
+          {\nu \equiv \nu' : \El{p}{\mu}}
+\]
+
+For $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$, first rewrite both contexts
+into normal form according to the above, and then do a substitution
+\begin{mathpar}
+  \inferrule*[]{  }
+             {\TermTwoT{\gamma}{()}{\mu}{\emptyset}{p}}
+             \and
+  \inferrule*[]{ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+                 \TermTwoT{\gamma}{t}{1}{\TrPlus{(\El{p}{s})}{\nu}}{\El{p}{\mu}}}
+             {\TermTwoT{\gamma}{(s,t)}{\mu}{\mu'.\nu}{p}}
+\end{mathpar}
+
+\item
+Define a term 2-cell $\TermTwoT{\gamma}{t}{\nu}{\nu'}{\El{p}{\mu}}$ to be a
+renaming $\gamma \mid \alpha,i:\mu \yields s : \alpha, i:\mu'$
+that commutes with the projections to $\alpha$ as in the profunctor stuff?
+\end{enumerate}
+
+Then the profunctory one seems like it's taking the additonal step of
+saying that the \emph{types} (mode terms) are exactly the 
+(renamings) between mode contexts, and doing ``hereditary substitution''
+to keep things in normal form all the time.  
+
+
 
 \subsection{Modalities}
 
