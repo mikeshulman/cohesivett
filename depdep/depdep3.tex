@@ -44,7 +44,8 @@
 \newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{ty} #2 : #4}}
 \newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tele} #2 : #4}}
 \newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tm} #2 : #4}}
-\newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_\mathsf{tm} #2 :_{#5} #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_{#5} #2 : #4}}
+\newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \vDash_{\mathsf{disp}} #2 :_{#5} #4}}
 \newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \vDash_\mathsf{sub} #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
 \newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
@@ -467,6 +468,8 @@ $\StI{\id_\alpha}{M} \equiv M$, $\StE{M}{\id_\alpha}{x}{x} \equiv M$).
 \subsection{Axiomatic Internal-Comprehension-Category Mode Theory for
   One Mode (no strict equations on mode types (besides substitution))}
 
+FIXME: make this universey
+
 Just to make the point that we \emph{could} do it, here's what it looks
 like to literally use standard dependent type theory with $\Sigma$ and
 $=$ types as the mode theory.  I think it would be pretty unusable in
@@ -482,8 +485,6 @@ We need to give the rules for
 \item $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ 
 \item $\TermTwo{\gamma}{s}{\mu}{\nu}$ 
 \end{enumerate}
-
-FIXME: describe the connection with the universey view
 
 \begin{enumerate}
 
@@ -630,56 +631,61 @@ term $\gamma \mid \alpha,i:\mu \yields t : \mu'$.
 
 \end{enumerate}
 
-\subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory}
 
-We could also do a version where the internal comprehension category
-\emph{types} (mode terms) are given by generators, but rather than
-having a full dependent type theory, we make the universal properties of
-those types strict equalities.  (This works because $\Sigma,1,=$ are all
-left-invertible.)
+%% I don't really see how to do this in named form: 
 
-\begin{enumerate}
+%% \subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory}
 
-\item Define mode types (contexts in the internal comprehension category) as in the previous section
+%% We could also do a version where the internal comprehension category
+%% \emph{types} (mode terms) are given by generators, but rather than
+%% having a full dependent type theory, we make the universal properties of
+%% those types strict equalities.  (This works because $\Sigma,1,=$ are all
+%% left-invertible.)
 
-\item Define mode terms (types in the internal comprehension category)
-  as in the previous section
+%% \begin{enumerate}
 
-\item In place of the term-in-mode-term rules for $\Sigma,1,=$ (pairing,
-  projection, etc), add equations like
-\[
-\begin{array}{c}
-  \alpha, i : (\Sigma j:\mu.\mu'), \alpha' \equiv (\alpha, j:\mu, i:\mu',\TrPlus{(j,i)/i}{\alpha'})\\
-  \alpha, i:1, \alpha' \equiv \alpha, \TrPlus{(()/i)}{\alpha'} \\
-  \alpha, \TrPlus{s}{\mu} \equiv ? \\
-  (\alpha, i : \mu, \alpha', i \equiv t, \alpha'') \equiv \alpha, \TrPlus{(t/x)}{\alpha',\alpha''} \\
-  (\alpha, i : (t,t') = (u,u'), \alpha') \equiv (\alpha, i : t = u, j : t' = u', \alpha') \\
-\end{array}
-\]
-(for $=$ present unification via rewrite rules)
+%% \item Define mode types (contexts in the internal comprehension category) as in the previous section
 
-Then for  \TypeTwo{\gamma}{s}{\beta}{\alpha} is it sufficient to
-first rewrite both contexts into normal form and then do a renaming
-(variable for variable substitution) as in the profunctor version?
-\begin{mathpar}
-  \inferrule*[]{  }
-             {\gamma \mid \beta \yields () : \emptyset  }
-             \and
-  \inferrule*[]{ \gamma \mid \beta \yields s : \alpha \and
-                 j : \TrPlus{s}{\mu} \in \beta}
-  {\gamma \mid \beta \yields (\sigma, j/i) : (\alpha, i : \mu)} \\
-\end{mathpar}
+%% \item Define mode terms (types in the internal comprehension category)
+%%   as in the previous section
 
-\item
-Define a term 2-cell $\TermTwoT{\gamma}{t}{\mu}{\mu'}{\alpha}$ to be a
-renaming $\gamma \mid \alpha,i:\mu \yields s : \alpha, i:\mu'$
-that commutes with the projections to $\alpha$ as in the profunctor stuff?
-\end{enumerate}
+%% \item In place of the term-in-mode-term rules for $\Sigma,1,=$ (pairing,
+%%   projection, etc), add equations like
+%% \[
+%% \begin{array}{c}
+%%   \alpha, i : (\Sigma j:\mu.\mu'), \alpha' \equiv (\alpha, j:\mu, i:\mu',\TrPlus{(j,i)/i}{\alpha'})\\
+%%   \alpha, i:1, \alpha' \equiv \alpha, \TrPlus{(()/i)}{\alpha'} \\
+%%   \alpha, \TrPlus{s}{\mu} \equiv ? \\
+%%   (\alpha, i : \mu, \alpha', i \equiv t, \alpha'') \equiv \alpha, \TrPlus{(t/x)}{\alpha',\alpha''} \\
+%%   (\alpha, i : (t,t') = (u,u'), \alpha') \equiv (\alpha, i : t = u, j : t' = u', \alpha') \\
+%% \end{array}
+%% \]
+%% (for $=$ present unification via rewrite rules)
 
-Then the profunctory one seems like it's taking the additonal step of
-saying that the \emph{types} (mode terms) are exactly the 
-(renamings) between mode contexts, and doing ``hereditary substitution''
-to keep things in normal form all the time.  
+%% Then for  \TypeTwo{\gamma}{s}{\beta}{\alpha} is it sufficient to
+%% first rewrite both contexts into normal form and then do a renaming
+%% (variable for variable substitution) as in the profunctor version?
+%% \begin{mathpar}
+%%   \inferrule*[]{  }
+%%              {\gamma \mid \beta \yields () : \emptyset  }
+%%              \and
+%%   \inferrule*[]{ \gamma \mid \beta \yields s : \alpha \and
+%%                  j : \TrPlus{s}{\mu} \in \beta}
+%%   {\gamma \mid \beta \yields (\sigma, j/i) : (\alpha, i : \mu)} \\
+%% \end{mathpar}
+
+%% \item
+%% Define a term 2-cell $\TermTwoT{\gamma}{t}{\mu}{\mu'}{\alpha}$ to be a
+%% renaming $\gamma \mid \alpha,i:\mu \yields s : \alpha, i:\mu'$
+%% that commutes with the projections to $\alpha$ as in the profunctor stuff?
+%% \end{enumerate}
+
+%% Then the profunctory one seems like it's taking the additonal step of
+%% saying that the \emph{types} (mode terms) are exactly the 
+%% (renamings) between mode contexts, and doing ``hereditary substitution''
+%% to keep things in normal form all the time.  
+
+%% ----------------------------------------------------------------------
 
 \subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory
 (Universey, de Bruijn Form)}
@@ -771,11 +777,17 @@ saying that the \emph{types} (mode terms) are exactly the
 (renamings) between mode contexts, and doing ``hereditary substitution''
 to keep things in normal form all the time.  
 
+%% ----------------------------------------------------------------------
 
-\subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory
-(Universey, de Bruijn, Strict Contraction)}
+\subsection{Strict Internal-Comprehension-Category Mode Theory (Display
+  Map Style, Axiomatic)}
 
-Fix a base mode $p$.  
+\newcommand\wk[0]{\mathsf{w}}
+\newcommand\fst[0]{\mathsf{fst}}
+\newcommand\snd[0]{\mathsf{snd}}
+
+Fix a base mode $p$, which will be an internal comprehension category
+object.    
 
 \begin{enumerate}
 
@@ -788,65 +800,338 @@ Fix a base mode $p$.
             {\gamma \yields \El{p}{\mu} \type}
 \end{mathpar}
 
-\item The things that were mode types above are now mode terms of mode
-  $p$:
+\item The mode terms of type $p$ correspond to contexts.    
   \begin{mathpar}
   \inferrule*[]{~}
                {\gamma \yields \emptyset : p} \and 
 
    \inferrule*[]{ \gamma \yields \mu : p \and
-                  \gamma \yields \nu : \El{p}{\mu}}
-               {  \gamma \yields (\mu.\nu) : p } 
+                  \gamma \yields \nu : \El{p}{\mu}
+                }
+                { \gamma \yields \mu.\nu : p}
   \end{mathpar}
 
-\item The things that were mode terms of type $\alpha$ above are now
-  mode terms of type $\El{p}{\mu}$ where $\mu : p$:
+  The mode 2-cells of type $p$ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}
+  correspond to substitutions (maps in the context category of $p$),
+  including projection and pairing:
   \begin{mathpar}
-  \inferrule*{ }
-             {\gamma \yields 1 : \alpha}
-             \qquad
+      \inferrule*[]{ \gamma \yields \mu : p \and
+                  \gamma \yields \nu : \El{p}{\mu}
+                }
+                 {  \TermTwoT{\gamma}{\wk}{\mu.\nu}{\mu}{p} }
+      \quad
+      \inferrule*[]{ }
+                 {\TermTwoT{\gamma}{\cdot}{\mu}{\emptyset}{p}}
+      \quad
+      \inferrule*[]{
+        \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+        \TermTwoT{\gamma}{t}{1}{\TrPlus{\El{p}{s}}{\nu'}}{\El{p}{\mu}}
+                   }
+                 {\TermTwoT{\gamma}{s,t}{\mu}{\mu'.\nu'}{p}}
+  \end{mathpar}
+  Here we write $1 : \El{p}{\mu}$ for $(\mu \mid 1 : \mu \vDash_p \mu)$
+  using the constructor for dependent types defined next.
+
+  \drlnote{TODO: equations}
+
+  For $\TrPlus{s}{-}$, we also need the internal comprehension object's contexts to have
+    pullbacks of arbitrary maps (where map means 2-cell in $p$):
+  \begin{mathpar}
   \inferrule*
-      {\gamma \yields \nu : \El{p}{\mu} \\
-        \gamma \yields \nu' : \El{p}{\mu.\nu}
+      {\gamma \yields \mu_1 : p \and 
+        \TermTwoT{\gamma}{s_1}{\mu_1}{\mu}{p} \and
+        \TermTwoT{\gamma}{s_2}{\mu_2}{\mu}{p}
       }
-      {\gamma \yields \Sigma_\nu(\nu') : \El{p}{\mu}}
+    {\gamma \yields \mu_1 \times^{s_1,s_2}_\mu \mu_2 : p}
   \end{mathpar}
 
-  We leave off $=$ because $\TermTwoT{\gamma}{-}{1}{\nu}{\El{p}{\mu}}$
-  will be a mere proposition (set containment).
+  \begin{mathpar}
+  \inferrule*
+      {\gamma \yields \mu_1 : p \and 
+        \TermTwoT{\gamma}{s_1}{\mu_1}{\mu}{p} \and
+        \TermTwoT{\gamma}{s_2}{\mu_2}{\mu}{p}
+      }
+    {\TermTwoT{\gamma}{\fst}{\mu_1 \times^{s_1,s_2}_\mu \mu_2}{\mu_1}{p}}
+    \qquad
+  \inferrule*
+      {\gamma \yields \mu_1 : p \and 
+        \TermTwoT{\gamma}{s_1}{\mu_1}{\mu}{p} \and
+        \TermTwoT{\gamma}{s_2}{\mu_2}{\mu}{p}
+      }
+    {\TermTwoT{\gamma}{\snd}{\mu_1 \times^{s_1,s_2}_\mu \mu_2}{\mu_2}{p}}
+  \end{mathpar}
+
+  \drlnote{TODO: unviersal property}
+
+  \drlnote{TODO: add equations reducing the pushout}
   
-\item To define $\Sigma,1$ give equations between mode terms of type $p$
-  (representing contexts) 
-\[
-\begin{array}{c}
-  \mu.(\Sigma_\nu(\nu')) \equiv \mu.\nu.\nu' \\
-  \mu.\nu.\TrPlus{w}{\nu'} \equiv \mu.\nu'.\TrPlus{w}{\nu} \\
-  \mu.\nu.\TrPlus{w}{\nu} \equiv \mu.\nu \\
-  \mu.1 \equiv \mu \\
-\end{array}
-\]
+\item The mode terms of type $\El{p}{\mu}$ where $\mu : p$ correspond to
+  dependent types in context $\mu$, and are the things that upstairs
+  \emph{term} judgements will be indexed by.
 
-As well as equations between mode terms of type $\El{p}{\mu}$ pushing
-substitution inside, and 
-\[
-\inferrule{\mu.\nu \equiv \mu.\nu' : p}
-          {\nu \equiv \nu' : \El{p}{\mu}}
-\]
-to inherit associativity, etc.  
+  The desired action $\TrCirc{\El{p}{s : \mu \vDash_p \mu'}} {\nu :
+    \El{p}{\mu}} : \El{p}{\mu'}$ together with having a unit type $1 :
+  \El{p}{\mu}$ means that \emph{every} term 2-cell $s : \mu \vDash_p
+  \mu'$ induces a dependent type over $\mu'$.  So it seems simplest to
+  literally represent the dependent types by another mode term of type
+  $p$ (context/upstairs type dependency) paired with a 2-cell:
+  \begin{mathpar}
+    \inferrule*{ \gamma \yields \mu' : p \and
+                 \TermTwoT{\Gamma}{s}{\mu'}{\mu}{p} \and
+                }
+               {\gamma \yields (\mu' \mid s) : \El{p}{\mu}}
+  \end{mathpar}
+  \drlnote{Unsure about 2-cell in $p$ vs type 2-cell here: premise could
+  also be $\TypeTwo{\Gamma}{s}{\El{p}{\mu'}}{\El{p}{\mu}}$.}
 
-For $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$, first rewrite both contexts
-into normal form according to the above, so that both sides are of the
-form $x_1,\TrPlus{w_2}{x_2},\ldots,\TrPlus{w_n}{x_n}$, where $w_i$ shows
-that all dependencies of $x_i$ are in the prefix, and then check that
-each $x_i'$ in $\mu'$ is also in $\mu$.  
+  Any dependent type can be $\eta$-expanded into its projection, and
+  comprehending with an explicit map $\beta$-reduces:
+  \begin{mathpar}
+   \inferrule*[]{ \gamma \yields \mu : p \and
+                  \gamma \yields \nu : \El{p}{\mu}
+                }
+                {  \gamma \yields \nu \equiv (\mu.\nu \mid \wk_{\mu,\nu}) : \El{p}{\mu}}
+   \quad
+    \inferrule*{ \gamma \yields \mu' : p \and
+                 \TermTwoT{\Gamma}{s}{\mu'}{\mu}{p} \and
+                }
+               {\gamma \yields \mu.(\mu' \mid s) \equiv \mu' : p}
+   \quad
+    \inferrule*{ \gamma \yields \mu' : p \and
+                 \TermTwoT{\Gamma}{s}{\mu'}{\mu}{p} \and
+                }
+               {\TermTwoT{\gamma}{\wk_{\mu,(\mu' \mid s)} \equiv s}{\mu.(\mu' \mid s)}{\mu}{p}}
+  \end{mathpar}
 
-For $\TermTwoT{\gamma}{s}{\nu}{\nu'}{\El{p}{\mu}}$, just check
-$\TermTwoT{\gamma}{s}{\mu.\nu}{\mu.\nu'}{p}$, because if it's
-propositional, then it will commute with the projections to $\mu$
-automatically.
+  Recall that all mode theories have terms for variables,
+  $\TrPlus{s}{-}$ and $\TrCirc{s}{-}$.  For variables we don't add any
+  special equations, but the above gives
+  \begin{mathpar}
+  \inferrule*{x : \El{p}{\mu} \in \gamma}
+             {\gamma \yields x \equiv (\mu.x \mid \wk_{\mu,x}) : \El{p}{\mu}}
+  \end{mathpar}
 
-It should be possible to phrase this as a quotienting of the syntax.
+  For $\TrCirc{s}{-}$ we have that it's implemented by composition:
+  \begin{mathpar}
+  \inferrule*
+    {\gamma \yields (\mu'' \mid s'') : \El{p}{\mu} \\
+     \TermTwoT{\gamma}{s'}{\mu}{\mu'}{p}
+    }
+    {\gamma \yields \TrCirc{\El{p}{s'}}{\mu'' \mid s''} \equiv (\mu'' \mid s'';s') : \El{p}{\mu'}}
+  \end{mathpar}
+  \drlnote{If the only type 2-cells
+  \TypeTwo{\gamma}{s}{\El{p}{\mu}}{\alpha}
+  are $\El{p}{s'}$ for $s'$ as above, then this is a complete
+  ``definition''.  Otherwise?}
+
+  \begin{mathpar}
+    \inferrule*
+    {\gamma \yields (\mu'' \mid s'') : \El{p}{\mu} \\
+     \TermTwoT{\gamma}{s'}{\mu'}{\mu}{p}
+    }
+    {\gamma \yields \TrPlus{s'}{\mu'' \mid s''} := (\mu'' \times_\mu \mu' \mid \mathsf{snd}) : \El{p}{\mu'}}
+  \and
+  \end{mathpar}
+
+  FIXME: what does closure under substitution mean?
+
+\item We might have some freedom to pick fewer of these, but it seems
+  like it works to take term 2-cells in $\El{p}{\mu}$ to be term 2-cells
+  in $p$ that commute with projections:
+  \begin{mathpar}
+    \inferrule*{
+                 \TermTwoT{\gamma}{s}{\mu.\nu}{\mu.\nu'}{p} \and
+                 s;\wk_{\mu,\nu'} \equiv \wk_{\mu,\nu'} 
+               }
+              {\TermTwoT{\gamma}{s}{\nu}{\nu'}{\El{p}{\mu}}}
+  \end{mathpar}
+  
+%% \begin{mathpar}
+%%   \inferrule*[]{  }
+%%              {\TermTwoT{\gamma}{()}{\mu}{\emptyset}{p}}
+%%              \and
+%%   \inferrule*[]{ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+%%                  \TermTwoT{\gamma}{t}{1}{\TrPlus{(\El{p}{s})}{\nu}}{\El{p}{\mu}}}
+%%              {\TermTwoT{\gamma}{(s,t)}{\mu}{\mu'.\nu}{p}}
+%% \end{mathpar}
 \end{enumerate}
+
+%% ----------------------------------------------------------------------
+
+%% \subsection{Strict Internal-Comprehension-Category Mode Theory (Display
+%%   Map Style, Normal Forms)}
+
+%% Fix a base mode $p$, which will be an internal comprehension category
+%% object.    
+
+%% \begin{enumerate}
+
+%% \item The mode \emph{types} are
+%% \begin{mathpar}
+%%   \inferrule{ }
+%%             {\gamma \yields p \type}
+%%   \and
+%%   \inferrule{\gamma \yields \mu : p}
+%%             {\gamma \yields \El{p}{\mu} \type}
+%% \end{mathpar}
+
+%% \item The mode terms of type $p$ correspond to contexts.  Contexts are
+%%   restricted to normal form---you can't add a $\Sigma$.  
+%%   \begin{mathpar}
+%%   \inferrule*[]{~}
+%%                {\gamma \yields \emptyset : p} \and 
+
+%%    \inferrule*[]{ \gamma \yields \mu : p \and
+%%                    x : \alpha \in \gamma \and
+%%                    \TypeTwo{\gamma}{s}{\El{p}{\mu}}{\alpha}
+%%                 }
+%%                {  \gamma \yields (\mu, i : \TrPlus{s}{x}) : p } 
+%%   \end{mathpar}
+
+%%   The mode 2-cells of type $p$ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}
+%%   correspond to substitutions (maps in the context category of $p$).  
+%%   Some of those are ``display maps''.  We need a pullback of a display
+%%   map and an arbitrary map 
+%%   \begin{mathpar}
+%%     \inferrule*
+%%     { \TermTwoT{\gamma}{s'}{\mu'}{\mu}{p} \and
+%%       \TermTwoT{\gamma}{s''}{\mu''}{\mu}{p} \and
+%%       \mathsf{display}(s'')
+%%     }
+%%     {\gamma \yields \mu'' \times_\mu \mu' : p}
+%%   \end{mathpar}
+%%   If all contexts are comprehensions as above, this is definable, but
+%%   I'm not sure what happens with modalities.
+  
+%% \item The mode terms of type $\El{p}{\mu}$ where $\mu : p$ correspond to
+%%   dependent types in context $\mu$.  We represent them as a chosen
+%%   class of ``display'' substitutions/context morphisms.  
+%%   \begin{mathpar}
+%%     \inferrule*{ \gamma \yields \mu' : p \and
+%%                  \TermTwoT{\Gamma}{s}{\mu'}{\mu}{p} \and
+%%                  \mathsf{display}(s)
+%%                 }
+%%                {\gamma \yields (\mu' \mid s) : \El{p}{\mu}}
+%%   \end{mathpar}
+
+%%   We need at least the following display maps: projections from a
+%%   context extension, pullback of a display map along an arbitrary map,
+%%   composition of display maps:
+%%   \begin{mathpar}
+%%   \inferrule*{x : \El{p}{\mu} \in \gamma}
+%%              {\gamma \yields x := (\mu, i : \TrPlus{1}{x} \mid \mu/\mu) : \El{p}{\mu}}
+%%              \and
+%%   \inferrule*
+%%     {\gamma \yields (\mu'' \mid s'') : \El{p}{\mu} \\
+%%      \TermTwoT{\gamma}{s'}{\mu'}{\mu}{p}
+%%     }
+%%     {\gamma \yields \TrPlus{s'}{(\mu'' \mid s'')} := (\mu'' \times_\mu \mu' \mid \mathsf{snd}) : \El{p}{\mu'}}
+%%   \and
+%%   \inferrule*
+%%     {\gamma \yields (\mu'' \mid s'') : \El{p}{\mu} \\
+%%      \TermTwoT{\gamma}{s'}{\mu}{\mu'}{p}
+%%     }
+%%     {\gamma \yields \TrCirc{s'}{(\mu'' \mid s'')} := (\mu'' \mid s'';s') : \El{p}{\mu'}}
+%%   \end{mathpar}
+
+%%   Note: assuming \TypeTwo{\gamma}{s}{\El{p}{\mu}}{\El{p}{\mu'}}
+%%   iff \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}; otherwise need to use the
+%%   former.  
+
+%%   FIXME: closure under substitution
+  
+%% \item
+
+%% %% \begin{mathpar}
+%% %%   \inferrule*[]{  }
+%% %%              {\TermTwoT{\gamma}{()}{\mu}{\emptyset}{p}}
+%% %%              \and
+%% %%   \inferrule*[]{ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+%% %%                  \TermTwoT{\gamma}{t}{1}{\TrPlus{(\El{p}{s})}{\nu}}{\El{p}{\mu}}}
+%% %%              {\TermTwoT{\gamma}{(s,t)}{\mu}{\mu'.\nu}{p}}
+%% %% \end{mathpar}
+%% \end{enumerate}
+
+
+%% ----------------------------------------------------------------------
+
+%% skipping for now:
+
+%% \subsection{Axiomatic Strict Internal-Comprehension-Category Mode Theory
+%% (Universey, de Bruijn, Strict Contraction)}
+
+%% Fix a base mode $p$.  
+
+%% \begin{enumerate}
+
+%% \item The mode \emph{types} are
+%% \begin{mathpar}
+%%   \inferrule{ }
+%%             {\gamma \yields p \type}
+%%   \and
+%%   \inferrule{\gamma \yields \mu : p}
+%%             {\gamma \yields \El{p}{\mu} \type}
+%% \end{mathpar}
+
+%% \item The things that were mode types above are now mode terms of mode
+%%   $p$:
+%%   \begin{mathpar}
+%%   \inferrule*[]{~}
+%%                {\gamma \yields \emptyset : p} \and 
+
+%%    \inferrule*[]{ \gamma \yields \mu : p \and
+%%                   \gamma \yields \nu : \El{p}{\mu}}
+%%                {  \gamma \yields (\mu.\nu) : p } 
+%%   \end{mathpar}
+
+%% \item The things that were mode terms of type $\alpha$ above are now
+%%   mode terms of type $\El{p}{\mu}$ where $\mu : p$:
+%%   \begin{mathpar}
+%%   \inferrule*{ }
+%%              {\gamma \yields 1 : \alpha}
+%%              \qquad
+%%   \inferrule*
+%%       {\gamma \yields \nu : \El{p}{\mu} \\
+%%         \gamma \yields \nu' : \El{p}{\mu.\nu}
+%%       }
+%%       {\gamma \yields \Sigma_\nu(\nu') : \El{p}{\mu}}
+%%   \end{mathpar}
+
+%%   We leave off $=$ because $\TermTwoT{\gamma}{-}{1}{\nu}{\El{p}{\mu}}$
+%%   will be a mere proposition (set containment).
+  
+%% \item To define $\Sigma,1$ give equations between mode terms of type $p$
+%%   (representing contexts) 
+%% \[
+%% \begin{array}{c}
+%%   \mu.(\Sigma_\nu(\nu')) \equiv \mu.\nu.\nu' \\
+%%   \mu.\nu.\TrPlus{w}{\nu'} \equiv \mu.\nu'.\TrPlus{w}{\nu} \\
+%%   \mu.\nu.\TrPlus{w}{\nu} \equiv \mu.\nu \\
+%%   \mu.1 \equiv \mu \\
+%% \end{array}
+%% \]
+
+%% As well as equations between mode terms of type $\El{p}{\mu}$ pushing
+%% substitution inside, and 
+%% \[
+%% \inferrule{\mu.\nu \equiv \mu.\nu' : p}
+%%           {\nu \equiv \nu' : \El{p}{\mu}}
+%% \]
+%% to inherit associativity, etc.  
+
+%% For $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$, first rewrite both contexts
+%% into normal form according to the above, so that both sides are of the
+%% form $x_1,\TrPlus{w_2}{x_2},\ldots,\TrPlus{w_n}{x_n}$, where $w_i$ shows
+%% that all dependencies of $x_i$ are in the prefix, and then check that
+%% each $x_i'$ in $\mu'$ is also in $\mu$.  
+
+%% For $\TermTwoT{\gamma}{s}{\nu}{\nu'}{\El{p}{\mu}}$, just check
+%% $\TermTwoT{\gamma}{s}{\mu.\nu}{\mu.\nu'}{p}$, because if it's
+%% propositional, then it will commute with the projections to $\mu$
+%% automatically.
+
+%% It should be possible to phrase this as a quotienting of the syntax.
+%% \end{enumerate}
 
 
 
