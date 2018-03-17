@@ -1,0 +1,240 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage{stackengine}
+\stackMath
+\usepackage[mathscr]{euscript}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{red}DRL}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\newcommand{\yields}{\vdash}
+\newcommand{\cbar}{\, | \,}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand\vsubst[2]{#1 \, \{ #2 \}}
+\newcommand\p[1]{\mathsf{p}_{#1}}
+\newcommand\ins[2]{\mathsf{in}_{#1}(#2)}
+\newcommand\outs[2]{\mathsf{out}_{#1}(#2)}
+
+\title{Non-Split Type Theory}
+\author{}
+
+\begin{document}
+\maketitle
+
+Suppose you have a non-split comprehension category; what does its
+internal type theory look like?  We should have contexts $\Gamma$ and
+substitutions $\Gamma \vdash \theta : \Delta$, where composition of
+substitutions $\theta[\theta']$ is strictly unital and associative,
+because the base category of contexts is a category.  We should have
+dependent types $\Gamma \vdash A \TYPE$.  But the substitution into
+types $A[\theta]$ (pullback of a type along a morphism in the base) is
+only determined up to isomorphism, so it should be its own type
+constructor, and there shouldn't be any definitional equalities relating
+it to other types.  E.g. $(\Pi x:A.B)[\theta]$ should be isomorphic to
+$\Pi x:A[\theta].B[\theta,x/x]$ but not definitionally equal to it.
+On the other hand, the equational theory of \emph{terms} should be
+exactly as usual, since that's happening in the base category of
+contexts.   
+
+A nice way to do this is to have virtual pullbacks in the judgement, so
+that the explicit substitution types can be given a universal property
+relative to those.  So a term judgement looks like
+\[
+\Gamma \vdash a : \vsubst A \theta \text { where } \Delta \vdash A \TYPE
+\text{ and } \Gamma \vdash \theta : \Delta
+\]
+The idea is that the $\vsubst A \theta$ is judgemental punctuation
+corresponding to the pullback $\theta^*(A)$.  In a non-virtual model,
+such a term $a$ corresponds to a map (not necessarily cartesian)
+$\theta^*(A) \to \Delta.A$ over $\theta : \Gamma \to \Delta$.
+
+Each entry in $\Gamma$ also has a virtual pullback.
+
+I think rules like this have been used before in explicit substitution
+calculi (it reminds me of what I've heard people say about how the Twelf
+implementation manages variables, which goes back to Bob's
+implementation of LF; also of Thierry's weak type theory for the
+semisimplicial model from the end of the IAS year), but I don't think
+I've seen the virtual/judgemental approach written out.  And usually
+people don't push the \emph{term} substitution under binders because
+they're thinking of explicit subsitutions as closures.
+
+\paragraph{Contexts}
+
+\begin{mathpar}
+\inferrule*{ }
+           { \cdot \CTX }
+
+\inferrule*{ \Gamma \CTX \and
+             \Delta \CTX \and
+             \Delta \vdash A \TYPE \and
+             \Gamma \vdash \theta : \Delta
+           }
+           { \Gamma, x : \vsubst A \theta \CTX}
+\end{mathpar}
+
+\paragraph{Substitutions}
+
+\begin{mathpar}
+\inferrule*{ }
+           { \Gamma \vdash \cdot : \cdot \CTX }
+
+\inferrule*{ \Gamma \vdash \theta' : \Delta \and
+             \Gamma \vdash a : \vsubst A {\theta[\theta']}
+           }
+           { \Gamma \vdash (\theta',a/x) : \Delta, x : \vsubst A {\theta}}
+\end{mathpar}
+
+These could be admissible, but we should have
+\begin{mathpar}
+  \inferrule*{ }
+             {\Gamma \vdash 1 : \Gamma}
+
+  \inferrule*{ \Gamma_1 \vdash \theta_1 : \Gamma_2 \and \Gamma_2 \vdash \theta_2 : \Gamma_3  }
+  { \Gamma_1 \vdash \theta_2[\theta_1] : \Gamma_3 }
+  \\
+  1[\theta] \equiv \theta \and
+  \theta[1] \equiv \theta \and
+  (\theta_1[\theta_2])[\theta_3] \equiv (\theta_1[\theta_2[\theta_3]])
+  \\
+  \cdot[\theta] \equiv \cdot \and
+  (\theta,a/x)[\theta'] \equiv (\theta[\theta'],a[\theta']/x)
+\end{mathpar}
+
+Projections (could also be admissible):
+\begin{mathpar}
+  \inferrule*{ }
+             {\Gamma,\Gamma' \vdash \p{\Gamma'} : \Gamma}
+  \\ 
+  \p{x:\vsubst{A}{\theta}}[\theta',a] \equiv \theta' \and
+  \theta : \cdot \equiv \cdot \and
+  \theta' : (\Delta, x : \vsubst A {\theta}) \equiv (\p{x:\vsubst A \theta}{[\theta']}, x[\theta']/x)
+\end{mathpar}
+
+
+\paragraph{Dependent types}
+
+\begin{mathpar}
+  \inferrule*{ \Delta \vdash A \TYPE \and
+               \Gamma \vdash \theta : \Delta
+             }
+             { \Gamma \vdash A[\theta] \TYPE }
+
+\inferrule* { \Gamma \vdash A \TYPE \and
+             \Gamma, x : \vsubst A 1 \vdash B \TYPE}
+           { \Gamma \vdash \Pi x:A.B \TYPE }
+
+\inferrule* { \Gamma \vdash A \TYPE \and
+             \Gamma, x : \vsubst A 1 \vdash B \TYPE}
+           { \Gamma \vdash \Sigma x:A.B \TYPE }
+\end{mathpar}
+
+We could also have a primitive compound type $\Pi x:A[\theta].B$ which
+would avoid special-casing $1$ in the typing rule, and similarly for $\Sigma$.  
+
+\paragraph{Terms}
+Definitional equalities are always between two terms $\Gamma \vdash a
+\equiv a' : \vsubst A \theta$ in the same virtual pullback. 
+
+Substitution (could be admissible):
+\begin{mathpar}
+  \inferrule*{ \Gamma \vdash a : \vsubst A \theta   }
+             { \Gamma \vdash a[\theta'] : \vsubst A {\theta[\theta']}  }
+
+  a[\theta][\theta'] \equiv a[\theta[\theta']] \and
+  a[1] \equiv a
+\end{mathpar}
+
+Variables:
+\begin{mathpar}
+\inferrule*{ }
+           { \Gamma_1,x:\vsubst A \theta,\Gamma_2 \vdash x : \vsubst A {\theta[\p{x:\vsubst A \theta,\Gamma_2}]}  }
+\and
+x[\theta_1,a,\theta_2] \equiv a
+\end{mathpar}
+
+Explicit substitution types:
+\begin{mathpar}
+  \inferrule*{ \Gamma \vdash a : \vsubst A {\theta[\theta']}}
+            { \Gamma \vdash \ins{\theta}{a} : \vsubst{A[\theta]}{\theta'} }
+
+  \inferrule*{ \Gamma \vdash a : \vsubst{A[\theta]}{\theta'} }
+             { \Gamma \vdash \outs{\theta}{a} : \vsubst A {\theta[\theta']} }
+  \\
+  \ins{\theta}{a}[\theta''] \equiv \ins{\theta}{a[\theta'']} \and
+  \outs{\theta}{a}[\theta''] \equiv \outs{\theta}{a[\theta'']} \and
+  \ins{\theta}{\outs{\theta}{a}} \equiv a \and 
+  \outs{\theta}{\ins{\theta}{a}} \equiv a \and
+\end{mathpar}
+(Type checking the substitution equations uses strict associativity of
+composition in $\Gamma$.)  These could also be treated positively,
+e.g. if we wanted only weak $\eta$ for them
+($\Gamma,\vsubst{A[\theta]}{\theta'} \vdash J$ if
+ $\Gamma,\vsubst{A}{\theta[\theta']} \vdash J$ as the left rule).  
+
+For $\Pi$, one way to do it is to build the $(\Pi x:A.B)[\theta] \cong
+\Pi x:A[\theta].B[\theta,x]$ isomorphism into the rules (like how the
+adjoint logic rules for coproducts that build in commuting with $F$):
+  \begin{mathpar}
+  \inferrule*{ \Gamma,x : \vsubst A {\theta}  \vdash b : \vsubst B {\theta[\p{x}], x/x} }
+             { \Gamma \vdash \lambda x.b : \vsubst {\Pi x:A.B}{\theta} }
+  \and
+  \inferrule*{ \Gamma \vdash f : \vsubst {\Pi x:A.B}{\theta}
+               \and
+               \Gamma \vdash a : \vsubst A \theta
+             }
+             { \Gamma \vdash f(a) : \vsubst B {\theta,a/x} }
+  \\
+  (\lambda x.b)[\theta'] \equiv \lambda x.b[\theta',x/x] \and
+  f(a) [\theta'] \equiv f[\theta'](a[\theta']) \and
+  (\lambda x.b)(a) \equiv b[1_\Gamma,a/x] \and
+  f \equiv \lambda x.(f[\p{x}])(x)
+  \end{mathpar}
+  (The $\lambda$ rule's premise uses strict unit $1[\theta]$ to type check.)
+  An alternative is to have $\lambda$ and application only for $a :
+  \vsubst{\Pi x:A.B}{1}$ and put in the isomorphism separately.
+
+For $\Sigma$:
+  \begin{mathpar}
+  \inferrule*{ \Gamma \vdash a : \vsubst A {\theta}
+               \and
+               \Gamma \vdash b : \vsubst A {\theta,a/x}
+             }
+             { \Gamma \vdash (a,b) : \vsubst {\Sigma x:A.B} {\theta} }
+  \and
+  \inferrule*{ \Delta \vdash (\Sigma x:A.B) \TYPE \and
+               \Delta, p : \vsubst{(\Sigma x:A.B)} {1} \vdash C \TYPE \and
+               \Gamma \vdash \theta : \Delta
+               \\ 
+               \Gamma,x : \vsubst A {\theta}, y: \vsubst B {\theta[\p{x}],x/x} \vdash c : \vsubst C {\theta[\p{x,y}], (x,y)/p } \and
+               \Gamma \vdash a : \vsubst {(\Sigma x:A.B)} {\theta} 
+             }
+             { \Gamma \vdash \mathsf{split}_{p.C}(x.y.c,a) : \vsubst {C}{\theta,a/p} }
+  \\
+  (a,b)[\theta'] \equiv (a[\theta'],b[\theta']) \and
+  \mathsf{split}_{p.C}(x.y.c,a) [\theta'] \equiv \mathsf{split}_{p.C}(x.y.c[\theta'[\p{x,y}],x/x,y/y],a[\theta']) \and
+  \mathsf{split}_{p.C}(x.y.c,(a,b)) \equiv c[1,a/x,b/y]
+  \end{mathpar}
+  
+\end{document}
