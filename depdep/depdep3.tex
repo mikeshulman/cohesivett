@@ -1135,36 +1135,42 @@ object.
 
 \subsection{Strict Internal-Comprehension-Category Mode Theory (Display Map Style, with $s^\circ$ and $s^+$ primitive)}
 
-As before we have
+We add exactly these:
 
 \begin{mathpar}
   \inferrule{ }
             {\gamma \yields p \type}
   \and
+    \inferrule*[]{~}
+               {\gamma \yields \emptyset : p}
+   \\ 
+
   \inferrule{\gamma \yields \alpha : p}
-            {\gamma \yields \El{p}{\alpha} \type}
- \\
-  \inferrule*[]{~}
-               {\gamma \yields \emptyset : p} \and 
+            {\gamma \yields \El{p}{\alpha} \type} \and
+   \inferrule{\gamma \yields \alpha : p}
+            {\gamma \yields 1_\alpha : \El{p}{\alpha}} \and
 
    \inferrule*[]{ \gamma \yields \alpha : p \and
                   \gamma \yields \mu : \El{p}{\alpha}
                 }
                 { \gamma \yields \alpha.\mu : p}
-  \end{mathpar}
-But now the only things we add are:
-\begin{mathpar}
-  \inferrule{\gamma \yields \alpha : p}
-            {\gamma \yields 1_\alpha : \El{p}{\alpha}}
+  \\
+
             \and 
               \inferrule{\gamma \yields \alpha : p}
             {\TermTwoT{\gamma}{\id_\alpha}{\alpha}{\alpha}{p}}
             \and
   \inferrule{\gamma \yields \alpha : p \and \gamma \yields \mu : \El{p}{\alpha}}
-            {\TermTwoT{\gamma}{\pi}{\alpha.\mu}{\alpha}{p}}
-            \\
-  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \beta \and \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}}}
-            {\TermTwoT{\gamma}{(s,m)}{\alpha}{\beta.\mu}{p}}
+            {\TermTwoT{\gamma}{\pi}{\alpha.\mu}{\alpha}{p}} \and
+  \inferrule{\gamma \yields \alpha : p \and \gamma \yields \mu : \El{p}{\alpha}}
+            {\TermTwoT{\gamma}{\mathsf{var}_\mu}{1_{\alpha.\mu}}{\El{p}{\pi}^+(\mu)}{\El{p}{\alpha.\mu}}} \and
+\end{mathpar}
+Do we need to assume a unique term 2-cell $\TermTwoT{\gamma}{\,!_\mu}{\mu}{1_\alpha}{\El{p}{\alpha}}$?
+
+Just like any mode theory, we still have the following (a reminder):
+\begin{mathpar}
+  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and \TermTwoT{\gamma}{m}{\mu}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+            {\TermTwoT{\gamma}{(s,m)}{\alpha.\mu}{\beta.\nu}{p}}
             \\
 \inferrule*
     {\gamma \yields \alpha : q \\
@@ -1176,9 +1182,18 @@ But now the only things we add are:
     {\gamma \yields \alpha : p \\
      \TypeTwo{\gamma}{s}{p}{q}
     }
-    {\gamma \yields \TrCirc{s}{\alpha} : q}
+    {\gamma \yields \TrCirc{s}{\alpha} : q} \\
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (x : \beta \in \gamma)
+    }
+    {\TermTwoT{\gamma}{\varepsilon_{s,x}}{\TrCirc{s}{\TrPlus{s}{x}}}{x}{\beta}}
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (y : \alpha \in \gamma)
+    }
+    {\TermTwoT{\gamma}{\eta_{s,y}}{y}{\TrPlus{s}{\TrCirc{s}{y}}}{\alpha}}
 \end{mathpar}
-(and the unit/counit).
 
 Now we get the term for $\Sigma$ types:
 \begin{align*}
@@ -1196,9 +1211,13 @@ What equations do we need? Some of the following?
 s^+(t^+(x)) &\equiv (s;t)^+(x) \\
 s^\circ(t^\circ(x)) &\equiv (t;s)^\circ(x) \\
 s^+(1_\beta) &\equiv 1_\alpha \\
-(s,m);\pi &\equiv s \\
+\alpha.1_\alpha &\equiv \alpha \\
+\alpha.\El{p}{s}^\circ(1_\beta) &\equiv \beta \\
+\El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \El{p}{s}^+(\id_x))}^+(\mu)) \\
+\eta_{\pi, \mu} &\equiv \El{p}{\pi}^\circ(\mathsf{var}_\mu)
 \end{align*}
-(It doesn't seem that we can get $\id$ from $\pi$ and comprehension -- at least, I couldn't see how)
+That last equation is wonky, I don't quite see how to line the RHS up with the type of the unit.
 
 \subsection{Modalities}
 
