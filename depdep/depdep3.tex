@@ -17,7 +17,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{lemma}{Lemma}
 
-\let\oldemptyset\emptyset
+\let\oldemptyset\emptyset%
 \let\emptyset\varnothing
 
 \newcommand{\yields}{\vdash}
@@ -1199,12 +1199,20 @@ Now we get the term for $\Sigma$ types:
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) : \El{p}{\alpha}
 \end{align*}
-And $\Pi$ types:
+And we get $\Pi$ types:
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)}) : \El{p}{\alpha.x}
 \end{align*}
+If we apply the equations below, these terms are:
+\begin{align*}
+\El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
+\El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
+\end{align*}
+respectively. Cool!
 
-What equations do we need? Some of the following?
+What equations do we need? Some of the following? Here I am writing the composition of 2-cells as $s;t$, instead of using substitution notation. 
+
+Also, I am abusing notation to $\mathsf{ap}$ things, so that if $\TermTwoT{\gamma}{m}{\mu}{\nu}{\El{p}{\alpha}}$ and $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ then $\El{p}{s}^+(m)$  is a term 2-cell $\TermTwoT{\gamma}{\El{p}{s}^+(m)}{\El{p}{s}^+(\mu)}{\El{p}{s}^+(\nu)}{\El{p}{\beta}}$
 \begin{align*}
 \id;s &\equiv s \equiv s;\id \\
 \id^+(x) &\equiv x \equiv \id^\circ(x) \\
@@ -1212,12 +1220,22 @@ s^+(t^+(x)) &\equiv (s;t)^+(x) \\
 s^\circ(t^\circ(x)) &\equiv (t;s)^\circ(x) \\
 s^+(1_\beta) &\equiv 1_\alpha \\
 \alpha.1_\alpha &\equiv \alpha \\
-\alpha.\El{p}{s}^\circ(1_\beta) &\equiv \beta \\
+\alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
 \El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \El{p}{s}^+(\id_x))}^+(\mu)) \\
-\eta_{\pi, \mu} &\equiv \El{p}{\pi}^\circ(\mathsf{var}_\mu)
+\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \El{p}{s}^+(\id_x))}^+(\mu)) \\ 
+(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
+s &\equiv ((s;\pi), \, \El{p}{s}^+(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p} \\
+\El{p}{(s,m)}^+(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\mu}{\El{p}{\alpha}} \\
 \end{align*}
-That last equation is wonky, I don't quite see how to line the RHS up with the type of the unit.
+
+We may also want the following extensionality principle:
+\begin{mathpar}
+\inferrule*
+    {\alpha.\mu \equiv \alpha.\mu' \and \pi_\mu \equiv \pi_{\mu'}
+    }
+    {\mu \equiv \mu'}
+\end{mathpar}
+The equation $\El{p}{\pi}^\circ(1_{\alpha.\mu}) \equiv \mu$ above is a consequence of this.
 
 \subsection{Modalities}
 
