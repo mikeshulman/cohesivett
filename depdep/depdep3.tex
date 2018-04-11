@@ -1157,69 +1157,56 @@ We add exactly these:
             \and
   \inferrule{\gamma \yields \alpha : p \and \gamma \yields \mu : \El{p}{\alpha}}
             {\TermTwoT{\gamma}{\pi}{\alpha.\mu}{\alpha}{p}}
-\end{mathpar}
-Do we need to assume a unique term 2-cell $\TermTwoT{\gamma}{\,!_\mu}{\mu}{1_\alpha}{\El{p}{\alpha}}$?
-
-Just like any mode theory, we still have the following (a reminder):
-\begin{mathpar}
+\\
+\inferrule{\gamma \yields \mu : \El{p}{\alpha}}
+            {\TermTwoT{\gamma}{\mathsf{var}_\mu}{1_{\alpha.\mu}}{\El{p}{\pi}^+(\mu)}{\El{p}{\alpha.\mu}}}
+\\
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and \TermTwoT{\gamma}{m}{\mu}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
             {\TermTwoT{\gamma}{(s,m)}{\alpha.\mu}{\beta.\nu}{p}}
-            \\
-\inferrule*
-    {\gamma \yields \alpha : q \\
-     \TypeTwo{\gamma}{s}{p}{q}
-    }
-    {\gamma \yields \TrPlus{s}{\alpha} : p}
-    
-\inferrule*
-    {\gamma \yields \alpha : p \\
-     \TypeTwo{\gamma}{s}{p}{q}
-    }
-    {\gamma \yields \TrCirc{s}{\alpha} : q} \\
-
-\inferrule*
-    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (x : \beta \in \gamma)
-    }
-    {\TermTwoT{\gamma}{\varepsilon_{s,x}}{\TrCirc{s}{\TrPlus{s}{x}}}{x}{\beta}}
-
-\inferrule*
-    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (y : \alpha \in \gamma)
-    }
-    {\TermTwoT{\gamma}{\eta_{s,y}}{y}{\TrPlus{s}{\TrCirc{s}{y}}}{\alpha}}
 \end{mathpar}
+Where this comes from: a compact definition of a comprehension category with unit, stolen from the paper ``Dependent Types and Fibred Computaitonal Effects'', is 
+\begin{itemize}
+\item A fibration $p : \mathcal{E} \to \mathcal{B}$
+\item A functor $1 : \mathcal{B} \to \mathcal{E}$ that picks out the terminal object of each fiber,
+\item A right adjoint $\{-\} : \mathcal{E} \to \mathcal{B}$ to the functor $1$.
+\end{itemize}
+In our notation, the type family $\El{p}{-}$ is the fibration $p$, the term $1_\alpha$ is the functor $1$ at $\alpha$, and $\{\mu\}$ is given by $\alpha.\mu$. We will use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. 
 
-Now we get the term for $\Sigma$ types:
+One way to express this adjoint is via a bijection 
+\begin{mathpar}
+\mprset{fraction={===}}
+ \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
+            {\TermTwoT{\gamma}{(s,t)}{\beta}{\alpha.\mu}{p}}
+\end{mathpar}
+The two premises correspond to a single morphism $(\beta, 1_\beta) \to (\alpha, \mu)$ in $\mathcal{E}$. Rephrasing this using the universal morphism perspective of adjunctions, the claim is that any morphism $(s, t) : (\beta, 1_\beta) \to (\alpha, \mu)$ in $\mathcal{E}$ factors as:
+\[\begin{tikzcd}
+(\beta, 1_\beta) \arrow[dr, "{(s, t)}" swap] \arrow[rr, dashed, "{((s,t), \id_{1_\beta})}"] && (\alpha.\mu, 1_{\alpha.\mu}) \arrow[dl, "{(\pi, \mathsf{var}_\mu)}"] \\
+& (\alpha, \mu)
+\end{tikzcd}\]
+
+The first two equations are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The third is the $\eta$ principle that makes the factorisation unique.
 \begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) : \El{p}{\alpha}
+(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
+\mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
+s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p}
 \end{align*}
-And we get $\Pi$ types:
-\begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)}) : \El{p}{\alpha.x}
-\end{align*}
-If we apply the equations below, these terms are:
-\begin{align*}
-\El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
-\El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
-\end{align*}
-respectively. Cool!
-
-What equations do we need? Some of the following? Here I am writing the composition of 2-cells as $s;t$, instead of using substitution notation. 
-
-And I am writing $\mathsf{ap}$ of a function on a 2-cell as follows: if $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\TermTwoT{\gamma}{m}{\mu}{\nu}{\El{p}{\alpha}}$ then $\mathsf{ap}(\El{p}{s}^+)(m)$  is a term 2-cell $\TermTwoT{\gamma}{\mathsf{ap}(\El{p}{s}^+)(m)}{\El{p}{s}^+(\mu)}{\El{p}{s}^+(\nu)}{\El{p}{\beta}}$.
-
+The following two equations are stricter than absolutely necessary, but seem convenient. The first is used to show that $1$ is functorial (only one direction is actually needed), and the second asserts that the unit of the adjunction $1 \dashv \{-\}$ is the identity.
 \begin{align*}
 s^+(1_\beta) &\equiv 1_\alpha \\
-\alpha.1_\alpha &\equiv \alpha \\
+\alpha.1_\alpha &\equiv \alpha
+\end{align*} 
+
+If we add in $s^\circ$, the following guesses seem reasonable:
+\begin{align*}
 \alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
 \El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu)) \\ 
-(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
-\intertext{Note that for any $\mu : \alpha$, there is a term 2-cell: $\TermTwoT{\gamma}{\mathsf{var}_\mu}{1_{\alpha.\mu}}{\El{p}{\pi}^+(\mu)}{\El{p}{\alpha.\mu}}$ given by the unit $\mathsf{var}_\mu :\equiv \eta_{\pi,\mu}$. The following equations might already be true?}
-s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p} \\
-\mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
+\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))
 \end{align*}
+The first two are justified by thinking about the profunctor version, and the third one is expressing that $\pi$ is a morphism of fibrations.
 
-We may also want the following extensionality principle:
+If we do have $s^\circ$, we may not need to add $\mathsf{var}_\mu$ by hand, because a term of that type already exists: the unit $\mathsf{var}_\mu :\equiv \eta_{\pi}(1_{\alpha.\mu})$ of the adjunction $\El{p}{\pi}^\circ \dashv \El{p}{\pi}^+$. It doesn't seem that the equations involving $\mathsf{var}_\mu$ hold automatically with this definition though.
+
+We may want the following extensionality principle:
 \begin{mathpar}
 \inferrule*
     {\alpha.\mu \equiv \alpha.\mu' \and \pi_\mu \equiv \pi_{\mu'}
@@ -1227,6 +1214,21 @@ We may also want the following extensionality principle:
     {\mu \equiv \mu'}
 \end{mathpar}
 The equation $\El{p}{\pi}^\circ(1_{\alpha.\mu}) \equiv \mu$ above is a consequence of this.
+
+Translating from the profunctor notation, we get the term for $\Sigma$ types:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) : \El{p}{\alpha}
+\end{align*}
+And $\Pi$ types:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)}) : \El{p}{\alpha.x}
+\end{align*}
+If we apply the above equations, these terms are:
+\begin{align*}
+\El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
+\El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
+\end{align*}
+respectively. Cool!
 
 \subsection{Modalities}
 
