@@ -1170,33 +1170,41 @@ Where this comes from: a compact definition of a comprehension category with uni
 \item A functor $1 : \mathcal{B} \to \mathcal{E}$ that picks out the terminal object of each fiber,
 \item A right adjoint $\{-\} : \mathcal{E} \to \mathcal{B}$ to the functor $1$.
 \end{itemize}
-In our notation, the type family $\El{p}{-}$ is the fibration $p$, the term $1_\alpha$ is the functor $1$ at $\alpha$, and $\{\mu\}$ is given by $\alpha.\mu$. We will use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. 
+In our notation:
+\begin{itemize}
+\item $\mathcal{B}$ is the category with objects given by terms $\alpha : p$ and morphisms by $\alpha \vDash_p \beta$.
+\item $\mathcal{E}$ has no direct analogue in the syntax, but has objects given by pairs $[\alpha, \mu]$ and morphisms given by pairs $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s : \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (I use square brackets to distinguish this from other forms of pairing)
+\item The fibration $p$ is the type family $\El{p}{-}$
+\item The functor $1$ at an object $\alpha$ is the term $[\alpha, 1_\alpha]$
+\item The functor $\{-\}$ is given at $[\alpha, \mu]$ by $\alpha.\mu$.
+\end{itemize}
 
-One way to express this adjoint is via a bijection 
+We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. One way to express this adjoint is via a bijection 
 \begin{mathpar}
 \mprset{fraction={===}}
  \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
             {\TermTwoT{\gamma}{(s,t)}{\beta}{\alpha.\mu}{p}}
 \end{mathpar}
-The two premises correspond to a single morphism $(\beta, 1_\beta) \to (\alpha, \mu)$ in $\mathcal{E}$. Rephrasing this using the universal morphism perspective of adjunctions, the claim is that any morphism $(s, t) : (\beta, 1_\beta) \to (\alpha, \mu)$ in $\mathcal{E}$ factors as:
+The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$. Adjointness can be expressed as the claim that any morphism $[s, t] : [\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$ factors as:
 \[\begin{tikzcd}
-(\beta, 1_\beta) \arrow[dr, "{(s, t)}" swap] \arrow[rr, dashed, "{((s,t), \id_{1_\beta})}"] && (\alpha.\mu, 1_{\alpha.\mu}) \arrow[dl, "{(\pi, \mathsf{var}_\mu)}"] \\
-& (\alpha, \mu)
+{[\beta, 1_\beta]} \arrow[dr, "{[s, t]}" swap] \arrow[rr, dashed, "{[(s,t), \id_{1_\beta}]}"] && {[\alpha.\mu, 1_{\alpha.\mu}]} \arrow[dl, "{[\pi, \mathsf{var}_\mu]}"] \\
+& {[\alpha, \mu]}
 \end{tikzcd}\]
+where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu]$.
 
-The first two equations are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The third is the $\eta$ principle that makes the factorisation unique.
+In what follows the first two equations are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The third is the $\eta$ principle that makes the factorisation unique.
 \begin{align*}
 (s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
 \mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
 s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p}
 \end{align*}
-The following two equations are stricter than absolutely necessary, but seem convenient. The first is used to show that $1$ is functorial (only one direction is actually needed), and the second asserts that the unit of the adjunction $1 \dashv \{-\}$ is the identity.
+The following two equations are stricter than absolutely necessary, but seem convenient. The first is used to show that $1$ is functorial (only one direction is actually needed), and the second asserts that the unit of the adjunction is the identity.
 \begin{align*}
 s^+(1_\beta) &\equiv 1_\alpha \\
 \alpha.1_\alpha &\equiv \alpha
 \end{align*} 
 
-If we add in $s^\circ$, the following guesses seem reasonable:
+If we add in $s^\circ$, the following equations seem reasonable:
 \begin{align*}
 \alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
 \El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
@@ -1228,7 +1236,8 @@ If we apply the above equations, these terms are:
 \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
 \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
 \end{align*}
-respectively. Cool!
+respectively. Cool! The long equation above, $\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) \equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))$, is stating that $\Sigma$ as defined above is a morphism of fibrations.
+
 
 \subsection{Modalities}
 
