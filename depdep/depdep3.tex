@@ -1156,14 +1156,35 @@ We add exactly these:
                 { \gamma \yields \alpha.\mu : p}
             \and
   \inferrule{\gamma \yields \alpha : p \and \gamma \yields \mu : \El{p}{\alpha}}
-            {\TermTwoT{\gamma}{\pi}{\alpha.\mu}{\alpha}{p}}
+            {\TermTwoT{\gamma}{\pi^\alpha_\mu}{\alpha.\mu}{\alpha}{p}}
 \\
 \inferrule{\gamma \yields \mu : \El{p}{\alpha}}
             {\TermTwoT{\gamma}{\mathsf{var}_\mu}{1_{\alpha.\mu}}{\El{p}{\pi}^+(\mu)}{\El{p}{\alpha.\mu}}}
-\\
-  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and \TermTwoT{\gamma}{m}{\mu}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
-            {\TermTwoT{\gamma}{(s,m)}{\alpha.\mu}{\beta.\nu}{p}}
 \end{mathpar}
+Together with equations:
+\begin{align}
+\label{beta-pi}
+(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
+\label{beta-var}
+\mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
+\label{eta-pi-var}
+s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p} \\
+\label{s-plus-one-strict}
+s^+(1_\beta) &\equiv 1_\alpha \\
+\label{dot-one-strict}
+\alpha.1_\alpha &\equiv \alpha \\
+\label{pi-one-strict}
+\pi^\alpha_{1_\alpha} &\equiv \id_\alpha \\
+\label{dot-circ}
+\alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
+\label{pi-dot-circ}
+\pi^\alpha_{\El{p}{s}^\circ(\mu)} &\equiv \pi^\beta_\mu;s && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
+\label{circ-one}
+\El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\label{pi-circ-morphism-of-fibrations}
+\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))
+\end{align}
+
 Where this comes from: a compact definition of a comprehension category with unit, stolen from the paper ``Dependent Types and Fibred Computaitonal Effects'', is 
 \begin{itemize}
 \item A fibration $p : \mathcal{E} \to \mathcal{B}$
@@ -1175,11 +1196,11 @@ In our notation:
 \item $\mathcal{B}$ is the category with objects given by terms $\alpha : p$ and morphisms by $\alpha \vDash_p \beta$.
 \item $\mathcal{E}$ has no direct analogue in the syntax, but has objects given by pairs $[\alpha, \mu]$ and morphisms given by pairs $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s : \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (I use square brackets to distinguish this from other forms of pairing)
 \item The fibration $p$ is the type family $\El{p}{-}$
-\item The functor $1$ at an object $\alpha$ is the term $[\alpha, 1_\alpha]$
+\item The functor $1$ at an object $\alpha$ is the pair $[\alpha, 1_\alpha]$
 \item The functor $\{-\}$ is given at $[\alpha, \mu]$ by $\alpha.\mu$.
 \end{itemize}
 
-We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. One way to express this adjoint is via a bijection 
+We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. We want the following bijection to be admissible:
 \begin{mathpar}
 \mprset{fraction={===}}
  \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
@@ -1192,25 +1213,11 @@ The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ i
 \end{tikzcd}\]
 where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu]$.
 
-In what follows the first two equations are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The third is the $\eta$ principle that makes the factorisation unique.
-\begin{align*}
-(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
-\mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
-s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p}
-\end{align*}
-The following two equations are stricter than absolutely necessary, but seem convenient. The first is used to show that $1$ is functorial (only one direction is actually needed), and the second asserts that the unit of the adjunction is the identity.
-\begin{align*}
-s^+(1_\beta) &\equiv 1_\alpha \\
-\alpha.1_\alpha &\equiv \alpha
-\end{align*} 
+The equations \eqref{beta-pi} and \eqref{beta-var} are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The equation \eqref{eta-pi-var} is the $\eta$ principle that makes the factorisation unique.
 
-If we add in $s^\circ$, the following equations seem reasonable:
-\begin{align*}
-\alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
-\El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))
-\end{align*}
-The first two are justified by thinking about the profunctor version, and the third one is expressing that $\pi$ is a morphism of fibrations.
+The subsequent three equations are stricter than absolutely necessary, but seem convenient. Equation \eqref{s-plus-one-strict} is used to show that $1$ is functorial (only one direction is actually needed), and \eqref{dot-one-strict} and \eqref{pi-one-strict} assert that the unit of the adjunction is the identity.
+
+The remaining equations are for $\El{p}{\pi}^\circ$. The first three are true in the profunctor version, and the final one is expressing that $\pi$ is a morphism of fibrations.
 
 If we do have $s^\circ$, we may not need to add $\mathsf{var}_\mu$ by hand, because a term of that type already exists: the unit $\mathsf{var}_\mu :\equiv \eta_{\pi}(1_{\alpha.\mu})$ of the adjunction $\El{p}{\pi}^\circ \dashv \El{p}{\pi}^+$. It doesn't seem that the equations involving $\mathsf{var}_\mu$ hold automatically with this definition though.
 
@@ -1221,7 +1228,7 @@ We may want the following extensionality principle:
     }
     {\mu \equiv \mu'}
 \end{mathpar}
-The equation $\El{p}{\pi}^\circ(1_{\alpha.\mu}) \equiv \mu$ above is a consequence of this.
+The equation $\El{p}{\pi}^\circ(1_{\alpha.\mu}) \equiv \mu$ above is one consequence of this.
 
 Translating from the profunctor notation, we get the term for $\Sigma$ types:
 \begin{align*}
@@ -1236,10 +1243,42 @@ If we apply the above equations, these terms are:
 \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
 \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
 \end{align*}
-respectively. Cool! The long equation above, $\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) \equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))$, is stating that $\Sigma$ as defined above is a morphism of fibrations.
+respectively. Cool! The long equation from earlier, $\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) \equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))$, is stating that $\Sigma$ as defined above is a morphism of fibrations.
 
+\subsubsection{Modalities}
 
-\subsection{Modalities}
+Start with a functor $f : p \to q$. Add:
+\begin{mathpar}
+  \inferrule{\gamma \yields \alpha : p}
+            {\gamma \yields f_0(\alpha) : q}
+\end{mathpar}
+Now we can \emph{define}:
+\begin{mathpar}
+  \inferrule{\gamma \yields \mu : \El{p}{\alpha}}
+            {\gamma \yields f_1(\mu) : \El{p}{f_0(\alpha)}}
+\end{mathpar}
+by:
+\begin{align*}
+f_1(\mu) :\equiv \El{p}{\mathsf{ap}(f_0)(\pi^\alpha_\mu)}^\circ(1_{f_0(\alpha.\mu)})
+\end{align*}
+Together with equations:
+\begin{align}
+\El{p}{\mathsf{ap}(f_0)(s)}^+(f_1(\mu)) &\equiv f_1(\El{p}{s}^+(\mu)) \\
+\mathsf{ap}(f_1)(\eta_s(\mu)) &\equiv \eta_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) \\
+\mathsf{ap}(f_1)(\varepsilon_s(\mu)) &\equiv \varepsilon_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) 
+\end{align}
+where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$.
+
+Then the following desirable equations are already true:
+\begin{align*}
+f_1(1_\alpha) &\equiv 1_{f_0(\alpha)} \\
+f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
+\mathsf{ap}(f_0)(\pi^\alpha_\mu) &\equiv \pi^{f_0(\alpha)}_{f_1(\mu)} \\
+\mathsf{ap}(f_1)(\mathsf{var}_\mu) &\equiv \mathsf{var}_{f_1(\mu)}
+\end{align*}
+This last one if we have defined $\mathsf{var}_\mu$ as $\eta_{\pi}(1_{\alpha.\mu})$
+
+\subsection{Older Modality Stuff}
 
 It seems like the $f_0, f_1$ idea from before fits here.  Suppose you
 have two modes $p$ and $q$ that each are internal comprehension
