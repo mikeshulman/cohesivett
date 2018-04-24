@@ -11,7 +11,7 @@
 \usepackage[status=draft,inline,nomargin]{fixme}
 \FXRegisterAuthor{ms}{anms}{\color{blue}MS}
 \FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
-\FXRegisterAuthor{drl}{andrl}{\color{red}DRL}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
@@ -34,15 +34,15 @@
 \newcommand{\tele}{\,\,\mathsf{mtele}}
 
 \newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
-\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\U[2]{\ensuremath{\mathsf{U}_{#1}(#2)}}
 \newcommand\St[2]{\ensuremath{{#1}(#2)}}
-\newcommand\StI[2]{\ensuremath{\mathsf{st}(#1,#2)}}
+\newcommand\StI[1]{\ensuremath{\mathsf{st}(#1)}}
 %\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
-\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#2}{#3} \, = \, {#1} \, \mathsf{in} \, #4}}
-\newcommand\FE[3]{\ensuremath{\mathsf{split} \, #2 \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
-\newcommand\UE[2]{\ensuremath{#1(#2)}}
-\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\UE[1]{\ensuremath{\mathsf{UE}(#1)}}
+\newcommand\UI[1]{\ensuremath{\mathsf{UI}(#1)}}
 \newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
 \newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
 \newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
@@ -71,8 +71,19 @@
 
 \newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
 
+\newcommand{\app}[2]{\ensuremath{#1 \: #2}}
+\newcommand{\sigmacl}[3]{\ensuremath{\textnormal{$\Sigma$}\,#1{:}#2.\,#3}}
+\newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
+\newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
+\newcommand{\picl}[3]{\ensuremath{\textnormal{$\Pi$}\,#1{:}#2.\,#3}}
+
+\newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\fpity}[3]{\ensuremath{(#1{:}#2 \mid #3)}}
+\newcommand{\fsumty}[2]{\ensuremath{#1 \mathbin{\hat{+}} #2}}
+\newcommand{\mt}[0]{\ensuremath{()}}
+
 \title{Adjoint Type Theory}
-\author{}
+\author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
 
 \begin{document}
@@ -90,10 +101,6 @@ Mode theory judgements:
 \item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
 \item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
   composition, identities)
-\item $\gamma \yields \delta \tele$ (empty, extension)
-\item $\gamma \yields \theta : \delta$ (empty, extension)
-\item $\TeleTwo{\gamma}{s}{\delta}{\delta'}$ (empty, extension)
-\item $\SubTwo{\gamma}{s}{\theta}{\theta'}$ (empty,textension)
 \end{enumerate}
 
 Top judgements: 
@@ -101,8 +108,6 @@ Top judgements:
 \item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
 \item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
 \item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
-\item Telescopes $\Gamma \yields_\delta \Delta \TELE$ over $\gamma \yields \delta \tele$
-\item Substitutions $\Gamma \yields_\theta \Theta : \Delta$ over $\gamma \yields \theta : \delta$
 \end{itemize}
 
 Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
@@ -141,9 +146,23 @@ over that to be admissible for the top, e.g.:
     {\gamma,x:p \ctx}
 \end{mathpar}
 
-\item
-  There are no types $p$ stipulated for all mode theories; see below
-for specific cases.  
+\item We assume $\Pi/\Sigma/+$ modes:
+\begin{mathpar}
+  \inferrule*{ } { \gamma \yields 1 \type }
+  
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \sigmacl{x}{p}{q} \type}
+
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \picl{x}{p}{q} \type}
+
+ \inferrule*{ \gamma \yields p \type \\
+               \gamma \yields q \type }
+             { \gamma \yields p + q \type }
+\end{mathpar}
+  
 
 \item In all mode theories, terms must have: 
 
@@ -166,10 +185,67 @@ for specific cases.
 \TrCirc{\id}{\mu} \equiv \mu \qquad
 \TrCirc{s'}{\TrCirc{s}{\mu}} \equiv \TrCirc{(s;s')}{\mu} \qquad
 \TrPlus{\id}{\mu} \equiv \mu \qquad
-\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu}
+\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
 \end{mathpar}
 
 These are adjoint as $s^\circ \dashv s^+$; this is the direction that identifies $F_{s^+}$ and $U_{s^\circ}$.  
+
+We also have the usual rules for $\Sigma/\Pi/+$ modes:
+\begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields \mt : 1}
+  \and 
+  \mu \equiv \mt
+\\
+\inferrule*{
+  \gamma \yields \mu : p \and
+  \gamma \yields \nu : q[\mu/x]
+    }
+   {\gamma \yields (\mu,\nu) : \sigmacl{x}{p}{q}}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \fst \mu : p}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \snd \mu : q[\fst \mu / x]}
+    \\
+    \fst{(p,q)} \equiv p \and
+    \snd{(p,q)} \equiv q \and
+    p \equiv (\fst p, \snd p)
+\\ 
+\inferrule*{
+  \gamma,x:p \yields \mu : q 
+    }
+   {\gamma \yields \lambda x.\mu : \picl{x}{p}{q}}
+\and
+\inferrule*
+    {\gamma \yields \mu : \picl{x}{p}{q} \\
+     \gamma \yields \nu : p}
+    { \gamma \yields \app{\mu}{\nu} : q[\nu/x]}
+\and
+(\lambda x.\mu) \nu \equiv \mu[\nu/x]
+\and
+    f \equiv \lambda x.f(x)
+\\ 
+\inferrule*{ \gamma \yields \mu : p }
+           { \gamma \yields \inl(\mu) : p + q}
+\and           
+\inferrule*{ \gamma \yields \mu : q }
+           { \gamma \yields \inr(\mu) : p + q}
+\and 
+\inferrule*{ \gamma,z:p+q \vdash r \type \\
+             \gamma \yields \mu : p + q \\
+             \gamma,x:p \yields \nu_1 : r[\inl(x)/z] \\
+             \gamma,y:q \yields \nu_1 : r[\inr(y)/z] \\
+           }
+           { \gamma \yields \case(\mu,x.\nu_1,y.\nu_2) : r[\mu/z]} \\
+\case(\inl(\mu),x.\nu_1,y.\nu_2) \equiv \nu_1(\mu/x) \and
+\case(\inr(\mu),x.\nu_1,y.\nu_2) \equiv \nu_2(\mu/x) \and
+\nu[\mu : p + q / z] \equiv \case(\mu,x.\nu[\inl(x)/z],y.\nu[\inr(y)/z])
+\end{mathpar}
+\drlnote{do we need Frobenius case for strict eta rule? do we need strict eta?}
 
 \item 2-cells between types:
 \begin{mathpar}
@@ -181,22 +257,41 @@ These are adjoint as $s^\circ \dashv s^+$; this is the direction that identifies
           }
           {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
 
-\inferrule*{\TypeTwo{\gamma,\delta}{s}{p}{p'} \\
-            \TeleTwo{\gamma}{t}{\theta}{\theta'}
+\inferrule*{\TypeTwo{\gamma,x:p,\gamma'}{s}{q}{q'} \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
            } 
-           {\TypeTwo{\gamma}{\ap s {t/\delta}}{p[\theta/\delta]}{p'[\theta'/\delta]}}
+           {\TypeTwo{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{q[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{q'[\mu'/x]}}
 
+\\
 \id;s \equiv s \equiv s;\id \and
 (s;s');s'' \equiv s;(s';s'') \and
-\ap s {\id_{\theta}/\delta} \equiv s[\theta/\delta] \\
-\ap s {\cdot/\cdot} \equiv s \and
-\ap {\ap s {t'/\delta'}} {t/\delta} \equiv \ap s {(t,\ap{t'}{t/\delta}) / (\delta,\delta')} \and
-\ap {(s;s')} {(t;t')/\delta} \equiv (\ap s {t/\delta});(\ap {s'} {t'/\delta})
+\ap s {\id_{\mu}/x} \equiv s[\mu/x] \\
+\ap {\ap s {t/x}} {t'/y} \equiv \ap{\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
+\ap {(s;s')} {(t;t')/x} \equiv (\ap s {t/x});(\ap {s'} {t'/x})
 \end{mathpar}
 
 We write $\ap p {t/\delta}$ (or just \ap p {t}) for whiskering
 $\id_p[t/\delta]$ (and similarly for other kinds of horizontal
-composition).
+composition).  Congruence for $\Sigma/\Pi/+$ needs to be a rule (because we
+don't have ap on a type variable/universes): 
+\begin{mathpar}
+  \inferrule*
+  {\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
+  {\TypeTwo{\gamma}{\sigmacl{x}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}}
+
+  \inferrule*
+  {\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x:p}{t}{q}{q'[\TrCirc{s}{x}/x']}}
+  {\TypeTwo{\gamma}{\picl{x'}{t}{s}}{\picl{x}{p}{q}}{\picl{x}{p'}{q'}}}
+
+  \inferrule*
+      {\TypeTwo{\gamma}{s}{p}{p'} \\
+        \TypeTwo{\gamma}{t}{q}{q'} }
+      {\TypeTwo{\gamma}{s + t}{{p} + {q}}{{p'} + {q'}}}
+\end{mathpar}
+
 
 \item 2-cells between terms:
 \begin{mathpar}
@@ -206,150 +301,93 @@ composition).
     \inferrule*{{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p}} \\
                 {\TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p}}
           }
-          {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
+   {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
 
-\inferrule*{\TermTwoT{\gamma,\delta}{s}{\mu}{\mu'}{p} \\
-            \TeleTwo{\gamma}{t}{\theta}{\theta'}
+\inferrule*{\TermTwoT{\gamma,x:p,\gamma'}{s}{\nu}{\nu}{q'} \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
            } 
-           {\TermTwoT{\gamma}{s[t/\delta]}{\mu[\theta/\delta]}{\TrPlus{(\ap p {t/\delta})}{\mu'[\theta'/\delta]}}{p[\theta/\delta]}}
+           {\TermTwoT{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{\nu[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
 
+\\           
 \id;s \equiv s \equiv s;\id \and
-(s;s');s'' \equiv s;(s';s'') \and
-\ap s {\id_{\theta}/\delta} \equiv s[\theta/\delta]\\
-\ap s {\cdot/\cdot} \equiv s \and
-\ap {\ap s {t'/\delta'}} {t/\delta} \equiv \ap s {(t,\ap{t'}{t/\delta}) / (\delta,\delta')} \and
+(s;s');s'' \equiv s;(s';s'') \and \\
+\ap s {\id_{\nu}/\delta} \equiv s[\nu/x] \and
+\ap{\id_x}{s/x} \equiv s \and
+\ap{\id_y}{s/x} \equiv \id_y \\
+\ap {\ap s {t/x}} {t'/y} \equiv \ap {\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
 \ap {(s;s')} {(t;t')/\delta} \equiv (\ap s {t/\delta});(\ap {s'} {t'/\delta})
 \end{mathpar}
 
 \drlnote{Do the horizontal composition equations need some ap's?}
 
+Equation defining ``transport'' along a mode type morphism between
+known types (Having $\Pi$ requires $\TrCirc{s}{-}$?):
+\begin{mathpar}
+\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \nu})
+\\
+\TrPlus{(\picl{x}{s}{t})}{\mu} \equiv \lambda x:p.\TrPlus{t}{\app {\mu} {(\TrCirc{s}{x})}}
+\\
+\TrPlus{(s + t)}{\mu} \equiv \case(\mu,x.\inl(\TrPlus{s}{x}),y.\inr(\TrPlus{t}{y}))
+\end{mathpar}
+\drlnote{ Do the analogous rules for $\TrCirc{s}{-}$ follow? }
+
+
 \begin{mathpar}
 \inferrule*
-    {\TypeTwo{\gamma}{s}{p}{q} \\ (x : q \in \gamma)
+    {\TypeTwo{\gamma}{s}{p}{q} \\
+     \gamma \yields \nu : q
     }
-    {\TermTwo{\gamma}{\varepsilon}{\TrCirc{s}{\TrPlus{s}{x}}}{x}}
+    {\TermTwo{\gamma}{\varepsilon_\nu}{\TrCirc{s}{\TrPlus{s}{\nu}}}{\nu}}
 
 \inferrule*
-    {\TypeTwo{\gamma}{s}{p}{q} \\ (y : p \in \gamma)
+    {\TypeTwo{\gamma}{s}{p}{q} \\
+      \gamma \yields \mu : p
     }
-    {\TermTwo{\gamma}{\eta}{y}{\TrPlus{s}{\TrCirc{s}{y}}}}
+    {\TermTwo{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}}
+\\ 
+\eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon/z} \equiv 1_{\TrPlus{s}{\nu}} \and
+\ap{(\TrCirc{s}{z})}{\eta/z};\varepsilon[\TrCirc{s}{\mu}/x]; \equiv 1_{\TrCirc{s}{\mu}}
 \end{mathpar}
-Satisfying the triangle identities. \mvrnote{Is there a better way to enforce adjointness?}
 
-\item Telescopes are tuples of types:
-
-  \begin{mathpar}
-  \inferrule*{ }
-             {\gamma \yields \cdot \tele}
-             
-  \inferrule*
-      {\gamma \yields \delta \tele \\
-        \gamma,\delta \yields p \type}
-      {\gamma \yields \delta,x:p \tele}
-  \end{mathpar}
-
-There is an admissible operation of appending a telescope onto a
-context:
-  \begin{mathpar}
-  \inferrule*[Left=Admissible]
-      {\gamma \yields \delta \tele }
-      {\gamma,\delta \ctx}
-      \\
-      (\gamma,\cdot) :\equiv \gamma \and
-  (\gamma,(\delta,x:p)) :\equiv (\gamma,\delta),x:p 
-  \end{mathpar}
-  
-\item Substitutions for telescopes are tuples of terms:
-
+Pairing and projection 2-cells are definable:
 \begin{mathpar}
-    \inferrule{ }
-              {\gamma \yields \cdot : \cdot}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
+             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(y:q[\mu/x].(\mu,y))}{t/y};\ap{\ap{(x:p,y:q.(x,y))}{s/x}}{\id_{\nu'}/y}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
 
-    \inferrule
-    { \gamma \yields \theta : \delta \\ 
-      \gamma \yields \mu : p[\theta]}
-    {\gamma \yields (\theta,\mu/x) : \delta,x:p}
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+   \and
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
 \end{mathpar}
 
-By induction on $\delta'$, we have an admissible append
-\begin{mathpar}
-  \inferrule*[Left=Admissible]
-             {\gamma \yields \theta : \delta \\ 
-               \gamma \yields \theta' : \delta'[\theta] }
-             {\gamma \yields (\theta,\theta') : \delta,\delta'} \\
-\and
-(\theta,\cdot) \equiv \theta
-\and
-(\theta,(\theta',\mu/x)) \equiv ((\theta,\theta'),\mu/x)
-\end{mathpar}
+\drlnote{TODO: check the beta/eta}
 
-\item mode telescope morphisms are tuples of mode type morphisms:
-  \begin{mathpar}
-  \inferrule*
-  {\TeleTwo{\gamma}{t}{\delta}{\delta'} \\
-  \TypeTwo{\gamma, \delta}{s}{p}{p'[\TrCirc{t}{\delta}/\delta']}}
-  {\TeleTwo{\gamma}{(t,s)}{(\delta, p)}{(\delta',p')}}  
-  \end{mathpar}
-Above, this action $\TrCirc{t}{\delta}$ of $t$ on a telescope $\delta$ is defined inductively by:
-  \begin{mathpar}
-  \inferrule*
-  {\gamma, \delta \yields \TrCirc{t}{\delta} : \delta' \\
-  \gamma, \delta, x : p \yields \TrCirc{s}{x} : p'[\TrCirc{t}{\delta}/\delta']}
-  {\gamma, (\delta, x : p) \yields (\TrCirc{t}{\delta}, \TrCirc{s}{x}) : (\delta', x : p') }  
-  \end{mathpar}
-  
-Wecould instead tuple the 2-cells using $s^+$: 
-\begin{mathpar}
-  \inferrule*
-  {\TeleTwo{\gamma}{t}{\delta}{\delta'} \\
-  \TypeTwo{\gamma, \delta'}{s}{p[\TrPlus{t}{\delta'}/\delta]}{p'}}
-  {\TeleTwo{\gamma}{(t,s)}{(\delta, p)}{(\delta',p')}}  
-\end{mathpar}
-where $\TrPlus{t}{\delta'}$ is defined by:
-  \begin{mathpar}
-  \inferrule*
-  {\gamma, \delta' \yields \TrPlus{t}{\delta'} : \delta \\
-  \gamma, \delta', x : p' \yields \TrPlus{s}{x} : p[\TrPlus{t}{\delta'}/\delta]}
-  {\gamma, (\delta', x : p') \yields (\TrPlus{t}{\delta}, \TrPlus{s}{x}) : (\delta, x : p) }  
-  \end{mathpar}
+\drlnote{Add funext, beta/eta with ap of app}
 
-\item 2-cells between substitutions for telescopes are tuples of mode
-  term 2-cells:
-  \begin{mathpar}
-
-\inferrule*
-  {\SubTwo{\gamma}{s}{\theta}{\theta'} \\
-  \TermTwo{\gamma}{t}{\TrCirc{(p[s])}{\mu}}{\mu'}}
-  {\SubTwo{\gamma}{(s,t/x)}{(\theta, \mu/x)}{(\theta',\mu'/x)}}
-
-\inferrule*
-  {\TermTwo{\gamma, \delta}{s_1}{\mu}{\mu'} \\
-  \SubTwo{\gamma}{s_2}{\theta}{\theta'}}
-  {\TermTwo{\gamma}{s_1[s_2]}{\TrCirc{(s_1[\theta];\mu[s_2])}{\mu[\theta]}}{\mu'[\theta']}} 
-\end{mathpar}
+\drlnote{ Are coproduct ones also definable? }
 
 \item
-  All judgements have an admissible substituton principle, satisfying
-  the equations:
+  All judgements have a substituton principle
 \begin{mathpar}
-  \inferrule*[Left=Admissible]
-              {\gamma,\delta,\delta' \yields J \\
-                \gamma \yields \theta : \delta
+  \inferrule*{\gamma,x:p,\gamma' \yields J \\
+              \gamma \yields \mu : p
               }
-              {\gamma,\delta'[\theta] \yields J[\theta]}
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]}
 
-J[\cdot] \equiv J
-\and
-J[\theta'/\delta'][\theta/\delta] \equiv J[(\theta,\theta'[\theta/\delta]) / (\delta,\delta')]
+J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 \end{mathpar}
 
-
+\drlnote{write out the usual rules defining this on types and terms}
+             
 \end{enumerate}
 
-
-
-
-\subsection{Contexts and telescopes (boring lifting to tuples)}
+\subsection{Contexts}
 
 \begin{mathpar}
   \inferrule*[Left = ctx-form]{ }
@@ -359,27 +397,11 @@ J[\theta'/\delta'][\theta/\delta] \equiv J[(\theta,\theta'[\theta/\delta]) / (\d
     \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
     \Gamma \yields_p A \TYPE \and (\text{where }  \gamma \yields p \type)}
   {\yields_{\gamma, x : p} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:p \ctx)  } \\
-
-  \inferrule*[Left = tele-form]{ }
-             {\Gamma \yields \cdot \TELE_{\cdot}  } \and
-
-  \inferrule*[Left = tele-form]{
-    \Gamma \yields_\delta \Delta \TELE \and  (\text{where } \gamma \yields \delta \tele) \\\\
-    \Gamma,\Delta \yields_p A \TYPE \and (\text{where } \gamma,\delta \yields p \type)}
-  {\Gamma \yields_{\delta, x : p} \Delta, x : A \TELE  \and (\text{where } \gamma \yields \delta,x:p \tele)} \\ \\
-
-  \and
-
-  \inferrule*[Left = sub1]{ }
-             {\Gamma \yields_\cdot \cdot : {\cdot}  } \and 
-  \inferrule*[Left = sub2]{
-    \Gamma \yields_\theta \Theta : \Delta  \and (\text{where } \gamma \yields \theta : \delta) \\\\
-    \Gamma \yields_{\mu} M : A[\Theta] \and (\text{where } \gamma,\delta \yields \mu : p[\theta])}
-  {\Gamma \yields_{\theta, \mu/x } (\Theta,M/x) : \Delta, x : A  \and (\text{where } \gamma \yields (\theta,\mu/x) : \delta,x:p)} \\ \\
 \end{mathpar}
 
-
 \subsection{Types and Terms}
+
+\subsubsection{Structural Rules}
 
 \begin{mathpar}
   \inferrule*[Left = var]{
@@ -392,149 +414,195 @@ J[\theta'/\delta'][\theta/\delta] \equiv J[(\theta,\theta'[\theta/\delta]) / (\d
    \and \TermTwo{\gamma}{s}{\nu}{\mu}
   }
   {\Gamma \yields_\nu s(M) : A} \\ \\
+\end{mathpar}
 
+\subsubsection{Framework}
+
+\begin{mathpar}
+
+  \inferrule*{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
+  \and 
+  \inferrule*{ \Gamma \yields_\mu M : A \\
+               \Gamma \yields_\nu N : B[M/x]
+             }
+             { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+
+    \fst{(p,q)} \equiv p \and
+    \snd{(p,q)} \equiv q \and
+    p \equiv (\fst p, \snd p)
+\end{mathpar}
+
+\begin{mathpar}
+  \inferrule*{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\picl{x}{p}{q}} \fpity{x}{A}{B} \TYPE}
+  \and 
+\inferrule*{
+  \Gamma,x:A \yields M : B
+    }
+   {\Gamma \yields_{\lambda x.\mu} \lambda x.M : \fpity{x}{A}{B}}
+\and
+\inferrule*
+    {\Gamma \yields_\mu M : \fpity{x}{A}{B} \\
+     \Gamma \yields_\nu N : A}
+    { \gamma \yields_{\app \mu \nu} \app{M}{N} : B[N/x]}
+\and
+(\lambda x.M) N \equiv M[N/x]
+\and
+M \equiv \lambda x.M(x)
+\end{mathpar}
+
+\begin{mathpar}
+    \inferrule*{ \Gamma \yields_p A \TYPE \\
+                 \Gamma \yields_q B \TYPE}
+             { \Gamma \yields_{p+q} \fsumty A B \TYPE}
+  \and
+  \inferrule*{ \Gamma \yields_\mu M : A }
+           { \gamma \yields_{\inl(\mu)} M : \fsumty A B}
+\and           
+\inferrule*{ \Gamma \yields_\mu M : B }
+           { \Gamma \yields_{\inr(\mu)} : \fsumty A B}
+\and 
+\inferrule*{ \Gamma,z:\fsumty A B \vdash_r C \type \\
+             \Gamma \yields_{\mu} M : \fsumty A B \\
+             \Gamma,x:A \yields_{\nu_1} N_1 : C[\inl(x)/z] \\
+             \Gamma,y:B \yields_{\nu_2} N_2 : C[\inr(y)/z] \\
+           }
+           { \Gamma \yields_{\case(\mu,x.\nu_1,y.\nu_2)} \case(M,x.N_1,y.N_2) : C[M/z]} \\
+\case(\inl(M),x.N_1,y.N_2) \equiv N_1(M/x) \and
+\case(\inr(M),x.N_1,y.N_2) \equiv N_2(M/x) \and
+\end{mathpar}
+
+
+\subsubsection{Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = F-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \and (\text{where } \gamma \yields q \type) } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\nu} M : A
+    \and (\text{where } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \and (\text{where } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, x : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \and (\text{where } \gamma, x:p \yields \nu' [\mu / x] : r [\mu / x] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/x]} : p[\nu/x])} \\
+  \FE{\FI{M}}{x}{N} \equiv M[N/x]
+
+  \\ \\
+
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_q A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \gamma, c:p \yields \mu : q
+  }{\Gamma \yields_p \U{c.\mu}{A} \TYPE \and (\text{where } \gamma \yields p \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma \yields_{\mu[\nu/c]} M : A \and (\text{where } \gamma \yields {\mu[\nu/c]} : q)
+  }
+  {\Gamma \yields_{\nu} \UI M : \U{c.\mu}{A}
+    \and (\text{where } \gamma \yields \nu : p)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_{\nu} N : U_{c.\mu}(A) \and (\text{where } \gamma \yields \nu : q)
+  }{
+    \Gamma \yields_{\mu[\nu/c]} \UE{N} : A \and (\text{where } \gamma \yields \mu[\nu/c] : p)
+  } \\
+
+  \UE{\UI{M}} \equiv M \and 
+  \UI{\UE{N}} \equiv N
+\end{mathpar}
+
+\subsubsection{Surprisingly Strict Modalities}
+
+\drlnote{Equation for $\Sigma/\Pi$ types}
+
+\begin{mathpar}
   \inferrule*[Left = s-form]{
     \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
     \and \TypeTwo{\gamma}{s}{q}{p}
   }{\Gamma \yields_q \St{s}{A} \TYPE \and (\text{where } \gamma \yields q \type)} \\
 
   \inferrule*[Left = S-intro]{
-    \Gamma \yields_{\mu} M : X
-    \and (\text{where } \gamma \yields {\mu} : \xi)
+    \Gamma \yields_{\mu} M : A
+    \and (\text{where } \gamma \yields {\mu} : p)
   }
-  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{s}{M} : \St{s}{X} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
 
   \inferrule*[Left = S-elim]{
-    \Gamma, y : \St{s}{X} \yields_{p} C \TYPE \and (\text{where } \gamma, y : q \yields p \type) \and \\\\
-    \Gamma \yields_{\nu} M : \St{s}{X} \and (\text{where } \gamma \yields \nu : q) \\\\
-    \Gamma, x : X \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
-    \and (\text{where } \gamma, x : \xi \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
-  {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{s}{x}{N} : C[M/y]  \and (\text{where } \gamma, q \yields {\nu'[\nu/y]} : p[\nu/y])} \\
-  
+    \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{x}/y]
+    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
   \\
-  \inferrule*[Left = F-form]{
-    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
-    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele) \\\\
-    \gamma, \delta \yields \mu : q 
-  }
-  {\Gamma \yields_q F_\mu(\Delta) \TYPE \and (\text{where } \gamma \yields q \type) } \\
-  
-  \inferrule*[Left = F-intro]{
-    \Gamma \yields_{\theta} \Theta : \Delta 
-    \and (\text{where } \gamma \yields {\theta} : \delta)
-    %% \and \gamma \yields \nu : q 
-    %% \and \gamma \yields \mu[\theta] : q 
-    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
-  }
-  {\Gamma \yields_{\mu[\theta]} \FI{\Theta} : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \mu[\theta] : q)} \\
-
-  \inferrule*[Left = F-elim]{
-    \Gamma, x : F_{\mu}(\Delta) \yields_{p} C \TYPE \and (\text{where } \gamma, x : q \yields p \type) \\\\
-    \Gamma \yields_{\nu} M : F_{\mu}(\Delta) \and (\text{where } \gamma \yields \nu : q) \\\\
-    \Gamma, \Delta \yields_{\nu' [\mu / x]} N : C [\FI{\Delta/\Delta}/x]
-    \and (\text{where } \gamma, \delta \yields \nu' [\mu / x] : p [\mu / x] )}
-  {\Gamma \yields_{\nu'[\nu/x]} \FE{M}{\Delta}{N} : C[M/x]  \and (\text{where } \gamma, q \yields {\nu'[\nu/x]} : p[\nu/x])} \\
-    \\ \\
-
-  \inferrule*[Left = U-form]{
-    \Gamma \yields_\delta \Delta \TELE \and (\text{where } \gamma \yields \delta \tele)\\\\
-    \Gamma, \Delta \yields_p A \TYPE \and (\text{where } \gamma, \delta \yields p \type)\\\\
-    \and \gamma, \delta, c : q \yields \mu : p
-  }{\Gamma \yields_q U_{c.\mu}(\Delta \vert A) \TYPE \and (\text{where } \gamma \yields q \type)} \\
-
-  \inferrule*[Left = U-intro]{
-    \Gamma, \Delta \yields_{\mu[\nu/c]} N : A \and (\text{where } \gamma,\delta \yields {\mu[\nu/c]} : p)
-  }
-  {\Gamma \yields_{\nu} \UI \Delta N : U_{c.\mu}(\Delta \vert A)
-    \and (\text{where } \gamma \yields \nu : q)
-  } \\
-  
-  \inferrule*[Left = U-elim]{
-    \Gamma \yields_\nu M : U_{c.\mu}(\Delta \vert A) \and (\text{where } \gamma \yields \nu : q)\\\\
-    \Gamma \yields_\theta \Theta : \Delta \and (\text{where } \gamma \yields \theta : \delta)\\
-  }{
-    \Gamma \yields_{\mu[\theta,\nu/c]} \UE{M}{\Theta} : A[\Theta] \and (\text{where } \gamma \yields \mu[\theta,\nu/c] : p[\theta])
-  } \\
+  \StE{\StI{s}{M}}{x}{N} \equiv M[N/x]
 \end{mathpar}
 
-Note that the intro/elim rules for \St{s}{A} only apply to base types $X$, and they are just the rules for $F$-types specialised to $\TrPlus{s}{-}$. For all other types the $s$ will push in via the following equalities:
+Type equalities:
 \begin{align*}
-\St{s}{\F{\mu}{\Delta}} &\equiv \F{\TrPlus{s}{\mu}}{\Delta} \\
-\St{s}{\U{c.\mu}{\Delta}{A}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{\Delta}{A} \\
-\St{s}{\St{t}{X}} &\equiv \St{t[s]}{X} \\
-\St{\id_\xi}{X} &\equiv X
+\St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
+\F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
+\St{s}{\U{c.\mu}{\Delta}{A}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{A} \\
+\U{c.\mu}{\St{s}{A}} &\equiv \U{c.\TrCirc{s}{\mu}}{A} \\
+\St{(\picl{x}{s}{t})}{\fpity{x}{A}{B}} & \equiv \fpity{x}{\St{s}{A}}{???} \\
+\St{(\sigmacl{x}{s}{t})}{\telety{x}{A}{B}} & \equiv \telety{x}{\St{s}{A}}{???} \\
+\St{s}{\St{t}{A}} &\equiv \St{t[s]}{A} \\
+\St{\id_p}{A} &\equiv A\\
+\St{p[s]}{A[M/x]} & \equiv A[?/x]
 \end{align*}
-And also the following, giving all the preconditions:
-\begin{mathpar}
-\inferrule*
-{\Gamma \yields_{\delta_1, x_i' : p_i', \delta_2} \Delta_1, x_i' : \St{s}{A_i}, \Delta_2 \TELE \and
-     \gamma, \delta_1, x_i' : p_i', \delta_2 \yields \mu : p \and
-     \TypeTwo{\gamma, \delta_1}{s}{p_i'}{p_i}
-     }
-{\Gamma \yields \F{\mu}{\Delta_1, x_i' : \St{s}{A_i}, \Delta_2} \equiv \F{\mu[\TrPlus{s}{x_i}/x_i']}{\Delta_1, x_i : A_i, \Delta_2[\StI{s}{x_i}/x_i']}} \\
+We should also have term definitional equalities over these.
+%% (like
+%% $\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
 
-\inferrule*{
-    \Gamma \yields_{\delta_1, x_i' : p_i', \delta_2} \Delta_1, x_i' : \St{s}{B_i}, \Delta_2 \TELE \and
-    \Gamma, \Delta_1, x_i' : \St{s}{B_i}, \Delta_2 \yields_p A \TYPE \\\\
-%    \gamma, \delta_1, x_i' : p_i', \delta_2 \yields p \type \and
-    \gamma, \delta_1, x_i' : p_i', \delta_2, c : q \yields \mu : p \and 
-    \TypeTwo{\gamma, \delta_1}{s}{p_i'}{p_i}
-  }{\Gamma \yields_q \U{c.\mu}{\Delta_1, x_i' : \St{s}{B_i}, \Delta_2}{A} 
-     \equiv \U{c.\mu[\TrPlus{s}{x_i}/x_i']}{\Delta_1, x_i : B_i, \Delta_2[\StI{s}{x_i}/x_i']}{A[\StI{s}{x_i}/x_i']} 
-     }   
+\subsection{Examples}
 
-\inferrule*{
-    \Gamma \yields_\delta \Delta \TELE \and
-    \Gamma, \Delta \yields_p A \TYPE \and 
-    \gamma, \delta, c : q \yields \mu : p' \and
-    \TypeTwo{\gamma, \delta_1}{s}{p'}{p}
-  }{\Gamma \yields_q \U{c.\mu}{\Delta}{\St{s}{A}} \equiv \U{c.\TrCirc{s}{\mu}}{\Delta}{A}} 
-\end{mathpar}
-Note that these $F$ and $U$ types do actually live in the same mode: the type formation rules require that $p$ and $q$ only depend on $\gamma$.
+The idea is that each connective is now a ``framework'' connective
+together with a unary modality moving it into the right mode:
 
-Then we should also be able to prove:
-\[
-\begin{array}{rcl}
-\St{\id_p}{A} & \equiv & A \\
-\St{s}{\St{t}{A}} &\equiv & \St{t[s]}{A} \\
-\St{p[s]}{A[\Theta]} & \equiv & A[\St{s}{\Theta}]
-\end{array}
-\]
-for general types, not just base types.
+\begin{itemize}
+\item 
+The previous two-argument \F{\mu}{x:A,y:B} (for $x :p, y:q \vdash \mu :
+r$) is now \F{z.\mu[\fst z/x,\snd z/y]}{\telety{x}{A}{B}}, using the
+upstairs $\Sigma$-type ${\telety{x}{A}{B}}$, which has mode
+$\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
+longer telescope.  
 
-We should also have term definitional equalities over these (like
-$\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
-%
-%In the final equation, the typing is
-%\begin{mathpar}
-%\gamma,\delta \yields p \type \and 
-%\Gamma,\Delta \yields_p A \type \and 
-%\Gamma \yields s : \theta \Rightarrow \theta' : \delta \and
-%\Gamma \yields_\theta \Theta : \Delta 
-%\end{mathpar}
-%This equation uses the operation
-%\begin{mathpar}
-% \inferrule*[Left = 2cell-subst]{
-%   \Gamma \yields_\theta \Theta : \Delta 
-%   \and \gamma \yields s : (\theta \Rightarrow \theta') : \delta
-%  }
-%  {\Gamma \yields_{\theta'} s_*(\Theta) : A} 
-%\end{mathpar}
-%is admissible. The extension case is given
-%\begin{mathpar}
-%(s,t/x) : (\theta,\mu/x) \Rightarrow (\theta',\mu'/x) : \delta,x:p
-%\and
-%\yields_{\theta,\mu/x} (\Theta,M/x) : \Delta,x:A
-%\end{mathpar}
-%as in the typing rules for these above, and constructs
-%\[
-%(s_*(\Theta), \StI{p[s]}{t_*(M)})
-%\]
-%Note that the second component uses the same third equation above (at a
-%smaller context) to type check, because the term is supposed to have
-%type $A[s_*(\Theta)]$, which we construct via the intro rule for
-%$\St{(p[s])}{A[\Theta]}$.
+\item 
+The previous \U{c.\mu}{x : A \mid B} is now
+\U{c.\lambda{x}.{\mu}}{\fpity{x}{A}{B}}, because the subscript (which
+used to be $x:p,y:q \vdash \mu : r(x)$ is a map from $q$ to
+$\picl{x}{p}{r}$.  Iterating the framework $\Pi$ or putting a framework
+$\Sigma$ in the argument gives the $n$-ary version.
 
+\item A real additve $\Gamma \vdash_p A + B \TYPE$ when $\Gamma \vdash_p
+  A \TYPE$ and $\Gamma \vdash_p B \TYPE$ is
+  \F{z.\case(z,x.x,x.x)}{\fsumty{A}{B}} where
+  $z : p + p \vdash \case(z,x.x,x.x) : p$.
+
+\end{itemize}
+
+\end{document}
 
 \subsection{Strict Internal-Comprehension-Object Mode Theory (Axiomatic, $s^\circ$ and $s^+$ primitive)}
 
