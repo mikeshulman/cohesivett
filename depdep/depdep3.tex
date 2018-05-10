@@ -704,6 +704,128 @@ f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
 \mathsf{ap}(f_1)(\mathsf{var}_\mu) &\equiv \mathsf{var}_{f_1(\mu)}
 \end{align*}
 
+\subsection{Bunches}
+\renewcommand{\smash}{\mathbin{\overline{\wedge}}}
+\newcommand{\lolli}{\multimap}
+\newcommand{\unit}{\mathbb{S}}
+
+Add a monoid structure on $p$:
+\begin{mathpar}
+  \inferrule{\gamma \yields \alpha : p \and \gamma \yields \beta : p}
+            {\gamma \yields \alpha \smash \beta : p}
+  \and
+  \inferrule{~}
+            {\gamma \yields \unit : p}
+\end{mathpar}
+
+And define
+\begin{mathpar}
+  \inferrule{\gamma \yields \mu : \El{p}{\alpha} \and \gamma \yields  \nu : \El{p}{\beta}}
+            {\gamma \yields \mu \smash_1 \nu : \El{p}{\alpha \smash \beta}}
+  \and
+  \inferrule{~}
+            {\gamma \yields \unit_1 : \El{p}{\emptyset}}
+\end{mathpar}
+by
+\begin{align*}
+\mu \smash_1 \nu :&\equiv \El{p}{\mathsf{ap}(\smash)(\pi^\alpha_\mu, \pi^\beta_\nu)}^\circ(1_{\alpha.\mu \smash \beta.\nu}) \\
+\unit_1 :&\equiv \El{p}{!_\unit}^\circ(1_{\unit})
+\end{align*}
+where $!_\unit : \unit \vDash \emptyset$ is the unique map.
+
+Impose the equations
+\begin{align*}
+\El{p}{\mathsf{ap}(\smash)(s,t)}^+ (\mu \smash_1 \nu) &\equiv \El{p}{s}^+(\mu) \smash \El{p}{t}^+(\nu) \\
+\mathsf{ap}(\smash_1)(\eta_s(\mu), \eta_t(\nu)) &\equiv \eta_{\mathsf{ap}(\smash)(s, t)}(\mu \smash_1 \nu) \\
+\mathsf{ap}(\smash_1)(\varepsilon_s(\mu), \varepsilon_t(\nu)) &\equiv \varepsilon_{\mathsf{ap}(\smash)(s, t)}(\mu \smash_1 \nu) \\
+\end{align*}
+
+Then it is true that:
+\begin{align*}
+(\alpha \smash \beta).(\mu \smash_1 \nu) &\equiv \alpha.\mu \smash \beta.\nu \\
+(\emptyset \smash \beta).(\unit_1 \smash_1 \nu) &\equiv \beta.\nu
+\end{align*}
+
+A guess at a surface level type theory: We have contexts that are built as:
+\begin{align*}
+\Gamma &::= \cdot \mid \mathbb{S} \mid \Gamma, E \mid (\Gamma_1 \mid \Gamma_2) \\
+E &::= x : A \mid (x : A \mid y : B)
+\end{align*}
+
+
+\begin{mathpar}
+\inferrule{\Gamma \sim \Delta}
+{\yields (\Gamma \mid \Delta)} \and
+
+\inferrule{~}
+{\Gamma \vDash \Gamma} \and 
+
+\inferrule{\Gamma \vDash \Gamma' \and \Gamma' \vDash \Gamma''}
+{\Gamma \vDash \Gamma''} \and 
+
+
+\inferrule
+  {\Gamma \vDash \Delta}
+  {\Gamma, x : A \vDash \Delta} \and 
+
+\inferrule
+  {\Gamma \vDash \Delta \and \Gamma' \vDash \Delta'}
+  {(\Gamma \mid \Gamma') \vDash (\Delta \mid \Delta')}
+
+\\
+
+\inferrule{~}
+  {\cdot \yields \mathbb{T} \TYPE} \and 
+\inferrule{~}
+  {\mathbb{S} \yields \star : \mathbb{T}} \and
+\inferrule
+  {(z : \mathbb{T}) \in \Gamma \and \Gamma \yields C \TYPE \and \Theta \yields M : \mathbb{T} \and \Gamma[\mathbb{S}/z] \yields N : C[\star/z]}
+  {\Gamma[\Theta/z] \yields \mathsf{use} \, M \, \mathsf{in} \, N : C[M/z]}
+
+\\
+
+\inferrule
+  {\Gamma_1 \yields A \TYPE \and \Gamma_2 \yields B \TYPE \\\\
+   (\Gamma_1 \mid \Gamma_2) \vDash \Gamma}
+  {\Gamma \yields A \smash B \TYPE} \and
+\inferrule
+  {\Gamma_1' \yields a : A \and \Gamma_2' \yields b : B \\\\
+   \Gamma_1' \vDash \Gamma_1 \and \Gamma_2' \vDash \Gamma_2 \and \Gamma \vDash \Gamma_1' \mid \Gamma_2'}
+  {\Gamma \yields (a, b) : A \smash B} \and
+\inferrule
+  {(z : A \smash B) \in \Gamma' \and \Gamma' \yields C \TYPE \and \Theta \yields M : A \smash B \and \Gamma[(x : A \mid y : B)/z] \yields N : C[(a,b)/z] \and \Gamma \vDash \Gamma'}
+  {\Gamma[\Theta/z] \yields \mathsf{split} \, (x,y) = M \, \mathsf{in} \, N : C[M/z]}
+
+\\
+
+\inferrule
+  {\Delta \yields B \TYPE \and (\Gamma \mid \Delta) \yields A \TYPE}
+  {\Gamma \yields B_\Delta \lolli A \TYPE} \and
+\inferrule
+  {(\Gamma \mid \Delta, x : B) \yields N : A}
+  {\Gamma \yields (\lambda x:B. N) : B_\Delta \lolli A} \and
+\inferrule
+  {\Gamma \yields M : B_\Delta \lolli A \and \Delta' \yields b : B \and \Delta' \vDash \Delta}
+  {(\Gamma \mid \Delta') \yields M(b) : A}
+\end{mathpar}
+
+\begin{align*}
+(\Gamma_1 \mid \Gamma_2) &\equiv (\Gamma_2 \mid \Gamma_1) \\
+(\Gamma_1 \mid (\Gamma_2 \mid \Gamma_3)) &\equiv ((\Gamma_1 \mid \Gamma_2) \mid \Gamma_3) \\ 
+(\Gamma_1 \mid \Gamma_2), (x : A \mid y : B) &\equiv (\Gamma_1, x:A) \mid (\Gamma_2, y : B) \\
+(\mathbb{S} \mid \Gamma) &\equiv \Gamma \\
+\end{align*}
+
+We can add a contraction $x \vDash \delta : x \smash x$, and we get a $\mu \vDash \delta_1 : \mu \smash_1 \mu$  automatically.
+In the surface type theory this is allowing $\Gamma \vDash (\Gamma \mid \Gamma)$. 
+
+Note that we have also not yet added any special behaviour to $\cdot \smash (-)$. We might want to add the equations
+\begin{align*}
+(\cdot \mid \unit) &\equiv \cdot \\
+(\cdot \mid \Gamma \mid \Delta) &\equiv (\cdot \mid \Gamma), (\cdot \mid \Delta) \\
+(\cdot \mid \Gamma, x : A) &\equiv ??
+\end{align*}
+It looks like the $\cdot \mid (-)$ \emph{doesn't} push all the way to the leaves necessarily?
 
 \subsection{Profunctory Internal-Comprehension-Category Mode Theory}
 
