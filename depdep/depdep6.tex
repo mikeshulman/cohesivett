@@ -1,0 +1,1067 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage{stackengine}
+\stackMath
+\usepackage[mathscr]{euscript}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+\newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\cbar}{\, | \,}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\ctx}{\,\,\mathsf{mctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\type}{\,\,\mathsf{mode}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+\newcommand{\tele}{\,\,\mathsf{mtele}}
+
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\St[2]{\ensuremath{{#1}(#2)}}
+\newcommand\StI[1]{\ensuremath{\mathsf{st}(#1)}}
+%\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_{#5} #2 : #4}}
+%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \vDash_{\mathsf{disp}} #2 :_{#5} #4}}
+\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
+\newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
+
+\newcommand\Set[0]{\ensuremath{\textbf{Set}}}
+\newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
+\newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
+\newcommand\Dt[2]{\ensuremath{#1.#2}}
+
+\newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
+\newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
+\newcommand{\case}{\mathsf{case}}
+\newcommand{\inl}{\mathsf{inl}}
+\newcommand{\inr}{\mathsf{inr}}
+\newcommand{\ini}{\mathsf{in}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand\El[2]{\mathcal{T}_{#1}(#2)}
+
+\newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+
+\newcommand{\app}[2]{\ensuremath{#1 \: #2}}
+\newcommand{\sigmacl}[3]{\ensuremath{\textnormal{$\Sigma$}\,#1{:}#2.\,#3}}
+\newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
+\newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
+\newcommand{\picl}[3]{\ensuremath{\textnormal{$\Pi$}\,#1{:}#2.\,#3}}
+
+\newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\mt}[0]{\ensuremath{()}}
+
+\title{Adjoint Type Theory}
+\author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Syntax}
+
+\subsection{Overview of Judgements}
+
+Mode theory judgements:
+\begin{enumerate}
+\item $\gamma \ctx$ (empty, extension)
+\item $\gamma \yields p \type$ 
+\item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
+\item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
+\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
+  composition, identities)
+\end{enumerate}
+
+Top judgements: 
+\begin{itemize}
+\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
+\item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
+\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
+\end{itemize}
+
+Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
+in \emph{both directions} in the mode theory, but
+$\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwo{\gamma}{s}{\mu}{\nu}$
+act \emph{contravariantly} on the subscripts of upstairs terms.
+
+We expect structurality to be admissible for the base, and structurality
+over that to be admissible for the top, e.g.:
+\begin{mathpar}
+\inferrule*[Left = weaken-over]
+           {\Gamma,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,\gamma' \vdash \mu : p)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,y:q,\gamma' \vdash \mu : p)}
+
+\inferrule*[Left = subst-over]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \\ (\text{where } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \\ (\text{where } \gamma \vdash \mu : p)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \\ (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
+\end{mathpar}
+
+
+\subsection{Mode Theory}
+
+\begin{enumerate}
+
+\item Contexts are as usual:
+
+\begin{mathpar}
+  \inferrule*{ }
+             {\cdot \ctx}
+             
+  \inferrule*
+    {\gamma \ctx \\
+     \gamma \yields p \type}
+    {\gamma,x:p \ctx}
+\end{mathpar}
+
+\item We assume $1/\Sigma$ modes:
+\begin{mathpar}
+  \inferrule*{ } { \gamma \yields 1 \type }
+  
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \sigmacl{x}{p}{q} \type}
+
+\end{mathpar}
+  
+
+\item In all mode theories, terms must have: 
+
+\begin{mathpar}
+\inferrule*{ }
+             {\gamma,x : p, \gamma' \yields x : p}
+             
+\inferrule*
+    {\gamma \yields \mu : q \\
+     \TypeTwo{\gamma}{s}{p}{q}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : p}
+    
+\inferrule*
+    {\gamma \yields \mu : p \\
+     \TypeTwo{\gamma}{s}{p}{q}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} : q}
+\\
+\TrCirc{\id}{\mu} \equiv \mu \qquad
+\TrCirc{s'}{\TrCirc{s}{\mu}} \equiv \TrCirc{(s;s')}{\mu} \qquad
+\TrPlus{\id}{\mu} \equiv \mu \qquad
+\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
+\end{mathpar}
+
+These are adjoint as $s^\circ \dashv s^+$; this is the direction that identifies $F_{s^+}$ and $U_{s^\circ}$.  
+
+We also have the usual rules for $1/\Sigma$ modes:
+\begin{mathpar}
+  \inferrule*{ }
+             {\gamma \yields \mt : 1}
+  \and 
+  \mu \equiv \mt
+\\
+\inferrule*{
+  \gamma \yields \mu : p \and
+  \gamma \yields \nu : q[\mu/x]
+    }
+   {\gamma \yields (\mu,\nu) : \sigmacl{x}{p}{q}}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \fst \mu : p}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \snd \mu : q[\fst \mu / x]}
+    \\
+    \fst{(p,q)} \equiv p \and
+    \snd{(p,q)} \equiv q \and
+    p \equiv (\fst p, \snd p)
+\end{mathpar}
+
+\item 2-cells between types:
+\begin{mathpar}
+    \inferrule*{ }
+          {\TypeTwo{\gamma}{\id_p}{p}{p}}
+    \qquad
+    \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} \\
+                {\TypeTwo{\gamma}{s_2}{p_2}{p_3}}
+          }
+          {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
+
+\inferrule*{\TypeTwo{\gamma,x:p,\gamma'}{s}{q}{q'} \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
+           } 
+           {\TypeTwo{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{q[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{q'[\mu'/x]}}
+
+\\
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \and
+\ap s {\id_{\mu}/x} \equiv s[\mu/x] \\
+\ap {\ap s {t/x}} {t'/y} \equiv \ap{\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
+\ap {(s;s')} {(t;t')/x} \equiv (\ap s {t/x});(\ap {s'} {t'/x})
+\end{mathpar}
+
+We write $\ap p {t/\delta}$ (or just \ap p {t}) for whiskering
+$\id_p[t/\delta]$ (and similarly for other kinds of horizontal
+composition).  Congruence for $\Sigma$ to be a rule (because we
+don't have ap on a type variable/universes): 
+\begin{mathpar}
+  \inferrule*
+  {\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
+  {\TypeTwo{\gamma}{\sigmacl{x}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}}
+\end{mathpar}
+
+
+\item 2-cells between terms:
+\begin{mathpar}
+    \inferrule*{ }
+          {\TermTwoT{\gamma}{\id_\mu}{\mu}{\mu}{p}}
+    \qquad
+    \inferrule*{{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p}} \\
+                {\TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p}}
+          }
+   {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
+
+\inferrule*{\TermTwoT{\gamma,x:p,\gamma'}{s}{\nu}{\nu}{q'} \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
+           } 
+           {\TermTwoT{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{\nu[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+
+\\           
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \and \\
+\ap s {\id_{\nu}/\delta} \equiv s[\nu/x] \and
+\ap{\id_x}{s/x} \equiv s \and
+\ap{\id_y}{s/x} \equiv \id_y \\
+\ap {\ap s {t/x}} {t'/y} \equiv \ap {\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
+\ap {(s;s')} {(t;t')/\delta} \equiv (\ap s {t/\delta});(\ap {s'} {t'/\delta})
+\end{mathpar}
+
+\drlnote{Do the horizontal composition equations need some ap's?}
+
+Equation defining ``transport'' along a mode type morphism between
+known types:
+\begin{mathpar}
+\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \nu})
+\end{mathpar}
+\drlnote{ Does the analogous rule for $\TrCirc{s}{-}$ follow? }
+
+
+\begin{mathpar}
+\inferrule*
+    {\TypeTwo{\gamma}{s}{p}{q} \\
+     \gamma \yields \nu : q
+    }
+    {\TermTwo{\gamma}{\varepsilon_\nu}{\TrCirc{s}{\TrPlus{s}{\nu}}}{\nu}}
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{p}{q} \\
+      \gamma \yields \mu : p
+    }
+    {\TermTwo{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}}
+\\ 
+\eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon/z} \equiv 1_{\TrPlus{s}{\nu}} \and
+\ap{(\TrCirc{s}{z})}{\eta/z};\varepsilon[\TrCirc{s}{\mu}/x]; \equiv 1_{\TrCirc{s}{\mu}}
+\end{mathpar}
+
+Pairing and projection 2-cells are definable:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
+             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(y:q[\mu/x].(\mu,y))}{t/y};\ap{\ap{(x:p,y:q.(x,y))}{s/x}}{\id_{\nu'}/y}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
+
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+   \and
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+\end{mathpar}
+
+\drlnote{TODO: check the beta/eta}
+
+\item
+  All judgements have a substituton principle
+\begin{mathpar}
+  \inferrule*{\gamma,x:p,\gamma' \yields J \\
+              \gamma \yields \mu : p
+              }
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]}
+
+J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
+\end{mathpar}
+
+\drlnote{write out the usual rules defining this on types and terms}
+             
+\end{enumerate}
+
+\subsection{Contexts}
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+  {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
+    \Gamma \yields_p A \TYPE \and (\text{where }  \gamma \yields p \type)}
+  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:p \ctx)  } \\
+\end{mathpar}
+
+\subsection{Types and Terms}
+
+\subsubsection{Structural Rules}
+
+\begin{mathpar}
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:p,\gamma' \yields x : p)} \and
+
+ \inferrule*[Left = 2cell]{
+   \Gamma \yields_\mu M : A 
+   \and \TermTwo{\gamma}{s}{\nu}{\mu}
+  }
+  {\Gamma \yields_\nu s(M) : A} \\ \\
+\end{mathpar}
+
+\subsubsection{Telescope Types}
+
+\begin{mathpar}
+
+  \inferrule*{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
+  \and 
+  \inferrule*{ \Gamma \yields_\mu M : A \\
+               \Gamma \yields_\nu N : B[M/x]
+             }
+             { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+
+    \fst{(p,q)} \equiv p \and
+    \snd{(p,q)} \equiv q \and
+    p \equiv (\fst p, \snd p)
+\end{mathpar}
+
+\subsubsection{Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = F-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \and (\text{where } \gamma \yields q \type) } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\nu} M : A
+    \and (\text{where } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \and (\text{where } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, x : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \and (\text{where } \gamma, x:p \yields \nu' [\mu / x] : r [\mu / x] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/x]} : p[\nu/x])} \\
+  \FE{\FI{M}}{x}{N} \equiv M[N/x]
+
+  \\ \\
+
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
+    \and \gamma, x:p, c:r \yields \mu : q
+  }{\Gamma \yields_r \U{c.\mu}{A} \TYPE \and (\text{where } \gamma \yields r \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \and (\text{where } \gamma,x:p \yields {\mu[\nu/c]} : q)
+  }
+  {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
+    \and (\text{where } \gamma \yields \nu : r)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \and (\text{where } \gamma \yields \nu_1 : r) \\\\
+    \Gamma \yields_{\nu_2} N_2 : A \and (\text{where } \gamma \yields \nu_2 : p)
+  }{
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+  } \\
+
+  \UE{\UI{x}{M}}{N} \equiv M[N/x] \and 
+  \UI{x}{\UE{N}{x}} \equiv N
+\end{mathpar}
+
+\subsubsection{Surprisingly Strict Modalities}
+
+\drlnote{Equation for $\Sigma$ types}
+
+\begin{mathpar}
+  \inferrule*[Left = s-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \TypeTwo{\gamma}{s}{q}{p}
+  }{\Gamma \yields_q \St{s}{A} \TYPE \and (\text{where } \gamma \yields q \type)} \\
+
+  \inferrule*[Left = S-intro]{
+    \Gamma \yields_{\mu} M : A
+    \and (\text{where } \gamma \yields {\mu} : p)
+  }
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
+
+  \inferrule*[Left = S-elim]{
+    \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{x}/y]
+    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
+  \\
+  \StE{\StI{s}{M}}{x}{N} \equiv M[N/x]
+\end{mathpar}
+
+Type equalities:
+\begin{align*}
+\St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
+\F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
+\St{s}{\U{c.\mu}{A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{A}{B} \\
+\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{A}{B} \\
+\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{A}{B} \\
+\St{(\telety{x}{s}{t})}{\telety{x}{A}{B}} & \equiv \telety{x}{\St{s}{A}}{???} \\
+\St{s}{\St{t}{A}} &\equiv \St{t[s]}{A} \\
+\St{\id_p}{A} &\equiv A\\
+\St{p[s]}{A[M/x]} & \equiv A[?/x]
+\end{align*}
+We should also have term definitional equalities over these.
+%% (like
+%% $\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
+
+\subsection{Examples}
+
+\begin{itemize}
+\item 
+The previous two-argument \F{\mu}{x:A,y:B} (for $x :p, y:q \vdash \mu :
+r$) is now \F{z.\mu[\fst z/x,\snd z/y]}{\telety{x}{A}{B}}, using the
+upstairs $\Sigma$-type ${\telety{x}{A}{B}}$, which has mode
+$\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
+longer telescope.  
+\end{itemize}
+
+\end{document}
+
+\subsection{Strict Internal-Comprehension-Object Mode Theory (Axiomatic, $s^\circ$ and $s^+$ primitive)}
+
+An internal comprehension object consists of 
+
+\begin{mathpar}
+  \inferrule{ }
+            {\gamma \yields p \type}
+  \and
+  \inferrule{\gamma \yields \alpha : p}
+            {\gamma \yields \El{p}{\alpha} \type} \and
+  \\ 
+  \inferrule*[]{~}
+               {\gamma \yields \emptyset : p}
+  \and
+   \inferrule*[]{ \gamma \yields \alpha : p \and
+                  \gamma \yields \mu : \El{p}{\alpha}
+                }
+                { \gamma \yields \alpha.\mu : p}
+  \and
+   \inferrule*{\gamma \yields \alpha : p}
+            {\gamma \yields 1_\alpha : \El{p}{\alpha}}
+
+  \and
+            \inferrule*[]{ \gamma \yields \alpha : p \and
+                  \gamma \yields \mu : \El{p}{\alpha}
+                }
+                { \TermTwoT{\gamma}{\,!}{\mu}{1_\alpha}{\alpha}}
+%            \and
+
+\end{mathpar}
+We use the above to define the following operations
+\begin{mathpar}
+\inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and \TermTwoT{\gamma}{m}{\mu}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+{\TermTwoT{\gamma}{(s,m)}{\alpha.\mu}{\beta.\nu}{p}} \\
+\inferrule{\gamma \yields \alpha : p \and \gamma \yields \mu : \El{p}{\alpha}}
+    {\TermTwoT{\gamma}{\pi^\alpha_\mu}{\alpha.\mu}{\alpha.1_\alpha}{p}} \\
+\inferrule{\gamma \yields \mu : \El{p}{\alpha}}
+    {\TermTwoT{\gamma}{\mathsf{var}_\mu}{1_{\alpha.\mu}}{\El{p}{\pi}^+(\mu)}{\El{p}{\alpha.\mu}}} \\
+\inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p}}
+    {\TermTwoT{\gamma}{\tilde{s}}{\alpha.s^+(\mu)}{\beta.\mu}{p}}
+\end{mathpar}
+by
+\begin{align*}
+    (s, m) &:\equiv \mathsf{ap} (.) (s, m) \\
+    \pi^\alpha_\mu &:\equiv (\id_\alpha, !_\mu)\\
+    \mathsf{var}_\mu &:\equiv \eta_{\pi}(1_{\alpha.\mu}) \\
+    \tilde{s} &:\equiv (s, \id_{s^+(\mu)})
+\end{align*}
+where $\eta_{\pi}$ is the unit of the adjunction $\El{p}{\pi}^\circ \dashv \El{p}{\pi}^+$.
+
+Now impose the equations:
+\begin{align}
+\label{s-plus-one-strict}
+s^+(1_\beta) &\equiv 1_\alpha \\
+\label{dot-one-strict}
+\alpha.1_\alpha &\equiv \alpha \\
+\label{pair-s-bang}
+(s, \id_{1}) &\equiv s\\
+\label{pi-one-strict}
+\pi^\alpha_{1_\alpha} &\equiv \id_\alpha \\
+\label{beta-pi}
+(s, m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}\\
+\label{beta-var}
+\mathsf{ap}(\El{p}{(s,m)}^+)(\mathsf{var}_\mu) &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\alpha}} \\
+\label{eta-pi-var}
+s &\equiv ((s;\pi), \, \mathsf{ap}(\El{p}{s}^+)(\mathsf{var}_\mu)) && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha.\mu}{p} \\
+\label{dot-circ}
+\alpha.\El{p}{s}^\circ(\mu) &\equiv \beta.\mu && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
+\label{pi-dot-circ}
+\pi^\alpha_{\El{p}{s}^\circ(\mu)} &\equiv \pi^\beta_\mu;s && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}\\
+\label{circ-one}
+\El{p}{\pi}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\label{pi-circ-morphism-of-fibrations}
+\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) &\equiv \El{p}{\pi}^\circ(\El{p}{\tilde{s}}^+(\mu)) \\
+\mathsf{ap}(\El{p}{\pi}^\circ)(\eta_{\tilde{s}}(\mu))  &\equiv \eta_s(\El{p}{\pi}^\circ(\mu)) \\
+\mathsf{ap}(\El{p}{\pi}^\circ)(\varepsilon_{\tilde{s}}(\mu))  &\equiv \varepsilon_s(\El{p}{\pi}^\circ(\mu))
+\end{align}
+where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$.
+
+(Note that \eqref{pi-one-strict} and \eqref{beta-pi} follow from \eqref{pair-s-bang})
+
+Where this comes from: a compact definition of a comprehension category with unit, stolen from the paper ``Dependent Types and Fibred Computaitonal Effects'', is 
+\begin{itemize}
+\item A fibration $p : \mathcal{E} \to \mathcal{B}$
+\item A functor $1 : \mathcal{B} \to \mathcal{E}$ that picks out the terminal object of each fiber,
+\item A right adjoint $\{-\} : \mathcal{E} \to \mathcal{B}$ to the functor $1$.
+\end{itemize}
+In our notation:
+\begin{itemize}
+\item $\mathcal{B}$ is the category with objects given by terms $\alpha : p$ and morphisms by $\alpha \vDash_p \beta$.
+\item $\mathcal{E}$ has no direct analogue in the syntax, but has objects given by pairs $[\alpha, \mu]$ and morphisms given by pairs $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s : \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (I use square brackets to distinguish this from other forms of pairing)
+\item The fibration $p$ is the type family $\El{p}{-}$
+\item The functor $1$ at an object $\alpha$ is the pair $[\alpha, 1_\alpha]$
+\item The functor $\{-\}$ is given at $[\alpha, \mu]$ by $\alpha.\mu$.
+\end{itemize}
+
+We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. We want the following bijection to be admissible:
+\begin{mathpar}
+\mprset{fraction={===}}
+ \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
+            {\TermTwoT{\gamma}{(s,t)}{\beta}{\alpha.\mu}{p}}
+\end{mathpar}
+The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$. Adjointness can be expressed as the claim that any morphism $[s, t] : [\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$ factors as:
+\[\begin{tikzcd}
+{[\beta, 1_\beta]} \arrow[dr, "{[s, t]}" swap] \arrow[rr, dashed, "{[(s,t), \id_{1_\beta}]}"] && {[\alpha.\mu, 1_{\alpha.\mu}]} \arrow[dl, "{[\pi, \mathsf{var}_\mu]}"] \\
+& {[\alpha, \mu]}
+\end{tikzcd}\]
+where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu]$. The equations \eqref{beta-pi} and \eqref{beta-var} are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The equation \eqref{eta-pi-var} is the $\eta$ principle that makes the factorisation unique.
+
+The final three equations are expressing that $\El{p}{\pi}^\circ$ is a morphism of fibrations.
+
+We may want the following extensionality principle:
+\begin{mathpar}
+\inferrule*
+    {\alpha.\mu \equiv \alpha.\mu' \and \pi_\mu \equiv \pi_{\mu'}
+    }
+    {\mu \equiv \mu'}
+\end{mathpar}
+The equation $\El{p}{\pi}^\circ(1_{\alpha.\mu}) \equiv \mu$ above is one consequence of this.
+
+Translating from the profunctor notation, we get the term for $\Sigma$ types:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) : \El{p}{\alpha}
+\end{align*}
+And $\Pi$ types:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)}) : \El{p}{\alpha.x}
+\end{align*}
+If we apply the above equations, these terms are:
+\begin{align*}
+\El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
+\El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
+\end{align*}
+respectively. Cool! The long equation from earlier, $\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) \equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))$, is stating that $\Sigma$ as defined above is a morphism of fibrations.
+
+\subsection{Modalities}
+
+Start with a functor $f : p \to q$. Add:
+\begin{mathpar}
+  \inferrule{\gamma \yields \alpha : p}
+            {\gamma \yields f_0(\alpha) : q}
+\end{mathpar}
+Now we can \emph{define}:
+\begin{mathpar}
+  \inferrule{\gamma \yields \mu : \El{p}{\alpha}}
+            {\gamma \yields f_1(\mu) : \El{p}{f_0(\alpha)}}
+\end{mathpar}
+by:
+\begin{align*}
+f_1(\mu) :\equiv \El{p}{\mathsf{ap}(f_0)(\pi^\alpha_\mu)}^\circ(1_{f_0(\alpha.\mu)})
+\end{align*}
+Together with equations:
+\begin{align}
+f_0(\emptyset_p) &\equiv \emptyset_q \\
+\El{p}{\mathsf{ap}(f_0)(s)}^+(f_1(\mu)) &\equiv f_1(\El{p}{s}^+(\mu)) \\
+\mathsf{ap}(f_1)(\eta_s(\mu)) &\equiv \eta_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) \\
+\mathsf{ap}(f_1)(\varepsilon_s(\mu)) &\equiv \varepsilon_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) 
+\end{align}
+where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$. 
+
+The following desirable equations are already true, unwinding the definitions:
+\begin{align*}
+f_1(1_\alpha) &\equiv 1_{f_0(\alpha)} \\
+f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
+\mathsf{ap}(f_0)(\pi^\alpha_\mu) &\equiv \pi^{f_0(\alpha)}_{f_1(\mu)} \\
+\mathsf{ap}(f_1)(\mathsf{var}_\mu) &\equiv \mathsf{var}_{f_1(\mu)}
+\end{align*}
+
+
+\subsection{Profunctory Internal-Comprehension-Category Mode Theory}
+
+The basic idea is that a type is a list of variable dependencies, with some information attached to each dependency saying how it relates to the previously specified dependencies in the same type.
+
+We use an auxilliary judgement $\gamma \mid \beta \yields \sigma : \alpha$ that places the type $\beta$ in a place we can treat it as a minicontext: we have been calling these `substitutions' but I think I will call them renamings in what follows. These are renamings/variable-for-variables substitutions between the lists that constitute $\alpha$ and $\beta$.
+
+Weakening and exchange in the context and weakening the minicontext should be straightforwardly admissible. Exchange in the minicontext should also be admissible (wherever it makes sense), and to properly match the semantics, we should probably be identifying such rearrangements.
+
+\begin{mathpar}
+  \inferrule*[]{~}
+  {\gamma \yields \emptyset \type  } \and 
+  \inferrule*[]{ \gamma \yields \beta \type \and \gamma \mid \beta \yields \sigma : \alpha \and (x : \alpha) \in \gamma}
+  {\gamma \yields (\beta, i : x[\sigma]) \type  } \\
+
+  \inferrule*[]{ \gamma \yields \beta \type}
+  {\gamma \mid \beta \yields () : \emptyset  } \and
+  \inferrule*[]{ \gamma \mid \beta \yields \sigma : \alpha \and  \gamma \mid \alpha \yields \tau : \delta \and (j : x[\tau[\sigma]]) \in \beta}
+  {\gamma \mid \beta \yields (\sigma, j/i) : (\alpha, i : x[\tau])} \\
+  
+  \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha}
+  {\gamma \yields (\beta \mid \sigma)
+   : \alpha} \\
+\end{mathpar}
+
+Where $\tau[\sigma]$ is an admissible substitution rule for renamings, defined below.
+
+\subsubsection{Substitution}
+
+It will take a bit of work to show that substitution is admissible. A substitution $\alpha[(\beta \mid \sigma) / x_0]$ (roughly) expands out to calculating the `pushout' of two natural transformations between types in terms of cell gluing. (Although it looks like an operation on two maps \emph{into} $\alpha$ using the substitution notation.) Intuitively is gluing the list $\beta$ into $\alpha$ everywhere that $x_0$ is used, identifying things as specified by $\sigma$.
+
+This is not too hard to do by hand in simple cases, here are some examples. To reduce the clutter we will denote the unique renaming into $\emptyset$ by $\cdot$, and when it is used to attach a dependency, omit entirely.
+
+Working in the context $x : \emptyset, y : \emptyset, z : \emptyset$ we have things like:
+\begin{align*}
+(i : x)[(j : y, k : y \mid\, \cdot)/x] &= (j : y, k : y) \\
+(i : x, m : z)[(j : y, k : y \mid\, \cdot)/x] &= (j : y, k : y, m : z)
+\end{align*}
+In context $x : \emptyset, y : \emptyset, z : (i : y)$ we can do:
+\begin{align*}
+(i : y, j : z[i/i])[(i_1 : x, i_2 : x \mid\, \cdot)/ y] = (i_1 : x, i_2 : x, j : z[i_1/i_1, i_2/i_2])
+\end{align*}
+as the type of $z$ is now $(i_1 : x, i_2 : x)$. And as an example of some actual gluing, take the context $x : \emptyset, y : (i : x), z : (i : x)$, we can do
+\begin{align*}
+(i : x, j : y[i/i])[(i : x k : z[i/i] \mid i/i ) / y] = (i : x, k : z[i/i])
+\end{align*}
+
+To prove substitution is admissible, the main steps would be:
+\begin{enumerate}
+\item Composition for renamings:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \delta \yields \tau : \beta}{\gamma \mid \delta \yields \sigma[\tau] : \alpha}
+\end{mathpar}
+\item An identity renaming: $\gamma \mid \alpha \yields \id : \alpha$.
+\item A `pushout' operation: 
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha}{\gamma \yields \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}\type}
+\end{mathpar}
+with associated $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inr : \beta'$, so that $\sigma[\inl] = \sigma'[\inr]$.
+\item The following Lemma, which looks morally like a more complicated version of $\inl$, (to be proven simultaneously with substitution I suppose)
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0 \mid \alpha \yields \tau : \alpha_0 \and (i : x_0[\tau]) \in \alpha \and \gamma \mid \beta \yields \sigma : \alpha_0}{\gamma \mid \alpha[(\beta \mid \sigma) / x_0] \yields \sigma' : \beta}
+\end{mathpar}
+such that $\sigma[\sigma'] = \tau[(\beta \mid \sigma)/x_0]$
+\item Substitution itself, for types, terms, renamings.
+\end{enumerate}
+
+So here we go:
+
+\begin{lemma}
+Weakening and exchange are admissible for the minicontext in renamings.
+\end{lemma}
+
+\begin{lemma}
+Renamings actually work: 
+\begin{mathpar}
+\inferrule*[]{(i : x[\sigma]) \in \alpha \and \gamma \mid \beta \yields \tau : \alpha}{(j : x[\sigma[\tau]]) \in \beta}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+Note that in the judgement $(i : x[\sigma]) \in \alpha$, the $\sigma$ is being implicitly weakened from some prefix of $\alpha$.
+\end{proof}
+
+\begin{lemma}
+Composition for renamings is admissible, and this composition is associative.
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \delta \yields \tau : \beta}{\gamma \mid \delta \yields \sigma[\tau] : \alpha}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+Induction on $\alpha$. When $\alpha = \emptyset$, we have the empty renaming $()$. 
+
+If instead $\alpha = (\alpha', i : x[\theta])$, where $\gamma \mid \alpha' \yields \theta : \kappa$, we must have obtained $\gamma \mid \beta \yields \sigma : (\alpha', i : x[\theta])$ via the renaming-extension rule applied to $\gamma \mid \beta \yields \sigma' : \alpha'$ and $(j : x[\theta[\sigma']]) \in \beta$.
+
+Now inductively we have $\gamma \mid \delta \yields \sigma'[\tau] : \alpha'$, and we reapply the renaming-extension rule with $(j : x[\theta [\sigma'][\tau]]) \in \delta$ (using associativity).
+
+\mvrnote{todo associativity}
+\end{proof}
+
+\begin{lemma}
+For any type there is an identity renaming $\gamma \mid \alpha \yields \id_\alpha : \alpha$, and $\sigma[\id] = \sigma = \id[\sigma]$.
+\end{lemma}
+\begin{proof}
+When $\alpha = \emptyset$, use the empty renaming.
+
+When $\alpha = (\alpha', i : x[\tau])$, inductively form $\id_{\alpha'}$, weaken the minicontext with $i : x[\tau]$, and apply the renaming-extension rule with $(i : x[\tau[\id_{\alpha'}]]) \in (\alpha', i : x[\tau]) $
+
+\mvrnote{todo the properties}
+\end{proof}
+
+\begin{lemma}
+Given $(i : x[\tau]) \in \alpha$ and $(i' : x[\tau]) \in \alpha$, there is a type $\alpha_{i=i'}$ where the two variables have been identified. This comes with a renaming $\gamma \mid \alpha_{i=i'} \yields \nabla_{i=i'} : \alpha$, and if $\gamma \mid \beta \yields \sigma : \alpha$ identifies $i$ and $i'$, then it factors through $\nabla_{i=i'}$, let us write this factorisation $\sigma = \nabla_{i=i'}[\sigma_{i=i'}]$.
+\end{lemma}
+\begin{proof}
+Without loss of generality $\alpha$ is of the form $\alpha = (\alpha_1, i : x[\tau], \alpha_2, i' : x[\tau], \alpha_3)$. Set 
+\begin{align*}
+\alpha_{i=i'} &:= (\alpha_1, i : x[\tau], \alpha_2, \alpha_3[i/i']) \\
+\nabla_{i=i'} &:= [\alpha_1/\alpha_1, i / i, \alpha_2/\alpha_2, i / i', \alpha_3/\alpha_3]
+\end{align*}
+
+\mvrnote{The factorisation thing seems clear to me but annoying to write down}
+\end{proof}
+
+\begin{lemma}
+We can construct pushouts of renamings:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha}{\gamma \yields \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}\type}
+\end{mathpar}
+with associated $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ and $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inr : \beta'$, so that $\sigma[\inl] = \sigma'[\inr]$.
+\end{lemma}
+\begin{proof}
+Again induction on $\alpha$. If $\alpha = \emptyset$, then we must have $\sigma = \tau = ()$. We define $\Pushout{\beta}{\emptyset}{\beta'}{()}{()}$ to be just $\beta$ and $\beta'$ concatenated. There are evident $\inl$ and $\inr$ renamings that pick out the $\beta$ or $\beta'$ part, and $\sigma[\inl] = \sigma'[\inr]$ is vacuously true as these are renamings into $\emptyset$.
+
+For the inductive case, suppose:
+\begin{align*}
+\alpha &= (\alpha, i : x[\tau]) \\
+\sigma &= (\sigma, j/i) && \text{where } (j : x [\tau[\sigma]]) \in \beta \\
+\sigma' &= (\sigma', j'/i) && \text{where } (j' : x [\tau[\sigma']]) \in \beta'
+\end{align*}
+Inductively we have $\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$ and the corresponding $\inl/\inr$. Pushing $j$ and $j'$ forward along $\inl$ and $\inr$, and using associativity of renamings, we have 
+\begin{align*}
+(j[\inl] : x[\tau[\sigma[\inl]]]) &\in \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \\
+(j'[\inr] : x[\tau[\sigma'[\inr]]]) &\in \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}
+\end{align*}
+Because $\sigma[\inl] = \sigma'[\inr]$, these variables are a pair that can be identified, and so we do:
+\begin{align*}
+\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma', j'/i)} := (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}
+\end{align*}
+
+Now to define $\inl$, we compose the inductively given $\gamma \mid \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'} \yields \inl : \beta$ with the contraction substitution $\gamma \mid (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]} \yields \nabla : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$. Define $\inr$ similarly.
+
+Checking the equation amounts to verifying $\sigma[\inl[\nabla]] = \sigma'[\inr[\nabla]]$, but this is clear by associativity and the inductive hypothesis.
+\end{proof}
+
+\begin{lemma}
+Universal property for pushout, i.e.:
+\begin{mathpar}
+\inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \sigma' : \alpha \\\\ 
+\gamma \mid \delta \yields \theta : \beta \and \gamma \mid \delta \yields \theta' : \beta' \\\\ 
+\sigma[\theta] = \sigma'[\theta']}
+{\gamma \mid \delta \yields \case^{\sigma, \sigma'}_\alpha(\theta, \theta') : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+If $\alpha = \emptyset$, then the pushout is $(\beta, \beta')$, and we have the renaming $\gamma \mid \delta \yields (\theta / \beta, \theta' / \beta') : (\beta, \beta')$.
+
+If $\alpha = (\alpha, i : x[\tau])$, we inductively have $\case(\theta, \theta') : \Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'}$. To get the renaming into $(\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]}$, we just have to show that $\case(\theta, \theta')$ identifies $j[\inl]$ and $j'[\inr]$. This follows from the equation $\sigma[\theta] = \sigma'[\theta']$, as $j$ and $j'$ are $i$ pushed forward along $\sigma$ and $\sigma'$. \mvrnote{This is sketchy}. We then have an induced renaming $\case(\theta, \theta')_{j[\inl] = j'[\inr]}$.
+
+Note: it appears we only need existence, not uniqueness.
+\end{proof}
+
+The following three lemmas all refer to each other so will be proven by mutual induction. In what follows, if $\gamma \yields \mu : \alpha$ is a term, let $\gamma \mid \bar \mu \yields \mu : \alpha$ be its underlying renaming.
+
+\begin{lemma}\label{inl-sub}
+$\inr$ for substitution:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \alpha \yields \tau : \alpha_0 \and (i_0 : x_0[\tau]) \in \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \ini_{i_0 \in \alpha}(\mu_0) : \bar \mu_0}
+\end{mathpar}
+such that $\mu_0[\ini_{i_0}(\mu_0)] = \tau[\mu_0/x_0]$
+\end{lemma}
+\begin{proof}
+
+Note that because $\tau$ is a substitution for $\alpha_0$, and $x_0$ is not used in $\alpha_0$, $\tau$ can't use any variable in $x_0 : \alpha_0, \gamma'$. This premise could be replaced by something like $\gamma \mid \alpha' \yields \tau : \alpha_0$ where $\alpha'$ the subset of $\alpha$ only containing variables from $\gamma$.
+
+Induction on $\alpha$. We cannot have $\alpha = \emptyset$, as we have assumed $(i_0 : x_0[\tau]) \in \alpha$.
+
+If $\alpha = (\alpha, i : x[\tau])$ with $i \neq i_0$, then $i_0$ must appear earlier in $\alpha$ somewhere and inductively we know $\gamma, \gamma'[\mu_0 / x_0] \mid \alpha[\mu_0 / x_0] \yields \ini_{i_0 \in \alpha}(\mu_0) : \bar \mu_0$, and we can just weaken the minicontext to $(\alpha[\mu_0 / x_0], i : x[\tau[\mu_0 / x_0]])$. Inductively the equation holds, and weakening doesn't change this.
+
+If instead $\alpha = (\alpha, i_0 : x[\tau])$, then by definition $(\alpha, i_0 : x[\tau])[\mu_0/x_0] = \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0}$ and we can use $\inr$. \mvrnote{todo equation}
+\end{proof}
+
+\begin{lemma}
+Substitution into types:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \yields \beta \type \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+Induction on $\beta$. If $\beta = \emptyset$ there is nothing to do. \mvrnote{except deal with $\gamma'$}
+
+If $\beta = (\beta, i : x[\sigma])$ for $x \neq x_0$, by the inductive step we have $\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type$. We can then find $(x : \alpha[\mu_0/x_0]) \in \gamma, \gamma'[\mu_0/x_0]$ and reapply the rule.
+
+If $\beta = (\beta, i : x_0[\sigma])$, then $\sigma$ here is $\gamma, x_0 : \alpha_0, \gamma'\mid \beta \yields \sigma : \alpha_0$. Again we inductively have $\gamma, \gamma'[\mu_0/x_0] \yields \beta[\mu_0/x_0] \type$ and $\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha_0[\mu_0/x_0]$. Note here that $\alpha_0[\mu_0/x_0] = \alpha_0$ because $x_0$ does not occur in $\alpha_0$. 
+
+We then form the pushout of this $\sigma[\mu_0/x_0]$ along the renaming underlying $\mu_0$, yielding the type \[\Pushout{\beta[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\sigma[\mu_0/x_0]}{\mu_0}\] as our answer.
+\end{proof}
+
+\begin{lemma}
+Substitution into renamings:
+\begin{mathpar}
+\inferrule*[]{\gamma, x_0 : \alpha_0, \gamma' \mid \beta \yields \sigma : \alpha \and \gamma \yields \mu_0 : \alpha_0}{\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha[\mu_0/x_0]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+Induction on $\sigma$. If $\sigma$ is the empty renaming there is nothing to do.
+
+So suppose we have just applied the renaming-extension rule to get $\gamma, x_0 : \alpha_0, \gamma' \mid \beta \yields (\sigma, j/i) : (\alpha, i : x[\tau])$, where $(j : x[\tau[\sigma]]) \in \beta$. Inductively we have $\gamma, \gamma'[\mu_0/x_0] \mid \beta[\mu_0/x_0] \yields \sigma[\mu_0/x_0] : \alpha[\mu_0/x_0]$. 
+
+Again there are two cases. If $x \neq x_0$, we can reapply the rule with $(j : x[\tau[\mu_0/x_0][\sigma[\mu_0/x_0]]]) \in \beta[\mu_0/x_0]$. (Here we have to use an interchange rule for renamings and substitution: $\tau[\mu_0/x_0][\sigma[\mu_0/x_0]]] = \tau[\sigma][\mu_0/x_0]$)
+
+If $x = x_0$, our goal is a renaming into $(\alpha, i : x_0[\tau])[\mu_0/x_0]$, which is $\Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0}$. For this we use the universal property of pushouts, applied to the following diagram (where confusingly the arrows go the opposite direction of renamings):
+\[
+\begin{tikzcd}
+\alpha_0 \ar[r, "{\tau[\mu_0/x_0]}"] \ar[d, "\mu_0" swap] & \alpha[\mu_0/x_0] \ar[d] \ar[ddr, bend left, "{\sigma[\mu_0/x_0]}"] & \\
+\bar \mu_0 \ar[r] \ar[drr, bend right, "\ini_j(\mu_0)" swap]& \Pushout{\alpha[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\tau[\mu_0/x_0]}{\mu_0} \ar[dr, dashed] & \\
+& & \beta[\mu_0/x_0]
+\end{tikzcd}
+\]
+\end{proof}
+
+In summary:
+\begin{align*}
+\Pushout{\beta}{\emptyset}{\beta'}{()}{()} &:= (\beta, \beta') \\
+\Pushout{\beta}{(\alpha, i : x[\tau])}{\beta'}{(\sigma, j/i)}{(\sigma, j'/i)} &:= (\Pushout{\beta}{\alpha}{\beta'}{\sigma}{\sigma'})_{j[\inl] = j'[\inr]} \\
+\inl^{(), ()}_\emptyset(\beta, \beta') &:= [\beta/\beta] \\
+\inl^{(\sigma, j/i), (\sigma', j'/i)}_{(\alpha, i:x[\tau])} (\beta, \beta') &:= \inl^{\sigma, \sigma'}_\alpha (\beta, \beta') [\nabla_{j, j'}] \\
+\inr^{(), ()}_\emptyset(\beta, \beta') &:= [\beta'/\beta'] \\
+\inr^{(\sigma, j/i), (\sigma', j'/i)}_{(\alpha, i:x[\tau])} (\beta, \beta') &:= \inr^{\sigma, \sigma'}_\alpha (\beta, \beta') [\nabla_{j, j'}] \\
+\case^{(),()}_\emptyset(\theta, \theta') &:= (\theta / \beta, \theta' / \beta') \\
+\case^{(\sigma,j/i),(\sigma', j'/i)}_{(\alpha,i:x[\tau])}(\theta, \theta') &:= \case^{\sigma, \sigma'}_{\alpha}(\theta, \theta')_{j[\inl]=j'[\inr]} \\
+\ini_{i_0 \in (\alpha, i : x[\sigma])}(\mu_0) &:= \ini_{i_0 \in \alpha}(\mu_0)\\
+\ini_{i_0 \in (\alpha, i_0 : x[\sigma])}(\mu_0) &:= \inr^{\sigma[\mu_0/x_0],\mu_0}_{\alpha_0}(\alpha[\mu_0/x_0], \bar \mu_0) \\
+\\
+\emptyset[\mu_0/x_0] &:= \emptyset \\
+(\beta, i : x[\sigma])[\mu_0/x_0] &:= (\beta[\mu_0/x_0], i : x[\sigma[\mu_0/x_0]]) \\
+(\beta, i : x_0[\sigma])[\mu_0/x_0] &:= \Pushout{\beta[\mu_0/x_0]}{\alpha_0}{\bar \mu_0}{\sigma[\mu_0/x_0]}{\mu_0} \\
+\\
+()[\mu_0/x_0] &:= () \\
+(\sigma, j/i)[\mu_0/x_0] &:= (\sigma[\mu_0/x_0], j[\mu_0/x_0]/i) && \text{where } (j : x[\tau[\sigma]]) \in \beta, x \neq x_0 \\
+(\sigma, j/i)[\mu_0/x_0] &:= \case(\sigma[\mu_0/x_0], \ini_j(\mu_0)) && \text{where } (j : x_0[\tau[\sigma]]) \in \beta \\
+\\
+\end{align*}
+
+\subsubsection{The Variable Rule}
+This isn't built in, but we can define it:
+\begin{lemma}
+Variable rule:
+\begin{mathpar}
+\inferrule*[]{~}{\gamma, x : \alpha, \gamma' \yields x : \alpha}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+This term is built as a renaming into $\alpha$. For this use \[\gamma, x : \alpha, \gamma' \mid \alpha, i : x[\alpha/\alpha]\yields (\alpha/\alpha) : \alpha\]
+\end{proof}
+Note that this is a projection, so whatever term rule we have must allow projections.
+
+\subsubsection{Defining $\TrPlus{s}{-}$ and $\TrCirc{s}{-}$}
+Continue to use the convention that $\bar \mu$ denotes the type underlying a term $\mu : \alpha$. As suggested by their names, type 2-cells $\TypeTwo{\gamma}{s}{\alpha}{\beta}$ act in the mode theory as follows:
+\begin{lemma}
+\begin{mathpar}
+\inferrule*
+    {\gamma \yields \mu : \beta \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : \alpha}
+
+\inferrule*
+    {\gamma \yields \mu : \alpha \\
+     \TypeTwo{\gamma}{s}{\alpha}{\beta}
+    }
+    {\gamma \yields \TrCirc{s}{\mu} : \beta}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+For $s^+$, construct the pushout $\Pushout{\bar \mu}{\beta}{\alpha}{\mu}{s}$. The renaming $\gamma \mid \Pushout{\bar \mu}{\beta}{\alpha}{\mu}{s} \yields \inr : \alpha$ is the desired term. 
+
+For $s^\circ$, we compose the renaming $s$ with $\mu$, so: $\gamma \mid \bar \mu \yields s[\mu] : \beta$.
+\end{proof}
+
+And we build the unit and counit:
+\begin{lemma}
+\begin{mathpar}
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (x : \beta \in \gamma)
+    }
+    {\TermTwo{\gamma}{\varepsilon}{\TrCirc{s}{\TrPlus{s}{x}}}{x}}
+
+\inferrule*
+    {\TypeTwo{\gamma}{s}{\alpha}{\beta} \and (y : \alpha \in \gamma)
+    }
+    {\TermTwo{\gamma}{\eta}{y}{\TrPlus{s}{\TrCirc{s}{y}}}}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+The counit is the upper right triangle in the following pushout diagram (written in natural transformation direction):
+\[
+\begin{tikzcd}[column sep={2cm,between origins},row sep={2cm,between origins}]
+\beta \ar[r, "x"] \ar[d, "s" swap]  \ar[dr, "\TrCirc{s}{\TrPlus{s}{x}}" near start] & \bar x \ar[d, "\inl"] \\
+\alpha \ar[r, "\TrPlus{s}{x}" swap] & \overline{\TrPlus{s}{x}} \\
+\end{tikzcd}
+\]
+
+The unit is the triangle on the right:
+\[
+\begin{tikzcd}
+\beta \ar[d, "s" swap] \ar[r, "s"]& \alpha \ar[dd, "\TrPlus{s}{\TrCirc{s}{x}}"] \ar[dddr, bend left = 40, "x"] &  \\
+\alpha \ar[d, "x" swap] & & \\
+\bar x \ar[r, "\inl" swap]  \ar[drr, "\id" swap, bend right] & \overline{\TrPlus{s}{\TrCirc{s}{x}}} \ar[dr, dashed]& \\
+& & \bar x
+\end{tikzcd}
+\]
+\end{proof}
+
+\subsubsection{$\Sigma$ and $\Pi$}
+
+$\Sigma$ ought to be the $F$ type for \[\gamma, x : \alpha, y : (\alpha, i : x[\id_\alpha]) \yields (\alpha, i : x[\id_\alpha], j : y[\id_{(\alpha, x)}] \mid \alpha / \alpha) : \alpha\]
+
+Let's call this $\sigma_x(y)$, or something. As a sanity check, we can test this with a simple case of $F$-left.
+\begin{mathpar}
+\inferrule*[Left=F-left]{\Gamma, x : A, y : B(x) \yields_{\id_{(\alpha, z)}[\sigma_x(y)/z]} c[\FI{x,y}/z] : C[\FI{x,y}/z]}{\Gamma, z : F_{\sigma_x(y)}(x:A, y : B(x)) \yields_{\id_{(\alpha, z)}} c : C}
+\end{mathpar}
+And presumably $\id_{(\alpha, z)}[\sigma_x(y)/z] = \id_{(\alpha, x, y)}$, as the pushout would identify $x$ and $y$'s dependence on an $\alpha$ with the existing $\alpha$ in $(\alpha, z)$.
+
+And the $F$-intro rule 
+\begin{mathpar}
+\inferrule*[Left=F-right$^*$]{~}{\Gamma, x : A, y: B(x) \yields_{\sigma_x(y)} \mathsf{pair}(x,y) : F_{\sigma_x(y)}(x:A, y : B(x))}
+\end{mathpar}
+could be read as saying that the term $\mathsf{pair}(x,y) := \FI{x,y}$ uses exactly what the type $A$ does, plus one usage of $x$ and one usage of $y$.
+
+$\Pi$ ought to be the $U$ type for \[\gamma, x : \alpha, y : \alpha \yields (\alpha, i : x[\id_\alpha], j : y[\id_{\alpha}] \mid \alpha / \alpha, i / i) : (\alpha, i : x[\id_\alpha])\]
+If we call this $\pi_x(y)$, we can try the $U$-right rule in a simple case:
+\begin{mathpar}
+  \inferrule*[Left = U-right]{\Gamma, x : A \yields_{\pi_x(y)[(\alpha \mid \id_\alpha) / y]} N : B}
+  {\Gamma \yields_{(\alpha \mid \id_\alpha)} \UI x N : U_{y.\pi_x(y)}(A \vert B)} \\
+\end{mathpar}
+And then $\pi_x(y)[(\id_\alpha\vert \alpha)/y] = (\alpha, i : x[\id_\alpha] \mid \id) : (\alpha, i : x[\id_\alpha])$, as the $\alpha$ from the $y$ has been glued to the existing one.
+
+\subsubsection{Structurality}
+
+We can change what structural rules are available by changing which renamings we are permitted to promote to 2-cells.
+
+\begin{enumerate}
+\item The term rule controls how the dependencies of a term relate to the dependencies of its type. By construction, the dependencies of a term bound the dependencies of the type, but we could restrict this further: Allowing only `relevant' renamings here would say that terms can't use variables that their types didn't.
+
+We could choose to not consider types `up to ordering', so that the order of dependencies mattes. Then, allowing only identity renamings in the term rule would demand that terms have have the same dependencies as their types, in the same order. (Whatever this means!)
+
+\item The type 2-cells control the structural rules in the types
+\item The term 2-cells control the structural rules in the terms
+\end{enumerate}
+
+E.g., for full structurality, we would use:
+
+\begin{mathpar}
+  \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha}
+  {\TypeTwo{\gamma}{\sigma}{\beta}{\alpha}}  \and   \inferrule*[]{\gamma \mid \beta \yields \sigma : \alpha \and \gamma \mid \beta' \yields \tau : \beta}
+  {
+  \TermTwo{\gamma}{s}{(\beta \mid \sigma)}{(\beta' \mid \sigma[\tau])}}
+\end{mathpar}
+
+These choices cannot be totally arbitrary: 
+\begin{enumerate}
+\item The variable rule requires that the term rule at least permits projections. Also, we need a type 2-cell $\TypeTwo{\gamma}{s}{\alpha} {\beta}$ to act on terms via $\TrCirc{s}{-}$ and $\TrPlus{s}{-}$. This means, terms must be closed under composition with and pushout along type 2-cells.
+\item We need term 2-cells $\TermTwo{\gamma}{s}{\mu}{\mu'}$ to induce type 2-cells via substitution: $\TypeTwo{\gamma}{s}{\alpha[\mu/x]}{\alpha[\mu'/x]}$. \mvrnote{What exactly is required for this? Enough that term 2-cells are included in type 2-cells?}
+\item For each type 2-cell $\TypeTwo{\gamma}{s}{\alpha} {\beta}$, the corresponding unit and counit term 2-cells must exist.
+\end{enumerate}
+
+As an example, it appears these choices could allow a type system where the types behave fully structurally and the terms behave linearly, but not vis versa.
+
+\subsection{Modal Type Theories}
+\newcommand{\Modes}{\mathcal{M}}
+
+Now let's try to match the idea where we have a small 2-category $\Modes$, and we want a dependent type theory that uses $\Modes$ as the modes. It seems that we want to annotate
+\begin{itemize}
+\item Types with a mode $p \in \ob \Modes$ so $\gamma \yields \alpha \type_p$
+\item Dependencies in a type with a morphism $f : p \to q$, so $\gamma \mid \beta \yields_f \sigma : \alpha$.
+\item Variable usages in a renaming with a 2-cell $s : f \Rightarrow g$.
+\end{itemize}
+
+A first naive attempt, that doesn't work, is:
+
+\begin{mathpar}
+  \inferrule*[]{p \in \ob \Modes}
+  {\gamma \yields \emptyset_p \type_p  } \and 
+  \inferrule*[]{ \gamma \yields \beta \type_p \and \gamma \yields \alpha \type_q \and f : p \to q \in \Modes \and \gamma \mid \beta \yields_f \sigma : \alpha \and (x : \alpha) \in \gamma }
+  {\gamma \yields (\beta, i : x_f[\sigma]) \type_p  } \\
+
+  \inferrule*[]{ \gamma \yields \beta \type_p \and f : p \to q \in \Modes}
+  {\gamma \mid \beta \yields_f () : \emptyset_q  } \and
+  \inferrule*[]{ \gamma \mid \beta \yields_f \sigma : \alpha \and  \gamma \mid \alpha \yields_g \tau : \delta \and (j : x_h[\tau[\sigma]]) \in \beta \and s : gf \Rightarrow h \in \Modes}
+  {\gamma \mid \beta \yields_f (\sigma, j_s/i) : (\alpha, i : x_g[\tau])} \\
+\end{mathpar}
+But above, saying $x_h[\tau[\sigma]]$ doesn't make sense, as presumably $\tau[\sigma]$ is a renaming that is mapped to $gf$. I think we may need an inductively defined way to extend the $s : f \Rightarrow g$ 2-cells in $\Modes$ to a kind of 2-cell between renamings. 
+
+\subsection{Bunchy Type Theories}
+
+\end{document}
+
