@@ -37,7 +37,7 @@
 \newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
-\newcommand\St[2]{\ensuremath{{#1}(#2)}}
+\newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
 \newcommand\StI[1]{\ensuremath{\mathsf{st}(#1)}}
 %\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
 \newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
@@ -207,7 +207,7 @@ We also have the usual rules for $1/\Sigma$ modes:
     p \equiv (\fst p, \snd p)
 \end{mathpar}
 
-\item 2-cells between types:
+\item Mode type morphisms:
 \begin{mathpar}
     \inferrule*{ }
           {\TypeTwo{\gamma}{\id_p}{p}{p}}
@@ -231,10 +231,10 @@ We also have the usual rules for $1/\Sigma$ modes:
 \ap {(s;s')} {(t;t')/x} \equiv (\ap s {t/x});(\ap {s'} {t'/x})
 \end{mathpar}
 
-We write $\ap p {t/\delta}$ (or just \ap p {t}) for whiskering
-$\id_p[t/\delta]$ (and similarly for other kinds of horizontal
-composition).  Congruence for $\Sigma$ to be a rule (because we
-don't have ap on a type variable/universes): 
+We write $\ap p {t/x}$ (or just \ap p {t}) for whiskering
+$\id_p[t/x]$ (and similarly for other kinds of horizontal
+composition).  We need congruence for $\Sigma$ to be a rule (because we
+don't have ap on a type variable/universes):
 \begin{mathpar}
   \inferrule*
   {\TypeTwo{\gamma}{s}{p}{p'} \\
@@ -386,7 +386,7 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 
 \begin{mathpar}
   \inferrule*[Left = F-form]{
-    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    %% \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
     \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
     \gamma, x:p \yields \mu : q 
   }
@@ -408,6 +408,16 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
     \and (\text{where } \gamma, x:p \yields \nu' [\mu / x] : r [\mu / x] )}
   {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/x]} : p[\nu/x])} \\
   \FE{\FI{M}}{x}{N} \equiv M[N/x]
+
+  \\ \\
+
+  \inferrule*[Left = F-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\mu / x] \type )}
+  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \FE{\FI{M}}{x}{C} \equiv C[N/x]
 
   \\ \\
 
@@ -437,8 +447,6 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 
 \subsubsection{Surprisingly Strict Modalities}
 
-\drlnote{Equation for $\Sigma$ types}
-
 \begin{mathpar}
   \inferrule*[Left = s-form]{
     \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
@@ -457,23 +465,33 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
     \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{x}/y]
     \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
-  \\
   \StE{\StI{s}{M}}{x}{N} \equiv M[N/x]
+  \\
+  
+  \inferrule*[Left = S-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\mu / x] \type )}
+  {\Gamma \yields_{r[\nu/y]} \StE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \StE{\StI{M}}{x}{C} \equiv C[N/x]
+
+  \\ \\
 \end{mathpar}
 
 Type equalities:
 \begin{align*}
 \St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
 \F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
-\St{s}{\U{c.\mu}{A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{A}{B} \\
-\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{A}{B} \\
-\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{A}{B} \\
-\St{(\telety{x}{s}{t})}{\telety{x}{A}{B}} & \equiv \telety{x}{\St{s}{A}}{???} \\
+\St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
+\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
+\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B} \\
+\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{t[s]}{A} \\
 \St{\id_p}{A} &\equiv A\\
-\St{p[s]}{A[M/x]} & \equiv A[?/x]
+\St{(\ap{s}{t/x})}{A[M/x]} & \equiv (\St{s}{A})[\St{t}{M}/x]
 \end{align*}
-We should also have term definitional equalities over these.
+\drlnote{We should also have term definitional equalities over these.}
 %% (like
 %% $\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
 
