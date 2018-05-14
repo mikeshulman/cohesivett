@@ -80,6 +80,9 @@
 \newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
 \newcommand{\mt}[0]{\ensuremath{()}}
 
+\newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
+
+
 \title{Adjoint Type Theory}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
@@ -98,6 +101,7 @@ Mode theory judgements:
 \item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
 \item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
 \item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
+  
   composition, identities)
 \end{enumerate}
 
@@ -207,6 +211,12 @@ We also have the usual rules for $1/\Sigma$ modes:
     p \equiv (\fst p, \snd p)
 \end{mathpar}
 
+Equation for ``transport'' in $\Sigma$:
+\begin{mathpar}
+\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
+\end{mathpar}
+\drlnote{ Analogous rule for $\TrCirc{s}{-}$? }
+
 \item Mode type morphisms:
 \begin{mathpar}
     \inferrule*{ }
@@ -217,33 +227,49 @@ We also have the usual rules for $1/\Sigma$ modes:
           }
           {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
 
-\inferrule*{\TypeTwo{\gamma,x:p,\gamma'}{s}{q}{q'} \\
+\inferrule*{{\gamma,x:p} \vdash {q} \type \\
             \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
-            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
            } 
-           {\TypeTwo{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{q[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{q'[\mu'/x]}}
+           {\TypeTwo{\gamma}{\ap {q} {t/x}}{q[\mu/x]}{q[\mu'/x]}}
 
 \\
 \id;s \equiv s \equiv s;\id \and
-(s;s');s'' \equiv s;(s';s'') \and
-\ap s {\id_{\mu}/x} \equiv s[\mu/x] \\
-\ap {\ap s {t/x}} {t'/y} \equiv \ap{\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
-\ap {(s;s')} {(t;t')/x} \equiv (\ap s {t/x});(\ap {s'} {t'/x})
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
+\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \\ 
+\ap q {s/\_} \equiv \id_q \\ 
+\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad (\text{where } \gamma,x:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type)\\
+s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad 
+(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
+
+%% subst: \id_\mu[\nu/x] = \id_{\mu[\nu/x]}
+%% subst: s[x/x] = s
+%% subst: (s;t)[\mu/x] = s[\mu/x];t[\mu/x]
+%% subst: s[\mu[\nu/x]/x] = s[\mu/x][\nu/x]
+%% subst: ap q (s [\mu/x]) = (ap q s)[\mu/x] and generalization
 \end{mathpar}
 
-We write $\ap p {t/x}$ (or just \ap p {t}) for whiskering
-$\id_p[t/x]$ (and similarly for other kinds of horizontal
-composition).  We need congruence for $\Sigma$ to be a rule (because we
-don't have ap on a type variable/universes):
+We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
+
+We need congruence for $\Sigma$ to be a rule (because we don't have ap
+on a type variable/universes):
 \begin{mathpar}
   \inferrule*
   {\TypeTwo{\gamma}{s}{p}{p'} \\
     \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
-  {\TypeTwo{\gamma}{\sigmacl{x}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}}
+  {\TypeTwo{\gamma}{\sigmacl{x'}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
+
+  \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
+  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'};) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
+
+  \ap{(\sigmacl{x'}{p}{q})}{s/y} \equiv \sigmacl{x'}{\ap{p}{s/y}}{? \ap{q}{s/y} ?}
 \end{mathpar}
+\drlnote{need to use encoded ap for second-last variable in this
+  equation: add use of $\Sigma$-mode to do it}
 
-
-\item 2-cells between terms:
+\item 2-cells between terms.  First, we have
+  identity/composition/whiskering and associated equations (whiskering
+  on the other side is given by substitution):
 \begin{mathpar}
     \inferrule*{ }
           {\TermTwoT{\gamma}{\id_\mu}{\mu}{\mu}{p}}
@@ -253,32 +279,25 @@ don't have ap on a type variable/universes):
           }
    {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
 
-\inferrule*{\TermTwoT{\gamma,x:p,\gamma'}{s}{\nu}{\nu}{q'} \\
+\inferrule*{\TermTwoT{\gamma,x:p}{s}{\nu}{\nu}{q} \\
             \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
-            \gamma' = y_1:q_1, \ldots, y_n:q_n \\
            } 
-           {\TermTwoT{\gamma,\gamma'[\mu'/x]}{\ap s {t/x}}{\nu[\mu/x,\TrPlus{\ap{q_i}{s/x}}{y_i/y_i}]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+           {\TermTwoT{\gamma}{\ap s {t/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
 
 \\           
 \id;s \equiv s \equiv s;\id \and
-(s;s');s'' \equiv s;(s';s'') \and \\
-\ap s {\id_{\nu}/\delta} \equiv s[\nu/x] \and
-\ap{\id_x}{s/x} \equiv s \and
-\ap{\id_y}{s/x} \equiv \id_y \\
-\ap {\ap s {t/x}} {t'/y} \equiv \ap {\ap {s}{t'/y}} {\ap {t}{t'/y} / x}  \\
-\ap {(s;s')} {(t;t')/\delta} \equiv (\ap s {t/\delta});(\ap {s'} {t'/\delta})
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
+\ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
+\ap x {s/x} \equiv s  \and
+\ap \mu {s/\_} \equiv \id_q \and
+\ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
+(\text{where } \gamma,x:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q \type)\\
+t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\nu'/x]/y} \quad
+ (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
-\drlnote{Do the horizontal composition equations need some ap's?}
-
-Equation defining ``transport'' along a mode type morphism between
-known types:
-\begin{mathpar}
-\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \nu})
-\end{mathpar}
-\drlnote{ Does the analogous rule for $\TrCirc{s}{-}$ follow? }
-
-
+Next, we have the adjunction for $s^\circ$ and $s^+$:
 \begin{mathpar}
 \inferrule*
     {\TypeTwo{\gamma}{s}{p}{q} \\
@@ -296,23 +315,23 @@ known types:
 \ap{(\TrCirc{s}{z})}{\eta/z};\varepsilon[\TrCirc{s}{\mu}/x]; \equiv 1_{\TrCirc{s}{\mu}}
 \end{mathpar}
 
-Pairing and projection 2-cells are definable:
+Finally, we have the 2-cells for $\Sigma$-mode term constructors:
+
 \begin{mathpar}
-  \inferrule*[Left=Derivable]
-      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
-    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
-             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(y:q[\mu/x].(\mu,y))}{t/y};\ap{\ap{(x:p,y:q.(x,y))}{s/x}}{\id_{\nu'}/y}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
-
-   \inferrule*[Left=Deriv]
-              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
-              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
-   \and
-   \inferrule*[Left=Deriv]
-              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
-              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+\inferrule*
+    {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+      \gamma \vdash \nu' : q[\mu'/x]
+    }
+      {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
+\ap {\fst(z)} {\extend{s}{\nu'}/z} \equiv s \and
+\ap {\snd(z)} {\extend{s}{\nu'}/z} \equiv \id_{\nu'} \\
+s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}} \quad (\text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}})
+\\      
+{\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
+{\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
+\extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu}{\nu'}{q[\mu'/x]})
 \end{mathpar}
-
-\drlnote{TODO: check the beta/eta}
 
 \item
   All judgements have a substituton principle
@@ -325,9 +344,28 @@ Pairing and projection 2-cells are definable:
 J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 \end{mathpar}
 
-\drlnote{write out the usual rules defining this on types and terms}
+\drlnote{write out the usual rules defining this}
              
 \end{enumerate}
+
+\subsubsection{Lemmas}
+
+Pairing and projection 2-cells are definable:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
+             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
+
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+   \and
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+\end{mathpar}
+
 
 \subsection{Contexts}
 
