@@ -211,11 +211,11 @@ We also have the usual rules for $1/\Sigma$ modes:
     p \equiv (\fst p, \snd p)
 \end{mathpar}
 
-Equation for ``transport'' in $\Sigma$:
+Equations for ``transport'' in $\Sigma$:
 \begin{mathpar}
-\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
+\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})\\
+\TrCirc{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrCirc{s}{\fst \mu},\TrCirc{(\ap{q}{\eta_{{\fst \mu}}/x};t[\TrCirc{s}{\fst \mu}/x])}{\snd \mu})
 \end{mathpar}
-\drlnote{ Analogous rule for $\TrCirc{s}{-}$? }
 
 \item Mode type morphisms:
 \begin{mathpar}
@@ -262,10 +262,9 @@ on a type variable/universes):
   \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
   (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'};) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
 
-  \ap{(\sigmacl{x'}{p}{q})}{s/y} \equiv \sigmacl{x'}{\ap{p}{s/y}}{? \ap{q}{s/y} ?}
+  \ap{(y:r . \sigmacl{x'}{p}{q})}{s/y} \equiv
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{(z:(\sigmacl{y}{r}{p}).{q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z}}
 \end{mathpar}
-\drlnote{need to use encoded ap for second-last variable in this
-  equation: add use of $\Sigma$-mode to do it}
 
 \item 2-cells between terms.  First, we have
   identity/composition/whiskering and associated equations (whiskering
@@ -524,9 +523,13 @@ Type equalities:
 \U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
 \U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B} \\
 \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{x}{x'}{\St{t}{B'}}} \\
-\St{s}{\St{t}{A}} &\equiv \St{t[s]}{A} \\
+\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
-\St{(\ap{s}{t/x})}{A[M/x]} & \equiv (\St{s}{A})[\St{t}{M}/x]
+\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\St{t}{M}/x] \quad (\text{where }
+\Gamma,x:A \vdash_q B \TYPE \text{ and } \Gamma \vdash_{\mu'} M : A \text{ and }
+\TermTwo{\gamma}{s}{\mu}{\mu'})
+%% other whiskering is a substitution rule:
+%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align*}
 \drlnote{We should also have term definitional equalities over these.}
 %% (like
