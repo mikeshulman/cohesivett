@@ -80,10 +80,11 @@
 \newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
 \newcommand{\mt}[0]{\ensuremath{()}}
 
+%% FIXME: notation?
 \newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
 
 
-\title{Adjoint Type Theory}
+\title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
 
@@ -101,8 +102,7 @@ Mode theory judgements:
 \item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
 \item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
 \item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
-  
-  composition, identities)
+    composition, identities)
 \end{enumerate}
 
 Top judgements: 
@@ -238,7 +238,7 @@ Equations for ``transport'' in $\Sigma$:
 \ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
 \ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \\ 
 \ap q {s/\_} \equiv \id_q \\ 
-\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad (\text{where } \gamma,x:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type)\\
+\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad (\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type)\\
 s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad 
 (\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
 
@@ -260,10 +260,10 @@ on a type variable/universes):
   {\TypeTwo{\gamma}{\sigmacl{x'}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
 
   \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
-  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'};) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
+  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
 
-  \ap{(y:r . \sigmacl{x'}{p}{q})}{s/y} \equiv
-  \sigmacl{x'}{\ap{p}{s/y}}{\ap{(z:(\sigmacl{y}{r}{p}).{q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z}}
+  \ap{(\sigmacl{x'}{p}{q})}{s/y:r} \equiv
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z:(\sigmacl{y}{r}{p})}}
 \end{mathpar}
 
 \item 2-cells between terms.  First, we have
@@ -278,10 +278,10 @@ on a type variable/universes):
           }
    {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
 
-\inferrule*{\TermTwoT{\gamma,x:p}{s}{\nu}{\nu}{q} \\
-            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+\inferrule*{{\gamma,x:p} \yields {\nu} : {q} \\
+            \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}\\
            } 
-           {\TermTwoT{\gamma}{\ap s {t/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+           {\TermTwoT{\gamma}{\ap \nu {s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu[\mu'/x]}}{q[\mu/x]}}
 
 \\           
 \id;s \equiv s \equiv s;\id \and
@@ -289,10 +289,10 @@ on a type variable/universes):
 \ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
 \ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
 \ap x {s/x} \equiv s  \and
-\ap \mu {s/\_} \equiv \id_q \and
+\ap \nu {s/\_} \equiv \id_\nu \and
 \ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
-(\text{where } \gamma,x:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q \type)\\
-t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\nu'/x]/y} \quad
+(\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q \type)\\
+t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\mu'/x]/y} \quad
  (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
@@ -310,9 +310,10 @@ Next, we have the adjunction for $s^\circ$ and $s^+$:
     }
     {\TermTwo{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}}
 \\ 
-\eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon/z} \equiv 1_{\TrPlus{s}{\nu}} \and
-\ap{(\TrCirc{s}{z})}{\eta/z};\varepsilon[\TrCirc{s}{\mu}/x]; \equiv 1_{\TrCirc{s}{\mu}}
+\eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon_\nu/z} \equiv \id_{\TrPlus{s}{\nu}} \and
+\ap{(\TrCirc{s}{z})}{\eta_\mu/z};\varepsilon_{\TrCirc{s}{\mu}}; \equiv \id_{\TrCirc{s}{\mu}}
 \end{mathpar}
+\drlnote{equations for when $s$ is $\sigmacl{x}{t}{t'}$}.  
 
 Finally, we have the 2-cells for $\Sigma$-modes:
 \begin{mathpar}
@@ -322,13 +323,13 @@ Finally, we have the 2-cells for $\Sigma$-modes:
     }
       {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
 \ap {\fst(z)} {\extend{s}{\nu'}/z} \equiv s \and
-\ap {\snd(z)} {\extend{s}{\nu'}/z} \equiv \id_{\nu'} \\
+\ap {\snd(z)} {\extend{s}{\nu'}/z} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \\
 s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}} \quad (\text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}})
 \\      
 {\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
 {\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
 \extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
-(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu}{\nu'}{q[\mu'/x]})
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]})
 \end{mathpar}
 
 \item
