@@ -576,11 +576,9 @@ Suppose (in any context $\gamma$) two types, with two dependent types
 over them:
 \begin{mathpar}
 p \type \and x : p \vdash S(x) \type \\
-q \type \and y : q \vdash T(x) \type 
+q \type \and y : q \vdash T(y) \type 
 \end{mathpar}
-A \emph{morphism of bifibrations} (\drlnote{should this be called
-  something more specific? does ``bifibration'' suggest the adjunction
-  preservation?}) from $(p,S)$ to $(q,T)$ consists of terms
+A \emph{morphism of bifibrations} from $(p,S)$ to $(q,T)$ consists of terms
 \begin{mathpar}
 x : p \vdash f_0(x) : q \and 
 x : p, z:S \vdash f_1(x,z) : T[f_0(x)/y]
@@ -605,6 +603,7 @@ the sense that it commutes with ``substitution'', in the sense of the
 contravariant action of a mode type morphism.  The second says that it
 is a ``morphism of opfibrations''.  The third and fourth say that $f_1$
 preserves the unit and counit of the $s^\circ \dashv s^+$ adjunctions.
+\drlnote{This is part of morphism of bifibrations because...}
 To type check \eqref{mor-fib-unit}, we have
 \begin{mathpar}
 \eta^{\ap{S}{s/x}}_\nu : \nu \Yields_{S[\beta/x]} \TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}}\\
@@ -736,7 +735,7 @@ $(p,x.\El{p}{x})$
 \begin{mathpar}
   {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\mathsf{var}_x}{1_{\alpha.x}}{\El{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
     \and
-    \mathsf{var}_x :\equiv \eta_{\pi^\alpha_x}(1_{\alpha.x}) 
+    \mathsf{var}_x :\equiv \eta^{\ApEl{p}{\pi^\alpha_x}}(1_{\alpha.x}) 
   \end{mathpar}
 This uses equation \eqref{circ-one} to equate
 $\TrPlus{\ApEl{p}{\pi}}{\TrCirc{\ApEl{p}{\pi}}{1_{\alpha.x}}}$ with
@@ -857,7 +856,7 @@ and $\{-\}$. We want the following to be in bijection:
 \begin{mathpar}
 \mprset{fraction={===}}
  \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
-            {\TermTwoT{\gamma}{(s,t)}{\beta}{\alpha.\mu}{p}}
+            {\TermTwoT{\gamma}{(s \bdot t)}{\beta}{\alpha.\mu}{p}}
 \end{mathpar}
 The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$. Adjointness can be expressed as the claim that any morphism $[s, t] : [\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$ factors as:
 \[\begin{tikzcd}
@@ -881,12 +880,12 @@ substitution (and preserve the adjunctions).
 
 Using equation \eqref{circ-one}, these terms are:
 \begin{align*}
-\ApEl{p}{\pi}^\circ(y) \equiv \ApEl{p}{\pi^\alpha_x}^\circ(\ApEl{p}{\pi^{\alpha.x}_y}^\circ(1_{\alpha.x.y})) \equiv \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \\
+\ApEl{p}{\pi}^\circ(y) \equiv \ApEl{p}{\pi^\alpha_x}^\circ(\ApEl{p}{\pi^{\alpha.x}_y}^\circ(1_{\alpha.x.y})) \equiv \ApEl{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \\
 \ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})
 \end{align*}
 which is like what we were writing in the profunctor mode theory.  
 
-\subsection{Adjunctions}
+\subsection{Morphism of Comprehension Objects}
 
 Let $(p,\El{p}{-},\emptyset_p,1_p,\bdot_p)$
 and $(q,\El{q}{-},\emptyset_q,1_q,\bdot_q)$
@@ -913,9 +912,10 @@ bifibrations is always true for the lifting of an $f_0$:
 \end{mathpar}
 using equations \eqref{dot-circ} \eqref{pi-dot-circ} and fusion.
 
-The most basic form of modality is an adjunction between $p$ and $q$.  
-\begin{definition}[\drlnote{Fiberwise?} adjunction between two modes]
-  An adjunction between $p$ and $q$ is specified by
+The most basic form of modality is specified in the mode theory by a
+morphism of comprehension objects between $p$ and $q$.  
+\begin{definition}[\drlnote{Fiberwise?} morphism of comprehension objects]
+  A morphism of comprehension objects between $p$ and $q$ is specified by
   a mode term
   \begin{mathpar}
     {\alpha : p \yields f_0(\alpha) : q}
@@ -939,6 +939,9 @@ f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
 \ap{f_1(\alpha,-)}{\mathsf{var}_\mu} &\equiv \mathsf{var}_{f_1(\mu)}
 \end{align*}
 
+\drlnote{Upstairs, a morphism of comprehension objects gives rise to an
+  adjoint pair of functors on contexts, which interact with dependent
+  types as follows\ldots}
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
