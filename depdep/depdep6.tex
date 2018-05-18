@@ -568,7 +568,7 @@ longer telescope.
 
 Any dependent type $x : p \vdash S(x) \type$ is a bifibration in the
 sense that for $s : \beta \Yields_p \alpha$ we have both $\ap{S}{s/x}^+
-: S[\alpha/x] \to S[\alpha/x]$ and $\ap{S}{s/x}^\circ : S[\alpha/x] \to
+: S[\alpha/x] \to S[\beta/x]$ and $\ap{S}{s/x}^\circ : S[\beta/x] \to
 S[\alpha/x]$.
 
 \begin{definition}
@@ -603,9 +603,9 @@ f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T[f_0(\alpha)/y]} \TrCirc{\ap{T[f_
 The first equation says that $f_1$ is a ``morphism of fibrations'', in
 the sense that it commutes with ``substitution'', in the sense of the
 contravariant action of a mode type morphism.  The second says that it
-is a ``morphism of opfibrations'' in a dual sense.  The third and fourth
-say that $f_1$ preserves the unit and counit of the $s^\circ \dashv s^+$
-adjunctions.  To type check \eqref{mor-fib-unit}, we have
+is a ``morphism of opfibrations''.  The third and fourth say that $f_1$
+preserves the unit and counit of the $s^\circ \dashv s^+$ adjunctions.
+To type check \eqref{mor-fib-unit}, we have
 \begin{mathpar}
 \eta^{\ap{S}{s/x}}_\nu : \nu \Yields_{S[\beta/x]} \TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}}\\
 \ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} : f_1(\beta,\nu) \Yields_{S[\beta/x]} f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
@@ -628,15 +628,15 @@ f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
 \TrCirc{\ap{T[f_0(x)/y]}{s/x}}{\TrPlus{\ap{T[f_0(x)/y]}{s/x}}{f_1(\alpha,\mu)}}
 \end{mathpar}
 
-Often, it will be the case that $f_1(x,z) := \TrCirc{t}{z}$ for some mode
-type morphism $\TypeTwo{x : p}{t}{S}{T[f_0(x)/y]}$.  In this case, equation
-\eqref{mor-opfib-subst} is automatic by fusion and naturality:
-\begin{mathpar}
-\TrCirc{t[\alpha/x]}{\TrCirc{\ap{S}{s/x}}{\nu}} \equiv \TrCirc{\ap{T[f_0(x)/y]}{s/x}}{\TrCirc{\beta}{\nu}}\\
-\end{mathpar}
-In such circumstances, asserting that $(f_0,f_1)$ is a morphism of
-bifibrations from $(p,S)$ to $(q,T)$ means assertin equations
-\eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
+%% Often, it will be the case that $f_1(x,z) := \TrCirc{t}{z}$ for some mode
+%% type morphism $\TypeTwo{x : p}{t}{S}{T[f_0(x)/y]}$.  In this case, equation
+%% \eqref{mor-opfib-subst} is automatic by fusion and naturality:
+%% \begin{mathpar}
+%% \TrCirc{t[\alpha/x]}{\TrCirc{\ap{S}{s/x}}{\nu}} \equiv \TrCirc{\ap{T[f_0(x)/y]}{s/x}}{\TrCirc{t[\beta/x]}{\nu}}\\
+%% \end{mathpar}
+%% In such circumstances, asserting that $(f_0,f_1)$ is a morphism of
+%% bifibrations from $(p,S)$ to $(q,T)$ means asserting equations
+%% \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
 
 \subsection{Strict Internal-Comprehension-Object (Axiomatic, $s^\circ$ and $s^+$ primitive)}
 
@@ -646,13 +646,15 @@ bifibrations from $(p,S)$ to $(q,T)$ means assertin equations
   \begin{mathpar}
     p \type \and
     \emptyset : p \and
-    \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \\
+    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
+    \\
     \alpha : p \yields \El{p}{\alpha} \type \and
     \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and
-    \TermTwoT{\alpha : p, x : \El{p}{\alpha}}{\,\bang_x}{x}{1_\alpha}{\El{p}{\alpha}}
+    \TermTwoT{\alpha : p, x : \El{p}{\alpha}}{\,\bang_x}{x}{1_\alpha}{\El{p}{\alpha}} \\
+    \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \\
   \end{mathpar}
 such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma
-\yields \mu : \alpha$ and $\gamma \yields \nu : \beta$ unless otherwise specified)
+\yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
 \begin{align}
 \label{s-plus-one-strict}
 \ApEl{p}{s}^+(1_\alpha) &\equiv 1_\beta && \\
@@ -660,10 +662,12 @@ such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and 
 \alpha.1_\alpha &\equiv \alpha \\
 \label{pair-s-bang}
 (s \bdot \id_{1_\alpha}) &\equiv s  && \\
-\label{bang-unique}
- t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{\El{p}{\alpha}}\\
 \label{circ-one}
 \ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu && \\
+\label{bang-unique-p}
+ t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\alpha}{\emptyset}{p}\\
+\label{bang-unique}
+ t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{\El{p}{\alpha}}\\
 \label{beta-var}
 \ap{\ApEl{p}{(s \bdot m)}^+}{\mathsf{var}_\mu} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\beta}} \\
 \label{eta-pi-var}
@@ -688,7 +692,7 @@ to
 $(p,x.\El{p}{x})$
 \end{center}
 
-In the equations, we use the following derived forms:
+\noindent In the equations, we use the following derived forms:
 \begin{itemize}
 \item Pairing for the internal comprehension object is given by ap of
   $.$ on the pairing for $\Sigma$-modes:
@@ -700,8 +704,8 @@ In the equations, we use the following derived forms:
   s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
   \end{mathpar}
   
-  By \eqref{dot-one-strict}, this has the usual comprehsion operation on
-  $p$ as a special case, if we take the terms to be maps
+  By \eqref{dot-one-strict}, this has the usual comprehsion for ``substitutions''
+  (mode term morphisms in $p$) as a special case, if we take the ``terms'' to be maps
   \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}
   in the fiber:
   \begin{mathpar}
@@ -729,18 +733,17 @@ In the equations, we use the following derived forms:
 \item Projection of the last ``variable'' from a ``context'' is defined
   using the unit of the adjunction $\El{p}{\pi}^\circ \dashv
   \El{p}{\pi}^+$:
-  
 \begin{mathpar}
   {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\mathsf{var}_x}{1_{\alpha.x}}{\El{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
     \and
-    \mathsf{var}_x :\equiv \eta_{\pi^\alpha_x}(1_{\alpha.x}) \\
+    \mathsf{var}_x :\equiv \eta_{\pi^\alpha_x}(1_{\alpha.x}) 
   \end{mathpar}
 This uses equation \eqref{circ-one} to equate
 $\TrPlus{\ApEl{p}{\pi}}{\TrCirc{\ApEl{p}{\pi}}{1_{\alpha.x}}}$ with
 $\TrPlus{\ApEl{p}{\pi}}{x}$.  
 \end{itemize}
 
-To type check the equations, we use the following derivable equations:
+\noindent To type check the equations, we use the following derivable equations:
 \begin{itemize}
 
 \item Fusion for $.$
@@ -774,29 +777,31 @@ mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
 equations: $\TrPlus{\ApEl{p}{s}}{-}$ is supposed to act like
 substitution; equation \eqref{s-plus-one-strict} says that substitution
 into the unit type gives the unit type in a different ``context''.
+Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
+$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
+comprehension and projection.
 Equation \eqref{pair-s-bang} type checks because of equations
 \eqref{s-plus-one-strict} and \eqref{dot-one-strict}: $\id_{1_\alpha} :
 1_\alpha \Yields \TrPlus{\ApEl{p}{s}}{1_\beta}$, so pairing with $s$
 gives $\alpha.1_\alpha \Yields \beta.1_\beta$, which is the same as
-$\alpha \Yields \beta$.  Equation \eqref{bang-unique} is the analogue of
-uniqueness of terms of unit type.  Equation \eqref{circ-one} is an
-$\eta$ principle that a term of mode $\El{p}{\alpha}$ (i.e. a
-``dependent type'') is determined by its comprehension and projection.
-Equation \eqref{beta-var} says that ``substituting'' into a ``variable''
-is second projection on the ``substitution''; it type checks using
-\eqref{s-plus-one-strict} and the derivable corresponding equation for
-first projection \eqref{beta-pi} (and fusing the transports/aps).
-Equation \eqref{eta-pi-var} is the usual $\eta$ principle for
-subsitutions.  Equation \eqref{dot-circ} says that the comprehension of
-$s^\circ(\mu)$ is the same as the comprehension of $\mu$, while equation
-\eqref{pi-dot-circ} says that the projection is determined by $s$ and
-the projection from $\beta$ (which type checks using \eqref{dot-circ}).
-Finally, we say that $\El{p}{\pi}^\circ$ is a morphism
-of bifibrations in the above sense.  
+$\alpha \Yields \beta$.  Equation \eqref{bang-unique-p} is the analogue
+of uniqueness of the subsitution for the empty context, while
+\eqref{bang-unique} is the analogue of uniqueness of terms of unit type.
+  Equation \eqref{beta-var} says that
+``substituting'' into a ``variable'' is second projection on the
+``substitution''; it type checks using \eqref{s-plus-one-strict} and the
+derivable corresponding equation for first projection \eqref{beta-pi}
+(and fusing the transports/aps).  Equation \eqref{eta-pi-var} is the
+usual $\eta$ principle for subsitutions.  Equation \eqref{dot-circ} says
+that the comprehension of $s^\circ(\mu)$ is the same as the
+comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
+projection is determined by $s$ and the projection from $\beta$ (which
+type checks using \eqref{dot-circ}).  Finally, we say that
+$\El{p}{\pi}^\circ$ is a morphism of bifibrations in the above sense.
 
 %% where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$.
 
-Some other equations that you might ask for that are already derivable are:
+Some other derivable equations:
 \begin{itemize}
 \item $\pi$ for $1_\alpha$ is the identity:
 \begin{align}
@@ -818,9 +823,9 @@ follows by using \eqref{circ-one} twice with congruence and
 transitivity.  
 \end{itemize}
 
-
 \begin{remark}
-Where this comes from: a compact definition of a comprehension category with unit, stolen from the paper ``Dependent Types and Fibred Computaitonal Effects'', is 
+This axiomatization was inspired by the definition of comprehension
+category with unit in \cite{ahman+16fibered}:
 \begin{itemize}
 \item A fibration $p : \mathcal{E} \to \mathcal{B}$
 \item A functor $1 : \mathcal{B} \to \mathcal{E}$ that picks out the terminal object of each fiber,
@@ -828,14 +833,27 @@ Where this comes from: a compact definition of a comprehension category with uni
 \end{itemize}
 In our notation:
 \begin{itemize}
-\item $\mathcal{B}$ is the category with objects given by terms $\alpha : p$ and morphisms by $\alpha \vDash_p \beta$.
-\item $\mathcal{E}$ has no direct analogue in the syntax, but has objects given by pairs $[\alpha, \mu]$ and morphisms given by pairs $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s : \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (I use square brackets to distinguish this from other forms of pairing)
-\item The fibration $p$ is the type family $\El{p}{-}$
+\item $\mathcal{B}$ is the category with objects given by terms $\alpha
+  : p$ and morphisms by $\alpha \vDash_p \beta$.
+
+\item $\mathcal{E}$ has no direct analogue in the syntax, but has
+  objects given by pairs $[\alpha, \mu : \El{p}{\alpha}]$ and morphisms given by pairs
+  $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s :
+  \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (We
+  write square brackets to distinguish this from other forms of
+  pairing.)
+
+\item The projection $p : \mathcal{E} \to \mathcal{B}$ is a fibration
+  because the type family $\El{p}{-}$ acts on term 2-cells $s : \alpha
+  \vDash_p \beta$ to give $(\ApEl{p}{s})^+$.
+
 \item The functor $1$ at an object $\alpha$ is the pair $[\alpha, 1_\alpha]$
+  
 \item The functor $\{-\}$ is given at $[\alpha, \mu]$ by $\alpha.\mu$.
 \end{itemize}
 
-We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$ and $\{-\}$. We want the following bijection to be admissible:
+We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$
+and $\{-\}$. We want the following to be in bijection:
 \begin{mathpar}
 \mprset{fraction={===}}
  \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
@@ -852,20 +870,24 @@ where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu
 
 \paragraph{Upstairs Types}
 
-Translating from the profunctor notation, we get the term for $\Sigma$ types:
+The mode terms for upstairs $\Sigma$ and $\Pi$ types are
 \begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) : \El{p}{\alpha}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(x,y) :\equiv \TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}  : \El{p}{\alpha}\\
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \Pi_1(x,y) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{y} : \El{p}{\alpha.x}
 \end{align*}
-And $\Pi$ types:
+The equations that $z.\TrCirc{(\pi^{\fst z}_{\snd{z}})}{y}$ is part of a
+morphism of fibrations says that $\Sigma$-types are stable under
+substitution (and preserve the adjunctions).
+
+Using equation \eqref{circ-one}, these terms are:
 \begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)}) : \El{p}{\alpha.x}
+\ApEl{p}{\pi}^\circ(y) \equiv \ApEl{p}{\pi^\alpha_x}^\circ(\ApEl{p}{\pi^{\alpha.x}_y}^\circ(1_{\alpha.x.y})) \equiv \El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \\
+\ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})
 \end{align*}
-If we apply the above equations, these terms are:
-\begin{align*}
-\El{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \equiv \El{p}{\pi}^\circ(\El{p}{\pi}^\circ(1_{\alpha.x.y})) &\equiv \El{p}{\pi}^\circ(y) \\
-\El{p}{\pi}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})&\equiv \El{p}{\pi}^+(y)
-\end{align*}
-respectively. Cool! The long equation from earlier, $\El{p}{s}^+(\El{p}{\pi}^\circ(\mu)) \equiv \El{p}{\pi}^\circ(\El{p}{(s, \mathsf{ap}(\El{p}{s}^+)(\id_x))}^+(\mu))$, is stating that $\Sigma$ as defined above is a morphism of fibrations.
+which is like what we were writing in the profunctor mode theory.  
+
+\bibliographystyle{abbrv}
+\bibliography{../drl-common/cs}
 
 \end{document}
 
@@ -1307,6 +1329,9 @@ A first naive attempt, that doesn't work, is:
 But above, saying $x_h[\tau[\sigma]]$ doesn't make sense, as presumably $\tau[\sigma]$ is a renaming that is mapped to $gf$. I think we may need an inductively defined way to extend the $s : f \Rightarrow g$ 2-cells in $\Modes$ to a kind of 2-cell between renamings. 
 
 \subsection{Bunchy Type Theories}
+
+\bibliographystyle{abbrv}
+\bibliography{../cs.bib}
 
 \end{document}
 
