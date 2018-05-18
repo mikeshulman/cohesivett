@@ -638,10 +638,10 @@ f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
 %% bifibrations from $(p,S)$ to $(q,T)$ means asserting equations
 %% \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
 
-\subsection{Strict Internal-Comprehension-Object (Axiomatic, $s^\circ$ and $s^+$ primitive)}
+\subsection{Strict Comprehension Object (Axiomatic, $s^\circ$ and $s^+$ primitive)}
 
-\begin{definition}[Internal Comprehension Object]
-  A \emph{strict internal comprehension object} is specified by the following
+\begin{definition}[Strict Comprehension Object]
+  A \emph{strict comprehension object} is specified by the following
   constants:
   \begin{mathpar}
     p \type \and
@@ -694,7 +694,7 @@ $(p,x.\El{p}{x})$
 
 \noindent In the equations, we use the following derived forms:
 \begin{itemize}
-\item Pairing for the internal comprehension object is given by ap of
+\item Pairing for the comprehension object is given by ap of
   $.$ on the pairing for $\Sigma$-modes:
   \begin{mathpar}
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
@@ -885,6 +885,60 @@ Using equation \eqref{circ-one}, these terms are:
 \ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})
 \end{align*}
 which is like what we were writing in the profunctor mode theory.  
+
+\subsection{Adjunctions}
+
+Let $(p,\El{p}{-},\emptyset_p,1_p,\bdot_p)$
+and $(q,\El{q}{-},\emptyset_q,1_q,\bdot_q)$
+be two strict comprehension objects.
+
+\begin{definition}[Lifting to dependent types]
+  For a mode term ${\alpha : p \yields f_0(\alpha) : q}$,
+  its \emph{lifting to dependent types} is
+\begin{mathpar}
+  {\alpha : p, x : \El{p}{\alpha} \yields f_1(\alpha,x) : \El{p}{f_0(\alpha)}}
+  \and
+  f_1(\alpha,x) :\equiv \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\alpha_x}}{1_{f_0(\alpha.x)}}
+\end{mathpar}
+\end{definition}
+\noindent We use the convention that, for a mode term $f_0$, $f_1$ is
+its lifting to dependent types.
+
+Observe that equation \eqref{mor-opfib-subst} of being a morphism of
+bifibrations is always true for the lifting of an $f_0$:
+\begin{mathpar}
+  \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{\nu}}}}{1_{f_0(\alpha.\TrCirc{\El{p}{s}}{\nu})}}
+  \equiv
+  \TrCirc{\ap{\El{p}{f_0(-)}}{s}}{\TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\beta_\nu}}{1_{f_0(\beta.\nu)}}}
+\end{mathpar}
+using equations \eqref{dot-circ} \eqref{pi-dot-circ} and fusion.
+
+The most basic form of modality is an adjunction between $p$ and $q$.  
+\begin{definition}[\drlnote{Fiberwise?} adjunction between two modes]
+  An adjunction between $p$ and $q$ is specified by
+  a mode term
+  \begin{mathpar}
+    {\alpha : p \yields f_0(\alpha) : q}
+  \end{mathpar}
+  such that
+  \begin{align}
+  f_0(\emptyset_p) &\equiv \emptyset_q 
+  \end{align}
+\begin{center}
+  $(f_0, f_1)$ is a morphism of bifibrations from $(p,\El{p}{-})$ to $(q,\El{q}{-})$
+equations  \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
+\end{center}
+\end{definition}
+
+We often treat $\alpha$ as an implicit argument to $f_1$.  We can show
+that $f$ preserves the rest of the structure of a comprehension object:
+\begin{align*}
+f_1(1_\alpha) &\equiv 1_{f_0(\alpha)} \\
+f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
+\ap{f_0}{\pi^\alpha_\mu} &\equiv \pi^{f_0(\alpha)}_{f_1(\mu)} \\
+\ap{f_1(\alpha,-)}{\mathsf{var}_\mu} &\equiv \mathsf{var}_{f_1(\mu)}
+\end{align*}
+
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
