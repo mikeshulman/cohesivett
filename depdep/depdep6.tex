@@ -668,7 +668,7 @@ such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and 
 \label{bang-unique}
  t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{\El{p}{\alpha}}\\
 \label{beta-var}
-\ap{\ApEl{p}{(s \bdot m)}^+}{\mathsf{var}_\mu} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\mu)}{\El{p}{\beta}} \\
+\ap{\ApEl{p}{(s \bdot m)}^+}{\mathsf{var}_\mu} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}} \\
 \label{eta-pi-var}
 t &\equiv ((t;\pi) \bdot \ap{\ApEl{p}{t}^+}{\mathsf{var}_\mu}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p} \\
 \label{dot-circ}
@@ -698,28 +698,28 @@ $(p,x.\El{p}{x})$
   \begin{mathpar}
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
              %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-             \TermTwoT{\gamma}{m}{\mu}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
             {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
   s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
   \end{mathpar}
   
   By \eqref{dot-one-strict}, this has the usual comprehsion for ``substitutions''
   (mode term morphisms in $p$) as a special case, if we take the ``terms'' to be maps
-  \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}
+  \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}
   in the fiber:
   \begin{mathpar}
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
              %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-             \TermTwoT{\gamma}{m}{1}{\El{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+             \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
             {\TermTwoT{\gamma}{s \bdot m}{\alpha}{\beta.\nu}{p}}
   \end{mathpar}
 
   As another special case, we have
 \begin{mathpar}
     \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \beta}
-    {\TermTwoT{\gamma}{\tilde{s}}{\alpha.\El{p}{s}^+(\mu)}{\beta.\mu}{p}}
+    {\TermTwoT{\gamma}{\tilde{s}}{\alpha.\ApEl{p}{s}^+(\mu)}{\beta.\mu}{p}}
     \and
-    \tilde{s} :\equiv (s \bdot \id_{\El{p}{s}^+(\mu)}) 
+    \tilde{s} :\equiv (s \bdot \id_{\ApEl{p}{s}^+(\mu)}) 
 \end{mathpar}
   
 \item Also using \eqref{dot-one-strict}, ``first projection'' from a ``context'' is given by 
@@ -730,10 +730,10 @@ $(p,x.\El{p}{x})$
 \end{mathpar}
 
 \item Projection of the last ``variable'' from a ``context'' is defined
-  using the unit of the adjunction $\El{p}{\pi}^\circ \dashv
-  \El{p}{\pi}^+$:
+  using the unit of the adjunction $\ApEl{p}{\pi}^\circ \dashv
+  \ApEl{p}{\pi}^+$:
 \begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\mathsf{var}_x}{1_{\alpha.x}}{\El{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\mathsf{var}_x}{1_{\alpha.x}}{\ApEl{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
     \and
     \mathsf{var}_x :\equiv \eta^{\ApEl{p}{\pi^\alpha_x}}(1_{\alpha.x}) 
   \end{mathpar}
@@ -748,7 +748,7 @@ $\TrPlus{\ApEl{p}{\pi}}{x}$.
 \item Fusion for $.$
 \begin{align}
 \label{dot-fusion}
-    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ap {\El{p}{s}^+} {m'}))
+    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
 \end{align}
 follows by fusing the ap's and the corresponding fusion rule for
 morphisms in $\Sigma$ modes.
@@ -756,7 +756,7 @@ morphisms in $\Sigma$ modes.
 \item $\beta$ reduction for first projection:
   \begin{align}
 \label{beta-pi}
-(s \bdot m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\El{p}{s}^+(\mu)}{\alpha}
+(s \bdot m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\ApEl{p}{s}^+(\mu)}{\alpha}
   \end{align}
   is derived by
   \begin{mathpar}
@@ -796,7 +796,7 @@ that the comprehension of $s^\circ(\mu)$ is the same as the
 comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
 projection is determined by $s$ and the projection from $\beta$ (which
 type checks using \eqref{dot-circ}).  Finally, we say that
-$\El{p}{\pi}^\circ$ is a morphism of bifibrations in the above sense.
+$\ApEl{p}{\pi}^\circ$ is a morphism of bifibrations in the above sense.
 
 %% where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$.
 
@@ -838,7 +838,7 @@ In our notation:
 \item $\mathcal{E}$ has no direct analogue in the syntax, but has
   objects given by pairs $[\alpha, \mu : \El{p}{\alpha}]$ and morphisms given by pairs
   $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s :
-  \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \El{p}{s}^+ (\mu)$. (We
+  \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \ApEl{p}{s}^+ (\mu)$. (We
   write square brackets to distinguish this from other forms of
   pairing.)
 
@@ -855,7 +855,7 @@ We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$
 and $\{-\}$. We want the following to be in bijection:
 \begin{mathpar}
 \mprset{fraction={===}}
- \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\El{p}{s}^+(\mu)}{\El{p}{\beta}}}
+ \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}}}
             {\TermTwoT{\gamma}{(s \bdot t)}{\beta}{\alpha.\mu}{p}}
 \end{mathpar}
 The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$. Adjointness can be expressed as the claim that any morphism $[s, t] : [\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$ factors as:
@@ -881,7 +881,7 @@ substitution (and preserve the adjunctions).
 Using equation \eqref{circ-one}, these terms are:
 \begin{align*}
 \ApEl{p}{\pi}^\circ(y) \equiv \ApEl{p}{\pi^\alpha_x}^\circ(\ApEl{p}{\pi^{\alpha.x}_y}^\circ(1_{\alpha.x.y})) \equiv \ApEl{p}{\pi;\pi}^\circ(1_{\alpha.x.y}) \\
-\ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\El{p}{\pi}^+(y)})
+\ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\ApEl{p}{\pi}^+(y)})
 \end{align*}
 which is like what we were writing in the profunctor mode theory.  
 
@@ -906,7 +906,7 @@ its lifting to dependent types.
 Observe that equation \eqref{mor-opfib-subst} of being a morphism of
 bifibrations is always true for the lifting of an $f_0$:
 \begin{mathpar}
-  \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{\nu}}}}{1_{f_0(\alpha.\TrCirc{\El{p}{s}}{\nu})}}
+  \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{\nu}}}}{1_{f_0(\alpha.\TrCirc{\ApEl{p}{s}}{\nu})}}
   \equiv
   \TrCirc{\ap{\El{p}{f_0(-)}}{s}}{\TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\beta_\nu}}{1_{f_0(\beta.\nu)}}}
 \end{mathpar}
@@ -968,11 +968,11 @@ f_1(\mu) :\equiv \El{p}{\mathsf{ap}(f_0)(\pi^\alpha_\mu)}^\circ(1_{f_0(\alpha.\m
 Together with equations:
 \begin{align}
 f_0(\emptyset_p) &\equiv \emptyset_q \\
-\El{p}{\mathsf{ap}(f_0)(s)}^+(f_1(\mu)) &\equiv f_1(\El{p}{s}^+(\mu)) \\
+\El{p}{\mathsf{ap}(f_0)(s)}^+(f_1(\mu)) &\equiv f_1(\ApEl{p}{s}^+(\mu)) \\
 \mathsf{ap}(f_1)(\eta_s(\mu)) &\equiv \eta_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) \\
 \mathsf{ap}(f_1)(\varepsilon_s(\mu)) &\equiv \varepsilon_{\mathsf{ap}(f_0)(s)}(f_1(\mu)) 
 \end{align}
-where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$. 
+where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\ApEl{p}{s}^\circ \dashv \ApEl{p}{s}^+$. 
 
 The following desirable equations are already true, unwinding the definitions:
 \begin{align*}
