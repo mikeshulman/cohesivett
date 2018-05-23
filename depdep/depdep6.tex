@@ -477,7 +477,7 @@ Pairing and projection 2-cells are definable:
     \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
     \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
     \and \gamma, x:p, c:r \yields \mu : q
-  }{\Gamma \yields_r \U{c.\mu}{A} \TYPE \and (\text{where } \gamma \yields r \type)} \\
+  }{\Gamma \yields_r \U{c.\mu}{A}{B} \TYPE \and (\text{where } \gamma \yields r \type)} \\
 
   \inferrule*[Left = U-intro]{
     \Gamma,x:A \yields_{\mu[\nu/c]} M : B \and (\text{where } \gamma,x:p \yields {\mu[\nu/c]} : q)
@@ -942,6 +942,164 @@ f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
 \drlnote{Upstairs, a morphism of comprehension objects gives rise to an
   adjoint pair of functors on contexts, which interact with dependent
   types as follows\ldots}
+
+\subsection{Spatial Type Theory}
+Let
+\begin{mathpar}
+    {\alpha : p \yields f_0(\alpha) : p}
+\end{mathpar}
+be a morphism of comprehension objects, together with a mode term 2-cell 
+\begin{mathpar}
+    {\alpha : p \mid f_0(\alpha) \vDash_p c_\alpha : \alpha}
+\end{mathpar}
+and equations
+\begin{align*}
+f_0(f_0(\alpha)) &\equiv f_0(\alpha) \\
+\ap{f_0}{c_\alpha} &\equiv \id_{f_0(\alpha)} \\
+c_{f_0(\alpha)} &\equiv \id_{f_0(\alpha)}
+\end{align*}
+making $f_0$ into an idempotent comonad on $p$.
+
+An operation
+\begin{mathpar}
+  {\alpha : p, x : \El{p}{f_0(\alpha)} \yields \flat_1(\alpha,x) : \El{p}{f_0(\alpha)}}
+\end{mathpar}
+can be defined in two equivalent ways: either \[\flat_1(\alpha,x) :\equiv f_1(f_0(\alpha),x)\] which typechecks due to idempotence, or \[ \flat_1(\alpha,x) :\equiv  f_1(\alpha,\ApEl{p}{c}^\circ(x)) \]
+which is equivalent via:
+\begin{align*}
+f_1(\alpha,\ApEl{p}{c}^\circ(x)) 
+&\equiv \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^\alpha_{\ApEl{p}{c}^\circ(x)}}}{1_{f_0(\alpha.\ApEl{p}{c}^\circ(x))}} && \text{(Def of $f_1$)} \\
+&\equiv \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^{f_0(\alpha)}_x;c}}{1_{f_0(f_0(\alpha).x)}} && \text{(By equations \eqref{dot-circ} and \eqref{pi-dot-circ})} \\
+&\equiv \TrCirc{\ap{\El{p}{f_0(-)}}{c}}{\TrCirc{\ap{\El{p}{f_0(-)}}{\pi^{f_0(\alpha)}_x}}{1_{f_0(f_0(\alpha).x)}}} && \text{(Fusion)} \\
+&\equiv \TrCirc{\ap{\El{p}{f_0(-)}}{\pi^{f_0(\alpha)}_x}}{1_{f_0(f_0(\alpha).x)}} && \text{($\ap{f_0}{c_\alpha} \equiv \id_{f_0(\alpha)}$)} \\
+&\equiv f_1(f_0(\alpha),x)
+\end{align*}
+
+Now we match spacial type theory judgements with the mode theory judgements they live over:
+\begin{align*}
+&\yields \Delta;\Gamma & \gamma &\yields \underline{(\Delta;\Gamma)} : p \\
+\Delta ;\Gamma &\yields A \TYPE & \gamma &\yields \El{p}{\underline{\Delta;\Gamma}} \type \\
+\Delta;\Gamma &\yields M : A & \gamma &\yields 1_{(\underline{\Delta;\Gamma})} : \El{p}{\underline{\Delta;\Gamma}}
+\end{align*}
+Where
+\begin{align*}
+\underline{(\cdot ; \cdot)} &:\equiv \emptyset \\
+\underline{(\Delta, x :: A ; \cdot)} &:\equiv \underline{(\Delta ; \cdot)}.\flat_1(x) \\
+\underline{(\Delta ; \Gamma, y : B)} &:\equiv \underline{(\Delta ; \Gamma )}.y \\
+\end{align*}
+So that
+\begin{align*}
+f_0(\underline{\Delta ; \Gamma}) \equiv (\underline{\Delta, \Gamma ; \cdot})
+\end{align*}
+by idempotence.
+
+\setlength{\jot}{20pt}
+\begin{align*}
+\inferrule*[vcenter, Left = var]{~}
+{\Delta ; \Gamma, x : A \yields x : A} 
+&&
+\inferrule*[Right = 2cell]{
+\inferrule*[Right = S-intro]{
+\inferrule*[Right = var]{~}
+  {\Gamma, x : A \yields_{x} x : A}}
+  {\Gamma, x : A \yields_{\pi^+(x)} x : \pi^*(A)} \and ~ \and
+    \TermTwo{\Gamma, x : A }{\mathsf{var}_x}{1_{\underline{(\Delta ; \Gamma, x:A )}}}{\pi^+(x)}}
+  {\Gamma, x : A \yields_{1_{\underline{(\Delta ; \Gamma, x:A )}}} x : \pi^*(A)} \\
+%
+\inferrule*[vcenter, Left = crisp-var]{~}
+{\Delta, x :: A  ; \cdot \yields x : A} 
+&&
+\inferrule*[Right = S-intro]{
+\inferrule*[Right = 2cell]{
+\inferrule*[Right = S-intro]{
+\inferrule*[Right = var]{~}
+  {\Gamma, x : A \yields_{x} x : A}}
+  {\Gamma, x : A \yields_{\pi^+(x)} x : \pi^*(A)} \and ~ \and
+    \TermTwo{\Gamma, x : A }{\mathsf{var}_x}{1_{\underline{(\Delta, \cdot )}.x}}{\pi^+(x)}}
+  {\Gamma, x : A \yields_{1_{\underline{(\Delta, \cdot )}.x}} x : \pi^*(A)}}
+  {\Gamma, x : A \yields_{1_{\underline{(\Delta, \cdot )}.\flat_1(x)}} x : (c_{f_0(\alpha).x};\pi)^*(A)}
+  \\
+\inferrule*[vcenter, Left = subst]{\Gamma \yields M : A \and \Delta ; \Gamma, x : A \yields N : B}
+{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
+&&\inferrule*[vcenter, Right= subst]{\Gamma \yields_{1_{\underline{(\Delta, \Gamma )}}} M : A \and \Gamma, x : A \yields_{1_{\underline{(\Delta, \Gamma)}.x}} N : B}
+{\Gamma \yields_{1_{\underline{(\Delta, \Gamma)}.1_{\underline{(\Delta, \Gamma )}}}} N[M/x] : B[M/x]} 
+  \\
+\inferrule*[vcenter, Left = crisp-subst]{\Delta ; \cdot \yields M : A \and \Delta, x :: A ; \Gamma \yields N : B}
+{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
+&&\inferrule*[vcenter, Right= subst]{\Gamma \yields_{1_{\underline{(\Delta, \cdot )}}} M : A \and \Gamma, x : A \yields_{1_{\underline{\Delta}.\flat_1(x).\pi^+\underline{\Gamma}}} N : B}
+{\Gamma \yields_{1_{\underline{\Delta}.\underline{\Gamma}}} N[M/x] : B[M/x]} 
+\end{align*}
+
+
+\newcommand\flatE[3]{\ensuremath{\mathsf{let} \, #2^\flat \, := \, {#1} \, \mathsf{in} \, #3}}
+
+
+\begin{align*}
+\inferrule*[vcenter, Left = $\flat$-form]{\Delta ; \cdot \yields A \TYPE}
+{\Delta ; \cdot \yields \flat A \TYPE} 
+&&\inferrule*[vcenter, Right = F-form]{
+    \Gamma \yields_{\El{p}{f_0(\alpha)}} A \TYPE\\\\
+    \gamma, x : {\El{p}{f_0(\alpha)}} \yields \flat_1(\alpha,x) : \El{p}{f_0(\alpha)}
+  }
+  {\Gamma \yields_{\El{p}{f_0(\alpha)}} \F{x.\flat_1(\alpha,x)}{A} \TYPE} \\
+%
+\inferrule*[vcenter, Left = $\flat$-intro]{\Delta ; \cdot \yields M : A}
+{\Delta ; \cdot \yields M^\flat : \flat A} &&
+\inferrule*[vcenter, Right = F-intro]{
+    \Gamma \yields_{1_{f_0(\alpha)}} M : A
+  }
+  {\Gamma \yields_{\flat_1(\alpha,x)[1/x] \equiv 1_{f_0(\alpha)}} \FI{M} : \F{x.\flat_1(\alpha,x)}{A}} \\
+%
+\inferrule*[vcenter, Left=crisp-$\flat$-elim]{
+    \Delta, x :: \flat A ; \cdot \yields C \TYPE \\\\
+    \Delta ; \cdot \yields M : \flat A \\\\
+    \Delta, u :: A ; \cdot \yields N : C[u^\flat / x]}
+  {\Delta ; \cdot \yields (\flatE{M}{u}{N}) : C[M / x]}
+ &&  \inferrule*[vcenter, Right = F-elim]{
+    \Gamma, y : \F{x.\flat_1(\alpha,x)}{A} \yields_{\underline{(\Delta ; \cdot )}.\flat_1(y)} C \TYPE \\\\
+    \Gamma \yields_{1_{\underline{(\Delta ; \cdot )}}} M : \F{x.\flat_1(\alpha,x)}{A} \\\\
+    \Gamma, x:A \yields_{1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y]} N : C [\FI{x}/y]}
+  {\Gamma \yields_{1_{\underline{(\Delta ; \cdot )}.\flat_1(y)}[1_{\underline{(\Delta ; \cdot )}}/y]} \FE{M}{x}{N} : C[M/y]} \\
+%
+\inferrule*[vcenter, Left=$\flat$-elim]{
+    \Delta ; \Gamma, x : \flat A \yields C \TYPE \\\\
+    \Delta ; \Gamma \yields M : \flat A \\\\
+    \Delta, u :: A ; \Gamma \yields N : C[u^\flat / x]}
+  {\Delta ; \Gamma \yields (\flatE{M}{u}{N}) : C[M / x]}
+ &&  \inferrule*[vcenter, Right = F-elim]{
+    \Gamma, y : \F{x.\pi_\Gamma^+(\flat_1(\alpha,x))}{A} \yields_{\underline{(\Delta ; \Gamma )}.y} C \TYPE \\\\
+    \Gamma \yields_{1_{\underline{(\Delta ; \Gamma )}}} M : \F{x.\pi_\Gamma^+(\flat_1(\alpha,x))}{A} \\\\
+    \Gamma, x:A \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]} N : C [\FI{x}/y]}
+  {\Gamma \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[1_{\underline{(\Delta ; \Gamma )}}/y]} \FE{M}{x}{N} : C[M/y]}
+\end{align*}
+In crisp-$\flat$-elim, we must use idempotence to show $1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y] \equiv 1_{\underline{(\Delta ; \cdot)}.\flat_1(\alpha,x)}$
+
+In $\flat$-elim, to get from $1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]$ back to $1_{\underline{(\Delta, y : A ; \Gamma)}}$, we have to push the $y$ past everything in $\Gamma$, then push the new $\pi^+$s on the entries of $\underline{\Gamma}$ into the types in $\Gamma$. (or something)
+\begin{align*}
+\inferrule*[vcenter, Left = $\sharp$-form]{\Delta, \Gamma ; \cdot \yields A \TYPE}
+{\Delta ; \Gamma \yields \sharp A \TYPE} 
+&&  \inferrule*[vcenter, Right = U-form]{
+    \Gamma \yields_{f_0(\underline{\Delta ; \Gamma})} A \TYPE \\\\
+    \and \gamma, c : {\El{p}{\underline{\Delta ; \Gamma}}} \yields f_1(\underline{\Delta ; \Gamma},c) : \El{p}{f_0(\underline{\Delta ; \Gamma})}
+  }{\Gamma \yields_{\underline{(\Delta ; \Gamma)}} \U{c.f_1(\underline{\Delta ; \Gamma},c)}{\cdot}{A} \TYPE} \\
+%
+\inferrule*[vcenter, Left = $\sharp$-intro]{\Delta, \Gamma ; \cdot \yields M : A}
+{\Delta ; \Gamma \yields M^\sharp : \sharp A} 
+&&\inferrule*[vcenter, Right = U-intro]{
+    \Gamma \yields_{f_1(\alpha,c)[1_{(\underline{\Delta ; \Gamma})}/c]\equiv 1_{f_0(\underline{\Delta ; \Gamma})}}  M : A
+  }
+  {\Gamma \yields_{1_{(\underline{\Delta ; \Gamma})}} \lambda{M} : \U{c.f_1(\alpha,c)}{\cdot}{A}
+  } \\
+%
+\inferrule*[vcenter, Left = $\sharp$-elim]{\Delta ; \Gamma \yields M : \sharp A}
+{\Delta, \Gamma ; \cdot \yields M_\sharp : A} 
+&&  \inferrule*[vcenter, Left = U-elim]{
+    \Gamma \yields_{1_{(\underline{\Delta ; \Gamma})}} N : \U{c.f_1(\alpha,c)}{\cdot}{A}
+  }{
+    \Gamma \yields_{f_1(\alpha,c)[1_{(\underline{\Delta ; \Gamma})}/c]} \UE{N}{\cdot} : A
+  } \\
+\end{align*}
+
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
