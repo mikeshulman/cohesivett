@@ -867,12 +867,12 @@ where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu
 \end{remark}
 
 
-\paragraph{Upstairs Types}
+\subsubsection{Upstairs Types}
 
 The mode terms for upstairs $\Sigma$ and $\Pi$ types are
 \begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(x,y) :\equiv \TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}  : \El{p}{\alpha}\\
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \Pi_1(x,y) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{y} : \El{p}{\alpha.x}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(\alpha,x,y) :\equiv \TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}  : \El{p}{\alpha}\\
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} \yields \Pi_1(\alpha,x,y) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{y} : \El{p}{\alpha.x}
 \end{align*}
 The equations that $z.\TrCirc{(\pi^{\fst z}_{\snd{z}})}{y}$ is part of a
 morphism of fibrations says that $\Sigma$-types are stable under
@@ -884,6 +884,80 @@ Using equation \eqref{circ-one}, these terms are:
 \ApEl{p}{\pi^\alpha_x}^+(y) \equiv \ApEl{p}{\pi^{\alpha.x}_{\ApEl{p}{\pi^\alpha_x}^+(y)}}^\circ(1_{\alpha.x.\ApEl{p}{\pi}^+(y)})
 \end{align*}
 which is like what we were writing in the profunctor mode theory.  
+
+This could be made more formal by giving an inductive encoding, but the
+basic idea for representing a standard dependent type theory (which we
+will refer to as the ``object language'') is as follows:
+\begin{itemize}
+\item An object-language context $x_1 : A_1, \ldots , x_n : A_n$
+  determines a mode context
+  \[x_1 : \El{p}{\emptyset}, x_2 : \El{p}{\emptyset.x_1}, \ldots, x_{i+1} : \El{p}{\emptyset.x_1.x_2.\ldots.x_i},\ldots
+  \]
+  and an upstairs context
+  \[x_1 : A_1, x_2 : A_2, \ldots, x_{i+1}:A_{i+1},\ldots
+  \]
+  over it.  We write $\underline{\Gamma}$ for
+  $\emptyset.x_1.x_2.\ldots.x_n$ when $\Gamma$ is
+  $x_1 : A_1, \ldots , x_n : A_n$.
+
+\item A judgement $\Gamma \yields A \TYPE$ is represented by
+  $\Gamma \yields_{\underline{\Gamma}} A \TYPE$.
+
+\item A judgement $\Gamma \yields a : A$ is represented by
+  $\Gamma \yields_{1_{\underline{\Gamma}}} a : A$.
+
+\item $\Sigma$ types are represented by
+  \begin{mathpar}
+    \inferrule{ \inferrule{\Gamma \yields_{\El{p}{\underline{\Gamma}}} A \TYPE \and
+                            \Gamma,x:A \yields_{\El{p}{\underline{\Gamma,x:A}}} B \type}
+                          {\Gamma \yields_{\sigmacl{x}{\El{p}{\underline{\Gamma}}}{\El{p}{\underline{\Gamma}.x}}} {\telety{x}{A}{B}} \TYPE }}
+            { \Gamma \yields_{\El{p}{\underline{\Gamma}}} \sigmacl{x}{A}{B} := \F{p.\Sigma_1(\underline{\Gamma},\fst p,\snd p)}{\telety{x}{A}{B}} \TYPE }
+  \end{mathpar}
+\drlnote{Write out what happens when you weaken/substitute.}
+  
+Pairing is derived as follows:
+\begin{mathpar}  
+    \inferrule{
+    \inferrule{
+      \inferrule{\Gamma \yields_{1_{\El{p}{\underline{\Gamma}}}} a : A \and
+                 \inferrule{\Gamma \yields_{1_{\El{p}{\underline{\Gamma}.1_{\underline{\Gamma}}}}} B[a/x] \TYPE}
+                           {\Gamma \yields_{1_{\El{p}{\underline{\Gamma}}}} b : B[a/x]}
+                }
+                {\Gamma \yields_{(1_{\underline{\Gamma}},1_{\underline{\Gamma}})} (a,b) : \telety{x}{A}{B}}
+    }
+    {\Gamma \yields_{\Sigma_1({\El{p}{\underline{\Gamma}}},{1_{\El{p}{\underline{\Gamma}}}},{1_{\El{p}{\underline{\Gamma}}}})} \FI{a,b} : \sigmacl{x}{A}{B}}}
+    {\Gamma \yields_{1_{\Gamma}} : \FI{a,b} : \sigmacl{x}{A}{B}}
+\end{mathpar}
+This uses the equation
+$\underline{\Gamma}.1_{\underline{\Gamma}} \equiv \underline{\Gamma}$
+(which is a form of contraction) in various places: it's why $B[a/x]$ lives over $1_{\underline{\Gamma}}$
+and why $(1_{\underline{\Gamma}},1_{\underline{\Gamma}})$ makes sense
+as an element of $\sigmacl{x}{\El{p}{\underline{\Gamma}}}{\El{p}{\underline{\Gamma}.x}}$.
+For the final step, we use \eqref{pi-one-strict}:
+\begin{mathpar}
+{\Sigma_1({\El{p}{\underline{\Gamma}}},{1_{\El{p}{\underline{\Gamma}}}},{1_{\El{p}{\underline{\Gamma}}}})}  
+\equiv
+\TrCirc{\ApEl{p}{\pi^{\underline{\Gamma}}_{1_{\El{p}{\underline{\Gamma}}}}}}{{1_{\El{p}{\underline{\Gamma}}}}}
+\equiv
+\TrCirc{\ApEl{p}{\id}}{{1_{\El{p}{\underline{\Gamma}}}}}
+\equiv
+{{1_{\El{p}{\underline{\Gamma}}}}}
+\end{mathpar}
+
+\drlnote{Do split}
+
+\item \drlnote{$\Pi$ types}
+
+\item \drlnote{Variable rule}
+  
+\end{itemize}
+
+
+Observe that this lands in a fragment of the framework where each piece
+of the judgement depends once on all previous variables, and where the
+term $a$ depends on exactly the same variables as the type $A$.
+
+
 
 \subsection{Morphism of Comprehension Objects}
 
