@@ -1049,50 +1049,126 @@ f_1(\alpha,\ApEl{p}{c}^\circ(x))
 &\equiv f_1(f_0(\alpha),x)
 \end{align*}
 
-Now we match spacial type theory judgements with the mode theory judgements they live over:
+Idempotence of $f_0$ implies idempotence of $\flat_1$:
 \begin{align*}
-&\yields \Delta;\Gamma & \gamma &\yields \underline{(\Delta;\Gamma)} : p \\
-\Delta ;\Gamma &\yields A \TYPE & \gamma &\yields \El{p}{\underline{\Delta;\Gamma}} \type \\
-\Delta;\Gamma &\yields M : A & \gamma &\yields 1_{(\underline{\Delta;\Gamma})} : \El{p}{\underline{\Delta;\Gamma}}
+f_0(\alpha).\flat_1(\flat_1(x)) 
+&\equiv f_0(f_0(\alpha)).\flat_1(\flat_1(x))  \\
+&\equiv f_0(f_0(\alpha).\flat_1(x)) \\
+&\equiv f_0(f_0(\alpha.x))\\
+&\equiv f_0(\alpha.x) \\
+&\equiv f_0(\alpha).\flat_1(x)
 \end{align*}
-Where
-\begin{align*}
-\underline{(\cdot ; \cdot)} &:\equiv \emptyset \\
-\underline{(\Delta, x :: A ; \cdot)} &:\equiv \underline{(\Delta ; \cdot)}.\flat_1(x) \\
-\underline{(\Delta ; \Gamma, y : B)} &:\equiv \underline{(\Delta ; \Gamma )}.y \\
-\end{align*}
-So that
-\begin{align*}
-f_0(\underline{\Delta ; \Gamma}) \equiv (\underline{\Delta, \Gamma ; \cdot})
-\end{align*}
-by idempotence.
 
-\setlength{\jot}{20pt}
+This time, an object-language context $\Delta; \Gamma \equiv x_1 : A_1, \ldots , x_n : A_n \mid y_1 : B_1, \ldots , y_m : B_m$
+  determines a mode context $(\Delta; \Gamma)^\dagger$ where all the $x$'s are marked with $\flat_1$:
+  \begin{align*}
+  x_1 &: \El{p}{\emptyset}, \\ 
+  x_2 &: \El{p}{\emptyset.\flat_1(x_1)}, \\ 
+  &\ldots, \\
+  x_{n} &: \El{p}{\emptyset.\flat_1(x_1).\ldots.\flat_1(x_{n-1})}, \\
+  y_1 &: \El{p}{\emptyset.\flat_1(x_1).\ldots.\flat_1(x_{n-1}).\flat_1(x_{n})}, \\
+  y_2 &: \El{p}{\emptyset.\flat_1(x_1).\ldots.\flat_1(x_{n-1}).\flat_1(x_{n}).y_1}, \\
+   y_3 &: \El{p}{\emptyset.\flat_1(x_1).\ldots.\flat_1(x_{n-1}).\flat_1(x_{n}).y_1.y_2}, \\
+  &\ldots
+\end{align*}
+  and an upstairs context
+  \[x_1 : A_1, \ldots , x_n : A_n, y_1 : B_1, \ldots , y_m : B_m
+  \]
+  over it.  We write $\underline{(\Delta ; \Gamma)}$ for
+  $\emptyset.\flat_1(x_1).\flat_1(x_2).\ldots.\flat_1(x_n).y_1.\dots.y_m$. This is equal to $f_0(\dots  f_0(f_0(\emptyset.x_1).x_2) \dots).y_1.\dots.y_m$, but \emph{not} the same as $f_0(x_1.\dots.x_n).y_1.\dots.y_m$.
+
+These are defined inductively by
 \begin{align*}
-\inferrule*[vcenter, Left = var]{~}
+(\cdot; \cdot)^\dagger &\equiv \cdot \\
+(\Delta, x :: A; \cdot)^\dagger &\equiv (\Delta, \cdot)^\dagger, x : \El{p}{\underline{\Delta, \cdot}} \\
+(\Delta ; \Gamma, x : A)^\dagger &\equiv (\Delta, \Gamma)^\dagger, x : \El{p}{\underline{\Delta, \Gamma}} \\
+\underline{\cdot ; \cdot} &\equiv \emptyset : p \\
+\underline{\Delta, x :: A; \cdot} &\equiv (\underline{\Delta, \cdot}).\flat_1(x) : p\\
+\underline{\Delta; \Gamma, x : A} &\equiv (\underline{\Delta, \Gamma}).x : p
+\end{align*}
+
+Note that \[f_0(\underline{\Delta ; \Gamma}) \equiv (\underline{\Delta, \Gamma ; \cdot})\]
+
+If we have a context $\Delta; \Gamma, \Gamma'$, we can use $\Sigma_1$ to tuple the suffix $\Gamma'$ into a single element of $\El{p}{\underline{\Delta; \Gamma}}$:
+\begin{align*}
+\underline{\Delta ; \Gamma}. \underline{\cdot} &:\equiv \underline{\Delta ; \Gamma}.1_{\underline{\Delta ; \Gamma}}  \\
+\underline{\Delta ; \Gamma}. \underline{\Gamma', x : A} &:\equiv \underline{\Delta ; \Gamma}.\Sigma_1(\underline{\Delta ; \Gamma}, \underline{\Gamma'}, x)  \\
+\end{align*}
+This typechecks due to equations \eqref{dot-circ} and \eqref{pi-dot-circ}. Let $\pi_{\Gamma'}$ denote the term 2-cell
+\begin{align*}
+ \TermTwo{(\Delta ; \Gamma, \Gamma')^\dagger}{\pi_{\Gamma'}}{\underline{(\Delta ; \Gamma)}.\underline{\Gamma'}}{\underline{(\Delta ; \Gamma)}}
+\end{align*}
+The same equations can be used to show this is equal to a composite of $\pi$s.
+
+Object-level judgements live over the mode theory as in MLTT:
+\begin{align*}
+&\yields \Delta;\Gamma & (\Delta, \Gamma)^\dagger &\yields \underline{(\Delta;\Gamma)} : p \\
+\Delta ;\Gamma &\yields A \TYPE & (\Delta, \Gamma)^\dagger &\yields \El{p}{\underline{\Delta;\Gamma}} \type \\
+\Delta;\Gamma &\yields M : A & (\Delta, \Gamma)^\dagger &\yields 1_{(\underline{\Delta;\Gamma})} : \El{p}{\underline{\Delta;\Gamma}}
+\end{align*}
+
+We can now reconstruct (approximations of) the spacial type theory rules as instances of the framework rules. The key is that in the framework whenever a $f_0(\alpha)$ is required, this can only arise in the object language as $(\underline{\Delta ; \cdot})$.
+\begin{itemize}
+\item \begin{mathpar}
+\inferrule*[vcenter, Right = weaken]{\Delta ; \Gamma\yields M : A} 
+{\Delta ; \Gamma, \Gamma' \yields M : A} 
+\end{mathpar}
+We use framework weakening combined with a structural rule:
+\begin{mathpar}
+\inferrule*[Right=s-intro]{
+\inferrule*[vcenter, Right = weaken-suffix]
+{(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}
+{(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}}
+{(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma, \Gamma')}}} \StI{M} : \pi^*_{\Gamma'}(A)}
+\end{mathpar}
+
+\item \begin{mathpar}
+\inferrule*[vcenter, Right = crisp-weaken-suffix]{\Delta ; \cdot \yields M : A} 
+{\Delta, \Delta' ; \cdot \yields M : A} 
+\end{mathpar}
+This is derived the same way.
+The cases of weakening in the middle of the context will be trickier.
+
+\item \begin{mathpar}
+\inferrule*[vcenter, Right = var]{~}
 {\Delta ; \Gamma, x : A \yields x : A} 
-&&
+\end{mathpar}
+The framework \textsc{var} rule lives over $x$, not $1_{\underline{(\Delta ; \Gamma, x : A)}}$, so we use structural rules to correct it:
+\begin{mathpar}
 \inferrule*[Right = 2cell]{
 \inferrule*[Right = S-intro]{
 \inferrule*[Right = var]{~}
-  {\Gamma, x : A \yields_{x} x : A}}
-  {\Gamma, x : A \yields_{\pi^+(x)} x : \pi^*(A)} \and ~ \and
-    \TermTwo{\Gamma, x : A }{\mathsf{var}_x}{1_{\underline{(\Delta ; \Gamma, x:A )}}}{\pi^+(x)}}
-  {\Gamma, x : A \yields_{1_{\underline{(\Delta ; \Gamma, x:A )}}} x : \pi^*(A)} \\
-%
-\inferrule*[vcenter, Left = crisp-var]{~}
+  {(\Delta ; \Gamma, x : A)^\dagger \yields_{x} x : A}}
+  {(\Delta ; \Gamma, x : A)^\dagger \yields_{\pi^+(x)} \StI{x} : \pi^*(A)} \and ~ \and
+    \TermTwo{(\Delta ; \Gamma, x : A)^\dagger }{\mathsf{var}_x}{1_{\underline{(\Delta ; \Gamma)}.x}}{\pi^+(x)}}
+  {(\Delta ; \Gamma, x : A)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)} \\
+\end{mathpar}
+And $1_{\underline{(\Delta ; \Gamma)}.x} \equiv 1_{\underline{(\Delta ; \Gamma, x : A)}}$ by definition.
+\item \begin{mathpar}
+\inferrule*[vcenter, Right = crisp-var]{~}
 {\Delta, x :: A  ; \cdot \yields x : A} 
-&&
-\inferrule*[Right = S-intro]{
-\inferrule*[Right = 2cell]{
-\inferrule*[Right = S-intro]{
-\inferrule*[Right = var]{~}
-  {\Gamma, x : A \yields_{x} x : A}}
-  {\Gamma, x : A \yields_{\pi^+(x)} x : \pi^*(A)} \and ~ \and
-    \TermTwo{\Gamma, x : A }{\mathsf{var}_x}{1_{\underline{(\Delta, \cdot )}.x}}{\pi^+(x)}}
-  {\Gamma, x : A \yields_{1_{\underline{(\Delta, \cdot )}.x}} x : \pi^*(A)}}
-  {\Gamma, x : A \yields_{1_{\underline{(\Delta, \cdot )}.\flat_1(x)}} x : (c_{f_0(\alpha).x};\pi)^*(A)}
-  \\
+\end{mathpar}
+Using the same derivation as in the cohesive \textsc{var} rule, we have 
+\[\Gamma, x : A \yields_{1_{\underline{(\Delta ; \cdot)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)\]
+but we want a term over $1_{\underline{(\Delta ; \cdot)}.\flat_1(x)}$. So pull back along the 2-cell
+\begin{mathpar}
+    {\alpha : p \mid f_0(f_0(\underline{\Delta ; \cdot}).x) \vDash_p c_{f_0(\underline{\Delta ; \cdot}).x} : f_0(\underline{\Delta ; \cdot}).x}
+\end{mathpar}
+Where the domain is 
+\begin{align*}
+f_0(f_0(\underline{\Delta ; \cdot}).x)
+\equiv f_0(f_0(\underline{\Delta ; \cdot})).\flat_1(x)
+\equiv f_0(\underline{\Delta ; \cdot}).\flat_1(x)
+\equiv (\underline{\Delta ; \cdot}).\flat_1(x)
+\end{align*}
+and the codomain is 
+\begin{align*}
+f_0(\underline{\Delta ; \cdot}).x \equiv (\underline{\Delta ; \cdot}).x
+\end{align*}
+as required.
+\end{itemize}
+
+\begin{align*}
 \inferrule*[vcenter, Left = subst]{\Gamma \yields M : A \and \Delta ; \Gamma, x : A \yields N : B}
 {\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
 &&\inferrule*[vcenter, Right= subst]{\Gamma \yields_{1_{\underline{(\Delta, \Gamma )}}} M : A \and \Gamma, x : A \yields_{1_{\underline{(\Delta, \Gamma)}.x}} N : B}
@@ -1146,7 +1222,7 @@ by idempotence.
     \Gamma, x:A \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]} N : C [\FI{x}/y]}
   {\Gamma \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[1_{\underline{(\Delta ; \Gamma )}}/y]} \FE{M}{x}{N} : C[M/y]}
 \end{align*}
-In crisp-$\flat$-elim, we must use idempotence to show $1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y] \equiv 1_{\underline{(\Delta ; \cdot)}.\flat_1(\alpha,x)}$
+In crisp-$\flat$-elim, we must use idempotence to show $1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y] \equiv 1_{\underline{(\Delta ; \cdot)}.\flat_1(\alpha,x)}$. TODO: add gamma to N and conclusion
 
 In $\flat$-elim, to get from $1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]$ back to $1_{\underline{(\Delta, y : A ; \Gamma)}}$, we have to push the $y$ past everything in $\Gamma$, then push the new $\pi^+$s on the entries of $\underline{\Gamma}$ into the types in $\Gamma$. (or something)
 \begin{align*}
