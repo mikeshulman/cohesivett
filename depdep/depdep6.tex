@@ -1006,18 +1006,24 @@ equations  \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
 
 We often treat $\alpha$ as an implicit argument to $f_1$.  We can show
 that $f$ preserves the rest of the structure of a comprehension object:
-\begin{align*}
+\begin{align}
+\label{mor-one}
 f_1(1_\alpha) &\equiv 1_{f_0(\alpha)} \\
+\label{mor-dot}
 f_0(\alpha.\mu) &\equiv f_0(\alpha).f_1(\mu) \\
+\label{mor-pi}
 \ap{f_0}{\pi^\alpha_\mu} &\equiv \pi^{f_0(\alpha)}_{f_1(\mu)} \\
+\label{mor-var}
 \ap{f_1(\alpha,-)}{\mathsf{var}_\mu} &\equiv \mathsf{var}_{f_1(\mu)}
-\end{align*}
+\end{align}
 
 \drlnote{Upstairs, a morphism of comprehension objects gives rise to an
   adjoint pair of functors on contexts, which interact with dependent
   types as follows\ldots}
 
 \subsection{Spatial Type Theory}
+\newcommand\flatE[3]{\ensuremath{\mathsf{let} \, #2^\flat \, := \, {#1} \, \mathsf{in} \, #3}}
+
 Let
 \begin{mathpar}
     {\alpha : p \yields f_0(\alpha) : p}
@@ -1049,14 +1055,19 @@ f_1(\alpha,\ApEl{p}{c}^\circ(x))
 &\equiv f_1(f_0(\alpha),x)
 \end{align*}
 
-Idempotence of $f_0$ implies idempotence of $\flat_1$:
+A general useful principle is that any $\alpha$ ending with a $\flat_1$ is equal to $f_0$ of itself:
+\begin{align*}
+f_0(\alpha).\flat_1(x)
+&\equiv f_0(\alpha.x) && \text{equation \eqref{mor-dot}} \\
+&\equiv f_0(f_0(\alpha.x)) && \text{idempotence of $f_0$} \\
+&\equiv f_0(f_0(\alpha).\flat_1(x)) && \text{equation \eqref{mor-dot} again} \\
+\end{align*} 
+This shows that $\flat_1$ is idempotent:
 \begin{align*}
 f_0(\alpha).\flat_1(\flat_1(x)) 
-&\equiv f_0(f_0(\alpha)).\flat_1(\flat_1(x))  \\
-&\equiv f_0(f_0(\alpha).\flat_1(x)) \\
-&\equiv f_0(f_0(\alpha.x))\\
-&\equiv f_0(\alpha.x) \\
-&\equiv f_0(\alpha).\flat_1(x)
+&\equiv f_0(f_0(\alpha)).\flat_1(\flat_1(x)) && \text{idempotence of $f_0$} \\
+&\equiv f_0(f_0(\alpha).\flat_1(x)) && \text{equation \eqref{mor-dot}}  \\
+&\equiv f_0(\alpha).\flat_1(x) && \text{equation above} 
 \end{align*}
 
 This time, an object-language context $\Delta; \Gamma \equiv x_1 : A_1, \ldots , x_n : A_n \mid y_1 : B_1, \ldots , y_m : B_m$
@@ -1092,9 +1103,9 @@ Note that \[f_0(\underline{\Delta ; \Gamma}) \equiv (\underline{\Delta, \Gamma ;
 If we have a context $\Delta; \Gamma, \Gamma'$, we can use $\Sigma_1$ to tuple the suffix $\Gamma'$ into a single element of $\El{p}{\underline{\Delta; \Gamma}}$:
 \begin{align*}
 \underline{\Delta ; \Gamma}. \underline{\cdot} &:\equiv \underline{\Delta ; \Gamma}.1_{\underline{\Delta ; \Gamma}}  \\
-\underline{\Delta ; \Gamma}. \underline{\Gamma', x : A} &:\equiv \underline{\Delta ; \Gamma}.\Sigma_1(\underline{\Delta ; \Gamma}, \underline{\Gamma'}, x)  \\
+\underline{\Delta ; \Gamma}. \underline{\Gamma', x : A} &:\equiv \underline{\Delta ; \Gamma}.\Sigma_1(\underline{\Delta ; \Gamma}, \underline{\Gamma'}, x)
 \end{align*}
-This typechecks due to equations \eqref{dot-circ} and \eqref{pi-dot-circ}. Let $\pi_{\Gamma'}$ denote the term 2-cell
+The equations \eqref{dot-circ} and \eqref{pi-dot-circ} used repeatedly show that $(\underline{\Delta ; \Gamma}).\underline{\Gamma'} \equiv \underline{\Delta ; \Gamma, \Gamma'}$. Let $\pi_{\Gamma'}$ denote the term 2-cell
 \begin{align*}
  \TermTwo{(\Delta ; \Gamma, \Gamma')^\dagger}{\pi_{\Gamma'}}{\underline{(\Delta ; \Gamma)}.\underline{\Gamma'}}{\underline{(\Delta ; \Gamma)}}
 \end{align*}
@@ -1108,7 +1119,9 @@ Object-level judgements live over the mode theory as in MLTT:
 \end{align*}
 
 We can now reconstruct (approximations of) the spacial type theory rules as instances of the framework rules. The key is that in the framework whenever a $f_0(\alpha)$ is required, this can only arise in the object language as $(\underline{\Delta ; \cdot})$.
+
 \begin{itemize}
+
 \item \begin{mathpar}
 \inferrule*[vcenter, Right = weaken]{\Delta ; \Gamma\yields M : A} 
 {\Delta ; \Gamma, \Gamma' \yields M : A} 
@@ -1116,7 +1129,7 @@ We can now reconstruct (approximations of) the spacial type theory rules as inst
 We use framework weakening combined with a structural rule:
 \begin{mathpar}
 \inferrule*[Right=s-intro]{
-\inferrule*[vcenter, Right = weaken-suffix]
+\inferrule*[Right = weaken]
 {(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}
 {(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}}
 {(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma, \Gamma')}}} \StI{M} : \pi^*_{\Gamma'}(A)}
@@ -1144,12 +1157,13 @@ The framework \textsc{var} rule lives over $x$, not $1_{\underline{(\Delta ; \Ga
   {(\Delta ; \Gamma, x : A)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)} \\
 \end{mathpar}
 And $1_{\underline{(\Delta ; \Gamma)}.x} \equiv 1_{\underline{(\Delta ; \Gamma, x : A)}}$ by definition.
+
 \item \begin{mathpar}
 \inferrule*[vcenter, Right = crisp-var]{~}
 {\Delta, x :: A  ; \cdot \yields x : A} 
 \end{mathpar}
 Using the same derivation as in the cohesive \textsc{var} rule, we have 
-\[\Gamma, x : A \yields_{1_{\underline{(\Delta ; \cdot)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)\]
+\[(\Delta, x : A ; \cdot )^\dagger \yields_{1_{\underline{(\Delta ; \cdot)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)\]
 but we want a term over $1_{\underline{(\Delta ; \cdot)}.\flat_1(x)}$. So pull back along the 2-cell
 \begin{mathpar}
     {\alpha : p \mid f_0(f_0(\underline{\Delta ; \cdot}).x) \vDash_p c_{f_0(\underline{\Delta ; \cdot}).x} : f_0(\underline{\Delta ; \cdot}).x}
@@ -1166,90 +1180,151 @@ and the codomain is
 f_0(\underline{\Delta ; \cdot}).x \equiv (\underline{\Delta ; \cdot}).x
 \end{align*}
 as required.
-\end{itemize}
 
+\item \begin{mathpar}
+\inferrule*[Right = subst]{\Gamma \yields M : A \and \Delta ; \Gamma, x : A \yields N : B}
+{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
+\end{mathpar}
+Use framework substitution:
+\begin{mathpar}
+\inferrule*[Right= subst]{(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta, \Gamma )}}} M : A \and (\Delta ; \Gamma, x : A)^\dagger \yields_{1_{\underline{(\Delta, \Gamma)}.x}} N : B}
+{(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta, \Gamma)}.1_{\underline{(\Delta, \Gamma )}}}} N[M/x] : B[M/x]}
+\end{mathpar}
+Then $1_{\underline{(\Delta, \Gamma)}.1_{\underline{(\Delta, \Gamma )}}} \equiv 1_{\underline{(\Delta, \Gamma)}}$ by equation \eqref{dot-one-strict}.
+
+\item \begin{mathpar}
+\inferrule*[Right = crisp-subst]{\Delta ; \cdot \yields M : A \and \Delta, x :: A ; \Gamma \yields N : B}
+{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
+\end{mathpar}
+The structure of the rule means that none of the types in $\Gamma$ can depend on $x$, so \mvrnote{somehow} we can consider $N : B$ as lying over $1_{\underline{(\Delta, \cdot )}.\flat_1(x).\pi^+\underline{\Gamma}}$. \mvrnote{There is some lying about how $\dagger$ works, for this to make sense.} Then apply substitution as before:
+\begin{mathpar}
+\inferrule*[Right= subst]{(\Delta ; \cdot)^\dagger\yields_{1_{\underline{(\Delta, \cdot )}}} M : A \and (\Delta, x : A ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta, \cdot)}.\flat_1(x).\pi^+\underline{\Gamma}}} N : B}
+{(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta, \cdot)}.\flat_1(1_{\underline{(\Delta, \cdot )}}).\pi^+\underline{\Gamma}}} N[M/x] : B[M/x]}
+\end{mathpar}
+That subscript is what we want:
 \begin{align*}
-\inferrule*[vcenter, Left = subst]{\Gamma \yields M : A \and \Delta ; \Gamma, x : A \yields N : B}
-{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
-&&\inferrule*[vcenter, Right= subst]{\Gamma \yields_{1_{\underline{(\Delta, \Gamma )}}} M : A \and \Gamma, x : A \yields_{1_{\underline{(\Delta, \Gamma)}.x}} N : B}
-{\Gamma \yields_{1_{\underline{(\Delta, \Gamma)}.1_{\underline{(\Delta, \Gamma )}}}} N[M/x] : B[M/x]} 
-  \\
-\inferrule*[vcenter, Left = crisp-subst]{\Delta ; \cdot \yields M : A \and \Delta, x :: A ; \Gamma \yields N : B}
-{\Delta ; \Gamma \yields N[M/x] : B[M/x]} 
-&&\inferrule*[vcenter, Right= subst]{\Gamma \yields_{1_{\underline{(\Delta, \cdot )}}} M : A \and \Gamma, x : A \yields_{1_{\underline{\Delta}.\flat_1(x).\pi^+\underline{\Gamma}}} N : B}
-{\Gamma \yields_{1_{\underline{\Delta}.\underline{\Gamma}}} N[M/x] : B[M/x]} 
+1_{\underline{(\Delta, \cdot)}.\flat_1(1_{\underline{(\Delta, \cdot )}}).\pi^+\underline{\Gamma}}
+&\equiv 1_{\underline{(\Delta, \cdot)}.1_{\underline{(\Delta, \cdot )}}.\pi^+\underline{\Gamma}} && \text{equation \eqref{mor-one}} \\
+&\equiv 1_{\underline{(\Delta, \cdot)}.\underline{\Gamma}} && \text{equations \eqref{dot-one-strict} and \eqref{pi-one-strict}} \\
+&\equiv 1_{\underline{(\Delta, \Gamma)}} && \text{definition of $\underline{\Gamma}$}
 \end{align*}
 
-
-\newcommand\flatE[3]{\ensuremath{\mathsf{let} \, #2^\flat \, := \, {#1} \, \mathsf{in} \, #3}}
-
-
-\begin{align*}
-\inferrule*[vcenter, Left = $\flat$-form]{\Delta ; \cdot \yields A \TYPE}
-{\Delta ; \cdot \yields \flat A \TYPE} 
-&&\inferrule*[vcenter, Right = F-form]{
-    \Gamma \yields_{\El{p}{f_0(\alpha)}} A \TYPE\\\\
-    \gamma, x : {\El{p}{f_0(\alpha)}} \yields \flat_1(\alpha,x) : \El{p}{f_0(\alpha)}
+\item \begin{mathpar}
+\inferrule*[Right = $\flat$-form]{\Delta ; \cdot \yields A \TYPE}
+{\Delta ; \Gamma \yields \flat A \TYPE} 
+\end{mathpar}
+Apply the framework F-form rule for $\flat_1$:
+\begin{mathpar}
+\inferrule*[Right = F-form]{
+    \Delta^\dagger \yields_{\El{p}{f_0(\underline{\Delta, \cdot})}} A \TYPE\\\\
+    \gamma, x : {\El{p}{f_0(\underline{\Delta, \cdot})}} \yields \flat_1(\underline{\Delta, \cdot},x) : \El{p}{f_0(\underline{\Delta, \cdot})}
   }
-  {\Gamma \yields_{\El{p}{f_0(\alpha)}} \F{x.\flat_1(\alpha,x)}{A} \TYPE} \\
-%
-\inferrule*[vcenter, Left = $\flat$-intro]{\Delta ; \cdot \yields M : A}
-{\Delta ; \cdot \yields M^\flat : \flat A} &&
+  {\Delta^\dagger \yields_{\underline{(\Delta, \cdot)}} \F{x.\flat_1(\underline{\Delta, \cdot},x)}{A} \TYPE}
+\end{mathpar}
+The key is that $\underline{(\Delta, \cdot)}$ ends with a $\flat_1$, so $\underline{(\Delta, \cdot)} \equiv f_0(\underline{\Delta, \cdot})$. If $\Gamma$ is nonempty, there is no way to re-write $\underline{(\Delta, \Gamma)}$ into the form $f_0(-)$, explaining the restriction on the formation rule.
+
+We can then weaken the result with $\Gamma$ to get the spatial type theory rule.
+
+\item \begin{mathpar}
+\inferrule*[Right = $\flat$-intro]{\Delta ; \cdot \yields M : A}
+{\Delta ; \Gamma \yields M^\flat : \flat A}
+\end{mathpar}
+Again use that $(\underline{\Delta, \cdot}) \equiv f_0(\underline{\Delta, \cdot})$ and apply F-intro:
+\begin{mathpar}
 \inferrule*[vcenter, Right = F-intro]{
-    \Gamma \yields_{1_{f_0(\alpha)}} M : A
+    \Delta^\dagger \yields_{1_{f_0(\underline{\Delta, \cdot})}} M : A
   }
-  {\Gamma \yields_{\flat_1(\alpha,x)[1/x] \equiv 1_{f_0(\alpha)}} \FI{M} : \F{x.\flat_1(\alpha,x)}{A}} \\
-%
-\inferrule*[vcenter, Left=crisp-$\flat$-elim]{
+  {\Delta^\dagger \yields_{\flat_1(\underline{\Delta, \cdot},x)[1/x]} \FI{M} : \F{x.\flat_1(\underline{\Delta, \cdot},x)}{A}}
+\end{mathpar}
+Equations \eqref{mor-one} means that $\flat_1(\underline{\Delta, \cdot},x)[1/x] \equiv 1_{\underline{\Delta, \cdot}}$. Finally, weaken with $\Gamma$.
+
+\item \begin{mathpar}
+\inferrule*[Right=crisp-$\flat$-elim]{
     \Delta, x :: \flat A ; \cdot \yields C \TYPE \\\\
     \Delta ; \cdot \yields M : \flat A \\\\
-    \Delta, u :: A ; \cdot \yields N : C[u^\flat / x]}
-  {\Delta ; \cdot \yields (\flatE{M}{u}{N}) : C[M / x]}
- &&  \inferrule*[vcenter, Right = F-elim]{
-    \Gamma, y : \F{x.\flat_1(\alpha,x)}{A} \yields_{\underline{(\Delta ; \cdot )}.\flat_1(y)} C \TYPE \\\\
-    \Gamma \yields_{1_{\underline{(\Delta ; \cdot )}}} M : \F{x.\flat_1(\alpha,x)}{A} \\\\
-    \Gamma, x:A \yields_{1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y]} N : C [\FI{x}/y]}
-  {\Gamma \yields_{1_{\underline{(\Delta ; \cdot )}.\flat_1(y)}[1_{\underline{(\Delta ; \cdot )}}/y]} \FE{M}{x}{N} : C[M/y]} \\
-%
-\inferrule*[vcenter, Left=$\flat$-elim]{
+    \Delta, u :: A ; \Gamma \yields N : C[u^\flat / x]}
+  {\Delta ; \Gamma \yields (\flatE{M}{u}{N}) : C[M / x]}
+\end{mathpar}
+As in crisp substitution, no types in $\Gamma$ may depend on $u$, so $N$ lives over 
+\[ 1_{\underline{(\Delta ; \cdot)}.\flat_1(u).\pi^+(\underline{\Gamma})}\]
+And we can use idempotence of $\flat_1$ to rewrite this into the form
+\[ 1_{\underline{(\Delta ; \cdot)}.\flat_1(x).\pi^+(\underline{\Gamma})}[\flat_1(u) / x] \]
+needed to apply F-elim:
+\begin{mathpar}
+ \inferrule*[Right = F-elim]{
+    \Delta^\dagger , x : \F{c.\flat_1(\alpha,c)}{A} \yields_{\underline{(\Delta ; \cdot )}.\flat_1(x)} C \TYPE \\\\
+     \Delta^\dagger \yields_{1_{\underline{(\Delta ; \cdot )}}} M : \F{c.\flat_1(\alpha,c)}{A} \\\\
+    (\Delta, u :: A ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \cdot)}.\flat_1(x).\pi^+(\underline{\Gamma})}[\flat_1(u) / x]} N : C [\FI{u}/x]}
+  {(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \cdot)}.\flat_1(x).\pi^+(\underline{\Gamma})}[1_{\underline{(\Delta ; \cdot )}} / x]} (\FE{M}{u}{N}) : C[M/x]} \\
+\end{mathpar}
+This subscript is equal to $1_{\underline{(\Delta ; \Gamma )}}$ using equation \eqref{mor-one}, followed by \eqref{dot-one-strict} and \eqref{pi-one-strict}.
+
+\item \begin{mathpar}
+\inferrule*[Right=$\flat$-elim]{
     \Delta ; \Gamma, x : \flat A \yields C \TYPE \\\\
     \Delta ; \Gamma \yields M : \flat A \\\\
     \Delta, u :: A ; \Gamma \yields N : C[u^\flat / x]}
   {\Delta ; \Gamma \yields (\flatE{M}{u}{N}) : C[M / x]}
- &&  \inferrule*[vcenter, Right = F-elim]{
-    \Gamma, y : \F{x.\pi_\Gamma^+(\flat_1(\alpha,x))}{A} \yields_{\underline{(\Delta ; \Gamma )}.y} C \TYPE \\\\
-    \Gamma \yields_{1_{\underline{(\Delta ; \Gamma )}}} M : \F{x.\pi_\Gamma^+(\flat_1(\alpha,x))}{A} \\\\
-    \Gamma, x:A \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]} N : C [\FI{x}/y]}
-  {\Gamma \yields_{1_{\underline{(\Delta ; \Gamma )}.y}[1_{\underline{(\Delta ; \Gamma )}}/y]} \FE{M}{x}{N} : C[M/y]}
-\end{align*}
-In crisp-$\flat$-elim, we must use idempotence to show $1_{\underline{(\Delta ; \cdot)}.\flat_1(y)}[\flat_1(\alpha,x) / y] \equiv 1_{\underline{(\Delta ; \cdot)}.\flat_1(\alpha,x)}$. TODO: add gamma to N and conclusion
+\end{mathpar}
+In this rule, for $\flat A$ to be well typed it can only depend on $\Delta$. The type of $x$ in the framework is then
+\[ \pi_\Gamma^\star(\F{c.\flat_1(\alpha,c)}{A}) \equiv \F{c.\pi_\Gamma^+(\flat_1(\alpha,c))}{A}\]
+by. 
 
-In $\flat$-elim, to get from $1_{\underline{(\Delta ; \Gamma )}.y}[\pi_\Gamma^+(\flat_1(\alpha,x)) / y]$ back to $1_{\underline{(\Delta, y : A ; \Gamma)}}$, we have to push the $y$ past everything in $\Gamma$, then push the new $\pi^+$s on the entries of $\underline{\Gamma}$ into the types in $\Gamma$. (or something)
-\begin{align*}
-\inferrule*[vcenter, Left = $\sharp$-form]{\Delta, \Gamma ; \cdot \yields A \TYPE}
+Like in crisp-$\flat$-elim, $\Gamma$ does not depend on $u$. The term $N$ lives over $1_{\underline{(\Delta, u :: A; \Gamma)}}$, which we rewrite into 
+\[ 1_{\underline{(\Delta ; \Gamma )}.x}[\pi_\Gamma^+(\flat_1(\alpha,u)) / x] \]
+\mvrnote{In $1_{\underline{(\Delta, u :: A; \Gamma)}}$ we have implicitly weakened all the types underlying $\Gamma$ with $u$. And we need something to do with $\pi$'s commuting with each other in some situations?}
+Apply F-elim:
+\begin{mathpar}
+\inferrule*[Right = F-elim]{
+    (\Delta ; \Gamma)^\dagger, x : \F{c.\pi_\Gamma^+(\flat_1(\alpha,c))}{A} \yields_{\underline{(\Delta ; \Gamma, x : \flat A)}} C \TYPE \\\\
+    (\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma )}}} M : \F{c.\pi_\Gamma^+(\flat_1(\alpha,c))}{A} \\\\
+    (\Delta, u :: A ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma )}.x}[\pi_\Gamma^+(\flat_1(\alpha,u)) / x]} N : C [\FI{x}/y]}
+  {(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma )}.x}[1_{\underline{(\Delta ; \Gamma )}}/x]} \FE{M}{u}{N} : C[M/x]}
+\end{mathpar}
+and $1_{\underline{(\Delta ; \Gamma )}.x}[1_{\underline{(\Delta ; \Gamma )}}/x] \equiv 1_{\underline{(\Delta ; \Gamma)}}$.
+
+\item \begin{mathpar}
+\inferrule*[Right = $\sharp$-form]{\Delta, \Gamma ; \cdot \yields A \TYPE}
 {\Delta ; \Gamma \yields \sharp A \TYPE} 
-&&  \inferrule*[vcenter, Right = U-form]{
-    \Gamma \yields_{f_0(\underline{\Delta ; \Gamma})} A \TYPE \\\\
+\end{mathpar}
+We use that $f_0(\underline{\Delta ; \Gamma}) \equiv (\underline{\Delta, \Gamma ; \cdot})$
+\begin{mathpar}
+\inferrule*[vcenter, Right = U-form]{
+    (\Delta , \Gamma ; \cdot)^\dagger \yields_{\El{p}{f_0(\underline{\Delta ; \Gamma})}} A \TYPE \\\\
     \and \gamma, c : {\El{p}{\underline{\Delta ; \Gamma}}} \yields f_1(\underline{\Delta ; \Gamma},c) : \El{p}{f_0(\underline{\Delta ; \Gamma})}
-  }{\Gamma \yields_{\underline{(\Delta ; \Gamma)}} \U{c.f_1(\underline{\Delta ; \Gamma},c)}{\cdot}{A} \TYPE} \\
-%
-\inferrule*[vcenter, Left = $\sharp$-intro]{\Delta, \Gamma ; \cdot \yields M : A}
-{\Delta ; \Gamma \yields M^\sharp : \sharp A} 
-&&\inferrule*[vcenter, Right = U-intro]{
-    \Gamma \yields_{f_1(\alpha,c)[1_{(\underline{\Delta ; \Gamma})}/c]\equiv 1_{f_0(\underline{\Delta ; \Gamma})}}  M : A
-  }
-  {\Gamma \yields_{1_{(\underline{\Delta ; \Gamma})}} \lambda{M} : \U{c.f_1(\alpha,c)}{\cdot}{A}
-  } \\
-%
-\inferrule*[vcenter, Left = $\sharp$-elim]{\Delta ; \Gamma \yields M : \sharp A}
-{\Delta, \Gamma ; \cdot \yields M_\sharp : A} 
-&&  \inferrule*[vcenter, Left = U-elim]{
-    \Gamma \yields_{1_{(\underline{\Delta ; \Gamma})}} N : \U{c.f_1(\alpha,c)}{\cdot}{A}
-  }{
-    \Gamma \yields_{f_1(\alpha,c)[1_{(\underline{\Delta ; \Gamma})}/c]} \UE{N}{\cdot} : A
-  } \\
-\end{align*}
+  }{(\Delta ; \Gamma)^\dagger \yields_{\underline{(\Delta ; \Gamma)}} \U{c.f_1(\underline{\Delta ; \Gamma},c)}{\cdot}{A} \TYPE}
+\end{mathpar}
+\mvrnote{Wait, something screwy is happening here. We can't just replace $(\Delta , \Gamma ; \cdot)^\dagger$ by $(\Delta ; \Gamma)^\dagger$, we need to correct all the variables from $\Delta$ that appear in $\Gamma$ somehow.}
 
+\item \begin{mathpar}
+\inferrule*[Right = $\sharp$-intro]{\Delta, \Gamma ; \cdot \yields M : A}
+{\Delta ; \Gamma \yields M^\sharp : \sharp A} 
+\end{mathpar}
+Again, $(\underline{\Delta , \Gamma ; \cdot}) \equiv f_0(\underline{\Delta ; \Gamma})$  so rewrite $1_{f_0(\underline{\Delta ; \Gamma})}$ into $f_1(\underline{\Delta ; \Gamma},c)[1_{(\underline{\Delta ; \Gamma})}/c]$ by equation \eqref{mor-one} and apply U-intro:
+\begin{mathpar}
+\inferrule*[vcenter, Right = U-intro]{
+    (\Delta , \Gamma; \cdot )^\dagger \yields_{f_1(\underline{\Delta ; \Gamma},c)[1_{(\underline{\Delta ; \Gamma})}/c]}  M : A
+  }
+  {(\Delta ; \Gamma)^\dagger \yields_{1_{(\underline{\Delta ; \Gamma})}} \lambda{M} : \U{c.f_1(\underline{\Delta ; \Gamma},c)}{\cdot}{A}
+  } 
+\end{mathpar}
+
+\item \begin{mathpar}
+\inferrule*[Right = $\sharp$-elim]{\Delta ; \cdot \yields M : \sharp A}
+{\Delta ; \Gamma \yields M_\sharp : A} 
+\end{mathpar}
+First apply U-elim:
+\begin{mathpar}
+\inferrule*[Right = U-elim]{
+    \Delta^\dagger \yields_{1_{(\underline{\Delta ; \cdot})}} N : \U{c.f_1(\alpha,c)}{\cdot}{A}
+  }{
+    \Delta^\dagger \yields_{f_1(\alpha,c)[1_{(\underline{\Delta ; \cdot})}/c]} \UE{N}{\cdot} : A
+  }
+\end{mathpar}
+Where $f_1(\alpha,c)[1_{(\underline{\Delta ; \cdot})}/c] \equiv 1_{f_0(\underline{\Delta ; \cdot})} \equiv 1_{(\underline{\Delta ; \cdot})}$. Then weaken with $\Gamma$.
+\end{itemize}
+
+\mvrnote{So what does the F-type for plain $f_0$ look like?}
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
