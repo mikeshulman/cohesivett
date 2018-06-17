@@ -1,0 +1,317 @@
+\documentclass[10pt]{article}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage{stackengine}
+\stackMath
+\usepackage[mathscr]{euscript}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+\newcommand{\TYPE}{\mathsf{type}}
+\newcommand{\CTX}{\,\,\mathsf{ctx}}
+
+\newcommand{\lolli}[3]{#1 \stackrel{#2}{\multimap} #3}
+
+\newcommand{\C}[0]{\mathcal{C}}
+\newcommand{\T}[0]{\mathcal{T}}
+\newcommand{\fst}[0]{\mathsf{fst}}
+
+\title{Mode Theory for Comprehension Categories}
+%% \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
+\date{}
+
+\begin{document}
+\maketitle
+
+Here's an attempt to write out what's happening with the mode theory for
+a comprehension object in a more familiar notation, and not taking
+things to be so strict.  
+
+The analogy I have in mind is ``? is to comprehension category'' as
+``multicategory is to cartesian multicategory'' -- what is the basic
+structure that you add some operations to (like terminal object and
+diagonals) to get a ``normal'' one?
+
+Suppose we have
+\begin{mathpar}
+  p \, \mathsf{mode} \and
+  \emptyset : p \and 
+  \alpha : p \vdash T(\alpha) \, \mathsf{mode} \and 
+  \alpha : p, x : T(\alpha) \vdash \alpha.x : p \and
+\end{mathpar}
+This is supposed to start to specify an internal comprehension object in
+some category, but if we think about it in $\mathit{Cat}$, then this
+means that we have
+\begin{itemize}
+\item A category of contexts $\C$.  We'll write the objects of $\C$ as
+  $\Gamma$ and the morphisms as $\Gamma \vdash \Delta$.
+  \begin{mathpar}
+      \inferrule*{ }
+             {\Gamma \vdash \Gamma}
+
+  \inferrule*
+             {\Gamma \vdash \Delta \and
+              \Delta \vdash \Psi
+             }
+             {\Gamma \vdash \Psi}
+  \end{mathpar}
+  with associativity and unit laws.  
+
+\item A bifibration of types $\T \twoheadrightarrow \C$.  We'll write
+  the objects in the fiber over $\Gamma$ as $A : \Gamma \vdash \TYPE$
+  and the morphisms in the fiber between two such objects as $A
+  \vdash_\Gamma B$.
+  \begin{mathpar}
+    \inferrule*{ }{A \vdash_\Gamma A}
+
+    \inferrule*{A \vdash_\Gamma B \and B \vdash_\Gamma C}
+               {A \vdash_\Gamma C}
+  \end{mathpar}
+  with associativity and unit laws.
+
+\item Given $\alpha \vDash_p \beta$, we have $T(s)^+ : T(\beta) \to
+  T(\alpha)$; we write this as substitution.  The fact that we can
+  ``ap'' a function on a term 2-cell says that this acts on terms as
+  well.
+  \begin{mathpar}
+  \inferrule*{A : \Gamma \vdash \TYPE \and
+             \theta : \Delta \vdash \Gamma}
+            {A[\theta] : \Gamma \vdash  \TYPE}
+  \and 
+  \inferrule*{A \vdash_\Gamma B \and \Delta \vdash \theta : \Gamma}
+             {A[\theta] \vdash_\Delta B[\theta]}
+  \and
+  A[id] = A \and
+  A[\theta][\theta'] = A[\theta';\theta] \\
+  \and
+  t[id] = t \and
+  t[\theta][\theta'] = t[\theta';\theta]
+  \and
+  id[\theta] = id \and
+  (s;t)[\theta] = s[\theta];t[\theta]
+  \end{mathpar}
+  with functoriality laws for both (the latter type checks because of
+  the former).
+  
+\item Given $\alpha \vDash_p \beta$, we have $T(s)^\circ : T(\alpha) \to
+  T(\beta)$; we write this as $\Sigma_{\theta} B$:
+\begin{mathpar}
+  \inferrule*{B : \Gamma \vdash \TYPE \and
+              \theta : \Gamma \vdash \Delta 
+  }
+  {
+    \Sigma_\theta B: \Delta \vdash  \TYPE
+  }
+
+  \inferrule*{A \vdash_\Gamma B}
+            {\Sigma_\theta A \vdash_{\Delta} \Sigma_\theta B }
+\end{mathpar}
+
+The unit and counit of $s^\circ \dashv s^+$ are 
+\begin{mathpar}
+\inferrule*{ }{B \vdash_{\Gamma} (\Sigma_\theta B)[\theta]}
+\and
+\inferrule*{ }{\Sigma_\theta (B[\theta]) \vdash_{\Delta} B}
+\end{mathpar}
+
+By functoriality and the counit we get the following ``elim''
+(c.f. universal morphism definition of adjunction):
+\begin{mathpar}
+\inferrule*[left=derivable]
+           {B \vdash_{\Gamma} C[\theta]}
+           {\Sigma_\theta B \vdash_{\Delta} C}
+\end{mathpar}
+
+\item The comprehension (and its functorial actions on term 2-cells)
+  gives
+  \begin{mathpar}
+  \inferrule*{ }{\emptyset \CTX}
+  
+  \inferrule*{\Gamma \CTX \and A : \Gamma \vdash \TYPE}
+             {\Gamma.A \CTX}
+
+  \inferrule*{\theta : \Gamma \vdash \Delta \and t : A \vdash_\Gamma B[\theta]}
+             {(\theta,t) : \Gamma.A \vdash \Delta.B}
+\end{mathpar}
+By default, $.$ is astructural, in the sense that when you want to make
+a substitution like
+\[
+\emptyset.A.B \vdash \emptyset.D.E
+\]
+you don't have any choice about how you divide the variables into the
+proofs of $D$ and $E$.
+
+\item By default, $\emptyset$ isn't terminal, but we can make it so:
+  \begin{mathpar}
+    ! : \Gamma \vdash \emptyset \and
+    \theta = !
+  \end{mathpar}
+
+\item A terminal object in each fiber:
+  \begin{mathpar}
+    \inferrule*{ }{1 : \Gamma \vdash \TYPE}
+    \and
+    \inferrule*{ }{! : A \vdash_\Gamma 1}
+    \and
+    t = !
+    \and
+    1_\Gamma[\theta] = 1_\Delta
+    \and
+  \end{mathpar}
+
+\item There aren't any interesting $\Sigma$'s without some
+  substitutions, so we can have projection with a naturality equation:
+\begin{mathpar}
+   \inferrule*{ }
+              {\pi : \Gamma.A \vdash \Gamma}
+   \and 
+   (\theta,t);\pi^\Delta_B = \pi^\Gamma_A;\theta
+\end{mathpar}
+
+However, another way to do this is to make $\Gamma \cong \Gamma.1$
+naturally in $\Gamma$:
+\begin{mathpar}
+\inferrule*{ }{o : \Gamma.1 \vdash \Gamma} \and
+\inferrule*{ }{o^{-1} : \Gamma \vdash \Gamma.1} \and
+o;o^{-1} = id \and
+o^{-1};o = id \and
+o_\Gamma;\theta = (\theta,id);o_\Delta
+\end{mathpar}
+Then we can define a general projection by
+\begin{mathpar}
+\pi^\Gamma_A := (id_\Gamma,!);o : \Gamma.A \vdash \Gamma.1 \vdash \Gamma  
+\end{mathpar}
+using the fact that 1 is terminal in the fiber.
+
+TODO: check naturality.  
+
+\item Now we can derive pairing of $\theta : \Gamma \vdash \Delta$ and
+  $t : 1 \vdash_\Gamma A[\theta]$ to $(\theta.t) : \Gamma \vdash
+  \Delta.A$ by 
+  \begin{mathpar}
+    (\theta.t) := o^{-1};(\theta,t) : \Gamma \vdash \Gamma.1 \vdash \Delta.A
+  \and
+  (\theta.t) ; \pi = \theta
+  \end{mathpar}
+  The equation should follow by naturality and the inverse law for $o$.
+
+\item For the specific case of $\Sigma_{\pi^\Gamma_A} B$, we write
+  $\Sigma_A B$, and assert that it's stable under substitution:
+\begin{mathpar}
+  \inferrule*{B : \Gamma.A \vdash \TYPE 
+  }
+  {
+    \Sigma_A B: \Gamma \vdash  \TYPE
+  }
+  \and
+  (\Sigma_A B)[\theta] = \Sigma_{A[\theta]} {B[\hat{\theta}]}
+
+  \\
+  \inferrule*{t : B \vdash_{\Gamma.A} B'}
+             {\Sigma_A(t) : \Sigma_A B \vdash_{\Gamma} \Sigma_A B' }
+  \and
+  (\Sigma_A(t))[\theta] = \Sigma_{A[\theta]}(t[\hat{\theta}])
+  \\ 
+  \inferrule*{ }{\eta^{A,B} : B \vdash_{\Gamma.A} (\Sigma_A B)[\pi^\Gamma_A]}
+  \and
+  \eta^{A,B}[\hat{\theta}] = \eta^{A[\theta],B[\hat{\theta}]} : B[\hat{\theta}] \vdash_{\Delta.A[\theta]} (\Sigma_{A[\theta]}{B[\hat{\theta}]}) [\pi^{\Delta}_{A'}]
+  \\
+  \inferrule*{ }{\epsilon : \Sigma_A (B[\pi^\Gamma_A]) \vdash_{\Gamma} B}
+  \and
+  \epsilon^{A,B}[\theta] = \epsilon^{A[\theta],B[\theta]} : \Sigma_{A[\theta]} (B[\theta][\pi^{\Delta}_{A[\theta]}]) \vdash_{\Delta} B[\theta]
+\end{mathpar}
+
+To type check the third equation, we've used
+\[
+(\Sigma_A B)[\pi^\Gamma_A][\hat{\theta}]
+= (\Sigma_A B)[\theta][\pi^\Delta_{A[\theta]}]
+= \Sigma_{A[\theta]}{B[\hat{\theta}]} [\pi^\Delta_{A[\theta]}]
+\]
+The fourth is similar, using $B[\theta][\pi^{\Delta}_{A[\theta]}]
+= B[\pi^{\Gamma}_A][\hat{\theta}]$.
+
+We could also say these are stable under $\Sigma_\theta$ (TODO: type
+check these)?  Are these true up to iso already?
+\begin{mathpar}
+\Sigma_{\hat{\theta}}(B[\pi_A]) \cong (\Sigma_\theta B)[\pi_A[\theta]] \\
+\Sigma_{\hat \theta} \eta_B = \eta_{\Sigma_{\theta} B} \\
+\Sigma_{\theta} \epsilon_B = \epsilon_{\Sigma_{\hat \theta} B} 
+\end{mathpar}
+
+\item We have a map
+  \begin{mathpar}
+    \inferrule*{\pi : \Gamma.A \vdash \Gamma \and B \vdash_{\Gamma.A} (\Sigma_A B)[\pi] }
+               {(\pi,\eta) : \Gamma.A.B \vdash \Gamma.\Sigma_A B}
+  \end{mathpar}
+  but the converse doesn't necessarily exist.  So we could add it by
+  saying that the above is an isomorphism:
+  \begin{mathpar}
+    \inferrule*{ }
+               {pe^{-1} : \Gamma.\Sigma_A B \vdash \Gamma.A.B }
+    \and
+    pe^{-1}; (\pi,\eta) = id \and
+    (\pi,\eta);pe^{-1} = id
+  \end{mathpar}
+TODO: check/add naturality equations (might already be true because
+above is natural).
+
+\item The final thing to add is that $\Sigma_A 1 \cong A$:
+  \begin{mathpar}
+    \inferrule*{ }
+               {\fst : \Sigma_A 1_{\Gamma.A} \vdash_\Gamma A}
+    \and 
+    \inferrule*{ }
+               {\fst^{-1} : A \vdash_\Gamma \Sigma_A 1}
+    \and
+    \fst;\fst^{-1} = id \and
+    \fst^{-1};\fst = id \and
+    \fst^{\Gamma,A}[\theta] = \fst^{\Delta,A[\theta]} \and
+    \fst^{A};t = \hat{t};\fst^{B}
+  \end{mathpar}
+  where
+  \[
+  \inferrule*[left=Derivable]
+             { t : A \vdash_\Gamma B }
+             { \hat{t} : \Sigma_A 1 \vdash_\Gamma \Sigma_B 1 }
+  \]
+
+\item This gives variable projection
+  \begin{mathpar}
+    v : 1_{\Gamma.A} \vdash_{\Gamma.A} A[\pi]
+  \end{mathpar}
+  by transposing $\fst : (\Sigma_A 1) \vdash A$.
+
+  More generally, it should give (indeed, be equivalent to) saying that
+  $1 \vdash_{\Gamma.A} B[\pi]$ is naturally isomorphic to $A
+  \vdash_{\Gamma} B$.  Writing $-^*$ and $-_*$ for the transposes, the
+  ``substitution into a variable'' equation $v[\theta.t] = t$ should
+  follow from something like: given $s : 1 \vdash_{\Gamma.A} B[\pi]$ and
+  $t : A' \vdash_\Gamma A$, then $s[id,t] \equiv (t;s^*)_*$ (which makes
+  sense without $\Gamma.1 \cong \Gamma$) and then maybe some other
+  diagrams commuting involving that.  TODO: unwind this in terms of
+  $\fst$.  
+
+\item TODO: $\eta$ rule?
+  
+\end{itemize}
+
+\end{document}
+
+

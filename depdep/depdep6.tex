@@ -92,6 +92,11 @@
 \newcommand\bdot[0]{\mathbin{.}}
 \newcommand\bang[0]{\mathord{!}}
 
+\newcommand\PP[1]{\mathcal{P}(#1)}
+\newcommand\ApP[1]{\mathcal{P}\langle#1\rangle}
+\newcommand\ii[0]{\dsd{i}}
+
+
 \title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
@@ -563,6 +568,95 @@ longer telescope.
 \end{itemize}
 
 \section{Mode Theories}
+
+\subsection{First-order Logic}
+
+The mode theory for first-order logic consists of:
+\begin{itemize}
+\item a mode $(\ii,\times,\top)$ with a cartesian product; write
+  $\pi^\alpha_x : \alpha \times x \Yields \alpha$.  $\pi$ should be
+  natural in the sense that for $s : \beta \Yields \alpha$,
+  $\pi^\beta_x;s \equiv (s \times \id_x);\pi^\alpha_x$.  
+\item a dependent mode $\alpha : \ii \yields \PP{\alpha} \type$
+\item whatever structure you want in each fiber, e.g. for each $\alpha$
+  a cartesian product
+  \begin{mathpar}
+   \alpha : \ii \vdash \top^1 : \PP{\alpha} \and 
+   \alpha : \ii, x : \PP{\alpha}, y : \PP{\alpha} \vdash x \times^1 y : \PP{\alpha}
+  \end{mathpar}
+\item then the idea is that $\TrCirc{\ApP{\pi^\alpha_x}}{-} \dashv
+  \TrPlus{\ApP{\pi^\alpha_x}}{-}$ gives an adjunction in the mode
+  theory, which we know gives a triple adjunction upstairs, which will be
+  $\exists \dashv \pi \dashv \forall$.  So 
+  $\exists$ is the $F$-type for 
+  \begin{mathpar}
+    \alpha : \ii, x : \ii, y : \PP{\alpha \times x} \vdash \TrCirc{\ApP{\pi^\alpha_x}}{y} : \PP{\alpha}
+  \end{mathpar}
+  and $\forall$ is the $U$ type for 
+  \begin{mathpar}
+    \alpha : \ii, x : \ii, y : \PP{\alpha} \vdash \TrPlus{\ApP{\pi^\alpha_x}}{y} : \PP{\alpha \times x}
+  \end{mathpar}
+
+  Momentarily write $\exists^\alpha_x(y)$ for
+  $\TrCirc{\ApP{\pi^\alpha_x}}{y}$
+  and $y[\pi^\alpha_x]$ for $\TrPlus{\ApP{\pi^\alpha_x}}{y}$, and more
+  generally, for $s : \beta \yields \alpha$, write $\exists_s y$ for
+  $\TrCirc{\ApP{s}}{y}$
+  and $y[s]$ for
+  $\TrPlus{\ApP{s}}{y}$.  This is probably a bad pun in general but it
+  helps to see these in a more familiar notation: the unit and counit
+  are
+  \begin{mathpar}
+    y \Yields_{(\alpha \times x)} (\exists^\alpha_x y)[\pi^\alpha_x]
+    \and
+    (\exists^\alpha_x (y[\pi^\alpha_x])) \Yields_{(\alpha)} y 
+  \end{mathpar}
+
+\item Suppose we have $\alpha,\beta : \ii, x : \ii$, $s : \beta \Yields
+  \alpha$.  There are four possible ``interactions'' that we could have
+  equations for.  
+  \begin{mathpar}
+    y : \PP{\alpha \times x} \vdash (\exists^\alpha_x y)[s] \equiv \exists^\beta_x (y[s \times \id])\\
+    y : \PP{\beta \times x} \vdash \exists_s (\exists^\beta_x y) \equiv \exists^\alpha_x (\exists_{s \times \id}(y))\\
+    y : \PP{\alpha} \vdash y[\pi^\alpha_x][s \times \id] \equiv y[s][\pi^\beta_x]\\
+    y : \PP{\beta} \vdash \exists_{s \times \id}(y[\pi^\alpha_x]) \equiv (\exists_s {y})[\pi^\alpha_x]
+  \end{mathpar}
+  The second and third follow from naturality of $\pi$ and the fusion
+  laws for $\TrCirc{s}{\TrCirc{t}{\mu}}$ and
+  $\TrPlus{s}{\TrPlus{t}{\mu}}$.
+  The first and fourth are what we need to assert for the upstairs
+  $\exists$ and $\forall$ to be ``stable under structural rules''.
+
+\item Given the above equations, for the unit and counit of
+  $\pi^\alpha_x$, it type checks to equate
+  \begin{mathpar}
+   y : \PP{\alpha \times x} \vdash \eta_y[s \times \id] \equiv \eta_{y[s \times \id]}: y[s \times \id] \Yields_{(\beta \times x)} (\exists^\alpha_x y)[\pi^\alpha_x][s \times \id]
+  \equiv (\exists^\beta_x (y[s \times \id]))[\pi^\beta_x]\\
+  
+  y : \PP{\alpha} \vdash \epsilon_y[s] \equiv \epsilon_{y[s]} : (\exists^\alpha_x (y[\pi^\alpha_x]))[s]
+  \equiv \exists^\beta_x (y[\pi^\alpha_x][s \times \id]) \equiv \exists^\beta_x (y[s][\pi^\beta_x])  \Yields_{(\beta)} y[s]
+
+  y : \PP{\beta \times x} \vdash \exists_{[s \times \id]}{\eta_y} \equiv
+  \eta_{\exists_{s \times \id} y}
+  :
+  \exists_{s \times \id}(y) \Yields_{(\alpha \times x)} \exists_{s \times \id} (\exists^\alpha_x y)[\pi^\alpha_x]
+  \equiv
+  (\exists_{s} (\exists^\alpha_x y))[\pi^\beta_x]
+  \equiv
+  (\exists^\beta_x(\exists_{s \times \id}(y)))[\pi^\beta_x]\\
+  
+  y : \PP{\beta} \vdash \exists_s{\epsilon_y} \equiv \epsilon_{\exists_s(y)} : 
+  \exists_{s}{(\exists^\beta_x (y[\pi^\beta_x]))} \equiv \exists^\alpha_x{\exists_{s \times \id} (y[\pi^\beta_x])} \equiv \exists^\alpha_x((\exists_{s}(y))[\pi^\alpha_x]) \Yields_{(\alpha)} \exists_{s}{y} 
+  \end{mathpar}
+  
+  %% \and
+  %%   (\exists^\alpha_x (y[\pi^\alpha_x])) \vdash_{(\alpha)} y 
+\end{itemize}
+
+\subsection{Linear Logic with Cartesian First-order Quantifiers}
+
+As above, except have a symmetric monoidal product $(\otimes^1,1^1)$ in
+each fiber instead of a cartesian product.  
 
 \subsection{Morphisms of Bifibrations}
 
