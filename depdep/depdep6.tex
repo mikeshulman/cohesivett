@@ -61,6 +61,7 @@
 \newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
 \newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
 \newcommand\Dt[2]{\ensuremath{#1.#2}}
+\newcommand\var[1]{\ensuremath{\mathsf{var}_{#1}}}
 
 \newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
 \newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
@@ -324,7 +325,7 @@ Next, we have the adjunction for $s^\circ$ and $s^+$:
     {\TermTwo{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}}
 \\ 
 \eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon_\nu/z} \equiv \id_{\TrPlus{s}{\nu}} \and
-\ap{(\TrCirc{s}{z})}{\eta_\mu/z};\varepsilon_{\TrCirc{s}{\mu}}; \equiv \id_{\TrCirc{s}{\mu}}
+\ap{(\TrCirc{s}{z})}{\eta_\mu/z};\varepsilon_{\TrCirc{s}{\mu}} \equiv \id_{\TrCirc{s}{\mu}}
 \\
 t;\eta_\mu \equiv \eta_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \and \varepsilon_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon_{\nu'}
 \end{mathpar}
@@ -764,9 +765,9 @@ such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and 
 \label{bang-unique}
  t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{\El{p}{\alpha}}\\
 \label{beta-var}
-\ap{\ApEl{p}{(s \bdot m)}^+}{\mathsf{var}_\mu} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}} \\
+\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}} \\
 \label{eta-pi-var}
-t &\equiv ((t;\pi) \bdot \ap{\ApEl{p}{t}^+}{\mathsf{var}_\mu}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p} \\
+t &\equiv ((t;\pi) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p} \\
 \label{dot-circ}
 \alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu && \\
 \label{pi-dot-circ}
@@ -829,7 +830,7 @@ $(p,x.\El{p}{x})$
   using the unit of the adjunction $\ApEl{p}{\pi}^\circ \dashv
   \ApEl{p}{\pi}^+$:
 \begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\mathsf{var}_x}{1_{\alpha.x}}{\ApEl{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
     \and
     \mathsf{var}_x :\equiv \eta^{\ApEl{p}{\pi^\alpha_x}}(1_{\alpha.x}) 
   \end{mathpar}
@@ -1421,6 +1422,101 @@ Where $f_1(\alpha,c)[1_{(\underline{\Delta ; \cdot})}/c] \equiv 1_{f_0(\underlin
 \end{itemize}
 
 \mvrnote{So what does the F-type for plain $f_0$ look like?}
+
+\subsection{Weak Comprehension Object (from mode type morphism)}
+
+\newcommand{\rdot}{\mathrm{dot}}
+
+\begin{definition}[Weak Comprehension Object]
+  A \emph{weak comprehension object} is specified by the following
+  constants:
+  \begin{mathpar}
+    p \type \and
+    \emptyset : p %\and
+%    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
+    \\
+    \alpha : p \yields \El{p}{\alpha} \type \and
+    \TypeTwo{}{\rdot}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
+  \end{mathpar}
+  such that
+  \begin{align}
+    \label{rdot-section}
+    \fst{\TrCirc{\rdot}{\alpha}} \equiv \alpha
+  \end{align}
+  where:
+  \begin{itemize}
+  \item Comprehension is given by $\rdot^+$:
+  \begin{mathpar}
+  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\rdot}{(\alpha, x)}
+  \end{mathpar}
+%  \item Pairing for the comprehension object is given by ap of
+%  $.$ on the pairing for $\Sigma$-modes:
+%  \begin{mathpar}
+%  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
+%             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
+%             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+%            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
+%  s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
+%  \end{mathpar}
+  \item The unit term in $\El{p}{\alpha}$ is given by 
+  \begin{mathpar}
+  \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and 1_\alpha :\equiv \snd{\TrCirc{\rdot}{\alpha}}
+  \end{mathpar}
+  This term is in $\El{p}{\fst{\TrCirc{\rdot}{\alpha}}} \equiv \El{p}{\alpha}$ by equation \eqref{rdot-section}.
+  \item The counit of $\rdot$ gives us both $\pi^\alpha_\mu$ and $\var{\mu}$ directly:
+  \begin{mathpar}
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
+  \and
+  \pi^\alpha_x :\equiv \ap \fst {\varepsilon_{(\alpha, x)}} \\
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi^\alpha_x}^+(x)}{\El{p}{\alpha.x}}} 
+    \and
+    \mathsf{var}_x :\equiv \ap \snd {\varepsilon_{(\alpha, x)}}
+  \end{mathpar}
+  \end{itemize}
+\end{definition}
+
+So in all, the unit and counit of $\rdot$ are maps
+\begin{align*}
+&\TermTwoT{}{\eta}{\alpha}{\alpha.{1_\alpha}}{p} \\
+&\TermTwoT{}{(\pi_x^\alpha, \var{x})}{(\alpha.x, 1_{\alpha.x})}{(\alpha, x)}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
+\end{align*}
+The first triangle equation is
+\begin{mathpar}
+\eta_{\TrPlus{\rdot}{(\alpha, x)}};\ap{(\TrPlus{\rdot}{z})}{\varepsilon_{(\alpha, x)}/z} \equiv \id_{\TrPlus{\rdot}{(\alpha, x)}} 
+\end{mathpar}
+And using some of the above definitions:
+\begin{mathpar}
+\eta_{\alpha.x};\ap{(\TrPlus{\rdot}{z})}{(\pi_x^\alpha, \var{x})/z} \equiv \id_{\alpha.x}
+\end{mathpar}
+
+The second triangle equation
+\begin{mathpar}
+\ap{(\TrCirc{\rdot}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\rdot}{\alpha}} \equiv \id_{\TrCirc{\rdot}{\alpha}}
+\end{mathpar}
+On the left this is:
+\begin{align*}
+\ap{(\TrCirc{\rdot}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\rdot}{\alpha}}
+&\equiv \ap{(z, 1_z)}{\eta_\alpha/z};\varepsilon_{(\alpha, 1_\alpha)} \\
+&\equiv (\eta_\alpha, \ap{1_z}{\eta_\alpha/z});(\pi^\alpha_{1_\alpha}, \var{1_\alpha}) \\
+&\equiv (\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}})
+\end{align*}
+So componentwise the triangle equation says
+\begin{align*}
+\eta_\alpha ; \pi_{1_\alpha}^\alpha &\equiv \id_\alpha \\
+\ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}} &\equiv \id_{1_\alpha}
+\end{align*}
+We are also hoping that $\pi_{1_\alpha}^\alpha ; \eta_\alpha \equiv 1_{\alpha.1}$. This seems to follow if we know that $\ap{1_w}{\pi_1^\alpha/w} \equiv \var{1_\alpha}$, because then we can use the first triangle equation at $x = 1_\alpha$:
+\begin{align*}
+\id_{1_\alpha} 
+&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \var{1})/z} \\
+&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
+&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
+&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{\TrCirc{\rdot}{z}})}{\pi_1^\alpha/z} \\
+&\equiv \pi_1^\alpha;\eta_{\alpha}
+\end{align*}
+where that last move is naturality of $\eta$. That condition holds if $1_\alpha$ is terminal.
+
+We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
