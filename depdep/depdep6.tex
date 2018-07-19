@@ -677,29 +677,30 @@ sense that for $s : \beta \Yields_p \alpha$ we have both $\ap{S}{s/x}^+
 S[\alpha/x]$.
 
 \begin{definition}
-Suppose (in any context $\gamma$) two types, with two dependent types
-over them:
+Suppose (in any context $\gamma$) a type, with two dependent types
+over it:
 \begin{mathpar}
-p \type \and x : p \vdash S(x) \type \\
-q \type \and y : q \vdash T(y) \type 
+p \type \and x : p \vdash S(x) \type \and x : p \vdash T(x) \type 
 \end{mathpar}
-A \emph{morphism of bifibrations} from $(p,S)$ to $(q,T)$ consists of terms
+A \emph{morphism of bifibrations} from $S$ to $T$ consists of a term
 \begin{mathpar}
-x : p \vdash f_0(x) : q \and 
-x : p, z:S \vdash f_1(x,z) : T[f_0(x)/y]
+x : p, z:S(x) \vdash f_1(x,z) : T(x)
 \end{mathpar}
-satisfying the following equations for any $\alpha : p$, $\beta : p$, $s
-: \beta \Yields_p \alpha$, $\mu : S[\alpha/x]$, $\nu : S[\alpha/x]$:
+satisfying the following equations for any $\alpha : p$, $s
+: \beta \Yields_p \alpha$, $\mu : S[\alpha/x]$, $\nu : S[\beta/x]$:
 \begin{align}
 \label{mor-fib-subst}
-f_1(\beta,\TrPlus{\ap{S}{s/x}}{\mu}) \equiv_{T[f_0(\beta)/y]} \TrPlus{\ap{T[f_0(x)/y]}{s/x}}{f_1(\alpha,\mu)}\\
+f_1(\beta,\TrPlus{\ap{S}{s/x}}{\mu}) \equiv_{T(x)} \TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}\\
 \label{mor-opfib-subst}
-f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T[f_0(\alpha)/y]} \TrCirc{\ap{T[f_0(x)/y]}{s/x}}{f_1(\beta,\nu)}\\
+f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T(x)} \TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}
+\end{align}
+A morphism of bifibrations is \emph{strict} \mvrnote{(??)} if additionally:
+\begin{align}
 \label{mor-fib-unit}
-\ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} \equiv \eta^{{\ap{T[f_0(x)/y]}{s/x}}}_{f_1(\beta,\nu)}\\
+\ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} \equiv \eta^{{\ap{T}{s/x}}}_{f_1(\beta,\nu)} \\
 \label{mor-fib-counit}
 \ap{f_1(\alpha,z)}{\varepsilon^{\ap{S}{s/x}}_\mu/z} \equiv
-\varepsilon^{{\ap{T[f_0(x)/y]}{s/x}}}_{f_1(\alpha,\mu)}
+\varepsilon^{{\ap{T}{s/x}}}_{f_1(\alpha,\mu)}
 \end{align}
 \end{definition}
 
@@ -718,9 +719,9 @@ But
 \begin{align*}
   f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
   & \equiv
-\TrPlus{\ap{T[f_0(x)/y]}{s/x}}{f_1(\alpha,{\TrCirc{\ap{S}{s/x}}{\nu}})} \\
+\TrPlus{\ap{T}{s/x}}{f_1(\alpha,{\TrCirc{\ap{S}{s/x}}{\nu}})} \\
 & \equiv
-\TrPlus{\ap{T[f_0(x)/y]}{s/x}}{\TrCirc{\ap{T[f_0(x)/y]}{s/x}}{f_1(\beta,\nu)}}
+\TrPlus{\ap{T}{s/x}}{\TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}}
 \end{align*}
 
 To type check \eqref{mor-fib-counit}, we have
@@ -729,7 +730,7 @@ To type check \eqref{mor-fib-counit}, we have
 \ap{f_1(\alpha,z)}{\varepsilon^{\ap{S}{s/x}}_\mu/z} : f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}}) \Yields_{S[\alpha/x]} f_1(\alpha,\mu)\\
 f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
 \equiv
-\TrCirc{\ap{T[f_0(x)/y]}{s/x}}{\TrPlus{\ap{T[f_0(x)/y]}{s/x}}{f_1(\alpha,\mu)}}
+\TrCirc{\ap{T}{s/x}}{\TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}}
 \end{mathpar}
 
 %% Often, it will be the case that $f_1(x,z) := \TrCirc{t}{z}$ for some mode
@@ -741,6 +742,237 @@ f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
 %% In such circumstances, asserting that $(f_0,f_1)$ is a morphism of
 %% bifibrations from $(p,S)$ to $(q,T)$ means asserting equations
 %% \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
+
+\subsection{Fibred Terminal Object}
+
+\begin{definition}
+For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} is a term
+\begin{mathpar}
+x : p \vdash 1_x : S(x)
+\end{mathpar}
+such that
+\begin{align}
+\label{bang-unique}
+t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alpha)}\\
+\label{s-plus-one-strict}
+\TrPlus{\ap{S}{s}}{1_\alpha} &\equiv 1_\beta && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}
+\end{align}
+\end{definition}
+
+\subsection{Comprehension Object (from a mode type morphism)}
+
+\begin{definition}[Comprehension Object]
+  A \emph{comprehension object} is specified by the following
+  constants:
+  \begin{mathpar}
+    p \type \and
+    \emptyset : p %\and
+%    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
+    \\
+    \alpha : p \yields \El{p}{\alpha} \type \and
+    \TypeTwo{\cdot}{\chi}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
+  \end{mathpar}
+  such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
+\begin{align}
+\label{chi-section}
+\fst{\TrCirc{\chi}{\alpha}} &\equiv \alpha \\
+\label{one-terminal} 
+1_\alpha &\text{ is a fibred terminal object of } \El{p}{\alpha} \\
+\label{circ-one}
+\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu && \\
+\label{bang-unique-p}
+ t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\alpha}{\emptyset}{p}\\
+\label{dot-circ}
+\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu && \\
+\label{pi-dot-circ}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s && 
+%% \label{pi-circ-morphism-of-fibrations}
+%% \ApEl{p}{s}^+(\ApEl{p}{\pi^\alpha_\mu}^\circ(\nu)) &\equiv
+%% \ApEl{p}{\pi^\beta_{\TrPlus{\ApEl{p}{s}}{\mu}}}^\circ(\ApEl{p}{\tilde{s}}^+(\nu)) && \text{where } \gamma \vdash \nu : \El{p}{\alpha . \mu}\\
+%% \mathsf{ap}(\El{p}{\pi}^\circ)(\eta_{\tilde{s}}(\mu))  &\equiv \eta_s(\El{p}{\pi}^\circ(\mu)) \\
+%% \mathsf{ap}(\El{p}{\pi}^\circ)(\varepsilon_{\tilde{s}}(\mu))  &\equiv \varepsilon_s(\El{p}{\pi}^\circ(\mu))
+\end{align}
+\begin{center}
+  $(z.\fst{z} \:,\:
+  z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
+  \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z})$ \\
+is a morphism of bifibrations from
+$(\sigmacl{\alpha}{p}{\El{p}{\alpha}}, z.\El{p}{\fst z \bdot \snd z})$
+to  
+$(p,x.\El{p}{x})$
+\end{center}
+  
+\noindent In the equations, we use the following derived forms:
+  \begin{itemize}
+  \item Comprehension is given by $\chi^+$:
+  \begin{mathpar}
+  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\chi}{(\alpha, x)}
+  \end{mathpar}
+%  \item Pairing for the comprehension object is given by ap of
+%  $.$ on the pairing for $\Sigma$-modes:
+%  \begin{mathpar}
+%  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
+%             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
+%             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+%            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
+%  s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
+%  \end{mathpar}
+  \item The terminal object of $\El{p}{\alpha}$ is given by 
+  \begin{mathpar}
+  \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and 1_\alpha :\equiv \snd{\TrCirc{\chi}{\alpha}}
+  \end{mathpar}
+  This is well typed, as $\El{p}{\fst{\TrCirc{\chi}{\alpha}}} \equiv \El{p}{\alpha}$ by equation \eqref{chi-section}.
+  \item $\pi^\alpha_\mu$ and $\var{\mu}$ are defined via the counit of the adjunction $\chi^\circ \dashv \chi^+$.
+  \begin{mathpar}
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
+  \and
+  \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\chi_{(\alpha, x)}} \\
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi^\alpha_x}^+(x)}{\El{p}{\alpha.x}}} 
+    \and
+    \mathsf{var}_x :\equiv \ap \snd {\varepsilon^\chi_{(\alpha, x)}}
+  \end{mathpar}
+  \item Pairing for the comprehension object is given by ap of
+  $.$ on the pairing for $\Sigma$-modes:
+  \begin{mathpar}
+  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
+             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
+             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
+  s \bdot m :\equiv \ap{\chi^+}{(s, m)}
+  \end{mathpar}
+  \end{itemize}
+  
+\noindent To type check the equations, we use the following derivable equations:
+\end{definition}
+
+The triangle equalities for $\chi^\circ \dashv \chi^+$ take the following form:
+\begin{align*}
+%\eta_{\TrPlus{\chi}{(\alpha, x)}};\ap{(\TrPlus{\chi}{z})}{\varepsilon_{(\alpha, x)}/z} \equiv \id_{\TrPlus{\chi}{(\alpha, x)}} 
+\eta_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
+%\ap{(\TrCirc{\chi}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\chi}{\alpha}} \equiv \id_{\TrCirc{\chi}{\alpha}}
+(\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
+\end{align*}
+because $1_\alpha$ is terminal, the latter is just saying $\eta_\alpha ; \pi^\alpha_{1_\alpha} = \id_\alpha$.
+
+%The second triangle equation is
+%\begin{mathpar}
+%\ap{(\TrCirc{\chi}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\chi}{\alpha}} \equiv \id_{\TrCirc{\chi}{\alpha}}
+%\end{mathpar}
+%On the left this is:
+%\begin{align*}
+%\ap{(\TrCirc{\chi}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\chi}{\alpha}}
+%&\equiv \ap{(z, 1_z)}{\eta_\alpha/z};\varepsilon_{(\alpha, 1_\alpha)} \\
+%&\equiv (\eta_\alpha, \ap{1_z}{\eta_\alpha/z});(\pi^\alpha_{1_\alpha}, \var{1_\alpha}) \\
+%&\equiv (\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}})
+%\end{align*}
+%So componentwise the triangle equation says
+%\begin{align*}
+%\eta_\alpha ; \pi_{1_\alpha}^\alpha &\equiv \id_\alpha \\
+%\ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}} &\equiv \id_{1_\alpha}
+%\end{align*}
+
+Some other derivable equations:
+\begin{itemize}
+\item Fusion for $.$
+\begin{align}
+\label{dot-fusion}
+    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
+\end{align}
+follows by fusing the ap's and the corresponding fusion rule for morphisms in $\Sigma$ modes:
+\begin{align*}
+(s \bdot m);(s' \bdot m') &\equiv \ap{\chi^+}{(s, m)} ; \ap{\chi^+}{(s', m')} \\
+&\equiv \ap{\chi^+}{(s, m);(s', m')} \\
+&\equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
+\end{align*}
+
+\item $\pi^\alpha_\mu$ is natural in $\mu$:
+  \begin{align}
+  \label{pi-naturality}
+  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}
+  \end{align}
+  by
+  \begin{align*}
+  (s \bdot m); \pi^\alpha_\mu 
+  &\equiv \ap{\chi^+}{(s, m)} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\  
+  &\equiv \ap{\fst}{\ap{\chi^\circ(\chi^+(z))}{(s, m)/z}} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\
+  &\equiv \ap{\fst}{\ap{\chi^\circ(\chi^+(z))}{(s, m)/z} ; \varepsilon^\chi_{(\alpha, \mu)}} \\
+  &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}; (s, m) } \\
+  &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}} ; s\\
+  &\equiv \pi^\beta_\nu ; s
+  \end{align*}
+\item Beta reduction for first projection:
+  \begin{align}
+\label{beta-pi}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\ApEl{p}{s}^+(\mu)}{\alpha}
+  \end{align}
+follows from naturality by:
+\begin{align*}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu
+&\equiv \eta_\beta;\pi^\beta_{1_\beta};s \\
+&\equiv s
+\end{align*}
+
+\item Beta reduction for var:
+\begin{align}
+\label{beta-var}
+\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} &\equiv \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m}  && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}}
+\end{align}
+is derivable by:
+\begin{align*}
+\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} 
+&\equiv \ap{\ApEl{p}{\ap{\chi^+}{(s, m)}}^+}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
+&\equiv \ap{1_z}{(s, m)/z};\ap{\ApEl{p}{\ap{\chi^+}{(s, m)}}^+}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
+&\equiv \ap \snd {((s \bdot m), \ap{1_z}{(s, m)/z});\varepsilon^\chi_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\ap{\TrCirc{\chi}{\TrPlus{\chi}{z}}}{(s, m)/z};\varepsilon^\chi_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\varepsilon^\chi_{(\beta, 1_\beta)};(s, m)} \\
+&\equiv \var{1_\beta}; \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m} \\
+&\equiv \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m} \\
+\end{align*}
+
+\item The eta principle for pairing:
+\begin{align}
+\label{eta-pi-var}
+t &\equiv \eta_\beta;((t;\pi^\alpha_\mu) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
+\end{align}
+is derived by the first triangle equation followed by naturality of $\eta$:
+\begin{align*}
+t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{\TrPlus{\chi}{\TrCirc{\chi}{z}}}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{(z \bdot 1_z)}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;(t \bdot \ap{1_z}{t/z});(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ap{1_z}{t/z}; \ap{\ApEl{p}{t}^+}{\var{\mu}})) \\
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}})
+\end{align*}
+(We know that $\ap{1_z}{t/z} \equiv \id_{1_\beta}$ because $1_\beta$ is terminal.)
+\end{itemize}
+
+An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
+
+\begin{definition}
+  A comprehension object is \mvrnote{super cool} if additionally:
+\begin{align}
+\label{chi-monad-trivial}
+\alpha.1_{\alpha} &\equiv \alpha\\
+\label{chi-unit-identity}
+\eta^\chi_\alpha &\equiv \id_\alpha \\
+\label{pair-s-bang}
+(s \bdot \id_{1_\alpha}) &\equiv s  &&
+\end{align}
+\end{definition}
+
+
+%We are also hoping that $\pi_{1_\alpha}^\alpha ; \eta_\alpha \equiv 1_{\alpha.1}$. This seems to follow if we know that $\ap{1_w}{\pi_1^\alpha/w} \equiv \var{1_\alpha}$, because then we can use the first triangle equation at $x = 1_\alpha$:
+%\begin{align*}
+%\id_{\alpha.{1_\alpha}}
+%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \var{1})/z} \\
+%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
+%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
+%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{\TrCirc{\chi}{z}})}{\pi_1^\alpha/z} \\
+%&\equiv \pi_1^\alpha;\eta_{\alpha}
+%\end{align*}
+%where that last move is naturality of $\eta$. That condition holds if $1_\alpha$ is terminal.
+
+%We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
 
 \subsection{Strict Comprehension Object (Axiomatic, $s^\circ$ and $s^+$ primitive)}
 
@@ -1430,101 +1662,6 @@ Where $f_1(\alpha,c)[1_{(\underline{\Delta ; \cdot})}/c] \equiv 1_{f_0(\underlin
 \end{itemize}
 
 \mvrnote{So what does the F-type for plain $f_0$ look like?}
-
-\subsection{Weak Comprehension Object (from mode type morphism)}
-
-\newcommand{\rdot}{\mathrm{dot}}
-
-\begin{definition}[Weak Comprehension Object]
-  A \emph{weak comprehension object} is specified by the following
-  constants:
-  \begin{mathpar}
-    p \type \and
-    \emptyset : p %\and
-%    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
-    \\
-    \alpha : p \yields \El{p}{\alpha} \type \and
-    \TypeTwo{}{\rdot}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
-  \end{mathpar}
-  such that
-  \begin{align}
-    \label{rdot-section}
-    \fst{\TrCirc{\rdot}{\alpha}} \equiv \alpha
-  \end{align}
-  where:
-  \begin{itemize}
-  \item Comprehension is given by $\rdot^+$:
-  \begin{mathpar}
-  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\rdot}{(\alpha, x)}
-  \end{mathpar}
-%  \item Pairing for the comprehension object is given by ap of
-%  $.$ on the pairing for $\Sigma$-modes:
-%  \begin{mathpar}
-%  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
-%             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-%             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
-%            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
-%  s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
-%  \end{mathpar}
-  \item The unit term in $\El{p}{\alpha}$ is given by 
-  \begin{mathpar}
-  \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and 1_\alpha :\equiv \snd{\TrCirc{\rdot}{\alpha}}
-  \end{mathpar}
-  This term is in $\El{p}{\fst{\TrCirc{\rdot}{\alpha}}} \equiv \El{p}{\alpha}$ by equation \eqref{rdot-section}.
-  \item The counit of $\rdot$ gives us both $\pi^\alpha_\mu$ and $\var{\mu}$ directly:
-  \begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
-  \and
-  \pi^\alpha_x :\equiv \ap \fst {\varepsilon_{(\alpha, x)}} \\
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi^\alpha_x}^+(x)}{\El{p}{\alpha.x}}} 
-    \and
-    \mathsf{var}_x :\equiv \ap \snd {\varepsilon_{(\alpha, x)}}
-  \end{mathpar}
-  \end{itemize}
-\end{definition}
-
-So in all, the unit and counit of $\rdot$ are maps
-\begin{align*}
-&\TermTwoT{}{\eta}{\alpha}{\alpha.{1_\alpha}}{p} \\
-&\TermTwoT{}{(\pi_x^\alpha, \var{x})}{(\alpha.x, 1_{\alpha.x})}{(\alpha, x)}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
-\end{align*}
-The first triangle equation is
-\begin{mathpar}
-\eta_{\TrPlus{\rdot}{(\alpha, x)}};\ap{(\TrPlus{\rdot}{z})}{\varepsilon_{(\alpha, x)}/z} \equiv \id_{\TrPlus{\rdot}{(\alpha, x)}} 
-\end{mathpar}
-And using some of the above definitions:
-\begin{mathpar}
-\eta_{\alpha.x};\ap{(\TrPlus{\rdot}{z})}{(\pi_x^\alpha, \var{x})/z} \equiv \id_{\alpha.x}
-\end{mathpar}
-
-The second triangle equation
-\begin{mathpar}
-\ap{(\TrCirc{\rdot}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\rdot}{\alpha}} \equiv \id_{\TrCirc{\rdot}{\alpha}}
-\end{mathpar}
-On the left this is:
-\begin{align*}
-\ap{(\TrCirc{\rdot}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\rdot}{\alpha}}
-&\equiv \ap{(z, 1_z)}{\eta_\alpha/z};\varepsilon_{(\alpha, 1_\alpha)} \\
-&\equiv (\eta_\alpha, \ap{1_z}{\eta_\alpha/z});(\pi^\alpha_{1_\alpha}, \var{1_\alpha}) \\
-&\equiv (\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}})
-\end{align*}
-So componentwise the triangle equation says
-\begin{align*}
-\eta_\alpha ; \pi_{1_\alpha}^\alpha &\equiv \id_\alpha \\
-\ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}} &\equiv \id_{1_\alpha}
-\end{align*}
-We are also hoping that $\pi_{1_\alpha}^\alpha ; \eta_\alpha \equiv 1_{\alpha.1}$. This seems to follow if we know that $\ap{1_w}{\pi_1^\alpha/w} \equiv \var{1_\alpha}$, because then we can use the first triangle equation at $x = 1_\alpha$:
-\begin{align*}
-\id_{1_\alpha} 
-&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \var{1})/z} \\
-&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
-&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
-&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\rdot}{\TrCirc{\rdot}{z}})}{\pi_1^\alpha/z} \\
-&\equiv \pi_1^\alpha;\eta_{\alpha}
-\end{align*}
-where that last move is naturality of $\eta$. That condition holds if $1_\alpha$ is terminal.
-
-We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
 
 \bibliographystyle{abbrv}
 \bibliography{../drl-common/cs}
