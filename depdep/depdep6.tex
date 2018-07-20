@@ -316,23 +316,23 @@ Next, we have the adjunction for $s^\circ$ and $s^+$:
     {\TypeTwo{\gamma}{s}{p}{q} \\
      \gamma \yields \nu : q
     }
-    {\TermTwo{\gamma}{\varepsilon_\nu}{\TrCirc{s}{\TrPlus{s}{\nu}}}{\nu}}
+    {\TermTwoT{\gamma}{\varepsilon^s_\nu}{\TrCirc{s}{\TrPlus{s}{\nu}}}{\nu}{q}}
 
 \inferrule*
     {\TypeTwo{\gamma}{s}{p}{q} \\
       \gamma \yields \mu : p
     }
-    {\TermTwo{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}}
+    {\TermTwoT{\gamma}{\eta^s_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}{p}}
 \\ 
 \eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon_\nu/z} \equiv \id_{\TrPlus{s}{\nu}} \and
 \ap{(\TrCirc{s}{z})}{\eta_\mu/z};\varepsilon_{\TrCirc{s}{\mu}} \equiv \id_{\TrCirc{s}{\mu}}
 \\
-t;\eta_\mu \equiv \eta_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \and \varepsilon_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon_{\nu'}
+\varepsilon_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon_{\nu'} \and t;\eta_\mu \equiv \eta_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \\
+\varepsilon^{\id_p}_\nu \equiv \id_{\nu} \and \eta^{\id_p}_\mu \equiv \id_{\mu} \\
+\varepsilon^{s;t}_\nu \equiv (\ap{t^\circ}{\varepsilon^s_{t^+(\nu)}}) ; \varepsilon^t_\nu \and 
+\eta^{s;t}_\mu \equiv \eta^s_\mu ; (\ap{s^+}{\eta^t_{s^\circ(\mu)}})
 \end{mathpar}
-\msnote{Shouldn't those be
-$\TermTwoT{\gamma}{\varepsilon_\nu}{\TrCirc{s}{\TrPlus{s}{\nu}}}{\nu}{q}$ and
-$\TermTwoT{\gamma}{\eta_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}{p}$?
-}
+\mvrnote{similar functoriality for horizontal composition?}
 
 \drlnote{equations for when $s$ is $\sigmacl{x}{t}{t'}$}.  
 
@@ -418,12 +418,10 @@ Pairing and projection 2-cells are definable:
 
  \inferrule*[Left = 2cell]{
    \Gamma \yields_\mu M : A 
-   \and \TermTwo{\gamma}{s}{\nu}{\mu}
+   \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
   }
   {\Gamma \yields_\nu s(M) : A} \\ \\
 \end{mathpar}
-
-\msnote{Shouldn't that be $\TermTwoT{\gamma}{s}{\nu}{\mu}{p}$ in the 2cell rule, where $\Gamma \yields_p A \TYPE$?}
 
 \subsubsection{Telescope Types}
 
@@ -690,9 +688,9 @@ satisfying the following equations for any $\alpha : p$, $s
 : \beta \Yields_p \alpha$, $\mu : S[\alpha/x]$, $\nu : S[\beta/x]$:
 \begin{align}
 \label{mor-fib-subst}
-f_1(\beta,\TrPlus{\ap{S}{s/x}}{\mu}) \equiv_{T(x)} \TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}\\
+f_1(\beta,\TrPlus{\ap{S}{s/x}}{\mu}) \equiv_{T(\beta)} \TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}\\
 \label{mor-opfib-subst}
-f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T(x)} \TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}
+f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T(\alpha)} \TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}
 \end{align}
 A morphism of bifibrations is \emph{strict} \mvrnote{(??)} if additionally:
 \begin{align}
