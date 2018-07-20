@@ -741,17 +741,27 @@ f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
 %% bifibrations from $(p,S)$ to $(q,T)$ means asserting equations
 %% \eqref{mor-fib-subst} \eqref{mor-fib-unit} \eqref{mor-fib-counit}.
 
-\subsection{Fibred Terminal Object}
+\subsection{Terminal Objects}
 
 \begin{definition}
-For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} is a term
+For a mode $x : p$, a terminal object is specified by
 \begin{mathpar}
-x : p \vdash 1_x : S(x)
+\vdash \emptyset : p \and
+\TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
+\end{mathpar}
+such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
+\end{definition}
+
+\begin{definition}
+For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} term is specified by:
+\begin{mathpar}
+x : p \vdash 1_x : S(x) \and
+\TermTwoT{x : p, \mu : S(x)}{!_\mu}{\mu}{1_x}{S(x)}
 \end{mathpar}
 such that
 \begin{align}
 \label{bang-unique}
-t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alpha)}\\
+t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alpha)}\\
 \label{s-plus-one-strict}
 \TrPlus{\ap{S}{s}}{1_\alpha} &\equiv 1_\beta && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}
 \end{align}
@@ -763,42 +773,22 @@ t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alpha)}
   A \emph{comprehension object} is specified by the following
   constants:
   \begin{mathpar}
-    p \type \and
-    \emptyset : p %\and
+    p \type 
+%    \emptyset : p %\and
 %    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
     \\
     \alpha : p \yields \El{p}{\alpha} \type \and
     \TypeTwo{\cdot}{\chi}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
+    \\
+    \TermTwoT{\alpha : p, \mu : \El{p}{\alpha}}{!_\mu}{\mu}{1_\alpha}{\El{p}{\alpha}}
   \end{mathpar}
   such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
 \begin{align}
 \label{chi-section}
 \fst{\TrCirc{\chi}{\alpha}} &\equiv \alpha \\
 \label{one-terminal} 
-1_\alpha &\text{ is a fibred terminal object of } \El{p}{\alpha} \\
-\label{circ-one}
-\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu && \\
-\label{bang-unique-p}
- t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\alpha}{\emptyset}{p}\\
-\label{dot-circ}
-\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu && \\
-\label{pi-dot-circ}
-\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s && 
-%% \label{pi-circ-morphism-of-fibrations}
-%% \ApEl{p}{s}^+(\ApEl{p}{\pi^\alpha_\mu}^\circ(\nu)) &\equiv
-%% \ApEl{p}{\pi^\beta_{\TrPlus{\ApEl{p}{s}}{\mu}}}^\circ(\ApEl{p}{\tilde{s}}^+(\nu)) && \text{where } \gamma \vdash \nu : \El{p}{\alpha . \mu}\\
-%% \mathsf{ap}(\El{p}{\pi}^\circ)(\eta_{\tilde{s}}(\mu))  &\equiv \eta_s(\El{p}{\pi}^\circ(\mu)) \\
-%% \mathsf{ap}(\El{p}{\pi}^\circ)(\varepsilon_{\tilde{s}}(\mu))  &\equiv \varepsilon_s(\El{p}{\pi}^\circ(\mu))
+(1_\alpha, !_\mu) &\text{ is a fibred terminal object of } \El{p}{\alpha} 
 \end{align}
-\begin{center}
-  $(z.\fst{z} \:,\:
-  z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
-  \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z})$ \\
-is a morphism of bifibrations from
-$(\sigmacl{\alpha}{p}{\El{p}{\alpha}}, z.\El{p}{\fst z \bdot \snd z})$
-to  
-$(p,x.\El{p}{x})$
-\end{center}
   
 \noindent In the equations, we use the following derived forms:
   \begin{itemize}
@@ -839,8 +829,6 @@ $(p,x.\El{p}{x})$
   s \bdot m :\equiv \ap{\chi^+}{(s, m)}
   \end{mathpar}
   \end{itemize}
-  
-\noindent To type check the equations, we use the following derivable equations:
 \end{definition}
 
 The triangle equalities for $\chi^\circ \dashv \chi^+$ take the following form:
@@ -850,7 +838,7 @@ The triangle equalities for $\chi^\circ \dashv \chi^+$ take the following form:
 %\ap{(\TrCirc{\chi}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\chi}{\alpha}} \equiv \id_{\TrCirc{\chi}{\alpha}}
 (\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
 \end{align*}
-because $1_\alpha$ is terminal, the latter is just saying $\eta_\alpha ; \pi^\alpha_{1_\alpha} = \id_\alpha$.
+because $1_\alpha$ is terminal, only the first component of the latter equation has content, it says that $\eta_\alpha ; \pi^\alpha_{1_\alpha} = \id_\alpha$.
 
 %The second triangle equation is
 %\begin{mathpar}
@@ -903,7 +891,7 @@ follows by fusing the ap's and the corresponding fusion rule for morphisms in $\
 \label{beta-pi}
 \eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\ApEl{p}{s}^+(\mu)}{\alpha}
   \end{align}
-follows from naturality by:
+follows from naturality and the second triangle equation by:
 \begin{align*}
 \eta_\beta;(s \bdot m);\pi^\alpha_\mu
 &\equiv \eta_\beta;\pi^\beta_{1_\beta};s \\
@@ -944,166 +932,6 @@ t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 (We know that $\ap{1_z}{t/z} \equiv \id_{1_\beta}$ because $1_\beta$ is terminal.)
 \end{itemize}
 
-An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
-
-\begin{definition}
-  A comprehension object is \mvrnote{super cool} if additionally:
-\begin{align}
-\label{chi-monad-trivial}
-\alpha.1_{\alpha} &\equiv \alpha\\
-\label{chi-unit-identity}
-\eta^\chi_\alpha &\equiv \id_\alpha \\
-\label{pair-s-bang}
-(s \bdot \id_{1_\alpha}) &\equiv s  &&
-\end{align}
-\end{definition}
-
-
-%We are also hoping that $\pi_{1_\alpha}^\alpha ; \eta_\alpha \equiv 1_{\alpha.1}$. This seems to follow if we know that $\ap{1_w}{\pi_1^\alpha/w} \equiv \var{1_\alpha}$, because then we can use the first triangle equation at $x = 1_\alpha$:
-%\begin{align*}
-%\id_{\alpha.{1_\alpha}}
-%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \var{1})/z} \\
-%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
-%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{z})}{(\pi_1^\alpha, \ap{1_w}{\pi_1^\alpha/w})/z} \\
-%&\equiv \eta_{\alpha.1};\ap{(\TrPlus{\chi}{\TrCirc{\chi}{z}})}{\pi_1^\alpha/z} \\
-%&\equiv \pi_1^\alpha;\eta_{\alpha}
-%\end{align*}
-%where that last move is naturality of $\eta$. That condition holds if $1_\alpha$ is terminal.
-
-%We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
-
-\subsection{Strict Comprehension Object (Axiomatic, $s^\circ$ and $s^+$ primitive)}
-
-\begin{definition}[Strict Comprehension Object]
-  A \emph{strict comprehension object} is specified by the following
-  constants:
-  \begin{mathpar}
-    p \type \and
-    \emptyset : p \and
-    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
-    \\
-    \alpha : p \yields \El{p}{\alpha} \type \and
-    \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and
-    \TermTwoT{\alpha : p, x : \El{p}{\alpha}}{\,\bang_x}{x}{1_\alpha}{\El{p}{\alpha}} \\
-    \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \\
-  \end{mathpar}
-such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma
-\yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
-\begin{align}
-\label{s-plus-one-strict}
-\ApEl{p}{s}^+(1_\alpha) &\equiv 1_\beta && \\
-\label{dot-one-strict}
-\alpha.1_\alpha &\equiv \alpha \\
-\label{pair-s-bang}
-(s \bdot \id_{1_\alpha}) &\equiv s  && \\
-\label{circ-one}
-\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu && \\
-\label{bang-unique-p}
- t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\alpha}{\emptyset}{p}\\
-\label{bang-unique}
- t & \equiv \bang && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{\El{p}{\alpha}}\\
-\label{beta-var}
-\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} &\equiv m && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}} \\
-\label{eta-pi-var}
-t &\equiv ((t;\pi) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p} \\
-\label{dot-circ}
-\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu && \\
-\label{pi-dot-circ}
-\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s && 
-%% \label{pi-circ-morphism-of-fibrations}
-%% \ApEl{p}{s}^+(\ApEl{p}{\pi^\alpha_\mu}^\circ(\nu)) &\equiv
-%% \ApEl{p}{\pi^\beta_{\TrPlus{\ApEl{p}{s}}{\mu}}}^\circ(\ApEl{p}{\tilde{s}}^+(\nu)) && \text{where } \gamma \vdash \nu : \El{p}{\alpha . \mu}\\
-%% \mathsf{ap}(\El{p}{\pi}^\circ)(\eta_{\tilde{s}}(\mu))  &\equiv \eta_s(\El{p}{\pi}^\circ(\mu)) \\
-%% \mathsf{ap}(\El{p}{\pi}^\circ)(\varepsilon_{\tilde{s}}(\mu))  &\equiv \varepsilon_s(\El{p}{\pi}^\circ(\mu))
-\end{align}
-\begin{center}
-  $(z.\fst{z} \:,\:
-  z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
-  \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z})$ \\
-is a morphism of bifibrations from
-$(\sigmacl{\alpha}{p}{\El{p}{\alpha}}, z.\El{p}{\fst z \bdot \snd z})$
-to  
-$(p,x.\El{p}{x})$
-\end{center}
-
-\noindent In the equations, we use the following derived forms:
-\begin{itemize}
-\item Pairing for the comprehension object is given by ap of
-  $.$ on the pairing for $\Sigma$-modes:
-  \begin{mathpar}
-  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
-             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
-            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
-  s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
-  \end{mathpar}
-  
-  By \eqref{dot-one-strict}, this has the usual comprehsion for ``substitutions''
-  (mode term morphisms in $p$) as a special case, if we take the ``terms'' to be maps
-  \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}
-  in the fiber:
-  \begin{mathpar}
-  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
-             %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-             \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
-            {\TermTwoT{\gamma}{s \bdot m}{\alpha}{\beta.\nu}{p}}
-  \end{mathpar}
-
-  As another special case, we have
-\begin{mathpar}
-    \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and \gamma \yields \mu : \beta}
-    {\TermTwoT{\gamma}{\tilde{s}}{\alpha.\ApEl{p}{s}^+(\mu)}{\beta.\mu}{p}}
-    \and
-    \tilde{s} :\equiv (s \bdot \id_{\ApEl{p}{s}^+(\mu)}) 
-\end{mathpar}
-  
-\item Also using \eqref{dot-one-strict}, ``first projection'' from a ``context'' is given by 
-\begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha.1_x \equiv \alpha}{p}}
-  \and
-  \pi^\alpha_x :\equiv (\id_\alpha \bdot \bang_x) \equiv \ap{\alpha.x}{\bang/(x:\El{p}{\alpha})} \\
-\end{mathpar}
-
-\item Projection of the last ``variable'' from a ``context'' is defined
-  using the unit of the adjunction $\ApEl{p}{\pi}^\circ \dashv
-  \ApEl{p}{\pi}^+$:
-\begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi}^+(x)}{\El{p}{\alpha.x}}} 
-    \and
-    \mathsf{var}_x :\equiv \eta^{\ApEl{p}{\pi^\alpha_x}}(1_{\alpha.x}) 
-  \end{mathpar}
-This uses equation \eqref{circ-one} to equate
-$\TrPlus{\ApEl{p}{\pi}}{\TrCirc{\ApEl{p}{\pi}}{1_{\alpha.x}}}$ with
-$\TrPlus{\ApEl{p}{\pi}}{x}$.  
-\end{itemize}
-
-\noindent To type check the equations, we use the following derivable equations:
-\begin{itemize}
-
-\item Fusion for $.$
-\begin{align}
-\label{dot-fusion}
-    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
-\end{align}
-follows by fusing the ap's and the corresponding fusion rule for
-morphisms in $\Sigma$ modes.
-
-\item $\beta$ reduction for first projection:
-  \begin{align}
-\label{beta-pi}
-(s \bdot m);\pi &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\ApEl{p}{s}^+(\mu)}{\alpha}
-  \end{align}
-  is derived by
-  \begin{mathpar}
-    (s \bdot m);\pi \equiv (s \bdot m);(\id_\alpha \bdot \bang_\mu) \equiv
-    (s;\id \bdot m;!_\mu) \equiv (s \bdot \bang_\mu) \equiv (s \bdot \id_{1_\alpha}) \equiv s
-  \end{mathpar}
-  using the definition of $\pi$, equations \eqref{dot-fusion},
-  \eqref{bang-unique} (twice), and 
-  \eqref{pair-s-bang}.  
-\end{itemize}
-\end{definition}
-
 We think of a term of mode $p$ as a ``context'', a mode term morphism of
 mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
 ``dependent type'', and a mode term morphism $1_\alpha
@@ -1111,51 +939,13 @@ mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
 equations: $\TrPlus{\ApEl{p}{s}}{-}$ is supposed to act like
 substitution; equation \eqref{s-plus-one-strict} says that substitution
 into the unit type gives the unit type in a different ``context''.
-Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
-$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
-comprehension and projection.
-Equation \eqref{pair-s-bang} type checks because of equations
-\eqref{s-plus-one-strict} and \eqref{dot-one-strict}: $\id_{1_\alpha} :
-1_\alpha \Yields \TrPlus{\ApEl{p}{s}}{1_\beta}$, so pairing with $s$
-gives $\alpha.1_\alpha \Yields \beta.1_\beta$, which is the same as
-$\alpha \Yields \beta$.  Equation \eqref{bang-unique-p} is the analogue
-of uniqueness of the subsitution for the empty context, while
-\eqref{bang-unique} is the analogue of uniqueness of terms of unit type.
-  Equation \eqref{beta-var} says that
+
+Equation \eqref{beta-var} says that
 ``substituting'' into a ``variable'' is second projection on the
 ``substitution''; it type checks using \eqref{s-plus-one-strict} and the
 derivable corresponding equation for first projection \eqref{beta-pi}
 (and fusing the transports/aps).  Equation \eqref{eta-pi-var} is the
-usual $\eta$ principle for subsitutions.  Equation \eqref{dot-circ} says
-that the comprehension of $s^\circ(\mu)$ is the same as the
-comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
-projection is determined by $s$ and the projection from $\beta$ (which
-type checks using \eqref{dot-circ}).  Finally, we say that
-$\ApEl{p}{\pi}^\circ$ is a morphism of bifibrations in the above sense.
-
-%% where $\eta_s$ and $\varepsilon_s$ are the unit and counit for the adjunction $\El{p}{s}^\circ \dashv \El{p}{s}^+$.
-
-Some other derivable equations:
-\begin{itemize}
-\item $\pi$ for $1_\alpha$ is the identity:
-\begin{align}
-\label{pi-one-strict}
-\pi^\alpha_{1_\alpha} &\equiv \id_\alpha 
-\end{align}
-follows from \eqref{pair-s-bang}, \eqref{bang-unique} and the definition of $\pi$.
-
-\item An extensionality rule that two elements of $\El{p}{\alpha}$ are
-  equal if they have the same comprehensions and projections
-\begin{align}
-\label{comprehension-ext}
-\inferrule*
-    {\alpha.\mu \equiv \alpha.\mu' \and \pi_\mu \equiv \pi_{\mu'}
-    }
-    {\mu \equiv \mu'}
-\end{align}
-follows by using \eqref{circ-one} twice with congruence and
-transitivity.  
-\end{itemize}
+usual $\eta$ principle for subsitutions.
 
 \begin{remark}
 This axiomatization was inspired by the definition of comprehension
@@ -1167,40 +957,78 @@ category with unit in \cite{ahman+16fibered}:
 \end{itemize}
 In our notation:
 \begin{itemize}
-\item $\mathcal{B}$ is the category with objects given by terms $\alpha
-  : p$ and morphisms by $\alpha \vDash_p \beta$.
+\item $\mathcal{B}$ corresponds to the mode $p$ and $\mathcal{E}$ to $\sigmacl{\alpha}{p}{\El{p}{\alpha}}$, with the morphisms in both categories given by the mode-term-2-cells in each.
 
-\item $\mathcal{E}$ has no direct analogue in the syntax, but has
-  objects given by pairs $[\alpha, \mu : \El{p}{\alpha}]$ and morphisms given by pairs
-  $[s, t] : [\beta, \nu] \to [\alpha, \mu]$ where $\beta \vDash_p s :
-  \alpha$ and $\nu \vDash_{\El{p}{\beta}} t : \ApEl{p}{s}^+ (\mu)$. (We
-  write square brackets to distinguish this from other forms of
-  pairing.)
+\item The projection $p : \mathcal{E} \to \mathcal{B}$ is the function $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. 
 
-\item The projection $p : \mathcal{E} \to \mathcal{B}$ is a fibration
-  because the type family $\El{p}{-}$ acts on term 2-cells $s : \alpha
-  \vDash_p \beta$ to give $(\ApEl{p}{s})^+$.
-
-\item The functor $1$ at an object $\alpha$ is the pair $[\alpha, 1_\alpha]$
-  
-\item The functor $\{-\}$ is given at $[\alpha, \mu]$ by $\alpha.\mu$.
+\item The functor $1$ is given by $\chi^\circ$, and $\{-\}$ is given by $\chi^+$. These are automatically adjoint.
 \end{itemize}
-
-We use $\pi$ and $\mathsf{var}_\mu$ to enforce the adjointness of $1$
-and $\{-\}$. We want the following to be in bijection:
-\begin{mathpar}
-\mprset{fraction={===}}
- \inferrule{\TermTwoT{\gamma}{s}{\beta}{\alpha}{s} \and \TermTwoT{\gamma}{t}{1_\beta}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}}}
-            {\TermTwoT{\gamma}{(s \bdot t)}{\beta}{\alpha.\mu}{p}}
-\end{mathpar}
-The two premises correspond to a morphism $[\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$. Adjointness can be expressed as the claim that any morphism $[s, t] : [\beta, 1_\beta] \to [\alpha, \mu]$ in $\mathcal{E}$ factors as:
-\[\begin{tikzcd}
-{[\beta, 1_\beta]} \arrow[dr, "{[s, t]}" swap] \arrow[rr, dashed, "{[(s,t), \id_{1_\beta}]}"] && {[\alpha.\mu, 1_{\alpha.\mu}]} \arrow[dl, "{[\pi, \mathsf{var}_\mu]}"] \\
-& {[\alpha, \mu]}
-\end{tikzcd}\]
-where $[\pi, \mathsf{var}_\mu]$ is the counit of the adjunction at $[\alpha, \mu]$. The equations \eqref{beta-pi} and \eqref{beta-var} are the $\beta$ principles for $\pi$ and $\mathsf{var}_\mu$ that guarantee the triangle commutes. The equation \eqref{eta-pi-var} is the $\eta$ principle that makes the factorisation unique.
 \end{remark}
 
+An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
+
+\begin{definition}
+  A comprehension object is \mvrnote{super cool} if additionally:
+\begin{align}
+\label{dot-one-strict}
+\alpha.1_{\alpha} &\equiv \alpha\\
+\label{chi-unit-identity}
+\eta^\chi_\alpha &\equiv \id_\alpha \\
+\label{circ-one}
+\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\label{dot-circ}
+\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu \\
+\label{pi-dot-circ}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s 
+\end{align}
+\end{definition}
+Consequences of being \mvrnote{super cool}:
+\begin{itemize}
+\item Projecting away $1_\alpha$ is the identity:
+\begin{align}
+\label{pi-one-strict}
+\pi^\alpha_{1_\alpha} \equiv \id_\alpha 
+\end{align}
+\item Pairing with $\id_{1_\alpha}$ is the identity:
+\begin{align}
+\label{pair-s-bang}
+(s \bdot \id_{1_\alpha}) \equiv s
+\end{align}
+By
+\begin{align*}
+(s \bdot \id_{1_\alpha}) 
+&\equiv (s \bdot \id_{1_\alpha}); \pi^\alpha_{1_\alpha} \\
+&\equiv \pi^\alpha_{1_\alpha};s \\
+&\equiv s
+\end{align*}
+\end{itemize}
+Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
+$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
+comprehension and projection. Equation \eqref{dot-circ} says
+that the comprehension of $s^\circ(\mu)$ is the same as the
+comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
+projection is determined by $s$ and the projection from $\beta$ (which
+type checks using \eqref{dot-circ}).
+
+\begin{definition}
+  A comprehension object \emph{has $\Sigma$s} if
+\[
+  z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
+  \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z} 
+\]
+is a morphism of bifibrations from $\El{p}{\fst z \bdot \snd z}$ to $\El{p}{\fst z}$ over $z : \sigmacl{\alpha}{p}{\El{p}{\alpha}}$.
+\end{definition}
+
+\begin{definition}
+  A comprehension object \emph{has $\Pi$s} if
+\[
+  z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z}
+  \vdash \TrPlus{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z \bdot \snd z} 
+\]
+is a morphism of bifibrations from $\El{p}{\fst z}$ to $\El{p}{\fst z \bdot \snd z}$ over $z : \sigmacl{\alpha}{p}{\El{p}{\alpha}}$.
+\end{definition}
+
+%We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
 
 \subsubsection{Upstairs Types}
 
@@ -1296,9 +1124,9 @@ term $a$ depends on exactly the same variables as the type $A$.
 
 \subsection{Morphism of Comprehension Objects}
 
-Let $(p,\El{p}{-},\emptyset_p,1_p,\bdot_p)$
-and $(q,\El{q}{-},\emptyset_q,1_q,\bdot_q)$
-be two strict comprehension objects.
+Let $(p,\El{p}{-},\chi_p)$ and $(q,\El{q}{-},\chi_q)$ be two comprehension objects.
+
+\mvrnote{FIXME: below is out of date}
 
 \begin{definition}[Lifting to dependent types]
   For a mode term ${\alpha : p \yields f_0(\alpha) : q}$,
