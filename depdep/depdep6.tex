@@ -54,8 +54,8 @@
 \newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_{#5} #2 : #4}}
 %% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \vDash_{\mathsf{disp}} #2 :_{#5} #4}}
 \newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
-\newcommand\TrPlus[2]{\ensuremath{#1^+(#2)}}
-\newcommand\TrCirc[2]{\ensuremath{#1^\circ(#2)}}
+\newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
 
 \newcommand\Set[0]{\ensuremath{\textbf{Set}}}
 \newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
@@ -784,6 +784,8 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
   \end{mathpar}
   such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
 \begin{align}
+\label{empty-terminal} 
+p &\text{ has a terminal object} \\
 \label{chi-section}
 \fst{\TrCirc{\chi}{\alpha}} &\equiv \alpha \\
 \label{one-terminal} 
@@ -960,21 +962,61 @@ In our notation:
 \end{itemize}
 \end{remark}
 
+\begin{definition}
+  A comprehension object is an \emph{object with finite limits} if the following equations hold:
+  \begin{align}
+  \label{circ-one}
+\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\label{dot-circ-one}
+\alpha.(\ApEl{p}{s}^\circ(1_\beta)) &\equiv \beta.1_\beta \\
+\label{pi-dot-circ-one}
+\pi^\alpha_{\ApEl{p}{s}^\circ(1_\beta)} &\equiv \pi^\beta_{1_\beta};s 
+  \end{align}
+\end{definition}
+Consequences of this:
+\begin{itemize}
+\item More general version of equation  \eqref{dot-circ-one}:
+\begin{align}
+\tag{\ref{dot-circ-one}'} \label{dot-circ}
+\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu
+\end{align}
+By:
+\begin{align*}
+\alpha.(\ApEl{p}{s}^\circ(\nu))
+&\equiv\alpha.(\ApEl{p}{s}^\circ \ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu})) \\
+&\equiv\alpha.(\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})) \\
+&\equiv \beta.\nu.1_{\beta.\nu}
+\end{align*}
+\item Corresponding more general version of equation \eqref{pi-dot-circ-one}:
+\begin{align}
+\tag{\ref{pi-dot-circ-one}'} \label{pi-dot-circ}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^{\beta.\nu}_{1_{\beta.\nu}};\pi^\beta_\nu;s
+\end{align}
+By:
+\begin{align*}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)}
+&\equiv \pi^\alpha_{\ApEl{p}{s}^\circ(\ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu}))} \\
+&\equiv \pi^\alpha_{\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})} \\
+&\equiv \pi^{\beta.\nu}_{1_{\beta.\nu}};\pi^\beta_\nu;s 
+\end{align*}
+\end{itemize}
+Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
+$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
+comprehension and projection. Equation \eqref{dot-circ} says
+that the comprehension of $s^\circ(\mu)$ is the same as the
+comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
+projection is determined by $s$ and the projection from $\beta$ (which
+type checks using \eqref{dot-circ}).
+
 An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
 
 \begin{definition}
-  A comprehension object is \mvrnote{super cool} if additionally:
+  A comprehension object is \mvrnote{super cool} if:
 \begin{align}
 \label{dot-one-strict}
 \alpha.1_{\alpha} &\equiv \alpha\\
 \label{chi-unit-identity}
-\eta^\chi_\alpha &\equiv \id_\alpha \\
-\label{circ-one}
-\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-\label{dot-circ}
-\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu \\
-\label{pi-dot-circ}
-\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s 
+\eta^\chi_\alpha &\equiv \id_\alpha
 \end{align}
 \end{definition}
 Consequences of being \mvrnote{super cool}:
@@ -997,31 +1039,49 @@ By
 &\equiv s
 \end{align*}
 \end{itemize}
-Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
-$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
-comprehension and projection. Equation \eqref{dot-circ} says
-that the comprehension of $s^\circ(\mu)$ is the same as the
-comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
-projection is determined by $s$ and the projection from $\beta$ (which
-type checks using \eqref{dot-circ}).
 
 \begin{definition}
-  A comprehension object \emph{has $\Sigma$s} if
+  A comprehension object \emph{induces stable $\Sigma$s} if
 \[
   z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
   \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z} 
 \]
 is a morphism of bifibrations from $\El{p}{\fst z \bdot \snd z}$ to $\El{p}{\fst z}$ over $z : \sigmacl{\alpha}{p}{\El{p}{\alpha}}$.
 \end{definition}
+Expanding the definition, this is asking that for any 
+\begin{align*}
+\alpha, \beta &: p \\
+x &: \El{p}{\beta} \\
+y &: \El{p}{\alpha} \\
+s &: \beta\Yields_p \alpha \\
+m &: x \Yields_{\El{p}{\beta}} \TrPlus{s}{y} \\
+z &: \El{p}{\alpha.y} \\
+z' &: \El{p}{\beta.x}
+\end{align*}
+we have
+\begin{align*}
+\TrCirc{\pi^{\beta}_x}{\TrPlus{(s . m)}{z}} &\equiv_\beta \TrPlus{s}{\TrCirc{\pi^{\alpha}_{y}}{z}} \\
+\TrCirc{\pi^{\alpha}_y}{\TrCirc{(s . m)}{z'}} &\equiv_\beta \TrCirc{s}{\TrCirc{\pi^{\beta}_{x}}{z'}}
+\end{align*}
 
 \begin{definition}
-  A comprehension object \emph{has $\Pi$s} if
+  A comprehension object \emph{induces stable $\Pi$s} if
 \[
   z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z}
   \vdash \TrPlus{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z \bdot \snd z} 
 \]
 is a morphism of bifibrations from $\El{p}{\fst z}$ to $\El{p}{\fst z \bdot \snd z}$ over $z : \sigmacl{\alpha}{p}{\El{p}{\alpha}}$.
 \end{definition}
+This is asking that for any $\alpha, \beta, x, y, s, m$ as above, and
+\begin{align*}
+w &: \El{p}{\alpha} \\
+w' &: \El{p}{\beta}
+\end{align*}
+we have
+\begin{align*}
+\TrPlus{\pi^{\beta}_x}{\TrPlus{s}{w}} &\equiv_{\beta.x} \TrPlus{(s . m)}{\TrPlus{\pi^{\alpha}_{y}}{w}} \\
+\TrPlus{\pi^{\alpha}_y}{\TrCirc{s}{w'}} &\equiv_{\beta.x} \TrCirc{(s . m)}{\TrPlus{\pi^{\beta}_{x}}{w'}}
+\end{align*}
 
 %We are also hoping that $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}}$ is isomorphic to $\mu$. We have a map $\TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \vDash \mu$ as the transpose of $\var{\mu}$. Is there a map in the other direction?
 
