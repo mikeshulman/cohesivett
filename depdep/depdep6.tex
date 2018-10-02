@@ -38,12 +38,14 @@
 \newcommand{\TELE}{\,\,\mathsf{Tele}}
 \newcommand{\tele}{\,\,\mathsf{mtele}}
 
+\newcommand{\rewrite}[2]{#1(#2)}
 \newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
 \newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
 \newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
 \newcommand\StI[1]{\ensuremath{\mathsf{st}(#1)}}
+\newcommand\UStI[1]{\ensuremath{\mathsf{ust}(#1)}}
 \newcommand\UnSt[1]{\ensuremath{\mathsf{unst}(#1)}}
 %\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
 \newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
@@ -311,6 +313,8 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\m
  (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
+\mvrnote{Should we write $t[s/x]$ as shorthand for either side of the last equation?}
+
 Next, we have the adjunction for $s^\circ$ and $s^+$:
 \begin{mathpar}
 \inferrule*
@@ -421,8 +425,15 @@ Pairing and projection 2-cells are definable:
    \Gamma \yields_\mu M : A 
    \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
   }
-  {\Gamma \yields_\nu s(M) : A} \\ \\
+  {\Gamma \yields_\nu \rewrite{s}{M} : A} \\ \\
+  
+  \rewrite{\id_\mu}{M} \equiv M \and
+  \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
+  \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{s[t/x]}{M[N/x]}
 \end{mathpar}
+
+\mvrnote{show that the above equations imply that the 2-cell rule pushes into terms}
+
 
 \subsubsection{Telescope Types}
 
@@ -564,6 +575,52 @@ Type equalities:
 \drlnote{We should also have term definitional equalities over these.}
 %% (like
 %% $\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
+
+\subsection{Lemmas}
+
+\begin{lemma}
+The $\mathsf{U}$-style rules for $s$-types are derivable:
+\begin{mathpar}
+\inferrule*[Left = s-intro-2]{
+    \Gamma \yields_{\TrCirc{s}{\mu}} M : B
+  }
+  {\Gamma \yields_{\mu} \UStI{M} : \St{s}{B}
+  } \and
+  
+  \inferrule*[Left = s-elim-2]{
+    \Gamma \yields_{\mu} N : \St{s}{B}
+  }{
+    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{N} : B
+  } 
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+For the first:
+\begin{mathpar}
+\inferrule*[Left = 2cell]{
+\inferrule*[Left = s-intro]{
+    \Gamma \yields_{\TrCirc{s}{\mu}} M : A
+  }
+  {\Gamma \yields_{\TrPlus{s}{\TrCirc{s}{\mu}}} \StI{M} : \St{s}{A}}}
+  {
+    {\Gamma \yields_{\mu} \UStI{M} :\equiv \rewrite{\eta^s_\mu}{\StI{M}} : \St{s}{A}}}
+\end{mathpar}
+And the second:
+\begin{mathpar}
+\inferrule*[Left = s-elim]{
+\Gamma \yields_{\mu} N : \St{s}{B} 
+\and
+\inferrule*[left = 2cell]{
+     \Gamma, x : B \yields_x x : B
+  }{
+    \Gamma, x : B \yields_{\TrCirc{s}{\TrPlus{s}{x}}} \rewrite{\varepsilon^s_x}{x} : B
+  }
+  }
+  {
+    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{N} :\equiv \StE{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
+  }
+\end{mathpar}
+\end{proof}
 
 \subsection{Examples}
 
