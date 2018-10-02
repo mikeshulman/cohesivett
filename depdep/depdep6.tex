@@ -64,6 +64,7 @@
 \newcommand\Hom[3]{\ensuremath{\textbf{hom}_{#1}(#2,#3)}}
 \newcommand\just[1]{\ensuremath{\textsf{just}_{#1}}}
 \newcommand\Dt[2]{\ensuremath{#1.#2}}
+\newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
 \newcommand\var[1]{\ensuremath{\mathsf{var}_{#1}}}
 
 \newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
@@ -1276,7 +1277,7 @@ In this section we interpret all the rules and equations of the presentation of 
 
 For consistency we switch from the Agda-style syntax used in the paper to ordinary inference rules. To distinguish judgements in this type theory from the ones in the framework I will use $\qyields$ as the turnstile. \mvrnote{Or some other symbol...} We have the following judgements:
 \begin{mathpar}
-\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \theta : \Delta 
+\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
 \end{mathpar}
 with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equations require earlier equations to hold in order to typecheck.
 
@@ -1284,46 +1285,46 @@ with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equ
 \begin{mathpar}
 \inferrule*[left=ctx-empty]{~}{\cdot \CTX} \and
 \inferrule*[left=ctx-ext]{\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma, A \CTX} \\
-\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \theta : \Delta}{\Gamma \qyields A[\theta] \TYPE} \and
-\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \theta : \Delta}{\Gamma \qyields a[\theta] : A[\theta]} 
+\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields a[\Theta] : A[\Theta]} 
 \\
 \inferrule*[left=sub-empty]{~}{\Gamma \qyields \epsilon : \cdot} \and
-\inferrule*[left=sub-ext]{\Gamma \qyields \theta : \Delta \and \Gamma \qyields a : A[\theta]}{\Gamma \qyields (\theta, a) : \Delta, A} \\
+\inferrule*[left=sub-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \\
 \inferrule*[left=sub-id]{~}{\Gamma \qyields \id_\Gamma : \Gamma} \and
-\inferrule*[left=sub-comp]{\Gamma \qyields \theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \theta ; \kappa : \Lambda} \\
-\inferrule*[left=sub-$\pi_1$]{\Gamma \qyields \theta : \Delta, A}{\Gamma \qyields \pi_1(\theta) : \Delta} \and 
-\inferrule*[left=sub-$\pi_2$]{\Gamma \qyields \theta : \Delta, A}{\Gamma \qyields \pi_2(\theta) : A[\pi_1(\theta)]} 
+\inferrule*[left=sub-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
+\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma} \and 
+\inferrule*[left=sub-var]{~}{\Gamma, A \qyields \var{\Gamma,A} : A[\proj{\Gamma,A}]} 
 \end{mathpar}
 
 \begin{align}
 A[\id] &\equiv A \\
-A[\theta ; \kappa] &\equiv A[\kappa][\theta] \\
+A[\Theta ; \kappa] &\equiv A[\kappa][\Theta] \\
 \nonumber\\
 a[\id] &\equiv a \\
-a[\theta ; \kappa] &\equiv a[\kappa][\theta] \\
+a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
 \nonumber\\
-\id ; \theta &\equiv \theta \\
-\theta ; \id &\equiv \theta \\
-(\theta; \kappa) ; \rho &\equiv \theta ; (\kappa ; \rho) \\
+\id ; \Theta &\equiv \Theta \\
+\Theta ; \id &\equiv \Theta \\
+(\Theta; \kappa) ; \rho &\equiv \Theta ; (\kappa ; \rho) \\
 \nonumber\\
-\theta ; (\kappa , a) &\equiv (\theta ; \kappa) , a[\theta] \\ 
-\pi_1(\theta, a) &\equiv \theta \\
-\pi_2(\theta, a) &\equiv a \\
-(\pi_1(\theta), \pi_2(\theta)) &\equiv \theta \\
-\theta &\equiv \epsilon && \text{for } \Gamma \qyields \theta : \cdot
+\Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\ 
+(\Theta, a);\proj{\Gamma,A} &\equiv \Theta \\
+\var{\Gamma,A}[\Theta, a] &\equiv a \\
+(\proj{\Gamma,A}, \var{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
+\Theta &\equiv \epsilon && \text{for } \Gamma \qyields \Theta : \cdot
 \end{align}
 \caption{Rules of MLTT via Explicit Substitutions}\label{fig:qit-rules}
 \end{figure}
 
 We can derive some useful operations:
 \begin{mathpar}
-\inferrule*[left=derivable]{\Gamma \qyields \theta : \Delta \and \Delta \qyields A \TYPE}{\Gamma, A[\theta] \qyields \theta \uparrow A : \Delta, A} \and
-\inferrule*[left=derivable]{\Gamma \qyields a : A}{\Gamma \qyields \overline{a} : \Gamma, A}
+\inferrule*[left=derivable]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields A \TYPE}{\Gamma, A[\Theta] \qyields \Theta \uparrow A : \Delta, A} \and
+\inferrule*[left=derivable]{\Gamma \qyields a : A}{\Gamma \qyields \hat{a} : \Gamma, A}
 \end{mathpar}
 defined by:
 \begin{align*}
-\theta \uparrow A &:\equiv (\pi_1(\id_{\Gamma, A[\theta]}); \theta) , \pi_2(\id_{\Gamma, A[\theta]}) \\
-\overline{a} &:\equiv \id_{\Gamma} , a
+\Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]} \\
+\hat{a} &:\equiv \id_{\Gamma} , a
 \end{align*}
 
 Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Figures~\ref{fig:qit-pi-rules} and~\ref{fig:qit-sigma-rules}.
@@ -1335,11 +1336,11 @@ Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Fig
 \inferrule*[left=$\Pi$-lam]{\Gamma, A \qyields b : B}{\Gamma \qyields \mathsf{lam}(b) : \Pi_A B}
 \end{mathpar}
 \begin{align}
-(\Pi_A B)[\theta] &\equiv \Pi_{A[\theta]} B[\theta \uparrow A] \\
+(\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
 \nonumber\\
 \mathsf{app}(\mathsf{lam}(b)) &\equiv b \\
 \mathsf{lam}(\mathsf{app}(f)) &\equiv f \\
-\mathsf{lam}(b)[\theta] &\equiv \mathsf{lam}(b[\theta \uparrow A])
+\mathsf{lam}(b)[\Theta] &\equiv \mathsf{lam}(b[\Theta \uparrow A])
 \end{align}
 \caption{Rules for $\Pi$-types in  MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
 \end{figure}
@@ -1347,22 +1348,22 @@ Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Fig
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE} \\
-\inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\overline{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
+\inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\hat{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
 \inferrule*[left=$\Sigma$-$\pi_1$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_1(p) : A} \and
 \inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\overline{\pi_1(p)}]} \and
 \end{mathpar}
 \begin{align}
-(\Sigma_A B)[\theta] &\equiv \Sigma_{A[\theta]} B[\theta \uparrow A] \\
+(\Sigma_A B)[\Theta] &\equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A] \\
 \nonumber\\
 \pi_1(a, b) &\equiv a \\
 \pi_2(a, b) &\equiv b \\
 (\pi_1(p), \pi_2(p)) &\equiv p \\
-(a, b)[\theta] &\equiv (a[\theta], b[\theta])
+(a, b)[\Theta] &\equiv (a[\Theta], b[\Theta])
 \end{align}
 \caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
 \end{figure}
 
-Our goal is to interpret these rules in the framework. The mode theory consists of an object with finite limits $p$ that supports both stable $\Sigma$s and $\Pi$s. The basic idea for representing the judgements of MLTT is as follows:
+Our goal is to interpret these rules in the framework. The mode theory consists of a comprehension object $p$. The basic idea for representing the judgements of MLTT is as follows:
 \begin{itemize}
 \item For each object-language context $\Gamma$, there is a corresponding upstairs framework context $\upstairs{\Gamma}$ living over the downstairs framework context $\downstairs{\Gamma}$. There is also an mode term $\downstairs{\Gamma} \yields \asdep{\Gamma} : p$, meant to represent a dependency descriptor for using every variable in $\Gamma$ exactly once.
 
@@ -1377,6 +1378,8 @@ These will be defined inductively, and the general idea is that for $\Gamma$ of 
   \[x_1 : \El{p}{\emptyset}, x_2 : \El{p}{\emptyset.x_1}, \ldots, x_{i+1} : \El{p}{\emptyset.x_1.x_2.\ldots.x_i},\ldots
   \]
   The mode term $\asdep{\Gamma} : p$ will be $\emptyset.x_1.x_2.\ldots.x_n$ when $\Gamma$ is $x_1 : A_1, \ldots , x_n : A_n$.
+
+\subsubsection{Structural Rules}
 
 We now give the translations of all the rules in Figure~\ref{fig:qit-rules}.
 \begin{enumerate}
@@ -1407,7 +1410,7 @@ So use the derivation
   } \and   
   \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
   }{
-    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}]) \TYPE
+    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]} \TYPE
   }
 \end{mathpar}
 
@@ -1441,7 +1444,7 @@ And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{
 \downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}] \\
 \upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
 \end{align*}
-From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, where I use $\UnSt{\upstairs{a}}$ as shorthand for $\StE{\upstairs{a}}{x}{x}$. \mvrnote{There is also a hidden use of the counit for $s_{\Theta}$ here} We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
+From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
 so we define
 \begin{align*}
 \upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{\upstairs{a}}/x \\
@@ -1453,11 +1456,11 @@ We still need to specify a 2-cell
 \]
 The codomain here is
 \begin{align*}
-\asdep{\Delta}.x[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
-&\equiv \asdep{\Delta}.x[\downstairs{\Theta}][\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] \\ 
+(\asdep{\Delta}.x)[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
+&\equiv \asdep{\Delta}[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x].x[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] \\
 &\equiv \asdep{\Delta}[\downstairs{\Theta}].\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}
 \end{align*}
-So define 
+because $x$ does not occur in $\asdep{\Delta}$. Define:
 \begin{align*}
 s_{\Theta, a} &\equiv \eta^\chi_{\downstairs{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
 \end{align*}
@@ -1467,65 +1470,32 @@ This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha 
 
 \item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$.
 
-\item[\textsc{sub-$\pi_1$}] This is translated to the framework substitution with the last term forgotten. We are given
+\item[\textsc{sub-proj}] This is translated to the framework substitution with the last term forgotten, i.e. $\mathsf{proj}$ in the framework. Define 
 \begin{align*}
-\downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash_p \asdep{(\Delta, x : A)}[\downstairs{\Theta}]
+\downstairs{\Gamma, A} \yields s_{\proj{\Gamma, A}} : \asdep{(\Gamma, A)} \vDash_p \asdep{\Gamma}[\downstairs{\proj{\Gamma, A}}]
 \end{align*}
-and need to produce
-\begin{align*}
-\downstairs{\Gamma} \yields s_{\pi_1(\Theta)} : \asdep{\Gamma} \vDash_p \asdep{\Delta}[\pi_1(\downstairs{\Theta})]
-\end{align*}
-For this we can use $s_{\pi_1(\Theta)} :\equiv s_\Theta;\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_{x[\downstairs{\Theta}]}$
+to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as substituting $\upstairs{\proj{\Gamma, A}}$ into a term or type corresponds to a framework weakening.
 
-\item[\textsc{sub-$\pi_2$}] We have a framework substitution 
+\item[\textsc{sub-var}] Our goal is to produce a framework term 
 \begin{align*}
-\upstairs{\Gamma} &\yields \upstairs{\Theta} : \upstairs{\Delta, x : A} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash_p \asdep{(\Delta, x : A)}[\downstairs{\Theta}]
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{(\Gamma, A)}}} \var{\Gamma, A} : \St{s_{\proj{\Gamma, A}}}{\upstairs{A}[\upstairs{\proj{\Gamma, A}}]}
 \end{align*}
-and WLOG $\upstairs{\Theta} \equiv (\upstairs{\Theta'}, a)$ for some $\upstairs{\Gamma} \yields_\mu a : \upstairs{A}[\upstairs{\Theta'}]$, where $\downstairs{\Gamma} \yields \mu : \asdep{\Delta}[\downstairs{\Theta'}]$. Notice also that
-\begin{align*}
-\asdep{(\Delta, x : A)}[\downstairs{\Theta}] 
-&\equiv \asdep{\Delta}.x[\downstairs{\Theta'}, \mu/x] \\
-&\equiv \asdep{\Delta}[\downstairs{\Theta'}].\mu
-\end{align*}
-
-Our goal is to produce a framework term 
-\begin{align*}
-\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \pi_2(\Theta) : s_{\pi_1(\Theta)}^*(\upstairs{A}[\upstairs{\pi_1(\Theta)}])
-\end{align*}
-The type there is equal to:
-\begin{align*}
-s_{\pi_1(\Theta)}^*(\upstairs{A}[\upstairs{\pi_1(\Theta)}])
-&\equiv {(s_{\Theta};\pi)}^*(\upstairs{A}[\upstairs{\Theta'}]) \\
-&\equiv s_{\Theta}^*(\pi^*(\upstairs{A}[\upstairs{\Theta'}]))
-\end{align*}
-Where $\pi :\equiv \pi^{\asdep{\Delta}[\downstairs{\Theta'}]}_{\mu}$ to reduce clutter.
-Now use the derivation:
+For this use the derivation:
 \begin{mathpar}
-\inferrule*[Left=s-intro]
-{
-\inferrule*[Left=2cell]
-{
-\inferrule*[Left=s-intro]
-{
- \inferrule*[Left=2cell] {
- \upstairs{\Gamma} \yields_\mu a : \upstairs{A}[\upstairs{\Theta'}] \and E(\mu) : \TrCirc{\ApEl{p}{\pi}}{1_{\asdep{\Delta}[\downstairs{\Theta'}].\mu}} \vDash_{\El{p}{\asdep{\Delta}[\downstairs{\Theta'}]}} \mu
+\inferrule*[Left=s-intro-2] {
+\inferrule*[Left=2cell] {
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \vDash_{\El{p}{\asdep{\Gamma}}} x
  }{
- \upstairs{\Gamma} \yields_{\TrCirc{\pi}{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}}} E(x)(a) : \upstairs{A}[\upstairs{\Theta'}]
-}}
-{
-\upstairs{\Gamma} \yields_{\TrPlus{\pi}{\TrCirc{\pi}{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}}}} \StI{E(x)(a)} : \St{\pi}{\upstairs{A}[\upstairs{\Theta'}]}
-} \and \eta^{\pi}_{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}} : 1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]} \vDash \TrPlus{\pi}{\TrCirc{\pi}{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}}}}
-{
-\upstairs{\Gamma} \yields_{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}} \eta^{\pi}_1(\StI{E(x)(a)}) : \St{\pi}{\upstairs{A}[\upstairs{\Theta'}]}
-}}
-{
-\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \StI{\eta^{\pi}_1(\StI{E(x)(a)})} : \St{s_\Theta}{\St{\pi}{\upstairs{A}[\upstairs{\Theta'}]}}
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} \rewrite{E(x)}{x} : \upstairs{A}
+}}{
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\rewrite{E(x)}{x}} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
 }
 \end{mathpar}
-Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction. In the last step we again use Equation~\eqref{s-plus-one-strict} to identify $\TrPlus{s_\Theta}{1_{\asdep{(\Delta,x:A)}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$. 
+Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 
+\item[{$A[\id] \equiv A$}] Follows because $\St{\id}{A} \equiv A$ surprisingly strictly.
 \end{enumerate}
+\mvrnote{todo all the other equations}
 
 \subsection{Upstairs Types}
 \mvrnote{Oldish stuff:}
