@@ -563,7 +563,7 @@ Type equalities:
 \F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
 \St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
 \U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
-\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B} \\
+\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{x}/x]} \\
 \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
