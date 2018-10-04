@@ -38,17 +38,17 @@
 \newcommand{\TELE}{\,\,\mathsf{Tele}}
 \newcommand{\tele}{\,\,\mathsf{mtele}}
 
-\newcommand{\rewrite}[2]{#1(#2)}
+\newcommand{\rewrite}[2]{\overleftarrow{#1}(#2)}
 \newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
 \newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
 \newcommand\UE[2]{\ensuremath{#1(#2)}}
 \newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
 \newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
-\newcommand\StI[1]{\ensuremath{\mathsf{st}(#1)}}
-\newcommand\UStI[1]{\ensuremath{\mathsf{ust}(#1)}}
-\newcommand\UnSt[1]{\ensuremath{\mathsf{unst}(#1)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}_{#1}(#2)}}
+\newcommand\UStI[2]{\ensuremath{\mathsf{ust}_{#1}(#2)}}
+\newcommand\UnSt[2]{\ensuremath{\mathsf{unst}_{#1}(#2)}}
 %\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
-\newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{~}{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
 \newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
@@ -535,12 +535,12 @@ Pairing and projection 2-cells are definable:
     \Gamma \yields_{\mu} M : A
     \and (\text{where } \gamma \yields {\mu} : p)
   }
-  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{s}{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
 
   \inferrule*[Left = S-elim]{
     \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
     \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
-    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{x}/y]
+    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
     \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
   \StE{\StI{s}{M}}{x}{N} \equiv M[N/x]
@@ -552,7 +552,7 @@ Pairing and projection 2-cells are definable:
     \Gamma, x:A \yields_{r [\TrPlus{s}{x} / y]} C \TYPE
     \and (\text{where } \gamma, x:p \yields r [\TrPlus{s}{x} / y] \type )}
   {\Gamma \yields_{r[\nu/y]} \StE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
-  \StE{\StI{M}}{x}{C} \equiv C[N/x]
+  \StE{\StI{s}{M}}{x}{C} \equiv C[N/x]
 
   \\ \\
 \end{mathpar}
@@ -563,7 +563,7 @@ Type equalities:
 \F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
 \St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
 \U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
-\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{x}/x]} \\
+\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
 \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
@@ -579,19 +579,32 @@ Type equalities:
 
 \subsection{Lemmas}
 
+%\begin{lemma}[Substitution over substitution]
+%\begin{mathpar}
+%  \inferrule*{\Gamma, x : A, \Gamma' \yields_\nu \judge \\
+%              \Gamma \yields_\mu M : A
+%              }
+%             {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} \judge[M/x]} \\
+% \judge[\mu/x][\nu/y] \equiv \judge[\nu/y][\mu[\nu/y]/x]
+%\end{mathpar}
+%\end{lemma}
+%\begin{proof}
+%
+%\end{proof}
+
 \begin{lemma}
 The $\mathsf{U}$-style rules for $s$-types are derivable:
 \begin{mathpar}
 \inferrule*[Left = s-intro-2]{
     \Gamma \yields_{\TrCirc{s}{\mu}} M : B
   }
-  {\Gamma \yields_{\mu} \UStI{M} : \St{s}{B}
+  {\Gamma \yields_{\mu} \UStI{s}{M} : \St{s}{B}
   } \and
   
   \inferrule*[Left = s-elim-2]{
     \Gamma \yields_{\mu} N : \St{s}{B}
   }{
-    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{N} : B
+    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} : B
   } 
 \end{mathpar}
 \end{lemma}
@@ -602,9 +615,9 @@ For the first:
 \inferrule*[Left = s-intro]{
     \Gamma \yields_{\TrCirc{s}{\mu}} M : A
   }
-  {\Gamma \yields_{\TrPlus{s}{\TrCirc{s}{\mu}}} \StI{M} : \St{s}{A}}}
+  {\Gamma \yields_{\TrPlus{s}{\TrCirc{s}{\mu}}} \StI{s}{M} : \St{s}{A}}}
   {
-    {\Gamma \yields_{\mu} \UStI{M} :\equiv \rewrite{\eta^s_\mu}{\StI{M}} : \St{s}{A}}}
+    {\Gamma \yields_{\mu} \UStI{s}{M} :\equiv \rewrite{\eta^s_\mu}{\StI{s}{M}} : \St{s}{A}}}
 \end{mathpar}
 And the second:
 \begin{mathpar}
@@ -618,7 +631,7 @@ And the second:
   }
   }
   {
-    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{N} :\equiv \StE{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
+    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} :\equiv \StE{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
   }
 \end{mathpar}
 \end{proof}
@@ -1431,7 +1444,7 @@ So use the derivation
   } \and   
   \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
   }{
-    \upstairs{\Gamma} \yields_{\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}} \StI{\upstairs{a}[\upstairs{\Theta}]} : \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}
+    \upstairs{\Gamma} \yields_{\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}} \StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]} : \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}
   }
 \end{mathpar}
 And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$.
@@ -1444,10 +1457,10 @@ And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{
 \downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}] \\
 \upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
 \end{align*}
-From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
+From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{s_\Theta}{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
 so we define
 \begin{align*}
-\upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{\upstairs{a}}/x \\
+\upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}/x \\
 \downstairs{\Theta, a/x} &:\equiv \downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x
 \end{align*}
 We still need to specify a 2-cell 
@@ -1488,7 +1501,7 @@ For this use the derivation:
  }{
  \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} \rewrite{E(x)}{x} : \upstairs{A}
 }}{
-\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\rewrite{E(x)}{x}} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
 }
 \end{mathpar}
 Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction.
@@ -1763,7 +1776,7 @@ We use framework weakening combined with a structural rule:
 \inferrule*[Right = weaken]
 {(\Delta ; \Gamma)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}
 {(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}}} M : A}}
-{(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma, \Gamma')}}} \StI{M} : \pi^*_{\Gamma'}(A)}
+{(\Delta ; \Gamma, \Gamma')^\dagger \yields_{1_{\underline{(\Delta ; \Gamma, \Gamma')}}} \StI{\pi}{M} : \pi^*_{\Gamma'}(A)}
 \end{mathpar}
 
 \item \begin{mathpar}
@@ -1783,9 +1796,9 @@ The framework \textsc{var} rule lives over $x$, not $1_{\underline{(\Delta ; \Ga
 \inferrule*[Right = S-intro]{
 \inferrule*[Right = var]{~}
   {(\Delta ; \Gamma, x : A)^\dagger \yields_{x} x : A}}
-  {(\Delta ; \Gamma, x : A)^\dagger \yields_{\pi^+(x)} \StI{x} : \pi^*(A)} \and ~ \and
+  {(\Delta ; \Gamma, x : A)^\dagger \yields_{\pi^+(x)} \StI{\pi}{x} : \pi^*(A)} \and ~ \and
     \TermTwo{(\Delta ; \Gamma, x : A)^\dagger }{\mathsf{var}_x}{1_{\underline{(\Delta ; \Gamma)}.x}}{\pi^+(x)}}
-  {(\Delta ; \Gamma, x : A)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)} \\
+  {(\Delta ; \Gamma, x : A)^\dagger \yields_{1_{\underline{(\Delta ; \Gamma)}.x}} \mathsf{var}_x(\StI{\pi}{x}) : \pi^*(A)} \\
 \end{mathpar}
 And $1_{\underline{(\Delta ; \Gamma)}.x} \equiv 1_{\underline{(\Delta ; \Gamma, x : A)}}$ by definition.
 
@@ -1794,7 +1807,7 @@ And $1_{\underline{(\Delta ; \Gamma)}.x} \equiv 1_{\underline{(\Delta ; \Gamma, 
 {\Delta, x :: A  ; \cdot \yields x : A} 
 \end{mathpar}
 Using the same derivation as in the cohesive \textsc{var} rule, we have 
-\[(\Delta, x : A ; \cdot )^\dagger \yields_{1_{\underline{(\Delta ; \cdot)}.x}} \mathsf{var}_x(\StI{x}) : \pi^*(A)\]
+\[(\Delta, x : A ; \cdot )^\dagger \yields_{1_{\underline{(\Delta ; \cdot)}.x}} \mathsf{var}_x(\StI{\pi}{x}) : \pi^*(A)\]
 but we want a term over $1_{\underline{(\Delta ; \cdot)}.\flat_1(x)}$. So pull back along the 2-cell
 \begin{mathpar}
     {\alpha : p \mid f_0(f_0(\underline{\Delta ; \cdot}).x) \vDash_p c_{f_0(\underline{\Delta ; \cdot}).x} : f_0(\underline{\Delta ; \cdot}).x}
