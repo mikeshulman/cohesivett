@@ -1475,7 +1475,7 @@ The codomain here is
 \end{align*}
 because $x$ does not occur in $\asdep{\Delta}$. Define:
 \begin{align*}
-s_{\Theta, a} &\equiv \eta^\chi_{\downstairs{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
+s_{\Theta, a} &\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
 \end{align*}
 This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 
@@ -1487,13 +1487,24 @@ This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha 
 \begin{align*}
 \downstairs{\Gamma, A} \yields s_{\proj{\Gamma, A}} : \asdep{(\Gamma, A)} \vDash_p \asdep{\Gamma}[\downstairs{\proj{\Gamma, A}}]
 \end{align*}
-to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as substituting $\upstairs{\proj{\Gamma, A}}$ into a term or type corresponds to a framework weakening.
+to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as substituting $\upstairs{\proj{\Gamma, A}}$ into a framework term or type corresponds to a framework weakening.
 
 \item[\textsc{sub-var}] Our goal is to produce a framework term 
 \begin{align*}
 \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{(\Gamma, A)}}} \var{\Gamma, A} : \St{s_{\proj{\Gamma, A}}}{\upstairs{A}[\upstairs{\proj{\Gamma, A}}]}
 \end{align*}
 For this use the derivation:
+\begin{mathpar}
+\inferrule*[Left=2cell] {
+\inferrule*[Left=s-intro] {
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
+ }{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{x}} \StI{\pi^{\asdep{\Gamma}}_x}{x} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+}}{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+}
+\end{mathpar}
+Or equivalently:
 \begin{mathpar}
 \inferrule*[Left=s-intro-2] {
 \inferrule*[Left=2cell] {
