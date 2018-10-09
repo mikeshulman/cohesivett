@@ -48,7 +48,7 @@
 \newcommand\UStI[2]{\ensuremath{\mathsf{ust}_{#1}(#2)}}
 \newcommand\UnSt[2]{\ensuremath{\mathsf{unst}_{#1}(#2)}}
 %\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
-\newcommand\StE[3]{\ensuremath{\mathsf{let} \, \StI{~}{#2} \, = \, {#1} \, \mathsf{in} \, #3}}
+\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#1}{#3} \, = \, {#2} \, \mathsf{in} \, #4}}
 \newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
@@ -360,12 +360,12 @@ s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\
 \end{mathpar}
 
 \item
-  All judgements have a substituton principle
+  All judgements have a substitution principle
 \begin{mathpar}
   \inferrule*{\gamma,x:p,\gamma' \yields J \\
               \gamma \yields \mu : p
               }
-             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]}
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]} \\
 
 J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 \end{mathpar}
@@ -542,8 +542,8 @@ Pairing and projection 2-cells are definable:
     \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
     \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
     \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
-  {\Gamma \yields_{\nu'[\nu/y]} \StE{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
-  \StE{\StI{s}{M}}{x}{N} \equiv M[N/x]
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
+  \StE{s}{\StI{s}{M}}{x}{N} \equiv M[N/x]
   \\
   
   \inferrule*[Left = S-Elim]{
@@ -551,8 +551,8 @@ Pairing and projection 2-cells are definable:
     \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
     \Gamma, x:A \yields_{r [\TrPlus{s}{x} / y]} C \TYPE
     \and (\text{where } \gamma, x:p \yields r [\TrPlus{s}{x} / y] \type )}
-  {\Gamma \yields_{r[\nu/y]} \StE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
-  \StE{\StI{s}{M}}{x}{C} \equiv C[N/x]
+  {\Gamma \yields_{r[\nu/y]} \StE{s}{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \StE{s}{\StI{s}{M}}{x}{C} \equiv C[N/x]
 
   \\ \\
 \end{mathpar}
@@ -564,7 +564,7 @@ Type equalities:
 \St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
 \U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
 \U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
-\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{x}{x'}{\St{t}{B'}}} \\
+\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
 \St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\St{t}{M}/x] \quad (\text{where }
@@ -618,7 +618,7 @@ And the second:
   }
   }
   {
-    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} :\equiv \StE{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
+    \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} :\equiv \StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
   }
 \end{mathpar}
 \end{proof}
