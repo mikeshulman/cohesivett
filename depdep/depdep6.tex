@@ -432,9 +432,10 @@ Pairing and projection 2-cells are definable:
   \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
   \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{s[t/x]}{M[N/x]}
 \end{mathpar}
-
-\mvrnote{show that the above equations imply that the 2-cell rule pushes into terms}
-
+In the absence of eta for $\mathsf{F}$-types, we also need to assert
+\begin{mathpar}
+(\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+\end{mathpar}
 
 \subsubsection{Telescope Types}
 
@@ -485,8 +486,9 @@ Pairing and projection 2-cells are definable:
     \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
     \and (\text{where } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
-  \FE{\FI{M}}{x}{N} \equiv M[N/x]
-
+  \FE{\FI{M}}{x}{N} \equiv N[M/x] \and
+  \text{(optionally:) }
+  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
   \\ \\
 
   \inferrule*[Left = F-Elim]{
@@ -495,10 +497,10 @@ Pairing and projection 2-cells are definable:
     \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
     \and (\text{where } \gamma, x:p \yields r [\mu / y] \type )}
   {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
-  \FE{\FI{M}}{x}{C} \equiv C[N/x]
-
-  \\ \\
-
+  \FE{\FI{M}}{x}{C} \equiv C[M/x] \and
+  \text{(optionally:) }
+  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
+\\ \\
   \inferrule*[Left = U-form]{
     \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
     \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
@@ -519,7 +521,7 @@ Pairing and projection 2-cells are definable:
     \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
   } \\
 
-  \UE{\UI{x}{M}}{N} \equiv M[N/x] \and 
+  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
   \UI{x}{\UE{N}{x}} \equiv N
 \end{mathpar}
 
@@ -543,7 +545,7 @@ Pairing and projection 2-cells are definable:
     \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
     \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
-  \StE{s}{\StI{s}{M}}{x}{N} \equiv M[N/x]
+  \StE{s}{\StI{s}{M}}{x}{N} \equiv N[M/x] \and
   \\
   
   \inferrule*[Left = S-Elim]{
@@ -567,7 +569,7 @@ Type equalities:
 \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
-\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\St{t}{M}/x] \quad (\text{where }
+\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\StI{t}{M}/x] \quad (\text{where }
 \Gamma,x:A \vdash_q B \TYPE \text{ and } \Gamma \vdash_{\mu'} M : A \text{ and }
 \TermTwo{\gamma}{s}{\mu}{\mu'})
 %% other whiskering is a substitution rule:
@@ -578,6 +580,58 @@ Type equalities:
 %% $\StI{\id_p}{M} \equiv M$, $\StE{M}{\id_p}{x}{x} \equiv M$).
 
 \subsection{Lemmas}
+
+\begin{lemma}
+The \textsc{2cell} rule pushes into terms, i.e.:
+\begin{align*}
+\FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
+(\FE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\FE{M}{x}{N}} \\
+\UE{M}{\rewrite{s}{N}} &\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\UE{M}{N}} \\
+\UE{(\rewrite{t}{M})}{N} &\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
+\UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
+\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ap{t^+}{s/x}}{\StI{t}{M}} \\
+(\StE{t}{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StE{t}{M}{x}{N}} \\
+(\StE{s}{M}{x}{\rewrite{t[\TrPlus{s}{x}/y]}{N}}) &\equiv \rewrite{t[\nu/y]}{\StE{s}{M}{x}{N}} 
+\intertext{If we have definitional eta-expansion for \textsf{F}-types, we can also derive (rather than asserting)}
+(\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) &\equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}} 
+\end{align*}
+\end{lemma}
+\begin{proof}
+For \textsf{F}-types:
+\begin{align*}
+\FI{\rewrite{s}{M}} 
+&\equiv \rewrite{\id_{\mu[\nu/x]}}{\FI{x}}[\rewrite{s}{M}/x]  \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\FI{x}[M/x]} \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
+(\FE{\rewrite{s}{M}}{x}{N})
+&\equiv \rewrite{\id_{\nu'[\nu/y]}}{\FE{y}{x}{N}}[\rewrite{s}{M}/y] \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{(\FE{y}{x}{N})[M/y]} \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{\FE{M}{x}{N}}
+\intertext{and assuming eta-expansion:}
+\rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+&\equiv \rewrite{t}{\FE{y}{x}{N}} [M/y] \\
+&\equiv \FE{M}{z}{(\rewrite{t}{\FE{y}{x}{N}}[\FI{z}/y])} \\
+&\equiv \FE{M}{z}{(\rewrite{t[\mu/y]}{\FE{\FI{z}}{x}{N}})} \\
+&\equiv \FE{M}{z}{\rewrite{t[\mu/y]}{N}}
+\end{align*}
+
+For \textsf{U}-types:
+\begin{align*}
+\UE{M}{\rewrite{s}{N}}
+&\equiv \rewrite{\id_{\mu[\nu_2/x, \nu_1/c]}}{\UE{M}{z}}[\rewrite{s}{N}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\UE{M}{N}} \\
+\UE{(\rewrite{t}{M})}{N}
+&\equiv \rewrite{\id_{\mu[\nu_2/x, \nu_1/c]}}{\UE{(z)}{N}}[\rewrite{t}{M}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
+\rewrite{s}{\UI{x}{M}}
+&\equiv \UI{y}{\UE{(\rewrite{s}{\UI{x}{M}})}{y}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{\UE{(\UI{x}{M})}{y}}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{M[y/x]}} \\
+&\equiv \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}
+\end{align*}
+
+And for $s$-types the reasoning is identical to that for \textsf{F}-types. \mvrnote{So we also need to assert one of them if we don't have eta for $s$-types?}
+\end{proof}
 
 \begin{lemma}
 The $\mathsf{U}$-style rules for $s$-types are derivable:
