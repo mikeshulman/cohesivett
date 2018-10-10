@@ -646,7 +646,9 @@ The $\mathsf{U}$-style rules for $s$-types are derivable:
     \Gamma \yields_{\mu} N : \St{s}{B}
   }{
     \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} : B
-  } 
+  } \\
+  \UnSt{s}{\UStI{s}{M}} \equiv M \and
+  \UStI{s}{\UnSt{s}{N}} \equiv N
 \end{mathpar}
 \end{lemma}
 \begin{proof}
@@ -675,6 +677,32 @@ And the second:
     \Gamma \yields_{\TrCirc{s}{\mu}} \UnSt{s}{N} :\equiv \StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}} : B
   }
 \end{mathpar}
+Verifying the equations:
+\begin{align*}
+\UnSt{s}{\UStI{s}{M}}
+&\equiv \StE{s}{\rewrite{\eta^s_\mu}{\StI{s}{M}}}{x}{\rewrite{\varepsilon^s_x}{x}} \\
+&\equiv \rewrite{\ap{s^\circ}{\eta^s_\mu}}{\StE{s}{\StI{s}{M}}{x}{\rewrite{\varepsilon^s_x}{x}}} \\
+&\equiv \rewrite{\ap{s^\circ}{\eta^s_\mu}}{\rewrite{\varepsilon^s_{\TrCirc{s}{\mu}}}{M}} \\
+&\equiv \rewrite{\ap{s^\circ}{\eta^s_\mu};\varepsilon^s_{\TrCirc{s}{\mu}}}{M} \\
+&\equiv M
+\end{align*}
+by one triangle identity, and:
+\begin{align*}
+\UStI{s}{\UnSt{s}{N}} 
+&\equiv \UStI{s}{\StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}}} \\ 
+&\equiv \rewrite{\eta^s_\mu}{\StI{s}{\StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}}}} \\ 
+&\equiv \rewrite{\eta^s_y}{\StI{s}{\StE{s}{y}{x}{\rewrite{\varepsilon^s_x}{x}}}}[N/y] \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_y}{\StI{s}{\StE{s}{y}{x}{\rewrite{\varepsilon^s_x}{x}}}}[\StI{s}{z}/y]} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\StE{s}{\StI{s}{z}}{x}{\rewrite{\varepsilon^s_x}{x}}}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\rewrite{\varepsilon^s_x}{x}[z/x]}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\rewrite{\varepsilon^s_z}{z}}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\rewrite{\ap{s^+}{\varepsilon^s_z}}{\StI{s}{z}}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}};\ap{s^+}{\varepsilon^s_z}}{\StI{s}{z}}} \\ 
+&\equiv \StE{s}{N}{z}{\StI{s}{z}} \\ 
+&\equiv N
+\end{align*}
+using the other.
+\mvrnote{This uses definitional eta for $s$-types?}
 \end{proof}
 
 \subsection{Examples}
