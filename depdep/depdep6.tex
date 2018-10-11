@@ -569,9 +569,9 @@ Type equalities:
 \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \St{\id_p}{A} &\equiv A\\
-\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\StI{t}{M}/x] \quad (\text{where }
+\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] \quad (\text{where }
 \Gamma,x:A \vdash_q B \TYPE \text{ and } \Gamma \vdash_{\mu'} M : A \text{ and }
-\TermTwo{\gamma}{s}{\mu}{\mu'})
+\TermTwo{\gamma}{t}{\mu}{\mu'})
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align*}
