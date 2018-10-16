@@ -8,6 +8,7 @@
 \usepackage[mathscr]{euscript}
 \usepackage{tikz-cd}
 \usepackage{mathpartir}
+\usepackage{enumitem}
 \usepackage[status=draft,inline,nomargin]{fixme}
 \FXRegisterAuthor{ms}{anms}{\color{blue}MS}
 \FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
@@ -29,6 +30,7 @@
 \newcommand{\yields}{\vdash}
 \newcommand{\Yields}{\vDash}
 \newcommand{\cbar}{\, | \,}
+\newcommand{\judge}{\mathcal{J}}
 
 \newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
 \newcommand{\CTX}{\,\,\mathsf{Ctx}}
@@ -650,6 +652,7 @@ The $\mathsf{U}$-style rules for $s$-types are derivable:
   \UnSt{s}{\UStI{s}{M}} \equiv M \and
   \UStI{s}{\UnSt{s}{N}} \equiv N
 \end{mathpar}
+\mvrnote{And fusion equations}
 \end{lemma}
 \begin{proof}
 For the first:
@@ -704,6 +707,16 @@ by one triangle identity, and:
 using the other.
 \mvrnote{This uses definitional eta for $s$-types?}
 \end{proof}
+\begin{lemma}
+The $\mathsf{F}$- and $\mathsf{U}$-style rules can be mixed-and-matched by:
+\begin{mathpar}
+\UnSt{s}{\StI{s}{M}} \equiv \rewrite{\varepsilon^s_\mu}{M} \and \StE{s}{\UStI{s}{M}}{z}{N} \equiv \rewrite{\ap{\nu'}{\eta^s_\mu/y}}{N}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+\mvrnote{easy}
+\end{proof}
+
 
 \subsection{Examples}
 
@@ -1499,7 +1512,7 @@ Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Fig
 \caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
 \end{figure}
 
-Our goal is to interpret these rules in the framework. The mode theory consists of a comprehension object $p$. The basic idea for representing the judgements of MLTT is as follows:
+Our goal is to interpret these rules in the framework. The mode theory will contain a comprehension object $p$, possibly with some extra strictness. The basic idea for representing the judgements of MLTT is as follows:
 \begin{itemize}
 \item For each object-language context $\Gamma$, there is a corresponding upstairs framework context $\upstairs{\Gamma}$ living over the downstairs framework context $\downstairs{\Gamma}$. There is also an mode term $\downstairs{\Gamma} \yields \asdep{\Gamma} : p$, meant to represent a dependency descriptor for using every variable in $\Gamma$ exactly once.
 
@@ -1515,9 +1528,369 @@ These will be defined inductively, and the general idea is that for $\Gamma$ of 
   \]
   The mode term $\asdep{\Gamma} : p$ will be $\emptyset.x_1.x_2.\ldots.x_n$ when $\Gamma$ is $x_1 : A_1, \ldots , x_n : A_n$.
 
-\subsubsection{Structural Rules}
+\subsubsection{Translation to Strict Comprehension Object}
 
-We now give the translations of all the rules in Figure~\ref{fig:qit-rules}.
+We give a translation for mode theory containing a comprehension object which is however strict is necessary to make the translation easy to describe. Here is a tally of the requirements:
+\begin{itemize}
+\item $E(x)$ is the identity, i.e.:
+\begin{align*}
+\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x
+\end{align*}
+This is used in the translation of \textsc{sub-var}. Note that as a consequence of the above, $\var{x}$ is equal to the unit of the $\pi^\circ \dashv \pi^+$ adjunction, and $H(\pi^{\asdep{\Gamma}}_x) \equiv H(U(x)) \equiv \id_{\asdep{\Gamma}.x}$.
+\item More?
+\end{itemize}
+
+First all the structural rules.
+\begin{enumerate}
+\item[\textsc{ctx-empty}] The empty context $\cdot$ is interpreted of course as the empty context in the framework, and we define $\asdep{(\cdot)} :\equiv \emptyset : p$.
+
+\item[\textsc{ctx-ext}] We are provided with an upstairs context $\upstairs{\Gamma}$ over $\downstairs{\Gamma}$, and a type $\upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{A} \TYPE$.
+We can then define
+\begin{align*}
+\upstairs{\Gamma, x : A} &:\equiv \upstairs{\Gamma}, x : \upstairs{A} \\
+\downstairs{\Gamma, x : A} &:\equiv \downstairs{\Gamma}, x : \El{p}{\asdep{\Gamma}} \\
+\asdep{(\Gamma, x : A)} &:\equiv (\asdep{\Gamma}).x
+\end{align*}
+
+\item[\textsc{type-sub}] We are provided with
+\begin{align*}
+\upstairs{\Delta} &\yields_{\asdep{\Delta}} \upstairs{A} \TYPE \\
+\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+\end{align*}
+So use the derivation
+\begin{mathpar}
+  \inferrule*[Left=s-form] {
+\inferrule*[Left=Sub]{
+  \upstairs{\Delta} \yields_{\asdep{\Delta}} \upstairs{A} \TYPE \and 
+  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
+  }{
+  \upstairs{\Gamma} \yields_{\asdep{\Delta}[\downstairs{\Theta}]} \upstairs{A}[\upstairs{\Theta}] \TYPE
+  } \and   
+  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+  }{
+    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]} \TYPE
+  }
+\end{mathpar}
+
+\item[\textsc{term-sub}] We are provided with
+\begin{align*}
+\upstairs{\Delta} &\yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \TYPE \\
+\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+\end{align*}
+So use the derivation
+\begin{mathpar}
+  \inferrule*[Left=s-intro] {
+\inferrule*[Left=Sub]{
+ \upstairs{\Delta} \yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \and 
+  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
+  }{
+  \upstairs{\Gamma} \yields_{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \upstairs{a}[\upstairs{\Theta}] : \upstairs{A}[\upstairs{\Theta}] 
+  } \and   
+  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+  }{
+    \upstairs{\Gamma} \yields_{\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}} \StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]} : \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}
+  }
+\end{mathpar}
+And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$.
+
+\item[\textsc{sub-empty}] This is interpreted as the empty framework substitution. We also define $\downstairs{\Gamma} \yields s_\epsilon : \asdep{\Gamma} \vDash \asdep{(\cdot)}[]$ to be the unique mode-morphism $! : \asdep{\Gamma} \vDash \emptyset$.
+
+\item[\textsc{sub-ext}] We are given
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}] \\
+\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
+\end{align*}
+From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{s_\Theta}{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
+so we define
+\begin{align*}
+\upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}/x \\
+\downstairs{\Theta, a/x} &:\equiv \downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x
+\end{align*}
+We still need to specify a 2-cell 
+\[
+\downstairs{\Gamma} \yields s_{\Theta, a/x} : \asdep{\Gamma} \vDash \asdep{(\Delta, x : A)}[\downstairs{\Theta, a/x}]
+\]
+The codomain here is
+\begin{align*}
+(\asdep{\Delta}.x)[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
+&\equiv \asdep{\Delta}[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x].x[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] \\
+&\equiv \asdep{\Delta}[\downstairs{\Theta}].\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}
+\end{align*}
+because $x$ does not occur in $\asdep{\Delta}$. Define:
+\begin{align*}
+s_{\Theta, a} &\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
+\end{align*}
+This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
+
+\item[\textsc{sub-id}] This is translated to be the identity framework substitution on $\upstairs{\Gamma}$, with $s_{\id_\Gamma} :\equiv \id_{\asdep{\Gamma}}$.
+
+\item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$.
+
+\item[\textsc{sub-proj}] This is translated to the framework substitution with the last term forgotten, i.e. $\mathsf{proj}$ in the framework. Define 
+\begin{align*}
+\downstairs{\Gamma, A} \yields s_{\proj{\Gamma, A}} : \asdep{(\Gamma, A)} \vDash_p \asdep{\Gamma}[\downstairs{\proj{\Gamma, A}}]
+\end{align*}
+to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as substituting $\upstairs{\proj{\Gamma, A}}$ into a framework term or type corresponds to a framework weakening.
+
+\item[\textsc{sub-var}] Our goal is to produce a framework term 
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{(\Gamma, A)}}} \var{\Gamma, A} : \St{s_{\proj{\Gamma, A}}}{\upstairs{A}[\upstairs{\proj{\Gamma, A}}]}
+\end{align*}
+For this use the derivation:
+\begin{mathpar}
+\inferrule*[Left=2cell] {
+\inferrule*[Left=s-intro] {
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
+ }{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{x}} \StI{\pi^{\asdep{\Gamma}}_x}{x} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+}}{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+}
+\end{mathpar}
+Or equivalently:
+\begin{mathpar}
+\inferrule*[Left=s-intro-2] {
+\inferrule*{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \equiv x
+ }{
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} x : \upstairs{A}
+}}{
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\pi^{\asdep{\Gamma}}_x}{x} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+}
+\end{mathpar}
+\end{enumerate}
+Now we check that these translations satisfy the required equations. The first three blocks of equations follow quickly from the analogous properties in the framework, together with the equations for surprisingly strict $s$-types. Here are the equations we might be worried about:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}] 
+\begin{align*}
+\upstairs{A[\kappa][\Theta]}
+&\equiv \St{s_{\Theta}}{\upstairs{A[\kappa]}[\upstairs{\Theta}]} \\
+&\equiv \St{s_{\Theta}}{(\St{s_{\kappa}}{\upstairs{A}[\upstairs{\kappa}]})[\upstairs{\Theta}]} \\
+&\equiv \St{s_\Theta}{\St{s_\kappa[\downstairs{\Theta}]}{\upstairs{A}[ \upstairs{\kappa}][\upstairs{\Theta}]}} \\
+&\equiv \St{(s_\Theta; (s_\kappa[\downstairs{\Theta}]))}{\upstairs{A}[\upstairs{\Theta} ; \upstairs{\kappa}]} \\
+&\equiv \St{s_{\Theta ; \kappa}}{\upstairs{A}[\upstairs{\Theta ; \kappa}]} \\
+&\equiv \upstairs{A[\Theta ; \kappa]}
+\end{align*}
+
+\item[{$a[\Theta ; \kappa] \equiv a[\kappa][\Theta]$}] 
+\begin{align*}
+\upstairs{a[\kappa][\Theta]}
+&\equiv \upstairs{a[\kappa][\Theta]}
+\end{align*}
+
+\item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}] 
+\begin{align*}
+\upstairs{\Theta ; (\kappa , a) }
+&\equiv \upstairs{\Theta} ; \upstairs{(\kappa , a)} \\
+&\equiv \upstairs{\Theta} ; (\upstairs{\kappa}, \UnSt{s_{\kappa}}{\upstairs{a}}) \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}}{\upstairs{a}}[\upstairs{\Theta}] \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]} \\
+&\equiv ??? \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\rewrite{\varepsilon^{s_\Theta}_{1}}{\upstairs{a}[\upstairs{\Theta}]}} \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\UnSt{s_\Theta}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}}} \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_\Theta ; (s_{\kappa}[\downstairs{\Theta}])}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\Theta;\kappa}}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
+&\equiv \upstairs{(\Theta ; \kappa)} , \UnSt{s_{\Theta;\kappa}}{\upstairs{a[\Theta]}} \\
+&\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]} 
+\end{align*}
+Simultaneously, this is happening downstairs:
+\begin{align*}
+\downstairs{\Theta ; (\kappa , a) }
+&\equiv \downstairs{\Theta} ; \downstairs{(\kappa , a)} \\
+&\equiv \downstairs{\Theta} ; (\downstairs{\kappa} , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}/x) \\
+&\equiv (\downstairs{\Theta} ; \downstairs{\kappa}) , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}[\downstairs{\Theta}]/x \\
+&\equiv (\downstairs{\Theta} ; \downstairs{\kappa}) , \TrCirc{s_{\kappa}[\downstairs{\Theta}]}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}/x \\
+&\equiv ?? \\
+&\equiv (\downstairs{\Theta}; \downstairs{\kappa}) , \TrCirc{s_{\kappa}[\downstairs{\Theta}]}{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} / x \\
+&\equiv (\downstairs{\Theta}; \downstairs{\kappa}) , \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} / x \\
+&\equiv \downstairs{(\Theta ; \kappa)} , \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} / x \\
+&\equiv \downstairs{(\Theta ; \kappa) , a[\Theta] }
+\end{align*}
+The associated 2-cell:
+\begin{align*}
+s_{\Theta ; (\kappa , a)} 
+&\equiv s_\Theta ; (s_{(\kappa , a)}[\downstairs{\Theta}]) \\
+&\equiv s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}]) \\
+&\equiv ? \\
+&\equiv H(s_{\Theta} ; (s_\kappa[\downstairs{\Theta}])) \\
+&\equiv H(s_{\Theta ; \kappa}) \\
+&\equiv s_{(\Theta ; \kappa) , a[\Theta]}
+\end{align*}
+What's going on here? The LHS is a morphism from $\asdep{\Gamma}$ to
+\begin{align*}
+\asdep{(\Lambda,A)}[\downstairs{\Theta ; (\kappa , a)}]
+&\equiv \asdep{(\Lambda,A)}[\downstairs{(\kappa , a)}][\downstairs{\Theta}] \\
+&\equiv \asdep{\Lambda}.x[\downstairs{\kappa} , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}/x][\downstairs{\Theta}] \\
+&\equiv (\asdep{\Lambda}[\downstairs{\kappa}].\TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}})[\downstairs{\Theta}] \\
+\end{align*}
+And the RHS is a morphism from $\asdep{\Gamma}$ to
+\begin{align*}
+\asdep{(\Lambda,A)}[\downstairs{(\Theta ; \kappa) , a[\Theta]}]
+&\equiv \asdep{\Lambda}.x[\downstairs{(\Theta ; \kappa)}, \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}}/x] \\
+&\equiv \asdep{\Lambda}[\downstairs{(\Theta ; \kappa)}].\TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} \\
+&\equiv \asdep{\Lambda}[\downstairs{\kappa}][\downstairs{\Theta}].\TrCirc{(s_{\Theta} ; (s_\kappa[\downstairs{\Theta}]))}{1_{\asdep{\Gamma}}} \\
+&\equiv \asdep{\Lambda}[\downstairs{\kappa}][\downstairs{\Theta}]. \TrCirc{s_\kappa[\downstairs{\Theta}]}{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}}
+\end{align*}
+
+\item[{$(\Theta, a);\proj{\Gamma,A} \equiv \Theta$}] Foo
+\item[{$\var{\Gamma,A}[\Theta, a] \equiv a$}] Foo
+\item[{$(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
+On the left we calculate
+\begin{align*}
+\upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
+&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \\
+&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{\pi^{\asdep{\Gamma}}_x}{\UStI{\pi^{\asdep{\Gamma}}_x}{x}} \\
+&\equiv \upstairs{\proj{\Gamma, A}} , x / x
+\end{align*}
+over $\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \equiv x$. The associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x) \equiv \id_{\asdep{\Gamma}.x}$.
+\end{enumerate}
+
+Some observations:
+\begin{itemize}
+\item The substitution $\Theta \uparrow A$ is translated as follows:
+\begin{align*}
+\upstairs{\Theta \uparrow A} 
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \\
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\upstairs{\var{\Gamma, A[\Theta]}}} \\
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}} \\
+\end{align*}
+Or:
+\begin{align*}
+\upstairs{\Theta \uparrow A} 
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \\
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\upstairs{\var{\Gamma, A[\Theta]}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}]}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{\UnSt{s_{\proj{\Gamma, A[\Theta]}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{\rewrite{E(x)}{x}}
+\end{align*}
+This does indeed typecheck, as the variable $x$ is of type $\upstairs{A[\Theta]} \equiv \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}$. The downstairs substitution is:
+\begin{align*}
+\downstairs{\Theta \uparrow A} 
+&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{1_{\asdep{\Gamma}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{(s_{\proj{\Gamma, A[\Theta]}};s_{\Theta}[\mathsf{proj}])}{1_{\asdep{\Gamma}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\Theta}[\mathsf{proj}]}{\TrCirc{s_{\proj{\Gamma, A[\Theta]}}}{1_{\asdep{\Gamma}}}} \\
+&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\Theta}[\mathsf{proj}]}{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}}} \\
+\end{align*}
+
+And the associated 2-cell $s_{\Theta \uparrow A}$ is
+\begin{align*}
+s_{\Theta \uparrow A} 
+&\equiv H(s_{(\proj{\Gamma, A[\Theta]};\Theta)}) \\
+&\equiv H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])
+\end{align*}
+
+\item The following identity will be useful later:
+\begin{align*}
+\upstairs{\Theta \uparrow A}[\StI{s_\Theta}{x}/x]
+&\equiv [(\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}/x][\StI{s_\Theta}{x}/x] \\
+&\equiv [(\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \rewrite{\var{\StI{s_\Theta}{x}}}{\StI{\pi^{\asdep{\Gamma}}_{\StI{s_\Theta}{x}}}{\StI{s_\Theta}{x}}}/x] \\
+\end{align*}
+
+\item The derived substitution $\hat{a}$ is \mvrnote{todo}.
+\end{itemize}
+
+\subsubsection{Rules for $\Pi$-types}
+
+Suppose $p$ supports stable $\Pi$-types. In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
+\end{align*}
+
+\begin{enumerate}
+%\item[\textsc{a}]
+\item[\textsc{$\Pi$-form}] We have two types
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\asdep{\Gamma}} \upstairs{A} \TYPE \\
+\upstairs{\Gamma}, x : \El{p}{\asdep{\Gamma}} &\yields_{\asdep{\Gamma}.x} \upstairs{B} \TYPE
+\end{align*}
+These are exactly of the right shape to apply \textsc{U-form}.
+\begin{mathpar}
+\inferrule{
+  \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{A} \TYPE \and
+  \upstairs{\Gamma}, x : \El{p}{\asdep{\Gamma}} \yields_{\asdep{\Gamma}.x} \upstairs{B} \TYPE \\\\
+  \downstairs{\Gamma}, x : \El{p}{\asdep{\Gamma}}, c : \El{p}{\asdep{\Gamma}} \yields \Pi_1(\asdep{\Gamma},x,c) : \El{p}{\asdep{\Gamma}.x}
+}
+            { \overline{\Gamma} \yields_{\El{p}{\asdep{\Gamma}}} \upstairs{\Pi_A B} :\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}} \TYPE }
+\end{mathpar}
+
+\item[\textsc{$\Pi$-app}] We are given 
+\begin{align*}
+\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{f} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}
+\intertext{and we want} 
+\upstairs{\Gamma}, x : \upstairs{A} &\yields_{1_{\asdep{\Gamma}.x}} \upstairs{\mathsf{app}(f)} : \upstairs{B}
+\end{align*}
+This is an application of \textsc{U-elim}.
+\begin{mathpar}
+\inferrule*[Left=U-elim]{
+\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{f} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}} \and
+\upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}
+}{
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\Pi_1(\asdep{\Gamma},x,1_{\asdep{\Gamma}})} \upstairs{f}(x) : \upstairs{B}
+}
+\end{mathpar}
+and
+\begin{align*}
+\Pi_1(\asdep{\Gamma},x,1_{\asdep{\Gamma}})
+&\equiv \TrPlus{\ApEl{p}{\pi^{\asdep{\Gamma}}_x}}{1_{\asdep{\Gamma}}} \\
+&\equiv 1_{\asdep{\Gamma}.x}
+\end{align*}
+again by Equation~\eqref{s-plus-one-strict}.
+
+\item[\textsc{$\Pi$-lam}] The inverse of the above, we are given:
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} &\yields_{1_{\asdep{\Gamma}.x}} \upstairs{b} : \upstairs{B}
+\intertext{and we want} 
+\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{\mathsf{lam}(b)} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}
+\end{align*}
+Rewrite $1_{\asdep{\Gamma}.x} \equiv \Pi_1(\asdep{\Gamma},x,1_{\asdep{\Gamma}}) \equiv \Pi_1(\asdep{\Gamma},x,c)[1_{\asdep{\Gamma}}/c]$ then apply \textsc{U-intro}:
+\begin{mathpar}
+  \inferrule*[Left = U-intro]{
+    \upstairs{\Gamma}, x : \upstairs{A} \yields_{\Pi_1(\asdep{\Gamma},x,c)[1_{\asdep{\Gamma}}/c]} \upstairs{b} : \upstairs{B}
+  }
+  {\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \lambda x.\upstairs{b} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}
+  }
+\end{mathpar}
+\end{enumerate}
+So far we have not used that $p$ satisfies the Beck-Chevalley conditions for $\Pi$s. This ought to come up in the equations now:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$(\Pi_A B)[\Theta] \equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] $}:] We calculate:
+\begin{align*}
+\upstairs{(\Pi_A B)[\Theta]} 
+&\equiv \St{s_{\Theta}}{\upstairs{\Pi_A B}[\upstairs{\Theta}]} \\
+&\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}}{\upstairs{B}}[\upstairs{\Theta}]} \\
+&\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta},x/x]}
+\end{align*}
+The U-type is over 
+\begin{align*}
+\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})
+&\equiv \TrPlus{\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_x}{\TrCirc{s_{\Theta}}{c}} \\
+&\equiv \TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}
+\end{align*}
+Working from the other side:
+\begin{align*}
+&\equiv \dots \\ 
+&\equiv \U{c.\TrCirc{H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta \uparrow A}][\StI{s_\Theta}{x}/x]} \\
+&\equiv \U{c.\TrCirc{H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]} \\
+&\equiv \U{c.\TrCirc{s_{\Theta \uparrow A}}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]} \\
+&\equiv \U{c.\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A[\Theta]}}{\upstairs{B[\Theta \uparrow A]}} \\
+&\equiv \upstairs{\Pi_{A[\Theta]} B[\Theta \uparrow A]}
+\end{align*}
+
+\end{enumerate}
+
+\subsubsection{Rules for $\Sigma$-types}
+
+\subsubsection{Translation to a Weak Comprehension Object}
+
+Now we see if some of the equations can be omitted.
+
 \begin{enumerate}
 \item[\textsc{ctx-empty}] The empty context $\cdot$ is interpreted of course as the empty context in the framework, and we define $\asdep{(\cdot)} :\equiv \emptyset : p$.
 
@@ -1639,10 +2012,54 @@ Or equivalently:
 }
 \end{mathpar}
 Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction.
-
-\item[{$A[\id] \equiv A$}] Follows because $\St{\id}{A} \equiv A$ surprisingly strictly.
 \end{enumerate}
-\mvrnote{todo all the other equations}
+
+A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
+\begin{align*}
+\upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
+&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \\
+&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
+&\equiv \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x
+\end{align*}
+which is over $\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x$, and the associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x)$.
+
+But we can mediate between the two sides by a morphism of mode substitutions (not formally defined in the rules earlier, we're just going to fudge it here)
+ \[(\id_{\downstairs{\proj{\Gamma, A}} }, E(x))  : (\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x) \vDash \id_{\Gamma, A}\]
+Then the following diagram of mode term morphisms commutes:
+\[\begin{tikzcd}
+\asdep{(\Gamma, A)} \ar[r, Rightarrow, "H(\pi^{\asdep{\Gamma}}_x)"] \ar[dr, Rightarrow, "\id" swap] & \asdep{(\Gamma, A)}[\downstairs{\proj{\Gamma,A}, \var{\Gamma,A}}] \ar[d, Rightarrow, "{\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}"]\\
+& \asdep{(\Gamma, A)}[\id]
+\end{tikzcd}\]
+because:
+\begin{align*}
+H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}
+&\equiv H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{\Gamma}.x}{E(x)/x}} \\
+&\equiv \id
+\end{align*}
+As this is exactly the triangle equation for the slice/comprehension adjunction.
+
+What happens if we substitute the fake $\id$ into a type? We get:
+\begin{align*}
+\upstairs{A[\proj{\Gamma,A}, \var{\Gamma,A}]}
+&\equiv \St{s_{(\proj{\Gamma,A}, \var{\Gamma,A})}}{\upstairs{A}[ \upstairs{\proj{\Gamma,A}, \var{\Gamma,A}}]} \\
+&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\upstairs{A}[ \upstairs{\rewrite{E(x)}{x}} / x]} \\
+&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\St{(\ap{\asdep{\Gamma}.x}{E(x)/x})}{\upstairs{A}[ x / x]}}\\
+&\equiv \St{(H(\pi^{\asdep{\Gamma}}_x);(\ap{\asdep{\Gamma}.x}{E(x)/x}))}{\upstairs{A}} \\
+&\equiv \St{\id}{\upstairs{A}} \\
+&\equiv \upstairs{A}
+\end{align*}
+
+% $T : \downstairs{\Theta} \vDash \downstairs{\Theta'}$ where $\downstairs{\Theta}, \downstairs{\Theta'} : \downstairs{\Gamma} \vdash \downstairs{\Delta}$ . Such a morphism is defined inductively as either the unique morphism between empty substitutions, or as a pair $(T, t) : (\downstairs{\Theta}, \mu) \vDash (\downstairs{\Theta'}, \mu')$ where
+%\begin{align*}
+%T : \downstairs{\Theta} &\vDash \downstairs{\Theta'} & :\downstairs{\Gamma} \yields \downstairs{\Delta} \\
+%t : \mu &\vDash_{\downstairs{A}[\downstairs{\Theta}]} \TrPlus{\ap{\downstairs{A}}{T}}{\mu'}
+%\end{align*}
+%and the operation $\downstairs{\Gamma} \yields \ap{\downstairs{B}}{T} : \downstairs{B}[\downstairs{\Theta}] \vDash \downstairs{B}[\downstairs{\Theta'}]$ is defined inductively by:
+%\begin{align*}
+%\ap{\downstairs{B}}{\cdot} &:\equiv \id_{\downstairs{B}} \\
+%\ap{\downstairs{B}}{T, t} &:\equiv \ap{\downstairs{B}[\downstairs{\Theta}]}{t/x};?
+%\end{align*}
+%This is what $\Sigma$-types were supposed to do.
 
 \subsection{Upstairs Types}
 \mvrnote{Oldish stuff:}
