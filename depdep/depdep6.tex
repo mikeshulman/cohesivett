@@ -434,7 +434,7 @@ Pairing and projection 2-cells are definable:
   }
   {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:p,\gamma' \yields x : p)} \and
 
- \inferrule*[Left = 2cell]{
+ \inferrule*[Left = rewrite]{
    \Gamma \yields_\mu M : A 
    \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
   }
@@ -453,7 +453,8 @@ In the absence of eta for $\mathsf{F}$- and $s$-types, we also need to assert
 \subsubsection{Telescope Types}
 
 \begin{mathpar}
-
+  \inferrule*{~}{\Gamma \yields_{1} 1 \TYPE} \and
+  \inferrule*{~}{\Gamma \yields_{()} () : 1} \and
   \inferrule*{ \Gamma \yields_p A \TYPE \\
                \Gamma,x:A \yields_q B \TYPE}
              { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
@@ -557,8 +558,8 @@ In the absence of eta for $\mathsf{F}$- and $s$-types, we also need to assert
     \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
     \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
     \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
-    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : p [\TrPlus{s}{x} / y] )}
-  {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : p[\nu/y])} \\
+    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : r[\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
   \StE{s}{\StI{s}{M}}{x}{N} \equiv N[M/x] \and
   \\
   
@@ -589,19 +590,38 @@ Type equalities:
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align*}
-With corresponding term equalities: \mvrnote{TODO: F and U equations}
+With corresponding term equalities: \mvrnote{TODO: F and U and telescope equations}
 \begin{align*}
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} \\
 \StI{\id_p}{M} &\equiv M \\
 \StE{\id_p}{N}{x}{M} &\equiv M[N/x] && \text{(implied by previous)}\\
-\rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  && \text{(special case of equation for 2cell on substitutions)}
+\rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  && \text{(special case of equation for rewrite on substitutions)}
 \end{align*}
 
 
 \subsection{Lemmas}
 
+%\begin{lemma}
+%The \textsc{2cell} rule pushes into terms of telescope types:
+%\begin{align*}
+%(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
+%(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%\mvrnote{Todo:} For telescope types:
+%\begin{align*}
+%(\rewrite{s}{M},N) 
+%&\equiv  \\
+%(M,\rewrite{t}{N}) 
+%&\equiv \rewrite{(\id_\mu, \id_y)}{(M, y)}[\rewrite{t}{N}/y] \\
+%&\equiv \rewrite{(\id_\mu, \id_y)[t/y]}{(M,N)} \\
+%&\equiv \rewrite{(\id_\mu, t)}{(M,N)}
+%\end{align*}
+%\end{proof}
+
 \begin{lemma}
-The \textsc{2cell} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and $s$-types:
+The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and $s$-types:
 \begin{align*}
 \FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
 (\FE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}} \\
@@ -677,7 +697,7 @@ The $\mathsf{U}$-style rules for $s$-types are derivable:
 \begin{proof}
 For the first:
 \begin{mathpar}
-\inferrule*[Left = 2cell]{
+\inferrule*[Left = rewrite]{
 \inferrule*[Left = s-intro]{
     \Gamma \yields_{\TrCirc{s}{\mu}} M : A
   }
@@ -690,7 +710,7 @@ And the second:
 \inferrule*[Left = s-elim]{
 \Gamma \yields_{\mu} N : \St{s}{B} 
 \and
-\inferrule*[left = 2cell]{
+\inferrule*[left = rewrite]{
      \Gamma, x : B \yields_x x : B
   }{
     \Gamma, x : B \yields_{\TrCirc{s}{\TrPlus{s}{x}}} \rewrite{\varepsilon^s_x}{x} : B
@@ -729,7 +749,7 @@ using the other.
 \end{proof}
 
 \begin{lemma}
-The 2-cell rule pushes into the $\mathsf{U}$-style rules by
+The rewrite rule pushes into the $\mathsf{U}$-style rules by
 \begin{mathpar}
 \rewrite{t}{\UStI{s}{M}} \equiv \UStI{s}{\rewrite{\ap{s^\circ}{t}}{M}} \and \rewrite{\ap{s^\circ}{t}}{\UnSt{s}{M}} \equiv \UnSt{s}{\rewrite{t}{M}}
 \end{mathpar}
@@ -748,6 +768,116 @@ The $\mathsf{F}$- and $\mathsf{U}$-style rules can be mixed-and-matched by:
 \mvrnote{easy}
 \end{proof}
 
+
+\begin{lemma}
+Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems straightforward}
+\begin{mathpar}
+\inferrule*{\yields_\gamma \Gamma}
+             {\cdot \yields_{\Sigma \gamma} \Sigma \Gamma \TYPE}
+\and
+\inferrule*{~}
+             {\sigma : \Sigma \Gamma \yields_{\proj{\gamma}} \proj{\Gamma} : \Gamma}
+\and
+\inferrule*{\Gamma \yields_\theta \Theta : \Delta}
+             {\Gamma \yields_{\Sigma \theta} \Sigma \Theta : \Sigma \Delta}
+\and
+\inferrule*{\Gamma \yields\Theta : \Delta}
+             {\Gamma \yields \Theta \equiv \proj{\Delta}[\Sigma \Theta / \sigma]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+$\Sigma \Gamma$ is defined inductively by
+\begin{align*}
+\Sigma (\cdot) &:\equiv 1 \\
+\Sigma (\Gamma, x : A) &:\equiv \sum_{\sigma : \Sigma \Gamma} A[\proj{\Gamma}] \\
+\proj{(\cdot)} &:\equiv \cdot \\
+\proj{\Gamma, x : A} &:\equiv (\proj\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma}
+\end{align*}
+with each definition lying over the identical one downstairs. For $\Sigma \Theta$ we simultaneously verify the equation $\Theta \equiv \proj{\Delta}[\Sigma \Theta / \sigma]$, as we need it to hold for $(\Sigma \Theta, M)$ to be well typed.
+\begin{align*}
+\Sigma(\cdot) &:\equiv \mt : 1\\
+\Sigma(\Theta, M : A) &:\equiv (\Sigma \Theta, M) : \sum_{\sigma : \Sigma \Delta} A[\proj{\Delta}] \\
+(\cdot)[()/\sigma]  &\equiv (\cdot) \\
+\proj{\Delta, x : A}[\Sigma(\Theta, M : A)/\sigma] &\equiv ((\proj{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\Sigma \Theta, M)/\sigma] \\
+&\equiv (\proj{\Delta}[\Sigma \Theta/\sigma]), M \\
+&\equiv \Theta, M
+\end{align*}
+\end{proof}
+
+\begin{definition}
+A 2-cell between mode substitutions $\gamma\yields t : (\theta \vDash \theta') : \delta$ is given by a mode term 2-cell \[\gamma \yields \Sigma t : (\Sigma \theta \vDash_{\Sigma \delta} \Sigma \theta')\].
+\end{definition}
+In particular, if $\gamma\yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)$ then
+\begin{align*}
+\gamma &\yields \ap{\fst}{t} : \theta \vDash \theta' \\
+\gamma &\yields \ap{\snd}{t} : (\mu[\theta] \vDash \TrPlus{(\ap{p[\proj{\delta}]}{\Sigma t/\sigma})}{\mu'[\theta']})
+\end{align*}
+
+\begin{lemma}
+N-ary ap is admissible:
+\begin{mathpar}
+\inferrule*{\delta \vdash {q} \type \\
+            \gamma \yields t : (\theta \vDash \theta') : \delta
+           } 
+           {\TypeTwo{\gamma}{\ap {q} {t}}{q[\theta]}{q[\theta']}}
+\and
+\inferrule*{\delta \yields {\nu} : {q} \\
+            \gamma\yields t : (\theta \vDash \theta') : \delta
+           } 
+           {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
+          
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+These are
+\begin{align*}
+\ap {q} {t} &:\equiv \ap{q[\proj{\delta}]}{\Sigma t/\sigma} \\
+\ap {\nu} {t} &:\equiv \ap{\nu[\proj{\delta}]}{\Sigma t/\sigma}
+\end{align*}
+which are well-typed by the equation $\theta \equiv \proj{\delta}[\Sigma \theta / \sigma]$.
+\end{proof}
+
+\begin{lemma}
+N-ary rewrite is admissible:
+\begin{mathpar}
+ \inferrule*[Left = rewrite]{
+   \Gamma \yields_{\theta'} \Theta : \Delta \and 
+   \gamma \yields t : (\theta \vDash \theta') : \delta
+  }
+  {\Gamma \yields_{\theta} \rewrite{t}{\Theta} : \Delta}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+This is
+\begin{align*}
+\rewrite{t}{\Theta} &:\equiv \proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+A N-ary versions of the equations concerning rewrites hold:
+\begin{align*}
+\St{(\ap{q}{t})}{B[\Theta]} &\equiv B[\rewrite{t}{\Theta}] \\
+\rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} &\equiv N[\rewrite{t}{\Theta}]
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+B[\rewrite{t}{\Theta}] 
+&\equiv B[\proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
+&\equiv B[\proj{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
+&\equiv \St{\ap{q[\proj{\delta}]}{\Sigma t / \sigma}}{B[\proj{\Delta}][\Sigma \Theta/\sigma]} \\
+&\equiv \St{\ap{q}{t}}{B[\Theta]}
+\end{align*}
+And:
+\begin{align*}
+N[\rewrite{t}{\Theta}]
+&\equiv N[\proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
+&\equiv N[\proj{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
+&\equiv \rewrite{\ap{\nu[\proj{\delta}]}{\Sigma t/\sigma}}{\StI{\ap{q[\proj{\delta}]}{\Sigma t/\sigma}}{N[\proj{\Delta}][\Sigma \Theta/\sigma]}} \\
+&\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
+\end{align*}
+\end{proof}
 
 \subsection{Examples}
 
@@ -1673,7 +1803,7 @@ to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as
 \end{align*}
 For this use the derivation:
 \begin{mathpar}
-\inferrule*[Left=2cell] {
+\inferrule*[Left=rewrite] {
 \inferrule*[Left=s-intro] {
  \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
  }{
@@ -1721,7 +1851,8 @@ Now we check that these translations satisfy the required equations. The first t
 &\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}}{\upstairs{a}}[\upstairs{\Theta}] \\
 &\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]} \\
 &\equiv ??? \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\rewrite{\varepsilon^{s_\Theta}_{1}}{\upstairs{a}[\upstairs{\Theta}]}} \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \rewrite{\ap{(s_\kappa[\downstairs{\Theta}])^\circ}{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}}{\UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]}} \\
+&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\rewrite{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}{\upstairs{a}[\upstairs{\Theta}]}} \\
 &\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\UnSt{s_\Theta}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}}} \\
 &\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_\Theta ; (s_{\kappa}[\downstairs{\Theta}])}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
 &\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\Theta;\kappa}}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
@@ -2022,7 +2153,7 @@ to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as
 \end{align*}
 For this use the derivation:
 \begin{mathpar}
-\inferrule*[Left=2cell] {
+\inferrule*[Left=rewrite] {
 \inferrule*[Left=s-intro] {
  \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
  }{
@@ -2034,7 +2165,7 @@ For this use the derivation:
 Or equivalently:
 \begin{mathpar}
 \inferrule*[Left=s-intro-2] {
-\inferrule*[Left=2cell] {
+\inferrule*[Left=rewrite] {
  \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \vDash_{\El{p}{\asdep{\Gamma}}} x
  }{
  \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} \rewrite{E(x)}{x} : \upstairs{A}
@@ -2374,7 +2505,7 @@ The cases of weakening in the middle of the context will be trickier.
 \end{mathpar}
 The framework \textsc{var} rule lives over $x$, not $1_{\underline{(\Delta ; \Gamma, x : A)}}$, so we use structural rules to correct it:
 \begin{mathpar}
-\inferrule*[Right = 2cell]{
+\inferrule*[Right = rewrite]{
 \inferrule*[Right = S-intro]{
 \inferrule*[Right = var]{~}
   {(\Delta ; \Gamma, x : A)^\dagger \yields_{x} x : A}}
