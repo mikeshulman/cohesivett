@@ -69,6 +69,8 @@
 \newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
 \newcommand\var[1]{\ensuremath{\mathsf{var}_{#1}}}
 
+\newcommand\fan[1]{\ensuremath{\mathsf{fan}_{#1}}}
+
 \newcommand\Push[3]{\ensuremath{#1 +_{#2} #3}}
 \newcommand\Pushout[5]{\ensuremath{#1 +^{#4,#5}_{#2} #3}}
 \newcommand{\case}{\mathsf{case}}
@@ -277,7 +279,7 @@ on a type variable/universes):
   \inferrule*
   {\TypeTwo{\gamma}{s}{p}{p'} \\
     \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
-  {\TypeTwo{\gamma}{\sigmacl{x'}{t}{s}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
+  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
 
   \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
   (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
@@ -590,8 +592,9 @@ Type equalities:
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align*}
-With corresponding term equalities: \mvrnote{TODO: F and U and telescope equations}
+With corresponding term equalities: \mvrnote{TODO: F and U}
 \begin{align*}
+\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) \\
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} \\
 \StI{\id_p}{M} &\equiv M \\
 \StE{\id_p}{N}{x}{M} &\equiv M[N/x] && \text{(implied by previous)}\\
@@ -601,15 +604,22 @@ With corresponding term equalities: \mvrnote{TODO: F and U and telescope equatio
 
 \subsection{Lemmas}
 
-%\begin{lemma}
-%The \textsc{2cell} rule pushes into terms of telescope types:
-%\begin{align*}
+\begin{lemma}
+The \textsc{2cell} rule pushes into terms of telescope types:
+\begin{align*}
 %(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
 %(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
-%\end{align*}
-%\end{lemma}
-%\begin{proof}
-%\mvrnote{Todo:} For telescope types:
+\rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} ) 
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\rewrite{(s, t)}{(M, N)} 
+&\equiv (\fst\rewrite{(s, t)}{(M, N)}, \snd \rewrite{(s, t)}{(M, N)} ) \\
+&\equiv (\fst z [\rewrite{(s, t)}{(M, N)}/z], \snd z [\rewrite{(s, t)}{(M, N)}/z] ) \\
+&\equiv (\rewrite{\ap{\fst}{(s, t)}}{\fst (M, N)}, \rewrite{\ap{\snd}{(s, t)}}{\StI{\ap{q[\fst z/x]}{(s, t)/z}}{\snd (M, N)}} ) \\
+&\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
+\end{align*}
 %\begin{align*}
 %(\rewrite{s}{M},N) 
 %&\equiv  \\
@@ -618,7 +628,7 @@ With corresponding term equalities: \mvrnote{TODO: F and U and telescope equatio
 %&\equiv \rewrite{(\id_\mu, \id_y)[t/y]}{(M,N)} \\
 %&\equiv \rewrite{(\id_\mu, t)}{(M,N)}
 %\end{align*}
-%\end{proof}
+\end{proof}
 
 \begin{lemma}
 The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and $s$-types:
@@ -628,7 +638,7 @@ The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and 
 \UE{M}{\rewrite{s}{N}} &\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
 \UE{(\rewrite{t}{M})}{N} &\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
 \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
-\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ap{t^+}{s}}{\FI{M}} \\
+\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ap{t^+}{s}}{\StI{t}{M}} \\
 (\StE{t}{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\StE{t}{M}{x}{N}}}
 \intertext{If we have definitional eta-expansion for \textsf{F}- and $s$-types, we can also derive (rather than asserting)}
 (\FE{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\FE{M}{x}{N}} \\
@@ -755,51 +765,65 @@ The rewrite rule pushes into the $\mathsf{U}$-style rules by
 \end{mathpar}
 \end{lemma}
 \begin{proof}
-\mvrnote{easy}
+\mvrnote{easy?}
 \end{proof}
 
 \begin{lemma}
 The $\mathsf{F}$- and $\mathsf{U}$-style rules can be mixed-and-matched by:
 \begin{mathpar}
-\UnSt{s}{\StI{s}{M}} \equiv \rewrite{\varepsilon^s_\mu}{M} \and \StE{s}{\UStI{s}{M}}{z}{N} \equiv \rewrite{\ap{\nu'}{\eta^s_\mu/y}}{N}
+\UnSt{s}{\StI{s}{M}} \equiv \rewrite{\varepsilon^s_\mu}{M} \and \StE{s}{\UStI{s}{M}}{z}{N} \equiv \rewrite{\ap{\nu'}{\eta^s_\mu/y}}{N} \\
+\rewrite{\eta^s_{\mu}}{\StI{s}{\UnSt{s}{N}}} \equiv N \and \text{\mvrnote{one more}}
 \end{mathpar}
 \end{lemma}
 \begin{proof}
-\mvrnote{easy}
+\mvrnote{easy?}
+
+Here's the third one:
+\begin{align*}
+\rewrite{\eta^s_{\mu}}{\StI{s}{\UnSt{s}{N}}} 
+&\equiv \rewrite{\eta^s_{\mu}}{\StI{s}{\StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}}}} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\StI{s}{\StE{s}{\StI{s}{x'}}{x}{\rewrite{\varepsilon^s_x}{x}}}})} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\StI{s}{\rewrite{\varepsilon^s_{x'}}{x'}}})} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\rewrite{\ap{s^+}{\varepsilon^s_{x'}}}{\StI{s}{x'}}})} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}};\ap{s^+}{\varepsilon^s_{x'}}}{\StI{s}{x'}})} \\
+&\equiv \StE{s}{N}{x'}{\StI{s}{x'}} \\
+&\equiv N
+\end{align*}
+\mvrnote{This also uses definitional eta for $s$-types, looks like we need it}
 \end{proof}
 
 
 \begin{lemma}
-Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems straightforward}
+Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems doable}
 \begin{mathpar}
 \inferrule*{\yields_\gamma \Gamma}
              {\cdot \yields_{\Sigma \gamma} \Sigma \Gamma \TYPE}
 \and
 \inferrule*{~}
-             {\sigma : \Sigma \Gamma \yields_{\proj{\gamma}} \proj{\Gamma} : \Gamma}
+             {\sigma : \Sigma \Gamma \yields_{\fan{\gamma}} \fan{\Gamma} : \Gamma}
 \and
 \inferrule*{\Gamma \yields_\theta \Theta : \Delta}
              {\Gamma \yields_{\Sigma \theta} \Sigma \Theta : \Sigma \Delta}
 \and
 \inferrule*{\Gamma \yields\Theta : \Delta}
-             {\Gamma \yields \Theta \equiv \proj{\Delta}[\Sigma \Theta / \sigma]}
+             {\Gamma \yields \Theta \equiv \fan{\Delta}[\Sigma \Theta / \sigma]}
 \end{mathpar}
 \end{lemma}
 \begin{proof}
 $\Sigma \Gamma$ is defined inductively by
 \begin{align*}
 \Sigma (\cdot) &:\equiv 1 \\
-\Sigma (\Gamma, x : A) &:\equiv \sum_{\sigma : \Sigma \Gamma} A[\proj{\Gamma}] \\
-\proj{(\cdot)} &:\equiv \cdot \\
-\proj{\Gamma, x : A} &:\equiv (\proj\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma}
+\Sigma (\Gamma, x : A) &:\equiv \sum_{\sigma : \Sigma \Gamma} A[\fan{\Gamma}] \\
+\fan{(\cdot)} &:\equiv \cdot \\
+\fan{\Gamma, x : A} &:\equiv (\fan\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma}
 \end{align*}
-with each definition lying over the identical one downstairs. For $\Sigma \Theta$ we simultaneously verify the equation $\Theta \equiv \proj{\Delta}[\Sigma \Theta / \sigma]$, as we need it to hold for $(\Sigma \Theta, M)$ to be well typed.
+with each definition lying over the identical one downstairs. For $\Sigma \Theta$ we simultaneously verify the equation $\Theta \equiv \fan{\Delta}[\Sigma \Theta / \sigma]$, as we need it to hold for $(\Sigma \Theta, M)$ to be well typed.
 \begin{align*}
 \Sigma(\cdot) &:\equiv \mt : 1\\
-\Sigma(\Theta, M : A) &:\equiv (\Sigma \Theta, M) : \sum_{\sigma : \Sigma \Delta} A[\proj{\Delta}] \\
+\Sigma(\Theta, M : A) &:\equiv (\Sigma \Theta, M) : \sum_{\sigma : \Sigma \Delta} A[\fan{\Delta}] \\
 (\cdot)[()/\sigma]  &\equiv (\cdot) \\
-\proj{\Delta, x : A}[\Sigma(\Theta, M : A)/\sigma] &\equiv ((\proj{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\Sigma \Theta, M)/\sigma] \\
-&\equiv (\proj{\Delta}[\Sigma \Theta/\sigma]), M \\
+\fan{\Delta, x : A}[\Sigma(\Theta, M : A)/\sigma] &\equiv ((\fan{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\Sigma \Theta, M)/\sigma] \\
+&\equiv (\fan{\Delta}[\Sigma \Theta/\sigma]), M \\
 &\equiv \Theta, M
 \end{align*}
 \end{proof}
@@ -807,14 +831,9 @@ with each definition lying over the identical one downstairs. For $\Sigma \Theta
 \begin{definition}
 A 2-cell between mode substitutions $\gamma\yields t : (\theta \vDash \theta') : \delta$ is given by a mode term 2-cell \[\gamma \yields \Sigma t : (\Sigma \theta \vDash_{\Sigma \delta} \Sigma \theta')\].
 \end{definition}
-In particular, if $\gamma\yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)$ then
-\begin{align*}
-\gamma &\yields \ap{\fst}{t} : \theta \vDash \theta' \\
-\gamma &\yields \ap{\snd}{t} : (\mu[\theta] \vDash \TrPlus{(\ap{p[\proj{\delta}]}{\Sigma t/\sigma})}{\mu'[\theta']})
-\end{align*}
 
 \begin{lemma}
-N-ary ap is admissible:
+N-ary ap and rewrite are admissible:
 \begin{mathpar}
 \inferrule*{\delta \vdash {q} \type \\
             \gamma \yields t : (\theta \vDash \theta') : \delta
@@ -825,21 +844,6 @@ N-ary ap is admissible:
             \gamma\yields t : (\theta \vDash \theta') : \delta
            } 
            {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
-          
-\end{mathpar}
-\end{lemma}
-\begin{proof}
-These are
-\begin{align*}
-\ap {q} {t} &:\equiv \ap{q[\proj{\delta}]}{\Sigma t/\sigma} \\
-\ap {\nu} {t} &:\equiv \ap{\nu[\proj{\delta}]}{\Sigma t/\sigma}
-\end{align*}
-which are well-typed by the equation $\theta \equiv \proj{\delta}[\Sigma \theta / \sigma]$.
-\end{proof}
-
-\begin{lemma}
-N-ary rewrite is admissible:
-\begin{mathpar}
  \inferrule*[Left = rewrite]{
    \Gamma \yields_{\theta'} \Theta : \Delta \and 
    \gamma \yields t : (\theta \vDash \theta') : \delta
@@ -848,11 +852,26 @@ N-ary rewrite is admissible:
 \end{mathpar}
 \end{lemma}
 \begin{proof}
-This is
+These are
 \begin{align*}
-\rewrite{t}{\Theta} &:\equiv \proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]
+\ap {q} {t} &:\equiv \ap{q[\fan{\delta}]}{\Sigma t/\sigma} \\
+\ap {\nu} {t} &:\equiv \ap{\nu[\fan{\delta}]}{\Sigma t/\sigma} \\
+\rewrite{t}{\Theta} &:\equiv \fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]
 \end{align*}
+which are well-typed by the equation $\theta \equiv \fan{\delta}[\Sigma \theta / \sigma]$.
 \end{proof}
+
+In particular, we have the following rules for building and using 2-cells between substitutions.
+\begin{mathpar}
+\inferrule{\gamma \yields t : \theta \vDash \theta' \and \gamma \yields s : (\mu[\theta] \vDash \TrPlus{\ap{p}{t}}{\mu'[\theta']})}
+{ \gamma \yields (s, t) : (\theta, \mu) \vDash (\theta', \mu') } \\
+%
+\inferrule{\gamma \yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)}
+{\gamma \yields \ap{\fst}{t} : \theta \vDash \theta' } \and
+%
+\inferrule{\gamma \yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)}
+{\gamma \yields \ap{\snd}{t} : (\mu[\theta] \vDash \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']})}
+\end{mathpar}%
 
 \begin{lemma}
 A N-ary versions of the equations concerning rewrites hold:
@@ -864,18 +883,36 @@ A N-ary versions of the equations concerning rewrites hold:
 \begin{proof}
 \begin{align*}
 B[\rewrite{t}{\Theta}] 
-&\equiv B[\proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
-&\equiv B[\proj{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
-&\equiv \St{\ap{q[\proj{\delta}]}{\Sigma t / \sigma}}{B[\proj{\Delta}][\Sigma \Theta/\sigma]} \\
+&\equiv B[\fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
+&\equiv B[\fan{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
+&\equiv \St{\ap{q[\fan{\delta}]}{\Sigma t / \sigma}}{B[\fan{\Delta}][\Sigma \Theta/\sigma]} \\
 &\equiv \St{\ap{q}{t}}{B[\Theta]}
 \end{align*}
 And:
 \begin{align*}
 N[\rewrite{t}{\Theta}]
-&\equiv N[\proj{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
-&\equiv N[\proj{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
-&\equiv \rewrite{\ap{\nu[\proj{\delta}]}{\Sigma t/\sigma}}{\StI{\ap{q[\proj{\delta}]}{\Sigma t/\sigma}}{N[\proj{\Delta}][\Sigma \Theta/\sigma]}} \\
+&\equiv N[\fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
+&\equiv N[\fan{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
+&\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\Sigma t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\Sigma t/\sigma}}{N[\fan{\Delta}][\Sigma \Theta/\sigma]}} \\
 &\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+Rewriting by a tuple is a tuple of rewritings:
+\begin{align*}
+\rewrite{(t, s/x)}{\Theta, M/x} \equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
+\end{align*}
+\end{lemma}
+\begin{proof}
+Unwinding definitions:
+\begin{align*}
+\rewrite{(t, s/x)}{\Theta, M/x}
+&\equiv \fan{\Delta, x : A}[\rewrite{\Sigma (t, s/x)}{\Sigma (\Theta, M/x)}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[\rewrite{(\Sigma t, s)}{\Sigma\Theta, M}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[(\rewrite{\Sigma t}{\Sigma\Theta}, \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\Sigma t/\sigma}}{N}})/\sigma] \\
+&\equiv (\fan\Delta[\rewrite{\Sigma t}{\Sigma\Theta}/\sigma], \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\Sigma t/\sigma}}{N}}) \\
+&\equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
 \end{align*}
 \end{proof}
 
@@ -1346,6 +1383,24 @@ H(U(x)); U(E(x))
 %\end{align*}
 \end{proof}
 
+For future use:
+
+\begin{lemma}
+For $s : \beta \vDash_p \alpha$ and $t : \alpha \vDash_p \lambda$
+\begin{align*}
+H(s;t) \equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}})
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+H(s;t)
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot \eta^{\ApEl{p}{s;t}}_{1_\beta}) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{\ApEl{p}{s}}_\mu ; (\ap{\ApEl{p}{s}^+}{\eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{\mu}}})) \\
+&\equiv \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
+&\equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
+\end{align*}
+\end{proof}
+
 If the adjunction is an equivalence for every $\alpha$ \mvrnote{Do we need any extra compatibility?}, then the $T(\alpha)$ bifibration is equivalent to the codomain bifibration and $(p,\El{p}{-},\chi_p)$ is describing a category with finite limits. 
 
 \begin{definition}
@@ -1673,7 +1728,7 @@ Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Fig
 \caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
 \end{figure}
 
-Our goal is to interpret these rules in the framework. The mode theory will contain a comprehension object $p$, possibly with some extra strictness. The basic idea for representing the judgements of MLTT is as follows:
+Our goal is to interpret these rules in the framework. The mode theory will contain a comprehension object $p$, possibly with some extra strictness \mvrnote{to be determined}. The basic idea for representing the judgements of MLTT is as follows:
 \begin{itemize}
 \item For each object-language context $\Gamma$, there is a corresponding upstairs framework context $\upstairs{\Gamma}$ living over the downstairs framework context $\downstairs{\Gamma}$. There is also an mode term $\downstairs{\Gamma} \yields \asdep{\Gamma} : p$, meant to represent a dependency descriptor for using every variable in $\Gamma$ exactly once.
 
@@ -1682,6 +1737,12 @@ Our goal is to interpret these rules in the framework. The mode theory will cont
 \item A term $\Gamma \qyields a : A$ is represented by $\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{a} : \upstairs{A}$.
 
 \item A substitution $\Gamma \qyields \Theta : \Delta$ has a corresponding framework substitution $\upstairs{\Gamma} \yields \upstairs{\Theta} : \upstairs{\Delta}$ living over $\downstairs{\Gamma} \yields \downstairs{\Theta} : \downstairs{\Delta}$, together with a mode morphism $\downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash_p \asdep{\Delta}[\downstairs{\Theta}]$ that we use to correct the mismatch between object-level and framework substitution.
+
+Such pairs $\{ \Theta, s \}$ are considered up to the following relation:
+\begin{align*}
+\{ \rewrite{t}{\Theta}, s \} \sim \{ \Theta, (s ; \ap{\asdep{\Delta}}{t})\}
+\end{align*}
+This is to account for the different possible placements of the structural rules. We will show that any two substitutions so related act the same on types and terms in the image of the translation.
 \end{itemize}
 
 These will be defined inductively, and the general idea is that for $\Gamma$ of the form $x_1 : A_1, \ldots , x_n : A_n$, the framework context $\upstairs{\Gamma}$ will live over the mode context $\downstairs{\Gamma}$ that looks like:
@@ -1689,20 +1750,21 @@ These will be defined inductively, and the general idea is that for $\Gamma$ of 
   \]
   The mode term $\asdep{\Gamma} : p$ will be $\emptyset.x_1.x_2.\ldots.x_n$ when $\Gamma$ is $x_1 : A_1, \ldots , x_n : A_n$.
 
-\subsubsection{Translation to Strict Comprehension Object}
+\subsubsection{Translation}
 
-We give a translation for mode theory containing a comprehension object which is however strict is necessary to make the translation easy to describe. Here is a tally of the requirements:
-\begin{itemize}
-\item $E(x)$ is the identity, i.e.:
-\begin{align*}
-\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x
-\end{align*}
-This is used in the translation of \textsc{sub-var}. Note that as a consequence of the above, $\var{x}$ is equal to the unit of the $\pi^\circ \dashv \pi^+$ adjunction, and $H(\pi^{\asdep{\Gamma}}_x) \equiv H(U(x)) \equiv \id_{\asdep{\Gamma}.x}$.
-\item More?
-\end{itemize}
+%We give a translation for mode theory containing a comprehension object which is however strict is necessary to make the translation easy to describe. Here is a tally of the requirements:
+%\begin{itemize}
+%\item $E(x)$ is the identity, i.e.:
+%\begin{align*}
+%\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+%\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x
+%\end{align*}
+%This is used in the translation of \textsc{sub-var}. Note that as a consequence of the above, $\var{x}$ is equal to the unit of the $\pi^\circ \dashv \pi^+$ adjunction, and $H(\pi^{\asdep{\Gamma}}_x) \equiv H(U(x)) \equiv \id_{\asdep{\Gamma}.x}$.
+%\item More?
+%\end{itemize}
 
 First all the structural rules.
+
 \begin{enumerate}
 \item[\textsc{ctx-empty}] The empty context $\cdot$ is interpreted of course as the empty context in the framework, and we define $\asdep{(\cdot)} :\equiv \emptyset : p$.
 
@@ -1714,13 +1776,13 @@ We can then define
 \asdep{(\Gamma, x : A)} &:\equiv (\asdep{\Gamma}).x
 \end{align*}
 
-\item[\textsc{type-sub}] We are provided with
+\item[\textsc{type-sub}] Choose a representative of the translation of $\Theta$, say $\{ \upstairs{\Theta}, s_\Theta \}$ where: \mvrnote{This notation is a little confusing, I don't mean to say that $\upstairs{\Theta}$ and $s_\Theta$ are necessarily in the image of the translation.}
 \begin{align*}
 \upstairs{\Delta} &\yields_{\asdep{\Delta}} \upstairs{A} \TYPE \\
 \upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
 \downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
 \end{align*}
-So use the derivation
+The translation of $A[\Theta]$ is then:
 \begin{mathpar}
   \inferrule*[Left=s-form] {
 \inferrule*[Left=Sub]{
@@ -1734,8 +1796,14 @@ So use the derivation
     \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]} \TYPE
   }
 \end{mathpar}
+We must show that this resulting type respects the relation on pairs $\{ \Theta, s \}$:
+\begin{align*}
+\St{s}{\upstairs{A}[\rewrite{t}{\Theta}]} 
+&\equiv \St{s}{\St{\ap{\asdep{\Delta}}{t}}{\upstairs{A}[\Theta]}}  \\
+&\equiv \St{(s;\ap{\asdep{\Delta}}{t})}{\upstairs{A}[\Theta]}
+\end{align*}
 
-\item[\textsc{term-sub}] We are provided with
+\item[\textsc{term-sub}] Again choose a representative of the translation of the substitution, $\{ \upstairs{\Theta}, s_\Theta \}$. We have:
 \begin{align*}
 \upstairs{\Delta} &\yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \TYPE \\
 \upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
@@ -1757,6 +1825,15 @@ So use the derivation
 \end{mathpar}
 And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$.
 
+This again respects the relation on pairs $\{ \upstairs{\Theta}, s_\Theta \}$:
+\begin{align*}
+\StI{s}{\upstairs{a}[\rewrite{t}{\Theta}]}
+&\equiv \StI{s}{\rewrite{\ap{1_{\asdep{\Delta}}}{t}}{\StI{\ap{\asdep{\Delta}}{t}}{\upstairs{a}[\Theta]}} } \\
+&\equiv \StI{s}{\StI{\ap{\asdep{\Delta}}{t}}{\upstairs{a}[\Theta]} } \\
+&\equiv \StI{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}[\Theta]} \\
+\end{align*}
+Where $\ap{1_{\asdep{\Delta}}}{t} : 1_{\asdep{\Delta}[\theta]} \vDash \TrPlus{\ap{\asdep{\Delta}}{t}}{1_{\asdep{\Delta}[\theta']}}$ disappears as it must be the identity. \mvrnote{Does this still work if $s^+$ doesn't preserve the terminal object strictly?}
+
 \item[\textsc{sub-empty}] This is interpreted as the empty framework substitution. We also define $\downstairs{\Gamma} \yields s_\epsilon : \asdep{\Gamma} \vDash \asdep{(\cdot)}[]$ to be the unique mode-morphism $! : \asdep{\Gamma} \vDash \emptyset$.
 
 \item[\textsc{sub-ext}] We are given
@@ -1766,7 +1843,7 @@ And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{
 \upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
 \end{align*}
 From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{s_\Theta}{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
-so we define
+so define
 \begin{align*}
 \upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}/x \\
 \downstairs{\Theta, a/x} &:\equiv \downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x
@@ -1787,6 +1864,20 @@ s_{\Theta, a} &\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asde
 \end{align*}
 This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 
+To show this is well defined, we have to verify that:
+\begin{align*}
+\left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x), H(s) \right\} \sim \left\{ (\Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x), H(s;\ap{\asdep{\Delta}}{t}) \right\} 
+\end{align*}
+Trying this
+\begin{align*}
+\left\{ (\Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x), H(s;\ap{\asdep{\Delta}}{t}) \right\} 
+&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; (\ap{\asdep{\Delta}}{t} \bdot \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}})\right\} \\
+&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; \ap{(d.x)}{\ap{\asdep{\Delta}}{t}/d, \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
+&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; \ap{\asdep{\Delta}.x}{t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
+&\sim \left\{ \rewrite{(t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x)}{\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x}, H(s) \right\} \\
+&\equiv \left\{ (\rewrite{t}{\Theta}, \rewrite{\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}}{\StI{\ap{\asdep{\Delta}}{t}}{\UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}}}/x), H(s) \right\} \\
+&\equiv \left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x), H(s) \right\}
+\end{align*}
 \item[\textsc{sub-id}] This is translated to be the identity framework substitution on $\upstairs{\Gamma}$, with $s_{\id_\Gamma} :\equiv \id_{\asdep{\Gamma}}$.
 
 \item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$.
@@ -1815,15 +1906,17 @@ For this use the derivation:
 Or equivalently:
 \begin{mathpar}
 \inferrule*[Left=s-intro-2] {
-\inferrule*{
- \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \equiv x
+\inferrule*[Left=rewrite] {
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \vDash_{\El{p}{\asdep{\Gamma}}} x
  }{
- \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} x : \upstairs{A}
+ \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} \rewrite{E(x)}{x} : \upstairs{A}
 }}{
-\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\pi^{\asdep{\Gamma}}_x}{x} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
 }
 \end{mathpar}
+Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 \end{enumerate}
+
 Now we check that these translations satisfy the required equations. The first three blocks of equations follow quickly from the analogous properties in the framework, together with the equations for surprisingly strict $s$-types. Here are the equations we might be worried about:
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
 \item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}] 
@@ -1901,14 +1994,40 @@ And the RHS is a morphism from $\asdep{\Gamma}$ to
 \item[{$(\Theta, a);\proj{\Gamma,A} \equiv \Theta$}] Foo
 \item[{$\var{\Gamma,A}[\Theta, a] \equiv a$}] Foo
 \item[{$(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
-On the left we calculate
+A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
 \begin{align*}
 \upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
 &\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{\pi^{\asdep{\Gamma}}_x}{\UStI{\pi^{\asdep{\Gamma}}_x}{x}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , x / x
+&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
+&\equiv \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x
 \end{align*}
-over $\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \equiv x$. The associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x) \equiv \id_{\asdep{\Gamma}.x}$.
+which is over $\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x$, and the associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x)$.
+
+But we can mediate between the two sides by a morphism of mode substitutions (not formally defined in the rules earlier, we're just going to fudge it here)
+ \[(\id_{\downstairs{\proj{\Gamma, A}} }, E(x))  : (\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x) \vDash \id_{\Gamma, A}\]
+Then the following diagram of mode term morphisms commutes:
+\[\begin{tikzcd}
+\asdep{(\Gamma, A)} \ar[r, Rightarrow, "H(\pi^{\asdep{\Gamma}}_x)"] \ar[dr, Rightarrow, "\id" swap] & \asdep{(\Gamma, A)}[\downstairs{\proj{\Gamma,A}, \var{\Gamma,A}}] \ar[d, Rightarrow, "{\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}"]\\
+& \asdep{(\Gamma, A)}[\id]
+\end{tikzcd}\]
+because:
+\begin{align*}
+H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}
+&\equiv H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{\Gamma}.x}{E(x)/x}} \\
+&\equiv \id
+\end{align*}
+As this is exactly the triangle equation for the slice/comprehension adjunction.
+
+What happens if we substitute the fake $\id$ into a type? We get:
+\begin{align*}
+\upstairs{A[\proj{\Gamma,A}, \var{\Gamma,A}]}
+&\equiv \St{s_{(\proj{\Gamma,A}, \var{\Gamma,A})}}{\upstairs{A}[ \upstairs{\proj{\Gamma,A}, \var{\Gamma,A}}]} \\
+&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\upstairs{A}[ \upstairs{\rewrite{E(x)}{x}} / x]} \\
+&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\St{(\ap{\asdep{\Gamma}.x}{E(x)/x})}{\upstairs{A}[ x / x]}}\\
+&\equiv \St{(H(\pi^{\asdep{\Gamma}}_x);(\ap{\asdep{\Gamma}.x}{E(x)/x}))}{\upstairs{A}} \\
+&\equiv \St{\id}{\upstairs{A}} \\
+&\equiv \upstairs{A}
+\end{align*}
 \end{enumerate}
 
 Some observations:
@@ -2048,180 +2167,6 @@ Working from the other side:
 \end{enumerate}
 
 \subsubsection{Rules for $\Sigma$-types}
-
-\subsubsection{Translation to a Weak Comprehension Object}
-
-Now we see if some of the equations can be omitted.
-
-\begin{enumerate}
-\item[\textsc{ctx-empty}] The empty context $\cdot$ is interpreted of course as the empty context in the framework, and we define $\asdep{(\cdot)} :\equiv \emptyset : p$.
-
-\item[\textsc{ctx-ext}] We are provided with an upstairs context $\upstairs{\Gamma}$ over $\downstairs{\Gamma}$, and a type $\upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{A} \TYPE$.
-We can then define
-\begin{align*}
-\upstairs{\Gamma, x : A} &:\equiv \upstairs{\Gamma}, x : \upstairs{A} \\
-\downstairs{\Gamma, x : A} &:\equiv \downstairs{\Gamma}, x : \El{p}{\asdep{\Gamma}} \\
-\asdep{(\Gamma, x : A)} &:\equiv (\asdep{\Gamma}).x
-\end{align*}
-
-\item[\textsc{type-sub}] We are provided with
-\begin{align*}
-\upstairs{\Delta} &\yields_{\asdep{\Delta}} \upstairs{A} \TYPE \\
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
-\end{align*}
-So use the derivation
-\begin{mathpar}
-  \inferrule*[Left=s-form] {
-\inferrule*[Left=Sub]{
-  \upstairs{\Delta} \yields_{\asdep{\Delta}} \upstairs{A} \TYPE \and 
-  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
-  }{
-  \upstairs{\Gamma} \yields_{\asdep{\Delta}[\downstairs{\Theta}]} \upstairs{A}[\upstairs{\Theta}] \TYPE
-  } \and   
-  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
-  }{
-    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]} \TYPE
-  }
-\end{mathpar}
-
-\item[\textsc{term-sub}] We are provided with
-\begin{align*}
-\upstairs{\Delta} &\yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \TYPE \\
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
-\end{align*}
-So use the derivation
-\begin{mathpar}
-  \inferrule*[Left=s-intro] {
-\inferrule*[Left=Sub]{
- \upstairs{\Delta} \yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \and 
-  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
-  }{
-  \upstairs{\Gamma} \yields_{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \upstairs{a}[\upstairs{\Theta}] : \upstairs{A}[\upstairs{\Theta}] 
-  } \and   
-  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
-  }{
-    \upstairs{\Gamma} \yields_{\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}} \StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]} : \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}
-  }
-\end{mathpar}
-And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$.
-
-\item[\textsc{sub-empty}] This is interpreted as the empty framework substitution. We also define $\downstairs{\Gamma} \yields s_\epsilon : \asdep{\Gamma} \vDash \asdep{(\cdot)}[]$ to be the unique mode-morphism $! : \asdep{\Gamma} \vDash \emptyset$.
-
-\item[\textsc{sub-ext}] We are given
-\begin{align*}
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}] \\
-\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
-\end{align*}
-From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{s_\Theta}{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
-so we define
-\begin{align*}
-\upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}/x \\
-\downstairs{\Theta, a/x} &:\equiv \downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x
-\end{align*}
-We still need to specify a 2-cell 
-\[
-\downstairs{\Gamma} \yields s_{\Theta, a/x} : \asdep{\Gamma} \vDash \asdep{(\Delta, x : A)}[\downstairs{\Theta, a/x}]
-\]
-The codomain here is
-\begin{align*}
-(\asdep{\Delta}.x)[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
-&\equiv \asdep{\Delta}[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x].x[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] \\
-&\equiv \asdep{\Delta}[\downstairs{\Theta}].\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}
-\end{align*}
-because $x$ does not occur in $\asdep{\Delta}$. Define:
-\begin{align*}
-s_{\Theta, a} &\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
-\end{align*}
-This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
-
-\item[\textsc{sub-id}] This is translated to be the identity framework substitution on $\upstairs{\Gamma}$, with $s_{\id_\Gamma} :\equiv \id_{\asdep{\Gamma}}$.
-
-\item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$.
-
-\item[\textsc{sub-proj}] This is translated to the framework substitution with the last term forgotten, i.e. $\mathsf{proj}$ in the framework. Define 
-\begin{align*}
-\downstairs{\Gamma, A} \yields s_{\proj{\Gamma, A}} : \asdep{(\Gamma, A)} \vDash_p \asdep{\Gamma}[\downstairs{\proj{\Gamma, A}}]
-\end{align*}
-to be $s_{\proj{\Gamma, A}} :\equiv \pi^{\asdep{\Gamma}}_x$.This makes sense, as substituting $\upstairs{\proj{\Gamma, A}}$ into a framework term or type corresponds to a framework weakening.
-
-\item[\textsc{sub-var}] Our goal is to produce a framework term 
-\begin{align*}
-\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{(\Gamma, A)}}} \var{\Gamma, A} : \St{s_{\proj{\Gamma, A}}}{\upstairs{A}[\upstairs{\proj{\Gamma, A}}]}
-\end{align*}
-For this use the derivation:
-\begin{mathpar}
-\inferrule*[Left=rewrite] {
-\inferrule*[Left=s-intro] {
- \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
- }{
- \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{x}} \StI{\pi^{\asdep{\Gamma}}_x}{x} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
-}}{
- \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}} :\St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
-}
-\end{mathpar}
-Or equivalently:
-\begin{mathpar}
-\inferrule*[Left=s-intro-2] {
-\inferrule*[Left=rewrite] {
- \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}[\upstairs{\proj{\Gamma, A}}] \and E(x) : \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}} \vDash_{\El{p}{\asdep{\Gamma}}} x
- }{
- \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}.x}}} \rewrite{E(x)}{x} : \upstairs{A}
-}}{
-\upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\asdep{\Gamma}.x}} \UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}} : \St{\pi^{\asdep{\Gamma}}_x}{\upstairs{A}}
-}
-\end{mathpar}
-Where $E(x) :\equiv \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x$ is the counit of the $p/\alpha \to \El{p}{\alpha}$ adjunction.
-\end{enumerate}
-
-A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
-\begin{align*}
-\upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
-&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x
-\end{align*}
-which is over $\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x$, and the associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x)$.
-
-But we can mediate between the two sides by a morphism of mode substitutions (not formally defined in the rules earlier, we're just going to fudge it here)
- \[(\id_{\downstairs{\proj{\Gamma, A}} }, E(x))  : (\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x) \vDash \id_{\Gamma, A}\]
-Then the following diagram of mode term morphisms commutes:
-\[\begin{tikzcd}
-\asdep{(\Gamma, A)} \ar[r, Rightarrow, "H(\pi^{\asdep{\Gamma}}_x)"] \ar[dr, Rightarrow, "\id" swap] & \asdep{(\Gamma, A)}[\downstairs{\proj{\Gamma,A}, \var{\Gamma,A}}] \ar[d, Rightarrow, "{\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}"]\\
-& \asdep{(\Gamma, A)}[\id]
-\end{tikzcd}\]
-because:
-\begin{align*}
-H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}
-&\equiv H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{\Gamma}.x}{E(x)/x}} \\
-&\equiv \id
-\end{align*}
-As this is exactly the triangle equation for the slice/comprehension adjunction.
-
-What happens if we substitute the fake $\id$ into a type? We get:
-\begin{align*}
-\upstairs{A[\proj{\Gamma,A}, \var{\Gamma,A}]}
-&\equiv \St{s_{(\proj{\Gamma,A}, \var{\Gamma,A})}}{\upstairs{A}[ \upstairs{\proj{\Gamma,A}, \var{\Gamma,A}}]} \\
-&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\upstairs{A}[ \upstairs{\rewrite{E(x)}{x}} / x]} \\
-&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\St{(\ap{\asdep{\Gamma}.x}{E(x)/x})}{\upstairs{A}[ x / x]}}\\
-&\equiv \St{(H(\pi^{\asdep{\Gamma}}_x);(\ap{\asdep{\Gamma}.x}{E(x)/x}))}{\upstairs{A}} \\
-&\equiv \St{\id}{\upstairs{A}} \\
-&\equiv \upstairs{A}
-\end{align*}
-
-% $T : \downstairs{\Theta} \vDash \downstairs{\Theta'}$ where $\downstairs{\Theta}, \downstairs{\Theta'} : \downstairs{\Gamma} \vdash \downstairs{\Delta}$ . Such a morphism is defined inductively as either the unique morphism between empty substitutions, or as a pair $(T, t) : (\downstairs{\Theta}, \mu) \vDash (\downstairs{\Theta'}, \mu')$ where
-%\begin{align*}
-%T : \downstairs{\Theta} &\vDash \downstairs{\Theta'} & :\downstairs{\Gamma} \yields \downstairs{\Delta} \\
-%t : \mu &\vDash_{\downstairs{A}[\downstairs{\Theta}]} \TrPlus{\ap{\downstairs{A}}{T}}{\mu'}
-%\end{align*}
-%and the operation $\downstairs{\Gamma} \yields \ap{\downstairs{B}}{T} : \downstairs{B}[\downstairs{\Theta}] \vDash \downstairs{B}[\downstairs{\Theta'}]$ is defined inductively by:
-%\begin{align*}
-%\ap{\downstairs{B}}{\cdot} &:\equiv \id_{\downstairs{B}} \\
-%\ap{\downstairs{B}}{T, t} &:\equiv \ap{\downstairs{B}[\downstairs{\Theta}]}{t/x};?
-%\end{align*}
-%This is what $\Sigma$-types were supposed to do.
 
 \subsection{Upstairs Types}
 \mvrnote{Oldish stuff:}
