@@ -828,6 +828,26 @@ with each definition lying over the identical one downstairs. For $\Sigma \Theta
 \end{align*}
 \end{proof}
 
+\begin{lemma}
+Tupling respects substitution: for $\gamma \yields \theta : \delta$ and $\delta \yields \kappa : \lambda$, we have:
+\begin{mathpar}
+\Sigma(\kappa[\theta]) \equiv (\Sigma \kappa)[\theta]
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+By induction on the length of $\lambda$:
+\begin{align*}
+\Sigma((\cdot)[\theta]) 
+&\equiv \Sigma(\cdot) \\
+&\equiv (\Sigma (\cdot))[\theta] \\
+\Sigma((\kappa, M)[\theta])
+&\equiv \Sigma(\kappa[\theta], M[\theta]) \\
+&\equiv \Sigma(\kappa[\theta]), M[\theta] \\
+&\equiv (\Sigma\kappa)[\theta], M[\theta] \\
+&\equiv (\Sigma\kappa, M)[\theta]
+\end{align*}
+\end{proof}
+
 \begin{definition}
 A 2-cell between mode substitutions $\gamma\yields t : (\theta \vDash \theta') : \delta$ is given by a mode term 2-cell \[\gamma \yields \Sigma t : (\Sigma \theta \vDash_{\Sigma \delta} \Sigma \theta')\].
 \end{definition}
@@ -863,8 +883,8 @@ which are well-typed by the equation $\theta \equiv \fan{\delta}[\Sigma \theta /
 
 In particular, we have the following rules for building and using 2-cells between substitutions.
 \begin{mathpar}
-\inferrule{\gamma \yields t : \theta \vDash \theta' \and \gamma \yields s : (\mu[\theta] \vDash \TrPlus{\ap{p}{t}}{\mu'[\theta']})}
-{ \gamma \yields (s, t) : (\theta, \mu) \vDash (\theta', \mu') } \\
+\inferrule{\gamma \yields t : \theta \vDash \theta' : \delta \and \gamma \yields s : (\mu[\theta] \vDash \TrPlus{\ap{p}{t}}{\mu'[\theta']})}
+{ \gamma \yields (s, t) : (\theta, \mu) \vDash (\theta', \mu') : (\delta,x:p)} \\
 %
 \inferrule{\gamma \yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)}
 {\gamma \yields \ap{\fst}{t} : \theta \vDash \theta' } \and
@@ -874,10 +894,33 @@ In particular, we have the following rules for building and using 2-cells betwee
 \end{mathpar}%
 
 \begin{lemma}
+N-ary ap of a 2-cell on a substitution is admissible
+\begin{mathpar}
+\inferrule{\gamma \yields t : \theta \vDash \theta' : \delta \and \delta \yields \kappa : \lambda}
+{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \vDash \kappa[\theta'] : \lambda}
+\end{mathpar} 
+\end{lemma}
+\begin{proof}
+Due to the equation $\Sigma(\kappa[\theta]) \equiv (\Sigma \kappa)[\theta]$ we can just define $\Sigma(\ap{\kappa}{t}) :\equiv \ap{(\Sigma \kappa)}{t}$.
+\end{proof}
+
+\begin{lemma}
+N-ary associativity/interchange/etc. holds
+\begin{align*}
+\ap {(\nu[\theta])} {t} &\equiv \ap \nu {\ap \theta {t}} \\
+s[\theta];\ap{\nu'}{t} &\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\mvrnote{todo}
+\end{proof}
+
+\begin{lemma}
 A N-ary versions of the equations concerning rewrites hold:
 \begin{align*}
 \St{(\ap{q}{t})}{B[\Theta]} &\equiv B[\rewrite{t}{\Theta}] \\
-\rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} &\equiv N[\rewrite{t}{\Theta}]
+\rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} &\equiv N[\rewrite{t}{\Theta}] \\
+\rewrite{\ap{\kappa}{t}}{\Theta;\kappa} &\equiv \rewrite{t}{\Theta};\kappa
 \end{align*}
 \end{lemma}
 \begin{proof}
@@ -896,6 +939,17 @@ N[\rewrite{t}{\Theta}]
 &\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\Sigma t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\Sigma t/\sigma}}{N[\fan{\Delta}][\Sigma \Theta/\sigma]}} \\
 &\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
 \end{align*}
+And:
+\begin{align*}
+\rewrite{\ap{\kappa}{t}}{\Theta;\kappa}
+&\equiv \fan{\Lambda}[\rewrite{\Sigma(\ap{\kappa}{t})}{\Sigma (\Theta;\kappa)}/\sigma] \\
+&\equiv \fan{\Lambda}[\rewrite{\ap{(\Sigma \kappa)}{t}}{(\Sigma \kappa)[\Theta]}/\sigma] \\
+&\equiv \fan{\Lambda}[(\Sigma \kappa)[\rewrite{t}{\Theta}]/\sigma] \\
+&\equiv \fan{\Lambda}[(\Sigma \kappa)/\sigma][\rewrite{t}{\Theta}] \\
+&\equiv \kappa[\rewrite{t}{\Theta}] \\
+&\equiv \rewrite{t}{\Theta};\kappa
+\end{align*}
+using the previous equation.
 \end{proof}
 
 \begin{lemma}
@@ -1878,9 +1932,34 @@ Trying this
 &\equiv \left\{ (\rewrite{t}{\Theta}, \rewrite{\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}}{\StI{\ap{\asdep{\Delta}}{t}}{\UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}}}/x), H(s) \right\} \\
 &\equiv \left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x), H(s) \right\}
 \end{align*}
+
 \item[\textsc{sub-id}] This is translated to be the identity framework substitution on $\upstairs{\Gamma}$, with $s_{\id_\Gamma} :\equiv \id_{\asdep{\Gamma}}$.
 
-\item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$.
+\item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$. 
+First we show that this is well defined with respect to $\Theta$, i.e.:
+\begin{align*}
+\{ (\rewrite{t}{\Theta};\kappa), s_\Theta; (s_\kappa[\downstairs{\Theta}]) \} \sim \{ (\Theta;\kappa), (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\downstairs{\Theta}']) \}
+\end{align*}
+We have:
+\begin{align*}
+\{ (\Theta;\kappa), (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\downstairs{\Theta}']) \}
+&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}] ; \ap{\asdep{\Lambda}[\kappa]}{t}) \} \\
+&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}] ; \ap{\asdep{\Lambda}}{\ap{\kappa}{t}}) \} \\
+&\sim \{ \rewrite{\ap{\kappa}{t}}{\Theta;\kappa}, (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \} \\
+&\equiv \{ (\rewrite{t}{\Theta};\kappa), (s_\Theta; s_\kappa[\downstairs{\Theta}]) \} \\
+\end{align*}
+as required. Second, we check it is well defined with respect to the choice of representative of $\kappa$, i.e.:
+\begin{align*}
+\{ (\Theta;\rewrite{t}{\kappa}), s_\Theta; (s_\kappa[\downstairs{\Theta}]) \} \sim \{ (\Theta;\kappa), (s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\downstairs{\Theta}']) \}
+\end{align*}
+Checking this:
+\begin{align*}
+\{ (\Theta;\kappa), (s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\downstairs{\Theta}]) \}
+&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}];\ap{\asdep{\Lambda}}{t}[\downstairs{\Theta}]) \} \\
+&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}];\ap{\asdep{\Lambda}[\downstairs{\Theta}]}{t[\downstairs{\Theta}]}) \} \\
+&\sim \{ \rewrite{t[\downstairs{\Theta}]}{\Theta;\kappa}, (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \} \\
+&\equiv \{ (\Theta;\rewrite{t}{\kappa}), (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \}
+\end{align*}
 
 \item[\textsc{sub-proj}] This is translated to the framework substitution with the last term forgotten, i.e. $\mathsf{proj}$ in the framework. Define 
 \begin{align*}
