@@ -334,10 +334,10 @@ Next, we have the adjunction for $s^\circ$ and $s^+$:
     }
     {\TermTwoT{\gamma}{\eta^s_\mu}{\mu}{\TrPlus{s}{\TrCirc{s}{\mu}}}{p}}
 \\ 
-\eta_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon_\nu/z} \equiv \id_{\TrPlus{s}{\nu}} \and
-\ap{(\TrCirc{s}{z})}{\eta_\mu/z};\varepsilon_{\TrCirc{s}{\mu}} \equiv \id_{\TrCirc{s}{\mu}}
+\eta^s_{\TrPlus{s}{\nu}};\ap{(\TrPlus{s}{z})}{\varepsilon^s_\nu/z} \equiv \id_{\TrPlus{s}{\nu}} \and
+\ap{(\TrCirc{s}{z})}{\eta^s_\mu/z};\varepsilon^s_{\TrCirc{s}{\mu}} \equiv \id_{\TrCirc{s}{\mu}}
 \\
-\varepsilon_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon_{\nu'} \and t;\eta_\mu \equiv \eta_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \\
+\varepsilon^s_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon^s_{\nu'} \and t;\eta^s_\mu \equiv \eta^s_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \\
 \varepsilon^{\id_p}_\nu \equiv \id_{\nu} \and \eta^{\id_p}_\mu \equiv \id_{\mu} \\
 \varepsilon^{s;t}_\nu \equiv (\ap{t^\circ}{\varepsilon^s_{t^+(\nu)}}) ; \varepsilon^t_\nu \and 
 \eta^{s;t}_\mu \equiv \eta^s_\mu ; (\ap{s^+}{\eta^t_{s^\circ(\mu)}})
@@ -970,6 +970,11 @@ Unwinding definitions:
 \end{align*}
 \end{proof}
 
+As a special case, note that we have
+\begin{align*}
+\rewrite{(\id_\Theta, s/x)}{\Theta, M/x} \equiv (\Theta, \rewrite{s}{M}/x)
+\end{align*}
+
 \subsection{Examples}
 
 \begin{itemize}
@@ -1339,6 +1344,10 @@ t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 &\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}})
 \end{align*}
 (We know that $\ap{1_z}{t/z} \equiv \id_{1_\beta}$ because $1_\beta$ is terminal.)
+\item Naturality of $\eta^\chi_\beta$ takes the following form:
+\begin{align*}
+s;\eta^\chi_\mu \equiv \eta^\chi_{\mu'} ; (s \bdot \ap{1_x}{s/x})
+\end{align*}
 \end{itemize}
 
 We think of a term of mode $p$ as a ``context'', a mode term morphism of
@@ -1437,22 +1446,39 @@ H(U(x)); U(E(x))
 %\end{align*}
 \end{proof}
 
-For future use:
+For future use, some identities involving $H$:
 
-\begin{lemma}
-For $s : \beta \vDash_p \alpha$ and $t : \alpha \vDash_p \lambda$
+\begin{lemma}\label{lemma:h-on-composite}
+For $\gamma \yields s : \beta \vDash_p \alpha$ and $\gamma \yields t : \alpha \vDash_p \lambda$
 \begin{align*}
-H(s;t) \equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}})
+H(s;t) &\equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
+H(s ; t) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}) &\equiv s ; H(t) \\
+H(s) ; \pi^\alpha_{\TrCirc{s}{1_\beta}} &\equiv s
 \end{align*}
 \end{lemma}
 \begin{proof}
 \begin{align*}
 H(s;t)
 &\equiv \eta^\chi_\beta ; ((s;t) \bdot \eta^{\ApEl{p}{s;t}}_{1_\beta}) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{\ApEl{p}{s}}_\mu ; (\ap{\ApEl{p}{s}^+}{\eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{\mu}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{\ApEl{p}{s}}_{1_\beta} ; (\ap{\ApEl{p}{s}^+}{\eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})) \\
 &\equiv \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
 &\equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
 \end{align*}
+And
+\begin{align*}
+H(s ; t) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}})
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot \eta^{s;t}_{1_\beta}) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{s;t}_{1_\beta} ; \ap{(s;t)^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ap{(s;t)^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ap{s^+}{\ap{t^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\varepsilon^{s}_{1_{\alpha}} ; \eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{\ap{s^+}{1_\alpha}} ; \ap{s^+}{\varepsilon^{s}_{1_{\alpha}}} ; \ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot \ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}}) \\
+&\equiv \eta^\chi_\beta ; (s \bdot \ap{1_x}{s/x}) ; (t \bdot \eta^{t}_{\TrCirc{s}{1_\beta}}) \\
+&\equiv s ; \eta^\chi_\alpha ; (t \bdot \eta^{t}_{\TrCirc{s}{1_\beta}}) \\
+&\equiv s ; H(t)
+\end{align*}
+The third equation is exactly beta-reduction for $\pi$.
 \end{proof}
 
 If the adjunction is an equivalence for every $\alpha$ \mvrnote{Do we need any extra compatibility?}, then the $T(\alpha)$ bifibration is equivalent to the codomain bifibration and $(p,\El{p}{-},\chi_p)$ is describing a category with finite limits. 
@@ -1914,7 +1940,7 @@ The codomain here is
 \end{align*}
 because $x$ does not occur in $\asdep{\Delta}$. Define:
 \begin{align*}
-s_{\Theta, a} &\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
+s_{\Theta, a} &:\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
 \end{align*}
 This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 
@@ -2012,66 +2038,72 @@ Now we check that these translations satisfy the required equations. The first t
 \item[{$a[\Theta ; \kappa] \equiv a[\kappa][\Theta]$}] 
 \begin{align*}
 \upstairs{a[\kappa][\Theta]}
-&\equiv \upstairs{a[\kappa][\Theta]}
+&\equiv \StI{s_\Theta}{\upstairs{a[\kappa]}[\upstairs{\Theta}]} \\
+&\equiv \StI{s_\Theta}{\StI{s_\kappa}{\upstairs{a}[\upstairs{\kappa}]}[\upstairs{\Theta}]} \\
+&\equiv \StI{s_\Theta}{\StI{s_\kappa[\upstairs{\Theta}]}{\upstairs{a}[\upstairs{\kappa}][\upstairs{\Theta}]}} \\
+&\equiv \StI{s_{\Theta;\kappa}}{\upstairs{a}[\upstairs{\Theta};\upstairs{\kappa}]} \\
+&\equiv \upstairs{a[\Theta ; \kappa]}
 \end{align*}
 
-\item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}] 
+\item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}] These are only equal up to the relation: 
 \begin{align*}
-\upstairs{\Theta ; (\kappa , a) }
-&\equiv \upstairs{\Theta} ; \upstairs{(\kappa , a)} \\
-&\equiv \upstairs{\Theta} ; (\upstairs{\kappa}, \UnSt{s_{\kappa}}{\upstairs{a}}) \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}}{\upstairs{a}}[\upstairs{\Theta}] \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]} \\
-&\equiv ??? \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \rewrite{\ap{(s_\kappa[\downstairs{\Theta}])^\circ}{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}}{\UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]}} \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\rewrite{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}{\upstairs{a}[\upstairs{\Theta}]}} \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\UnSt{s_\Theta}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}}} \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_\Theta ; (s_{\kappa}[\downstairs{\Theta}])}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
-&\equiv (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\Theta;\kappa}}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \\
-&\equiv \upstairs{(\Theta ; \kappa)} , \UnSt{s_{\Theta;\kappa}}{\upstairs{a[\Theta]}} \\
-&\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]} 
+\{\upstairs{\Theta ; (\kappa , a) } \mid s_{\Theta ; (\kappa , a)}  \}
+&\equiv \{\upstairs{\Theta} ; \upstairs{(\kappa , a)} \mid s_\Theta ; (s_{(\kappa , a)}[\downstairs{\Theta}])  \} \\
+&\equiv \{ \upstairs{\Theta} ; (\upstairs{\kappa}, \UnSt{s_{\kappa}}{\upstairs{a}}) \mid s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}])\} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}}{\upstairs{a}}[\upstairs{\Theta}] \mid s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}]) \} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]} \mid s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}]) \} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]} \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) ; \ap{\asdep{(\Lambda.x)}}{\id, \ap{(s_\kappa[\downstairs{\Theta}])^\circ}{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}} \} \\
+&\sim \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \rewrite{\ap{(s_\kappa[\downstairs{\Theta}])^\circ}{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}}{\UnSt{s_{\kappa}[\downstairs{\Theta}]}{\upstairs{a}[\upstairs{\Theta}]}}  \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) \} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\rewrite{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}{\upstairs{a}[\upstairs{\Theta}]}}  \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) \} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\kappa}[\downstairs{\Theta}]}{\UnSt{s_\Theta}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}}}  \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) \} \\
+&\equiv \{(\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_\Theta ; (s_{\kappa}[\downstairs{\Theta}])}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) \} \\
+&\equiv \{ (\upstairs{\Theta} ; \upstairs{\kappa}) , \UnSt{s_{\Theta;\kappa}}{\StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]}} \mid H(s_\Theta ; (s_\kappa[\downstairs{\Theta}]))\}\\
+&\equiv \{ \upstairs{(\Theta ; \kappa)} , \UnSt{s_{\Theta;\kappa}}{\upstairs{a[\Theta]}} \mid H(s_{\Theta;\kappa})\} \\
+&\equiv \{ \upstairs{(\Theta ; \kappa) , a[\Theta]} \mid s_{(\Theta ; \kappa) , a[\Theta]} \}
 \end{align*}
-Simultaneously, this is happening downstairs:
+What's left in the middle there is to check that
 \begin{align*}
-\downstairs{\Theta ; (\kappa , a) }
-&\equiv \downstairs{\Theta} ; \downstairs{(\kappa , a)} \\
-&\equiv \downstairs{\Theta} ; (\downstairs{\kappa} , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}/x) \\
-&\equiv (\downstairs{\Theta} ; \downstairs{\kappa}) , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}[\downstairs{\Theta}]/x \\
-&\equiv (\downstairs{\Theta} ; \downstairs{\kappa}) , \TrCirc{s_{\kappa}[\downstairs{\Theta}]}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}/x \\
-&\equiv ?? \\
-&\equiv (\downstairs{\Theta}; \downstairs{\kappa}) , \TrCirc{s_{\kappa}[\downstairs{\Theta}]}{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} / x \\
-&\equiv (\downstairs{\Theta}; \downstairs{\kappa}) , \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} / x \\
-&\equiv \downstairs{(\Theta ; \kappa)} , \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} / x \\
-&\equiv \downstairs{(\Theta ; \kappa) , a[\Theta] }
+s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}]) \equiv H(s_\Theta ; (s_\kappa[\downstairs{\Theta}])) ; \ap{\asdep{(\Lambda.x)}}{\id, \ap{(s_\kappa[\downstairs{\Theta}])^\circ}{\varepsilon^{s_\Theta}_{1_{\asdep{\Delta}[\downstairs{\Theta}]}}}}
 \end{align*}
-The associated 2-cell:
+This is exactly the second equation of Lemma~\ref{lemma:h-on-composite}.
+
+\item[{$(\Theta, a);\proj{\Gamma,A} \equiv \Theta$}] We calculate:
 \begin{align*}
-s_{\Theta ; (\kappa , a)} 
-&\equiv s_\Theta ; (s_{(\kappa , a)}[\downstairs{\Theta}]) \\
-&\equiv s_\Theta ; (H(s_\kappa)[\downstairs{\Theta}]) \\
-&\equiv ? \\
-&\equiv H(s_{\Theta} ; (s_\kappa[\downstairs{\Theta}])) \\
-&\equiv H(s_{\Theta ; \kappa}) \\
-&\equiv s_{(\Theta ; \kappa) , a[\Theta]}
-\end{align*}
-What's going on here? The LHS is a morphism from $\asdep{\Gamma}$ to
-\begin{align*}
-\asdep{(\Lambda,A)}[\downstairs{\Theta ; (\kappa , a)}]
-&\equiv \asdep{(\Lambda,A)}[\downstairs{(\kappa , a)}][\downstairs{\Theta}] \\
-&\equiv \asdep{\Lambda}.x[\downstairs{\kappa} , \TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}}/x][\downstairs{\Theta}] \\
-&\equiv (\asdep{\Lambda}[\downstairs{\kappa}].\TrCirc{s_{\kappa}}{1_{\asdep{\Delta}}})[\downstairs{\Theta}] \\
-\end{align*}
-And the RHS is a morphism from $\asdep{\Gamma}$ to
-\begin{align*}
-\asdep{(\Lambda,A)}[\downstairs{(\Theta ; \kappa) , a[\Theta]}]
-&\equiv \asdep{\Lambda}.x[\downstairs{(\Theta ; \kappa)}, \TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}}/x] \\
-&\equiv \asdep{\Lambda}[\downstairs{(\Theta ; \kappa)}].\TrCirc{s_{\Theta ; \kappa}}{1_{\asdep{\Gamma}}} \\
-&\equiv \asdep{\Lambda}[\downstairs{\kappa}][\downstairs{\Theta}].\TrCirc{(s_{\Theta} ; (s_\kappa[\downstairs{\Theta}]))}{1_{\asdep{\Gamma}}} \\
-&\equiv \asdep{\Lambda}[\downstairs{\kappa}][\downstairs{\Theta}]. \TrCirc{s_\kappa[\downstairs{\Theta}]}{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}}
+\{ \upstairs{(\Theta, a);\proj{\Gamma,A}} \mid s_{(\Theta, a);\proj{\Gamma,A}} \}
+&\equiv \{ \upstairs{(\Theta, a)};\proj{\Gamma,A} \mid s_{(\Theta, a)};s_{\proj{\Gamma,A}}[\downstairs{\Theta, a}] \} \\
+&\equiv \{ (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}});\proj{\Gamma,A} \mid H(s_\Theta);s_{\proj{\Gamma,A}}[\downstairs{\Theta}, \TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}] \} \\
+&\equiv \{ \upstairs{\Theta} \mid H(s_\Theta); \pi^{\asdep{\Gamma}[\downstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}} \} \\
+&\equiv \{ \upstairs{\Theta} \mid s_\Theta \}
 \end{align*}
 
-\item[{$(\Theta, a);\proj{\Gamma,A} \equiv \Theta$}] Foo
-\item[{$\var{\Gamma,A}[\Theta, a] \equiv a$}] Foo
+\item[{$\var{\Delta,A}[\Theta, a] \equiv a$}] Calculate:
+\begin{align*}
+\upstairs{\var{\Delta,A}[\Theta, a]}
+&\equiv \StI{s_{\Theta, a}}{\upstairs{\var{\Delta, A}}[\upstairs{\Theta, a}]} \\
+&\equiv \StI{H(s_\Theta)}{\rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}[\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}]} \\
+&\equiv \StI{H(s_\Theta)}{\rewrite{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta);\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
+&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{s_\Theta}{\UnSt{s_\Theta}{\upstairs{a}}}}
+\end{align*}
+Pause to calculate the rewrite:
+\begin{align*}
+\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}
+&\equiv \ap{(\eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta}))^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}} \\
+&\equiv \ap{(\eta^\chi_{\asdep{\Gamma}})^+}{\ap{(s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}} \\
+&\equiv \ap{(\eta^\chi_{\asdep{\Gamma}})^+}{\ap{(\pi^{\asdep{\Gamma}}_{1_{\asdep{\Gamma}}})^+}{\eta_{1_{\asdep{\Gamma}}}^{s_\Theta}}} \\
+&\equiv \ap{(\eta^\chi_{\asdep{\Gamma}};\pi^{\asdep{\Gamma}}_{1_{\asdep{\Gamma}}})^+}{\eta_{1_{\asdep{\Gamma}}}^{s_\Theta}} \\
+&\equiv \eta_{1_{\asdep{\Gamma}}}^{s_\Theta}
+\end{align*}
+Using beta-reduction for $\var{}$ and the triangle identity for $\chi$. So returning to the upstairs term:
+\begin{align*}
+\upstairs{\var{\Delta,A}[\Theta, a]}
+&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{s_\Theta}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
+&\equiv \rewrite{\eta_{1_{\asdep{\Gamma}}}^{s_\Theta}}{\StI{s_\Theta}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
+&\equiv \upstairs{a}
+\end{align*}
+
 \item[{$(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
 A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
 \begin{align*}
