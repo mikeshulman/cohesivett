@@ -1754,7 +1754,7 @@ a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
 \nonumber\\
 \Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\ 
 (\Theta, a);\proj{\Gamma,A} &\equiv \Theta \\
-\var{\Gamma,A}[\Theta, a] &\equiv a \\
+\var{\Delta,A}[\Theta, a] &\equiv a \\
 (\proj{\Gamma,A}, \var{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
 \Theta &\equiv \epsilon && \text{for } \Gamma \qyields \Theta : \cdot
 \end{align}
@@ -1818,9 +1818,9 @@ Our goal is to interpret these rules in the framework. The mode theory will cont
 
 \item A substitution $\Gamma \qyields \Theta : \Delta$ has a corresponding framework substitution $\upstairs{\Gamma} \yields \upstairs{\Theta} : \upstairs{\Delta}$ living over $\downstairs{\Gamma} \yields \downstairs{\Theta} : \downstairs{\Delta}$, together with a mode morphism $\downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash_p \asdep{\Delta}[\downstairs{\Theta}]$ that we use to correct the mismatch between object-level and framework substitution.
 
-Such pairs $\{ \Theta, s \}$ are considered up to the following relation:
+Such pairs $\{ \Theta \mid s \}$ are considered up to the following relation:
 \begin{align*}
-\{ \rewrite{t}{\Theta}, s \} \sim \{ \Theta, (s ; \ap{\asdep{\Delta}}{t})\}
+\{ \rewrite{t}{\Theta} \mid s \} \sim \{ \Theta \mid s ; \ap{\asdep{\Delta}}{t} \}
 \end{align*}
 This is to account for the different possible placements of the structural rules. We will show that any two substitutions so related act the same on types and terms in the image of the translation.
 \end{itemize}
@@ -1856,24 +1856,24 @@ We can then define
 \asdep{(\Gamma, x : A)} &:\equiv (\asdep{\Gamma}).x
 \end{align*}
 
-\item[\textsc{type-sub}] Choose a representative of the translation of $\Theta$, say $\{ \upstairs{\Theta}, s_\Theta \}$ where: \mvrnote{This notation is a little confusing, I don't mean to say that $\upstairs{\Theta}$ and $s_\Theta$ are necessarily in the image of the translation.}
+\item[\textsc{type-sub}] Choose a representative of the translation of $\Theta$, say $\{ \Theta, s \}$ where:
 \begin{align*}
 \upstairs{\Delta} &\yields_{\asdep{\Delta}} \upstairs{A} \TYPE \\
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+\upstairs{\Gamma} &\yields_\theta \Theta : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s : \asdep{\Gamma} \vDash \asdep{\Delta}[\theta]
 \end{align*}
 The translation of $A[\Theta]$ is then:
 \begin{mathpar}
   \inferrule*[Left=s-form] {
 \inferrule*[Left=Sub]{
   \upstairs{\Delta} \yields_{\asdep{\Delta}} \upstairs{A} \TYPE \and 
-  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
+  \upstairs{\Gamma}\yields_\theta \Theta : \upstairs{\Delta}
   }{
-  \upstairs{\Gamma} \yields_{\asdep{\Delta}[\downstairs{\Theta}]} \upstairs{A}[\upstairs{\Theta}] \TYPE
+  \upstairs{\Gamma} \yields_{\asdep{\Delta}[\theta]} \upstairs{A}[\Theta] \TYPE
   } \and   
-  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+  \downstairs{\Gamma} \yields s : \asdep{\Gamma} \vDash \asdep{\Delta}[\theta]
   }{
-    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]} \TYPE
+    \upstairs{\Gamma} \yields_{\asdep{\Gamma}} \St{s}{\upstairs{A}[\Theta]} \TYPE
   }
 \end{mathpar}
 We must show that this resulting type respects the relation on pairs $\{ \Theta, s \}$:
@@ -1883,29 +1883,29 @@ We must show that this resulting type respects the relation on pairs $\{ \Theta,
 &\equiv \St{(s;\ap{\asdep{\Delta}}{t})}{\upstairs{A}[\Theta]}
 \end{align*}
 
-\item[\textsc{term-sub}] Again choose a representative of the translation of the substitution, $\{ \upstairs{\Theta}, s_\Theta \}$. We have:
+\item[\textsc{term-sub}] Again choose a representative of the translation of the substitution, $\{ \Theta \mid s \}$. We have:
 \begin{align*}
 \upstairs{\Delta} &\yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \TYPE \\
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+\upstairs{\Gamma} &\yields_\theta \Theta : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s : \asdep{\Gamma} \vDash \asdep{\Delta}[\theta]
 \end{align*}
 So use the derivation
 \begin{mathpar}
   \inferrule*[Left=s-intro] {
 \inferrule*[Left=Sub]{
  \upstairs{\Delta} \yields_{1_{\asdep{\Delta}}} \upstairs{a} : \upstairs{A} \and 
-  \upstairs{\Gamma}\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}
+  \upstairs{\Gamma}\yields_\theta \Theta : \upstairs{\Delta}
   }{
-  \upstairs{\Gamma} \yields_{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \upstairs{a}[\upstairs{\Theta}] : \upstairs{A}[\upstairs{\Theta}] 
+  \upstairs{\Gamma} \yields_{1_{\asdep{\Delta}[\theta]}} \upstairs{a}[\Theta] : \upstairs{A}[\Theta] 
   } \and   
-  \downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}]
+  \downstairs{\Gamma} \yields s : \asdep{\Gamma} \vDash \asdep{\Delta}[\Theta]
   }{
-    \upstairs{\Gamma} \yields_{\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}}} \StI{s_{\Theta}}{\upstairs{a}[\upstairs{\Theta}]} : \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}
+    \upstairs{\Gamma} \yields_{\TrPlus{s}{1_{\asdep{\Delta}[\theta]}}} \StI{s}{\upstairs{a}[\Theta]} : \St{s}{\upstairs{A}[\Theta]}
   }
 \end{mathpar}
-And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s_{\Theta}}{1_{\asdep{\Delta}[\downstairs{\Theta}]}} \equiv 1_{\asdep{\Gamma}}$.
+And by Equation~\eqref{s-plus-one-strict}, we know that $\TrPlus{s}{1_{\asdep{\Delta}[\theta]}} \equiv 1_{\asdep{\Gamma}}$.
 
-This again respects the relation on pairs $\{ \upstairs{\Theta}, s_\Theta \}$:
+This again respects the relation on pairs $\{ \Theta \mid s \}$:
 \begin{align*}
 \StI{s}{\upstairs{a}[\rewrite{t}{\Theta}]}
 &\equiv \StI{s}{\rewrite{\ap{1_{\asdep{\Delta}}}{t}}{\StI{\ap{\asdep{\Delta}}{t}}{\upstairs{a}[\Theta]}} } \\
@@ -1918,15 +1918,15 @@ Where $\ap{1_{\asdep{\Delta}}}{t} : 1_{\asdep{\Delta}[\theta]} \vDash \TrPlus{\a
 
 \item[\textsc{sub-ext}] We are given
 \begin{align*}
-\upstairs{\Gamma} &\yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta} \\
-\downstairs{\Gamma} &\yields s_\Theta : \asdep{\Gamma} \vDash \asdep{\Delta}[\downstairs{\Theta}] \\
-\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s_{\Theta}^*(\upstairs{A}[\upstairs{\Theta}])
+\upstairs{\Gamma} &\yields_{\theta} \Theta : \upstairs{\Delta} \\
+\downstairs{\Gamma} &\yields s : \asdep{\Gamma} \vDash \asdep{\Delta}[\theta] \\
+\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : s^*(\upstairs{A}[\Theta])
 \end{align*}
-From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} \UnSt{s_\Theta}{\upstairs{a}} : \upstairs{A}[\upstairs{\Theta}]$, using \textsc{s-elim-2}. We can now pair this with $\upstairs{\Theta}$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}} (\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
+From the term, we get another term $\upstairs{\Gamma}\yields_{\TrCirc{s}{1_{\asdep{\Gamma}}}} \UnSt{s}{\upstairs{a}} : \upstairs{A}[\Theta]$, using \textsc{s-elim-2}. We can now pair this with $\Theta$ to get a framework substitution \[\upstairs{\Gamma} \yields_{\theta, \TrCirc{s}{1_{\asdep{\Gamma}}}} (\Theta, \UnSt{s}{\upstairs{a}}) : \upstairs{\Delta}, \upstairs{A}\]
 so define
 \begin{align*}
-\upstairs{\Theta, a/x} &:\equiv \upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}/x \\
-\downstairs{\Theta, a/x} &:\equiv \downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x
+\upstairs{\Theta, a/x} &:\equiv \Theta, \UnSt{s}{\upstairs{a}}/x \\
+\downstairs{\Theta, a/x} &:\equiv \theta, \TrCirc{s}{1_{\asdep{\Gamma}}}/x
 \end{align*}
 We still need to specify a 2-cell 
 \[
@@ -1934,29 +1934,29 @@ We still need to specify a 2-cell
 \]
 The codomain here is
 \begin{align*}
-(\asdep{\Delta}.x)[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
-&\equiv \asdep{\Delta}[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x].x[\downstairs{\Theta}, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] \\
-&\equiv \asdep{\Delta}[\downstairs{\Theta}].\TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}
+(\asdep{\Delta}.x)[\theta, \TrCirc{s_{\Theta}}{1_{\asdep{\Gamma}}}/x] 
+&\equiv \asdep{\Delta}[\theta, \TrCirc{s}{1_{\asdep{\Gamma}}}/x].x[\theta, \TrCirc{s}{1_{\asdep{\Gamma}}}/x] \\
+&\equiv \asdep{\Delta}[\theta].\TrCirc{s}{1_{\asdep{\Gamma}}}
 \end{align*}
 because $x$ does not occur in $\asdep{\Delta}$. Define:
 \begin{align*}
-s_{\Theta, a} &:\equiv \eta^\chi_{\asdep{\Gamma}}; (s_\Theta \bdot \eta_{1_{\asdep{\Gamma}}}^{s_\Theta})
+s_{\Theta, a} &:\equiv \eta^\chi_{\asdep{\Gamma}}; (s \bdot \eta_{1_{\asdep{\Gamma}}}^{s})
 \end{align*}
-This is exactly the unit morphism $H(s_\Theta)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
+This is exactly the unit morphism $H(s)$ given earlier for the $p/\alpha \to \El{p}{\alpha}$ adjunction.
 
 To show this is well defined, we have to verify that:
 \begin{align*}
-\left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x), H(s) \right\} \sim \left\{ (\Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x), H(s;\ap{\asdep{\Delta}}{t}) \right\} 
+\left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x) \mid H(s) \right\} \sim \left\{ (\Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x) \mid H(s;\ap{\asdep{\Delta}}{t}) \right\} 
 \end{align*}
 Trying this
 \begin{align*}
-\left\{ (\Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x), H(s;\ap{\asdep{\Delta}}{t}) \right\} 
-&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; (\ap{\asdep{\Delta}}{t} \bdot \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}})\right\} \\
-&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; \ap{(d.x)}{\ap{\asdep{\Delta}}{t}/d, \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
-&\equiv \left\{ (\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x), H(s) ; \ap{\asdep{\Delta}.x}{t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
-&\sim \left\{ \rewrite{(t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x)}{\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x}, H(s) \right\} \\
-&\equiv \left\{ (\rewrite{t}{\Theta}, \rewrite{\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}}{\StI{\ap{\asdep{\Delta}}{t}}{\UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}}}/x), H(s) \right\} \\
-&\equiv \left\{ (\rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x), H(s) \right\}
+\left\{ \Theta, \UnSt{s;\ap{\asdep{\Delta}}{t}}{\upstairs{a}}/x \mid H(s;\ap{\asdep{\Delta}}{t}) \right\} 
+&\equiv \left\{ \Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x \mid H(s) ; (\ap{\asdep{\Delta}}{t} \bdot \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}})\right\} \\
+&\equiv \left\{ \Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x \mid H(s) ; \ap{(d.x)}{\ap{\asdep{\Delta}}{t}/d, \eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
+&\equiv \left\{ \Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x \mid H(s) ; \ap{\asdep{\Delta}.x}{t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x} \right\} \\
+&\sim \left\{ \rewrite{(t,\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}/x)}{\Theta, \UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}/x} \mid H(s) \right\} \\
+&\equiv \left\{ \rewrite{t}{\Theta}, \rewrite{\eta^{\ApEl{p}{\ap{\asdep{\Delta}}{t}}}_{\TrCirc{\ApEl{p}{s}}{1_{\asdep{\Gamma}}}}}{\StI{\ap{\asdep{\Delta}}{t}}{\UnSt{\ap{\asdep{\Delta}}{t}}{\UnSt{s}{\upstairs{a}}}}}/x \mid H(s) \right\} \\
+&\equiv \left\{ \rewrite{t}{\Theta}, \UnSt{s}{\upstairs{a}}/x \mid  H(s) \right\}
 \end{align*}
 
 \item[\textsc{sub-id}] This is translated to be the identity framework substitution on $\upstairs{\Gamma}$, with $s_{\id_\Gamma} :\equiv \id_{\asdep{\Gamma}}$.
@@ -1964,27 +1964,27 @@ Trying this
 \item[\textsc{sub-comp}] This is composition of framework substitutions, with $s_{(\Theta;\kappa)} :\equiv s_\Theta; (s_\kappa[\downstairs{\Theta}])$. 
 First we show that this is well defined with respect to $\Theta$, i.e.:
 \begin{align*}
-\{ (\rewrite{t}{\Theta};\kappa), s_\Theta; (s_\kappa[\downstairs{\Theta}]) \} \sim \{ (\Theta;\kappa), (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\downstairs{\Theta}']) \}
+\{ \rewrite{t}{\Theta};\kappa \mid s_\Theta; (s_\kappa[\theta]) \} \sim \{ \Theta;\kappa \mid (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\theta']) \}
 \end{align*}
 We have:
 \begin{align*}
-\{ (\Theta;\kappa), (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\downstairs{\Theta}']) \}
-&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}] ; \ap{\asdep{\Lambda}[\kappa]}{t}) \} \\
-&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}] ; \ap{\asdep{\Lambda}}{\ap{\kappa}{t}}) \} \\
-&\sim \{ \rewrite{\ap{\kappa}{t}}{\Theta;\kappa}, (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \} \\
-&\equiv \{ (\rewrite{t}{\Theta};\kappa), (s_\Theta; s_\kappa[\downstairs{\Theta}]) \} \\
+\{ \Theta;\kappa \mid (s_\Theta ; \ap{\asdep{\Delta}}{t} ; s_\kappa[\theta']) \}
+&\equiv \{ \Theta;\kappa \mid (s_\Theta ; s_\kappa[\theta] ; \ap{\asdep{\Lambda}[\kappa]}{t}) \} \\
+&\equiv \{ \Theta;\kappa \mid (s_\Theta ; s_\kappa[\theta] ; \ap{\asdep{\Lambda}}{\ap{\kappa}{t}}) \} \\
+&\sim \{ \rewrite{\ap{\kappa}{t}}{\Theta;\kappa} \mid (s_\Theta ; s_\kappa[\theta]) \} \\
+&\equiv \{ \rewrite{t}{\Theta};\kappa \mid (s_\Theta; s_\kappa[\theta]) \} \\
 \end{align*}
 as required. Second, we check it is well defined with respect to the choice of representative of $\kappa$, i.e.:
 \begin{align*}
-\{ (\Theta;\rewrite{t}{\kappa}), s_\Theta; (s_\kappa[\downstairs{\Theta}]) \} \sim \{ (\Theta;\kappa), (s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\downstairs{\Theta}']) \}
+\{ \Theta;\rewrite{t}{\kappa} \mid s_\Theta; (s_\kappa[\theta]) \} \sim \{ \Theta;\kappa \mid s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\theta'] \}
 \end{align*}
 Checking this:
 \begin{align*}
-\{ (\Theta;\kappa), (s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\downstairs{\Theta}]) \}
-&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}];\ap{\asdep{\Lambda}}{t}[\downstairs{\Theta}]) \} \\
-&\equiv \{ (\Theta;\kappa), (s_\Theta ; s_\kappa[\downstairs{\Theta}];\ap{\asdep{\Lambda}[\downstairs{\Theta}]}{t[\downstairs{\Theta}]}) \} \\
-&\sim \{ \rewrite{t[\downstairs{\Theta}]}{\Theta;\kappa}, (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \} \\
-&\equiv \{ (\Theta;\rewrite{t}{\kappa}), (s_\Theta ; s_\kappa[\downstairs{\Theta}]) \}
+\{ \Theta;\kappa \mid (s_\Theta ; (s_\kappa;\ap{\asdep{\Lambda}}{t})[\theta]) \}
+&\equiv \{ \Theta;\kappa \mid s_\Theta ; s_\kappa[\theta];\ap{\asdep{\Lambda}}{t}[\theta] \} \\
+&\equiv \{ \Theta;\kappa \mid s_\Theta ; s_\kappa[\theta];\ap{\asdep{\Lambda}[\theta]}{t[\theta]} \} \\
+&\sim \{ \rewrite{t[\theta]}{\Theta;\kappa} \mid s_\Theta ; s_\kappa[\theta] \} \\
+&\equiv \{ \Theta;\rewrite{t}{\kappa} \mid s_\Theta ; s_\kappa[\theta] \}
 \end{align*}
 
 \item[\textsc{sub-proj}] This is translated to the framework substitution with the last term forgotten, i.e. $\mathsf{proj}$ in the framework. Define 
@@ -2115,16 +2115,9 @@ Using beta-reduction for $\var{}$ and the triangle identity for $\chi$. So retur
 &\equiv \upstairs{\id_{\Gamma, A}}
 \end{align*}
 Using the triangle identity for the slice/comprehension adjunction.
-
-A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
-\begin{align*}
-\upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
-&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
-&\equiv \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x
-\end{align*}
-which is over $\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x$, and the associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x)$.
 \end{enumerate}
+
+\mvrnote{To be fixed:}
 
 Some observations:
 \begin{itemize}
