@@ -2083,7 +2083,6 @@ This is exactly the second equation of Lemma~\ref{lemma:h-on-composite}.
 &\equiv \StI{H(s_\Theta)}{\rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}[\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}]} \\
 &\equiv \StI{H(s_\Theta)}{\rewrite{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
 &\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
-&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
 &\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta);\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
 &\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{s_\Theta}{\UnSt{s_\Theta}{\upstairs{a}}}}
 \end{align*}
@@ -2104,7 +2103,19 @@ Using beta-reduction for $\var{}$ and the triangle identity for $\chi$. So retur
 &\equiv \upstairs{a}
 \end{align*}
 
-\item[{$(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
+\item[{$(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$}]  Again this is true only up to the relation:
+\begin{align*}
+\{ \upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})} \mid s_{(\proj{\Gamma,A}, \var{\Gamma,A})} \}
+&\equiv \{ \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\upstairs{\var{\Gamma, A}}} \mid H(s_{\proj{\Gamma,A}}) \} \\
+&\equiv \{ \upstairs{\proj{\Gamma, A}} , \UnSt{s_{\proj{\Gamma, A}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \mid H(s_{\proj{\Gamma,A}}) \} \\
+&\equiv \{ \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x \mid H(\pi^{\asdep{\Gamma}}_x) \} \\
+&\sim \{ \upstairs{\proj{\Gamma, A}} , x / x \mid H(\pi^{\asdep{\Gamma}}_x) ; \ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)} \} \\
+&\equiv \{ \upstairs{\proj{\Gamma, A}} , x / x \mid H(\pi^{\asdep{\Gamma}}_x) ; \ap{\asdep{\Gamma}.x}{E(x)/x} \} \\
+&\equiv \{ \upstairs{\proj{\Gamma, A}} , x / x \mid \id_{\asdep{\Gamma}.x} \} \\
+&\equiv \upstairs{\id_{\Gamma, A}}
+\end{align*}
+Using the triangle identity for the slice/comprehension adjunction.
+
 A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Gamma,A}) \equiv \id_{\Gamma, A}$ does not hold on the nose. On the left, instead we get:
 \begin{align*}
 \upstairs{(\proj{\Gamma,A}, \var{\Gamma,A})}
@@ -2113,32 +2124,6 @@ A problem: With the above translations, the equation $(\proj{\Gamma,A}, \var{\Ga
 &\equiv \upstairs{\proj{\Gamma, A}} , \rewrite{E(x)}{x} / x
 \end{align*}
 which is over $\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x$, and the associated 2-cell is $H(\pi^{\asdep{\Gamma}}_x)$.
-
-But we can mediate between the two sides by a morphism of mode substitutions (not formally defined in the rules earlier, we're just going to fudge it here)
- \[(\id_{\downstairs{\proj{\Gamma, A}} }, E(x))  : (\downstairs{\proj{\Gamma, A}} , \TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}} / x) \vDash \id_{\Gamma, A}\]
-Then the following diagram of mode term morphisms commutes:
-\[\begin{tikzcd}
-\asdep{(\Gamma, A)} \ar[r, Rightarrow, "H(\pi^{\asdep{\Gamma}}_x)"] \ar[dr, Rightarrow, "\id" swap] & \asdep{(\Gamma, A)}[\downstairs{\proj{\Gamma,A}, \var{\Gamma,A}}] \ar[d, Rightarrow, "{\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}"]\\
-& \asdep{(\Gamma, A)}[\id]
-\end{tikzcd}\]
-because:
-\begin{align*}
-H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{(\Gamma, A)}}{\id_{\downstairs{\proj{\Gamma, A}} }, E(x)}}
-&\equiv H(\pi^{\asdep{\Gamma}}_x) ; {\ap{\asdep{\Gamma}.x}{E(x)/x}} \\
-&\equiv \id
-\end{align*}
-As this is exactly the triangle equation for the slice/comprehension adjunction.
-
-What happens if we substitute the fake $\id$ into a type? We get:
-\begin{align*}
-\upstairs{A[\proj{\Gamma,A}, \var{\Gamma,A}]}
-&\equiv \St{s_{(\proj{\Gamma,A}, \var{\Gamma,A})}}{\upstairs{A}[ \upstairs{\proj{\Gamma,A}, \var{\Gamma,A}}]} \\
-&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\upstairs{A}[ \upstairs{\rewrite{E(x)}{x}} / x]} \\
-&\equiv \St{H(\pi^{\asdep{\Gamma}}_x)}{\St{(\ap{\asdep{\Gamma}.x}{E(x)/x})}{\upstairs{A}[ x / x]}}\\
-&\equiv \St{(H(\pi^{\asdep{\Gamma}}_x);(\ap{\asdep{\Gamma}.x}{E(x)/x}))}{\upstairs{A}} \\
-&\equiv \St{\id}{\upstairs{A}} \\
-&\equiv \upstairs{A}
-\end{align*}
 \end{enumerate}
 
 Some observations:
