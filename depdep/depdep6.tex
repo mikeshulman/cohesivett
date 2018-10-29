@@ -1816,7 +1816,7 @@ Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Fig
 \inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE} \\
 \inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\hat{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
 \inferrule*[left=$\Sigma$-$\pi_1$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_1(p) : A} \and
-\inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\overline{\pi_1(p)}]} \and
+\inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\widehat{\pi_1(p)}]} \and
 \end{mathpar}
 \begin{align}
 (\Sigma_A B)[\Theta] &\equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A] \\
@@ -2176,51 +2176,50 @@ Using beta-reduction for $\var{}$ and the triangle identity for $\chi$. So retur
 Using the triangle identity for the slice/comprehension adjunction.
 \end{enumerate}
 
-\mvrnote{To be fixed:}
-
 Some observations:
-\begin{itemize}
-\item The substitution $\Theta \uparrow A$ is translated as follows:
+\begin{lemma}
+The derived substitution $\Theta \uparrow A$ is translated to (nearly) its framework equivalent: \[\upstairs{\Gamma, x : A[\Theta]} \yields (\upstairs{\Theta}, \UnSt{ s_{\Theta}}{x}/x) : \upstairs{\Delta, x : A},\]
+with associated 2-cell \[s_{\Theta \uparrow A} \equiv (s_\Theta \bdot \eta^{s_\Theta}_x)\]
+\end{lemma}
+\begin{proof}
 \begin{align*}
-\upstairs{\Theta \uparrow A} 
-&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \\
-&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\upstairs{\var{\Gamma, A[\Theta]}}} \\
-&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}} \\
+\{ \upstairs{\Theta \uparrow A} \mid s_{\Theta \uparrow A} \}
+&\equiv \{\upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \mid s_{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \}\\
+&\equiv \{ \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\upstairs{\var{\Gamma, A[\Theta]}}} \mid H(s_{\proj{\Gamma, A[\Theta]}; \Theta}) \} \\
+&\equiv \{ (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}]}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \mid H(s_{\proj{\Gamma, A[\Theta]}};s_\Theta[\downstairs{\mathsf{proj}}]) \}\\
+&\equiv \{ (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{\rewrite{E(x)}{x}} \mid H(s_{\proj{\Gamma, A[\Theta]}};s_\Theta[\downstairs{\mathsf{proj}}]) \}\\
+&\equiv \{ (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \rewrite{\TrCirc{s_\Theta}{E(x)}}{\UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{x}} \mid H(s_{\proj{\Gamma, A[\Theta]}};s_\Theta[\downstairs{\mathsf{proj}}]) \}\\
+&\sim \{ (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{x} \mid H(s_{\proj{\Gamma, A[\Theta]}};s_\Theta[\downstairs{\mathsf{proj}}]) ; \ap{\asdep{\Delta}.x}{\TrCirc{s_\Theta}{E(x)}/x} \}
 \end{align*}
-Or:
+This last 2-cell is:
 \begin{align*}
-\upstairs{\Theta \uparrow A} 
-&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]}} \\
-&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)} , \UnSt{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{\upstairs{\var{\Gamma, A[\Theta]}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}]}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{\UnSt{s_{\proj{\Gamma, A[\Theta]}}}{\UStI{\pi^{\asdep{\Gamma}}_x}{\rewrite{E(x)}{x}}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \UnSt{ s_{\Theta}[\downstairs{\mathsf{proj}}]}{\rewrite{E(x)}{x}}
+H(s_{\proj{\Gamma, A[\Theta]}};s_\Theta[\downstairs{\mathsf{proj}}]) ; \ap{\asdep{\Delta}.x}{\TrCirc{s_\Theta}{E(x)}/x} 
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \eta^{\pi^{\asdep{\Gamma}}_x;s_\Theta}_{1_{\asdep{\Gamma}.x}}) ; (\id \bdot \TrCirc{s_\Theta}{\ap{{\pi^{\asdep{\Gamma}}_x}^\circ}{\var{x}}}) ; (\id \bdot \ap{s_\Theta^\circ}{\varepsilon^{\pi^{\asdep{\Gamma}}_x}_x}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \eta^{\pi^{\asdep{\Gamma}}_x;s_\Theta}_{1_{\asdep{\Gamma}.x}}) ; (\id \bdot \ap{{(\pi^{\asdep{\Gamma}}_x;s_\Theta)}^\circ}{\var{x}}) ; (\id \bdot \ap{s_\Theta^\circ}{\varepsilon^{\pi^{\asdep{\Gamma}}_x}_x}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \eta^{\pi^{\asdep{\Gamma}}_x;s_\Theta}_{1_{\asdep{\Gamma}.x}} ; \ap{{(\pi^{\asdep{\Gamma}}_x;s_\Theta)}^+}{\ap{{(\pi^{\asdep{\Gamma}}_x;s_\Theta)}^\circ}{\var{x}}})  ; (\id \bdot \ap{s_\Theta^\circ}{\varepsilon^{\pi^{\asdep{\Gamma}}_x}_x}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \var{x};\eta^{\pi^{\asdep{\Gamma}}_x;s_\Theta}_{\TrPlus{\pi}{1_{\asdep{\Gamma}}}})  ; (\id \bdot \ap{s_\Theta^\circ}{\varepsilon^{\pi^{\asdep{\Gamma}}_x}_x}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \var{x};\eta^{\pi^{\asdep{\Gamma}}_x;s_\Theta}_{\TrPlus{\pi}{1_{\asdep{\Gamma}}}};\ap{(\pi^{\asdep{\Gamma}}_x;s_\Theta)^+}{\ap{s_\Theta^\circ}{\varepsilon^{\pi^{\asdep{\Gamma}}_x}_x}}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; ((\pi^{\asdep{\Gamma}}_x;s_\Theta) \bdot \var{x};\ap{{\pi^{\asdep{\Gamma}}_x}^+}{\eta^{s_\Theta}_x}) \\
+&\equiv \eta^\chi_{\asdep{\Gamma}.x} ; (\pi^{\asdep{\Gamma}}_x \bdot \var{x}) ; (s_\Theta \bdot \eta^{s_\Theta}_x) \\
+&\equiv (s_\Theta \bdot \eta^{s_\Theta}_x) \\
 \end{align*}
-This does indeed typecheck, as the variable $x$ is of type $\upstairs{A[\Theta]} \equiv \St{s_{\Theta}}{\upstairs{A}[\upstairs{\Theta}]}$. The downstairs substitution is:
-\begin{align*}
-\downstairs{\Theta \uparrow A} 
-&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\proj{\Gamma, A[\Theta]}; \Theta}}{1_{\asdep{\Gamma}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{(s_{\proj{\Gamma, A[\Theta]}};s_{\Theta}[\mathsf{proj}])}{1_{\asdep{\Gamma}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\Theta}[\mathsf{proj}]}{\TrCirc{s_{\proj{\Gamma, A[\Theta]}}}{1_{\asdep{\Gamma}}}} \\
-&\equiv (\proj{\Gamma, A[\Theta]};  \downstairs{\Theta}) , \TrCirc{s_{\Theta}[\mathsf{proj}]}{\TrCirc{\pi^{\asdep{\Gamma}}_x}{1_{\asdep{\Gamma}}}} \\
-\end{align*}
+\mvrnote{This is very similar to the triangle equation for $H/E$, does it follow neatly from naturality/functoriality or something?}
+\end{proof}
 
-And the associated 2-cell $s_{\Theta \uparrow A}$ is
+\begin{lemma}
+The derived substitution $\hat{a}$ is also translated to its framework equivalent: \[\upstairs{\Gamma} \yields (\upstairs{\Gamma}/\upstairs{\Gamma}, \upstairs{a}/x) : \upstairs{\Gamma, A} \]
+with associated 2-cell \[s_{\hat{a}} \equiv \eta^\chi_{\asdep{\Gamma}} \]
+\end{lemma}
+\begin{proof}
 \begin{align*}
-s_{\Theta \uparrow A} 
-&\equiv H(s_{(\proj{\Gamma, A[\Theta]};\Theta)}) \\
-&\equiv H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])
+\{ \hat{a} \mid s_{\hat{a}} \}
+&\equiv \{ \upstairs{\id_\Gamma, a} \mid s_{\upstairs{\id_\Gamma, a}} \} \\
+&\equiv \{ \upstairs{\id_\Gamma}, \UnSt{s_{\id_\Gamma}}{\upstairs{a}} \mid H(s_{\id_\Gamma})\} \\
+&\equiv \{ \upstairs{\id_\Gamma}, \UnSt{\id_{\asdep\Gamma}}{\upstairs{a}} \mid H(\id_{\asdep\Gamma}) \} \\
+&\equiv \{ \upstairs{\Gamma}/\upstairs{\Gamma}, \upstairs{a}/x \mid \eta^\chi_{\asdep{\Gamma}}; (\id_{\asdep\Gamma} \bdot \eta_{1_{\asdep{\Gamma}}}^{\id_{\asdep\Gamma}}) \} \\
+&\equiv \{ \upstairs{\Gamma}/\upstairs{\Gamma}, \upstairs{a}/x \mid \eta^\chi_{\asdep{\Gamma}} \}
 \end{align*}
-
-\item The following identity will be useful later:
-\begin{align*}
-\upstairs{\Theta \uparrow A}[\StI{s_\Theta}{x}/x]
-&\equiv [(\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}/x][\StI{s_\Theta}{x}/x] \\
-&\equiv [(\proj{\Gamma, A[\Theta]};  \upstairs{\Theta}) , \rewrite{\var{\StI{s_\Theta}{x}}}{\StI{\pi^{\asdep{\Gamma}}_{\StI{s_\Theta}{x}}}{\StI{s_\Theta}{x}}}/x] \\
-\end{align*}
-
-\item The derived substitution $\hat{a}$ is \mvrnote{todo}.
-\end{itemize}
+\end{proof}
 
 \subsubsection{Rules for $\Pi$-types}
 
