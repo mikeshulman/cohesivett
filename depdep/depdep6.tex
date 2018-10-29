@@ -318,7 +318,10 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\m
  (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
-\mvrnote{Should we write $t[s/x]$ as shorthand for either side of the last equation?}
+\mvrnote{Should we write $t[s/x]$ as shorthand for either side of the
+  last equation?}
+
+\drlnote{\ap t {s/x} would be more consistent, I think}
 
 Next, we have the adjunction for $s^\circ$ and $s^+$:
 \begin{mathpar}
@@ -576,6 +579,9 @@ In the absence of eta for $\mathsf{F}$- and $s$-types, we also need to assert
   \\ \\
 \end{mathpar}
 
+\drlnote{Change the definition of $s$-types to $U$-types as primitive
+  and derive $F$, so that having $\eta$ is less surprising.}
+
 Type equalities:
 \begin{align*}
 \St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
@@ -620,6 +626,11 @@ The \textsc{2cell} rule pushes into terms of telescope types:
 &\equiv (\rewrite{\ap{\fst}{(s, t)}}{\fst (M, N)}, \rewrite{\ap{\snd}{(s, t)}}{\StI{\ap{q[\fst z/x]}{(s, t)/z}}{\snd (M, N)}} ) \\
 &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
 \end{align*}
+
+\drlnote{Add ref to equalities being used from second to third line.
+  Also write out the typing for the second half of the pair, to show how
+  the $s$-type moves work.}
+
 %\begin{align*}
 %(\rewrite{s}{M},N) 
 %&\equiv  \\
@@ -794,7 +805,7 @@ Here's the third one:
 
 
 \begin{lemma}
-Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems doable}
+Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems doable} 
 \begin{mathpar}
 \inferrule*{\yields_\gamma \Gamma}
              {\cdot \yields_{\Sigma \gamma} \Sigma \Gamma \TYPE}
@@ -808,6 +819,7 @@ Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that
 \inferrule*{\Gamma \yields\Theta : \Delta}
              {\Gamma \yields \Theta \equiv \fan{\Delta}[\Sigma \Theta / \sigma]}
 \end{mathpar}
+\drlnote{Other round-trip}
 \end{lemma}
 \begin{proof}
 $\Sigma \Gamma$ is defined inductively by
@@ -831,6 +843,13 @@ with each definition lying over the identical one downstairs. For $\Sigma \Theta
 \begin{definition}
 A 2-cell between mode substitutions $\gamma\yields t : (\theta \vDash \theta') : \delta$ is given by a mode term 2-cell \[\gamma \yields \Sigma t : (\Sigma \theta \vDash_{\Sigma \delta} \Sigma \theta')\].
 \end{definition}
+
+\drlnote{Maybe write $\gamma\yields t : \theta \vDash_\delta \theta'$ ?
+In the rules, we're writing things like $\gamma \mid \mu \vDash s :
+\mu'$; we should be consistent about that versus this notation for where
+the $s$ goes, and change one or the other.  I find things like $\Gamma
+\vdash s : \mu \vDash_p \nu$ with two turnstiles hard to parse.
+}
 
 \begin{lemma}
 N-ary ap and rewrite are admissible:
@@ -1126,26 +1145,28 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
   A \emph{comprehension object} is specified by the following
   constants:
   \begin{mathpar}
-    p \type 
-%    \emptyset : p %\and
-%    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
+    p \type \and 
+    \emptyset : p \and
+    \TermTwoT{\alpha : p}{\bang_p}{\alpha}{\emptyset}{p}
     \\
     \alpha : p \yields \El{p}{\alpha} \type \and
     \TypeTwo{\cdot}{\chi}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
     \\
+    \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and
     \TermTwoT{\alpha : p, \mu : \El{p}{\alpha}}{!_\mu}{\mu}{1_\alpha}{\El{p}{\alpha}}
   \end{mathpar}
-  such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$)
+  such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \mu : \El{p}{\alpha}$)
 \begin{align}
 \label{empty-terminal} 
-p &\text{ has a terminal object} \\
+(\emptyset, \bang_p) &\text{ is a terminal object of } p \\
 \label{chi-section}
 \fst{\TrCirc{\chi}{\alpha}} &\equiv \alpha \\
 \label{one-terminal} 
 (1_\alpha, !_\mu) &\text{ is a fibred terminal object of } \El{p}{\alpha} 
 \end{align}
   
-\noindent We use the following derived forms:
+\noindent We use the following derived forms
+(where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$):
   \begin{itemize}
   \item Comprehension is given by $\chi^+$:
   \begin{mathpar}
@@ -1738,7 +1759,7 @@ Our goal is to interpret these rules in the framework. The mode theory will cont
 
 \item A substitution $\Gamma \qyields \Theta : \Delta$ has a corresponding framework substitution $\upstairs{\Gamma} \yields \upstairs{\Theta} : \upstairs{\Delta}$ living over $\downstairs{\Gamma} \yields \downstairs{\Theta} : \downstairs{\Delta}$, together with a mode morphism $\downstairs{\Gamma} \yields s_\Theta : \asdep{\Gamma} \vDash_p \asdep{\Delta}[\downstairs{\Theta}]$ that we use to correct the mismatch between object-level and framework substitution.
 
-Such pairs $\{ \Theta, s \}$ are considered up to the following relation:
+Such pairs $\{ \Theta, s \}$ are quotiented by the following relation:
 \begin{align*}
 \{ \rewrite{t}{\Theta}, s \} \sim \{ \Theta, (s ; \ap{\asdep{\Delta}}{t})\}
 \end{align*}
@@ -1750,6 +1771,43 @@ These will be defined inductively, and the general idea is that for $\Gamma$ of 
   \]
   The mode term $\asdep{\Gamma} : p$ will be $\emptyset.x_1.x_2.\ldots.x_n$ when $\Gamma$ is $x_1 : A_1, \ldots , x_n : A_n$.
 
+\drlnote{Does $\sim$ make sense in the following generality?  (Doesn't
+  mention the translation at all)}
+
+  First, the pairs we consider are $\{ \Theta, s \}$ where (for fixed
+  $\Gamma_\gamma$ and $\Delta_\delta$ and $\cdot \yields p \type$ and
+  $\gamma \yields \mu : p$ and $\delta \yields \nu : p$), $\Gamma
+  \yields_\theta \Theta : \Delta$ and
+  $\TermTwoT{\gamma}{s}{\mu}{\nu[\theta]}{p}$.
+
+  The quotient relation says that for any
+  $\Gamma
+  \yields_\theta \Theta : \Delta$ and
+  $\TermTwoT{\gamma}{t}{\theta'}{\theta}{\delta}$
+  and 
+  $\TermTwoT{\gamma}{s}{\mu}{\nu[\theta']}{p}$, the pairs
+  \[
+  \{ \Gamma \yields_{\theta'} \rewrite{t}{\Theta} : \Delta,
+  \TermTwoT{\gamma}{s}{\mu}{\nu[\theta']}{p}
+  \}
+  \]
+  and
+  \[
+  \{ \Gamma \yields_{\theta} {\Theta} : \Delta,
+  \TermTwoT{\gamma}{s;\ap{\nu}{t}}{\mu}{\nu[\theta]}{p}
+  \}
+  \]
+  are equal.
+
+  Generalize further to
+    $\delta \yields p \type$ and
+    $\gamma \yields \mu : p[\theta]$ and $\delta \yields \nu : p$, and
+    $\TermTwoT{\gamma}{s}{\mu}{\nu[\theta]}{p[\theta]}$?
+    Then $\mu$ needs to change between the two sides, something like
+    $\{ \mu, \rewrite{t}{\Theta}, s \}$
+    vs
+    $\{ \TrCirc{\ap{p}{t}}{\mu}, \Theta, \ap{\TrCirc{\ap{p}{t}}{-}}{s};\ap{\nu}{t} \}$
+    
 \subsubsection{Translation}
 
 %We give a translation for mode theory containing a comprehension object which is however strict is necessary to make the translation easy to describe. Here is a tally of the requirements:
