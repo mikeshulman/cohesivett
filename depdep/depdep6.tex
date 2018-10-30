@@ -318,11 +318,6 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\m
  (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
-\mvrnote{Should we write $t[s/x]$ as shorthand for either side of the
-  last equation?}
-
-\drlnote{\ap t {s/x} would be more consistent, I think}
-
 Next, we have the adjunction for $s^\circ$ and $s^+$:
 \begin{mathpar}
 \inferrule*
@@ -611,7 +606,7 @@ With corresponding term equalities: \mvrnote{TODO: F and U}
 \subsection{Lemmas}
 
 \begin{lemma}
-The \textsc{2cell} rule pushes into terms of telescope types:
+The \textsc{rewrite} rule pushes into terms of telescope types:
 \begin{align*}
 %(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
 %(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
@@ -2291,26 +2286,28 @@ So far we have not used that $p$ satisfies the Beck-Chevalley conditions for $\P
 &\equiv \St{s_{\Theta}}{\upstairs{\Pi_A B}[\upstairs{\Theta}]} \\
 &\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}}{\upstairs{B}}[\upstairs{\Theta}]} \\
 &\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
-&\equiv \U{c.\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta},x/x]}
-\end{align*}
-The U-type is over 
-\begin{align*}
-\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})
-&\equiv \TrPlus{\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_x}{\TrCirc{s_{\Theta}}{c}} \\
-&\equiv \TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}
-\end{align*}
-Working from the other side:
-\begin{align*}
+&\equiv \U{c.\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta},x/x]} \\
 &\equiv \dots \\ 
-&\equiv \U{c.\TrCirc{H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta \uparrow A}][\StI{s_\Theta}{x}/x]} \\
-&\equiv \U{c.\TrCirc{H(s_{\proj{\Gamma, A[\Theta]}} ; s_{\Theta}[\downstairs{\mathsf{proj}}])}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]} \\
+&\equiv \U{c.\TrCirc{(\id_{\asdep{\Delta}.x} \bdot \varepsilon^{s_\Theta}_x)}{\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]} \\
+&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\St{(\id_{\asdep{\Delta}.x} \bdot \varepsilon^{s_\Theta}_x)}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
+&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]} \\
+&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, \UnSt{s_\Theta}{x}/x][\StI{s_\Theta}{x}/x]} \\
+&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_x)}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta}, \UnSt{s_\Theta}{x}/x]} \\
 &\equiv \U{c.\TrCirc{s_{\Theta \uparrow A}}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]} \\
 &\equiv \U{c.\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
 &\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
 &\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A[\Theta]}}{\upstairs{B[\Theta \uparrow A]}} \\
 &\equiv \upstairs{\Pi_{A[\Theta]} B[\Theta \uparrow A]}
 \end{align*}
-
+In the middle we verify, using Beck-Chevalley, 
+\begin{align*}
+\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})
+&\equiv \TrPlus{\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_x}{\TrCirc{s_{\Theta}}{c}} \\
+&\equiv \TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
+&\equiv \TrCirc{(s_{\Theta} . (\eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}};\ap{{s_{\Theta}}^+}{\varepsilon^{s_\Theta}_x}))}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
+&\equiv \TrCirc{((s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}}) ; (\id_{} \bdot \varepsilon^{s_\Theta}_x))}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
+&\equiv \TrCirc{(\id_{} \bdot \varepsilon^{s_\Theta}_x)}{\TrCirc{(s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}} \\
+\end{align*}
 \end{enumerate}
 
 \subsubsection{Rules for $\Sigma$-types}
