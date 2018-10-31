@@ -85,6 +85,8 @@
 \newcommand\ApEl[2]{\mathcal{T}_{#1}\langle#2\rangle}
 
 \newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+\newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
+\newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
 
 \newcommand{\app}[2]{\ensuremath{#1 \: #2}}
 \newcommand{\sigmacl}[3]{\ensuremath{\textnormal{$\Sigma$}\,#1{:}#2.\,#3}}
@@ -337,8 +339,8 @@ Next, we have the adjunction for $s^\circ$ and $s^+$:
 \\
 \varepsilon^s_\nu;t \equiv \ap{\TrCirc{s}{\TrPlus{s}{z}}}{t/z} ; \varepsilon^s_{\nu'} \and t;\eta^s_\mu \equiv \eta^s_{\mu'} ; \ap{\TrPlus{s}{\TrCirc{s}{z}}}{t/z} \\
 \varepsilon^{\id_p}_\nu \equiv \id_{\nu} \and \eta^{\id_p}_\mu \equiv \id_{\mu} \\
-\varepsilon^{s;t}_\nu \equiv (\ap{t^\circ}{\varepsilon^s_{t^+(\nu)}}) ; \varepsilon^t_\nu \and 
-\eta^{s;t}_\mu \equiv \eta^s_\mu ; (\ap{s^+}{\eta^t_{s^\circ(\mu)}})
+\varepsilon^{s;t}_\nu \equiv (\ap{t^\circ}{\varepsilon^s_{\TrPlus{t}{\nu}}}) ; \varepsilon^t_\nu \and 
+\eta^{s;t}_\mu \equiv \eta^s_\mu ; (\ApPlus{s}{\eta^t_{\TrCirc{s}{\mu}}})
 \end{mathpar}
 \mvrnote{similar functoriality for horizontal composition?}
 
@@ -378,7 +380,7 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 
 We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
 variable name when it is clear how to view $\mu$ as a term with a
-distinguished variable; e.g. $\ap{s^+}{t}$ for
+distinguished variable; e.g. $\ApPlus{s}{t}$ for
 $\ap{\TrPlus{s}{x}}{t/x}$.
 
 \subsubsection{Lemmas}
@@ -593,8 +595,13 @@ Type equalities:
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align*}
-With corresponding term equalities: \mvrnote{TODO: F and U}
+With corresponding term equalities: \mvrnote{The F and U equations are a bit silly without annotations}
 \begin{align*}
+\StI{s}{\FI{M}} &\equiv \FI{M} \\
+\FI{\StI{s}{M}} &\equiv \FI{M} \\
+\StI{s}{\UI{x}{M}} &\equiv \UI{x}{M} \\
+\UI{x}{\StI{s}{M}} &\equiv \UI{x}{M} \\
+\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} \\
 \StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) \\
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} \\
 \StI{\id_p}{M} &\equiv M \\
@@ -644,7 +651,7 @@ The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and 
 \UE{M}{\rewrite{s}{N}} &\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
 \UE{(\rewrite{t}{M})}{N} &\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
 \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
-\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ap{t^+}{s}}{\StI{t}{M}} \\
+\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ApPlus{t}{s}}{\StI{t}{M}} \\
 (\StE{t}{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\StE{t}{M}{x}{N}}}
 \intertext{If we have definitional eta-expansion for \textsf{F}- and $s$-types, we can also derive (rather than asserting)}
 (\FE{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\FE{M}{x}{N}} \\
@@ -755,8 +762,8 @@ by one triangle identity, and:
 &\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\StE{s}{\StI{s}{z}}{x}{\rewrite{\varepsilon^s_x}{x}}}}} \\ 
 &\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\rewrite{\varepsilon^s_x}{x}[z/x]}}} \\ 
 &\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\StI{s}{\rewrite{\varepsilon^s_z}{z}}}} \\ 
-&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\rewrite{\ap{s^+}{\varepsilon^s_z}}{\StI{s}{z}}}} \\ 
-&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}};\ap{s^+}{\varepsilon^s_z}}{\StI{s}{z}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}}}{\rewrite{\ApPlus{s}{\varepsilon^s_z}}{\StI{s}{z}}}} \\ 
+&\equiv \StE{s}{N}{z}{\rewrite{\eta^s_{\TrPlus{s}{z}};\ApPlus{s}{\varepsilon^s_z}}{\StI{s}{z}}} \\ 
 &\equiv \StE{s}{N}{z}{\StI{s}{z}} \\ 
 &\equiv N
 \end{align*}
@@ -790,8 +797,8 @@ Here's the third one:
 &\equiv \rewrite{\eta^s_{\mu}}{\StI{s}{\StE{s}{N}{x}{\rewrite{\varepsilon^s_x}{x}}}} \\
 &\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\StI{s}{\StE{s}{\StI{s}{x'}}{x}{\rewrite{\varepsilon^s_x}{x}}}})} \\
 &\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\StI{s}{\rewrite{\varepsilon^s_{x'}}{x'}}})} \\
-&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\rewrite{\ap{s^+}{\varepsilon^s_{x'}}}{\StI{s}{x'}}})} \\
-&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}};\ap{s^+}{\varepsilon^s_{x'}}}{\StI{s}{x'}})} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}}}{\rewrite{\ApPlus{s}{\varepsilon^s_{x'}}}{\StI{s}{x'}}})} \\
+&\equiv \StE{s}{N}{x'}{(\rewrite{\eta^s_{\TrPlus{s}{x'}};\ApPlus{s}{\varepsilon^s_{x'}}}{\StI{s}{x'}})} \\
 &\equiv \StE{s}{N}{x'}{\StI{s}{x'}} \\
 &\equiv N
 \end{align*}
@@ -1245,7 +1252,7 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
   {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
   \and
   \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\chi_{(\alpha, x)}} \\
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\ApEl{p}{\pi^\alpha_x}^+(x)}{\El{p}{\alpha.x}}} 
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{1_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}} 
     \and
     \mathsf{var}_x :\equiv \ap \snd {\varepsilon^\chi_{(\alpha, x)}}
   \end{mathpar}
@@ -1254,9 +1261,9 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
   \begin{mathpar}
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
              %% \and \gamma \yields \mu : \alpha \and \gamma \yields \nu : \beta \and
-             \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}}
+             \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}}
             {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
-  s \bdot m :\equiv \ap{\chi^+}{(s, m)}
+  s \bdot m :\equiv \ApPlus{\chi}{(s, m)}
   \end{mathpar}
   \end{itemize}
 \end{definition}
@@ -1266,7 +1273,7 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
 %\eta_{\TrPlus{\chi}{(\alpha, x)}};\ap{(\TrPlus{\chi}{z})}{\varepsilon_{(\alpha, x)}/z} \equiv \id_{\TrPlus{\chi}{(\alpha, x)}} 
 \eta_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
 %\ap{(\TrCirc{\chi}{z})}{\eta_\alpha/z};\varepsilon_{\TrCirc{\chi}{\alpha}} \equiv \id_{\TrCirc{\chi}{\alpha}}
-(\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ap{\ApEl{p}{\eta_\alpha}^+}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
+(\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ap{1_z}{\eta_\alpha/z} ; \ApPlus{\ApEl{p}{\eta_\alpha}}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
 \end{align*}
 because $1_\alpha$ is terminal, only the first component of the latter equation has content, it says that $\eta_\alpha ; \pi^\alpha_{1_\alpha} = \id_\alpha$.
 
@@ -1292,26 +1299,26 @@ Some other derivable equations:
 \item Fusion for $.$
 \begin{align}
 \label{dot-fusion}
-    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
+    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
 \end{align}
 follows by fusing the ap's and the corresponding fusion rule for morphisms in $\Sigma$ modes:
 \begin{align*}
-(s \bdot m);(s' \bdot m') &\equiv \ap{\chi^+}{(s, m)} ; \ap{\chi^+}{(s', m')} \\
-&\equiv \ap{\chi^+}{(s, m);(s', m')} \\
-&\equiv ((s;s') \bdot (m;\ap {\ApEl{p}{s}^+} {m'}))
+(s \bdot m);(s' \bdot m') &\equiv \ApPlus{\chi}{(s, m)} ; \ApPlus{\chi}{(s', m')} \\
+&\equiv \ApPlus{\chi}{(s, m);(s', m')} \\
+&\equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
 \end{align*}
 
 \item $\pi^\alpha_\mu$ is natural in $\mu$:
   \begin{align}
   \label{pi-naturality}
-  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\ApEl{p}{s}^+(\nu)}{\El{p}{\alpha}}
+  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}
   \end{align}
   by
   \begin{align*}
   (s \bdot m); \pi^\alpha_\mu 
-  &\equiv \ap{\chi^+}{(s, m)} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\  
-  &\equiv \ap{\fst}{\ap{\chi^\circ(\chi^+(z))}{(s, m)/z}} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\
-  &\equiv \ap{\fst}{\ap{\chi^\circ(\chi^+(z))}{(s, m)/z} ; \varepsilon^\chi_{(\alpha, \mu)}} \\
+  &\equiv \ApPlus{\chi}{(s, m)} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\  
+  &\equiv \ap{\fst}{\ApCirc{\chi}{\ApPlus{\chi}{(s, m)}}} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\
+  &\equiv \ap{\fst}{\ApCirc{\chi}{\ApPlus{\chi}{(s, m)}} ; \varepsilon^\chi_{(\alpha, \mu)}}  \\
   &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}; (s, m) } \\
   &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}} ; s\\
   &\equiv \pi^\beta_\nu ; s
@@ -1319,7 +1326,7 @@ follows by fusing the ap's and the corresponding fusion rule for morphisms in $\
 \item Beta reduction for first projection:
   \begin{align}
 \label{beta-pi}
-\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\ApEl{p}{s}^+(\mu)}{\alpha}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{1_\alpha}{\TrPlus{\ApEl{p}{s}}{\mu}}{\alpha}
   \end{align}
 follows from naturality and the second triangle equation by:
 \begin{align*}
@@ -1331,24 +1338,24 @@ follows from naturality and the second triangle equation by:
 \item Beta reduction for var:
 \begin{align}
 \label{beta-var}
-\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} &\equiv \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m}  && \text{where } \TermTwoT{\gamma}{m}{1}{\ApEl{p}{s}^+(\mu)}{\El{p}{\beta}}
+\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} &\equiv \ApPlus{\ApEl{p}{\pi^\beta_{1_\beta}}}{m}  && \text{where } \TermTwoT{\gamma}{m}{1}{\TrPlus{\ApEl{p}{s}}{\mu}}{\El{p}{\beta}}
 \end{align}
 is derivable by:
 \begin{align*}
-\ap{\ApEl{p}{(s \bdot m)}^+}{\var{\mu}} 
-&\equiv \ap{\ApEl{p}{\ap{\chi^+}{(s, m)}}^+}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
-&\equiv \ap{1_z}{(s, m)/z};\ap{\ApEl{p}{\ap{\chi^+}{(s, m)}}^+}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
+\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} 
+&\equiv \ApPlus{\ApEl{p}{\ApPlus{\chi}{(s, m)}}}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
+&\equiv \ap{1_z}{(s, m)/z};\ApPlus{\ApEl{p}{\ApPlus{\chi}{(s, m)}}}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
 &\equiv \ap \snd {((s \bdot m), \ap{1_z}{(s, m)/z});\varepsilon^\chi_{(\alpha, \mu)}} \\
 &\equiv \ap \snd {\ap{\TrCirc{\chi}{\TrPlus{\chi}{z}}}{(s, m)/z};\varepsilon^\chi_{(\alpha, \mu)}} \\
 &\equiv \ap \snd {\varepsilon^\chi_{(\beta, 1_\beta)};(s, m)} \\
-&\equiv \var{1_\beta}; \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m} \\
-&\equiv \ap{\ApEl{p}{\pi^\beta_{1_\beta}}^+}{m} \\
+&\equiv \var{1_\beta}; \ApPlus{\ApEl{p}{\pi^\beta_{1_\beta}}}{m} \\
+&\equiv \ApPlus{\ApEl{p}{\pi^\beta_{1_\beta}}}{m} \\
 \end{align*}
 
 \item The eta principle for pairing:
 \begin{align}
 \label{eta-pi-var}
-t &\equiv \eta_\beta;((t;\pi^\alpha_\mu) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
+t &\equiv \eta_\beta;((t;\pi^\alpha_\mu) \bdot \ApPlus{\ApEl{p}{t}}{\var{\mu}}) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
 \end{align}
 is derived by the first triangle equation followed by naturality of $\eta$:
 \begin{align*}
@@ -1356,8 +1363,8 @@ t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 &\equiv \eta_\beta;\ap{\TrPlus{\chi}{\TrCirc{\chi}{z}}}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 &\equiv \eta_\beta;\ap{(z \bdot 1_z)}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 &\equiv \eta_\beta;(t \bdot \ap{1_z}{t/z});(\pi_\mu^\alpha \bdot \var{\mu}) \\
-&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ap{1_z}{t/z}; \ap{\ApEl{p}{t}^+}{\var{\mu}})) \\
-&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot \ap{\ApEl{p}{t}^+}{\var{\mu}})
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ap{1_z}{t/z}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) \\
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot \ApPlus{\ApEl{p}{t}}{\var{\mu}})
 \end{align*}
 (We know that $\ap{1_z}{t/z} \equiv \id_{1_\beta}$ because $1_\beta$ is terminal.)
 \item Naturality of $\eta^\chi_\beta$ takes the following form:
@@ -1423,7 +1430,7 @@ F(H(s)) ; E(F(s))
 &\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}} ; \ap{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}^\circ}{\var{\TrCirc{\ApEl{p}{s}}{1_\beta}}};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
 &\text{(Fusing the ap's)} \\
 &\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^+}{?}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
+%&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\ApPlus{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})}{?}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
 %&\equiv \varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{?} ; ?  \\
 &\equiv ??? \\
 &\equiv \ap{(\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{z})}{\eta_{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}/z};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
@@ -1439,11 +1446,11 @@ H(U(x)); U(E(x))
 &\equiv H(\pi^\alpha_x) ; (\id_\alpha, E(x)) \\
 &\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}) ; (\id_\alpha, (\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x)) \\
 & \text{(Fusion for $\bdot$)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ap{\ApEl{p}{\pi^\alpha_x}^+}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
 & \text{(Fusion for ap)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ap{\ApEl{p}{\pi^\alpha_x}^+}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}}} ; \ap{\ApEl{p}{\pi^\alpha_x}^+}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
 & \text{(Naturality of $\eta$)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x} ; \eta^{\ApEl{p}{\pi^\alpha_x}}_{\ap{\ApEl{p}{\pi^\alpha_x}^+}{x}} ; \ap{\ApEl{p}{\pi^\alpha_x}^+}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x} ; \eta^{\ApEl{p}{\pi^\alpha_x}}_{\ApPlus{\ApEl{p}{\pi^\alpha_x}}{x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
 &\text{(Triangle identity for $\ApEl{p}{\pi^\alpha_x}$)} \\
 &\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
 &\text{(Triangle identity for $\chi$)} \\
@@ -1476,7 +1483,7 @@ H(s) ; \pi^\alpha_{\TrCirc{s}{1_\beta}} &\equiv s
 \begin{align*}
 H(s;t)
 &\equiv \eta^\chi_\beta ; ((s;t) \bdot \eta^{\ApEl{p}{s;t}}_{1_\beta}) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{\ApEl{p}{s}}_{1_\beta} ; (\ap{\ApEl{p}{s}^+}{\eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{\ApEl{p}{s}}_{1_\beta} ; (\ApPlus{\ApEl{p}{s}}{\eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})) \\
 &\equiv \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
 &\equiv H(s) ; (t \bdot \eta^{\ApEl{p}{t}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}}) \\
 \end{align*}
@@ -1484,12 +1491,12 @@ And
 \begin{align*}
 H(s ; t) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}})
 &\equiv \eta^\chi_\beta ; ((s;t) \bdot \eta^{s;t}_{1_\beta}) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{s;t}_{1_\beta} ; \ap{(s;t)^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ap{(s;t)^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ap{s^+}{\ap{t^+}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}}})) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ap{s^+}{\varepsilon^{s}_{1_{\alpha}} ; \eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{\ap{s^+}{1_\alpha}} ; \ap{s^+}{\varepsilon^{s}_{1_{\alpha}}} ; \ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
-&\equiv \eta^\chi_\beta ; ((s;t) \bdot \ap{s^+}{\eta^{t}_{\TrCirc{s}{1_\beta}}}) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^{s;t}_{1_\beta} ; \ApPlus{(s;t)}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ApPlus{s}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ApPlus{(s;t)}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ApPlus{s}{\eta^{t}_{\TrCirc{s}{1_\beta}}} ; \ApPlus{s}{\ApPlus{t}{\ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}}}})) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{1_\beta} ; (\ApPlus{s}{\varepsilon^{s}_{1_{\alpha}} ; \eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot (\eta^s_{\ApPlus{s}{1_\alpha}} ; \ap{s^+}{\varepsilon^{s}_{1_{\alpha}}} ; \ApPlus{s}{\eta^{t}_{\TrCirc{s}{1_\beta}}} )) \\
+&\equiv \eta^\chi_\beta ; ((s;t) \bdot \ApPlus{s}{\eta^{t}_{\TrCirc{s}{1_\beta}}}) \\
 &\equiv \eta^\chi_\beta ; (s \bdot \ap{1_x}{s/x}) ; (t \bdot \eta^{t}_{\TrCirc{s}{1_\beta}}) \\
 &\equiv s ; \eta^\chi_\alpha ; (t \bdot \eta^{t}_{\TrCirc{s}{1_\beta}}) \\
 &\equiv s ; H(t)
@@ -1777,7 +1784,7 @@ a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
 \caption{Rules of MLTT via Explicit Substitutions}\label{fig:qit-rules}
 \end{figure}
 
-We can derive some useful operations:
+We can derive some useful operations that we will use later when defining $\Pi$ and $\Sigma$ types.
 \begin{mathpar}
 \inferrule*[left=derivable]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields A \TYPE}{\Gamma, A[\Theta] \qyields \Theta \uparrow A : \Delta, A} \and
 \inferrule*[left=derivable]{\Gamma \qyields a : A}{\Gamma \qyields \hat{a} : \Gamma, A}
@@ -1787,42 +1794,6 @@ defined by:
 \Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \var{\Gamma, A[\Theta]} \\
 \hat{a} &:\equiv \id_{\Gamma} , a
 \end{align*}
-
-Using these we give the rules for $\Pi$ and $\Sigma$ types, which we show in Figures~\ref{fig:qit-pi-rules} and~\ref{fig:qit-sigma-rules}.
-
-\begin{figure}
-\begin{mathpar}
-\inferrule*[left=$\Pi$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi_A B \TYPE} \\
-\inferrule*[left=$\Pi$-app]{\Gamma \qyields f : \Pi_A B}{\Gamma, A \qyields \mathsf{app}(f) : B} \and 
-\inferrule*[left=$\Pi$-lam]{\Gamma, A \qyields b : B}{\Gamma \qyields \mathsf{lam}(b) : \Pi_A B}
-\end{mathpar}
-\begin{align}
-(\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
-\nonumber\\
-\mathsf{app}(\mathsf{lam}(b)) &\equiv b \\
-\mathsf{lam}(\mathsf{app}(f)) &\equiv f \\
-\mathsf{lam}(b)[\Theta] &\equiv \mathsf{lam}(b[\Theta \uparrow A])
-\end{align}
-\caption{Rules for $\Pi$-types in  MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
-\end{figure}
-
-\begin{figure}
-\begin{mathpar}
-\inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE} \\
-\inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\hat{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
-\inferrule*[left=$\Sigma$-$\pi_1$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_1(p) : A} \and
-\inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\widehat{\pi_1(p)}]} \and
-\end{mathpar}
-\begin{align}
-(\Sigma_A B)[\Theta] &\equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A] \\
-\nonumber\\
-\pi_1(a, b) &\equiv a \\
-\pi_2(a, b) &\equiv b \\
-(\pi_1(p), \pi_2(p)) &\equiv p \\
-(a, b)[\Theta] &\equiv (a[\Theta], b[\Theta])
-\end{align}
-\caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
-\end{figure}
 
 Our goal is to interpret these rules in the framework. The mode theory will contain a comprehension object $p$, possibly with some extra strictness \mvrnote{to be determined}. The basic idea for representing the judgements of MLTT is as follows:
 \begin{itemize}
@@ -2136,8 +2107,8 @@ This is exactly the second equation of Lemma~\ref{lemma:h-on-composite}.
 &\equiv \StI{s_{\Theta, a}}{\upstairs{\var{\Delta, A}}[\upstairs{\Theta, a}]} \\
 &\equiv \StI{H(s_\Theta)}{\rewrite{\var{x}}{\StI{\pi^{\asdep{\Gamma}}_x}{x}}[\upstairs{\Theta}, \UnSt{s_\Theta}{\upstairs{a}}]} \\
 &\equiv \StI{H(s_\Theta)}{\rewrite{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
-&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
-&\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta);\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
+&\equiv \rewrite{\ApPlus{H(s_\Theta)}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta)}{\StI{\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ApPlus{H(s_\Theta)}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{H(s_\Theta);\pi^{\asdep{\Gamma}[\upstairs{\Theta}]}_{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}{\UnSt{s_\Theta}{\upstairs{a}}}} \\
 &\equiv \rewrite{\ap{H(s_\Theta)^+}{\var{\TrCirc{s_\Theta}{1_{\asdep{\Gamma}}}}}}{\StI{s_\Theta}{\UnSt{s_\Theta}{\upstairs{a}}}}
 \end{align*}
 Pause to calculate the rewrite:
@@ -2218,6 +2189,35 @@ with associated 2-cell \[s_{\hat{a}} \equiv \eta^\chi_{\asdep{\Gamma}} \]
 
 \subsubsection{Rules for $\Pi$-types}
 
+
+The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Note that substitution into $\mathsf{app}$ is derivable:
+\begin{align*}
+\mathsf{app}(f[\Theta])
+&\equiv \mathsf{app}(\mathsf{lam}(\mathsf{app}(f))[\Theta]) \\
+&\equiv \mathsf{app}(\mathsf{lam}(\mathsf{app}(f)[\Theta \uparrow A])) \\
+&\equiv \mathsf{app}(f)[\Theta \uparrow A]
+\end{align*}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=$\Pi$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi_A B \TYPE} \\
+\inferrule*[left=$\Pi$-app]{\Gamma \qyields f : \Pi_A B}{\Gamma, A \qyields \mathsf{app}(f) : B} \and 
+\inferrule*[left=$\Pi$-lam]{\Gamma, A \qyields b : B}{\Gamma \qyields \mathsf{lam}(b) : \Pi_A B}
+\end{mathpar}
+\begin{align}
+(\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
+\nonumber\\
+\mathsf{app}(\mathsf{lam}(b)) &\equiv b \\
+\mathsf{lam}(\mathsf{app}(f)) &\equiv f \\
+\mathsf{lam}(b)[\Theta] &\equiv \mathsf{lam}(b[\Theta \uparrow A])
+\end{align}
+\mvrnote{TODO: replace $\mathsf{app}$ with the rule:}
+\begin{mathpar}
+\inferrule*[left=$\Pi$-app]{~}{\Gamma, A, (\Pi_A B)[\proj{}] \qyields \mathsf{app}_{A, B} : B[\proj{}]} \and 
+\end{mathpar}
+\caption{Rules for $\Pi$-types in  MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
+\end{figure}
+
 Suppose $p$ supports stable $\Pi$-types. In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
@@ -2285,35 +2285,195 @@ So far we have not used that $p$ satisfies the Beck-Chevalley conditions for $\P
 \upstairs{(\Pi_A B)[\Theta]} 
 &\equiv \St{s_{\Theta}}{\upstairs{\Pi_A B}[\upstairs{\Theta}]} \\
 &\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}}{\upstairs{B}}[\upstairs{\Theta}]} \\
-&\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
-&\equiv \U{c.\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta},x/x]} \\
-&\equiv \dots \\ 
-&\equiv \U{c.\TrCirc{(\id_{\asdep{\Delta}.x} \bdot \varepsilon^{s_\Theta}_x)}{\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]} \\
-&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\St{(\id_{\asdep{\Delta}.x} \bdot \varepsilon^{s_\Theta}_x)}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
-&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]} \\
-&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}}{x :\upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, \UnSt{s_\Theta}{x}/x][\StI{s_\Theta}{x}/x]} \\
-&\equiv \U{c.\TrCirc{(s_\Theta \bdot \eta^{s_\Theta}_x)}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta}, \UnSt{s_\Theta}{x}/x]} \\
-&\equiv \U{c.\TrCirc{s_{\Theta \uparrow A}}{\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]} \\
-&\equiv \U{c.\TrPlus{\pi^{\asdep{\Gamma}}_x}{c}}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
+&\equiv \St{s_{\Theta}}{\U{c.\Pi_1(\asdep{\Delta},x,c)[\downstairs{\Theta}]}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Delta}[\downstairs{\Theta}],x,\TrCirc{s_{\Theta}}{c})}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta},x/x]} \\
+&\equiv \U{c.\TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x/x]} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\St{(\id \bdot \varepsilon^{s_\Theta}_x)}{\upstairs{B}[\upstairs{\Theta}, x/x]}}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\upstairs{B}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{((s_{\Theta} . \eta^{s_\Theta}_x)[\TrPlus{s_\Theta}{x}/x])}{\upstairs{B}[\upstairs{\Theta}, \UnSt{s_\Theta}{x}/x][\StI{s_\Theta}{x}/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta \uparrow A}[\TrPlus{s_\Theta}{x}/x])}{\upstairs{B}[\upstairs{\Theta \uparrow A}][\StI{s_\Theta}{x}/x]}} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c)}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}[\StI{s_\Theta}{x}/x]} \\
+&\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
 &\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
 &\equiv \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A[\Theta]}}{\upstairs{B[\Theta \uparrow A]}} \\
 &\equiv \upstairs{\Pi_{A[\Theta]} B[\Theta \uparrow A]}
 \end{align*}
-In the middle we verify, using Beck-Chevalley, 
+where in the middle we verify, using Beck-Chevalley, 
 \begin{align*}
-\Pi_1(\asdep{\Delta},x,\TrCirc{s_{\Theta}}{c})
-&\equiv \TrPlus{\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_x}{\TrCirc{s_{\Theta}}{c}} \\
+\Pi_1(\asdep{\Delta}[\downstairs{\Theta}],x,\TrCirc{s_{\Theta}}{c})
+&:\equiv \TrPlus{\pi^{\asdep{\Delta}[\downstairs{\Theta}]}_x}{\TrCirc{s_{\Theta}}{c}} \\
 &\equiv \TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
-&\equiv \TrCirc{(s_{\Theta} . (\eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}};\ap{{s_{\Theta}}^+}{\varepsilon^{s_\Theta}_x}))}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
-&\equiv \TrCirc{((s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}}) ; (\id_{} \bdot \varepsilon^{s_\Theta}_x))}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}} \\
-&\equiv \TrCirc{(\id_{} \bdot \varepsilon^{s_\Theta}_x)}{\TrCirc{(s_{\Theta} . \eta^{s_\Theta}_{\TrPlus{s_{\Theta}}{x}})}{\TrPlus{\pi^{\asdep{\Gamma}}_{\TrPlus{s_\Theta}{x}}}{c}}} \\
+&\equiv \TrCirc{(s_{\Theta} . \id_{\TrPlus{s_\Theta}{x}})}{\Pi_1(\asdep{\Gamma},\TrPlus{s_\Theta}{x},c}
+\end{align*}
+
+\item[{$\mathsf{app}(\mathsf{lam}(b)) \equiv b$}:] Follows immediately from beta-reduction for $\mathsf{U}$-types.
+%\begin{align*}
+%\upstairs{\mathsf{app}(\mathsf{lam}(b))}
+%&\equiv \UE{\upstairs{\mathsf{lam}(b)}}{x} \\
+%&\equiv \UE{(\UI{x}{\upstairs{b}})}{x} \\
+%&\equiv \upstairs{b}
+%\end{align*}
+\item[{$\mathsf{lam}(\mathsf{app}(f)) \equiv f$}:] Follows immediately from eta-expansion for $\mathsf{U}$-types.
+
+\item[{$\mathsf{lam}(b)[\Theta] \equiv \mathsf{lam}(b[\Theta \uparrow A])$}:] This equation holds over the one for $\Pi$-types above. It is a little difficult to follow, so we simultaneously show how the type is being transformed.
+\begin{align*}
+&\upstairs{\mathsf{lam}(b)[\Theta]} && : \upstairs{(\Pi_A B)[\Theta]} \\
+&\equiv \StI{s_\Theta}{\upstairs{\mathsf{lam}(b)}[\upstairs{\Theta}]} && : \St{s_{\Theta}}{\upstairs{\Pi_A B}[\upstairs{\Theta}]} \\
+&\equiv \StI{s_\Theta}{(\UI{x}{\upstairs{b}})[\upstairs{\Theta}]} && :  \St{s_{\Theta}}{\U{-}{x : \upstairs{A}}{\upstairs{B}}[\upstairs{\Theta}]} \\
+&\equiv \StI{s_\Theta}{\UI{x}{\upstairs{b}[\upstairs{\Theta}, x / x]}} && :  \St{s_{\Theta}}{\U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x / x]}} \\
+&\equiv \UI{x}{\upstairs{b}[\upstairs{\Theta}, x / x]} && :  \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\upstairs{B}[\upstairs{\Theta}, x / x]} \\
+&\equiv \UI{x}{\StI{(s_{\Theta} \bdot \id_{\TrPlus{s_\Theta}{x}})}{\upstairs{b}[\upstairs{\Theta}, x/x]}} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} \bdot \id_{\TrPlus{s_\Theta}{x}})}{\upstairs{B}[\upstairs{\Theta}, x/x]}} \\
+&\equiv \UI{x}{\StI{(s_{\Theta} \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\StI{(\id \bdot \varepsilon^{s_\Theta}_x)}{\upstairs{b}[\upstairs{\Theta}, x/x]}}} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\St{(\id \bdot \varepsilon^{s_\Theta}_x)}{\upstairs{B}[\upstairs{\Theta}, x/x]}}} \\
+&\equiv \UI{x}{\StI{(s_{\Theta} \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\upstairs{b}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]}} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta} \bdot \eta^{s_\Theta}_{\TrPlus{s_\Theta}{x}})}{\upstairs{B}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]}} \\
+&\equiv \UI{x}{\StI{s_{\Theta \uparrow A}[\TrPlus{s_\Theta}{x}/x]}{\upstairs{b}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]}} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta \uparrow A}[\TrPlus{s_\Theta}{x}/x])}{\upstairs{B}[\upstairs{\Theta}, \rewrite{\varepsilon^{s_\Theta}_x}{x}/x]}} \\
+&\equiv \UI{x}{\StI{s_{\Theta \uparrow A}[\TrPlus{s_\Theta}{x}/x]}{\upstairs{b}[\upstairs{\Theta \uparrow A}][\StI{s_\Theta}{x}/x]}} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{(s_{\Theta \uparrow A}[\TrPlus{s_\Theta}{x}/x])}{\upstairs{B}[\upstairs{\Theta \uparrow A}][\StI{s_\Theta}{x}/x]}} \\
+&\equiv \UI{x}{\StI{s_{\Theta \uparrow A}}{\upstairs{b}[\upstairs{\Theta \uparrow A}]}[\StI{s_\Theta}{x}/x]} && : \U{-}{x : \upstairs{A}[\upstairs{\Theta}]}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}[\StI{s_\Theta}{x}/x]} \\
+&\equiv \UI{x}{\StI{s_{\Theta \uparrow A}}{\upstairs{b}[\upstairs{\Theta \uparrow A}]}} && : \U{-}{x : \St{s_\Theta}{\upstairs{A}[\upstairs{\Theta}]}}{\St{s_{\Theta \uparrow A}}{\upstairs{B}[\upstairs{\Theta \uparrow A}]}} \\
+&\equiv \UI{x}{\upstairs{b[\Theta \uparrow A]}} && : \U{-}{x : \upstairs{A[\Theta]}}{\upstairs{B[\Theta \uparrow A]}} \\
+&\equiv \upstairs{\mathsf{lam}(b[\Theta \uparrow A])} && : \upstairs{\Pi_{A[\Theta]} B[\Theta \uparrow A]}
 \end{align*}
 \end{enumerate}
 
 \subsubsection{Rules for $\Sigma$-types}
 
+The rules for $\Sigma$ types are given in Figure~\ref{fig:qit-sigma-rules}.
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE} \\
+\inferrule*[left=$\Sigma$-pair]{~}{\Gamma, A, B \qyields \mathsf{pair}_{A, B} : (\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]} \and
+\inferrule*[left=$\Sigma$-split]{\Gamma, A, B \qyields c : C[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}]}{\Gamma, \Sigma_A B \qyields \mathsf{split}_{A, B}(c) : C}
+%\inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\hat{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
+%\inferrule*[left=$\Sigma$-$\pi_1$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_1(p) : A} \and
+%\inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\widehat{\pi_1(p)}]} \and
+\end{mathpar}
+\begin{align}
+(\Sigma_A B)[\Theta] &\equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A] \\
+\nonumber\\
+\mathsf{split}_{A,B}(\mathsf{pair}_{A,B}) &\equiv \var{\Gamma, \Sigma_A B} \\
+\mathsf{split}_{A,B}(c)[\Theta \uparrow \Sigma_A B] &\equiv \mathsf{split}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B]) \\
+\mathsf{pair}_{A, B}[\Theta \uparrow A \uparrow B] &\equiv \mathsf{pair}_{A[\Theta], B[\Theta \uparrow A]}
+%\pi_1(a, b) &\equiv a \\
+%\pi_2(a, b) &\equiv b \\
+%(\pi_1(p), \pi_2(p)) &\equiv p \\
+%(a, b)[\Theta] &\equiv (a[\Theta], b[\Theta])
+\end{align}
+\caption{Rules for $\Sigma$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
+\end{figure}
+
+Suppose $p$ supports stable $\Sigma$-types. In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(\alpha,x,y) :\equiv \TrCirc{\ApEl{p}{\pi^\alpha_x}}{y} : \El{p}{\alpha}
+\end{align*}
+%We will use the following 2-cells:
+%\begin{align*}
+%
+%\end{align*}
+
+\begin{enumerate}
+\item[\textsc{$\Sigma$-form}] Because framework $\mathsf{F}$-types are unary, we first use a framework $\Sigma$-type to pair the provided types together.
+
+\begin{mathpar}
+\inferrule*[Left=F-form]{
+\inferrule*[Left={$(,)$-form}]
+{\upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{A} \TYPE \and \upstairs{\Gamma}, x : \upstairs{A} \yields_{\asdep{\Gamma}.x} \upstairs{B} \TYPE}
+{\upstairs{\Gamma} \yields_{\sigmacl{x}{\asdep{\Gamma}}{\asdep{\Gamma}.x}} \telety{x}{\upstairs{A}}{\upstairs{B}} \TYPE}
+}
+{\upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{\Sigma_A B} :\equiv \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}} \TYPE}
+\end{mathpar}
+
+\item[\textsc{$\Sigma$-pair}]
+\item[\textsc{$\Sigma$-split}]
+
+%\item[\textsc{$\Sigma$-pair}] We have $\Gamma \qyields a : A$ and $\Gamma \qyields b : B[\hat{a}]$, i.e.:
+%\begin{align*}
+%\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{a} : \upstairs{A} \\
+%\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{b} : \St{(\eta^\chi_{\asdep{\Gamma}})}{\upstairs{B}[\upstairs{a}/x]} \\
+%\end{align*}
+%So define $\upstairs{(a, b)} : \upstairs{\Sigma_A B}$ to be the framework term:
+%\begin{mathpar}
+%\inferrule*[Left=F-intro]{
+%\inferrule*[Left={$(,)$-pair}] {
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{a} : \upstairs{A} \and
+%\inferrule*[left=s-elim-2]{
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{b} : \St{(\eta^\chi_{\asdep{\Gamma}})}{\upstairs{B}[\upstairs{a}/x]}
+%}{\upstairs{\Gamma} \yields_{\TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}}} \UnSt{\eta^\chi_{\asdep{\Gamma}}}{\upstairs{b}} : {\upstairs{B}[\upstairs{a}/x]}
+%}}
+%{\upstairs{\Gamma} \yields_{(1_{\asdep{\Gamma}}, \TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}})} (\upstairs{a}, \UnSt{\eta^\chi_{\asdep{\Gamma}}}{\upstairs{b}}) : \telety{x}{\upstairs{A}}{\upstairs{B}}}}
+%{
+%\upstairs{\Gamma} \yields_{
+%\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)[(1_{\asdep{\Gamma}}, \TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}})/z]
+%} \FI{(\upstairs{a}, \UnSt{\eta^\chi_{\asdep{\Gamma}}}{\upstairs{b}})} : \upstairs{\Sigma_A B}
+%}
+%\end{mathpar}
+%The mode of this term is:
+%\begin{align*}
+%&\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)[(1_{\asdep{\Gamma}}, \TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}})/z] \\
+%&\equiv \Sigma_1(\asdep{\Gamma}, 1_{\asdep{\Gamma}}, \TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}}) \\
+%&\equiv \TrCirc{\pi^{\asdep{\Gamma}}_{1_{\asdep{\Gamma}}}}{\TrCirc{\eta^\chi_{\asdep{\Gamma}}}{1_{\asdep{\Gamma}}}} \\
+%&\equiv \TrCirc{(\eta^\chi_{\asdep{\Gamma}};\pi^{\asdep{\Gamma}}_{1_{\asdep{\Gamma}}})}{1_{\asdep{\Gamma}}} \\
+%&\equiv 1_{\asdep{\Gamma}}
+%\end{align*}
+%as required.
+
+%\item[\textsc{$\Sigma$-$\pi_1$}] We are handed $\Gamma \qyields p : \Sigma_A B$, i.e. 
+%\begin{align*}
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{p} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}
+%\end{align*}
+%Then $\upstairs{\pi_1(p)}$ is:
+%\begin{mathpar}
+%\inferrule*[Left=F-elim]{\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{p} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}
+%\and
+%\inferrule*[left=rewrite]{\upstairs{\Gamma}, z : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields_{\fst z} \fst z : \upstairs{A}}
+%{\upstairs{\Gamma}, z : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields_{\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)} \rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)}{\fst z} : \upstairs{A}}
+%}
+%{\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \FE{\upstairs{p}}{z}{\rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)}{\fst z}} : \upstairs{A}
+%}
+%\end{mathpar}
+%
+%\item[\textsc{$\Sigma$-$\pi_2$}] Again we have $\Gamma \qyields p : \Sigma_A B$, so
+%\begin{align*}
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{p} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}
+%\end{align*}
+%and we are are trying to get
+%\begin{align*}
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \St{\eta^\chi_{\asdep\Gamma}}{\upstairs{B}[\upstairs{\pi_1(p)}/x]}
+%\end{align*}
+%To apply $\mathsf{F}$-elim, we need to produce an appropriate term of:
+%\begin{align*}
+%\upstairs{\Gamma}, z : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields &\upstairs{B}[\upstairs{\pi_1(y)}/x][\FI{z}/y] \TYPE \\
+%&\equiv \upstairs{B}[\FE{y}{z}{\rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)}{\fst z}}/x][\FI{z}/y] \\
+%&\equiv \upstairs{B}[\FE{\FI{z}}{z}{\rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)}{\fst z}}/x] \\
+%&\equiv \upstairs{B}[\rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)}{\fst z}/x] \\
+%&\equiv \St{(\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x})}{\upstairs{B}[\fst z/x]}
+%\end{align*}
+%There is an `obvious' term that fits: use
+%\begin{align*}
+%\upstairs{\Gamma}, z : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields \StI{\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x}}{\snd z} : \St{(\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x})}{\upstairs{B}[\fst z/x]}
+%\end{align*}
+%Define $\upstairs{\pi_2(p)}$ to be:
+%\begin{mathpar}
+%\inferrule*[Left=s-intro]{
+%\inferrule*[Left=F-elim]{\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \upstairs{p} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}
+%\\
+%\upstairs{\Gamma}, z : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields \StI{\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x}}{\snd z} : \St{(\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x})}{\upstairs{B}[\fst z/x]}
+%}
+%{\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}.1}} \FE{\upstairs{p}}{z}{\StI{\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x}}{\snd z}} : \upstairs{B}[\upstairs{\pi_1(p)}/x]
+%}}
+%{
+%\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \StI{\eta^\chi_{\asdep\Gamma}}{\FE{\upstairs{p}}{z}{\StI{\ap{\asdep{\Gamma}.x}{\ApCirc{\pi^{\asdep{\Gamma}}_{\fst z}}{!_{\snd z}};E(\fst z)/x}}{\snd z}}} : \St{\eta^\chi_{\asdep\Gamma}}{\upstairs{B}[\upstairs{\pi_1(p)}/x]}
+%}
+%\end{mathpar}
+\end{enumerate}
+
+Again, the Beck-Chevalley condition will appear when we check the equations:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$(\Sigma_A B)[\Theta] \equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A]$}:]
+\end{enumerate}
+
 \subsection{Upstairs Types}
-\mvrnote{Oldish stuff:}
+\mvrnote{Outdated stuff:}
 
 The mode terms for upstairs $\Sigma$ and $\Pi$ types are
 \begin{align*}
