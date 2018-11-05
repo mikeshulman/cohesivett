@@ -1638,40 +1638,40 @@ comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
 projection is determined by $s$ and the projection from $\beta$ (which
 type checks using \eqref{dot-circ}).
 
-An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
+%An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
+%
+%\begin{definition}
+%  A comprehension object is \mvrnote{super cool} if:
+%\begin{align}
+%\label{dot-one-strict}
+%\alpha.1_{\alpha} &\equiv \alpha\\
+%\label{chi-unit-identity}
+%\eta^\chi_\alpha &\equiv \id_\alpha
+%\end{align}
+%\end{definition}
+%Consequences of being \mvrnote{super cool}:
+%\begin{itemize}
+%\item Projecting away $1_\alpha$ is the identity:
+%\begin{align}
+%\label{pi-one-strict}
+%\pi^\alpha_{1_\alpha} \equiv \id_\alpha 
+%\end{align}
+%\item Pairing with $\id_{1_\alpha}$ is the identity:
+%\begin{align}
+%\label{pair-s-bang}
+%(s \bdot \id_{1_\alpha}) \equiv s
+%\end{align}
+%By
+%\begin{align*}
+%(s \bdot \id_{1_\alpha}) 
+%&\equiv (s \bdot \id_{1_\alpha}); \pi^\alpha_{1_\alpha} \\
+%&\equiv \pi^\alpha_{1_\alpha};s \\
+%&\equiv s
+%\end{align*}
+%\end{itemize}
 
 \begin{definition}
-  A comprehension object is \mvrnote{super cool} if:
-\begin{align}
-\label{dot-one-strict}
-\alpha.1_{\alpha} &\equiv \alpha\\
-\label{chi-unit-identity}
-\eta^\chi_\alpha &\equiv \id_\alpha
-\end{align}
-\end{definition}
-Consequences of being \mvrnote{super cool}:
-\begin{itemize}
-\item Projecting away $1_\alpha$ is the identity:
-\begin{align}
-\label{pi-one-strict}
-\pi^\alpha_{1_\alpha} \equiv \id_\alpha 
-\end{align}
-\item Pairing with $\id_{1_\alpha}$ is the identity:
-\begin{align}
-\label{pair-s-bang}
-(s \bdot \id_{1_\alpha}) \equiv s
-\end{align}
-By
-\begin{align*}
-(s \bdot \id_{1_\alpha}) 
-&\equiv (s \bdot \id_{1_\alpha}); \pi^\alpha_{1_\alpha} \\
-&\equiv \pi^\alpha_{1_\alpha};s \\
-&\equiv s
-\end{align*}
-\end{itemize}
-
-\begin{definition}
-  A comprehension object \emph{supports stable $\Sigma$s} if
+  A comprehension object \emph{supports weak $\Sigma$s} if
 \[
   z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z \bdot \snd z}
   \vdash \TrCirc{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z} 
@@ -1695,7 +1695,15 @@ we have
 \end{align*}
 
 \begin{definition}
-  A comprehension object \emph{supports stable $\Pi$s} if
+A comprehension object \emph{supports strong $\Sigma$s} if, additionally,
+\begin{align*}
+\mathtt{pair}(\alpha,x,y) :\equiv (\pi^\alpha_x \bdot \eta^{\pi^\alpha_x}_y) : \alpha.x.y \vDash \alpha.\TrCirc{\pi^\alpha_x}{y}
+\end{align*}
+is an isomorphism.
+\end{definition}
+
+\begin{definition}
+  A comprehension object \emph{supports $\Pi$s} if
 \[
   z:\sigmacl{\alpha}{p}{\El{p}{\alpha}}, y : \El{p}{\fst z}
   \vdash \TrPlus{(\pi^{\fst z}_{\snd{z}})}{y} : \El{p}{\fst z \bdot \snd z} 
@@ -2179,7 +2187,7 @@ Using the triangle identity for the slice/comprehension adjunction.
 \end{enumerate}
 
 Some observations:
-\begin{lemma}
+\begin{lemma}\label{lemma:uparrow-translation}
 The derived substitution $\Theta \uparrow A$ is translated to (nearly) its framework equivalent: \[\upstairs{\Gamma, x : A[\Theta]} \yields (\upstairs{\Theta}, \UnSt{ s_{\Theta}}{x}/x) : \upstairs{\Delta, x : A},\]
 with associated 2-cell \[s_{\Theta \uparrow A} \equiv (s_\Theta \bdot \eta^{s_\Theta}_x)\]
 \end{lemma}
@@ -2254,7 +2262,7 @@ The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Note that 
 \caption{Rules for $\Pi$-types in  MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
 \end{figure}
 
-Suppose $p$ supports stable $\Pi$-types. In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
+Suppose $p$ supports $\Pi$-types. In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
 \end{align*}
@@ -2373,41 +2381,47 @@ where in the middle we verify, using Beck-Chevalley,
 
 \subsubsection{Rules for $\Sigma$-types}
 
-The rules for $\Sigma$ types are given in Figure~\ref{fig:qit-sigma-rules}.
+The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. There are two versions of the eliminator; a weak and strong version. The choice of one or the other yields \emph{weak} $\Sigma$-types or \emph{strong} $\Sigma$-types.
 
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE} \\
 \inferrule*[left=$\Sigma$-pair]{~}{\Gamma, A, B \qyields \mathsf{pair}_{A, B} : (\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]} \and
-\inferrule*[left=$\Sigma$-split]{\Gamma, A, B \qyields c : C[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}]}{\Gamma, \Sigma_A B \qyields \mathsf{split}_{A, B}(c) : C}
+\inferrule*[left=$\Sigma$-split-strong]{\Gamma, A, B \qyields c : C[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}]}{\Gamma, \Sigma_A B \qyields \mathsf{split}_{A, B}(c) : C}
 %\inferrule*[left=$\Sigma$-pair]{\Gamma \qyields a : A \and \Gamma \qyields b : B[\hat{a}]}{\Gamma \qyields (a, b) : \Sigma_A B} \and
 %\inferrule*[left=$\Sigma$-$\pi_1$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_1(p) : A} \and
 %\inferrule*[left=$\Sigma$-$\pi_2$]{\Gamma \qyields p : \Sigma_A B}{\Gamma \qyields \pi_2(p) : B[\widehat{\pi_1(p)}]} \and
 \end{mathpar}
 \begin{align}
 (\Sigma_A B)[\Theta] &\equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A] \\
+\mathsf{pair}_{A, B}[\Theta \uparrow A \uparrow B] &\equiv \mathsf{pair}_{A[\Theta], B[\Theta \uparrow A]} \\
 \nonumber\\
 \mathsf{split}_{A,B}(\mathsf{pair}_{A,B}) &\equiv \var{\Gamma, \Sigma_A B} \\
-\mathsf{split}_{A,B}(c)[\Theta \uparrow \Sigma_A B] &\equiv \mathsf{split}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B]) \\
-\mathsf{pair}_{A, B}[\Theta \uparrow A \uparrow B] &\equiv \mathsf{pair}_{A[\Theta], B[\Theta \uparrow A]}
-%\pi_1(a, b) &\equiv a \\
-%\pi_2(a, b) &\equiv b \\
-%(\pi_1(p), \pi_2(p)) &\equiv p \\
-%(a, b)[\Theta] &\equiv (a[\Theta], b[\Theta])
+\mathsf{split}_{A,B}(c)[\Theta \uparrow \Sigma_A B] &\equiv \mathsf{split}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])
 \end{align}
-\caption{Rules for $\Sigma$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
+\vspace{1cm}
+\begin{mathpar}
+\inferrule*[left=$\Sigma$-split-weak]{\Gamma, A, B \qyields c : C[\proj{\Gamma, A, B};\proj{\Gamma, A}]}{\Gamma, \Sigma_A B \qyields \mathsf{wsplit}_{A, B}(c) : C[\proj{\Gamma, \Sigma_A B}]}
+\end{mathpar}
+\begin{align}
+\mathsf{wsplit}_{A,B}(\mathsf{pair}_{A,B}) &\equiv \var{\Gamma, \Sigma_A B} \\
+\mathsf{wsplit}_{A,B}(c)[\Theta \uparrow \Sigma_A B] &\equiv \mathsf{wsplit}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B]) \\
+\end{align}
+%\begin{align}
+%%\pi_1(a, b) &\equiv a \\
+%%\pi_2(a, b) &\equiv b \\
+%%(\pi_1(p), \pi_2(p)) &\equiv p \\
+%%(a, b)[\Theta] &\equiv (a[\Theta], b[\Theta])
+%\end{align}
+\caption{Rules for $\Sigma$-types in MLTT via Explicit Substitutions}\label{fig:qit-weak-sigma-rules}
 \end{figure}
 
-Suppose $p$ supports stable $\Sigma$-types. In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
+Suppose $p$ supports weak $\Sigma$-types. In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(\alpha,x,y) :\equiv \TrCirc{\ApEl{p}{\pi^\alpha_x}}{y} : \El{p}{\alpha}
 \end{align*}
-%We will use the following 2-cells:
-%\begin{align*}
-%
-%\end{align*}
 
-\begin{enumerate}
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
 \item[\textsc{$\Sigma$-form}] Because framework $\mathsf{F}$-types are unary, we first use a framework $\Sigma$-type to pair the provided types together.
 
 \begin{mathpar}
@@ -2419,8 +2433,92 @@ Suppose $p$ supports stable $\Sigma$-types. In the framework, $\Sigma$-types are
 {\upstairs{\Gamma} \yields_{\asdep{\Gamma}} \upstairs{\Sigma_A B} :\equiv \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}} \TYPE}
 \end{mathpar}
 
-\item[\textsc{$\Sigma$-pair}]
-\item[\textsc{$\Sigma$-split}]
+\item[\textsc{$\Sigma$-pair}] We are constructing a term of type:
+\begin{align*}
+\upstairs{(\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]}
+&\equiv \St{s_{\proj{\Gamma, A, B};\proj{\Gamma, A}}}{\upstairs{\Sigma_A B}[\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}}]} \\
+&\equiv \St{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\upstairs{\Sigma_A B}} \\
+&\equiv \St{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{ \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}}
+\end{align*}
+And for this use:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-intro]{
+\inferrule*[Left={F-intro}]{
+\inferrule*[Left={$(,)$-intro}]{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_x x : \upstairs{A} \and \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_y y : \upstairs{B}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{(x, y)} (x, y) : \telety{x}{\upstairs{A}}{\upstairs{B}}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\Sigma_1(\asdep{\Gamma}, x, y)} \FI{(x, y)} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\TrPlus{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\Sigma_1(\asdep{\Gamma}, x, y)}} \StI{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\FI{(x, y)}} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{1_{\asdep{\Gamma}.x.y}} \rewrite{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}}{\StI{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\FI{(x, y)}}} : \F{z.\Sigma_1(\asdep{\Gamma}, \fst z, \snd z)}{\telety{x}{\upstairs{A}}{\upstairs{B}}}}
+\end{mathpar}
+
+\item[\textsc{$\Sigma$-split-weak}] \mvrnote{TODO}
+\end{enumerate}
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$\mathsf{split}_{A,B}(\mathsf{pair}_{A,B}) \equiv \var{\Gamma, \Sigma_A B}$}:]
+\item[{$\mathsf{split}_{A,B}(c)[\Theta \uparrow \Sigma_A B] \equiv \mathsf{split}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])$}:]
+\item[{$\mathsf{pair}_{A, B}[\Theta \uparrow A \uparrow B] \equiv \mathsf{pair}_{A[\Theta], B[\Theta \uparrow A]}$}:]
+\end{enumerate}
+
+Now suppose $p$ supports strong $\Sigma$-types, so $\mathtt{pair}(\alpha,x,y)$ has an inverse
+\begin{align*}
+\mathtt{split}(\alpha,x,y) : \alpha.\Sigma_1(\alpha,x,y) \vDash\alpha.x.y
+\end{align*}
+This allows us to interpret strong elimination.
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[\textsc{$\Sigma$-split-strong}] We will save ourselves some trouble if we first simplify the translation of the substitution $(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}$:
+\begin{align*}
+&\{ \upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}} \mid s_{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}} \} \\
+&\equiv \{ \UnSt{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\upstairs{\mathsf{pair}_{A,B}}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \}  \\
+&\equiv \{ \UnSt{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\rewrite{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}}{\StI{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\FI{(x, y)}}}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \}  \\
+&\equiv \{ \rewrite{\ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}}}{\UnSt{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\StI{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}{\FI{(x, y)}}}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \}  \\
+&\equiv \{ \rewrite{\ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}}}{\rewrite{\varepsilon^{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}{\FI{(x, y)}}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \}  \\
+&\equiv \{ \rewrite{\ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}{\FI{(x, y)}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \} 
+\end{align*}
+Now let's simplify the 2-cell in that rewrite.
+\begin{align*}
+&\ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}} \\
+&\equiv \ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}};\ApCirc{\pi^{\asdep{\Gamma}}_x}{\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}};\varepsilon^{\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}}};\ApCirc{\pi^{\asdep{\Gamma}}_x}{\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}};\varepsilon^{\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\var{y}};\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_{\TrPlus{\pi^{\asdep{\Gamma}}_x}{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}};\varepsilon^{\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\var{y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_y;\eta^{\pi^{\asdep{\Gamma}}_x}_y};\varepsilon^{\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\var{y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_y}; \ApCirc{\pi^{\asdep{\Gamma}}_x}{\eta^{\pi^{\asdep{\Gamma}}_x}_y};\varepsilon^{\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{y}} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{\ApCirc{\pi^{\asdep{\Gamma}.x}_y}{\var{y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y}_y} \\
+&\equiv \ApCirc{\pi^{\asdep{\Gamma}}_x}{E(y)}
+\end{align*}
+\mvrnote{There may have been an easier path through all this...}
+So the substitution is equivalent to:
+\begin{align*}
+&\{ \upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}} \mid s_{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}} \} \\
+&\equiv \{ \rewrite{\ApCirc{(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x)}{\var{y};\ApPlus{\pi^{\asdep{\Gamma}.x}_y}{\eta^{\pi^{\asdep{\Gamma}}_x}_y}};\varepsilon^{\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x}_{\TrCirc{\pi^{\asdep{\Gamma}}_x}{y}}}{\FI{(x, y)}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \} \\
+&\equiv \{ \rewrite{\ApCirc{\pi^{\asdep{\Gamma}}_x}{E(y)}}{\FI{(x, y)}}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) \} \\
+&\equiv \{ \FI{(x, y)}/z \mid H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) ; (\id_{\asdep{\Gamma}} \bdot \ApCirc{\pi^{\asdep{\Gamma}}_x}{E(y)}) \} \\
+&\equiv \{ \FI{(x, y)}/z \mid (\pi^{\asdep{\Gamma}}_x \bdot \eta^{\pi^{\asdep{\Gamma}}_x}_y) \} \\
+&\equiv \{ \FI{(x, y)}/z \mid \mathtt{pair}(\asdep{\Gamma},x,y) \}
+\end{align*}
+where $H(\pi^{\asdep{\Gamma}.x}_y;\pi^{\asdep{\Gamma}}_x) ; (\id_{\asdep{\Gamma}} \bdot \ApCirc{\pi^{\asdep{\Gamma}}_x}{E(y)}) = (\pi^{\asdep{\Gamma}}_x \bdot \eta^{\pi^{\asdep{\Gamma}}_x}_y)$ by exactly the same reasoning as used in Lemma~\ref{lemma:uparrow-translation}.
+
+So we are handed an element $\upstairs{c}$ of $\upstairs{C[\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}]}$, i.e. of:
+\begin{align*}
+\St{s_{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}}}{\upstairs{C}[\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \mathsf{pair}_{A,B}}]}
+&\equiv \St{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{C}[\FI{(x, y)}/z]}
+\end{align*}
+and we want an element of $\upstairs{C}$. So use:
+\begin{align*}
+\inferrule*[Left=F-elim]{
+\upstairs{\Gamma}, z : \upstairs{\Sigma_A B} \yields_z z : \upstairs{\Sigma_A B} \and 
+\inferrule*[left=rewrite]{
+\inferrule*[Left=cut]{
+\inferrule*[Left=s-elim-2]{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{1_{\asdep{\Gamma}.x.y}} \upstairs{c} : \St{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{C}[\FI{(x, y)}/z]}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\TrCirc{\mathtt{pair}(\asdep{\Gamma},x,y)}{1_{\asdep{\Gamma}.x.y}}} \UnSt{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{c}} : \upstairs{C}[\FI{(x, y)}/z]}}
+{\upstairs{\Gamma}, w : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields_{\TrCirc{\mathtt{pair}(\asdep{\Gamma},\fst{w},\snd{w})}{1_{\asdep{\Gamma}.{\fst w}.{\snd w}}}} \UnSt{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{c}} : \upstairs{C}[\FI{w}/z]}}
+{\upstairs{\Gamma}, w : \telety{x}{\upstairs{A}}{\upstairs{B}} \yields_{1_{\asdep{\Gamma}.w}[\Sigma_1(x,y)/w]} \rewrite{\ApCirc{\mathtt{pair}(\asdep{\Gamma},x,y)}{\varepsilon^{\mathtt{split}(\asdep{\Gamma},x,y)}_{1_{\asdep{\Gamma}.{\fst w}.{\snd w}}}}}{\UnSt{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{c}}} : \upstairs{C}[\FI{w}/z]}
+}
+{\upstairs{\Gamma}, z : \upstairs{\Sigma_A B} \yields_{1_{\asdep{\Gamma}.z}} \FE{z}{w}{\rewrite{\ApCirc{\mathtt{pair}(\asdep{\Gamma},x,y)}{\varepsilon^{\mathtt{split}(\asdep{\Gamma},x,y)}_{1_{\asdep{\Gamma}.{\fst w}.{\snd w}}}}}{\UnSt{\mathtt{pair}(\asdep{\Gamma},x,y)}{\upstairs{c}}}} : \upstairs{C}} 
+\end{align*}
+\mvrnote{Uh oh, we use cut here. Is it in a way that breaks the extensibility of the translation? Note that the reason we're using cut is that the telescope types use $\pi_1$ and $\pi_2$ eliminators, which is a mismatch with the $\mathsf{split}$ style of everything else. Maybe this means we're ok?}
 
 %\item[\textsc{$\Sigma$-pair}] We have $\Gamma \qyields a : A$ and $\Gamma \qyields b : B[\hat{a}]$, i.e.:
 %\begin{align*}
