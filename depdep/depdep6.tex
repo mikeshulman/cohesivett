@@ -413,6 +413,33 @@ Pairing and projection 2-cells are definable:
 
 \drlnote{Check usual composition rule for pairing}
 
+\begin{lemma}
+If $s : p \vDash q$ and $t : q \vDash p$ are inverse, then $\TrPlus{t}{\mu} \cong \TrCirc{s}{\mu}$ for $\mu : p$.
+\end{lemma}
+\begin{proof}
+The maps in either direction are given by
+\begin{align*}
+\eta^t_{\TrCirc{s}{\mu}} &: \TrCirc{s}{\mu} \vDash \TrPlus{t}{\TrCirc{t}{\TrCirc{s}{\mu}}} \equiv \TrPlus{t}{\mu} \\
+\ApPlus{t}{\eta^s_\mu} &: \TrPlus{t}{\mu} \vDash \TrPlus{t}{\TrPlus{s}{\TrCirc{s}{\mu}}} \equiv \TrCirc{s}{\mu}
+\end{align*}
+And we can check that the composites are the identity:
+\begin{align*}
+\eta^t_{\TrCirc{s}{\mu}} ; \ApPlus{t}{\eta^s_\mu}
+&\equiv \eta^t_{\TrCirc{s}{\mu}} ; \ApPlus{t}{\eta^s_{\TrCirc{t}{\TrCirc{s}{\mu}}}} \\
+&\equiv \eta^{t;s}_{\TrCirc{s}{\mu}} \\ 
+&\equiv \eta^{\id}_{\TrCirc{s}{\mu}} \\ 
+&\equiv \id_{\TrCirc{s}{\mu}}
+\intertext{and}
+\ApPlus{t}{\eta^s_\mu} ; \eta^t_{\TrCirc{s}{\mu}}
+&\equiv \ApPlus{(t;s)}{\ApPlus{t}{\eta^s_\mu} ; \eta^t_{\TrCirc{s}{\mu}}} \\
+&\equiv \ApPlus{t}{\ApPlus{s}{\ApPlus{t}{\eta^s_\mu}} ; \ApPlus{s}{\eta^t_{\TrCirc{s}{\mu}}}} \\
+&\equiv \ApPlus{t}{\eta^s_\mu ; \ApPlus{s}{\eta^t_{\TrCirc{s}{\mu}}}} \\
+&\equiv \ApPlus{t}{\eta^{s;t}_\mu} \\
+&\equiv \ApPlus{t}{\eta^{\id}_\mu} \\
+&\equiv \ApPlus{t}{\id_\mu} \\
+&\equiv \id_{\TrPlus{t}{\mu}}
+\end{align*}
+\end{proof}
 
 \subsection{Contexts}
 
@@ -1423,17 +1450,29 @@ i.e. $F(t) :\equiv \ap{(\ApEl{p}{s'})^\circ}{\varepsilon^{\ApEl{p}{t}}_{1_{\beta
 
 And for a 2-cell $s : x \vDash_{\El{p}{\alpha}} y$, the morphism $U(s) : \pi^\alpha_x \vDash \pi^\alpha_y$ (as a 2-cell over $\alpha$) is given by $U(s) :\equiv (\id_\alpha \bdot s)$. This is indeed a 2-cell over $\alpha$ by naturality of $\pi$.
 
-Now we can check the triangle identities. Suppose we have $s : \beta \vDash \alpha$. Then:
+Now we can check the triangle identities. The following identity is needed:
+\begin{align*}
+\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}; \var{\TrCirc{{s}}{1_\beta}} 
+&\equiv \ApCirc{H(s)}{\ApPlus{H(s)}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{(\eta^\chi_\beta ; (s \bdot \eta^{s}_{1_\beta}))}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{(s \bdot \eta^{s}_{1_\beta})}{\var{\TrCirc{{s}}{1_\beta}}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{\pi^\beta_{1_\beta}}{\eta^{s}_{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\eta^{s}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s);\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta};\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}};\ApCirc{H(s)}{\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrCirc{H(s)}{1_\beta}} ; \eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}} \\
+&\equiv \eta^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{H(s)}}{1_\beta}}
+\end{align*}
+Suppose we have $s : \beta \vDash \alpha$. Then:
 \begin{align*}
 F(H(s)) ; E(F(s))
 &\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}} ; E(\TrCirc{\ApEl{p}{s}}{1_\beta}) \\
 &\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}} ; \ap{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}^\circ}{\var{\TrCirc{\ApEl{p}{s}}{1_\beta}}};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
 &\text{(Fusing the ap's)} \\
 &\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\ApPlus{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})}{?}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%&\equiv \varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{?} ; ?  \\
-&\equiv ??? \\
-&\equiv \ap{(\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{z})}{\eta_{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}/z};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
+&\text{(Above equation)} \\
+&\equiv \ap{(\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{z})}{\eta^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}/z};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
 &\equiv \id_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
 &\equiv \id_{\TrCirc{\ApEl{p}{H(s);\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{1_\beta}} \\
 &\equiv \id_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
@@ -1469,7 +1508,7 @@ H(U(x)); U(E(x))
 %\end{align*}
 \end{proof}
 
-For future use, some identities involving $H$:
+For future use, some identities involving $H$: \mvrnote{Surely these can be expressed/simplified using the $F$ and $U$ functors from above?}
 
 \begin{lemma}\label{lemma:h-on-composite}
 For $\gamma \yields s : \beta \vDash_p \alpha$ and $\gamma \yields t : \alpha \vDash_p \lambda$
