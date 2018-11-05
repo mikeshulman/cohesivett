@@ -1452,30 +1452,38 @@ And for a 2-cell $s : x \vDash_{\El{p}{\alpha}} y$, the morphism $U(s) : \pi^\al
 
 Now we can check the triangle identities. The following identity is needed:
 \begin{align*}
-\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}; \var{\TrCirc{{s}}{1_\beta}} 
-&\equiv \ApCirc{H(s)}{\ApPlus{H(s)}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\ApPlus{(\eta^\chi_\beta ; (s \bdot \eta^{s}_{1_\beta}))}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{(s \bdot \eta^{s}_{1_\beta})}{\var{\TrCirc{{s}}{1_\beta}}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{\pi^\beta_{1_\beta}}{\eta^{s}_{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\eta^{s}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\eta^{H(s);\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta};\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}};\ApCirc{H(s)}{\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} \\
-&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrCirc{H(s)}{1_\beta}} ; \eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}} \\
+&\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}; \var{\TrCirc{{s}}{1_\beta}} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{H(s)}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} 
+&&\text{(Naturality of $\varepsilon$)} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{(\eta^\chi_\beta ; (s \bdot \eta^{s}_{1_\beta}))}{\var{\TrCirc{{s}}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Definition of $H(s)$)} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{(s \bdot \eta^{s}_{1_\beta})}{\var{\TrCirc{{s}}{1_\beta}}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}} 
+&&\text{(Unfuse the transport)} \\
+&\equiv \ApCirc{H(s)}{\ApPlus{\eta^\chi_\beta}{\ApPlus{\pi^\beta_{1_\beta}}{\eta^{s}_{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Beta reduction for $\var{}$)} \\
+&\equiv \ApCirc{H(s)}{\eta^{s}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Triangle identity for $\chi$)} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s);\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Beta unreduction for $\pi$)} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta};\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Unfuse $\eta$ for a composite)} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}};\ApCirc{H(s)}{\ApPlus{H(s)}{\eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}}} ; \varepsilon^{H(s)}_{\TrPlus{\pi^\alpha_{\TrCirc{s}{1_\beta}}}{\TrCirc{s}{1_\beta}}}
+&&\text{(Unfuse ap on a composite)} \\
+&\equiv \ApCirc{H(s)}{\eta^{H(s)}_{1_\beta}} ; \varepsilon^{H(s)}_{\TrCirc{H(s)}{1_\beta}} ; \eta^{\pi^\alpha_{\TrCirc{s}{1_\beta}}}_{\TrCirc{H(s)}{1_\beta}}
+&&\text{(Naturality of $\varepsilon$)} \\
 &\equiv \eta^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{H(s)}}{1_\beta}}
+&&\text{(Triangle equation for $H(s)$)}
 \end{align*}
 Suppose we have $s : \beta \vDash \alpha$. Then:
 \begin{align*}
-F(H(s)) ; E(F(s))
-&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}} ; E(\TrCirc{\ApEl{p}{s}}{1_\beta}) \\
-&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}} ; \ap{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}^\circ}{\var{\TrCirc{\ApEl{p}{s}}{1_\beta}}};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-&\text{(Fusing the ap's)} \\
-&\equiv \ap{(\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}})^\circ}{\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}}} ;\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-&\text{(Above equation)} \\
-&\equiv \ap{(\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{z})}{\eta^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}/z};\varepsilon^{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
-&\equiv \id_{\TrCirc{\ApEl{p}{\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}}} \\
-&\equiv \id_{\TrCirc{\ApEl{p}{H(s);\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}}}}{1_\beta}} \\
-&\equiv \id_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
+&F(H(s)) ; E(F(s)) \\
+&\equiv \ap{({\pi^\alpha_{\TrCirc{{s}}{1_\beta}}})^\circ}{\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}} ; E(\TrCirc{{s}}{1_\beta}) && \text{(Definition of $F$)} \\
+&\equiv \ap{({\pi^\alpha_{\TrCirc{{s}}{1_\beta}}})^\circ}{\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}} ; \ap{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}^\circ}{\var{\TrCirc{{s}}{1_\beta}}};\varepsilon^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{s}}{1_\beta}} && \text{(Definition of $E$)} \\
+&\equiv \ap{({\pi^\alpha_{\TrCirc{{s}}{1_\beta}}})^\circ}{\varepsilon^{{H(s)}}_{1_{\alpha.\TrCirc{{s}}{1_\beta}}}; \var{\TrCirc{{s}}{1_\beta}}} ;\varepsilon^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{s}}{1_\beta}} && \text{(Fuse ap)} \\
+&\equiv \ap{(\TrCirc{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}{z})}{\eta^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{H(s)}}{1_\beta}}/z};\varepsilon^{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}_{\TrCirc{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}{\TrCirc{{H(s)}}{1_\beta}}} && \text{(Above equation)} \\
+&\equiv \id_{\TrCirc{{\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}{\TrCirc{{H(s)}}{1_\beta}}} && \text{(Triangle equation for $\pi$)} \\
+&\equiv \id_{\TrCirc{{H(s);\pi^\alpha_{\TrCirc{{s}}{1_\beta}}}}{1_\beta}} && \text{(Fuse transports)} \\
+&\equiv \id_{\TrCirc{{s}}{1_\beta}} && \text{(Beta reduction for $\pi$)} \\
 &\equiv \id_{F(s)}
 \end{align*}
 
@@ -1483,29 +1491,18 @@ Mercifully the other one is easier:
 \begin{align*}
 H(U(x)); U(E(x))
 &\equiv H(\pi^\alpha_x) ; (\id_\alpha, E(x)) \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}) ; (\id_\alpha, (\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x)) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{{\pi^\alpha_x}}_{1_{\alpha.x}}) ; (\id_\alpha, (\ap{{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{{\pi^\alpha_x}}_x)) \\
 & \text{(Fusion for $\bdot$)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{{\pi^\alpha_x}}{\ap{{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{{\pi^\alpha_x}}_x}) \\
 & \text{(Fusion for ap)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{{\pi^\alpha_x}}_{1_{\alpha.x}} ; \ApPlus{{\pi^\alpha_x}}{\ap{{\pi^\alpha_x}^\circ}{\var{x}}} ; \ApPlus{{\pi^\alpha_x}}{\varepsilon^{{\pi^\alpha_x}}_x}) \\
 & \text{(Naturality of $\eta$)} \\
-&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x} ; \eta^{\ApEl{p}{\pi^\alpha_x}}_{\ApPlus{\ApEl{p}{\pi^\alpha_x}}{x}} ; \ApPlus{\ApEl{p}{\pi^\alpha_x}}{\varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x}) \\
-&\text{(Triangle identity for $\ApEl{p}{\pi^\alpha_x}$)} \\
+&\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x} ; \eta^{{\pi^\alpha_x}}_{\ApPlus{{\pi^\alpha_x}}{x}} ; \ApPlus{{\pi^\alpha_x}}{\varepsilon^{{\pi^\alpha_x}}_x}) \\
+&\text{(Triangle identity for ${\pi^\alpha_x}$)} \\
 &\equiv \eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
 &\text{(Triangle identity for $\chi$)} \\
 &\equiv \id_{\alpha.x}
 \end{align*}
-%So we are done if we can show
-%\begin{align*}
-%\eta_{\TrCirc{\ApEl{p}{H(s)}}{1_\beta}} \equiv \varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}}
-%\end{align*}
-%Starting with the RHS:
-%\begin{align*}
-%\varepsilon^{\ApEl{p}{H(s)}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}}
-%&\equiv \varepsilon^{\ApEl{p}{\eta^\chi_\beta};\ApEl{p}{(s \bdot \eta^{\ApEl{p}{s}}_{1_\beta})}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%&\equiv \varepsilon^{\ApEl{p}{\eta^\chi_\beta};\ApEl{p}{(s \bdot \eta^{\ApEl{p}{s}}_{1_\beta})}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%&(\ap{{\ApEl{p}{(s \bdot \eta^{\ApEl{p}{s}}_{1_\beta})}}^\circ}{\varepsilon^{\ApEl{p}{\eta^\chi_\beta}}_{{\ApEl{p}{(s \bdot \eta^{\ApEl{p}{s}}_{1_\beta})}}^+(1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}})}}) ; \varepsilon^{\ApEl{p}{(s \bdot \eta^{\ApEl{p}{s}}_{1_\beta})}}_{1_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}}}; \var{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%\end{align*}
 \end{proof}
 
 For future use, some identities involving $H$: \mvrnote{Surely these can be expressed/simplified using the $F$ and $U$ functors from above?}
