@@ -1225,67 +1225,94 @@ each fiber instead of a cartesian product.
 
 \subsection{Morphisms of Bifibrations}
 
-Any dependent type $x : p \vdash S(x) \type$ is a bifibration in the
-sense that for $s : \beta \Yields_p \alpha$ we have both $\ap{S}{s/x}^+
-: S[\alpha/x] \to S[\beta/x]$ and $\ap{S}{s/x}^\circ : S[\beta/x] \to
-S[\alpha/x]$.
+Any dependent type $x : p \vdash A(x) \type$ is a bifibration in the
+sense that for $s : \beta \Yields_p \alpha$ we have both $\ap{A}{s/x}^+
+: A[\alpha/x] \to A[\beta/x]$ and $\ap{A}{s/x}^\circ : A[\beta/x] \to
+A[\alpha/x]$.
 
 \begin{definition}
 Suppose (in any context $\gamma$) a type, with two dependent types
 over it:
 \begin{mathpar}
-p \type \and x : p \vdash S(x) \type \and x : p \vdash T(x) \type 
+p \type \and x : p \vdash A(x) \type \and x : p \vdash B(x) \type 
 \end{mathpar}
-A \emph{morphism of bifibrations} from $S$ to $T$ consists of a term
+A \emph{morphism of bifibrations} from $A$ to $B$ consists of a term
 \begin{mathpar}
-x : p, z:S(x) \vdash f_1(x,z) : T(x)
+x : p, z:A(x) \vdash f_1(x,z) : B(x)
 \end{mathpar}
-satisfying the following equations for any $\alpha : p$, $s
-: \beta \Yields_p \alpha$, $\mu : S[\alpha/x]$, $\nu : S[\beta/x]$:
+such that for for any $\alpha : p$, $s : \beta \Yields_p \alpha$, $\mu : A[\alpha/x]$, $\nu : A[\beta/x]$, the two maps
 \begin{align}
 \label{mor-fib-subst}
-f_1(\beta,\TrPlus{\ap{S}{s/x}}{\mu}) \equiv_{T(\beta)} \TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}\\
+l_f(s, \mu) &: f_1(\beta,\TrPlus{\ap{A}{s/x}}{\mu}) \vDash_{B(\beta)} \TrPlus{\ap{B}{s/x}}{f_1(\alpha,\mu)}  \\
+l_f(s, \mu) &:\equiv \ap{f_1(x,z)}{s/x, \id_{\TrPlus{\ap{A}{s}}{\mu}}/z} \nonumber \\
 \label{mor-opfib-subst}
-f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\nu}) \equiv_{T(\alpha)} \TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}
+r_f(s, \nu) &: \TrCirc{\ap{B}{s}}{f_1(\beta,\nu)} \vDash_{B(\alpha)} f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu}) \\
+r_f(s, \nu) &:\equiv \ApCirc{\ap{B}{s}}{\ap{f_1(x,z)}{s/x, \eta^{\ap{A}{s}}_{\nu}/z}};\varepsilon^{\ap{B}{s}}_{f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu})} \nonumber
 \end{align}
-A morphism of bifibrations is \emph{strict} \mvrnote{(??)} if additionally:
-\begin{align}
-\label{mor-fib-unit}
-\ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} \equiv \eta^{{\ap{T}{s/x}}}_{f_1(\beta,\nu)} \\
-\label{mor-fib-counit}
-\ap{f_1(\alpha,z)}{\varepsilon^{\ap{S}{s/x}}_\mu/z} \equiv
-\varepsilon^{{\ap{T}{s/x}}}_{f_1(\alpha,\mu)}
-\end{align}
+are identities. \mvrnote{TODO: pick a better name for these maps?} \mvrnote{The reason the maps are defined so differently is that our mode theory is `$+$-biased'}
 \end{definition}
 
 The first equation says that $f_1$ is a ``morphism of fibrations'', in
 the sense that it commutes with ``substitution'', in the sense of the
 contravariant action of a mode type morphism.  The second says that it
-is a ``morphism of opfibrations''.  The third and fourth say that $f_1$
-preserves the unit and counit of the $s^\circ \dashv s^+$ adjunctions.
-\drlnote{This is part of morphism of bifibrations because...}
-To type check \eqref{mor-fib-unit}, we have
-\begin{mathpar}
-\eta^{\ap{S}{s/x}}_\nu : \nu \Yields_{S[\beta/x]} \TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}}\\
-\ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} : f_1(\beta,\nu) \Yields_{S[\beta/x]} f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
-\end{mathpar}
-But
-\begin{align*}
-  f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
-  & \equiv
-\TrPlus{\ap{T}{s/x}}{f_1(\alpha,{\TrCirc{\ap{S}{s/x}}{\nu}})} \\
-& \equiv
-\TrPlus{\ap{T}{s/x}}{\TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}}
-\end{align*}
+is a ``morphism of opfibrations''.  
 
-To type check \eqref{mor-fib-counit}, we have
-\begin{mathpar}
-\varepsilon^{\ap{S}{s/x}}_\mu : \TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}} \Yields_{S[\alpha/x]} \mu\\
-\ap{f_1(\alpha,z)}{\varepsilon^{\ap{S}{s/x}}_\mu/z} : f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}}) \Yields_{S[\alpha/x]} f_1(\alpha,\mu)\\
-f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
-\equiv
-\TrCirc{\ap{T}{s/x}}{\TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}}
-\end{mathpar}
+\begin{lemma}
+For \emph{any} term $f_1(x,z)$ of the above shape, the following equations hold:
+\begin{align*}
+\ap{f_1(\beta,z)}{\eta^{\ap{A}{s}}_\nu/z} ; l_f(s, \TrCirc{\ap{A}{s}}{\nu}) &\equiv \eta^{\ap{B}{s}}_{f_1(\beta, \nu)} ; \ApPlus{\ap{B}{s}}{r_f(s, \nu)} \\
+r_f(s, \TrPlus{\ap{B}{s}}{\mu}) ; \ap{f_1(\alpha,z)}{\varepsilon^{\ap{B}{s}}_\mu/z} &\equiv \ApCirc{\ap{A}{s}}{l_f(s,\mu)};\varepsilon^{\ap{A}{s}}_{f_1(\alpha, \mu)}
+\end{align*}
+\end{lemma}
+\begin{proof}
+The first:
+\begin{align*}
+&\eta^{\ap{B}{s}}_{f_1(\alpha, \nu)} ; \ApPlus{\ap{B}{s}}{r_f(s, \nu)} \\
+&\equiv \eta^{\ap{B}{s}}_{f_1(\alpha, \nu)} ; \ApPlus{\ap{B}{s}}{\ApCirc{\ap{B}{s}}{\ap{f_1(x,z)}{s/x, \eta^{\ap{A}{s}}_{\nu}/z}};\varepsilon^{\ap{B}{s}}_{f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu})}} \\
+&\equiv \eta^{\ap{B}{s}}_{f_1(\alpha, \nu)} ; \ApPlus{\ap{B}{s}}{\ApCirc{\ap{B}{s}}{\ap{f_1(x,z)}{s/x, \eta^{\ap{A}{s}}_{\nu}/z}}};\ApPlus{\ap{B}{s}}{\varepsilon^{\ap{B}{s}}_{f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu})}} \\
+&\equiv \ap{f_1(x,z)}{s/x, \eta^{\ap{A}{s}}_{\nu}/z} ; \eta^{\ap{B}{s}}_{\TrPlus{\ap{B}{s}}{f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu})}} ; \ApPlus{\ap{B}{s}}{\varepsilon^{\ap{B}{s}}_{f_1(\alpha,\TrCirc{\ap{A}{s}}{\nu})}} \\
+&\equiv \ap{f_1(x,z)}{s/x, \eta^{\ap{A}{s}}_{\nu}/z} \\
+&\equiv \ap{f_1(\alpha,z)}{\eta^{\ap{A}{s}}_\mu/z} ; l_f(s, \TrCirc{\ap{A}{s}}{\mu})
+\end{align*}
+The other equation is similar.
+\end{proof}
+
+\begin{corollary}
+For $f_1$ a morphism of bifibrations, we have:
+\begin{align}
+\label{mor-fib-unit}
+\ap{f_1(\beta,z)}{\eta^{\ap{A}{s/x}}_\nu/z} \equiv \eta^{{\ap{B}{s/x}}}_{f_1(\beta,\nu)} \\
+\label{mor-fib-counit}
+\ap{f_1(\alpha,z)}{\varepsilon^{\ap{A}{s/x}}_\mu/z} \equiv
+\varepsilon^{{\ap{B}{s/x}}}_{f_1(\alpha,\mu)}
+\end{align}
+\end{corollary}
+
+%The third and fourth say that $f_1$
+%preserves the unit and counit of the $s^\circ \dashv s^+$ adjunctions.
+%\drlnote{This is part of morphism of bifibrations because...}
+%To type check \eqref{mor-fib-unit}, we have
+%\begin{mathpar}
+%\eta^{\ap{S}{s/x}}_\nu : \nu \Yields_{S[\beta/x]} \TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}}\\
+%\ap{f_1(\beta,z)}{\eta^{\ap{S}{s/x}}_\nu/z} : f_1(\beta,\nu) \Yields_{S[\beta/x]} f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
+%\end{mathpar}
+%But
+%\begin{align*}
+%  f_1(\beta,\TrPlus{\ap{S}{s/x}}{\TrCirc{\ap{S}{s/x}}{\nu}})
+%  & \equiv
+%\TrPlus{\ap{T}{s/x}}{f_1(\alpha,{\TrCirc{\ap{S}{s/x}}{\nu}})} \\
+%& \equiv
+%\TrPlus{\ap{T}{s/x}}{\TrCirc{\ap{T}{s/x}}{f_1(\beta,\nu)}}
+%\end{align*}
+%
+%To type check \eqref{mor-fib-counit}, we have
+%\begin{mathpar}
+%\varepsilon^{\ap{S}{s/x}}_\mu : \TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}} \Yields_{S[\alpha/x]} \mu\\
+%\ap{f_1(\alpha,z)}{\varepsilon^{\ap{S}{s/x}}_\mu/z} : f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}}) \Yields_{S[\alpha/x]} f_1(\alpha,\mu)\\
+%f_1(\alpha,\TrCirc{\ap{S}{s/x}}{\TrPlus{\ap{S}{s/x}}{\mu}})
+%\equiv
+%\TrCirc{\ap{T}{s/x}}{\TrPlus{\ap{T}{s/x}}{f_1(\alpha,\mu)}}
+%\end{mathpar}
 
 %% Often, it will be the case that $f_1(x,z) := \TrCirc{t}{z}$ for some mode
 %% type morphism $\TypeTwo{x : p}{t}{S}{T[f_0(x)/y]}$.  In this case, equation
@@ -2730,7 +2757,6 @@ and we want an element of $\upstairs{C}$. So use:
 }
 {\upstairs{\Gamma}, z : \upstairs{\Sigma_A B} \yields_{1_{\asdep{\Gamma}.z}} \FE{z}{w}{\StI{\mathtt{split}(\asdep{\Gamma},\fst w,\snd w)}{\upstairs{c}[\fst w / x, \snd w / y]}} : \upstairs{C}} 
 \end{align*}
-\mvrnote{Uh oh, we use cut here. Is it in a way that breaks the extensibility of the translation? Note that the reason we're using cut is that the telescope types use $\pi_1$ and $\pi_2$ eliminators, which is a mismatch with the $\mathsf{split}$ style of everything else. Maybe this means we're ok?}
 \end{enumerate}
 
 %The following computation will show up a few times:
