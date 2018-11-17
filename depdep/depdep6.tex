@@ -651,8 +651,8 @@ Where the last term equation is a special case of rewrite on substitutions. The 
 In the absence of \textsf{F}-eta, we also need these extra equalities so we can push $s$-types around:
 \begin{align*}
 \StI{s[\nu/y]}{\FE{M}{x}{N}} &\equiv \FE{M}{x}{\StI{s[\mu/y]}{N}} \\
-\FEs{\TrPlus{s}{\mu}}{M}{x}{N} &\equiv \FEs{\mu}{(\StE{s}{M}{p}{p})}{x}{N} \\
-\FEs{\mu[\TrPlus{s}{x}/x]}{M}{y}{N} &\equiv \StE{s}{(\FEs{\mu}{M}{q}{q})}{x}{N}
+\FEs{\TrPlus{s}{\mu}}{M}{x}{N} &\equiv \StE{s}{M}{y}{(\FEs{\mu}{y}{x}{N})} \\
+\FEs{\mu[\TrPlus{s}{x}/x]}{M}{x}{N} &\equiv \FEs{\mu}{M}{y}{(\StE{s}{y}{x}{N})} \\
 \end{align*}
 \mvrnote{Check that the ones for U-types hold already}
 
@@ -917,16 +917,15 @@ Using eta for $s$-types:
 \begin{proof}
 \begin{align*}
 &\FEs{\TrPlus{s}{\mu}}{\StI{s}{M}}{x}{N} \\
-&\equiv \FEs{\mu}{(\StE{s}{\StI{s}{M}}{p}{p})}{x}{N} \\
+&\equiv \StE{s}{\StI{s}{M}}{y}{(\FEs{\mu}{y}{x}{N})} \\
 &\equiv \FEs{\mu}{M}{x}{N}
 \end{align*}
 and
 \begin{align*}
-& \FEs{\mu[\TrPlus{s}{x}/x]}{M}{y}{N[\StI{s}{x}/z]} \\
-&\equiv \StE{s}{(\FEs{\mu}{M}{q}{q})}{x}{N[\StI{s}{x}/z]} \\
-&\equiv N[(\FEs{\mu}{M}{q}{q})/z] \\
+& \FEs{\mu[\TrPlus{s}{x}/x]}{M}{x}{N[\StI{s}{x}/x]} \\
+&\equiv \FEs{\mu}{M}{y}{(\StE{s}{y}{x}{N[\StI{s}{x}/x]})}  \\
+&\equiv \FEs{\mu}{M}{y}{N[y/x]} 
 \end{align*}
-\mvrnote{Stuck?}
 \end{proof}
 
 \begin{lemma}
