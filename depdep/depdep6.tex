@@ -1686,103 +1686,103 @@ H(s ; t) ; (\id_\lambda \bdot \ap{t^\circ}{\varepsilon^{s}_{1_{\alpha}}})
 The third equation is exactly beta-reduction for $\pi$.
 \end{proof}
 
-%If the adjunction is an equivalence for every $\alpha$ \mvrnote{Do we need any extra compatibility?}, then the $T(\alpha)$ bifibration is equivalent to the codomain bifibration and $(p,\El{p}{-},\chi_p)$ is describing a category with finite limits. 
-%
-%\begin{definition}
-%  A comprehension object is an \emph{object with finite limits} if the unit and counit described above are isomorphisms, so there exist inverses:
-%  \begin{align*}
-%  H^{-1}(s) : \alpha.\TrCirc{\ApEl{p}{s}}{1_\beta} \vDash_p \beta && \text{(as a map $\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \to s$ of 2-cells over $\alpha$)} \\
-%  E^{-1}(x) : x \vDash_{\El{p}{\alpha}} \TrCirc{\ApEl{p}{\pi^\alpha_x}}{1_{\alpha.x}}
-%  \end{align*}
-%  For completeness, being inverses means that:
-%  \begin{align*}
-%  \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) ; H^{-1}(s) &\equiv \id_\beta \\
-%   H^{-1}(s) ; \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) &\equiv \id_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%   H^{-1}(s) ; s &\equiv \pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
-%   \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x ; E^{-1}(x) &\equiv \id_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{1_{\alpha.x}}} \\
-%   E^{-1}(x) ; \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x  
-%  \end{align*}
-%\end{definition}
-%
-%Naturality of these inverses ought to follow from naturality of $H$ and $E$.
-%
-%It may be more convenient to demand the unit and counit are identities, not just isomorphisms:
-%
-%\begin{definition}
-%  A comprehension object is an \emph{very strict object with finite limits} if the following equations hold:
-%  \begin{align}
-%\label{circ-one}
-%\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
-%\label{counit-identity}
-%\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x \\
-%\label{dot-circ-one}
-%\alpha.(\ApEl{p}{s}^\circ(1_\beta)) &\equiv \beta \\
-%\label{pi-dot-circ-one}
-%\pi^\alpha_{\ApEl{p}{s}^\circ(1_\beta)} &\equiv s \\
-%\label{unit-identity}
-%\eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) &\equiv \id_\beta
-%  \end{align}
-%\end{definition}
-%Equations \eqref{circ-one} and \eqref{counit-identity} express that the counit of the adjunction between $p/\alpha$ and $T(\alpha)$ is the identity, and equations \eqref{dot-circ-one}, \eqref{pi-dot-circ-one} and \eqref{unit-identity} express that the unit is the identity.
-%
-%Consequences of this:
-%\begin{itemize}
-%\item More general version of equation  \eqref{dot-circ-one}:
-%\begin{align}
-%\tag{\ref{dot-circ-one}'} \label{dot-circ}
-%\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu
-%\end{align}
-%By:
-%\begin{align*}
-%\alpha.(\ApEl{p}{s}^\circ(\nu))
-%&\equiv\alpha.(\ApEl{p}{s}^\circ \ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu})) \\
-%&\equiv\alpha.(\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})) \\
-%&\equiv \beta.\nu
-%\end{align*}
-%\item Corresponding more general version of equation \eqref{pi-dot-circ-one}:
-%\begin{align}
-%\tag{\ref{pi-dot-circ-one}'} \label{pi-dot-circ}
-%\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s
-%\end{align}
-%By:
-%\begin{align*}
-%\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)}
-%&\equiv \pi^\alpha_{\ApEl{p}{s}^\circ(\ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu}))} \\
-%&\equiv \pi^\alpha_{\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})} \\
-%&\equiv \pi^\beta_\nu;s 
-%\end{align*}
-%\item Two terms $\mu, \nu : \El{p}{\alpha}$ are equal iff their comprehensions and projections are equal:
-%\begin{align}
-%\inferrule{\alpha.\mu \equiv \alpha.\nu \and \pi^\alpha_\mu \equiv \pi^\alpha_\nu}{\mu \equiv \nu}
-%\end{align}
-%Follows by:
-%\begin{align*}
-%\mu 
-%&\equiv \TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \\
-%&\equiv \TrCirc{\ApEl{p}{\pi^\alpha_\nu}}{1_{\alpha.\nu}} \\
-%&\equiv \nu
-%\end{align*}
-%\item The old definition of $\var{x}$ is equal to the new one obtained directly from $\chi$.
-%\begin{align}
-%\var{x} \equiv \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}
-%\end{align}
-%Specialising equation \eqref{unit-identity} to $s \equiv \pi^\alpha_x$, we have
-%\begin{align*}
-%\eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}) \equiv \id_{\alpha.x}
-%\end{align*}
-%but the first triangle equation for $\chi$ claims that already
-%\begin{align*}
-%\eta^\chi_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x}
-%\end{align*}
-%so $(\pi_x^\alpha \bdot \var{x}) \equiv (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}})$ and the result follows.
-%\end{itemize}
-%Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
-%$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
-%comprehension and projection. Equation \eqref{dot-circ} says
-%that the comprehension of $s^\circ(\mu)$ is the same as the
-%comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
-%projection is determined by $s$ and the projection from $\beta$ (which
-%type checks using \eqref{dot-circ}).
+If the adjunction is an equivalence for every $\alpha$ \mvrnote{Do we need any extra compatibility?}, then the $T(\alpha)$ bifibration is equivalent to the codomain bifibration and $(p,\El{p}{-},\chi_p)$ is describing a category with finite limits. 
+
+\begin{definition}
+  A comprehension object is an \emph{object with finite limits} if the unit and counit described above are isomorphisms, so there exist inverses:
+  \begin{align*}
+  H^{-1}(s) : \alpha.\TrCirc{\ApEl{p}{s}}{1_\beta} \vDash_p \beta && \text{(as a map $\pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \to s$ of 2-cells over $\alpha$)} \\
+  E^{-1}(x) : x \vDash_{\El{p}{\alpha}} \TrCirc{\ApEl{p}{\pi^\alpha_x}}{1_{\alpha.x}}
+  \end{align*}
+  For completeness, being inverses means that:
+  \begin{align*}
+  \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) ; H^{-1}(s) &\equiv \id_\beta \\
+   H^{-1}(s) ; \eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) &\equiv \id_{\alpha.\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
+   H^{-1}(s) ; s &\equiv \pi^\alpha_{\TrCirc{\ApEl{p}{s}}{1_\beta}} \\
+   \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x ; E^{-1}(x) &\equiv \id_{\TrCirc{\ApEl{p}{\pi^\alpha_x}}{1_{\alpha.x}}} \\
+   E^{-1}(x) ; \ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x  
+  \end{align*}
+\end{definition}
+
+Naturality of these inverses ought to follow from naturality of $H$ and $E$.
+
+It may be more convenient to demand the unit and counit are identities, not just isomorphisms:
+
+\begin{definition}
+  A comprehension object is an \emph{very strict object with finite limits} if the following equations hold:
+  \begin{align}
+\label{circ-one}
+\ApEl{p}{\pi^\alpha_\mu}^\circ(1_{\alpha.\mu}) &\equiv \mu \\
+\label{counit-identity}
+\ap{\ApEl{p}{\pi^\alpha_x}^\circ}{\var{x}} ; \varepsilon^{\ApEl{p}{\pi^\alpha_x}}_x &\equiv \id_x \\
+\label{dot-circ-one}
+\alpha.(\ApEl{p}{s}^\circ(1_\beta)) &\equiv \beta \\
+\label{pi-dot-circ-one}
+\pi^\alpha_{\ApEl{p}{s}^\circ(1_\beta)} &\equiv s \\
+\label{unit-identity}
+\eta^\chi_\beta ; (s \bdot \eta^{\ApEl{p}{s}}_{1_\beta}) &\equiv \id_\beta
+  \end{align}
+\end{definition}
+Equations \eqref{circ-one} and \eqref{counit-identity} express that the counit of the adjunction between $p/\alpha$ and $T(\alpha)$ is the identity, and equations \eqref{dot-circ-one}, \eqref{pi-dot-circ-one} and \eqref{unit-identity} express that the unit is the identity.
+
+Consequences of this:
+\begin{itemize}
+\item More general version of equation  \eqref{dot-circ-one}:
+\begin{align}
+\tag{\ref{dot-circ-one}'} \label{dot-circ}
+\alpha. (\ApEl{p}{s}^\circ(\nu)) &\equiv \beta.\nu
+\end{align}
+By:
+\begin{align*}
+\alpha.(\ApEl{p}{s}^\circ(\nu))
+&\equiv\alpha.(\ApEl{p}{s}^\circ \ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu})) \\
+&\equiv\alpha.(\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})) \\
+&\equiv \beta.\nu
+\end{align*}
+\item Corresponding more general version of equation \eqref{pi-dot-circ-one}:
+\begin{align}
+\tag{\ref{pi-dot-circ-one}'} \label{pi-dot-circ}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)} &\equiv \pi^\beta_\nu;s
+\end{align}
+By:
+\begin{align*}
+\pi^\alpha_{\ApEl{p}{s}^\circ(\nu)}
+&\equiv \pi^\alpha_{\ApEl{p}{s}^\circ(\ApEl{p}{\pi^\beta_\nu}^\circ(1_{\beta.\nu}))} \\
+&\equiv \pi^\alpha_{\ApEl{p}{\pi^\beta_\nu;s}^\circ(1_{\beta.\nu})} \\
+&\equiv \pi^\beta_\nu;s 
+\end{align*}
+\item Two terms $\mu, \nu : \El{p}{\alpha}$ are equal iff their comprehensions and projections are equal:
+\begin{align}
+\inferrule{\alpha.\mu \equiv \alpha.\nu \and \pi^\alpha_\mu \equiv \pi^\alpha_\nu}{\mu \equiv \nu}
+\end{align}
+Follows by:
+\begin{align*}
+\mu 
+&\equiv \TrCirc{\ApEl{p}{\pi^\alpha_\mu}}{1_{\alpha.\mu}} \\
+&\equiv \TrCirc{\ApEl{p}{\pi^\alpha_\nu}}{1_{\alpha.\nu}} \\
+&\equiv \nu
+\end{align*}
+\item The old definition of $\var{x}$ is equal to the new one obtained directly from $\chi$.
+\begin{align}
+\var{x} \equiv \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}
+\end{align}
+Specialising equation \eqref{unit-identity} to $s \equiv \pi^\alpha_x$, we have
+\begin{align*}
+\eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}}) \equiv \id_{\alpha.x}
+\end{align*}
+but the first triangle equation for $\chi$ claims that already
+\begin{align*}
+\eta^\chi_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x}
+\end{align*}
+so $(\pi_x^\alpha \bdot \var{x}) \equiv (\pi^\alpha_x \bdot \eta^{\ApEl{p}{\pi^\alpha_x}}_{1_{\alpha.x}})$ and the result follows.
+\end{itemize}
+Equation \eqref{circ-one} is an $\eta$ principle that a term of mode
+$\El{p}{\alpha}$ (i.e. a ``dependent type'') is determined by its
+comprehension and projection. Equation \eqref{dot-circ} says
+that the comprehension of $s^\circ(\mu)$ is the same as the
+comprehension of $\mu$, while equation \eqref{pi-dot-circ} says that the
+projection is determined by $s$ and the projection from $\beta$ (which
+type checks using \eqref{dot-circ}).
 
 %An automatic consequence of $1_\alpha$ being terminal is that $\eta_\alpha$ is an isomorphism. We might prefer it to be an identity:
 %
