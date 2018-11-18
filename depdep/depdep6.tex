@@ -1363,7 +1363,7 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
     \alpha : p \yields \El{p}{\alpha} \type \and
     \TypeTwo{\cdot}{\chi}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}}
     \\
-    \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and
+    %% \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and
     \TermTwoT{\alpha : p, \mu : \El{p}{\alpha}}{!_\mu}{\mu}{1_\alpha}{\El{p}{\alpha}}
   \end{mathpar}
   such that (where $\gamma \yields \alpha : p$ and $\gamma \yields \mu : \El{p}{\alpha}$)
@@ -1375,9 +1375,19 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
 \label{one-terminal} 
 (1_\alpha, !_\mu) &\text{ is a fibred terminal object of } \El{p}{\alpha} 
 \end{align}
-  
-\noindent We use the following derived forms
-(where $\gamma \yields \alpha : p$ and $\gamma \yields \beta : p$ and  $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu : \alpha$ and $\gamma \yields \nu : \beta$):
+  \noindent where 
+ the terminal object of $\El{p}{\alpha}$ is given by 
+  \begin{mathpar}
+  \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and 1_\alpha :\equiv \snd{\TrCirc{\chi}{\alpha}}
+  \end{mathpar}
+  This is well typed, as $\El{p}{\fst{\TrCirc{\chi}{\alpha}}} \equiv \El{p}{\alpha}$ by equation \eqref{chi-section}.
+\end{definition}
+
+\begin{definition}
+Any comprehension object supports the following derived forms (where $\gamma \yields \alpha : p$
+and $\gamma \yields \beta : p$ and
+$\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
+\alpha$ and $\gamma \yields \nu : \beta$):
   \begin{itemize}
   \item Comprehension is given by $\chi^+$:
   \begin{mathpar}
@@ -1392,11 +1402,6 @@ t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{1_\alpha}{S(\alp
 %            {\TermTwoT{\gamma}{s \bdot m}{\alpha.\mu}{\beta.\nu}{p}} \and
 %  s \bdot m :\equiv \ap{(\fst z \bdot \snd z)}{(s,t)/ (z:\sigmacl{\alpha}{p}{\El{p}{\alpha}})}
 %  \end{mathpar}
-  \item The terminal object of $\El{p}{\alpha}$ is given by 
-  \begin{mathpar}
-  \alpha : p \yields 1_\alpha : \El{p}{\alpha} \and 1_\alpha :\equiv \snd{\TrCirc{\chi}{\alpha}}
-  \end{mathpar}
-  This is well typed, as $\El{p}{\fst{\TrCirc{\chi}{\alpha}}} \equiv \El{p}{\alpha}$ by equation \eqref{chi-section}.
   \item $\pi^\alpha_\mu$ and $\var{\mu}$ are defined via the counit of the adjunction $\chi^\circ \dashv \chi^+$.
   \begin{mathpar}
   {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
