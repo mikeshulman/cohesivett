@@ -14,6 +14,8 @@
 \FXRegisterAuthor{ms}{anms}{\color{blue}MS}
 \FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
 \FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
@@ -86,6 +88,23 @@
 \newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
 \newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
 
+% Macros for semantics notation
+\newcommand\mm[1]{\llbracket #1 \rrbracket}
+\newcommand\op{^{\mathrm{op}}}
+\newcommand\co{^{\mathrm{co}}}
+\newcommand\coop{^{\mathrm{coop}}}
+\newcommand\Cat{\mathrm{Cat}}
+\newcommand\CAT{\mathrm{CAT}}
+\newcommand\M{\mathcal{M}}
+\newcommand\Mty{\mathrm{Ty}_{\M}}
+\newcommand\Mtm{\mathrm{Tm}_{\M}}
+\newcommand\C{\mathcal{C}}
+\newcommand\Cty{\mathrm{Ty}_{\C}}
+\newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\name[1]{\ulcorner #1\urcorner}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
 \title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
@@ -116,7 +135,9 @@ Top judgements:
 \end{itemize}
 
 Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
-in \emph{both directions} in the mode theory, but
+in \emph{both directions} in the mode theory,
+\msnote{That's not true any more, is it?}
+but
 $\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwo{\gamma}{s}{\mu}{\nu}$
 act \emph{contravariantly} on the subscripts of upstairs terms.
 
@@ -1185,5 +1206,87 @@ Now the equations:
 \item[{$\mathsf{pair}_{A, B}[\Theta \uparrow A \uparrow B] \equiv \mathsf{pair}_{A[\Theta], B[\Theta \uparrow A]}$}:]
 \item[{$\mathsf{split}_{A,B}(c)[\Theta \uparrow \Sigma_A B] \equiv \mathsf{split}_{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])$}:] 
 \end{enumerate}
+
+
+\section{Semantics}
+\label{sec:semantics}
+
+The ``canonical'' semantics should interpret each judgment as follows:
+
+Mode theory judgements:
+\begin{enumerate}
+\item $\mm{\gamma \ctx}$ is a category.
+\item $\mm{\gamma \yields p \type}$ is a functor $\mm{\gamma}\op \to \Cat$.
+\item $\mm{\TypeTwo{\gamma}{s}{p}{q}}$ is a natural transformation $\mm{\gamma \yields q} \Rightarrow \mm{\gamma \yields p}$ (note reversal of direction; this is because mode morphisms act contravariantly on mode terms and on upstairs subscripts).
+\item $\mm{\gamma \yields \mu : p}$ is a section of the projection from the Grothendieck construction $\int\mm{\gamma\yields p} \to \mm{\gamma}$.
+  In particular, it assigns to every object $x\in \mm{\gamma}$ an object $\mm{\gamma \yields \mu : p}(x)\in \mm{\gamma\yields p}(x)$.
+\item $\mm{\TermTwoT{\gamma}{s}{\mu}{\nu}{p}}$ is a natural transformation of such sections over the identity, i.e.\ whose composite with the projection is the identity natural transformation of the identity functor.
+\end{enumerate}
+
+Top judgements: 
+\begin{itemize}
+\item $\mm{\yields_\gamma \Gamma \CTX}$ is an object of $\mm{\gamma}$
+\item $\mm{\Gamma \yields_p A \TYPE}$ is an object of $\mm{\gamma \yields p}(\mm{\Gamma})$.
+\item $\mm{\Gamma \yields_\mu M : A}$ is a morphism from $\mm{\gamma \yields \mu : p}(\mm{\Gamma})$ to $\mm{\Gamma \yields_p A}$ in $\mm{\gamma \yields p}(\mm{\Gamma})$.
+\end{itemize}
+
+The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
+
+\begin{enumerate}
+\item Categories form a 2-category.
+  In general we will stipulate an arbitrary (strict) 2-category $\M$.
+\item Given a category $C$, the collection of functors and (strict) natural transformations $C\op \to \Cat$ forms a (large) category $[C\op, \Cat]$, and if we reverse the directions of the natural transformations we get $[C\op, \Cat]\op$.
+  Moreover, precomposition with functors $C\to C'$ and natural transformations between them makes $[(-)\op, \Cat]\op$ into a strict 2-functor $\Cat\op \to \CAT$; syntactically these are $q[\mu/x]$ and $\ap{q}{\mu/x}$ respectively.
+
+  Here $\CAT$ denotes the very large 2-category of large categories.
+  Note that this 2-functor is covariant on 2-cells: the two $(-)\op$s cancel each other out at that level.
+  In fact, this 2-functor can be identified with the representable $[-,\Cat\op]$.
+
+  Thus, in general we will stipulate a strict 2-functor $\Mty:\M\op \to \CAT$.
+  \addtocounter{enumi}{1}
+\item Given a category $C$ and a functor $T:C\op\to Cat$, the sections of the projection $\int T \to C$, and natural transformations over the identity, form a category.
+  Moreover, such sections also vary functorially as $C$ does.
+  Thus, in general we will stipulate another strict 2-functor $\Mtm : \M\op\to\CAT$ with a strictly 2-natural projection map $\Mtm\to\Mty$.
+
+  The contravariant action of mode morphisms $\TypeTwo{\gamma}{s}{p}{q}$ on mode terms tells us that the morphisms of $\Mty(C)$ must act on the objects of $\Mtm$ contravariantly.
+  Moreover, this action is strictly functorial, and respected by substitution.
+  Thus, we stipulate that $\Mtm \to \Mty$ is a \emph{split fibration} internal to the 2-category $[\M\coop,\CAT]$, which means that each functor $\Mtm(C) \to \Mty(C)$ is a split fibration and that all the naturality squares
+  \begin{center}
+    \begin{tikzcd}
+      \Mtm(C) \ar[d] \ar[r] & \Mtm(C')\ar[d] \\
+      \Mty(C) \ar[r] & \Mty(C')
+    \end{tikzcd}
+  \end{center}
+  are strict morphisms of split fibrations (preserve the splittings on the nose).
+
+  To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, if we form the pullback in $[\M\coop,\CAT]$
+  \begin{center}
+    \begin{tikzcd}
+      \bullet \ar[d] \ar[r] & \Mtm \ar[d] \\
+      y(C) \ar[r,"\name{T}"] & \Mty
+    \end{tikzcd}
+  \end{center}
+  then the pullback object is also of the form $y(\int T)$ for some object $\int T\in \M$.
+  Here $y(C)$ denotes the representable functor $y(C)(-) = \M(-,C) : \M\op\to\CAT$.
+  The Yoneda lemma implies that (strict) 2-natural transformations $\name{T} : y(C) \to \Mty$ are in bijection with objects $T\in \Mty(C)$; thus every $T\in \Mty(C)$ induces an object $\int T$ with a projection $\int T \to C$ in $\M$, such that elements of $\Mtm(C)$ over $T$ are in bijection with sections of this projection.
+  To make the notion algebraic, we require the object $\int T$ to be a specified function of $C$ and $T$.
+
+  Since the above pullback is a pullback in a 2-category, it also has a universal property for 2-cells.
+  Thus, morphisms in $\Mtm$ (over the identity in $\Mty$) are in bijection with 2-cells between sections (over the identity).
+
+  The 2-categorical Yoneda lemma also tells us that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications $\name{\mu}:\name{S} \to \name{T}$.
+  Since $\Mtm\to\Mty$ is a fibration, such a 2-cell induces a universal map in the other direction $\int \mu : \int T\to \int S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $\int \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
+\end{enumerate}
+
+Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated semantically by:
+
+\begin{defn}
+  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
+\end{defn}
+
+Pleasingly, this is a straightforward categorification of the standard notion of category with families.
+The only really new ingredient is the requirement that $\Mtm\to \Mty$ be an internal fibration, which has no analogue for 1-categories.
+
+
 
 \end{document}
