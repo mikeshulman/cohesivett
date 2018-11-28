@@ -102,8 +102,14 @@
 \newcommand\Cty{\mathrm{Ty}_{\C}}
 \newcommand\Ctm{\mathrm{Tm}_{\C}}
 \newcommand\name[1]{\ulcorner #1\urcorner}
+\theoremstyle{normal}
+\newtheorem{prob}{Problem}
+\newtheorem{thm}{Theorem}
 \theoremstyle{definition}
 \newtheorem{defn}{Definition}
+\newtheorem{eg}{Example}
+\newenvironment{constr}{\begin{proof}[Construction]}{\end{proof}}
+\newcommand{\Util}{\widetilde{U}}
 
 \title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
@@ -1281,12 +1287,34 @@ The general categorical semantics is an abstraction of these structures --- cate
 Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated semantically by:
 
 \begin{defn}
-  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
+  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Upsilon:\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
 \end{defn}
 
 Pleasingly, this is a straightforward categorification of the standard notion of category with families.
 The only really new ingredient is the requirement that $\Mtm\to \Mty$ be an internal fibration, which has no analogue for 1-categories.
 
+The ruminations above suggest that there should be a 2-category with families where $\M=\Cat$ and $\Mty(C) = [C\op,\Cat]\op$.
+In fact we can construct this precisely as an instance of a much more general operation, similar to the ``global universe'' coherence method for ordinary type theory introduced by Voevodsky.
+(There should also be a ``local universe'' method analogous to that of Lumsdaine--Warren, but we do not need that here.)
 
+\begin{prob}
+  Let $\M'$ be any 2-category containing an internal split fibration $\upsilon : \Util \to U$, and let $\M\subseteq \M'$ be a full subcategory such that if $C\in \M$ and $C'\to C$ is a pullback of $\upsilon$, then $C'\in \M$.
+  Then $\M$ is a 2-category with families with
+  \begin{align*}
+    \Mty(C) &= \M'(C,U)\\
+    \Mtm(C) &= \M'(C,\Util).
+  \end{align*}
+\end{prob}
+\begin{constr}
+  The definitions of $\Mty$ and $\Mtm$ are certainly 2-functors, since they are representable, and the morphism $\upsilon$ induces a 2-natural transformation $\Upsilon:\Mtm\to\Mty$.
+  Since split fibrations can be defined in terms of finite limits and diagrammatic 2-categorical structure (adjunctions), they are preserved by the restricted Yoneda embedding; thus $\Upsilon$ is also a split fibration.
+  Finally, since the restricted Yoneda embedding also preserves pullbacks, it preserves any pullback of $\upsilon$ to a representable; hence the vertex of any such pullback is again representable.
+  Thus, $\Upsilon$ is a representable morphism (and by choosing pullbacks in $\M'$ we can make $\Upsilon$ algebraically representable).
+\end{constr}
+
+\begin{eg}
+  Let $\M'=\CAT$ and $\M=\Cat$, with $U = \Cat\op$ and $\Util$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
+  Thus, $\Cat$ becomes a 2-category with families where $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, as in the above motivating discussion.
+\end{eg}
 
 \end{document}
