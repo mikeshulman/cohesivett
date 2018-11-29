@@ -914,9 +914,183 @@ longer telescope.
 
 \subsection{Comprehension Object}
 
+\subsection{Comprehension Object with $\Sigma$}
+
+This doesn't necessarily need to go into the final paper, but here are
+some notes that compare different ways of doing the mode theory for
+$\Sigma$ types.
+
+We assume a comprehension object $\chi$ given by a
+comprehension-terminal adjunction (definition yet to be spelled out
+without the automatic adjunction notation, but all the same stuff should
+be defined).
+
+\newcommand\mtt[1]{\mathtt{#1}}
+
+\begin{enumerate}
+
+\item \label{sigma:total-to-fiber0} Conjecture: In any comprehension
+  object $\chi$, 2-cells $s : \alpha \vDash_p \alpha.x$ such that $s;\pi
+  = \id_\alpha$ correspond bijectively to 2-cells $1_\alpha
+  \vDash_{\El{p}{\alpha}} x$.
+
+  First, given $s : \alpha \vDash_p \alpha.x$, take $\mtt{var} : 1_{\alpha.x}
+  \vDash_{\El{p}{\alpha.x}} \TrPlus{(\pi^\alpha_x)}{x}$ and ap $s$ onto
+  it to get $\TrPlus{s}{1} \vDash_{\El{p}{\alpha}}
+  \TrPlus{s}{\TrPlus{(\pi^\alpha_x)}{x}}$.  Then fuse, reduce
+  $\TrPlus{s}{1}$, and use the section property to show that this also
+  has type
+  $1_\alpha \vDash_{\El{p}{\alpha}} x$.
+
+  Conversely, given $t : 1_\alpha \vDash_{\El{p}{\alpha}} x$,
+  the pairing of $\chi$ gives $(\id, t) : \alpha \vDash \alpha.x$.
+
+\item \label{sigma:total-to-fiber1} Conjecture: similarly, 2-cells $s :
+  \alpha.x \vDash_p \alpha.y$ such that $s;\pi_y = \pi_x$ correspond
+  bijectively to 2-cells $1_{\alpha.x} \vDash_{\El{p}{\alpha.x}}
+  \TrPlus{\pi^\alpha_x}{y}$.
+
+  First, given $s : \alpha.x \vDash_p \alpha.y$, take $\mtt{var} :
+  1_{\alpha.y} \vDash_{\El{p}{\alpha.y}} \TrPlus{(\pi^\alpha_y)}{y}$ and
+  ap $s$ onto it to get $\TrPlus{s}{1} \vDash_{\El{p}{\alpha.x}}
+  \TrPlus{s}{\TrPlus{(\pi^\alpha_y)}{x}}$.  Then fuse, reduce
+  $\TrPlus{s}{1}$, and use the commuting triangle to show that this also
+  has type $1_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi_x} y$.
+
+  Conversely, given $t : 1_{\alpha.x} \vDash_{\El{p}{\alpha.}}
+  \TrPlus{\pi_x} y$, we have $\id.t := \ap{.}{(\id, t)} : \alpha.x \vDash \alpha.y$.
+
+\item \label{sigma:total-to-fiber2} Conjecture: similarly, 2-cells $s :
+  \alpha.x.y \vDash_p \alpha.z$ such that $s;\pi_z = \pi_y;\pi_x$
+  correspond bijectively to 2-cells $1_{\alpha.x.y}
+  \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^{\alpha.x}_y;\pi^\alpha_x}{y}$.
+
+\item \label{sigma:full} Define \emph{fullness} of the comprehension
+  object to mean that maps $s : \alpha.x \vDash_p \alpha.y$ such that
+  $s;\pi_y = \pi_x$ correspond bijectively to maps in the fiber $x
+  \vDash_{\El{p}{\alpha}} y$.  (Probably plus some naturality.)
+
+  (Is this the same as $U$ from the comprehesion/slide adjunction before
+  being full and faithful?)
+
+\item \label{sigma:full-interesting} Define \emph{terminal fullness}
+  (probably a better name) of the comprehension object to mean that maps
+  maps $1_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  out of the terminal object are bjective with $x
+  \vDash_{\El{p}{\alpha}} y$.
+
+  One direction is automatic: given $s : x \vDash_{\El{p}{\alpha}} y$,
+  we can make $(\id.s) : \alpha.x \vDash \alpha.y$ as above, and ap that
+  onto $\mtt{var} : 1_{\alpha.y} \vDash \TrPlus{\pi_y}{y}$ to get
+  $1_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$.
+
+\item By \ref{sigma:total-to-fiber1}, fullness follows iff terminal
+  fullness.  
+  
+\item \label{sigma:complete}
+
+  A ``complete spec'' (cf. Jacobs REF) for $\Sigma$ types is
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item $\Sigma_1(\alpha,x,-) \dashv \TrPlus{\pi^\alpha_x}{-}$
+  \item $E : \Sigma_1(\alpha,x,1_{\alpha.x}) \vDash x$ given by
+    transposing $\mtt{var}$ is an isomorphism
+  \item The induced map $\mtt{pair} : \alpha.x.y \vDash
+    \alpha.\Sigma_1(\alpha,x,y)$ given by $(\pi, \eta^\pi)$ is an
+    isomorphism.
+  \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s , \id)}{y})$
+  \end{itemize}
+  I'd be very surprised if this were not sufficient -- it's everything I
+  think we could ask for.
+
+\item Conjecture: given the adjunction $\Sigma_1(\alpha,x,-) \dashv
+  \TrPlus{\pi^\alpha_x}{-}$ (actually, only the counit) and $E$ an iso,
+  terminal fullness (and therefore fullness) holds.  The converse map
+  for $1_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  is given by transposing to get $\Sigma_1(\alpha,x,1_{\alpha.x}) \vDash
+  y$ and composing with $E^-1 : x \vDash
+  \Sigma_1(\alpha,x,1_{\alpha.x})$.
+
+  Conversely, given \ref{sigma:full-interesting}, do we get the counit
+  $\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{y}) \vdash_{\El{p}{\alpha}} y$?
+
+\item \label{sigma:total-spec} Another possible spec for $\Sigma$ types
+  would be
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item A map $\mtt{pair} : \alpha.x.y \vDash
+    \alpha.\Sigma_1(\alpha,x,y)$ that commutes over $\alpha$, probably
+    with some naturality
+  \item $\mtt{pair}$ is an isomorphism (split)
+  \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s , \id)}{y})$?
+  \end{itemize}
+
+  This has all the axioms in $p$, rather than asserting the adjunction
+  in the fiber.
+
+\item Conjecture: given \ref{sigma:total-spec} (pairing and split in
+  $p$) and fullness in the sense of \ref{sigma:full-interesting}, we
+  can derive the adjunction $\Sigma_1(\alpha,x,-) \dashv
+  \TrPlus{\pi^\alpha_x}{-}$.
+
+  E.g. for the unit $y \vdash_{\alpha.x} \TrPlus{\pi^\alpha_x}{\Sigma_1(\alpha,x,y)}$
+  we can get
+  $1_{\alpha.x.y} \vdash_{\alpha.x.y} \TrPlus{\pi_y;\pi_x}{\Sigma_1(\alpha,x,y)}$
+  from $\mtt{pair}$ by \ref{sigma:total-to-fiber2}.
+  Then use \ref{sigma:full-interesting}.  
+
+  For the counit
+  $\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \vdash_{\alpha} z$
+  we have
+  \[
+  \alpha.\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \vDash \alpha.x.\TrPlus{\pi^\alpha_x}{z} \vDash \alpha.z 
+  \]
+  and then can use the full version of fullness (\ref{sigma:full}).    
+
+  Thus, if the comprehension category is already full, then pair and
+  split are enough, which explains why we don't usually talk about the
+  adjunction itself inside the type theory.  
+  
+\item The exact 2-cell that comes up in encoding pairing for
+  object-language $\Sigma$-types below is a contraction:
+  \[
+  1_\alpha \vDash_{\El{p}{\alpha}} \Sigma_1(\alpha,1_\alpha,1_{\alpha.{1_\alpha}})
+  \]
+  This seemed odd, because it seems like it's less than full pairing.    
+
+\item However, contraction does imply $\mtt{pair}$, because we already
+  know that $\Sigma_1$ is a functor, so we have
+  \[
+  \ap{\Sigma_1}{(\pi^{\alpha.x}_y;\pi^\alpha_x, \mtt{var}, \mtt{var}?)} :
+  \Sigma_1(\alpha,1_\alpha,1_{\alpha.1}) \vDash \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)}
+  \]
+  Then precompose with contraction, and then use
+  \ref{sigma:total-to-fiber2}.
+
+  (This is a more dependent version of deriving $\Gamma \vdash A$ and
+  $\Gamma \vdash B$ implies $\Gamma \vdash A \times B$ from $\Gamma
+  \times \Gamma \vdash A \times B$ by functoriality and then
+  precomposing with the diagonal.)
+  
+\item Conversely, a constant $\mtt{pair} : \alpha.x.y \vDash
+  \alpha.\Sigma_1(\alpha,x,y)$ (commuting over $\alpha$) implies
+  contraction. An instance is $\alpha.1_{\alpha}.1_{\alpha.1} \vDash
+  \alpha.\Sigma_1(\alpha,1_\alpha,1_{\alpha.1})$, and the comprehension
+  object already has $\beta.1 \cong \beta$, so precompose, to get
+  $\alpha \vDash \alpha.\Sigma_1(\alpha,1_\alpha,1_{\alpha.1})$, and
+  then use \ref{sigma:total-to-fiber0}.
+
+\item It remains to see exactly what we need to encode split (BC,
+  $\mtt{pair}$ is an iso?), but it's plausible that we're avoiding
+  needing the $\Sigma_1(\alpha,x,-) \dashv \TrPlus{\pi^\alpha_x}{-}$
+  adjunction itself or fullness (which implies it) by only ever talking
+  about maps from $1$ in the fiber.  
+\end{enumerate}
+  
 \subsection{MLTT via Explicit Substitutions}
-\newcommand{\qyields}{\Vdash}
-\newcommand{\varsof}[1]{{#1}^\dagger}
+\newcommand{\qyields}{\Vdash} \newcommand{\varsof}[1]{{#1}^\dagger}
 \newcommand{\upstairs}[1]{\overline{#1}}
 \newcommand{\downstairs}[1]{\underline{#1}}
 \newcommand{\asdep}[1]{{#1}_p}
