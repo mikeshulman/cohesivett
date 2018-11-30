@@ -99,13 +99,14 @@
 \newcommand\Cat{\mathrm{Cat}}
 \newcommand\CAT{\mathrm{CAT}}
 \newcommand\M{\mathcal{M}}
-\newcommand\Mty{\mathrm{Ty}_{\M}}
-\newcommand\Mtm{\mathrm{Tm}_{\M}}
+\newcommand\Mty{{\mathrm{Ty}_{\M}}}
+\newcommand\Mtm{{\mathrm{Tm}_{\M}}}
 \newcommand\C{\mathcal{C}}
 \newcommand\Cty{\mathrm{Ty}_{\C}}
 \newcommand\Ctm{\mathrm{Tm}_{\C}}
 \newcommand\name[1]{\ulcorner #1\urcorner}
 \newcommand{\Util}{\widetilde{U}}
+\newcommand\ev{\mathrm{ev}}
 
 \title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
@@ -1315,6 +1316,82 @@ In fact we can construct this precisely as an instance of a much more general op
   Let $\M'=\CAT$ and $\M=\Cat$, with $U = \Cat\op$ and $\Util$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
   Thus, $\Cat$ becomes a 2-category with families where $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, as in the above motivating discussion.
 \end{example}
+
+\subsection{$\Sigma$-modes}
+\label{sec:2-sigmas}
+
+Emboldened by this success, let's just try to write down a notion of $\Sigma$-types for 2-categories with families by categorifying the usual one for 1-categories.
+As formulated by Awodey, $\Sigma$-types for a 1-category with families involve the dependent product of the presheaf $\mathrm{Ty}$ along the projection $\mathrm{Tm}\to \mathrm{Ty}$, to encode the notion of one type dependent on another one.
+Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not locally cartesian closed, so not all dependent products exist; but fortunately, dependent products along fibrations do exist.
+
+\begin{lemma}\label{thm:fib-exp}
+  For a 2-category $\M$, any split fibration $\Upsilon : S\to T$ in $[\M\op,\CAT]$ is exponentiable.
+\end{lemma}
+\begin{proof}
+  Suppose given $R\to S$; we want to define $\Pi_S[R]$ over $T$.
+  Given an object $x\in T(C)$, corresponding to a morphism $\name{x}:y(C)\to T$, the objects of $\Pi_S[R](C)$ over $x$ must be bijective to the lifts of $\name{x}$ to $\Pi_S [R]$.
+  The desired universal property of $\Pi_S [R]$ means that such lifts are bijective to maps $x^* S \to R$ over $S$.
+  So we take the latter as the \emph{definition} the objects of $\Pi_S [R]$, i.e.\
+  \[ \ob (\Pi_S [R](C)) = \sum_{x:\ob (T(C))} \ob (\M_{/S}(x^*S, R)). \]
+  Next, given a morphism $\alpha :x\to y$ in $T(C)$ and objects $u,v$ of $\Pi_S[R]$ over $x,y$ respectively, morphisms $u\to v$ over $\alpha$ must correspond bijectively to lifts of the corresponding 2-cell $\name{\alpha} :\name{x} \to \name{y} :y(C) \to T$ to a 2-cell between $\name{u},\name{v} : y(C) \to \Pi_S[R]$.
+  However, the desired universal property of $\Pi_S[R]$ as a dependent product doesn't obviously determine such lifts, because the 2-cell $\name{\alpha}$ doesn't live in the slice category $\M/T$.
+  But we can use the fibration structure of $\Upsilon$, which induces a map $\alpha^*S : y^*S \to x^*S$ over $y(C)$ and a 2-cell
+  \begin{center}
+    \begin{tikzcd}
+      x^*S \ar[drr] \\
+      & \Downarrow\overline{\alpha} & S\\
+      y^*S \ar[urr] \ar[uu,"\alpha^*S"]
+    \end{tikzcd}
+  \end{center}
+  over $\alpha$ with a universal property (see Hermida, Buckley, Johnstone).
+  Thus, if $u$ and $v$ are determined by maps $\hat{u}:x^*S \to R$ and $\hat{v}:y^*S\to R$ over $S$, we can define a morphism $u\to v$ over $\alpha$ to be determined by a lift $\hat{\alpha}$ of $\overline{\alpha}$ to $R$.
+
+  The maps $\alpha^*S $ and 2-cells $\overline{\alpha}$ are functorial in $\alpha$ in all the ways one would hope (strictly so, since $\Upsilon$ is split --- although this is not really necessary), so it is straightforward to make $\Pi_S[R](C)$ thusly defined into a category and $\Pi_S[R]$ into a functor $\M\op\to\CAT$ over $T$.
+
+  Note in particular that when $\alpha$ is an identity, so is $\overline{\alpha}$, so the fiber of $\Pi_S[R]$ over an object $x$ is the category $\M_{/S}(x^*S, R)$.
+  This means that $\Pi_S[R]$ has the desired universal property with respect to maps out of representables, i.e.\ we have a natural isomorphism of hom-categories
+  \[\M_{/T}(x:y(C)\to T,\Pi_S[R]) \cong \M_{/S}(x^*S, R).\]
+  It is straightforward to extend this, using the Yoneda lemma, to the full universal property.
+\end{proof}
+
+Proceeding by analogy with the 1-categorical case, consider the dependent product $\Pi_\Upsilon[\Mty]$, where $\Mty$ denotes abusively the pullback $\Mtm \times \Mty \to \Mtm$ in $\M/\Mtm$.
+The universal structure of $\Pi_\Upsilon[\Mty]$ consists of an ``evaluation'' map $\ev:\Pi_\Upsilon[\Mty] \times_\Mty \Mtm \to \Mty$.
+Note that the projection $\Pi_\Upsilon[\Mty] \times_\Mty \Mtm \to \Pi_\Upsilon[\Mty]$ is a split fibration, since it is a pullback of $\Upsilon:\Mtm \to \Mty$.
+And we can also pull $\Upsilon$ back along the evaluation map to get a further split fibration:
+\begin{center}
+  \begin{tikzcd}
+    \ev^* \Mtm \ar[r] \ar[d,->>] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d,->>]\\
+    \Pi_\Upsilon[\Mty] \times_\Mty \Mtm \ar[r] \ar[d,->>] \ar[ddr,phantom,near start,"\lrcorner"] \ar[dr] & \Mty\\
+    \Pi_\Upsilon[\Mty] \ar[dr] & \Mtm \ar[d,->>] \\
+    & \Mty
+  \end{tikzcd}
+\end{center}
+Note that the composite of two split fibrations is again a split fibration.
+
+\begin{definition}
+  A 2-category with families has \textbf{$\Sigma$-types} if it is equipped with maps $\Pi_\Upsilon[\Mty] \to \Mty$ and $\ev^* \Mtm \to \Mtm$ such that the square
+  \begin{center}
+    \begin{tikzcd}
+      \ev^* \Mtm \ar[r] \ar[d,->>] & \Mtm \ar[dd,->>]\\
+    \Pi_\Upsilon[\Mty] \times_\Mty \Mtm \ar[d,->>] \\
+    \Pi_\Upsilon[\Mty] \ar[r] & \Mty
+    \end{tikzcd}
+  \end{center}
+  (1) commutes, (2) is a pullback, and (3) is a strict morphism of split fibrations.
+\end{definition}
+
+Let's unwind this to correspond to syntax.
+By the construction in Lemma \ref{thm:fib-exp}, an object of $\Pi_\Upsilon[\Mty](\gamma)$ lives over a type $p\in \Mty(\gamma)$, and consists of the additional data of a map $p^*\Mtm \to \Mty$.
+But since $\Upsilon$ is representable, $p^* \Mtm$ is also representable, by the extended context $\gamma.p$; thus this additional data is a type $\gamma,x:p \yields q \type$.
+The morphism $\Pi_\Upsilon[\Mty] \to \Mty$ thus assigns to any such pair a mode type $\gamma \yields \sigmacl{x}{p}{q} \type$.
+
+Similarly, an object of $\ev^* \Mtm$ over $(p,q)$ consists of a pair of a term $\gamma \yields \mu : p$ and $\gamma \yields \nu : q[\mu/x]$, and so the morphism $\ev^* \Mtm$ assigns to this the pair $(p,q):\sigmacl{x}{p}{q}$.
+The fact that the square is a pullback (on objects) means that we have $\fst$ and $\snd$ collectively forming an inverse isomorphism, i.e.\ the $\beta$- and $\eta$-rules hold for $\Sigma$-modes.
+
+The action of $\Pi_\Upsilon[\Mty] \to \Mty$ on morphisms gives the congruence rules for $\Sigma$ on mode type morphisms, along with its functoriality laws (since this map over each $\gamma$ is a functor) and its naturality law for substitution (since this map is a natural transformation as $\gamma$ varies).
+Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes, and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
+
+Finally, the fact that this square is a strict morphism of split fibrations gives the equation for ``transport'' in $\Sigma$.
 
 
 \end{document}
