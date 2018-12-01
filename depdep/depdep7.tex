@@ -1653,22 +1653,22 @@ The ruminations above suggest that there should be a 2-category with families wh
 In fact we can construct this precisely as an instance of a much more general operation, similar to the ``global universe'' coherence method for ordinary type theory introduced by Voevodsky.
 (There should also be a ``local universe'' method analogous to that of Lumsdaine--Warren, but we do not need that here.)
 
-\begin{problem}
+\begin{theorem}\label{thm:2cwf-univ}
   Let $\M'$ be any 2-category containing an internal split fibration $\upsilon : \Util \to U$, and let $\M\subseteq \M'$ be a full subcategory such that if $C\in \M$ and $C'\to C$ is a pullback of $\upsilon$, then $C'\in \M$.
   Then $\M$ is a 2-category with families with
   \begin{align*}
     \Mty(C) &= \M'(C,U)\\
     \Mtm(C) &= \M'(C,\Util).
   \end{align*}
-\end{problem}
-\begin{constr}
+\end{theorem}
+\begin{proof}
   The definitions of $\Mty$ and $\Mtm$ are certainly 2-functors, since they are representable, and the morphism $\upsilon$ induces a 2-natural transformation $\Upsilon:\Mtm\to\Mty$.
   Since split fibrations can be defined in terms of finite limits and diagrammatic 2-categorical structure (adjunctions), they are preserved by the restricted Yoneda embedding; thus $\Upsilon$ is also a split fibration.
   Finally, since the restricted Yoneda embedding also preserves pullbacks, it preserves any pullback of $\upsilon$ to a representable; hence the vertex of any such pullback is again representable.
   Thus, $\Upsilon$ is a representable morphism (and by choosing pullbacks in $\M'$ we can make $\Upsilon$ algebraically representable).
-\end{constr}
+\end{proof}
 
-\begin{example}
+\begin{example}\label{eg:cat-2cwf}
   Let $\M'=\CAT$ and $\M=\Cat$, with $U = \Cat\op$ and $\Util$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
   Thus, $\Cat$ becomes a 2-category with families where $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, as in the above motivating discussion.
 \end{example}
@@ -1745,9 +1745,49 @@ Similarly, an object of $\ev^* \Mtm$ over $(p,q)$ consists of a pair of a term $
 The fact that the square is a pullback (on objects) means that we have $\fst$ and $\snd$ collectively forming an inverse isomorphism, i.e.\ the $\beta$- and $\eta$-rules hold for $\Sigma$-modes.
 
 The action of $\Pi_\Upsilon[\Mty] \to \Mty$ on morphisms gives the congruence rules for $\Sigma$ on mode type morphisms, along with its functoriality laws (since this map over each $\gamma$ is a functor) and its naturality law for substitution (since this map is a natural transformation as $\gamma$ varies).
-Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes, and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
+Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes (although the latter is currently written to only apply when one of the morphisms being paired is cartesian), and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
 
 Finally, the fact that this square is a strict morphism of split fibrations gives the equation for ``transport'' in $\Sigma$.
+
+To construct our canonical model, we again appeal to a universal case.
+
+\begin{theorem}\label{thm:sig-univ}
+  In the situation of Theorem \ref{thm:2cwf-univ}, suppose that $\upsilon : \Util\to U$ ``has $\Sigma$-types'' in the analogous sense, i.e.\ it is exponentiable and equipped with maps $\Pi_\upsilon[U] \to U$ and $\ev^* \Util \to \Util$ such that the square
+  \begin{center}
+    \begin{tikzcd}
+      \ev^* \Util \ar[r] \ar[d,->>] & \Util \ar[dd,->>]\\
+      \Pi_\upsilon[U] \times_U \Util \ar[d,->>] \\
+      \Pi_\upsilon[U] \ar[r] & U
+    \end{tikzcd}
+  \end{center}
+  commutes, is a pullback, and is a strict morphism of split fibrations.
+  Then the 2-category with families constructed as in Theorem \ref{thm:2cwf-univ} also has $\Sigma$-types.
+\end{theorem}
+\begin{proof}
+  All the structure involved in the definition of $\Sigma$-types (dependent products, pullbacks, morphisms of split fibrations) is preserved by any restricted Yoneda embedding.
+\end{proof}
+
+\begin{example}
+  Continuing Example \ref{eg:cat-2cwf}, we want to show that $U=\Cat\op$ has $\Sigma$-types in the sense of Theorem \ref{thm:sig-univ}.
+  The map $\upsilon\Util\to U$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
+  An object of $\Pi_\upsilon[U]$ consists of a category $A\in U$ together with a functor from the fiber of $\upsilon$ over $A$ to $U$, which is to say simply a functor $A\to \Cat\op$, or equivalently $B:A\op\to\Cat$.
+  Similarly, a morphism $(A,B)\to (A',B')$ in $\Pi_\upsilon[U]$ consists of a functor $f:A'\to A$ together with a natural transformation $g:B' \to B \circ f$.
+
+  The fiber of $\Pi_\upsilon[U] \times_U \Util$ over $(A,B)\in \Pi_\upsilon[U]$ is just the category $A$, and its contravariant split fibrational action on $(f,g)$ is just the action of the functor $f$.
+  Thus, a morphism therein from $(A,B,x)$ to $(A',B',x')$ consists of $f:A'\to A$ and $g:B' \to B \circ f$ together with $\xi : x \to f(x')$.
+
+  The functor $\ev$ sends $(A,B,x)$ to the category $B(x)$.
+  Thus, the fiber of $\ev^*\Util$ over $(A,B,x)$ is just the category $B(x)$, with contravariant split fibrational action on $(f,g,\xi)$ given by the components of $g$.
+  So a morphism from $(A,B,x,y)$ to $(A',B',x',y')$ consists of $f,g,\xi$ and $\zeta : y \to B(\xi)(g_{x'}(y'))$.
+
+  It follows that the fiber of the composite $\ev^*\Util \to \Pi_\upsilon[U] \times_U \Util \to \Pi_\upsilon[U]$ over $(A,B)$ is (isomorphic to) the category of pairs $(x,y)$ with $x\in A$ and $y\in B(x)$, and with morphisms $(x,y)\to (x',y')$ being pairs $(\xi,\zeta)$ where $\xi:x\to x'$ and $\beta: y \to B(\xi)(y')$.
+  The split fibrational action of a morphism $(f:A'\to A,g:B' \to B \circ f)$ sends $(x',y')$ to $(f(x'),g(y'))$, with a similar action on morphisms.
+  Thus, we can define the desired functor $\Pi_\upsilon[U] \to U = \Cat\op$ by sending $(A,B)$ to precisely this category of pairs $(x,y)$, which is none other than the ordinary Grothendieck construction of $B:A\op\to \Cat$.
+  Defining this functor on morphisms by the above split fibrational action, we find tautologically that the desired square is both a pullback and a morphism of split fibrations.
+  (More abstractly, we are simply using the fact that $\Util\to U$ is a classifier in $\CAT$ of split fibrations with small fibers.)
+
+  Thus, the canonical 2-category with families structure on $\Cat$ has $\Sigma$-types.
+\end{example}
 
 
 \end{document}
