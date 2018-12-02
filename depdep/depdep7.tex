@@ -1002,7 +1002,8 @@ be defined).
     \alpha.\Sigma_1(\alpha,x,y)$ given by $(\pi, \eta^\pi)$ is an
     isomorphism.
   \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
-    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s , \id)}{y})$
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s . \id)}{y})$,
+    where $s.\id : \beta.\TrPlus{s}{x} \vDash \alpha.x$
   \end{itemize}
   I'd be very surprised if this were not sufficient -- it's everything I
   think we could ask for.
@@ -1025,9 +1026,9 @@ be defined).
   \item A map $\mtt{pair} : \alpha.x.y \vDash
     \alpha.\Sigma_1(\alpha,x,y)$ that commutes over $\alpha$, probably
     with some naturality
-  \item $\mtt{pair}$ is an isomorphism (split)
+  \item $\mtt{pair}$ is an isomorphism (with inverse $\mtt{split}$)
   \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
-    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s , \id)}{y})$?
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s . \id)}{y})$?
   \end{itemize}
 
   This has all the axioms in $p$, rather than asserting the adjunction
@@ -1063,8 +1064,9 @@ be defined).
   \]
   This seemed odd, because it seems like it's less than full pairing.    
 
-\item However, contraction does imply $\mtt{pair}$, because we already
-  know that $\Sigma_1$ is a functor, so we have
+\item \label{sigma:get-pair} However, contraction does imply
+  $\mtt{pair}$, because we already know that $\Sigma_1$ is a functor, so
+  we have
   \[
   \ap{\Sigma_1}{(\pi^{\alpha.x}_y;\pi^\alpha_x, \mtt{var}, \mtt{var}?)} :
   \Sigma_1(\alpha,1_\alpha,1_{\alpha.1}) \vDash \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)}
@@ -1085,11 +1087,106 @@ be defined).
   $\alpha \vDash \alpha.\Sigma_1(\alpha,1_\alpha,1_{\alpha.1})$, and
   then use \ref{sigma:total-to-fiber0}.
 
-\item It remains to see exactly what we need to encode split (BC,
-  $\mtt{pair}$ is an iso?), but it's plausible that we're avoiding
-  needing the $\Sigma_1(\alpha,x,-) \dashv \TrPlus{\pi^\alpha_x}{-}$
-  adjunction itself or fullness (which implies it) by only ever talking
-  about maps from $1$ in the fiber.  
+\item \label{sigma:spec} What we seem to need for $\Sigma$ types is just
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item A map $\mtt{contract} : 1_\alpha \vDash_{\El{p}{\alpha}} \Sigma_1(\alpha,1_\alpha,1_{\alpha.{1_\alpha}})$.
+  \item such that the $\mtt{pair}$ map induced as in
+    \ref{sigma:get-pair} is an isomorphism (split)
+  \end{itemize}
+
+\item It seems surprising that, in addition to not needing the
+  adjunction (which is kind of explained by never touching maps out of
+  anything other than $1$ in the fiber), we also don't need the BC
+  condition.  A partial explanation is that the BC condition is
+  (conjecture) true up to isomorphism, at least when phrased in terms of
+  total spaces.
+
+  Here are the maps:
+
+  For 
+  \[
+  \Sigma_1(\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{s.\id}}{y}) \vDash \TrPlus{\ApEl{p}{s}}{(\Sigma_1(\alpha,x,y))} 
+  \]
+  observe that there is a 2-cell in the mode theory $\Sigma$-type
+  \[
+  (\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{(s . \id)}}{y}) \vDash_{\Sigma z:p.\Sigma x:\El{p}{z}.\El{p}{z.x}} (\alpha,x,y)
+  \]
+  given by $(s, \id, \id)$ (using the equation for ``ap of framework
+  $\Sigma$ on a 2-cell'', and an associativity between $(\ap{w:(\Sigma
+    z:p.\El{p}{z}).\El{p}{(\fst w).(\snd w)}}{s , \id})$ and
+  $\ApEl{p}{s.\id}$).  $\Sigma_1$'s input is (an uncurried version of)
+  this $\Sigma$ type, so
+  \[
+  \ap{\Sigma_1 (\fst(w), \fst({\snd (w)}), \snd{(\snd w)})}{(s, \id, \id)/w}
+  \]
+  has the desired type (using the equation for ``ap of \fst{} on a
+  2-cell in $\Sigma$'').
+  By \ref{sigma:total-to-fiber1} this induces a 2-cell (leaving off the $\ApEl{p}{-}$)
+  \[
+  \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) \vDash \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} 
+  \]
+
+  For the converse, we construct 
+  \[
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \vDash \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) 
+  \]
+  (I'm not sure if this one is actually true in the fiber without
+  assuming fullness).
+  By post-composing with $\mtt{pair}$, it suffices to give 
+  \[
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \vDash \beta.\TrPlus{s}{x}.\TrPlus{(s.\id)}{y}
+  \]
+
+  Lemma 1: In general, given $\alpha \vdash \alpha.x$ which is a section
+  of $\pi^\alpha_x$, we can ``substitute'' any $s : \beta \vDash \alpha$
+  into it to get $\beta \vdash \beta.\TrPlus{x}$, which is a section of
+  $\pi^\beta_{\TrPlus{s}{x}}$.  For us, this is derived by using
+  \ref{sigma:total-to-fiber0} to reduce the problem to going from $1
+  \vDash_{\El{p}{\alpha}} x$ to $1 \vDash_{\El{p}{\beta}}
+  \TrPlus{s}{x}$, which is just the ap of ${\TrPlus{s}{-}}$ together
+  with it reducing on $1$.
+
+  Lemma 2: similarly, given $\alpha.x \vdash \alpha.y$ (commuting over
+  $\alpha$), we can ``substitute'' to get $\beta.\TrPlus{s}{x} \vdash
+  \beta.\TrPlus{s}{y}$ (commuting over $\beta$), by using
+  \ref{sigma:total-to-fiber1}, ap-ing $s$ in the fiber, reducing the ap
+  on $1$, and using the commuting triangle with $\pi$.
+
+  There is a map $\mtt{fst} : \alpha.\Sigma_1(\alpha,x,y) \vDash_p
+  \alpha.x$ given by $\mtt{split};\pi$, which commutes over $\alpha$.
+
+  There is also a section $\mtt{snd} : \alpha.\Sigma_1(\alpha,x,y)
+  \vDash_p \alpha.\Sigma_1(\alpha,x,y).\TrPlus{\mtt{fst}}{y}$ (this is
+  the total-space version of the usual second projection term).  In the
+  fiber, we need $1 \vDash_{\alpha.\Sigma_1(\alpha,x,y)}
+  \TrPlus{\mtt{fst}}{y}$, but we have the $\mtt{var}$ term $1
+  \vDash_{\alpha.x.y} \TrPlus{\pi^{\alpha.x}_y}{y}$ and ap-ing
+  $\mtt{split}$ gives the result.
+  
+  Applying Lemma 2 to $\mtt{fst}$ gives
+  \[s^*{\mtt{fst}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash \beta.\TrPlus{s}{x}
+  \]
+  which commutes over $\beta$.
+
+  Applying Lemma 1 to $\mtt{snd}$ gives $s^*{\snd{}} :
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash_p
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s}{\TrPlus{\mtt{fst}}{y}}$
+  commuting over $\alpha$.  (Some of the total space/fiber moves could
+  be $\beta$-reduced here.)
+  We also should have $s;\mtt{fst} = ;{s.\id}$, so this has type
+  \[
+  s^*{\snd{}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash_p
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s^*\mtt{fst}}{\TrPlus{s.\id}{y}}
+  \]
+  
+  Using the comprehension-terminal adjunction to map into $.$, we can
+  pair $s^*{\mtt{fst}}$, $s^*{\snd{}}$
+  to get
+  \[
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash (\beta.\TrPlus{s}{x}).{\TrPlus{(s.\id)}{y}}
+  \]
+  
 \end{enumerate}
   
 \subsection{MLTT via Explicit Substitutions}
@@ -1591,6 +1688,25 @@ Top judgements:
 \item $\mm{\Gamma \yields_p A \TYPE}$ is an object of $\mm{\gamma \yields p}(\mm{\Gamma})$.
 \item $\mm{\Gamma \yields_\mu M : A}$ is a morphism from $\mm{\gamma \yields \mu : p}(\mm{\Gamma})$ to $\mm{\Gamma \yields_p A}$ in $\mm{\gamma \yields p}(\mm{\Gamma})$.
 \end{itemize}
+
+\drlnote{Are these right?}
+Total substitutions in the mode theory, 2-cells between them, and
+upstairs substitutions above them are not part of the primitive syntax
+of the framework, but can be defined by tupling terms.
+These can be interpreted as: 
+\begin{itemize}
+\item $\mm{\gamma \yields \theta : \delta}$ is a functor from $\mm{\gamma}$ to $\mm{\delta}$
+\item $\mm{\gamma \yields \theta_1 \vDash_\delta \theta_2}$ is a natural
+  transformation from $\mm{\gamma \yields \theta_1 : \delta}$ to
+  $\mm{\gamma \yields \theta_2 : \delta}$
+\item $\mm{\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta}$ is a
+  morphism from $\mm{\theta}(\mm{\Gamma})$ to $\mm{\Delta}$ in
+  $\mm{\delta}$.
+  Natural transformations act contravariantly because $\theta$ is in the
+  domain of the morphism.  
+  \end{itemize}
+So the semantics of contexts/substitutions is a lot like 
+one-variable adjoint logic with only $F$ types~\cite{ls15adjoint}.  
 
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
 
