@@ -107,9 +107,15 @@
 \newcommand\C{\mathcal{C}}
 \newcommand\Cty{\mathrm{Ty}_{\C}}
 \newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\vp{\varpi}
+\newcommand\vpty{{\vp}_{\mathrm{Ty}}}
+\newcommand\vptm{{\vp}_{\mathrm{Tm}}}
 \newcommand\name[1]{\ulcorner #1\urcorner}
 \newcommand{\Util}{\widetilde{U}}
 \newcommand\ev{\mathrm{ev}}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbbb}{bbold}
+\newcommand\one{\mathbbb{1}}
 
 \title{A Fibrational Framework for Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
@@ -779,7 +785,7 @@ the $s$ goes, and change one or the other.  I find things like $\Gamma
 \vdash s : \mu \vDash_p \nu$ with two turnstiles hard to parse.
 }
 
-\begin{lemma}
+\begin{lemma}\label{lem:n-ary-ap-rewrite}
 N-ary ap and rewrite are admissible:
 \begin{mathpar}
 \inferrule*{\delta \vdash {q} \type \\
@@ -1690,6 +1696,7 @@ Top judgements:
 \end{itemize}
 
 \drlnote{Are these right?}
+\msnote{Yes!}
 Total substitutions in the mode theory, 2-cells between them, and
 upstairs substitutions above them are not part of the primitive syntax
 of the framework, but can be defined by tupling terms.
@@ -1709,6 +1716,7 @@ So the semantics of contexts/substitutions is a lot like
 one-variable adjoint logic with only $F$ types~\cite{ls15adjoint}.  
 
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
+In this subsection we will concern ourselves only with the ``downstairs'' mode theory, which means abstracting the behavior of Grothendieck constructions in $\Cat$; in \S\ref{sec:fib-2cwf} we will reintroduce the ``upstairs'' type theory by additionally abstracting the behavior of ``objects and morphisms''.
 
 \begin{enumerate}
 \item Categories form a 2-category.
@@ -1789,6 +1797,34 @@ In fact we can construct this precisely as an instance of a much more general op
   Thus, $\Cat$ becomes a 2-category with families where $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, as in the above motivating discussion.
 \end{example}
 
+On the other hand, we should also have the syntactic model:
+
+\begin{example}\label{eg:syn-2cwf}
+  Let $\M$ be the 2-category whose:
+  \begin{itemize}
+  \item objects are mode contexts $\gamma \ctx$,
+  \item morphisms are total mode substitutions $\gamma \yields \theta : \delta$, and
+  \item 2-cells are total mode 2-cells $\gamma \yields \theta_1 \vDash_\delta \theta_2$.
+  \end{itemize}
+  We define $\Mty:\M\op\to\CAT$ such that
+  \begin{itemize}
+  \item the objects of $\Mty(\gamma)$ are modes $\gamma \yields p\type$, and
+  \item the morphisms of $\Mty(\gamma)$ are mode morphisms $\TypeTwo{\gamma}{s}{p}{q}$,
+  \item with functorial action by substitution.
+  \end{itemize}
+  Finally, we define $\Mtm:\M\op\to\CAT$ such that
+  \begin{itemize}
+  \item the objects of $\Mtm(\gamma)$ are mode terms $\gamma \yields \mu:p$, and
+  \item the morphisms of $\Mtm(\gamma)$ are mode 2-cells $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$,
+  \item with functorial action by substitution.
+  \end{itemize}
+  The projection $\Upsilon:\Mtm\to\Mty$ is clear.
+  Its representability is given, as usual, by context extension $(\gamma, x:p) \ctx$; the universal property of this follows from the definition of total substitutions and 2-cells as tuples.
+  Finally, its split fibration structure is given by the contravariant action of mode morphisms on mode terms ${\gamma \yields \TrPlus{s}{\mu} : p}$.
+  Note that, as mentioned above, so far we are only seeing the ``downstairs'' mode theory.
+\end{example}
+
+
 \subsection{$\Sigma$-modes}
 \label{sec:2-sigmas}
 
@@ -1852,7 +1888,8 @@ Note that the composite of two split fibrations is again a split fibration.
   (1) commutes, (2) is a pullback, and (3) is a strict morphism of split fibrations.
 \end{definition}
 
-Let's unwind this to correspond to syntax.
+\begin{example}\label{eg:syn-sig}
+  Continuing Example \ref{eg:syn-2cwf}, we argue that the syntactic model has $\Sigma$-types in this sense if and only if it has $\Sigma$-modes in the syntactic sense.
 By the construction in Lemma \ref{thm:fib-exp}, an object of $\Pi_\Upsilon[\Mty](\gamma)$ lives over a type $p\in \Mty(\gamma)$, and consists of the additional data of a map $p^*\Mtm \to \Mty$.
 But since $\Upsilon$ is representable, $p^* \Mtm$ is also representable, by the extended context $\gamma.p$; thus this additional data is a type $\gamma,x:p \yields q \type$.
 The morphism $\Pi_\Upsilon[\Mty] \to \Mty$ thus assigns to any such pair a mode type $\gamma \yields \sigmacl{x}{p}{q} \type$.
@@ -1864,6 +1901,7 @@ The action of $\Pi_\Upsilon[\Mty] \to \Mty$ on morphisms gives the congruence ru
 Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes (although the latter is currently written to only apply when one of the morphisms being paired is cartesian), and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
 
 Finally, the fact that this square is a strict morphism of split fibrations gives the equation for ``transport'' in $\Sigma$.
+\end{example}
 
 To construct our canonical model, we again appeal to a universal case.
 
@@ -1883,9 +1921,9 @@ To construct our canonical model, we again appeal to a universal case.
   All the structure involved in the definition of $\Sigma$-types (dependent products, pullbacks, morphisms of split fibrations) is preserved by any restricted Yoneda embedding.
 \end{proof}
 
-\begin{example}
+\begin{example}\label{eg:cat-sig}
   Continuing Example \ref{eg:cat-2cwf}, we want to show that $U=\Cat\op$ has $\Sigma$-types in the sense of Theorem \ref{thm:sig-univ}.
-  The map $\upsilon\Util\to U$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
+  The map $\upsilon:\Util\to U$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
   An object of $\Pi_\upsilon[U]$ consists of a category $A\in U$ together with a functor from the fiber of $\upsilon$ over $A$ to $U$, which is to say simply a functor $A\to \Cat\op$, or equivalently $B:A\op\to\Cat$.
   Similarly, a morphism $(A,B)\to (A',B')$ in $\Pi_\upsilon[U]$ consists of a functor $f:A'\to A$ together with a natural transformation $g:B' \to B \circ f$.
 
@@ -1905,5 +1943,133 @@ To construct our canonical model, we again appeal to a universal case.
   Thus, the canonical 2-category with families structure on $\Cat$ has $\Sigma$-types.
 \end{example}
 
+
+\subsection{Fibered 2-categories with families}
+\label{sec:fib-2cwf}
+
+As in our previous work, with the 2-categorical analogue of the downstairs mode theory in place, the upstairs type theory corresponds to a ``local fibration'' over it.
+
+\begin{definition}
+  Let $(\C,\Cty,\Ctm)$ and $(\M,\Mty,\Mtm)$ be two 2-categories with families.
+  A \textbf{morphism of 2-categories with families} consists of:
+  \begin{enumerate}
+  \item A 2-functor $\vp:\C\to\M$.
+  \item A commutative square in $[\C\op,\CAT]$:
+    \begin{center}
+      \begin{tikzcd}
+        \Ctm \ar[r,"\vptm"] \ar[d,->>] & \vp^* \Mtm\ar[d,->>] \\
+        \Cty \ar[r,"\vpty"] & \vp^* \Mty
+      \end{tikzcd}
+    \end{center}
+    Note that the right-hand vertical morphism is still a split fibration, since split fibration structure is defined using only finite 2-categorical limits, and $\vp^* : [\M\op,\CAT] \to [\C\op,\CAT]$ is a right adjoint and hence preserves all such structure.
+  \item This commutative square is a strict morphism of split fibrations.
+  \item This commutative square furthermore ``preserves the algebraic representations'' in the following sense: given $C\in \C$ and $T\in \Cty(C)$, hence $\name{T}:y(C) \to \Cty$, we have also $\vpty(T) \in \Mty(\vp(C))$ and hence $\name{\vpty(T)}:y(\vp(C)) \to \Mty$, and thus two algebraically specified pullback squares
+    \begin{center}
+      \begin{tikzcd}
+        y(\int T) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ctm \ar[d] &
+        y(\int \vpty(T)) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d] \\
+        y(C) \ar[r] & \Cty &
+        y(\vp(C)) \ar[r] & \Mty
+      \end{tikzcd}
+    \end{center}
+    Since $\vp^*$ preserves pullbacks, the left-hand composite square must factor uniquely as on the right:
+    \begin{center}
+      \begin{tikzcd}
+        y(\int T) \ar[r] \ar[d] &
+        \Ctm \ar[r,"\vptm"] \ar[d] & \vp^* \Mtm\ar[d] \ar[dr,phantom,"="] &
+        y(\int T) \ar[r,dashed]\ar[d] &
+        \vp^*y(\int \vpty(T)) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \vp^*\Mtm \ar[d] \\
+        y(C) \ar[r] & \Cty \ar[r,"\vpty"] & \vp^* \Mty &
+        y(C) \ar[r,"\vp"] & \vp^* y(\vp(C)) \ar[r] & \vp^* \Mty
+      \end{tikzcd}
+    \end{center}
+    Here the lower morphism marked $\vp$ is induced by the action of $\vp$ on arrows (it is also equivalently the unit of the adjunction between $\vp^*$ and its left adjoint).
+    The condition we require is then that $\int \vpty(T) = \vp(\int T)$, and that the dashed arrow is also the one induced by $\vp$ in this way.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}
+  A morphism of 2-categories with families $\vp : \C\to\M$ is a \textbf{local discrete fibration} if
+  \begin{enumerate}
+  \item The 2-functor $\vp:\C\to\M$ is a local discrete fibration, i.e.\ the induced functors on hom-categories $\C(X,Y) \to \M(\vp(X),\vp(Y))$ are discrete fibrations.
+    (If they were non-discrete fibrations, there would be an additional compatibility condition on composition, but in the discrete case this is automatic.)
+  \item The components of the transformations $\Cty\to\Mty$ and $\Ctm\to \Mtm$ are discrete fibrations (again, naturality is automatic in the discrete case).
+  \end{enumerate}
+  In this case we refer to $\C$ as a \textbf{fibered 2-category with families} over $\M$.
+\end{definition}
+
+\begin{example}\label{eg:syn-fib-2cwf}
+  Returning to Example \ref{eg:syn-2cwf}, we construct a fibered 2-category with families over the syntactic one $\M$, now using the ``upstairs'' type theory.
+  \begin{itemize}
+  \item An object of $\C$ is a context $\yields_\gamma \Gamma \CTX$.
+    Of course, its image in $\M$ is $\yields \gamma \ctx$.
+  \item A morphism in $\C$ is a total substitution $\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta$, lying over $\gamma \yields \theta : \delta$.
+  \item The fibrational action of 2-cells in $\M$ on morphisms in $\C$ is given by N-ary rewrite (Lemma \ref{lem:n-ary-ap-rewrite}).
+  \item An object of $\Cty(\Gamma)$ is a type $\Gamma_\gamma \yields_p A \TYPE$, lying over $\gamma \yields p\type$ in $\Mty(\gamma) = \Mty(\vp(\Gamma))$.
+    The fibrational action of morphisms in $\Mty$ is given by the $\St{s}{A}$ types.
+  \item An object of $\Ctm(\Gamma)$ over $A\in \Cty(\Gamma)$ is a term $\Gamma_\gamma \yields_\mu M:A_p$, lying over $\gamma \yields \mu:p$ in $\Mtm$.
+    To act on such a term by a morphism in $\Mtm(\gamma)$, we first factor the latter morphism as a mode 2-cell in a fiber $\TermTwoT{\gamma}{s}{\mu}{\TrPlus{t}{\nu}}{p}$ followed by the cartesian arrow corresponding to the action of a mode morphism $\TypeTwo{\gamma}{t}{p}{q}$ on $\nu$.
+    The cartesian morphism then acts on $M$ by S-intro, $\StI{t}{M} : \St{t}{A}$, and then we rewrite with the fiber 2-cell $\rewrite{s}{\StI{t}{M}}$.
+  \end{itemize}
+\end{example}
+
+To construct the canonical model, we appeal to a more general ``co-universe'' construction.
+
+\begin{theorem}
+  Let $\M$ be a 2-category with families, and let $\one$ be an \emph{arbitrary} object of $\M$.
+  Let $\C = \one\sslash \M$ be the lax slice 2-category of $\M$ under $\one$: its objects are morphisms $c:\one\to C$ in $\M$ and its morphisms are 2-cells inhabiting triangles
+  \begin{center}
+    \begin{tikzcd}
+      & \one \ar[dl,"c"'] \ar[dr,"d"] \ar[d,phantom,"\overset{\phi}{\Rightarrow}"] \\
+      A \ar[rr,"f"'] & {}& B
+    \end{tikzcd}
+  \end{center}
+  Let $\vp:\C\to\M$ be the obvious forgetful 2-functor.
+  
+  Let $\Cty(c:\one\to C)$ be the category of commutative squares
+  \begin{center}
+    \begin{tikzcd}
+      y(\one) \ar[d,"c"'] \ar[r,"\name{t}"] & \Mtm \ar[d] \\
+      y(C) \ar[r,"\name{T}"] & \Mty.
+    \end{tikzcd}
+  \end{center}
+  The obvious morphisms of such squares are commuting cylinders involving a 2-cell of morphisms $y(C) \to \Mty$ and another 2-cell of morphisms $y(\one) \to \Mtm$; we restrict the morphisms of $\Cty$ to be those for which the upper 2-cell belongs to the splitting of the fibration $\Mtm\to\Mty$.
+
+  Finally, let $\Ctm(c:\one\to C)$ be the category of 2-cells
+  \begin{center}
+    \begin{tikzcd}
+      & y(C) \ar[dr,"\name{\tau}"] \ar[d,phantom,"\Downarrow"] \\
+      y(\one) \ar[d,"c"'] \ar[ur,"c"] \ar[rr,"\name{t}"'] &{}& \Mtm \ar[d,"\Upsilon"] \\
+      y(C) \ar[rr,"\name{T}"'] && \Mty.
+    \end{tikzcd}
+  \end{center}
+  whose composite with $\Mtm \to \Mty$, as shown, is the identity induced by an identity $\Upsilon(\tau) = T$.
+  Then $(\C,\Cty,\Ctm)$ is a fibered 2-category with families over $\M$.
+\end{theorem}
+\begin{proof}
+  It is clear that $\C$ is a 2-category, and that $\vp:\C\to\M$ is a local discrete fibration.
+  The functorial action of $\Cty$ on morphisms of $\C$ is defined using the split cartesian lifts of $\Mtm\to\Mty$.
+  The restriction to split upper 2-cells ensures that the evident projection $\Cty\to\vp^*\Mty$ is a \emph{discrete} fibration (otherwise it would be only a split one; this seems analogous to how we can take the presheaf of objects of an arbitrary split comprehension category to obtain a category with families).
+  Similarly, the functorial action of $\Ctm$ is defined by unique factorization through these lifts.
+  The commutativity of the necessary square is evident.
+  The split fibration structure of $\Ctm\to\Cty$ is defined by composition and factoring through cartesian lifts; the square is then a strict morphism of split fibrations by construction.
+  The projection $\Ctm\to\vp^*\Mtm$ is a discrete fibration by composition with 2-cells in the domain.
+  Finally, the comprehension of $(T,t)$ as above is the comprehension $\int T$ together with the map $\one\to\int T$ induced by $t$; this is preserved by $\vp$ by construction.
+  \msnote{Need to check some stuff here, notably that these comprehensions have the right universal property.}
+\end{proof}
+
+\begin{example}
+  Continuing with Example \ref{eg:cat-2cwf}, we can take $\one$ to be the terminal category in $\M=\CAT$.
+  Then:
+  \begin{itemize}
+  \item The objects of $\C$ are categories $C$ equipped with a chosen object $c\in C$.
+  \item The morphisms $(C,c) \to (D,d)$ are functors $f:C\to D$ together with a morphism $\phi :f(c) \to d$.
+  \item Natural transformations act contravariantly on such pairs by precomposition $f(c) \xrightarrow{\alpha_c} g(c) \to d$.
+  \item The objects of $\Cty(C,c)$ are functors $T:C\op\to \Cat$ with an object $t\in T(c)$.
+  \item The objects of $\Ctm(C,c)$ are functors $T:C\op\to \Cat$ with a section $s:C\to \int T$ of the Grothendieck construction, along with an object $t\in T(c)$ and a morphism $s(c) \to t$ in $T(c)$.
+  \end{itemize}
+  Thus, this reproduces our informal expectation from \S\ref{sec:2cwfs}.
+  Note that while $\Cty$ and $\Ctm$ in this example simply ``pick out the objects and morphisms'' of the categories $C\in\M$, in general we can regard the fibered 2-category with families $\C$ as an ``abstraction'' of the notions of ``objects and morphisms'' applicable to any 2-category with families $\M$.
+\end{example}
 
 \end{document}
