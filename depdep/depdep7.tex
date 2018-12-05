@@ -102,12 +102,23 @@
 \newcommand\Cat{\mathrm{Cat}}
 \newcommand\CAT{\mathrm{CAT}}
 \newcommand\M{\mathcal{M}}
+\newcommand\Mhat{\widehat{\mathcal{M}}}
 \newcommand\Mty{{\mathrm{Ty}_{\M}}}
 \newcommand\Mtm{{\mathrm{Tm}_{\M}}}
+\newcommand\Mtyhat{{\widehat{\mathrm{Ty}}_{\M}}}
+\newcommand\Mtmhat{{\widehat{\mathrm{Tm}}_{\M}}}
+\newcommand\Ups{\Upsilon}
+\newcommand\Upshat{{\widehat{\Upsilon}}}
 \newcommand\C{\mathcal{C}}
+\newcommand\Chat{{\widehat{\mathcal{C}}}}
 \newcommand\Cty{\mathrm{Ty}_{\C}}
 \newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\Ctyhat{{\widehat{\mathrm{Ty}}}_{\C}}
+\newcommand\Ctmhat{{\widehat{\mathrm{Tm}}}_{\C}}
 \newcommand\vp{\varpi}
+\newcommand\vpst{\vp^*}
+\newcommand\vpsh{\vp_!}
+\newcommand\vptil{\widetilde{\vp}}
 \newcommand\vpty{{\vp}_{\mathrm{Ty}}}
 \newcommand\vptm{{\vp}_{\mathrm{Tm}}}
 \newcommand\name[1]{\ulcorner #1\urcorner}
@@ -1858,6 +1869,10 @@ one-variable adjoint logic with only $F$ types~\cite{ls15adjoint}.
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
 In this subsection we will concern ourselves only with the ``downstairs'' mode theory, which means abstracting the behavior of Grothendieck constructions in $\Cat$; in \S\ref{sec:fib-2cwf} we will reintroduce the ``upstairs'' type theory by additionally abstracting the behavior of ``objects and morphisms''.
 
+We work with two universes in the metatheory, leading to two categories of categories denoted $\Cat$ and $\CAT$, such that $\Cat$ is an object of $\CAT$.
+If necessary, we refer to objects of $\Cat$ as \emph{small}, objects of $\CAT$ (including $\Cat$) as \emph{large}, and other categories (such as $\CAT$ itself) as \emph{very large}.
+However, for the most part size issues can be ignored.
+
 \begin{enumerate}
 \item Categories form a 2-category.
   In general we will stipulate an arbitrary (strict) 2-category $\M$.
@@ -1866,7 +1881,7 @@ In this subsection we will concern ourselves only with the ``downstairs'' mode t
 
   Here $\CAT$ denotes the very large 2-category of large categories.
   Note that this 2-functor is covariant on 2-cells: the two $(-)\op$s cancel each other out at that level.
-  In fact, this 2-functor can be identified with the representable $[-,\Cat\op]$.
+  (In fact, this 2-functor can be identified with the representable $[-,\Cat\op]$; this will be useful below.)
 
   Thus, in general we will stipulate a strict 2-functor $\Mty:\M\op \to \CAT$.
   \addtocounter{enumi}{1}
@@ -1876,7 +1891,7 @@ In this subsection we will concern ourselves only with the ``downstairs'' mode t
 
   The contravariant action of mode morphisms $\TypeTwo{\gamma}{s}{p}{q}$ on mode terms tells us that the morphisms of $\Mty(C)$ must act on the objects of $\Mtm$ contravariantly.
   Moreover, this action is strictly functorial, and respected by substitution.
-  Thus, we stipulate that $\Mtm \to \Mty$ is a \emph{split fibration} internal to the 2-category $[\M\coop,\CAT]$, which means that each functor $\Mtm(C) \to \Mty(C)$ is a split fibration and that all the naturality squares
+  Thus, we stipulate that $\Mtm \to \Mty$ is a \emph{split fibration} internal to the 2-category $[\M\op,\CAT]$, which means that each functor $\Mtm(C) \to \Mty(C)$ is a split fibration and that all the naturality squares
   \begin{center}
     \begin{tikzcd}
       \Mtm(C) \ar[d] \ar[r] & \Mtm(C')\ar[d] \\
@@ -1885,29 +1900,29 @@ In this subsection we will concern ourselves only with the ``downstairs'' mode t
   \end{center}
   are strict morphisms of split fibrations (preserve the splittings on the nose).
 
-  To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, if we form the pullback in $[\M\coop,\CAT]$
-  \begin{center}
+  To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, if we form the pullback in $[\M\op,\CAT]$
+  \begin{equation}
     \begin{tikzcd}
-      \bullet \ar[d] \ar[r] & \Mtm \ar[d] \\
+      \int T \ar[d] \ar[r] & \Mtm \ar[d] \\
       y(C) \ar[r,"\name{T}"] & \Mty
-    \end{tikzcd}
-  \end{center}
+    \end{tikzcd}\label{eq:rep-pb}
+  \end{equation}
   then the pullback object is also of the form $y(\int T)$ for some object $\int T\in \M$.
   Here $y(C)$ denotes the representable functor $y(C)(-) = \M(-,C) : \M\op\to\CAT$.
   The Yoneda lemma implies that (strict) 2-natural transformations $\name{T} : y(C) \to \Mty$ are in bijection with objects $T\in \Mty(C)$; thus every $T\in \Mty(C)$ induces an object $\int T$ with a projection $\int T \to C$ in $\M$, such that elements of $\Mtm(C)$ over $T$ are in bijection with sections of this projection.
-  To make the notion algebraic, we require the object $\int T$ to be a specified function of $C$ and $T$.
+  To make the notion algebraic, we require the object $\int T$ to be a specified function of $C$ and $T$; we call this being \textbf{algebraically representable}.
 
-  Since the above pullback is a pullback in a 2-category, it also has a universal property for 2-cells.
+  Since~\eqref{eq:rep-pb} is a pullback in a 2-category, it also has a universal property for 2-cells.
   Thus, morphisms in $\Mtm$ (over the identity in $\Mty$) are in bijection with 2-cells between sections (over the identity).
 
-  The 2-categorical Yoneda lemma also tells us that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications $\name{\mu}:\name{S} \to \name{T}$.
-  Since $\Mtm\to\Mty$ is a fibration, such a 2-cell induces a universal map in the other direction $\int \mu : \int T\to \int S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $\int \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
+  The 2-categorical Yoneda lemma also says that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications $\name{\mu}:\name{S} \to \name{T}$.
+  Since $\Mtm\to\Mty$ is a fibration, such a $\name{\mu}$ induces a map in the other direction $\int \mu : \int T\to \int S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $\int \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
 \end{enumerate}
 
 Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated semantically by:
 
 \begin{definition}
-  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Upsilon:\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
+  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Ups:\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
 \end{definition}
 
 Pleasingly, this is a straightforward categorification of the standard notion of category with families.
@@ -1917,24 +1932,37 @@ The ruminations above suggest that there should be a 2-category with families wh
 In fact we can construct this precisely as an instance of a much more general operation, similar to the ``global universe'' coherence method for ordinary type theory introduced by Voevodsky.
 (There should also be a ``local universe'' method analogous to that of Lumsdaine--Warren, but we do not need that here.)
 
+\begin{definition}
+  A \textbf{2-category with a universe} is a large 2-category $\M$ together with a fully faithful 2-functor $y:\M \hookrightarrow \Mhat$, where $\Mhat$ is a very large and locally large 2-category having finite limits, and a morphism $\Upshat : \Mtmhat \to \Mtyhat$ in $\Mhat$ that is both (1) an internal split fibration and (2) algebraically $\M$-representable, in the sense that for any map $y(C)\to \Mtyhat$, where $C\in \M$, has a specified pullback that also lies in the image of $y$.
+\end{definition}
+
+Usually we will treat $y$ as an implicit coercion, identifying objects of $\M$ with their images in $\Mhat$.
+
+Note that every 2-category with families is also a 2-category with a universe, taking $\Mhat = [\M\op,\CAT]$ and $\Mtyhat=\Mty$, $\Mtmhat = \Mtm$, $\Upshat = \Ups$.
+Indeed a 2-category with families is precisely a 2-category with a universe such that $\M \hookrightarrow \Mhat$ is the Yoneda embedding.
+Conversely we have:
+
 \begin{theorem}\label{thm:2cwf-univ}
-  Let $\M'$ be any 2-category containing an internal split fibration $\upsilon : \Util \to U$, and let $\M\subseteq \M'$ be a full subcategory such that if $C\in \M$ and $C'\to C$ is a pullback of $\upsilon$, then $C'\in \M$.
-  Then $\M$ is a 2-category with families with
+  Any 2-category with a universe has an underlying 2-category with families, defined by
   \begin{align*}
-    \Mty(C) &= \M'(C,U)\\
-    \Mtm(C) &= \M'(C,\Util).
+    \Mty(C) &= \Mhat(C,\Mtyhat)\\
+    \Mtm(C) &= \Mhat(C,\Mtmhat)\\
+    \Ups &= \Mhat(C,\Upshat)
   \end{align*}
 \end{theorem}
 \begin{proof}
-  The definitions of $\Mty$ and $\Mtm$ are certainly 2-functors, since they are representable, and the morphism $\upsilon$ induces a 2-natural transformation $\Upsilon:\Mtm\to\Mty$.
-  Since split fibrations can be defined in terms of finite limits and diagrammatic 2-categorical structure (adjunctions), they are preserved by the restricted Yoneda embedding; thus $\Upsilon$ is also a split fibration.
-  Finally, since the restricted Yoneda embedding also preserves pullbacks, it preserves any pullback of $\upsilon$ to a representable; hence the vertex of any such pullback is again representable.
-  Thus, $\Upsilon$ is a representable morphism (and by choosing pullbacks in $\M'$ we can make $\Upsilon$ algebraically representable).
+  The definitions of $\Mty$ and $\Mtm$ are certainly 2-functors, since they are representable, and the morphism $\Upshat$ induces a 2-natural transformation $\Ups:\Mtm\to\Mty$.
+  More abstractly, we are applying the \emph{restricted Yoneda embedding} $\Mhat \to [\M\op,\CAT]$ (the term is somewhat of a misnomer since, unlike the ordinary Yoneda embedding, it may not be fully faithful).
+  Since split fibrations can be defined in terms of finite limits and diagrammatic 2-categorical structure (adjunctions), they are preserved by the restricted Yoneda embedding; thus $\Ups$ is also a split fibration.
+  Finally, since the restricted Yoneda embedding also preserves pullbacks, it preserves any pullback of $\Upshat$ to an object of $\M$; hence the vertex of any such pullback is again a specified representable.
+  Thus, $\Ups$ is algebraically representable.
 \end{proof}
 
 \begin{example}\label{eg:cat-2cwf}
-  Let $\M'=\CAT$ and $\M=\Cat$, with $U = \Cat\op$ and $\Util$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
-  Thus, $\Cat$ becomes a 2-category with families where $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, as in the above motivating discussion.
+  Let $\M=\Cat$ and $\Mhat=\CAT$, with $\Mtyhat = \Cat\op$, and $\Mtmhat$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
+  Explicitly, the objects of $\Mtmhat$ are categories $A$ equipped with an object $a\in A$, and its morphisms $(A,a) \to (B,b)$ are functors $f:B\to A$ paired with a morphism $\phi : a\to f(b)$.
+  Thus, $\Cat$ becomes a 2-category with a universe, and hence a 2-category with families, as in the above motivating discussion.
+  We have $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, and $\Mtm(C)$ consists of functors $D:C\op\to\Cat$ together with a section $s:C\to \int D$ of their Grothendieck construction.
 \end{example}
 
 On the other hand, we should also have the syntactic model:
@@ -1958,7 +1986,7 @@ On the other hand, we should also have the syntactic model:
   \item the morphisms of $\Mtm(\gamma)$ are mode 2-cells $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$,
   \item with functorial action by substitution.
   \end{itemize}
-  The projection $\Upsilon:\Mtm\to\Mty$ is clear.
+  The projection $\Ups:\Mtm\to\Mty$ is clear.
   Its representability is given, as usual, by context extension $(\gamma, x:p) \ctx$; the universal property of this follows from the definition of total substitutions and 2-cells as tuples.
   Finally, its split fibration structure is given by the contravariant action of mode morphisms on mode terms ${\gamma \yields \TrPlus{s}{\mu} : p}$.
   Note that, as mentioned above, so far we are only seeing the ``downstairs'' mode theory.
@@ -1973,7 +2001,7 @@ As formulated by Awodey, $\Sigma$-types for a 1-category with families involve t
 Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not locally cartesian closed, so not all dependent products exist; but fortunately, dependent products along fibrations do exist.
 
 \begin{lemma}\label{thm:fib-exp}
-  For a 2-category $\M$, any split fibration $\Upsilon : S\to T$ in $[\M\op,\CAT]$ is exponentiable.
+  For a 2-category $\M$, any split fibration $\Ups : S\to T$ in $[\M\op,\CAT]$ is exponentiable.
 \end{lemma}
 \begin{proof}
   Suppose given $R\to S$; we want to define $\Pi_S[R]$ over $T$.
@@ -1983,7 +2011,7 @@ Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not loca
   \[ \ob (\Pi_S [R](C)) = \sum_{x:\ob (T(C))} \ob (\M_{/S}(x^*S, R)). \]
   Next, given a morphism $\alpha :x\to y$ in $T(C)$ and objects $u,v$ of $\Pi_S[R]$ over $x,y$ respectively, morphisms $u\to v$ over $\alpha$ must correspond bijectively to lifts of the corresponding 2-cell $\name{\alpha} :\name{x} \to \name{y} :y(C) \to T$ to a 2-cell between $\name{u},\name{v} : y(C) \to \Pi_S[R]$.
   However, the desired universal property of $\Pi_S[R]$ as a dependent product doesn't obviously determine such lifts, because the 2-cell $\name{\alpha}$ doesn't live in the slice category $\M/T$.
-  But we can use the fibration structure of $\Upsilon$, which induces a map $\alpha^*S : y^*S \to x^*S$ over $y(C)$ and a 2-cell
+  But we can use the fibration structure of $\Ups$, which induces a map $\alpha^*S : y^*S \to x^*S$ over $y(C)$ and a 2-cell
   \begin{center}
     \begin{tikzcd}
       x^*S \ar[drr] \\
@@ -1994,7 +2022,7 @@ Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not loca
   over $\alpha$ with a universal property (see Hermida, Buckley, Johnstone).
   Thus, if $u$ and $v$ are determined by maps $\hat{u}:x^*S \to R$ and $\hat{v}:y^*S\to R$ over $S$, we can define a morphism $u\to v$ over $\alpha$ to be determined by a lift $\hat{\alpha}$ of $\overline{\alpha}$ to $R$.
 
-  The maps $\alpha^*S $ and 2-cells $\overline{\alpha}$ are functorial in $\alpha$ in all the ways one would hope (strictly so, since $\Upsilon$ is split --- although this is not really necessary), so it is straightforward to make $\Pi_S[R](C)$ thusly defined into a category and $\Pi_S[R]$ into a functor $\M\op\to\CAT$ over $T$.
+  The maps $\alpha^*S $ and 2-cells $\overline{\alpha}$ are functorial in $\alpha$ in all the ways one would hope (strictly so, since $\Ups$ is split --- although this is not really necessary), so it is straightforward to make $\Pi_S[R](C)$ thusly defined into a category and $\Pi_S[R]$ into a functor $\M\op\to\CAT$ over $T$.
 
   Note in particular that when $\alpha$ is an identity, so is $\overline{\alpha}$, so the fiber of $\Pi_S[R]$ over an object $x$ is the category $\M_{/S}(x^*S, R)$.
   This means that $\Pi_S[R]$ has the desired universal property with respect to maps out of representables, i.e.\ we have a natural isomorphism of hom-categories
@@ -2002,27 +2030,27 @@ Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not loca
   It is straightforward to extend this, using the Yoneda lemma, to the full universal property.
 \end{proof}
 
-Proceeding by analogy with the 1-categorical case, consider the dependent product $\Pi_\Upsilon[\Mty]$, where $\Mty$ denotes abusively the pullback $\Mtm \times \Mty \to \Mtm$ in $\M/\Mtm$.
-The universal structure of $\Pi_\Upsilon[\Mty]$ consists of an ``evaluation'' map $\ev:\Pi_\Upsilon[\Mty] \times_\Mty \Mtm \to \Mty$.
-Note that the projection $\Pi_\Upsilon[\Mty] \times_\Mty \Mtm \to \Pi_\Upsilon[\Mty]$ is a split fibration, since it is a pullback of $\Upsilon:\Mtm \to \Mty$.
-And we can also pull $\Upsilon$ back along the evaluation map to get a further split fibration:
+Proceeding by analogy with the 1-categorical case, consider the dependent product $\Pi_\Ups[\Mty]$, where $\Mty$ denotes abusively the pullback $\Mtm \times \Mty \to \Mtm$ in $\M/\Mtm$.
+The universal structure of $\Pi_\Ups[\Mty]$ consists of an ``evaluation'' map $\ev:\Pi_\Ups[\Mty] \times_\Mty \Mtm \to \Mty$.
+Note that the projection $\Pi_\Ups[\Mty] \times_\Mty \Mtm \to \Pi_\Ups[\Mty]$ is a split fibration, since it is a pullback of $\Ups:\Mtm \to \Mty$.
+And we can also pull $\Ups$ back along the evaluation map to get a further split fibration:
 \begin{center}
   \begin{tikzcd}
     \ev^* \Mtm \ar[r] \ar[d,->>] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d,->>]\\
-    \Pi_\Upsilon[\Mty] \times_\Mty \Mtm \ar[r] \ar[d,->>] \ar[ddr,phantom,near start,"\lrcorner"] \ar[dr] & \Mty\\
-    \Pi_\Upsilon[\Mty] \ar[dr] & \Mtm \ar[d,->>] \\
+    \Pi_\Ups[\Mty] \times_\Mty \Mtm \ar[r] \ar[d,->>] \ar[ddr,phantom,near start,"\lrcorner"] \ar[dr] & \Mty\\
+    \Pi_\Ups[\Mty] \ar[dr] & \Mtm \ar[d,->>] \\
     & \Mty
   \end{tikzcd}
 \end{center}
 Note that the composite of two split fibrations is again a split fibration.
 
 \begin{definition}
-  A 2-category with families has \textbf{$\Sigma$-types} if it is equipped with maps $\Pi_\Upsilon[\Mty] \to \Mty$ and $\ev^* \Mtm \to \Mtm$ such that the square
+  A 2-category with a universe (such as a 2-category with families) has \textbf{$\Sigma$-types} if $\Upshat$ is exponentiable, and it is equipped with maps $\Pi_\Upshat[\Mtyhat] \to \Mtyhat$ and $\ev^* \Mtmhat \to \Mtmhat$ such that the square
   \begin{center}
     \begin{tikzcd}
-      \ev^* \Mtm \ar[r] \ar[d,->>] & \Mtm \ar[dd,->>]\\
-    \Pi_\Upsilon[\Mty] \times_\Mty \Mtm \ar[d,->>] \\
-    \Pi_\Upsilon[\Mty] \ar[r] & \Mty
+      \ev^* \Mtmhat \ar[r] \ar[d,->>] & \Mtmhat \ar[dd,->>]\\
+      \Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat \ar[d,->>] \\
+      \Pi_\Upshat[\Mtyhat] \ar[r] & \Mtyhat
     \end{tikzcd}
   \end{center}
   (1) commutes, (2) is a pullback, and (3) is a strict morphism of split fibrations.
@@ -2030,14 +2058,14 @@ Note that the composite of two split fibrations is again a split fibration.
 
 \begin{example}\label{eg:syn-sig}
   Continuing Example \ref{eg:syn-2cwf}, we argue that the syntactic model has $\Sigma$-types in this sense if and only if it has $\Sigma$-modes in the syntactic sense.
-By the construction in Lemma \ref{thm:fib-exp}, an object of $\Pi_\Upsilon[\Mty](\gamma)$ lives over a type $p\in \Mty(\gamma)$, and consists of the additional data of a map $p^*\Mtm \to \Mty$.
-But since $\Upsilon$ is representable, $p^* \Mtm$ is also representable, by the extended context $\gamma.p$; thus this additional data is a type $\gamma,x:p \yields q \type$.
-The morphism $\Pi_\Upsilon[\Mty] \to \Mty$ thus assigns to any such pair a mode type $\gamma \yields \sigmacl{x}{p}{q} \type$.
+By the construction in Lemma \ref{thm:fib-exp}, an object of $\Pi_\Ups[\Mty](\gamma)$ lives over a type $p\in \Mty(\gamma)$, and consists of the additional data of a map $p^*\Mtm \to \Mty$.
+But since $\Ups$ is representable, $p^* \Mtm$ is also representable, by the extended context $\gamma.p$; thus this additional data is a type $\gamma,x:p \yields q \type$.
+The morphism $\Pi_\Ups[\Mty] \to \Mty$ thus assigns to any such pair a mode type $\gamma \yields \sigmacl{x}{p}{q} \type$.
 
 Similarly, an object of $\ev^* \Mtm$ over $(p,q)$ consists of a pair of a term $\gamma \yields \mu : p$ and $\gamma \yields \nu : q[\mu/x]$, and so the morphism $\ev^* \Mtm$ assigns to this the pair $(p,q):\sigmacl{x}{p}{q}$.
 The fact that the square is a pullback (on objects) means that we have $\fst$ and $\snd$ collectively forming an inverse isomorphism, i.e.\ the $\beta$- and $\eta$-rules hold for $\Sigma$-modes.
 
-The action of $\Pi_\Upsilon[\Mty] \to \Mty$ on morphisms gives the congruence rules for $\Sigma$ on mode type morphisms, along with its functoriality laws (since this map over each $\gamma$ is a functor) and its naturality law for substitution (since this map is a natural transformation as $\gamma$ varies).
+The action of $\Pi_\Ups[\Mty] \to \Mty$ on morphisms gives the congruence rules for $\Sigma$ on mode type morphisms, along with its functoriality laws (since this map over each $\gamma$ is a functor) and its naturality law for substitution (since this map is a natural transformation as $\gamma$ varies).
 Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes (although the latter is currently written to only apply when one of the morphisms being paired is cartesian), and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
 
 Finally, the fact that this square is a strict morphism of split fibrations gives the equation for ``transport'' in $\Sigma$.
@@ -2046,39 +2074,30 @@ Finally, the fact that this square is a strict morphism of split fibrations give
 To construct our canonical model, we again appeal to a universal case.
 
 \begin{theorem}\label{thm:sig-univ}
-  In the situation of Theorem \ref{thm:2cwf-univ}, suppose that $\upsilon : \Util\to U$ ``has $\Sigma$-types'' in the analogous sense, i.e.\ it is exponentiable and equipped with maps $\Pi_\upsilon[U] \to U$ and $\ev^* \Util \to \Util$ such that the square
-  \begin{center}
-    \begin{tikzcd}
-      \ev^* \Util \ar[r] \ar[d,->>] & \Util \ar[dd,->>]\\
-      \Pi_\upsilon[U] \times_U \Util \ar[d,->>] \\
-      \Pi_\upsilon[U] \ar[r] & U
-    \end{tikzcd}
-  \end{center}
-  commutes, is a pullback, and is a strict morphism of split fibrations.
-  Then the 2-category with families constructed as in Theorem \ref{thm:2cwf-univ} also has $\Sigma$-types.
+  If a 2-category with a universe has $\Sigma$-types, then so does its underlying 2-category with families (as in Theorem \ref{thm:2cwf-univ}).
 \end{theorem}
 \begin{proof}
   All the structure involved in the definition of $\Sigma$-types (dependent products, pullbacks, morphisms of split fibrations) is preserved by any restricted Yoneda embedding.
 \end{proof}
 
 \begin{example}\label{eg:cat-sig}
-  Continuing Example \ref{eg:cat-2cwf}, we want to show that $U=\Cat\op$ has $\Sigma$-types in the sense of Theorem \ref{thm:sig-univ}.
-  The map $\upsilon:\Util\to U$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
-  An object of $\Pi_\upsilon[U]$ consists of a category $A\in U$ together with a functor from the fiber of $\upsilon$ over $A$ to $U$, which is to say simply a functor $A\to \Cat\op$, or equivalently $B:A\op\to\Cat$.
-  Similarly, a morphism $(A,B)\to (A',B')$ in $\Pi_\upsilon[U]$ consists of a functor $f:A'\to A$ together with a natural transformation $g:B' \to B \circ f$.
+  Continuing Example \ref{eg:cat-2cwf}, we want to show that $\Mtyhat=\Cat\op$ has $\Sigma$-types in the sense of Theorem \ref{thm:sig-univ}.
+  The map $\Upshat:\Mtmhat\to \Mtyhat$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
+  An object of $\Pi_\Upshat[\Mtyhat]$ consists of a category $A\in \Cat\op$ together with a functor from the fiber of $\Upshat$ over $A$ to $\Mtyhat$, which is to say simply a functor $A\to \Cat\op$, or equivalently $B:A\op\to\Cat$.
+  Similarly, a morphism $(A,B)\to (A',B')$ in $\Pi_\Upshat[\Mtyhat]$ consists of a functor $f:A'\to A$ together with a natural transformation $g:B' \to B \circ f$.
 
-  The fiber of $\Pi_\upsilon[U] \times_U \Util$ over $(A,B)\in \Pi_\upsilon[U]$ is just the category $A$, and its contravariant split fibrational action on $(f,g)$ is just the action of the functor $f$.
+  The fiber of $\Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat$ over $(A,B)\in \Pi_\Upshat[\Mtyhat]$ is just the category $A$, and its contravariant split fibrational action on $(f,g)$ is just the action of the functor $f$.
   Thus, a morphism therein from $(A,B,x)$ to $(A',B',x')$ consists of $f:A'\to A$ and $g:B' \to B \circ f$ together with $\xi : x \to f(x')$.
 
   The functor $\ev$ sends $(A,B,x)$ to the category $B(x)$.
-  Thus, the fiber of $\ev^*\Util$ over $(A,B,x)$ is just the category $B(x)$, with contravariant split fibrational action on $(f,g,\xi)$ given by the components of $g$.
+  Thus, the fiber of $\ev^*\Mtmhat$ over $(A,B,x)$ is just the category $B(x)$, with contravariant split fibrational action on $(f,g,\xi)$ given by the components of $g$.
   So a morphism from $(A,B,x,y)$ to $(A',B',x',y')$ consists of $f,g,\xi$ and $\zeta : y \to B(\xi)(g_{x'}(y'))$.
 
-  It follows that the fiber of the composite $\ev^*\Util \to \Pi_\upsilon[U] \times_U \Util \to \Pi_\upsilon[U]$ over $(A,B)$ is (isomorphic to) the category of pairs $(x,y)$ with $x\in A$ and $y\in B(x)$, and with morphisms $(x,y)\to (x',y')$ being pairs $(\xi,\zeta)$ where $\xi:x\to x'$ and $\beta: y \to B(\xi)(y')$.
+  It follows that the fiber of the composite $\ev^*\Mtmhat \to \Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat \to \Pi_\Upshat[\Mtyhat]$ over $(A,B)$ is (isomorphic to) the category of pairs $(x,y)$ with $x\in A$ and $y\in B(x)$, and with morphisms $(x,y)\to (x',y')$ being pairs $(\xi,\zeta)$ where $\xi:x\to x'$ and $\beta: y \to B(\xi)(y')$.
   The split fibrational action of a morphism $(f:A'\to A,g:B' \to B \circ f)$ sends $(x',y')$ to $(f(x'),g(y'))$, with a similar action on morphisms.
-  Thus, we can define the desired functor $\Pi_\upsilon[U] \to U = \Cat\op$ by sending $(A,B)$ to precisely this category of pairs $(x,y)$, which is none other than the ordinary Grothendieck construction of $B:A\op\to \Cat$.
+  Thus, we can define the desired functor $\Pi_\Upshat[\Mtyhat] \to \Mtyhat = \Cat\op$ by sending $(A,B)$ to precisely this category of pairs $(x,y)$, which is none other than the ordinary Grothendieck construction of $B:A\op\to \Cat$.
   Defining this functor on morphisms by the above split fibrational action, we find tautologically that the desired square is both a pullback and a morphism of split fibrations.
-  (More abstractly, we are simply using the fact that $\Util\to U$ is a classifier in $\CAT$ of split fibrations with small fibers.)
+  (More abstractly, we are simply using the fact that $\Mtmhat\to \Mtyhat$ is a classifier in $\CAT$ of split fibrations with small fibers.)
 
   Thus, the canonical 2-category with families structure on $\Cat$ has $\Sigma$-types.
 \end{example}
@@ -2088,55 +2107,141 @@ To construct our canonical model, we again appeal to a universal case.
 \label{sec:fib-2cwf}
 
 As in our previous work, with the 2-categorical analogue of the downstairs mode theory in place, the upstairs type theory corresponds to a ``local fibration'' over it.
+To define this, we first need to talk about morphisms between 2-categories with families, or more generally with universes.
 
-\begin{definition}
-  Let $(\C,\Cty,\Ctm)$ and $(\M,\Mty,\Mtm)$ be two 2-categories with families.
-  A \textbf{morphism of 2-categories with families} consists of:
-  \begin{enumerate}
-  \item A 2-functor $\vp:\C\to\M$.
-  \item A commutative square in $[\C\op,\CAT]$:
-    \begin{center}
-      \begin{tikzcd}
-        \Ctm \ar[r,"\vptm"] \ar[d,->>] & \vp^* \Mtm\ar[d,->>] \\
-        \Cty \ar[r,"\vpty"] & \vp^* \Mty
-      \end{tikzcd}
-    \end{center}
-    Note that the right-hand vertical morphism is still a split fibration, since split fibration structure is defined using only finite 2-categorical limits, and $\vp^* : [\M\op,\CAT] \to [\C\op,\CAT]$ is a right adjoint and hence preserves all such structure.
-  \item This commutative square is a strict morphism of split fibrations.
-  \item This commutative square furthermore ``preserves the algebraic representations'' in the following sense: given $C\in \C$ and $T\in \Cty(C)$, hence $\name{T}:y(C) \to \Cty$, we have also $\vpty(T) \in \Mty(\vp(C))$ and hence $\name{\vpty(T)}:y(\vp(C)) \to \Mty$, and thus two algebraically specified pullback squares
-    \begin{center}
-      \begin{tikzcd}
-        y(\int T) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ctm \ar[d] &
-        y(\int \vpty(T)) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d] \\
-        y(C) \ar[r] & \Cty &
-        y(\vp(C)) \ar[r] & \Mty
-      \end{tikzcd}
-    \end{center}
-    Since $\vp^*$ preserves pullbacks, the left-hand composite square must factor uniquely as on the right:
-    \begin{center}
-      \begin{tikzcd}
-        y(\int T) \ar[r] \ar[d] &
-        \Ctm \ar[r,"\vptm"] \ar[d] & \vp^* \Mtm\ar[d] \ar[dr,phantom,"="] &
-        y(\int T) \ar[r,dashed]\ar[d] &
-        \vp^*y(\int \vpty(T)) \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \vp^*\Mtm \ar[d] \\
-        y(C) \ar[r] & \Cty \ar[r,"\vpty"] & \vp^* \Mty &
-        y(C) \ar[r,"\vp"] & \vp^* y(\vp(C)) \ar[r] & \vp^* \Mty
-      \end{tikzcd}
-    \end{center}
-    Here the lower morphism marked $\vp$ is induced by the action of $\vp$ on arrows (it is also equivalently the unit of the adjunction between $\vp^*$ and its left adjoint).
-    The condition we require is then that $\int \vpty(T) = \vp(\int T)$, and that the dashed arrow is also the one induced by $\vp$ in this way.
-\end{enumerate}
+\begin{definition}\label{defn:fibmor}
+  Let $\vp : \mathcal{A}\to \mathcal{B}$ be any 2-functor, and $p:S\to T$ and $q:U\to V$ be split fibrations in $\mathcal{A}$ and $\mathcal{B}$ respectively.
+  A \textbf{strict $\vp$-morphism from $p$ to $q$} consists of a commutative square in $\mathcal{B}$:
+  \begin{equation}\label{eq:fibmor}
+    \begin{tikzcd}
+      \vp S \ar[r] \ar[d] & U\ar[d]\\
+      \vp T \ar[r] & V
+    \end{tikzcd}
+  \end{equation}
+  such that for any $X\in \mathcal{A}$, the induced commutative square of categories
+  \begin{equation}\label{eq:fibmor2}
+    \begin{tikzcd}
+      \mathcal{A}(X,S) \ar[r] \ar[d] & \mathcal{B}(\vp X, \vp S) \ar[r] \ar[d] & \mathcal{B}(\vp X, U) \ar[d] \\
+      \mathcal{A}(X,T) \ar[r] & \mathcal{B}(\vp X, \vp T) \ar[r] & \mathcal{B}(\vp X, V)
+    \end{tikzcd}
+  \end{equation}
+  is a strict morphism of split fibrations.
 \end{definition}
 
-\begin{definition}
-  A morphism of 2-categories with families $\vp : \C\to\M$ is a \textbf{local discrete fibration} if
+If $\vp$ has a right adjoint $\vpst$, then~\eqref{eq:fibmor} is equivalent to a square in $\mathcal{A}$:
+\begin{equation}\label{eq:fibmor-mate}
+  \begin{tikzcd}
+    S \ar[r] \ar[d] & \vpst U\ar[d]\\
+    T \ar[r] & \vpst V
+  \end{tikzcd}
+\end{equation}
+and the condition in Definition \ref{defn:fibmor} is equivalent to asking that~\eqref{eq:fibmor-mate} be a strict morphism of internal split fibrations in $\mathcal{A}$.
+This makes sense since $\vpst$, as a right adjoint, preserves limits and hence split fibrations, while an analogous phrasing for~\eqref{eq:fibmor} would not since $\vp$ is not assumed to preserve fibrations.
+However, if $\vp$ \emph{does} preserve split fibrations, in the algebraic sense that it preserves the chosen cartesian lifts, and if~\eqref{eq:fibmor} is a strict morphism of split fibrations internal to $\M$, then it is also a strict $\vp$-morphism (but the converse need not hold).
+
+% Suppose $\C$ and $\M$ are 2-categories with universes and $\vp:\C\to\M$ is a 2-functor.
+% Since $\C$ is large and $\Mhat$ has large colimits, the composite $\C \xrightarrow{\vp} \M \hookrightarrow \Mhat$ has a pointwise left Kan extension along the inclusion $\C\hookrightarrow \Chat$; we denote it by $\vp_! : \Chat \to \Mhat$.
+% Since $\C\hookrightarrow \Chat$ is fully faithful, $\vp_!$ is an honest extension, i.e.\ it restricts to $\vp$ on $\C$.
+
+% If $\C$ is a 2-category with families, $\vp_!$ has a right adjoint $\vpst : \Mhat \to \Chat = [\C\op,\CAT]$ by precomposition: $\vpst(X)(C) = \Mhat(\vp(C),X)$.
+% In general, any right adjoint of $\vp_!$ comes with a mate natural transformation
+% \begin{equation}
+%   \begin{tikzcd}
+%     \C \ar[r] \ar[d,"\vp"'] \ar[dr,phantom,"{\Downarrow^{\vptil}}"] & \Chat\\
+%     \M \ar[r] & \Mhat. \ar[u,"\vpst"']
+%   \end{tikzcd}\label{eq:vpmate}
+% \end{equation}
+% If $\C$ and $\M$ are 2-categories with families, then $\vptil$ is just the action of $\vp$ on homs, $\C(-,C) \to \M(\vp(-),\vp(C))$.
+
+\begin{definition}\label{defn:mor-2cwu}
+  Let $\C$ and $\M$ be two 2-categories with universes.
+  A \textbf{morphism of 2-categories with universes} consists of:
   \begin{enumerate}
-  \item The 2-functor $\vp:\C\to\M$ is a local discrete fibration, i.e.\ the induced functors on hom-categories $\C(X,Y) \to \M(\vp(X),\vp(Y))$ are discrete fibrations.
-    (If they were non-discrete fibrations, there would be an additional compatibility condition on composition, but in the discrete case this is automatic.)
-  \item The components of the transformations $\Cty\to\Mty$ and $\Ctm\to \Mtm$ are discrete fibrations (again, naturality is automatic in the discrete case).
+  \item A commutative square of 2-functors
+    \begin{equation}\label{eq:mor-2cwu}
+      \begin{tikzcd}
+        \C \ar[r] \ar[d,"\vp"'] & \Chat \ar[d,"\vpsh"] \\
+        \M \ar[r] & \Mhat
+      \end{tikzcd}
+    \end{equation}
+  \item A $\vpsh$-morphism from $\Upshat:\Ctmhat \to \Ctyhat$ to $\Upshat : \Mtmhat \to \Mtyhat$ as in Definition \ref{defn:fibmor}.
+  % \item Morphisms $\vpty$ and $\vptm$ forming a commutative square in $\Chat$:
+  %   \begin{center}
+  %     \begin{tikzcd}
+  %       \Ctmhat \ar[r,"\vptm"] \ar[d,->>,"\Upshat"'] & \vpst \Mtmhat\ar[d,->>,"\vpst(\Upshat)"] \\
+  %       \Ctyhat \ar[r,"\vpty"] & \vpst \Mtyhat
+  %     \end{tikzcd}
+  %   \end{center}
+  %   Note that the right-hand vertical morphism is still a split fibration, since split fibration structure is defined using 2-categorical limits, and $\vpst$ is a right adjoint and hence preserves all such structure.
+  % \item This commutative square is a strict morphism of split fibrations.
+  \item This morphism furthermore ``preserves the algebraic representations'' in the following sense: given $C\in \C$ and $T:C \to \Ctyhat$, with specified pullback $\int T$, the composite square
+    \begin{equation}
+      \begin{tikzcd}
+        \vp(\int T) \ar[r] \ar[d] & \vpsh \Ctmhat \ar[r] \ar[d] & \Mtmhat \ar[d]\\
+        \vp(C) \ar[r,"\vpsh(T)"'] & \vpsh \Ctyhat \ar[r] & \Mtyhat
+      \end{tikzcd}\label{eq:mor-presrep}
+    \end{equation}
+    is also a specified pullback.
+% , the composite $\vpty T : C \to \vpst \Mtyhat$ has an adjunct $\overline{\vpty T}:\vp(C) = \vp_!(C) \to \Mtyhat$, and thus two algebraically specified pullback squares
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ctmhat \ar[d] &
+%         \int \overline{ \vpty T} \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Mtmhat \ar[d] \\
+%         C \ar[r,"T"'] & \Ctyhat &
+%         \vp(C) \ar[r,"{\overline{\vpty T}}"'] & \Mtyhat
+%       \end{tikzcd}
+%     \end{center}
+%     Since $\vpst$ preserves pullbacks, the left-hand composite square below factors uniquely as on the right:
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r] \ar[d] &
+%         \Ctmhat \ar[r,"\vptm"] \ar[d] & \vpst \Mtmhat\ar[d] \ar[dr,phantom,"="] &
+%         \int T \ar[r,dashed]\ar[d] \ar[dr,phantom,"(*)"] &
+%         \vpst \int \overline{\vpty T} \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \vpst\Mtmhat \ar[d] \\
+%         C \ar[r] & \Ctyhat \ar[r,"\vpty"] & \vpst \Mtyhat &
+%         C \ar[r,"\vptil"'] & \vpst \vp (C) \ar[r] & \vpst \Mtyhat
+%       \end{tikzcd}
+%     \end{center}
+%     where $\vptil$ denotes a component of~\eqref{eq:vpmate}.
+%     The condition we require is then that the square $(*)$ above coincides with the naturality square of $\vptil$:
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r,"\vptil"] \ar[d] & \vpst\vp(\int T) \ar[d] \\
+%         C \ar[r,"\vptil"] & \vpst\vp(C)
+%       \end{tikzcd}
+%     \end{center}
+%     (hence, in particular, that $\int \overline{\vpty T} = \vp(\int T)$).
   \end{enumerate}
-  In this case we refer to $\C$ as a \textbf{fibered 2-category with families} over $\M$.
 \end{definition}
+
+If $\M$ is a 2-category with a universe for which $\Mhat$ has large colimits, $\C$ is a 2-category with families, and $\vp:\C\to\M$ is any 2-functor, then the composite $\C \xrightarrow{\vp} \M \hookrightarrow \Mhat$ has a left Kan extension along $\C\hookrightarrow \Chat$.
+Since the latter inclusion is fully faithful, $\vpsh$ is an honest extension, i.e.\ the universal square~\eqref{eq:mor-2cwu} commutes (up to isomorphism, at least, and $\vpsh$ can be chosen to make it commute strictly).
+Moreover, in this case $\vpsh$ always has a right adjoint $\vpst : \Mhat \to \Chat = [\C\op,\CAT]$ defined by precomposition: $\vpst(X)(C) = \Mhat(\vp(C),X)$.
+
+\begin{definition}
+  If $\C$ and $\M$ are 2-categories with families, a \textbf{morphism of 2-categories with families} is a morphism of 2-categories with universes such that $\vpsh$ is this left Kan extension.
+\end{definition}
+
+\begin{remark}
+  If $\M$ is a 2-category with a universe for which $\Mhat$ has large colimits, and $\M'$ denotes the 2-category with families constructed from it as in Theorem \ref{thm:2cwf-univ}, then the identity 2-functor $\M'\to\M$ is a morphism of 2-categories with universes with $\vpsh$ a left Kan extension as above.
+  Morally, this should be some kind of ``coreflection'', but we will not try to make this precise.
+\end{remark}
+
+\begin{definition}\label{thm:2cwf-ldf}
+  A morphism of 2-categories with universes $\vp : \C\to\M$ is a \textbf{local discrete fibration} if
+  \begin{enumerate}
+  \item The 2-functor $\vp:\C\to\M$ is a local discrete fibration, i.e.\ the induced functors on hom-categories $\C(X,Y) \to \M(\vp(X),\vp(Y))$ are discrete fibrations.\footnote{If they were non-discrete fibrations, there would be an additional compatibility condition on composition, but in the discrete case this is automatic.}\label{item:ldf1}
+  \item The horizontal functors in the relevant instance of~\eqref{eq:fibmor2}:
+    \begin{gather*}
+      \Chat(X,\Ctmhat) \to \Mhat(\vp X, \vpsh \Ctmhat) \to \Mhat(\vp X, \Mtmhat)\\
+      \Chat(X,\Ctyhat) \to \Mhat(\vp X, \vpsh \Ctyhat) \to \Mhat(\vp X, \Mtyhat)
+    \end{gather*}
+    are discrete fibrations.\label{item:ldf2}
+  \end{enumerate}
+  In this case we refer to $\C$ as a \textbf{fibered 2-category with a universe} (or \textbf{with families}, if $\C$ and $\M$ are such and $\vp$ is a morphism of such) over $\M$.
+\end{definition}
+
+If $\vpsh$ has a right adjoint $\vpst$ (such as if $\vp$ is a morphism of 2-categories with families), then condition \ref{item:ldf2} is equivalent to asking that the adjunct morphisms $\Ctmhat \to \vpst \Mtmhat$ and $\Ctyhat \to \vpst \Mtyhat$ are internal discrete fibrations in $\Chat$.
 
 \begin{example}\label{eg:syn-fib-2cwf}
   Returning to Example \ref{eg:syn-2cwf}, we construct a fibered 2-category with families over the syntactic one $\M$, now using the ``upstairs'' type theory.
@@ -2153,63 +2258,142 @@ As in our previous work, with the 2-categorical analogue of the downstairs mode 
   \end{itemize}
 \end{example}
 
-To construct the canonical model, we appeal to a more general ``co-universe'' construction.
+To construct the canonical model, we appeal to a more general ``co-universe'' construction, which we decompose into three pieces.
 
-\begin{theorem}
-  Let $\M$ be a 2-category with families, and let $\one$ be an \emph{arbitrary} object of $\M$.
-  Let $\C = \one\sslash \M$ be the lax slice 2-category of $\M$ under $\one$: its objects are morphisms $c:\one\to C$ in $\M$ and its morphisms are 2-cells inhabiting triangles
-  \begin{center}
-    \begin{tikzcd}
-      & \one \ar[dl,"c"'] \ar[dr,"d"] \ar[d,phantom,"\overset{\phi}{\Rightarrow}"] \\
-      A \ar[rr,"f"'] & {}& B
-    \end{tikzcd}
-  \end{center}
-  Let $\vp:\C\to\M$ be the obvious forgetful 2-functor.
-  
-  Let $\Cty(c:\one\to C)$ be the category of commutative squares
-  \begin{center}
-    \begin{tikzcd}
-      y(\one) \ar[d,"c"'] \ar[r,"\name{t}"] & \Mtm \ar[d] \\
-      y(C) \ar[r,"\name{T}"] & \Mty.
-    \end{tikzcd}
-  \end{center}
-  The obvious morphisms of such squares are commuting cylinders involving a 2-cell of morphisms $y(C) \to \Mty$ and another 2-cell of morphisms $y(\one) \to \Mtm$; we restrict the morphisms of $\Cty$ to be those for which the upper 2-cell belongs to the splitting of the fibration $\Mtm\to\Mty$.
-
-  Finally, let $\Ctm(c:\one\to C)$ be the category of 2-cells
-  \begin{center}
-    \begin{tikzcd}
-      & y(C) \ar[dr,"\name{\tau}"] \ar[d,phantom,"\Downarrow"] \\
-      y(\one) \ar[d,"c"'] \ar[ur,"c"] \ar[rr,"\name{t}"'] &{}& \Mtm \ar[d,"\Upsilon"] \\
-      y(C) \ar[rr,"\name{T}"'] && \Mty.
-    \end{tikzcd}
-  \end{center}
-  whose composite with $\Mtm \to \Mty$, as shown, is the identity induced by an identity $\Upsilon(\tau) = T$.
-  Then $(\C,\Cty,\Ctm)$ is a fibered 2-category with families over $\M$.
+\begin{theorem}\label{thm:corefl-ldfib}
+  If $\vp:\C\to \M$ is a local discrete fibration of 2-categories with universes, then its coreflection into 2-categories with families is also a local discrete fibration.
 \end{theorem}
 \begin{proof}
-  It is clear that $\C$ is a 2-category, and that $\vp:\C\to\M$ is a local discrete fibration.
-  The functorial action of $\Cty$ on morphisms of $\C$ is defined using the split cartesian lifts of $\Mtm\to\Mty$.
-  The restriction to split upper 2-cells ensures that the evident projection $\Cty\to\vp^*\Mty$ is a \emph{discrete} fibration (otherwise it would be only a split one; this seems analogous to how we can take the presheaf of objects of an arbitrary split comprehension category to obtain a category with families).
-  Similarly, the functorial action of $\Ctm$ is defined by unique factorization through these lifts.
-  The commutativity of the necessary square is evident.
-  The split fibration structure of $\Ctm\to\Cty$ is defined by composition and factoring through cartesian lifts; the square is then a strict morphism of split fibrations by construction.
-  The projection $\Ctm\to\vp^*\Mtm$ is a discrete fibration by composition with 2-cells in the domain.
-  Finally, the comprehension of $(T,t)$ as above is the comprehension $\int T$ together with the map $\one\to\int T$ induced by $t$; this is preserved by $\vp$ by construction.
-  \msnote{Need to check some stuff here, notably that these comprehensions have the right universal property.}
+  We first have to check that it is actually a morphism of 2-categories with families.
+  The morphism $\vpsh \Ctyhat \to \Mtyhat$ induces by composition
+  \begin{equation}
+    \Chat(X,\Ctyhat) \to \Mhat(\vp X, \vpsh \Ctyhat) \to \Mhat(\vp X,\Mtyhat)\label{eq:corefl-map}
+  \end{equation}
+  and hence a map of the induced presheaves $\Cty \to \vpst \Mty$, and similarly for the $\Ctm \to \vpst \Mtm$.
+  Moreover,~\eqref{eq:fibmor2} refers only to the functors represented by $p$ and $q$, so we can restrict it to $X\in\C$ to obtain the analogous condition for these underlying presheaves.
+  And~\eqref{eq:mor-presrep} is defined in terms of~\eqref{eq:corefl-map}, so it carries over to the analogous condition as well.
+
+  Finally, condition~\ref{item:ldf1} of Definition \ref{thm:2cwf-ldf} is evident since the coreflection doesn't change the underlying categories, while condition \ref{item:ldf2} follows since it is also defined in terms of~\eqref{eq:corefl-map}.
 \end{proof}
 
+\begin{theorem}\label{thm:ldf-lift}
+  Suppose $\M$ is a 2-category with a universe, and we have a pullback square
+  \begin{equation}\label{eq:ldf-mor}
+    \begin{tikzcd}
+      \C \ar[r] \ar[d,"\vp"'] & \Chat \ar[d,"\vpsh"] \\
+      \M \ar[r] & \Mhat
+    \end{tikzcd}
+  \end{equation}
+  such that $\vpsh$ is a local discrete fibration.
+  Moreover, suppose we are given a lifting of $\Upshat : \Mtmhat \to \Mtyhat$ to a morphism $\Ctmhat \to \Ctyhat$ of $\Chat$, and that $\vpsh$ creates pullbacks of $\Ctmhat \to \Ctyhat$.
+  Then $\C\hookrightarrow\Chat$ is a 2-category with a universe and~\eqref{eq:ldf-mor} is a local discrete fibration of 2-categories with universes.
+\end{theorem}
+\begin{proof}
+  Since fully faithful 2-functors and local discrete fibrations are closed under pullback, $\C \to \Chat$ is fully faithful and $\vp$ is a local discrete fibration (of 2-categories only, for now).
+  To show that $\Ctmhat \to \Ctyhat$ is a split fibration, suppose given the following data in $\Chat$, mapping to $\Mhat$ as shown on the right:
+  \begin{equation*}
+    \begin{tikzcd}[row sep=large]
+      C \ar[d,equals] \ar[r,bend right,near end,"g'"'] & \Ctmhat \ar[d] \ar[dr,phantom,"\mapsto"] &
+      \vpsh C \ar[d,equals] \ar[r,bend right,near end,"\vpsh g'"'] & \Mtmhat \ar[d] \\
+      C \ar[r,bend left,"f"] \ar[r,bend right,"g"'] \ar[r,phantom,"\Downarrow^\alpha"] & \Ctyhat &
+      \vpsh C \ar[r,bend left,"\vpsh f"] \ar[r,bend right,"\vpsh g"'] \ar[r,phantom,"\Downarrow^{\vpsh \alpha}"] & \Mtyhat
+    \end{tikzcd}
+  \end{equation*}
+  We then have a specified cartesian lift $\gamma : h \to \vpsh g'$ in $\Mhat$.
+  Since $\vpsh$ is a local discrete fibration, $\gamma$ has a unique lift $\beta : f' \to g'$ in $\Chat$.
+  To show $\beta$ is cartesian, suppose given $\theta : k\to g'$ in $\Chat$ with $\Upshat\circ \theta = \alpha *\mu$ for some $\mu$\footnote{We are writing $\circ$ for composition of 1- and 2-morphsims along objects, including whiskering, and $*$ for composition of 2-morphisms along 1-morphisms}.
+  Then $\Upshat \circ \vpsh\theta = \vpsh\alpha *\vpsh\mu$, so $\vpsh\theta$ factors uniquely as $\gamma* \nu$ since $\gamma$ is cartesian.
+  Now since $\vpsh$ is a local discrete fibration, $\nu$ has a unique lift $\eta : k' \to f'$; but then $\beta*\eta : k' \to g'$ is a lift of $\vpsh\theta$, hence equal by uniqueness to $\theta$.
+  Uniqueness of these factorizations follows similarly, and splitness and functoriality is immediate.
+  Furthermore, by construction the identities $\vpsh\Ctyhat = \Mtyhat$ and $\vpsh\Ctmhat =\Mtmhat$ are a strict $\vpsh$-morphism of split fibrations, and since $\vpsh$ (not just $\vp$) is a local discrete fibration, condition~\ref{item:ldf2} of Definition \ref{thm:2cwf-ldf} is automatic.
+
+  It remains to show that $\Ctmhat \to \Ctyhat$ is algebraically $\C$-representable and that $\vp$ preserves these representations.
+  Since the right-hand square in~\eqref{eq:mor-presrep} is an identity, it suffices to show that given $T:C\to \Ctyhat$ with $C\in \C$, the specified pullback $\int (\vpsh T)$ lifts to a pullback in $\Chat$ with vertex in $\C$.
+  But by assumption $\vpsh$ creates pullbacks of $\Ctmhat\to\Ctyhat$, and the vertex of such a pullback must lie in $\C$ since~\eqref{eq:ldf-mor} is a pullback of 2-categories.
+\end{proof}
+
+\begin{theorem}\label{thm:laxslice-2cwf}
+  Let $\M$ be a 2-category with a universe, and let $\one$ be an arbitrary object of $\M$ equipped with a commutative triangle
+  \begin{equation}
+    \begin{tikzcd}
+      & \Mtmhat \ar[d,"\Upshat"] \\
+      \one \ar[ur,"t"] \ar[r,"\top"'] & \Mtyhat.
+    \end{tikzcd}\label{eq:laxslice-tri}
+  \end{equation}
+  Let $\C = \one\sslash \M$ be the lax slice 2-category of $\M$ under $\one$: its objects are morphisms $c:\one\to C$ in $\M$, its morphisms are 2-cells inhabiting triangles
+  \begin{equation}\label{eq:laxslice-mor}
+    \begin{tikzcd}
+      & \one \ar[dl,"a"'] \ar[dr,"b"] \ar[d,phantom,"\overset{\phi}{\Rightarrow}"] \\
+      A \ar[rr,"f"'] & {}& B
+    \end{tikzcd}
+  \end{equation}
+  and its 2-cells are 2-cells $\alpha :f\to g$ in $\M$ such that $\alpha a \circ \phi = \psi$.
+  Similarly, let $\Chat = \one\sslash\Mhat$, with the evident inclusion $\C\hookrightarrow\Chat$.
+  Let $\Ctyhat = (\top:\one \to \Mtyhat)$ and $\Ctmhat = (t:\one\to\Mtmhat)$, with~\eqref{eq:laxslice-tri} defining a map $\Ctmhat \to \Ctyhat$ in $\Chat$.
+  Then $\C$ is a 2-category with a universe, and the forgetful 2-functor $\vp:\C\to\M$ is a local discrete fibration.
+\end{theorem}
+\begin{proof}
+  First note that the forgetful functor $\vp:\C=(\one\sslash\M)\to\M$ is a local discrete fibration of 2-categories: given a morphism $(f,\phi):(A,a) \to (B,b)$ as in~\eqref{eq:laxslice-mor} and a 2-cell $\alpha:\psi\to\phi$ in $\M$, the unique lift is $\alpha$ with domain $(f,\phi * (\alpha \circ a))$.
+  Similarly, the forgetful functor $\vpsh:\Chat=(\one\sslash\Mhat)\to\Mhat$ is a local discrete fibration, and $\C$ is the pullback of $\Chat$ and $\M$ over $\Mhat$ (the objects of $\C$ are just those of $\Chat$ whose underlying objects in $\Mhat$ lie in $\M$).
+  Thus, to apply Theorem \ref{thm:ldf-lift} it remains only to check that $\vpsh$ creates pullbacks of~\eqref{eq:laxslice-tri} regarded as a morphism in $\one\sslash\Mhat$.
+
+  For brevity, write $q:X\to Y$ for $\Upshat :\Mtmhat \to \Mtyhat$; the only thing we will use about $q$ is that it is a fibration.
+  Note that we have assumed~\eqref{eq:laxslice-tri} to be commutative rather than simply inhabited by a 2-cell, so regarded as a lifting of $q$ it is special in this way as well among morphisms of $\one\sslash\Mhat$.
+  Now suppose we have a morphism $(f,\phi) : (A,a) \to (Y,\top)$ in $\one\sslash\Mhat$, and a pullback in $\Mhat$:
+  \begin{center}
+    \begin{tikzcd}
+      P \ar[r,"j"] \ar[d,"k"'] & X \ar[d,"q"]\\
+      A \ar[r,"f"'] & Y.
+    \end{tikzcd}
+  \end{center}
+  Let $\overline{\phi} : i \to t$ be a cartesian 2-cell lifting $\phi : f \circ a \to \top$.
+  Then $q \circ i = f\circ a$, so the universal property of $P$ induces a map $p:\one\to P$ with $j\circ p = i$ and $k\circ p = a$.
+  The latter identity makes $k$ into a morphism $(P,p) \to (A,a)$ in $\one\sslash\Mhat$, while $j\circ p = i \xrightarrow{\overline{\phi}} t$ makes $j$ into a morphism $(P,p) \to (X,t)$.
+  We claim the resulting square
+  \begin{center}
+    \begin{tikzcd}
+      (P,p) \ar[r,"{(j,\overline{\phi})}"] \ar[d,"{(k,1)}"'] & (X,t) \ar[d,"{(q,1)}"]\\
+      (A,a) \ar[r,"{(f,\phi)}"'] & (Y,\top)
+    \end{tikzcd}
+  \end{center}
+  (which commutes because $q \circ \overline{\phi} = \phi$) is a pullback in $\one\sslash\Mhat$.
+  To show this, suppose given $(Z,z:\one\to Z)$ and morphisms $(g,\gamma):(Z,z) \to (X,t)$ and $(h,\theta):(Z,z) \to (A,a)$ forming a commutative square, which means $q\circ g = f\circ h$ and $q\circ \gamma = \phi * (f\circ \theta)$.
+  The former equality induces, by the universal property of $P$, a unique map $\ell : Z\to P$ such that $j\circ \ell = g$ and $k\circ \ell = h$.
+
+  To make $\ell$ into a morphism in $\one\sslash\Mhat$, we need a 2-cell $\ell \circ z \to p$.
+  By the 2-cell universal property of $P$, it suffices to give 2-cells $g\circ z \to j\circ p = i$ and $h\circ z \to k \circ p = a$ that agree in $Y$.
+  For the latter, we can simply take $\theta$.
+  For the first, note that $\overline{\phi}:i\to t$ is cartesian over $\phi$, so there is a unique 2-cell $\eta : g \circ z \to i$ such that  $\overline{\phi} * \eta = \gamma$ and $q \circ \eta = f\circ \theta$.
+
+  The latter equation is the requisite agreement in $Y$, so we have a unique 2-cell $\lambda:\ell \circ z \to p$ such that $k\circ \lambda = \theta$ and $j\circ \lambda = \eta$.
+  The latter equation is equivalent, by uniqueness of $\eta$, to $q\circ j \circ \lambda = f\circ \theta$ (which follows from $k\circ \lambda = \theta$ and $q\circ j = f\circ k$) and $\overline{\phi} * (j\circ \lambda) = \gamma$.
+  Thus, these conditions are precisely the statements that $(j,\overline{\phi})\circ (\ell,\lambda) = (g,\gamma)$  and $(k,1)\circ (\ell,\lambda) = (h,\theta)$.
+  This shows the 1-cell universal property of $(P,p)$ in $\one\sslash\Mhat$.
+  The 2-cell universal property follows immediately from the 2-cell universal property of $P$.
+\end{proof}
+
+Combining Theorems \ref{thm:corefl-ldfib} and \ref{thm:laxslice-2cwf}, we can construct local discrete fibrations of 2-categories with families.
+
 \begin{example}
-  Continuing with Example \ref{eg:cat-2cwf}, we can take $\one$ to be the terminal category in $\M=\CAT$.
-  Then:
+  Consider the 2-category with a universe from Example \ref{eg:cat-2cwf}, with $\M=\Cat$, $\Mhat = \CAT$, and $\Mtyhat = \Cat\op$.
+  Let $\one$ be the terminal category in $\M=\Cat$, with $\top:\one \to \Cat\op$ picking out the terminal category and $t$ the unique object of the latter.
+  Thus we obtain a 2-category with a universe $\C$ where:
   \begin{itemize}
-  \item The objects of $\C$ are categories $C$ equipped with a chosen object $c\in C$.
+  \item The objects of $\C$ (resp.\ $\Chat$) are large (resp.\ very large) categories $C$ equipped with a chosen object $c\in C$.
   \item The morphisms $(C,c) \to (D,d)$ are functors $f:C\to D$ together with a morphism $\phi :f(c) \to d$.
   \item Natural transformations act contravariantly on such pairs by precomposition $f(c) \xrightarrow{\alpha_c} g(c) \to d$.
-  \item The objects of $\Cty(C,c)$ are functors $T:C\op\to \Cat$ with an object $t\in T(c)$.
-  \item The objects of $\Ctm(C,c)$ are functors $T:C\op\to \Cat$ with a section $s:C\to \int T$ of the Grothendieck construction, along with an object $t\in T(c)$ and a morphism $s(c) \to t$ in $T(c)$.
+  \item $\Ctyhat$ is the category $\Mtyhat = \Cat\op$ equipped with the terminal category $\top$.
+  \item Similarly, $\Ctmhat$ is the category $\Mtmhat$ of pointed categories $(A,a)$ with morphisms $(A,a) \to (B,b)$ being functors $f:B\to A$ paired with a morphism $\phi : a\to f(b)$, equipped with the terminal pointed category $(\top,t)$.
+  \end{itemize}
+  If we now apply the coreflection into 2-categories with families, we get a local discrete fibration over the ``canonical'' 2-category with families from Example \ref{eg:cat-2cwf}, where:
+  \begin{itemize}
+  \item The objects of $\Cty(C,c)$ are morphisms $(C,c) \to \Ctyhat = (\Cat\op,\top)$ in $Chat = \one\sslash\CAT$, which is to say functors $D:C\op\to \Cat$ equipped with a morphism $D(c) \to \top$ in $\Cat\op$, i.e.\ a functor $\top \to D(c)$, which is to say an object $d\in D(c)$.
+  \item The objects of $\Ctm(C,c)$ are such pairs $(D,d)$ with a section $s:C\to \int D$ of the Grothendieck construction, along with an object $d\in D(c)$ and a morphism $s(c) \to d$ in $D(c)$.
   \end{itemize}
   Thus, this reproduces our informal expectation from \S\ref{sec:2cwfs}.
   Note that while $\Cty$ and $\Ctm$ in this example simply ``pick out the objects and morphisms'' of the categories $C\in\M$, in general we can regard the fibered 2-category with families $\C$ as an ``abstraction'' of the notions of ``objects and morphisms'' applicable to any 2-category with families $\M$.
 \end{example}
+
+
 
 \end{document}
