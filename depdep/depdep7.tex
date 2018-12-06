@@ -522,7 +522,7 @@ In the absence of eta for $\mathsf{F}$, we also need to assert
     \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \and (\text{where } \gamma \yields \nu_1 : r) \\\\
     \Gamma \yields_{\nu_2} N_2 : A \and (\text{where } \gamma \yields \nu_2 : p)
   }{
-    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
   } \\
 
   \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
@@ -1391,6 +1391,7 @@ Then we have identities:
 \begin{align*}
 \upstairs{\proj{\Gamma, A}}[\into{\Gamma, A}/\beta] &\equiv \rewrite{\pi^\alpha_x}{\alpha} \\
 \upstairs{\var{\Gamma, A}}[\into{\Gamma, A}/\beta] &\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}} \\
+\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\var{\Gamma, A}}/x]&\equiv \rewrite{\pi^\beta_{1_\beta}}{\beta} \\
 \upstairs{\Theta \uparrow A}[\into{\Gamma, A[\Theta]}/\beta] &\equiv \into{\Delta, A}[\upstairs{\Theta}/\alpha, x / x]
 \end{align*}
 where $\Gamma \qyields \Theta : \Delta$ is any substitution.
@@ -1405,7 +1406,11 @@ These are straightforward to check:
 \upstairs{\var{\Gamma, A}}[\into{\Gamma, A}/\beta]
 &\equiv  \StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}}[\StI{\chi}{(\alpha, x)}/\beta]  \\
 &\equiv \StE{\chi}{\StI{\chi}{(\alpha, x)}}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} \\
-&\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}}
+&\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}} \\
+\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\var{\Gamma, A}}/x]
+&\equiv \rewrite{\pi^\beta_{1_\beta}}{\rewrite{\eta^\chi_\beta}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\var{\Gamma, A}/x]}}} \\
+&\equiv \rewrite{\pi^\beta_{1_\beta}}{\upstairs{(\proj{\Gamma, A},\var{\Gamma, A})}} \\
+&\equiv \rewrite{\pi^\beta_{1_\beta}}{\beta}
 \end{align*}
 For the last:
 \begin{align*}
@@ -1451,19 +1456,6 @@ And composing these gives:
 &\equiv (\rewrite{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ap{1_\beta}{\pi^{\alpha.x}_y/\beta};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}})}{(\alpha, x)}), \rewrite{\ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{1_{\alpha.x.y}}}}{\var{y}}}{\StI{\ApEl{p}{\pi^{\alpha.x.y}_{1_{\alpha.x.y}};\pi^{\alpha.x}_y}}{y}})\\
 &\equiv (\rewrite{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ap{1_\beta}{\pi^{\alpha.x}_y/\beta};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}}, \ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{1_{\alpha.x.y}}}}{\var{y}})}{(\alpha, x, y)})\\
 \end{align*}
-
-%and
-%\begin{align*}
-%&\upstairs{\proj{\Gamma, A}}[\upstairs{\Theta \uparrow A}/\beta] \\
-%&\equiv (\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}})[\upstairs{\Theta \uparrow A}/\beta] \\
-%&\equiv \StE{\chi}{\upstairs{\Theta \uparrow A}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} \\
-%&\equiv \StE{\chi}{\rewrite{\eta^\chi_\beta}{\StI{\chi}{(\upstairs{\proj{\Gamma, A[\Theta]}; \Theta}, \upstairs{\var{\Gamma, A[\Theta]}})}}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} \\
-%&\equiv \rewrite{\eta^\chi_\beta}{\StE{\chi}{\StI{\chi}{(\upstairs{\proj{\Gamma, A[\Theta]}; \Theta}, \upstairs{\var{\Gamma, A[\Theta]}})}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}} \\
-%&\equiv \rewrite{\eta^\chi_\beta}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}[(\upstairs{\proj{\Gamma, A[\Theta]}; \Theta}, \upstairs{\var{\Gamma, A[\Theta]}})/w]} \\
-%&\equiv \rewrite{\eta^\chi_\beta}{\rewrite{\pi^{\beta}_{1_\beta}}{\upstairs{\proj{\Gamma, A[\Theta]}; \Theta}}} \\
-%&\equiv \upstairs{\proj{\Gamma, A[\Theta]}; \Theta}\\
-%&\equiv \upstairs{\Theta}[\upstairs{\proj{\Gamma, A[\Theta]}}/\beta]\\
-%\end{align*}
 
 \subsubsection{Rules for $\Sigma$-types}
 \newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
@@ -1511,14 +1503,14 @@ The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. Ther
 \caption{Rules for $\Sigma$-types in MLTT via Explicit Substitutions}\label{fig:qit-sigma-rules}
 \end{figure}
 
-\begin{theorem}
-The rules for strong $\Sigma$-types can be interpreted in any comprehension object that supports strong $\Sigma$-types (Definition \ref{def:supports-strong-sigmas}).
-\end{theorem}
-
 In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(\alpha,x,y) : \El{p}{\alpha}
 \end{align*}
+
+\begin{theorem}
+The rules for strong $\Sigma$-types can be interpreted over any mode theory containing a comprehension object that supports strong $\Sigma$-types (Definition \ref{def:supports-strong-sigmas}), \mvrnote{and such that the $\mathsf{F}$-type for $\Sigma_1(\alpha,x,y)$ exists whenever needed}
+\end{theorem}
 
 \begin{definition}
 We use the following 2-cells:
@@ -1819,6 +1811,138 @@ Where the manipulations in the middle follow from the object-language equations 
 %&\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c[\Theta \uparrow A \uparrow B]}[\into{\Gamma, A[\Theta], B[\Theta \uparrow A]}[\into{\Gamma, A[\Theta]}/\beta, y/y] /\delta]}[\fst w'/\alpha, \fst w/x, \snd w/y]}} \\
 %\equiv{} &\upstairs{\qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])}
 %\end{align*}
+\end{enumerate}
+
+
+\subsubsection{Rules for $\Pi$-types}
+\newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
+\newcommand\qlam{\ensuremath{\mathsf{lam}}}
+
+The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Note that  substitution commuting with $\mathsf{app}$ is derivable: \mvrnote{TODO}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=$\Pi$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi_A B \TYPE} \\
+\inferrule*[left=$\Pi$-app]{~}{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}] \qyields \qapp{A, B} : B[\proj{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}}]} \and 
+\inferrule*[left=$\Pi$-lam]{\Gamma, A \qyields b : B}{\Gamma \qyields \qlam(b) : \Pi_A B}
+\end{mathpar}
+\begin{align}
+(\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
+\nonumber \\
+\qapp{A,B}[\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]] &\equiv M \\
+\qlam(\qapp{A,B}[\id_{\Gamma, A}, f[\proj{\Gamma, A}]]) &\equiv f \\
+\qlam(b)[\Theta] &\equiv \qlam(b[\Theta \uparrow A])
+\end{align}
+\begin{mathpar}
+
+\end{mathpar}
+\caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
+\end{figure}
+
+\begin{theorem}
+The rules for $\Pi$-types can be interpreted over any mode theory containing a comprehension object, \mvrnote{and such that certain $\mathsf{U}$-types exist}
+\end{theorem}
+
+In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
+\end{align*}
+
+\begin{enumerate}
+%\item[\textsc{a}]
+\item[\textsc{$\Pi$-form}] We are given
+\begin{align*}
+\alpha : \upstairs{\Gamma} &\yields_{\El{p}{\alpha}} \upstairs{A} \TYPE \\
+\beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} &\yields_{\El{p}{\beta}} \upstairs{B} \TYPE \\
+\end{align*}
+So form
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{\Pi_A B} :\equiv \U{c. \Pi_1(\alpha,x,c)}{\upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta]} \TYPE
+\end{align*}
+
+\item[\textsc{$\Pi$-app}] First note that 
+\begin{align*}
+\upstairs{(\Pi_A B)[\proj{\Gamma, A}]}[\into{\Gamma, A}/\beta] 
+&\equiv \U{c. \Pi_1(\alpha,x',c)}{x':\upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta][x'/x]}[\upstairs{\proj{\Gamma, A}}/\alpha][\into{\Gamma, A}/\beta] \\
+&\equiv \U{c. \Pi_1(\alpha,x',c)}{x':\upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta][x'/x]}[\rewrite{\pi^\alpha_x}{\alpha}/\alpha] \\
+&\equiv \St{\El{p}{\pi^\alpha_x}}{\U{c. \Pi_1(\alpha,x',c)}{\upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta][x'/x]}}
+\end{align*}
+So in context $\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{\Pi_A B[\proj{\Gamma, A}]}[\into{\Gamma, A}/\beta]$ we can do:
+\begin{align*}
+\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{\Pi_A B[\proj{\Gamma, A}]}[\into{\Gamma, A}/\beta] \yields_{\Pi_1(\alpha, x, \TrPlus{\eta^\chi_\alpha}{y})} (\StI{\eta^\chi_\alpha}{y})(x) : \upstairs{B}[\into{\Gamma, A}/\beta]
+\end{align*}
+And substitute with the appropriate unpacking and then transport.
+\begin{align*}
+&\delta : \upstairs{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}\yields_{1_\delta} \\ &\StI{\eta^\chi_\delta}{(\StI{\eta^\chi_\alpha}{y})(x)[\upstairs{\proj{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/\alpha, \upstairs{\var{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/x, \StI{\ApEl{p}{\pi^{\beta}_{1_{\beta}}}}{\upstairs{\var{\Gamma, A, B}}}/y]} : \upstairs{B[\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}]}
+\end{align*}
+That type is actually right, as:
+\begin{align*}
+&\St{\eta^\chi_\delta}{\upstairs{B}[\into{\Gamma, A}/\beta][\upstairs{\proj{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/\alpha, \upstairs{\var{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/x, \StI{\ApEl{p}{\pi^{\beta}_{1_{\beta}}}}{\upstairs{\var{\Gamma, A, B}}}/y]} \\
+&\equiv \St{\eta^\chi_\delta}{\upstairs{B}[\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/\alpha, \upstairs{\var{\Gamma, A}}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]/x]/\beta]} \\
+&\equiv \St{\eta^\chi_\delta}{\upstairs{B}[\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\var{\Gamma, A}}/x]/\beta][\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]} \\
+&\equiv \St{\eta^\chi_\delta}{\upstairs{B}[\rewrite{\pi^\beta_{1_\beta}}{\beta}/\beta][\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]} \\
+&\equiv \upstairs{B}[\upstairs{\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}/\beta]
+\end{align*}
+
+%We are given 
+%\begin{align*}
+%\alpha : \upstairs{\Gamma} &\yields_{1_\alpha} \upstairs{f} : \U{c.\Pi_1(\alpha,x,c)}{x : \upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta]}
+%\intertext{and we want} 
+%\beta : \upstairs{\Gamma, A} &\yields_{1_\beta} \upstairs{\mathsf{app}(f)} : \upstairs{B}
+%\end{align*}
+%So we can do:
+%\begin{mathpar}
+%\inferrule*[Left=s-intro]{
+%\inferrule*[Left=Cut]{
+%\inferrule*[Left=U-elim]{\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{f} : \U{c.\Pi_1(\alpha,x,c)}{x : \upstairs{A}}{\upstairs{B}[\into{\Gamma, A}/\beta]}
+%}{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\Pi_1(\alpha,x,1_\alpha)} \upstairs{f}(x) : \upstairs{B}[\into{\Gamma, A}/\beta]
+%}}
+%{\beta : \upstairs{\Gamma, A} \yields_{\Pi_1(\beta,1_\beta,1_\beta)} (\upstairs{f}(x))[\proj{\Gamma, A}/\alpha, \var{\Gamma, A}/x] : \upstairs{B}[\rewrite{\pi^\beta_{1_\beta}}{\beta}/\beta]}}
+%{\beta : \upstairs{\Gamma, A} \yields_{1_\beta} \StI{\eta^\chi_{\beta}}{(\upstairs{f}(x))[\proj{\Gamma, A}/\alpha, \var{\Gamma, A}/x]} : \upstairs{B}}
+%\end{mathpar}
+%where in the subscript we have used:
+%\begin{align*}
+%\TrPlus{\eta^\chi_{\beta}}{\Pi_1(\alpha,x,1_\alpha)}
+%&\equiv \TrPlus{\eta^\chi_{\beta}}{\TrPlus{\pi^\beta_{1_\beta}}{1_\beta}} \\
+%&\equiv 1_\beta
+%\end{align*}
+
+\item[\textsc{$\Pi$-lam}] Given
+\begin{align*}
+\beta : \upstairs{\Gamma, A} \yields_{1_\beta} \upstairs{b} : \upstairs{B}
+\end{align*}
+So we can substitute and use $U$-right.
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \UI{x}{(\upstairs{b}[\into{\Gamma, A}/\beta])} : \upstairs{\Pi_A B}
+\end{align*}
+Here we use that:
+\begin{align*}
+1_{\alpha.x} &\equiv \TrPlus{\pi^\alpha_x}{1_\alpha} \equiv \Pi_1(\alpha, x, 1_\alpha)
+\end{align*}
+\mvrnote{Although if it were just an isomorphism, that would be fine too}
+
+%The inverse of the above, we are given:
+%\begin{align*}
+%\upstairs{\Gamma}, x : \upstairs{A} &\yields_{1_{\asdep{\Gamma}.x}} \upstairs{b} : \upstairs{B}
+%\intertext{and we want} 
+%\upstairs{\Gamma} &\yields_{1_{\asdep{\Gamma}}} \upstairs{\mathsf{lam}(b)} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}
+%\end{align*}
+%Rewrite $1_{\asdep{\Gamma}.x} \equiv \Pi_1(\asdep{\Gamma},x,1_{\asdep{\Gamma}}) \equiv \Pi_1(\asdep{\Gamma},x,c)[1_{\asdep{\Gamma}}/c]$ then apply \textsc{U-intro}:
+%\begin{mathpar}
+%  \inferrule*[Left = U-intro]{
+%    \upstairs{\Gamma}, x : \upstairs{A} \yields_{\Pi_1(\asdep{\Gamma},x,c)[1_{\asdep{\Gamma}}/c]} \upstairs{b} : \upstairs{B}
+%  }
+%  {\upstairs{\Gamma} \yields_{1_{\asdep{\Gamma}}} \lambda x.\upstairs{b} : \U{c.\Pi_1(\asdep{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}
+%  }
+%\end{mathpar}
+\end{enumerate}
+
+And the equations:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$(\Pi_A B)[\Theta] \equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] $}:] 
+\item[{$\mathsf{app}(\mathsf{lam}(b)) \equiv b$}:] 
+\item[{$\mathsf{lam}(\mathsf{app}(f)) \equiv f$}:] 
+\item[{$\mathsf{lam}(b)[\Theta] \equiv \mathsf{lam}(b[\Theta \uparrow A])$}:] 
 \end{enumerate}
 
 \section{Semantics}
