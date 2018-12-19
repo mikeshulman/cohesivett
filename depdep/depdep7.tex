@@ -1057,7 +1057,7 @@ $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
 The triangle identities for $\chi^\circ \dashv \chi^+$ take the following form:
 \begin{align}
 \eta^\chi_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
-(\eta_\alpha ; \pi^\alpha_{1_\alpha}, \ApOne{\eta_\alpha} ; \ApPlus{\ApEl{p}{\eta_\alpha}}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
+(\eta^\chi_\alpha ; \pi^\alpha_{1_\alpha}, \ApOne{\eta^\chi_\alpha} ; \ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\var{1_\alpha}}) &\equiv \id_{(\alpha, 1_\alpha)}
 \end{align}
 
 Requiring a left adjoint for $\psi^+$ is a cute way of stating the following:
@@ -1165,7 +1165,7 @@ t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
 
 \item Naturality of $\eta^\chi_\beta$ takes the following form:
 \begin{align*}
-s;\eta^\chi_\mu \equiv \eta^\chi_{\mu'} ; (s \bdot \ap{1_x}{s/x})
+s;\eta^\chi_\mu \equiv \eta^\chi_{\mu'} ; (s \bdot \ApOne{s})
 \end{align*}
 
 %\item Ap into $\pi^\alpha_x$: for $s : \mu \vDash_{\alpha} \nu$
@@ -1188,6 +1188,43 @@ substitution; equation \eqref{s-plus-one-strict} says that substitution
 into the unit type gives the unit type in a different ``context''.
 
 Equation \eqref{beta-var} says that ``substituting'' into a ``variable'' is second projection on the ``substitution''.  Equation \eqref{eta-pi-var} is the usual $\eta$ principle for subsitutions.
+
+\begin{lemma}\label{sigma:total-to-fiber0} 
+For any comprehension object $p$, mode term morphisms $s : \alpha \vDash_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $1_\alpha \vDash_{\El{p}{\alpha}} x$.
+\end{lemma}
+\begin{proof}
+Given such an $s$, we can define
+\begin{align*}
+\hat{s} &: 1_\alpha \vDash_{\El{p}{\alpha}} x \\
+\hat{s} &:\equiv \ApOne{s};\ApPlus{s}{\var{x}}
+\end{align*}
+where the identity $s;\pi^\alpha_x \equiv \id_\alpha$ is used to verify that the codomain is $\TrPlus{s}{\TrPlus{\pi^\alpha_x}{x}} \equiv \TrPlus{(s;\pi^\alpha_x)}{x} \equiv x$.
+
+Conversely, given $m : 1_\alpha \vDash_{\El{p}{\alpha}} x$ we have:
+\begin{align*}
+\tilde{m} &: \alpha \vDash_p \alpha.x \\
+\tilde{m} &:\equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m)
+\end{align*}
+And indeed $\tilde{m};\pi^\alpha_x \equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m);\pi^\alpha_x \equiv \id_\alpha$ by Equation~\eqref{beta-pi}.
+
+It is easy to check the round trips are the identity:
+\begin{align*}
+&\eta^\chi_\alpha ; (\id_\alpha \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\chi_\alpha ; (s;\pi^\alpha_x \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\chi_\alpha ; (s \bdot \ApOne{s});(\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s;\eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s
+\end{align*}
+And:
+\begin{align*}
+&\ApOne{\eta^\chi_\alpha ; (\id_\alpha \bdot m)};\ApPlus{(\eta^\chi_\alpha ; (\id_\alpha \bdot m))}{\var{x}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\ApOne{(\id_\alpha \bdot m)};\ApPlus{(\id_\alpha \bdot m)}{\var{x}}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\var{1_\alpha};\ApPlus{\pi^\alpha_{1_\alpha}}{m}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\var{1_\alpha}};\ApPlus{\eta^\chi_\alpha}{\ApPlus{\pi^\alpha_{1_\alpha}}{m}} \\
+&\equiv \ApPlus{\eta^\chi_\alpha}{\ApPlus{\pi^\alpha_{1_\alpha}}{m}} \\
+&\equiv m
+\end{align*}
+\end{proof}
 
 \begin{remark}
 This axiomatization was inspired by the definition of comprehension
