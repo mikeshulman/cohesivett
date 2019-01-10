@@ -572,7 +572,7 @@ In the absence of eta for $\mathsf{F}$, we also need to assert
 %\drlnote{Change the definition of $s$-types to $U$-types as primitive and derive $F$, so that having $\eta$ is less surprising.}
 
 Term/type equalities:
-\begin{align*}
+\begin{align}
 %\StI{s}{\FI{M}} &\equiv \FI{M} &\St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
 %\FI{\StI{s}{M}} &\equiv \FI{M} &\F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
 %%\UStI{s}{\UI{x}{M}} &\equiv \UI{x}{M} &\St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
@@ -580,11 +580,11 @@ Term/type equalities:
 %\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} &\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
 \StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
-\StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A\\
+\label{eqn:stype-subst} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A\\
 \rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] \\
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
-\end{align*}
+\end{align}
 Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
 
 In the absence of \textsf{F}-eta, we also need these extra equalities so we can push $s$-types around:
@@ -1736,15 +1736,31 @@ The judgements and structural rules of MLTT can be interpreted in any comprehens
 
 \begin{enumerate}
 \item[\textsc{ctx-empty}] Define $\upstairs{(\cdot)} :\equiv \St{\psi}{1}$.
-\item[\textsc{ctx-ext}] Given $\alpha : \upstairs{\Gamma} \yields_{\El{p}{g}} \upstairs{A} \TYPE$, define $\upstairs{\Gamma, A} :\equiv \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}}$
-\item[\textsc{type-sub}] Given $\alpha : \upstairs{\Gamma} \yields_g \upstairs{\Theta} : \upstairs{\Delta}$ and $\alpha : \upstairs{\Delta} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE$ we can use framework substitution to form $\upstairs{A[\Theta]} :\equiv \upstairs{A}[\upstairs{\Theta}]$.
-\item[\textsc{term-sub}] \mvrnote{Same as types.}
-\item[\textsc{sub-empty}] For any $\upstairs{\Gamma}$ we have:
+\item[\textsc{ctx-ext}] Given $\alpha : \upstairs{\Gamma}
+  \yields_{\El{p}{g}} \upstairs{A} \TYPE$, define $\upstairs{\Gamma, A}
+  :\equiv \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}}$.
+  Since $\cdot \vdash_{\Sigma \alpha:p.\El{p}{\alpha}} (\alpha :
+  \upstairs{\Gamma}, \upstairs{A})$, and $\TypeTwo{\cdot}{\chi}{p}{\Sigma
+    \alpha:p.\El{p}{\alpha}}$, this is a type of mode $p$.
+  
+\item[\textsc{type-sub}] Given $g : \upstairs{\Gamma} \yields_g \upstairs{\Theta} : \upstairs{\Delta}$ and $\alpha : \upstairs{\Delta} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE$ we can use framework substitution to form 
+  $\upstairs{A[\Theta]} :\equiv \upstairs{A}[\upstairs{\Theta}]$,
+  with $g : \upstairs{\Gamma} \yields_g \upstairs{A}[\upstairs{\Theta}] \TYPE$.
+\item[\textsc{term-sub}]
+  Given $g : \upstairs{\Gamma} \yields_g \upstairs{\Theta} :
+  \upstairs{\Delta}$ and
+  $\alpha : \upstairs{\Delta} \yields_{1_{\alpha}} \upstairs{a} : \upstairs{A}$,
+  we can use framework substitution to form $g : \Gamma \vdash_{1_g}
+  \upstairs{a[\Theta]} :\equiv \upstairs{a}[\upstairs{\Theta}] : \upstairs{A[\Theta]}$.
+
+\item[\textsc{sub-empty}] For any $\upstairs{\Gamma}$ we have (recall
+  that $\emptyset := \TrPlus{\psi}{}$):
 \begin{mathpar}
 \inferrule*[Left=rewrite]{
 \inferrule*[Left=s-intro]{\alpha : \upstairs{\Gamma} \yields_{()} () : 1}{\alpha : \upstairs{\Gamma} \yields_{\emptyset} \StI{\psi}{()} : \upstairs{(.)}}
 }{\alpha : \upstairs{\Gamma} \yields_{\alpha} \upstairs{\epsilon_\Gamma} :\equiv \rewrite{\eta^\psi_\alpha}{\StI{\psi}{()}} : \upstairs{(.)}}
 \end{mathpar}
+
 \item[\textsc{sub-ext}] We have
 \begin{align*}
 \alpha : \upstairs{\Gamma} &\yields_\alpha \upstairs{\Theta} : \upstairs{\Delta} \\
@@ -1752,10 +1768,26 @@ The judgements and structural rules of MLTT can be interpreted in any comprehens
 \end{align*}
 which are exactly what is needed to form
 \begin{align*}
-\upstairs{\Theta, a} :\equiv \rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}
+  \inferrule*{\inferrule*{\alpha : \upstairs{\Gamma} \vdash_{(\alpha,1_\alpha)} {(\upstairs{\Theta}, \upstairs{a})} : (\alpha : \upstairs{\Gamma}, \upstairs{A[\Theta]})}
+                         {\alpha : \upstairs{\Gamma}
+                           \vdash_{\alpha.1_\alpha \equiv \TrPlus{\chi}{(\alpha,1_\alpha)}} {\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}} : \St{\chi}{(\alpha : \upstairs{\Gamma}, \upstairs{A[\Theta]})}}
+             }
+             {\alpha : \upstairs{\Gamma} \vdash_{\alpha}
+               \upstairs{\Theta, a} :\equiv
+               \rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta},
+                   \upstairs{a})}} : \upstairs{\Delta,A}}
 \end{align*}
-\item[\textsc{sub-id}] \mvrnote{Variable term}
-\item[\textsc{sub-comp}] \mvrnote{Composition of substitutions}
+
+\item[\textsc{sub-id}] We have $\alpha : \upstairs{\Gamma} \vdash_\alpha \alpha : \upstairs{\Gamma}$
+
+\item[\textsc{sub-comp}]
+Given $g : \upstairs{\Gamma} \vdash_{g} \upstairs{\Theta} : \upstairs{\Delta}$
+and
+$d : \upstairs{\Delta} \vdash_{d} \upstairs{\kappa} :
+\upstairs{\Lambda}$
+we have
+$g : \upstairs{\Gamma} \vdash_{g} \upstairs{\theta;\kappa} :\equiv \upstairs{\kappa}[\upstairs{\Theta}/d] : \upstairs{\Lambda}$
+  
 \item[\textsc{sub-proj}] We are trying to construct a term
 \begin{align*}
 \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_\beta \upstairs{\proj{\Gamma, A}} : \upstairs{\Gamma}
@@ -1764,6 +1796,18 @@ Use:
 \begin{align*}
 \upstairs{\proj{\Gamma, A}} :\equiv \StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}
 \end{align*}
+
+This type checks because
+\[
+\inferrule*{
+            \inferrule*{{w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} } \vdash_{\fst w} {\fst w} : {\upstairs{\Gamma}}}
+                       {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{\fst w.\snd w \equiv \TrPlus{\chi}{w}} {\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} : \upstairs{\Gamma}}
+           }
+           {
+             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_\beta \StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} : \upstairs{\Gamma}
+           }
+\]
+
 \item[\textsc{var}] We are a building a term
 \begin{align*}
 \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields \upstairs{\qvar{\Gamma, A}} : \upstairs{A}[\upstairs{\proj{\Gamma, A}}]
@@ -1772,16 +1816,37 @@ Note that:
 \begin{align*}
 &\upstairs{A}[\upstairs{\proj{\Gamma, A}}] \\
 &\equiv \upstairs{A}[\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}/\alpha] \\
-&\equiv \StE{\chi}{\beta}{w}{\upstairs{A}[\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}/\alpha]} \\
-&\equiv \StE{\chi}{\beta}{w}{\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}} 
+&\equiv \StE{\chi}{\beta}{w}{\upstairs{A}[\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}/\alpha]} & (\eta)\\
+&\equiv \StE{\chi}{\beta}{w}{\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}} & (\ref{eqn:stype-subst}) \\
 \end{align*}
 So we can build $\upstairs{\qvar{\Gamma, A}}$ by:
 \begin{align*}
 \upstairs{\qvar{\Gamma, A}} :\equiv \StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}}
 \end{align*}
+because
+\[
+\inferrule*{
+  \inferrule*{ {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{{\snd{w}}} {{{\snd w}}} : {{\upstairs{A}[\fst w/\alpha]}}}    }
+      {\inferrule*{ {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{\TrPlus{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd{w}}} {{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : {\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}} }
+                       {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{1_{\fst w.\snd w \equiv \TrPlus{\chi}{w}}} {\rewrite{\qvar{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : {\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}}}
+           }
+           {
+             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_{1_\beta} \StE{\chi}{\beta}{w}{\rewrite{\qvar{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : \StE{\chi}{\beta}{w}{\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}
+           }
+\]
 \end{enumerate}
 
-Now we check that these translations satisfy the required equations. The first three blocks of equations follow quickly from the analogous properties in the framework. Here are the equations we might be worried about:
+Now we check that these translations satisfy the required equations.
+
+The first three blocks of equations follow directly from the analogous
+properties in the framework, because framework substitution is
+functorial and assoiative/unital, and object-language substitution is
+translated to single-variable framework substitution into both types and
+terms, and identity and composition of substitutions are translated to
+identity and composition of open terms.
+
+The remaining equations are:
+
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
 \item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}] 
 \begin{align*}
