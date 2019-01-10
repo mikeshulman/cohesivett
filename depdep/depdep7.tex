@@ -629,7 +629,7 @@ The \textsc{rewrite} rule pushes into terms of telescope types:
 %\end{align*}
 \end{proof}
 
-\begin{lemma}
+\begin{lemma} \label{lem:rewrite-push}
 The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and $s$-types:
 \begin{align*}
 \FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
@@ -1693,17 +1693,20 @@ The remaining equations are:
 &\equiv \rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\kappa}[\Theta/\alpha], \upstairs{a}[\Theta/\alpha])}} \\
 &\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]}
 \end{align*}
+
 \item[{$(\Theta, a);\proj{\Gamma,A} \equiv \Theta$}]
 \begin{align*}
 \upstairs{(\Theta, a);\proj{\Gamma,A}}
 &\equiv \upstairs{\proj{\Gamma,A}}[\upstairs{(\Theta, a)}/\beta] \\
 &\equiv (\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}})[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}/\beta] \\
 &\equiv \StE{\chi}{\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} \\
-&\equiv \rewrite{\eta^\chi_{\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}} \\
+&\equiv \rewrite{\eta^\chi_{\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}} & (Lem~\ref{lem:rewrite-push})\\
 &\equiv \rewrite{\eta^\chi_{\alpha}}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}[(\upstairs{\Theta}, \upstairs{a})/w]} \\
 &\equiv \rewrite{\eta^\chi_{\alpha}}{\rewrite{\pi^\alpha_{1_\alpha}}{\upstairs{\Theta}}} \\
 &\equiv\upstairs{\Theta} 
 \end{align*}
+where the final steps fuse the rewrites and use a triangle identity for $\eta$ and $\pi$.  (FIXME: give this a label and insert reference).  
+
 \item[{$\qvar{\Delta,A}[\Theta, a] \equiv a$}] 
 \begin{align*}
 \upstairs{\qvar{\Delta,A}[\Theta, a]} 
