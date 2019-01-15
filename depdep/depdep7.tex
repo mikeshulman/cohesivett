@@ -2127,6 +2127,73 @@ The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
 The rules for the unit type can be interpreted over any mode theory containing a comprehension object $p$ that has unit \mvrnote{and such that the $\mathsf{F}$-type for $1_\alpha$ exists whenever needed}.
 \end{theorem}
 
+Translating the rules:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[\textsc{1-form}] For any $\upstairs{\Gamma}$ we can form
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{1_\Gamma} :\equiv \F{w.1_\alpha}{1} \TYPE
+\end{align*}
+\mvrnote{The mode $1$ vs the term $1_\alpha$ vs the object language $1_\Gamma$ could be confusing...}
+
+\item[\textsc{1-intro}] We have
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{\star_\Gamma} :\equiv \FI{()} : \upstairs{1_\Gamma}
+\end{align*}
+
+\item[\textsc{1-elim}] We are given
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{c} :\upstairs{C[\id_\Gamma, \star_\Gamma]} 
+\end{align*}
+The type of $\upstairs{c}$ can be simplified to:
+\begin{align*}
+\upstairs{C[\id_\Gamma, \star_\Gamma]} 
+&\equiv \upstairs{C}[\upstairs{\id_\Gamma, \star_\Gamma}/\beta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\id_\Gamma},\upstairs{\star_\Gamma})}}/\beta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\alpha, \FI{()})}}/\beta] \\
+&\equiv \St{\ApEl{p}{\eta^\chi_{\alpha}}}{\upstairs{C}[\StI{\chi}{(\alpha, \FI{()})}/\beta]}
+\end{align*}
+So as our translation use:
+\begin{mathpar}
+\inferrule*[Left=s-intro+rewrite]{
+\inferrule*[Left=cut]{
+\inferrule*[Left=F-elim]{
+\inferrule*[Left=s-intro+rewrite]{
+\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{c} :\St{\ApEl{p}{\eta^\chi_{\alpha}}}{\upstairs{C}[\StI{\chi}{(\alpha, \FI{()})}/\beta]} }
+{\alpha : \upstairs{\Gamma} \yields_{1_{\alpha.1_\alpha}} \rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}} : \upstairs{C}[\StI{\chi}{(\alpha, \FI{()})}/\beta]}}
+{\alpha : \upstairs{\Gamma}, s : \upstairs{1_\Gamma} \yields_{1_{\alpha.s}} \FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}} : \upstairs{C}[\StI{\chi}{(\alpha, s)}/\beta]}}
+{\beta : \upstairs{\Gamma, 1_\Gamma} \yields_{1_{\beta.1_\beta}} \FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}/s] : \upstairs{C}[\StI{\chi}{(\upstairs{\proj{\Gamma, 1_\Gamma}}, \upstairs{\qvar{\Gamma, 1_\Gamma}})}/\beta]}}
+{\beta : \upstairs{\Gamma, 1_\Gamma} \yields_{1_{\beta}} \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}/s]}} : \upstairs{C}}
+\end{mathpar}
+\end{enumerate}
+
+Checking the equations hold is reasonably straightforward:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$1_\Delta[\Theta] \equiv 1_\Gamma$}:] Easy!
+\item[{$\star_\Delta[\Theta] \equiv \star_\Gamma $}:] Also easy!
+\item[{$\qunitmatch{c}[\Theta \uparrow 1_\Gamma] \equiv \qunitmatch{c[\Theta]}$}:]
+\begin{align*}
+&\upstairs{\qunitmatch{c}[\Theta \uparrow 1_\Gamma]} \\
+&\equiv \upstairs{\qunitmatch{c}}[\upstairs{\Theta \uparrow 1_\Gamma}/\beta] \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}/s]}}[\upstairs{\Theta \uparrow 1_\Gamma}/\beta] \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}[\upstairs{\Theta \uparrow 1_\Gamma}/\beta]/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}[\upstairs{\Theta \uparrow 1_\Gamma}/\beta]/s]}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\Theta}[\upstairs{\proj{\Delta, 1_\Gamma[\Theta]}}/\alpha]/\alpha, \upstairs{\qvar{\Delta, 1_\Gamma[\Theta]}}/s]}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}[\upstairs{\Theta}/\alpha]}}}[\upstairs{\proj{\Delta, 1_\Delta}}/\alpha, \upstairs{\qvar{\Delta, 1_\Delta}}/s]}} \\
+&\equiv \upstairs{\qunitmatch{c[\Theta]}}
+\end{align*}
+\item[{$\qunitmatch{c}[\id_\Gamma, \star_\Gamma] \equiv c$}:] This is
+\begin{align*}
+&\upstairs{\qunitmatch{c}[\id_\Gamma, \star_\Gamma]} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}/s]}}[\upstairs{\id_\Gamma, \star_\Gamma}/\beta] \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\proj{\Gamma, 1_\Gamma}}[\upstairs{\id_\Gamma, \star_\Gamma}/\beta]/\alpha, \upstairs{\qvar{\Gamma, 1_\Gamma}}[\upstairs{\id_\Gamma, \star_\Gamma}/\beta]/s]}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}[\upstairs{\id_\Gamma}/\alpha, \upstairs{\star_\Gamma}/s]}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{\upstairs{\star_\Gamma}}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\FEs{w.1_\alpha}{\FI{()}}{w}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\eta^\chi_\beta}{\rewrite{\ApOne{\pi^\alpha_{1_\alpha}}}{\StI{\pi^\alpha_{1_\alpha}}{\upstairs{c}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\beta;\pi^\alpha_{1_\alpha}}}{\StI{\eta^\chi_\beta;\pi^\alpha_{1_\alpha}}{\upstairs{c}}} \\
+&\equiv \upstairs{c}
+\end{align*}
+\end{enumerate}
+
 \subsubsection{Rules for $\Sigma$-types}
 \newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
 \newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
