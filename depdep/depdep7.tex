@@ -8,6 +8,7 @@
 \usepackage{amssymb,amsthm,bbm}
 \usepackage[centertags]{amsmath}
 \usepackage[mathscr]{euscript}
+\usepackage{fontawesome}
 \usepackage{tikz-cd}
 \usepackage{mathpartir}
 \usepackage{enumitem}
@@ -1624,6 +1625,14 @@ If $1_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
 Take $\pinv{\alpha,x}$ to be the identity on $1_{\alpha.x}$ and then the equations hold trivially.
 \end{proof}
 
+\subsection{Dependent Right Adjoint}
+
+Suppose we have two comprehension objects $p$ and $q$.
+
+\begin{definition}
+A \emph{dependent right adjoint}
+\end{definition}
+
 \section{Object Languages}
 
 \subsection{MLTT via Explicit Substitutions}
@@ -2269,7 +2278,7 @@ Now the equations:
 \end{align*}
 
 \item[{$\qsplit{A,B}(c)\allowbreak[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \allowbreak\qpair{A,B}] \equiv c$}:] 
-This one should be `easy'!
+\mvrnote{There was a slight change to the definition of pair that needs to be fixed here} This one should be `easy'!
 \begin{align*}
 &\upstairs{\qsplit{A,B}(c)[(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}]} \\
 \equiv{} &\upstairs{\qsplit{A,B}(c)}[\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}}/\beta] \\
@@ -2321,7 +2330,7 @@ So finally:
 \end{align*}
 
 \item[{$\qpair{A, B}[\Theta \uparrow A \uparrow B] \equiv \qpair{A[\Theta], B[\Theta \uparrow A]}$}:]
-Let's try it:
+\mvrnote{There was a slight change to the definition of pair that needs to be fixed here} Let's try it:
 \begin{align*}
 &\upstairs{\qpair{A, B}[\Theta \uparrow A \uparrow B]} \\
 &\equiv \upstairs{\qpair{A, B}}[\upstairs{\Theta \uparrow A \uparrow B}/\delta] \\
@@ -2345,7 +2354,6 @@ Where the manipulations in the middle follow from the object-language equations 
 \equiv{} & \upstairs{\qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])}
 \end{align*}
 \end{enumerate}
-
 
 \subsubsection{Rules for $\Pi$-types}
 \newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
@@ -2496,6 +2504,38 @@ again using Lemma~\ref{lem:into-identities}.
 \equiv{} &\upstairs{f}
 \end{align*}
 \end{enumerate}
+
+\subsubsection{Rules for a Dependent Right Adjoint}
+\newcommand{\lock}{\mbox{\faUnlock}}
+\newcommand{\Rtype}[1]{\mathsf{R}{#1}}
+\newcommand{\RI}[1]{\mathsf{shut}({#1})}
+\newcommand{\RE}[1]{\mathsf{open}({#1})}
+
+Suppose our mode theory has two comprehension objects $p$ and $q$. The structural rules of MLTT can be interpreted in each separately, so we mark turnstile with the comprehension object that the judgement corresponds to.
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=ctx-$\lock$]{\qyields_p \Gamma \CTX}{\qyields_q \Gamma, \lock \CTX} \and
+\inferrule*[left=sub-$\lock$]{\Gamma \qyields_p \Theta : \Delta}{\Gamma, \lock \qyields_q \Theta, \lock : \Delta, \lock} \\
+\inferrule*[left=R-form]{\Gamma, \lock \qyields_q A \TYPE}{\Gamma \qyields_p \Rtype{A} \TYPE} \\
+\inferrule*[left=R-intro]{\Gamma, \lock \qyields_q a : A}{\Gamma \qyields_p \RI{a} : \Rtype{A}} \and
+\inferrule*[left=R-elim]{\Gamma \qyields_p b : \Rtype{B}}{\Gamma, \lock \qyields_q \RE{b} : B} \\
+\end{mathpar}
+\begin{align}
+\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
+(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
+\nonumber \\
+\Rtype{A}[\Theta] &\equiv \Rtype{(A[\Theta, \lock])} \\
+\RI{a}[\Theta] &\equiv \RI{a[\Theta, \lock]} \\
+\nonumber \\
+\RE{\RI{a}} &\equiv a \\
+\RI{\RE{b}} &\equiv b
+\end{align}
+\begin{mathpar}
+
+\end{mathpar}
+\caption{Rules for a Dependent Right Adjoint in MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
+\end{figure}
 
 \section{Semantics}
 \label{sec:semantics}
