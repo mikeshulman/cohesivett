@@ -967,7 +967,7 @@ and the triangle identities hold:
 \subsection{Terminal Objects}
 
 \begin{definition}
-For a mode $x : p$, a \emph{terminal object} of $p$ is specified by
+For $p \type$, a \emph{terminal object} of $p$ is specified by
 \begin{mathpar}
 \vdash \emptyset : p \and
 \TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
@@ -1272,7 +1272,7 @@ And the third by applying the second equation to each $\pi$ and using fusion.
 \newcommand\fibpair[1]{\ensuremath{\mathtt{fibpair}_{#1}}}
 \newcommand\pair[1]{\ensuremath{\mathtt{pair}_{#1}}}
 \newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
-  
+
 \begin{definition}\label{def:supports-sigmas}
 A comprehension object \emph{supports $\Sigma$ types} if it supports $1$ and there is a specified mode term
 \begin{align*}
@@ -1330,7 +1330,22 @@ And the last follows from the third by:
 \end{align*}
 \end{proof}
 
-\mvrnote{Notes:}
+\mvrnote{Is there some way of stating this by inserting a mode type morphism, similar to how we define a comprehension object? What if in the mode theory we have something like:}
+
+\begin{align*}
+\mathtt{whatever} : \sum_{\alpha : p} \El{p}{\alpha} \vDash \sum_{\alpha : p} \sum_{x : \El{p}{\alpha}} \El{p}{\alpha.x}
+\end{align*}
+with: 
+\begin{align*}
+\fst \TrPlus{\mathtt{whatever}}{\alpha, x, y} \equiv \alpha
+\end{align*}
+and then defining
+\begin{align*}
+\Sigma_1(\alpha, x, y) :\equiv \snd \TrPlus{\mathtt{whatever}}{\alpha, x, y} 
+\end{align*}
+Does this get us anything for free? Where does $\mathtt{contract}$ come from? Is it an adjunction? Is the $\tsplit{}$ condition saying that a unit/counit is the identity?
+ 
+\mvrnote{Dan Notes:}
 
 This doesn't necessarily need to go into the final paper, but here are
 some notes that compare different ways of doing the mode theory for
@@ -1625,13 +1640,27 @@ If $1_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
 Take $\pinv{\alpha,x}$ to be the identity on $1_{\alpha.x}$ and then the equations hold trivially.
 \end{proof}
 
-\subsection{Dependent Right Adjoint}
+\subsection{Morphism of Comprehension Objects}
+\newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
+\newcommand\foneinv[1]{\ensuremath{\mathtt{foneinv}_{#1}}}
 
 Suppose we have two comprehension objects $p$ and $q$.
 
-\begin{definition}
-A \emph{dependent right adjoint}
+\begin{definition}\label{def:morphism-comprehension-object}
+A \emph{morphism of comprehension objects} $f$ from $p$ to $q$ consists of constants
+\begin{align*}
+f : q \vDash p \\
+\alpha : p, x : \El{p}{\alpha} \yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
+\fone{\alpha} : f_1(1_\alpha) \vDash_{\El{q}{\TrPlus{f}{\alpha}}} 1_{\TrPlus{f}{\alpha}} \\
+\foneinv{\alpha} : 1_{\TrPlus{f}{\alpha}} \vDash_{\El{q}{\TrPlus{f}{\alpha}}} f_1(1_\alpha)
+\end{align*}
+such that
+\begin{align}
+\text{$\fone{\alpha}$ and \foneinv{\alpha} are inverse}
+\end{align}
 \end{definition}
+
+%\mvrnote{Another option is a mode type morphism $q \vDash p$ rather than a term $p \yields f : q$, and then using the $s$-type. (The direction switch is a little confusing). In real cohesive HoTT, however, $\flat$ has only propositional eta, suggesting that using a term is the right thing.}
 
 \section{Object Languages}
 
@@ -2519,7 +2548,7 @@ again using Lemma~\ref{lem:into-identities}.
 \newcommand{\RI}[1]{\mathsf{shut}({#1})}
 \newcommand{\RE}[1]{\mathsf{open}({#1})}
 
-Suppose our mode theory has two comprehension objects $p$ and $q$. The structural rules of MLTT can be interpreted in each separately, so we mark turnstile with the comprehension object that the judgement corresponds to.
+Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}. The structural rules of MLTT can be interpreted in each comprehension object separately, so we mark turnstile with the comprehension object that the judgement corresponds to.
 
 \begin{figure}
 \begin{mathpar}
@@ -2539,11 +2568,65 @@ Suppose our mode theory has two comprehension objects $p$ and $q$. The structura
 \RE{\RI{a}} &\equiv a \\
 \RI{\RE{b}} &\equiv b
 \end{align}
-\begin{mathpar}
-
-\end{mathpar}
 \caption{Rules for a Dependent Right Adjoint in MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
 \end{figure}
+
+\begin{enumerate}
+\item[\textsc{ctx-$\lock$}] Given $\yields \upstairs{\Gamma} \TYPE_p$, we have $\yields \upstairs{\Gamma, \lock} :\equiv \St{f}{\upstairs{\Gamma}} \TYPE_q$
+
+\item[\textsc{sub-$\lock$}] Follows because $\StI{f}{-}$ is a functor, explicitly:
+\begin{align*}
+\beta : \upstairs{\Gamma, \lock} \yields_\beta \upstairs{\Theta, \lock} :\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}} : \upstairs{\Delta, \lock}
+\end{align*}
+
+\item[\textsc{R-form}] We are given 
+\begin{align*}
+\beta : \St{f}{\upstairs{\Gamma}} \yields_{\El{q}{\beta}} \upstairs{A} \TYPE
+\end{align*}
+And define $\upstairs{\Rtype{A}}$ to be:
+\begin{align*}
+\upstairs{\Rtype{A}} :\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
+\end{align*}
+
+\item[\textsc{R-intro}] We are given 
+\begin{align*}
+\beta : \St{f}{\upstairs{\Gamma}} \yields_{1_\beta} \upstairs{a} : \upstairs{A}
+\end{align*}
+Define:
+\begin{mathpar}
+\inferrule*[Left=U-intro]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=Cut]
+{\beta : \St{f}{\upstairs{\Gamma}} \yields_{1_\beta} \upstairs{a} : \upstairs{A}}
+{\alpha : \upstairs{\Gamma} \yields_{1_{\TrPlus{f}{\alpha}}} \upstairs{a}[\StI{f}{\alpha}/\beta] : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{f_1(1_\alpha)} \rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \upstairs{\Rtype{A}}}
+\end{mathpar}
+
+\item[\textsc{R-elim}] Given
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}
+\end{align*}
+we can do:
+\begin{mathpar}
+\inferrule*[Left=s-elim] {
+\inferrule*[Left=rewrite] {
+\inferrule*[Left=U-elim]
+{\alpha : \upstairs{\Gamma} \yields_{1_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{f_1(1_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{1_{\TrPlus{f}{\alpha}}} \rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\beta : \upstairs{\Gamma, \lock} \yields_{1_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
+\end{mathpar}
+\end{enumerate}
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$\id_\Gamma , \lock \equiv \id_{\Gamma, \lock}$}:] 
+\item[{$(\Theta, \lock) ; (\kappa, \lock) \equiv (\Theta ; \kappa), \lock$}:] 
+\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
+\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
+\item[{$\RE{\RI{a}} \equiv a$}:] 
+\item[{$\RI{\RE{b}} \equiv b$}:] 
+\end{enumerate}
 
 \section{Semantics}
 \label{sec:semantics}
