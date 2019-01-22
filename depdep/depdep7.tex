@@ -2351,8 +2351,8 @@ This one should be `easy'!
 \end{align*}
 By Lemma~\ref{lem:double-into}, we know the substitution is equal to:
 \begin{align*}
-&[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta][\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}[\upstairs{\proj{\Gamma, A, B}}/\beta]/x, \upstairs{\qvar{\Gamma, A, B}}[\rewrite{\pi^\delta_{1_\delta}}{\delta}/\delta]/y] \\
-&\equiv [\rewrite{\pi^{\delta.1_\delta}_{1_{\delta.1_\delta}};\pi^{\delta}_{1_{\delta}}}{\delta}/\delta]
+&\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y][\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}[\upstairs{\proj{\Gamma, A, B}}/\beta]/x, \upstairs{\qvar{\Gamma, A, B}}[\rewrite{\pi^\delta_{1_\delta}}{\delta}/\delta]/y] \\
+&\equiv \rewrite{\pi^{\delta.1_\delta}_{1_{\delta.1_\delta}};\pi^{\delta}_{1_{\delta}}}{\delta}
 \end{align*}
 So finally:
 \begin{align*}
@@ -2619,13 +2619,88 @@ we can do:
 \end{mathpar}
 \end{enumerate}
 
+\begin{lemma}
+If $f$ is a morphism of comprehension objects, then
+\begin{align}
+\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] \equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta]
+\end{align}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+&\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] \\
+&\equiv \StI{f}{\upstairs{\Theta}} \\
+&\equiv \StE{f}{\StI{f}{\alpha}}{\alpha}{\StI{f}{\upstairs{\Theta}}}\\
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}}[\StI{f}{\alpha}/\beta] \\
+&\equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta] \\
+\end{align*}
+\end{proof}
+
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[{$\id_\Gamma , \lock \equiv \id_{\Gamma, \lock}$}:] 
+\item[{$\id_\Gamma , \lock \equiv \id_{\Gamma, \lock}$}:] \mvrnote{This is why $f$ is given by a mode type morphism, we need definitional eta}
+\mvrnote{These two should just be a general lemma about s-types being functorial}
+\begin{align*}
+\upstairs{\id_\Gamma , \lock} 
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\id_\Gamma}}} \\ 
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\alpha}} \\ 
+&\equiv \beta \\
+&\equiv \upstairs{\id_{\Gamma , \lock}} 
+\end{align*}
 \item[{$(\Theta, \lock) ; (\kappa, \lock) \equiv (\Theta ; \kappa), \lock$}:] 
+\begin{align*}
+&\upstairs{(\Theta, \lock) ; (\kappa, \lock)} \\
+&\equiv \upstairs{\kappa, \lock}[\upstairs{\Theta, \lock}/\beta] \\
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\kappa}}}[\upstairs{\Theta, \lock}/\beta] \\
+&\equiv \StE{f}{\upstairs{\Theta, \lock}}{\alpha}{\StI{f}{\upstairs{\kappa}}} \\
+&\equiv \StE{f}{(\StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}})}{\alpha}{\StI{f}{\upstairs{\kappa}}} \\
+&\equiv \StE{f}{\beta}{\alpha'}{\StE{f}{(\StE{f}{\StI{f}{\alpha'}}{\alpha}{\StI{f}{\upstairs{\Theta}}})}{\alpha}{\StI{f}{\upstairs{\kappa}}}} \\
+&\equiv \StE{f}{\beta}{\alpha'}{\StE{f}{\StI{f}{\upstairs{\Theta}[\alpha'/\alpha]}}{\alpha}{\StI{f}{\upstairs{\kappa}}}} \\
+&\equiv \StE{f}{\beta}{\alpha'}{\StI{f}{\upstairs{\kappa}}[\upstairs{\Theta}[\alpha'/\alpha]/\alpha]} \\
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\kappa}}[\upstairs{\Theta}/\alpha]} \\
+&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta;\kappa}}} \\
+&\equiv \upstairs{(\Theta;\kappa), \lock}
+\end{align*}
+
 \item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
+\begin{align*}
+\upstairs{\Rtype{A}[\Theta]}
+&\equiv \upstairs{\Rtype{A}}[\upstairs{\Theta}/\alpha] \\
+&\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta]}[\upstairs{\Theta}/\alpha] \\
+&\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta][\upstairs{\Theta}/\alpha]} \\
+&\equiv \U{f_1}{()}{\upstairs{A}[\upstairs{\Theta, \lock}/\beta][\StI{f}{\alpha}/\beta]} \\
+&\equiv \U{f_1}{()}{\upstairs{A[\Theta, \lock]}[\StI{f}{\alpha}/\beta]} \\
+&\equiv \upstairs{\Rtype{(A[\Theta, \lock])}} 
+\end{align*}
+
 \item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
+\begin{align*}
+\upstairs{\RI{a}[\Theta]}
+&\equiv \upstairs{\RI{a}}[\upstairs{\Theta}/\alpha] \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}[\upstairs{\Theta}/\alpha] \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a[\Theta, \lock]}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \upstairs{\RI{a[\Theta, \lock]}}
+\end{align*}
+
 \item[{$\RE{\RI{a}} \equiv a$}:] 
+\begin{align*}
+&\upstairs{\RE{\RI{a}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{\RI{a}}}{}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}}{}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\upstairs{a}[\StI{f}{\alpha}/\beta]} \\
+&\equiv \upstairs{a}[\beta/\beta] \\
+&\equiv \upstairs{a}
+\end{align*}
+
 \item[{$\RI{\RE{b}} \equiv b$}:] 
+\begin{align*}
+&\upstairs{\RI{\RE{b}}} \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{\RE{b}}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\StE{f}{\StI{f}{\alpha}}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}}} \\
+&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}} \\
+&\equiv \UI{()}{\UE{\upstairs{b}}{}} \\
+&\equiv \upstairs{b}
+\end{align*}
 \end{enumerate}
 
 \section{Semantics}
