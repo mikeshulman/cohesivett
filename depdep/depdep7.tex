@@ -38,7 +38,8 @@
 \newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
 
 \newcommand{\yields}{\vdash}
-\newcommand{\Yields}{\vDash}
+\newcommand{\Yields}{\tcell}
+\newcommand{\tcell}{\Rightarrow}
 \newcommand{\cbar}{\, | \,}
 \newcommand{\judge}{\mathcal{J}}
 
@@ -79,12 +80,12 @@
 \newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\FIs[2]{\ensuremath{\mathsf{F}_{#1}{(#2)}}}
-\newcommand\TypeTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
-\newcommand\TeleTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
-\newcommand\TermTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
-\newcommand\TermTwoT[5]{\ensuremath{#1 \mid #3 \vDash_{#5} {#2} : #4}}
-%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \vDash_{\mathsf{disp}} #2 :_{#5} #4}}
-\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \vDash #2 : #4}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash_{#5} {#2} : #3 \tcell #4}}
+%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
+%\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
 \newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
 
@@ -275,6 +276,8 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\m
  (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
 \end{mathpar}
 
+When the context is implicit, we write $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$ as $s : \mu \tcell_p \mu'$. 
+
 \item We assume $1/\Sigma$ modes:
 
 \begin{mathpar}
@@ -329,7 +332,7 @@ Mode type morphisms: We need congruence for $\Sigma$ to be a rule (because we do
 
 Finally, we have the 2-cells for $1/\Sigma$-terms:
 \begin{mathpar}
-s \equiv \id_{()} \text{ for } s : () \vDash_1 ()
+s \equiv \id_{()} \text{ for } \yields_1 s : () \tcell ()
 \\
 
 \inferrule*
@@ -792,31 +795,24 @@ By induction on the length of $\lambda$:
 \end{proof}
 
 \begin{definition}
-A 2-cell between mode substitutions $\gamma\yields t : (\theta \vDash \theta') : \delta$ is given by a mode term 2-cell \[\gamma \yields \Sigma t : (\Sigma \theta \vDash_{\Sigma \delta} \Sigma \theta')\].
+A 2-cell between mode substitutions $\gamma \yields t : \theta \tcell \theta' $ is given by a mode term 2-cell \[\gamma \yields_{\Sigma \delta} \Sigma t : \Sigma \theta \tcell \Sigma \theta' \].
 \end{definition}
-
-\drlnote{Maybe write $\gamma\yields t : \theta \vDash_\delta \theta'$ ?
-In the rules, we're writing things like $\gamma \mid \mu \vDash s :
-\mu'$; we should be consistent about that versus this notation for where
-the $s$ goes, and change one or the other.  I find things like $\Gamma
-\vdash s : \mu \vDash_p \nu$ with two turnstiles hard to parse.
-}
 
 \begin{lemma}\label{lem:n-ary-ap-rewrite}
 N-ary ap and rewrite are admissible:
 \begin{mathpar}
 \inferrule*{\delta \vdash {q} \type \\
-            \gamma \yields t : (\theta \vDash \theta') : \delta
+            \gamma \yields t : \theta \tcell \theta'
            } 
            {\TypeTwo{\gamma}{\ap {q} {t}}{q[\theta]}{q[\theta']}}
 \and
 \inferrule*{\delta \yields {\nu} : {q} \\
-            \gamma\yields t : (\theta \vDash \theta') : \delta
+            \gamma\yields t : \theta \tcell \theta'
            } 
            {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
  \inferrule*[Left = rewrite]{
    \Gamma \yields_{\theta'} \Theta : \Delta \and 
-   \gamma \yields t : (\theta \vDash \theta') : \delta
+   \gamma \yields t : \theta \tcell \theta'
   }
   {\Gamma \yields_{\theta} \rewrite{t}{\Theta} : \Delta}
 \end{mathpar}
@@ -833,21 +829,21 @@ which are well-typed by the equation $\theta \equiv \fan{\delta}[\Sigma \theta /
 
 In particular, we have the following rules for building and using 2-cells between substitutions.
 \begin{mathpar}
-\inferrule{\gamma \yields t : \theta \vDash \theta' : \delta \and \gamma \yields s : (\mu[\theta] \vDash \TrPlus{\ap{p}{t}}{\mu'[\theta']})}
-{ \gamma \yields (s, t) : (\theta, \mu) \vDash (\theta', \mu') : (\delta,x:p)} \\
+\inferrule{\gamma \yields t : \theta \tcell \theta' \and \gamma \yields s : \mu[\theta] \tcell \TrPlus{\ap{p}{t}}{\mu'[\theta']}}
+{ \gamma \yields (s, t) : (\theta, \mu) \tcell (\theta', \mu') : (\delta,x:p)} \\
 %
-\inferrule{\gamma \yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)}
-{\gamma \yields \ap{\fst}{t} : \theta \vDash \theta' } \and
+\inferrule{\gamma \yields t : ((\theta, \mu) \tcell (\theta', \mu')) : (\delta, x : p)}
+{\gamma \yields \ap{\fst}{t} : \theta \tcell \theta' } \and
 %
-\inferrule{\gamma \yields t : ((\theta, \mu) \vDash (\theta', \mu')) : (\delta, x : p)}
-{\gamma \yields \ap{\snd}{t} : (\mu[\theta] \vDash \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']})}
+\inferrule{\gamma \yields t : ((\theta, \mu) \tcell (\theta', \mu')) : (\delta, x : p)}
+{\gamma \yields \ap{\snd}{t} : (\mu[\theta] \tcell \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']})}
 \end{mathpar}%
 
 \begin{lemma}
 N-ary ap of a 2-cell on a substitution is admissible
 \begin{mathpar}
-\inferrule{\gamma \yields t : \theta \vDash \theta' : \delta \and \delta \yields \kappa : \lambda}
-{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \vDash \kappa[\theta'] : \lambda}
+\inferrule{\gamma \yields t : \theta \tcell \theta' \and \delta \yields \kappa : \lambda}
+{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell \kappa[\theta'] : \lambda}
 \end{mathpar} 
 \end{lemma}
 \begin{proof}
@@ -947,13 +943,13 @@ For clarity we will often treat mode terms with a distinguished parameter as tho
 A mode term $\gamma, y : q \yields u : p$ has a \emph{left adjoint} if there are specified constants:
 \begin{align*}
 \gamma, x : p &\yields f : q \\
-\gamma, x : p &\yields (\eta_x : x \vDash_p u(f(x))) \\
-\gamma, y : q &\yields (\varepsilon_y : f(u(y)) \vDash_q y)
+\gamma, x : p &\yields_p \eta_x : x \tcell u(f(x)) \\
+\gamma, y : q &\yields_q \varepsilon_y : f(u(y)) \tcell y
 \end{align*}
 such that $\eta$ and $\varepsilon$ are natural:
 \begin{align}
-\eta_x ; \ap{u}{\ap{f}{s}} &\equiv s ; \eta_{x'} && \text{for } s : x \vDash_p	 x' \\
-\ap{f}{\ap{u}{t}} ; \varepsilon_{y'}  &\equiv \varepsilon_y ; t && \text{for } t : y \vDash_q y'
+\eta_x ; \ap{u}{\ap{f}{s}} &\equiv s ; \eta_{x'} && \text{for } s : x \tcell x'  \\
+\ap{f}{\ap{u}{t}} ; \varepsilon_{y'}  &\equiv \varepsilon_y ; t && \text{for } t : y \tcell y'
 \end{align}
 and the triangle identities hold:
 \begin{align}
@@ -1012,10 +1008,10 @@ are left adjoints to $\chi^+$ and $\psi^+$ respectively.
 
 In particular, a comprehension object comes equipped with natural mode term morphisms
 \begin{align*}
-\eta^\chi_\alpha {}&: \alpha \vDash_p \TrPlus{\chi}{(\alpha, \One_\alpha)} \\
-\varepsilon^\chi_{(\alpha, \mu)} {}&: (\TrPlus{\chi}{(\alpha, \mu)}, \One_{\TrPlus{\chi}{(\alpha, \mu)}}) \yields_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
-\eta^\psi_\alpha {}&: \alpha \vDash_p \TrPlus{\psi}{()} \\
-\varepsilon^\psi_{x} {}&: x \vDash_1 ()
+\eta^\chi_\alpha {}&: \alpha \tcell_p \TrPlus{\chi}{(\alpha, \One_\alpha)} \\
+\varepsilon^\chi_{(\alpha, \mu)} {}&: (\TrPlus{\chi}{(\alpha, \mu)}, \One_{\TrPlus{\chi}{(\alpha, \mu)}}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
+\eta^\psi_\alpha {}&: \alpha \tcell_p \TrPlus{\psi}{()} \\
+\varepsilon^\psi_{x} {}&: x \tcell_1 ()
 \end{align*}
 satisfying the triangle identities. (Note that $\varepsilon^\psi_x$ is necessarily the unique morphism to $()$)
 
@@ -1065,11 +1061,11 @@ Requiring a left adjoint for $\psi^+$ is a cute way of stating the following:
 For $p$ a comprehension object, $\emptyset : p$ is terminal.
 \end{lemma}
 \begin{proof}
-We always have a map $\eta^\psi_\alpha : \alpha \vDash_p \emptyset$. To show it is unique, note that one of the triangle identities is 
+We always have a map $\eta^\psi_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that one of the triangle identities is 
 \begin{align*}
 \eta^\psi_\emptyset ; \ApPlus{\psi}{\id_{()}} \equiv \eta^\psi_\emptyset \equiv \id_\emptyset
 \end{align*}
-so for any $s : \alpha \vDash_p \emptyset$ we check:
+so for any $s : \alpha \tcell_p \emptyset$ we check:
 \begin{align*}
 s 
 &\equiv s ; \eta^\psi_\emptyset \\
@@ -1169,19 +1165,19 @@ into the unit type gives the unit type in a different ``context''.
 Equation \eqref{beta-var} says that ``substituting'' into a ``variable'' is second projection on the ``substitution''.  Equation \eqref{eta-pi-var} is the usual $\eta$ principle for subsitutions.
 
 \begin{lemma}\label{sigma:total-to-fiber0} 
-For any comprehension object $p$, mode term morphisms $s : \alpha \vDash_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha \vDash_{\El{p}{\alpha}} x$.
+For any comprehension object $p$, mode term morphisms $s : \alpha \tcell_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
 \end{lemma}
 \begin{proof}
 Given such an $s$, we can define
 \begin{align*}
-\hat{s} &: \One_\alpha \vDash_{\El{p}{\alpha}} x \\
+\hat{s} &: \One_\alpha \tcell_{\El{p}{\alpha}} x \\
 \hat{s} &:\equiv \ApOne{s};\ApPlus{s}{\var{x}}
 \end{align*}
 where the identity $s;\pi^\alpha_x \equiv \id_\alpha$ is used to verify that the codomain is $\TrPlus{s}{\TrPlus{\pi^\alpha_x}{x}} \equiv \TrPlus{(s;\pi^\alpha_x)}{x} \equiv x$.
 
-Conversely, given $m : \One_\alpha \vDash_{\El{p}{\alpha}} x$ we have:
+Conversely, given $m : \One_\alpha \tcell_{\El{p}{\alpha}} x$ we have:
 \begin{align*}
-\tilde{m} &: \alpha \vDash_p \alpha.x \\
+\tilde{m} &: \alpha \tcell_p \alpha.x \\
 \tilde{m} &:\equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m)
 \end{align*}
 And indeed $\tilde{m};\pi^\alpha_x \equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m);\pi^\alpha_x \equiv \id_\alpha$ by Equation~\eqref{beta-pi}.
@@ -1277,21 +1273,21 @@ A comprehension object \emph{supports $\Sigma$ types} if it supports $1$ and the
 \end{align*}
 and mode term morphisms
 \begin{align*}
-\contract{\alpha} &: \One_\alpha \vDash_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}}) \\
-\tsplit{\alpha,x,y} &: \alpha.\Sigma_1(\alpha,x,y) \vDash_{p} \alpha.x.y
+\contract{\alpha} &: \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}}) \\
+\tsplit{\alpha,x,y} &: \alpha.\Sigma_1(\alpha,x,y) \tcell_{p} \alpha.x.y
 \end{align*}
 such that $\tsplit{\alpha,x,y}$ is an inverse to $\pair{\alpha,x,y}$, defined by:
 \begin{align*}
-\fibpair{\alpha,x,y} &: \One_{\alpha.x.y} \vDash_{\El{p}{\alpha.x.y}} \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)} \\
+\fibpair{\alpha,x,y} &: \One_{\alpha.x.y} \tcell_{\El{p}{\alpha.x.y}} \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)} \\
 \fibpair{\alpha,x,y} &:\equiv \contract{\alpha.x.y};\ap{\Sigma_1(\alpha,x,y)}{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ApOne{\pi^{\alpha.x}_y};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}}, \ApOne{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}};\ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}}}{\var{y}})/(\alpha,x,y)} \\
-\pair{\alpha,x,y} &: \alpha.x.y \vDash_{p} \alpha.\Sigma_1(\alpha,x,y) \\
+\pair{\alpha,x,y} &: \alpha.x.y \tcell_{p} \alpha.\Sigma_1(\alpha,x,y) \\
 \pair{\alpha, x, y} &:\equiv \eta^\chi_{\alpha.x.y};((\pi^{\alpha.x}_y;\pi^\alpha_x) \bdot \fibpair{\alpha,x,y})
 \end{align*}
 and $\contract{\alpha}$ is natural:
 \begin{align}
 \contract{\alpha};\ap{\Sigma_1(\alpha,x,y)}{(s, \ApOne{s}, \ApOne{s \bdot \ApOne{s}})/(\alpha,x,y)} \equiv \ApOne{s};\ApPlus{\ApEl{p}{s}}{\contract{\beta}}
 \end{align}
-for any $s : \alpha \vDash \beta$.
+for any $s : \alpha \tcell \beta$.
 \end{definition}
 
 \begin{lemma}
@@ -1330,7 +1326,7 @@ And the last follows from the third by:
 \mvrnote{Is there some way of stating this by inserting a mode type morphism, similar to how we define a comprehension object? What if in the mode theory we have something like:}
 
 \begin{align*}
-\mathtt{whatever} : \sum_{\alpha : p} \El{p}{\alpha} \vDash \sum_{\alpha : p} \sum_{x : \El{p}{\alpha}} \El{p}{\alpha.x}
+\mathtt{whatever} : \sum_{\alpha : p} \El{p}{\alpha} \tcell \sum_{\alpha : p} \sum_{x : \El{p}{\alpha}} \El{p}{\alpha.x}
 \end{align*}
 with: 
 \begin{align*}
@@ -1357,59 +1353,59 @@ be defined).
 \begin{enumerate}
 
 \item \label{sigma:total-to-fiber0} Conjecture: In any comprehension
-  object $\chi$, 2-cells $s : \alpha \vDash_p \alpha.x$ such that $s;\pi
+  object $\chi$, 2-cells $s : \alpha \tcell_p \alpha.x$ such that $s;\pi
   = \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha
-  \vDash_{\El{p}{\alpha}} x$.
+  \tcell_{\El{p}{\alpha}} x$.
 
-  First, given $s : \alpha \vDash_p \alpha.x$, take $\mtt{var} : \One_{\alpha.x}
-  \vDash_{\El{p}{\alpha.x}} \TrPlus{(\pi^\alpha_x)}{x}$ and ap $s$ onto
-  it to get $\TrPlus{s}{1} \vDash_{\El{p}{\alpha}}
+  First, given $s : \alpha \tcell_p \alpha.x$, take $\mtt{var} : \One_{\alpha.x}
+  \tcell_{\El{p}{\alpha.x}} \TrPlus{(\pi^\alpha_x)}{x}$ and ap $s$ onto
+  it to get $\TrPlus{s}{1} \tcell_{\El{p}{\alpha}}
   \TrPlus{s}{\TrPlus{(\pi^\alpha_x)}{x}}$.  Then fuse, reduce
   $\TrPlus{s}{1}$, and use the section property to show that this also
   has type
-  $\One_\alpha \vDash_{\El{p}{\alpha}} x$.
+  $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
 
-  Conversely, given $t : \One_\alpha \vDash_{\El{p}{\alpha}} x$,
-  the pairing of $\chi$ gives $(\id, t) : \alpha \vDash \alpha.x$.
+  Conversely, given $t : \One_\alpha \tcell_{\El{p}{\alpha}} x$,
+  the pairing of $\chi$ gives $(\id, t) : \alpha \tcell \alpha.x$.
 
 \item \label{sigma:total-to-fiber1} Conjecture: similarly, 2-cells $s :
-  \alpha.x \vDash_p \alpha.y$ such that $s;\pi_y = \pi_x$ correspond
-  bijectively to 2-cells $\One_{\alpha.x} \vDash_{\El{p}{\alpha.x}}
+  \alpha.x \tcell_p \alpha.y$ such that $s;\pi_y = \pi_x$ correspond
+  bijectively to 2-cells $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}}
   \TrPlus{\pi^\alpha_x}{y}$.
 
-  First, given $s : \alpha.x \vDash_p \alpha.y$, take $\mtt{var} :
-  \One_{\alpha.y} \vDash_{\El{p}{\alpha.y}} \TrPlus{(\pi^\alpha_y)}{y}$ and
-  ap $s$ onto it to get $\TrPlus{s}{1} \vDash_{\El{p}{\alpha.x}}
+  First, given $s : \alpha.x \tcell_p \alpha.y$, take $\mtt{var} :
+  \One_{\alpha.y} \tcell_{\El{p}{\alpha.y}} \TrPlus{(\pi^\alpha_y)}{y}$ and
+  ap $s$ onto it to get $\TrPlus{s}{1} \tcell_{\El{p}{\alpha.x}}
   \TrPlus{s}{\TrPlus{(\pi^\alpha_y)}{x}}$.  Then fuse, reduce
   $\TrPlus{s}{1}$, and use the commuting triangle to show that this also
-  has type $\One_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi_x} y$.
+  has type $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi_x} y$.
 
-  Conversely, given $t : \One_{\alpha.x} \vDash_{\El{p}{\alpha.}}
-  \TrPlus{\pi_x} y$, we have $\id.t := \ap{.}{(\id, t)} : \alpha.x \vDash \alpha.y$.
+  Conversely, given $t : \One_{\alpha.x} \tcell_{\El{p}{\alpha.}}
+  \TrPlus{\pi_x} y$, we have $\id.t := \ap{.}{(\id, t)} : \alpha.x \tcell \alpha.y$.
 
 \item \label{sigma:total-to-fiber2} Conjecture: similarly, 2-cells $s :
-  \alpha.x.y \vDash_p \alpha.z$ such that $s;\pi_z = \pi_y;\pi_x$
+  \alpha.x.y \tcell_p \alpha.z$ such that $s;\pi_z = \pi_y;\pi_x$
   correspond bijectively to 2-cells $\One_{\alpha.x.y}
-  \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^{\alpha.x}_y;\pi^\alpha_x}{y}$.
+  \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^{\alpha.x}_y;\pi^\alpha_x}{y}$.
 
 \item \label{sigma:full} Define \emph{fullness} of the comprehension
-  object to mean that maps $s : \alpha.x \vDash_p \alpha.y$ such that
+  object to mean that maps $s : \alpha.x \tcell_p \alpha.y$ such that
   $s;\pi_y = \pi_x$ correspond bijectively to maps in the fiber $x
-  \vDash_{\El{p}{\alpha}} y$.  (Probably plus some naturality.)
+  \tcell_{\El{p}{\alpha}} y$.  (Probably plus some naturality.)
 
   (Is this the same as $U$ from the comprehesion/slide adjunction before
   being full and faithful?)
 
 \item \label{sigma:full-interesting} Define \emph{terminal fullness}
   (probably a better name) of the comprehension object to mean that maps
-  maps $\One_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  maps $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
   out of the terminal object are bjective with $x
-  \vDash_{\El{p}{\alpha}} y$.
+  \tcell_{\El{p}{\alpha}} y$.
 
-  One direction is automatic: given $s : x \vDash_{\El{p}{\alpha}} y$,
-  we can make $(\id.s) : \alpha.x \vDash \alpha.y$ as above, and ap that
-  onto $\mtt{var} : \One_{\alpha.y} \vDash \TrPlus{\pi_y}{y}$ to get
-  $\One_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$.
+  One direction is automatic: given $s : x \tcell_{\El{p}{\alpha}} y$,
+  we can make $(\id.s) : \alpha.x \tcell \alpha.y$ as above, and ap that
+  onto $\mtt{var} : \One_{\alpha.y} \tcell \TrPlus{\pi_y}{y}$ to get
+  $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$.
 
 \item By \ref{sigma:total-to-fiber1}, fullness follows iff terminal
   fullness.  
@@ -1420,14 +1416,14 @@ be defined).
   \begin{itemize}
   \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
   \item $\Sigma_1(\alpha,x,-) \dashv \TrPlus{\pi^\alpha_x}{-}$
-  \item $E : \Sigma_1(\alpha,x,\One_{\alpha.x}) \vDash x$ given by
+  \item $E : \Sigma_1(\alpha,x,\One_{\alpha.x}) \tcell x$ given by
     transposing $\mtt{var}$ is an isomorphism
-  \item The induced map $\mtt{pair} : \alpha.x.y \vDash
+  \item The induced map $\mtt{pair} : \alpha.x.y \tcell
     \alpha.\Sigma_1(\alpha,x,y)$ given by $(\pi, \eta^\pi)$ is an
     isomorphism.
   \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
     \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s . \id)}{y})$,
-    where $s.\id : \beta.\TrPlus{s}{x} \vDash \alpha.x$
+    where $s.\id : \beta.\TrPlus{s}{x} \tcell \alpha.x$
   \end{itemize}
   I'd be very surprised if this were not sufficient -- it's everything I
   think we could ask for.
@@ -1435,9 +1431,9 @@ be defined).
 \item Conjecture: given the adjunction $\Sigma_1(\alpha,x,-) \dashv
   \TrPlus{\pi^\alpha_x}{-}$ (actually, only the counit) and $E$ an iso,
   terminal fullness (and therefore fullness) holds.  The converse map
-  for $\One_{\alpha.x} \vDash_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
-  is given by transposing to get $\Sigma_1(\alpha,x,\One_{\alpha.x}) \vDash
-  y$ and composing with $E^-1 : x \vDash
+  for $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  is given by transposing to get $\Sigma_1(\alpha,x,\One_{\alpha.x}) \tcell
+  y$ and composing with $E^-1 : x \tcell
   \Sigma_1(\alpha,x,\One_{\alpha.x})$.
 
   Conversely, given \ref{sigma:full-interesting}, do we get the counit
@@ -1447,7 +1443,7 @@ be defined).
   would be
   \begin{itemize}
   \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
-  \item A map $\mtt{pair} : \alpha.x.y \vDash
+  \item A map $\mtt{pair} : \alpha.x.y \tcell
     \alpha.\Sigma_1(\alpha,x,y)$ that commutes over $\alpha$, probably
     with some naturality
   \item $\mtt{pair}$ is an isomorphism (with inverse $\mtt{split}$)
@@ -1473,7 +1469,7 @@ be defined).
   $\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \vdash_{\alpha} z$
   we have
   \[
-  \alpha.\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \vDash \alpha.x.\TrPlus{\pi^\alpha_x}{z} \vDash \alpha.z 
+  \alpha.\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \tcell \alpha.x.\TrPlus{\pi^\alpha_x}{z} \tcell \alpha.z 
   \]
   and then can use the full version of fullness (\ref{sigma:full}).    
 
@@ -1484,7 +1480,7 @@ be defined).
 \item The exact 2-cell that comes up in encoding pairing for
   object-language $\Sigma$-types below is a contraction:
   \[
-  \One_\alpha \vDash_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})
+  \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})
   \]
   This seemed odd, because it seems like it's less than full pairing.    
 
@@ -1493,7 +1489,7 @@ be defined).
   we have
   \[
   \ap{\Sigma_1}{(\pi^{\alpha.x}_y;\pi^\alpha_x, \mtt{var}, \mtt{var}?)} :
-  \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One}) \vDash \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)}
+  \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One}) \tcell \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)}
   \]
   Then precompose with contraction, and then use
   \ref{sigma:total-to-fiber2}.
@@ -1503,18 +1499,18 @@ be defined).
   \times \Gamma \vdash A \times B$ by functoriality and then
   precomposing with the diagonal.)
   
-\item Conversely, a constant $\mtt{pair} : \alpha.x.y \vDash
+\item Conversely, a constant $\mtt{pair} : \alpha.x.y \tcell
   \alpha.\Sigma_1(\alpha,x,y)$ (commuting over $\alpha$) implies
-  contraction. An instance is $\alpha.\One_{\alpha}.\One_{\alpha.\One} \vDash
+  contraction. An instance is $\alpha.\One_{\alpha}.\One_{\alpha.\One} \tcell
   \alpha.\Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One})$, and the comprehension
   object already has $\beta.\One \cong \beta$, so precompose, to get
-  $\alpha \vDash \alpha.\Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One})$, and
+  $\alpha \tcell \alpha.\Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One})$, and
   then use \ref{sigma:total-to-fiber0}.
 
 \item \label{sigma:spec} What we seem to need for $\Sigma$ types is just
   \begin{itemize}
   \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
-  \item A map $\mtt{contract} : \One_\alpha \vDash_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})$.
+  \item A map $\mtt{contract} : \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})$.
   \item such that the $\mtt{pair}$ map induced as in
     \ref{sigma:get-pair} is an isomorphism (split)
   \end{itemize}
@@ -1530,11 +1526,11 @@ be defined).
 
   For 
   \[
-  \Sigma_1(\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{s.\id}}{y}) \vDash \TrPlus{\ApEl{p}{s}}{(\Sigma_1(\alpha,x,y))} 
+  \Sigma_1(\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{s.\id}}{y}) \tcell \TrPlus{\ApEl{p}{s}}{(\Sigma_1(\alpha,x,y))} 
   \]
   observe that there is a 2-cell in the mode theory $\Sigma$-type
   \[
-  (\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{(s . \id)}}{y}) \vDash_{\Sigma z:p.\Sigma x:\El{p}{z}.\El{p}{z.x}} (\alpha,x,y)
+  (\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{(s . \id)}}{y}) \tcell_{\Sigma z:p.\Sigma x:\El{p}{z}.\El{p}{z.x}} (\alpha,x,y)
   \]
   given by $(s, \id, \id)$ (using the equation for ``ap of framework
   $\Sigma$ on a 2-cell'', and an associativity between $(\ap{w:(\Sigma
@@ -1548,26 +1544,26 @@ be defined).
   2-cell in $\Sigma$'').
   By \ref{sigma:total-to-fiber1} this induces a 2-cell (leaving off the $\ApEl{p}{-}$)
   \[
-  \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) \vDash \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} 
+  \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) \tcell \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} 
   \]
 
   For the converse, we construct 
   \[
-  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \vDash \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) 
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \tcell \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) 
   \]
   (I'm not sure if this one is actually true in the fiber without
   assuming fullness).
   By post-composing with $\mtt{pair}$, it suffices to give 
   \[
-  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \vDash \beta.\TrPlus{s}{x}.\TrPlus{(s.\id)}{y}
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \tcell \beta.\TrPlus{s}{x}.\TrPlus{(s.\id)}{y}
   \]
 
   Lemma 1: In general, given $\alpha \vdash \alpha.x$ which is a section
-  of $\pi^\alpha_x$, we can ``substitute'' any $s : \beta \vDash \alpha$
+  of $\pi^\alpha_x$, we can ``substitute'' any $s : \beta \tcell \alpha$
   into it to get $\beta \vdash \beta.\TrPlus{x}$, which is a section of
   $\pi^\beta_{\TrPlus{s}{x}}$.  For us, this is derived by using
   \ref{sigma:total-to-fiber0} to reduce the problem to going from $1
-  \vDash_{\El{p}{\alpha}} x$ to $1 \vDash_{\El{p}{\beta}}
+  \tcell_{\El{p}{\alpha}} x$ to $1 \tcell_{\El{p}{\beta}}
   \TrPlus{s}{x}$, which is just the ap of ${\TrPlus{s}{-}}$ together
   with it reducing on $1$.
 
@@ -1577,30 +1573,30 @@ be defined).
   \ref{sigma:total-to-fiber1}, ap-ing $s$ in the fiber, reducing the ap
   on $1$, and using the commuting triangle with $\pi$.
 
-  There is a map $\mtt{fst} : \alpha.\Sigma_1(\alpha,x,y) \vDash_p
+  There is a map $\mtt{fst} : \alpha.\Sigma_1(\alpha,x,y) \tcell_p
   \alpha.x$ given by $\mtt{split};\pi$, which commutes over $\alpha$.
 
   There is also a section $\mtt{snd} : \alpha.\Sigma_1(\alpha,x,y)
-  \vDash_p \alpha.\Sigma_1(\alpha,x,y).\TrPlus{\mtt{fst}}{y}$ (this is
+  \tcell_p \alpha.\Sigma_1(\alpha,x,y).\TrPlus{\mtt{fst}}{y}$ (this is
   the total-space version of the usual second projection term).  In the
-  fiber, we need $1 \vDash_{\alpha.\Sigma_1(\alpha,x,y)}
+  fiber, we need $1 \tcell_{\alpha.\Sigma_1(\alpha,x,y)}
   \TrPlus{\mtt{fst}}{y}$, but we have the $\mtt{var}$ term $1
-  \vDash_{\alpha.x.y} \TrPlus{\pi^{\alpha.x}_y}{y}$ and ap-ing
+  \tcell_{\alpha.x.y} \TrPlus{\pi^{\alpha.x}_y}{y}$ and ap-ing
   $\mtt{split}$ gives the result.
   
   Applying Lemma 2 to $\mtt{fst}$ gives
-  \[s^*{\mtt{fst}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash \beta.\TrPlus{s}{x}
+  \[s^*{\mtt{fst}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell \beta.\TrPlus{s}{x}
   \]
   which commutes over $\beta$.
 
   Applying Lemma 1 to $\mtt{snd}$ gives $s^*{\snd{}} :
-  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash_p
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell_p
   \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s}{\TrPlus{\mtt{fst}}{y}}$
   commuting over $\alpha$.  (Some of the total space/fiber moves could
   be $\beta$-reduced here.)
   We also should have $s;\mtt{fst} = ;{s.\id}$, so this has type
   \[
-  s^*{\snd{}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash_p
+  s^*{\snd{}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell_p
   \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s^*\mtt{fst}}{\TrPlus{s.\id}{y}}
   \]
   
@@ -1608,7 +1604,7 @@ be defined).
   pair $s^*{\mtt{fst}}$, $s^*{\snd{}}$
   to get
   \[
-  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \vDash (\beta.\TrPlus{s}{x}).{\TrPlus{(s.\id)}{y}}
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell (\beta.\TrPlus{s}{x}).{\TrPlus{(s.\id)}{y}}
   \]
   
 \end{enumerate}
@@ -1620,7 +1616,7 @@ be defined).
 \begin{definition}\label{def:supports-pis}
 A comprehension object \emph{has $\Pi$s} if there is a morphism
 \begin{align*}
-\pinv{\alpha,x} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha} \vDash_{\El{p}{\alpha.x}} \One_{\alpha.x} 
+\pinv{\alpha,x} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha} \tcell_{\El{p}{\alpha.x}} \One_{\alpha.x} 
 \end{align*}
 such that
 \begin{align*}
@@ -1646,10 +1642,10 @@ Suppose we have two comprehension objects $p$ and $q$.
 \begin{definition}\label{def:morphism-comprehension-object}
 A \emph{morphism of comprehension objects} $f$ from $p$ to $q$ consists of constants
 \begin{align*}
-f : q \vDash p \\
+f : q \tcell p \\
 \alpha : p, x : \El{p}{\alpha} \yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
-\fone{\alpha} : f_1(\One_\alpha) \vDash_{\El{q}{\TrPlus{f}{\alpha}}} \One_{\TrPlus{f}{\alpha}} \\
-\foneinv{\alpha} : \One_{\TrPlus{f}{\alpha}} \vDash_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One_\alpha)
+\fone{\alpha} : f_1(\One_\alpha) \tcell_{\El{q}{\TrPlus{f}{\alpha}}} \One_{\TrPlus{f}{\alpha}} \\
+\foneinv{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One_\alpha)
 \end{align*}
 such that
 \begin{align}
@@ -1657,7 +1653,7 @@ such that
 \end{align}
 \end{definition}
 
-%\mvrnote{Another option is a mode type morphism $q \vDash p$ rather than a term $p \yields f : q$, and then using the $s$-type. (The direction switch is a little confusing). In real cohesive HoTT, however, $\flat$ has only propositional eta, suggesting that using a term is the right thing.}
+%\mvrnote{Another option is a mode type morphism $q \tcell p$ rather than a term $p \yields f : q$, and then using the $s$-type. (The direction switch is a little confusing). In real cohesive HoTT, however, $\flat$ has only propositional eta, suggesting that using a term is the right thing.}
 
 \section{Object Languages}
 
@@ -2733,7 +2729,7 @@ of the framework, but can be defined by tupling terms.
 These can be interpreted as: 
 \begin{itemize}
 \item $\mm{\gamma \yields \theta : \delta}$ is a functor from $\mm{\gamma}$ to $\mm{\delta}$
-\item $\mm{\gamma \yields \theta_1 \vDash_\delta \theta_2}$ is a natural
+\item $\mm{\gamma \yields \theta_1 \tcell_\delta \theta_2}$ is a natural
   transformation from $\mm{\gamma \yields \theta_1 : \delta}$ to
   $\mm{\gamma \yields \theta_2 : \delta}$
 \item $\mm{\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta}$ is a
@@ -2851,7 +2847,7 @@ On the other hand, we should also have the syntactic model:
   \begin{itemize}
   \item objects are mode contexts $\gamma \ctx$,
   \item morphisms are total mode substitutions $\gamma \yields \theta : \delta$, and
-  \item 2-cells are total mode 2-cells $\gamma \yields \theta_1 \vDash_\delta \theta_2$.
+  \item 2-cells are total mode 2-cells $\gamma \yields_\delta \theta_1 \tcell \theta_2$.
   \end{itemize}
   We define $\Mty:\M\op\to\CAT$ such that
   \begin{itemize}
