@@ -2522,13 +2522,25 @@ again using Lemma~\ref{lem:into-identities}.
 \end{align*}
 \end{enumerate}
 
-\subsubsection{Rules for a Dependent Right Adjoint}
+\subsubsection{Rules for Dependent Adjoints}
 \newcommand{\lock}{\mbox{\faUnlock}}
 \newcommand{\Rtype}[1]{\mathsf{R}{#1}}
 \newcommand{\RI}[1]{\mathsf{shut}({#1})}
 \newcommand{\RE}[1]{\mathsf{open}({#1})}
 
-Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}. The structural rules of MLTT can be interpreted in each comprehension object separately, so we mark turnstile with the comprehension object that the judgement corresponds to.
+\newcommand{\Ltype}[1]{\mathsf{L}{#1}}
+\newcommand{\LI}[1]{\mathsf{left}_{#1}}
+\newcommand{\LE}[1]{\mathsf{spleft}({#1})}
+
+Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}. The structural rules of MLTT can be interpreted in each comprehension object separately, so we mark turnstile with the comprehension object that the judgement corresponds to. The rules for dependent adjoint types are given in Figure~\ref{fig:qit-adjoint-rules}.
+
+Similar to $\Pi$-types, naturality of $\RE{}$ follows from naturality of $\RI{}$ using eta expansion:
+\begin{align*}
+\RE{b}[\Theta, \lock] 
+&\equiv \RE{\RI{\RE{b}[\Theta, \lock]}} \\
+&\equiv \RE{\RI{\RE{b}}[\Theta]} \\
+&\equiv \RE{b[\Theta]}
+\end{align*}
 
 \begin{figure}
 \begin{mathpar}
@@ -2537,6 +2549,9 @@ Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphi
 \inferrule*[left=R-form]{\Gamma, \lock \qyields_q A \TYPE}{\Gamma \qyields_p \Rtype{A} \TYPE} \\
 \inferrule*[left=R-intro]{\Gamma, \lock \qyields_q a : A}{\Gamma \qyields_p \RI{a} : \Rtype{A}} \and
 \inferrule*[left=R-elim]{\Gamma \qyields_p b : \Rtype{B}}{\Gamma, \lock \qyields_q \RE{b} : B} \\
+\inferrule*[left=L-form]{\Gamma \qyields_p A \TYPE}{\Gamma, \lock \qyields_q \Ltype{A} \TYPE} \\
+\inferrule*[left=L-intro]{~}{\Gamma, A, \lock \qyields_q \LI{A} : \Ltype{A}[\proj{\Gamma, A}, \lock]} \and
+\inferrule*[left=L-elim]{\Gamma, A, \lock \qyields_q c : C[\proj{\Gamma, A}, \lock, \LI{A}]}{\Gamma, \lock, \Ltype{A} \qyields_q \LE{c} : C} \\
 \end{mathpar}
 \begin{align}
 \id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
@@ -2544,11 +2559,15 @@ Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphi
 \nonumber \\
 \Rtype{A}[\Theta] &\equiv \Rtype{(A[\Theta, \lock])} \\
 \RI{a}[\Theta] &\equiv \RI{a[\Theta, \lock]} \\
-\nonumber \\
 \RE{\RI{a}} &\equiv a \\
-\RI{\RE{b}} &\equiv b
+\RI{\RE{b}} &\equiv b \\
+\nonumber \\
+\Ltype{A}[\Theta, \lock] &\equiv \Ltype{(A[\Theta])} \\
+\LI{A}[\Theta \uparrow A, \lock] &\equiv \LI{A[\Theta]} \\
+\LE{c}[\Theta, \lock \uparrow \Ltype{A}] &\equiv \LE{c[\Theta \uparrow A, \lock]} \\
+\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] &\equiv c
 \end{align}
-\caption{Rules for a Dependent Right Adjoint in MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
+\caption{Rules for Dependent Adjoints in MLTT via Explicit Substitutions}\label{fig:qit-adjoint-rules}
 \end{figure}
 
 \begin{enumerate}
@@ -2681,6 +2700,14 @@ If $f$ is a morphism of comprehension objects, then
 &\equiv \UI{()}{\UE{\upstairs{b}}{}} \\
 &\equiv \upstairs{b}
 \end{align*}
+\end{enumerate}
+
+And now the left adjoint:
+
+\begin{enumerate}
+\item[\textsc{L-form}]
+\item[\textsc{L-intro}]
+\item[\textsc{L-elim}]
 \end{enumerate}
 
 \section{Semantics}
