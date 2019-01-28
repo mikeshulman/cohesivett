@@ -273,7 +273,9 @@ We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
 \ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
 (\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q)\\
 t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \quad
- (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p})
+ (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}) \\
+\ap{\TrPlus{s}{\mu}}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
+(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
 \end{mathpar}
 
 When the context is implicit, we write $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$ as $s : \mu \tcell_p \mu'$. 
@@ -1596,26 +1598,41 @@ be defined).
 
 \subsection{Comprehension Object with $\Pi$}
 \newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
-\mvrnote{Conjecture:}
 
 \begin{definition}\label{def:supports-pis}
-A comprehension object \emph{supports $\Pi$s} if there is a morphism
-\begin{align*}
-\pinv{\alpha,x} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha} \tcell_{\El{p}{\alpha.x}} \One_{\alpha.x} 
-\end{align*}
-such that
-\begin{align*}
-\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\pinv{\alpha,\One_\alpha}} &\equiv  \ApOne{\eta^\chi_\alpha} \\
-\pinv{\alpha,x};\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}} &\equiv \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha}}
-\end{align*}
-\mvrnote{Is that thing, $\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}}$ equal to $\ApOne{\pi^\alpha_x}$? I couldn't tell...}
+A comprehension object \emph{supports $\Pi$s} if $\ApOne{\pi^\alpha_x}$ is an isomorphism.
 \end{definition}
+
+Let $\pinv{\alpha,x}$ denote the inverse of $\ApOne{\pi^\alpha_x}$.
 
 \begin{lemma}
 If $\One_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
 \end{lemma}
 \begin{proof}
 Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$ and then the equations hold trivially.
+\end{proof}
+
+\begin{lemma}
+If $p$ has $\Pi$-types then:
+\begin{align*}
+\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\pinv{\alpha,\One_\alpha}} &\equiv  \ApOne{\eta^\chi_\alpha} \\
+\pinv{\alpha,x};\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}} &\equiv \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+The first one follows from:
+\begin{align*}
+\ApOne{\eta^\chi_\alpha} ; \ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\ApOne{\pi^\alpha_{\One_\alpha}}} 
+&\equiv \ApOne{\eta^\chi_\alpha;\pi^\alpha_{\One_\alpha}}  \\
+&\equiv \ApOne{\id_\alpha} \\
+&\equiv \id_{\One_\alpha}
+\end{align*}
+And the second from:
+\begin{align*}
+&\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}} \\
+&\equiv \ApPlus{\eta^\chi_{\alpha.x}}{\ApPlus{\pi^{\alpha.x}_{1_{\alpha.x}}}{\ap{\One_u}{(\pi^\alpha_x,\var{x})/(u,v)}}} \\
+&\equiv \ApOne{\pi^\alpha_x}
+\end{align*}
 \end{proof}
 
 \subsection{Morphism of Comprehension Objects}
