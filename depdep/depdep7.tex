@@ -574,8 +574,8 @@ Term/type equalities:
 %\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} &\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
 \StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
-\label{eqn:stype-subst} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A %\\
-%\rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] \\
+\label{eqn:stype-subst} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
+\rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] 
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align}
@@ -1638,24 +1638,34 @@ And the second from:
 \subsection{Morphism of Comprehension Objects}
 \newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
 \newcommand\foneinv[1]{\ensuremath{\mathtt{foneinv}_{#1}}}
+\newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
+\newcommand\fdistinv[1]{\ensuremath{\mathtt{fdistinv}_{#1}}}
 
 Suppose we have two comprehension objects $p$ and $q$.
 
 \begin{definition}\label{def:morphism-comprehension-object}
-A \emph{morphism of comprehension objects} $f$ from $p$ to $q$ consists of constants
+A \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \chi^p, \psi^p)$ to $(q, \One^q, \chi^q, \psi^q)$ consists of constants
 \begin{align*}
 f : q \tcell p \\
 \alpha : p, x : \El{p}{\alpha} \yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
-\fone{\alpha} : f_1(\One_\alpha) \tcell_{\El{q}{\TrPlus{f}{\alpha}}} \One_{\TrPlus{f}{\alpha}} \\
-\foneinv{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One_\alpha)
+\fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
 \end{align*}
-such that
-\begin{align}
-\text{$\fone{\alpha}$ and \foneinv{\alpha} are inverse}
-\end{align}
 \end{definition}
 
-%\mvrnote{Another option is a mode type morphism $q \tcell p$ rather than a term $p \yields f : q$, and then using the $s$-type. (The direction switch is a little confusing). In real cohesive HoTT, however, $\flat$ has only propositional eta, suggesting that using a term is the right thing.}
+\begin{definition}
+A morphism of comprehension objects \emph{supports right adjoint types} if $\fone{\alpha}$ is an isomorphism.
+\end{definition}
+Let $\foneinv{\alpha}$ denote the inverse of $\fone{\alpha}$.
+
+\begin{definition}
+A morphism of comprehension objects $f$ \emph{supports left adjoint types} if 
+\begin{align*}
+\fdist{\alpha, x} &: \TrPlus{f}{\alpha.x} \tcell \TrPlus{f}{\alpha}.f_1(x) \\
+\fdist{\alpha, x} &:\equiv \eta^{\chi^q}_{\TrPlus{f}{\alpha.x}} ; (\ApPlus{f}{\pi^\alpha_x} \bdot \fone{\alpha.x};\ap{f_1}{\pi^\alpha_x/\alpha, \var{x}/x})
+\end{align*}
+is an isomorphism.
+\end{definition}
+Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
 
 \section{Object Languages}
 
@@ -2615,8 +2625,8 @@ Define:
 \inferrule*[Left=Cut]
 {\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}}
 {\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \upstairs{a}[\StI{f}{\alpha}/\beta] : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
-{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
-{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \upstairs{\Rtype{A}}}
+{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \upstairs{\Rtype{A}}}
 \end{mathpar}
 
 \item[\textsc{R-elim}] Given
@@ -2630,8 +2640,8 @@ we can do:
 \inferrule*[Left=U-elim]
 {\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
 {\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
-{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
-{\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
+{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
 \end{mathpar}
 \end{enumerate}
 
@@ -2691,17 +2701,17 @@ If $f$ is a morphism of comprehension objects, then
 \begin{align*}
 \upstairs{\RI{a}[\Theta]}
 &\equiv \upstairs{\RI{a}}[\upstairs{\Theta}/\alpha] \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}[\upstairs{\Theta}/\alpha] \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a[\Theta, \lock]}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}[\upstairs{\Theta}/\alpha] \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a[\Theta, \lock]}[\StI{f}{\alpha}/\beta]}} \\
 &\equiv \upstairs{\RI{a[\Theta, \lock]}}
 \end{align*}
 
 \item[{$\RE{\RI{a}} \equiv a$}:] 
 \begin{align*}
 &\upstairs{\RE{\RI{a}}} \\
-&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{\RI{a}}}{}}} \\
-&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\UI{()}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}}{}}} \\
-&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\rewrite{\fone{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{\RI{a}}}{}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}}{}}} \\
+&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}} \\
 &\equiv \StE{f}{\beta}{\alpha}{\upstairs{a}[\StI{f}{\alpha}/\beta]} \\
 &\equiv \upstairs{a}[\beta/\beta] \\
 &\equiv \upstairs{a}
@@ -2710,10 +2720,10 @@ If $f$ is a morphism of comprehension objects, then
 \item[{$\RI{\RE{b}} \equiv b$}:] 
 \begin{align*}
 &\upstairs{\RI{\RE{b}}} \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\upstairs{\RE{b}}[\StI{f}{\alpha}/\beta]}} \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\StE{f}{\beta}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}[\StI{f}{\alpha}/\beta]}} \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\StE{f}{\StI{f}{\alpha}}{\alpha}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}}} \\
-&\equiv \UI{()}{\rewrite{\fone{\alpha}}{\rewrite{\foneinv{\alpha}}{\UE{\upstairs{b}}{}}}} \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{\RE{b}}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}[\StI{f}{\alpha}/\beta]}} \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\StE{f}{\StI{f}{\alpha}}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}}} \\
+&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}} \\
 &\equiv \UI{()}{\UE{\upstairs{b}}{}} \\
 &\equiv \upstairs{b}
 \end{align*}
@@ -2722,9 +2732,80 @@ If $f$ is a morphism of comprehension objects, then
 And now the left adjoint:
 
 \begin{enumerate}
-\item[\textsc{L-form}]
-\item[\textsc{L-intro}]
-\item[\textsc{L-elim}]
+\item[\textsc{L-form}] We are given
+\begin{align*}
+\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE
+\end{align*}
+So we can form 
+\begin{mathpar}
+\inferrule*[Left=s-Elim]{
+\inferrule*[Left=F-form]
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE}
+{\alpha : \upstairs{\Gamma} \yields_{\El{q}{\TrPlus{f}{\alpha}}} \F{f_1}{\upstairs{A}} \TYPE}}
+{\beta : \upstairs{\Gamma, \lock} \yields_{\El{q}{\beta}} \upstairs{\Ltype{A}} :\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}} \TYPE}
+\end{mathpar}
+
+\item[\textsc{L-intro}] Our goal is a term in context $\delta : \upstairs{\Gamma, A, \lock}$ of type:
+\begin{align*}
+&\upstairs{\Ltype{A}[\proj{\Gamma, A}, \lock]} \\
+&\equiv \upstairs{\Ltype{A}}[\upstairs{\proj{\Gamma, A}, \lock}/\beta] \\
+&\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}}[\StE{f}{\delta}{\beta'}{\StI{f}{\upstairs{\proj{\Gamma, A}}[\beta'/\beta]}}/\beta] \\
+&\equiv \StE{f}{(\StE{f}{\delta}{\beta'}{\StI{f}{\upstairs{\proj{\Gamma, A}}[\beta'/\beta]}})}{\alpha}{\F{f_1}{\upstairs{A}}} \\
+&\equiv \StE{f}{\delta}{\beta'}{\StE{f}{\StI{f}{\upstairs{\proj{\Gamma, A}}[\beta'/\beta]}}{\alpha}{\F{f_1}{\upstairs{A}}}} \\
+&\equiv \StE{f}{\delta}{\beta'}{\F{f_1}{\upstairs{A}}[\upstairs{\proj{\Gamma, A}}[\beta'/\beta]/\alpha]} \\
+&\equiv \StE{f}{\delta}{\beta'}{\F{f_1}{\upstairs{A[\proj{\Gamma, A}]}[\beta'/\beta]}} \\
+&\equiv \StE{f}{\delta}{\beta}{\F{f_1}{\upstairs{A[\proj{\Gamma, A}]}}}
+\end{align*}
+We can produce this by:
+\begin{mathpar}
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=F-intro]{
+\beta : \upstairs{\Gamma, A} \yields_{1_\beta} \upstairs{\qvar{\Gamma, A}} : \upstairs{A[\proj{\Gamma, A}]}}
+{\beta : \upstairs{\Gamma, A} \yields_{f_1(1_\beta)} \FIs{f_1}{\upstairs{\qvar{\Gamma, A}}} : \F{f_1}{\upstairs{A[\proj{\Gamma, A}]}}}}
+{\beta : \upstairs{\Gamma, A} \yields_{1_{\TrPlus{f}{\beta}}} \rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}} : \F{f_1}{\upstairs{A[\proj{\Gamma, A}]}}}}
+{\delta : \upstairs{\Gamma, A, \lock} \yields_{1_\delta} \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}} : \upstairs{\Ltype{A}[\proj{\Gamma, A}, \lock]}}
+\end{mathpar}
+
+\item[\textsc{L-elim}] We are given a term $\upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$. Similar to $\Sigma$-types, we first substitute with
+\begin{align*}
+\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{f}{\alpha.x}} \StI{f}{\into{\Gamma, A}}
+\end{align*}
+to obtain $\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]$ of type:
+\begin{align*}
+&\upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}[\StI{f}{\into{\Gamma, A}}/\delta] \\
+&\equiv \upstairs{C}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}/\delta][\StI{f}{\into{\Gamma, A}}/\delta] \\
+&\equiv \upstairs{C}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}[\StI{f}{\into{\Gamma, A}}/\delta]/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_\delta}{\StI{\chi}{\upstairs{\proj{\Gamma, A}, \lock}, \upstairs{\LI{A}}}}[\StI{f}{\into{\Gamma, A}}/\delta]/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_\delta}{\StI{\chi}{\StE{f}{\delta}{\beta}{\StI{f}{\upstairs{\proj{\Gamma, A}}}}, \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}}}[\StI{f}{\into{\Gamma, A}}/\delta]/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\StE{f}{\StI{f}{\into{\Gamma, A}}}{\beta}{\StI{f}{\upstairs{\proj{\Gamma, A}}}}, \StE{f}{\StI{f}{\into{\Gamma, A}}}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\StI{f}{\upstairs{\proj{\Gamma, A}}}[\into{\Gamma, A}/\beta], \rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}[\into{\Gamma, A}/\beta]}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}, \rewrite{\fone{\alpha.x}}{\FIs{f_1}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\rewrite{\ApPlus{f}{\pi^\alpha_x}}{\StI{f}{\alpha}}, \rewrite{\fone{\alpha.x};\ap{f_1}{\var{x}}}{\FIs{f_1}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\rewrite{\ApPlus{f}{\pi^\alpha_x}}{\StI{f}{\alpha}}, \rewrite{\fone{\alpha.x};\ap{f_1}{\var{x}};\ap{f_1}{\ApEl{p}{\pi^\alpha_x}/\alpha, \id / x}}{\FIs{f_1}{x}}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}};(\ApPlus{f}{\pi^\alpha_x} \bdot \fone{\alpha.x};\ap{f_1}{\var{x}};\ap{f_1}{\ApEl{p}{\pi^\alpha_x}/\alpha, \id / x})}{\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}}/\delta] \\
+&\equiv \St{\ApEl{q}{\fdist{\alpha,x}}}{\upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]} \\
+\end{align*}
+\mvrnote{There is a move in there that needs explanation}
+So we define the translation of $\LE{c}$ to be:
+\begin{mathpar}
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=F-elim]{
+\inferrule*[Left=s-intro+rewrite]{
+\inferrule*[Left=cut]{
+\delta : \upstairs{\Gamma, A, \lock} \yields_{1_\delta} \upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\TrPlus{f}{\alpha.x}}}\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta] : \St{\ApEl{q}{\fdist{\alpha,x}}}{\upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]}}}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\TrPlus{f}{\alpha}.f_1(x)}} \rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}} : \upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]}}
+{\alpha : \upstairs{\Gamma}, x' : \F{f_1}{\upstairs{A}} \yields_{1_{\TrPlus{f}{\alpha}.x'}} \FE{x'}{x}{(\dots)} : \upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, x'}/\delta]}}
+{\beta : \upstairs{\Gamma, \lock}, x' : \upstairs{\Ltype{A}} \yields_{1_{\beta.x'}} \StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\dots)}} : \upstairs{C}[\StI{\chi}{\beta, x'}/\delta]}}
+{\delta : \upstairs{\Gamma, \lock, \Ltype{A}} \yields_{1_\delta} \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\dots)}}} : \upstairs{C}}
+\end{mathpar}
+Or all together:
+\begin{align*}
+&\StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{ \\&\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}
+\end{align*}
 \end{enumerate}
 
 \section{Semantics}
