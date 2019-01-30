@@ -1650,6 +1650,10 @@ f : q \tcell p \\
 \alpha : p, x : \El{p}{\alpha} \yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
 \fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
 \end{align*}
+such that $\fone{\alpha}$ is natural:
+\begin{align}
+\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
+\end{align}
 \end{definition}
 
 \begin{definition}
@@ -1666,6 +1670,25 @@ A morphism of comprehension objects $f$ \emph{supports left adjoint types} if
 is an isomorphism.
 \end{definition}
 Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
+
+\begin{lemma}
+If $f$ supports left adjoint types and $q$ supports unit types, then 
+\begin{align*}
+\eta^\chi_{\TrPlus{f}{\beta}};(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta});\fdistinv{\beta, \One_\beta} \equiv \ApPlus{f}{\eta^\chi_\beta}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Follows from
+\begin{align*}
+\ApPlus{f}{\eta^\chi_\beta};\fdist{\beta, \One_\beta}
+&\equiv \ApPlus{f}{\eta^\chi_\beta};\eta^{\chi^q}_{\TrPlus{f}{\beta.\One_\beta}} ; (\ApPlus{f}{\pi^\beta_{\One_\beta}} \bdot \fone{\beta.\One_\beta};\ap{f_1}{\pi^\beta_{\One_\beta}/\alpha, \var{\One_\beta}/x}) \\
+&\equiv \ApPlus{f}{\eta^\chi_\beta};\eta^{\chi^q}_{\TrPlus{f}{\beta.\One_\beta}} ; (\ApPlus{f}{\pi^\beta_{\One_\beta}} \bdot \fone{\beta.\One_\beta};\ap{f_1}{\pi^\beta_{\One_\beta}/\alpha, \ApOne{\pi^\beta_{\One_\beta}}/x}) \\
+&\equiv \ApPlus{f}{\eta^\chi_\beta};\eta^{\chi^q}_{\TrPlus{f}{\beta.\One_\beta}} ; (\ApPlus{f}{\pi^\beta_{\One_\beta}} \bdot \ApOne{\ApPlus{f}{\pi^\beta_{\One_\beta}}};\ApPlus{\ApEl{q}{\ApPlus{f}{\pi^\beta_{\One_\beta}}}}{\fone{\beta}}) \\
+&\equiv \ApPlus{f}{\eta^\chi_\beta};\eta^{\chi^q}_{\TrPlus{f}{\beta.\One_\beta}} ; (\ApPlus{f}{\pi^\beta_{\One_\beta}} \bdot \ApOne{\ApPlus{f}{\pi^\beta_{\One_\beta}}});(\id_{\TrPlus{f}{\beta}} ; \fone{\beta}) \\
+&\equiv \ApPlus{f}{\eta^\chi_\beta}; \ApPlus{f}{\pi^\beta_{\One_\beta}} ; \eta^{\chi^q}_{\TrPlus{f}{\beta}} ; (\id_{\TrPlus{f}{\beta}} ; \fone{\beta}) \\
+&\equiv \eta^{\chi^q}_{\TrPlus{f}{\beta}} ; (\id_{\TrPlus{f}{\beta}} ; \fone{\beta})
+\end{align*}
+\end{proof}
 
 \section{Object Languages}
 
@@ -2805,6 +2828,70 @@ So we define the translation of $\LE{c}$ to be:
 Or all together:
 \begin{align*}
 &\StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{ \\&\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}
+\end{align*}
+\end{enumerate}
+
+And the equations:
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$\Ltype{A}[\Theta, \lock] \equiv \Ltype{(A[\Theta])}$}:]
+\begin{align*}
+&\upstairs{\Ltype{A}[\Theta, \lock]} \\
+&\equiv \upstairs{\Ltype{A}}[\upstairs{\Theta, \lock]}/\beta] \\
+&\equiv (\StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}})[\StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}}/\beta] \\
+&\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}[\upstairs{\Theta}/\alpha]} \\
+&\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}[\upstairs{\Theta}/\alpha]}} \\
+&\equiv \upstairs{\Ltype{(A[\Theta])}}
+\end{align*}
+
+\item[{$\LI{A}[\Theta \uparrow A, \lock] \equiv \LI{A[\Theta]}$}:]
+\begin{align*}
+&\upstairs{\LI{A}[\Theta \uparrow A, \lock]} \\
+&\equiv \upstairs{\LI{A}}[\upstairs{\Theta \uparrow A, \lock}/\delta] \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}[\upstairs{\Theta \uparrow A, \lock}/\delta] \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}[\StE{f}{\delta}{\beta}{\StI{f}{\upstairs{\Theta \uparrow A}}}/\delta] \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}[\upstairs{\Theta \uparrow A} / \beta]} \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}[\upstairs{\Theta \uparrow A} / \beta]}}} \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Delta, A[\Theta]}}}}} \\
+&\equiv \upstairs{\LI{A[\Theta]}}
+\end{align*}
+
+\item[{$\LE{c}[\Theta, \lock \uparrow \Ltype{A}] \equiv \LE{c[\Theta \uparrow A, \lock]}$}:]
+\begin{align*}
+&\upstairs{\LE{c}[\Theta, \lock \uparrow \Ltype{A}]} \\
+&\equiv \upstairs{\LE{c}}[\upstairs{\Theta, \lock \uparrow \Ltype{A}}/\delta] \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}[\upstairs{\Theta, \lock \uparrow \Ltype{A}}/\delta] \\
+&\equiv \StE{\chi}{\upstairs{\Theta, \lock \uparrow \Ltype{A}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}})[\upstairs{\Theta}/\alpha]}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}[\upstairs{\Theta}/\alpha]}/\delta]}})}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\upstairs{\Theta \uparrow A}[\into{\Gamma, A}/\beta]}/\delta]}})}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\upstairs{\Theta \uparrow A, \lock}[\StI{f}{\into{\Gamma, A}}/\delta]/\delta]}})}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\upstairs{\Theta \uparrow A, \lock}/\delta][\StI{f}{\into{\Gamma, A}}/\delta]}})}}} \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c[\Theta \uparrow A, \lock]}[\StI{f}{\into{\Gamma, A}}/\delta]}})}}} \\
+&\equiv \upstairs{\LE{c[\Theta \uparrow A, \lock]}}
+\end{align*}
+\mvrnote{Skipped some steps above that might be worth writing out in general, in particular I think the translation of split for $\Sigma$s could be improved}
+
+\item[{$\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] \equiv c$}:]
+\begin{align*}
+&\upstairs{\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}]} \\
+&\equiv \upstairs{\LE{c}}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}/\delta] \\
+&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}/\delta] \\
+&\equiv \StE{\chi}{\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+&\equiv \StE{\chi}{\rewrite{\eta^\chi_\beta}{\StI{\chi}{\upstairs{\proj{\Gamma, A}, \lock}, \upstairs{\LI{A}}}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{\chi}{\StI{\chi}{\upstairs{\proj{\Gamma, A}, \lock}, \upstairs{\LI{A}}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{\upstairs{\proj{\Gamma, A}, \lock}}{\alpha}{\FE{\upstairs{\LI{A}}}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{(\StE{f}{\delta}{\beta}{\StI{f}{\upstairs{\proj{\Gamma, A}}}})}{\alpha}{\FE{(\StE{f}{\delta}{\beta}{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}})}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{\delta}{\beta}{\StE{f}{\StI{f}{\upstairs{\proj{\Gamma, A}}}}{\alpha}{\FE{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{\delta}{\beta}{\FE{\rewrite{\fone{\beta}}{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}[\upstairs{\proj{\Gamma, A}}/\alpha]}}}} \\ 
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{\delta}{\beta}{\rewrite{\ApOne{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}}{\StI{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}{\FE{\FIs{f_1}{\upstairs{\qvar{\Gamma, A}}}}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}[\upstairs{\proj{\Gamma, A}}/\alpha]}}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\chi_\delta}}{\StI{\eta^\chi_\delta}{\StE{f}{\delta}{\beta}{\rewrite{\ApOne{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}}{\StI{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}{\rewrite{\ApOne{\fdistinv{\beta, \One_\beta}}}{\StI{\fdistinv{\beta,\One_\beta}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]/\delta]}}}}}}}} \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\ApOne{\eta^\chi_{\TrPlus{f}{\beta}}}}{\StI{\eta^\chi_{\TrPlus{f}{\beta}}}{\rewrite{\ApOne{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}}{\StI{(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta})}{\rewrite{\ApOne{\fdistinv{\beta, \One_\beta}}}{\StI{\fdistinv{\beta,\One_\beta}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]/\delta]}}}}}}}} \\
+&\equiv \StE{f}{\delta}{\beta}{\rewrite{\ApOne{\eta^\chi_{\TrPlus{f}{\beta}};(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta});\fdistinv{\beta, \One_\beta}}}{\StI{\eta^\chi_{\TrPlus{f}{\beta}};(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta});\fdistinv{\beta, \One_\beta}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]/\delta]}}}} \\
+&\equiv \StE{f}{\delta}{\beta}{\upstairs{c}[\rewrite{\ApPlus{f}{\eta^\chi_\beta}}{\StI{f}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}/\delta]}} \\
+&\equiv \StE{f}{\delta}{\beta}{\upstairs{c}[\StI{f}{\rewrite{\eta^\chi_\beta}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}/\delta]}} \\
+&\equiv \StE{f}{\delta}{\beta}{\upstairs{c}[\StI{f}{\beta}/\delta]} \\
+&\equiv \upstairs{c}
 \end{align*}
 \end{enumerate}
 
