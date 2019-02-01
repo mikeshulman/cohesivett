@@ -1324,7 +1324,8 @@ And the last follows from the third by:
 &\equiv \eta^\chi_{\alpha.\One_\alpha}
 \end{align*}
 \end{proof}
- 
+
+\iffalse
 \mvrnote{Dan Notes:}
 
 This doesn't necessarily need to go into the final paper, but here are
@@ -1595,6 +1596,7 @@ be defined).
   \]
   
 \end{enumerate}
+\fi
 
 \subsection{Comprehension Object with $\Pi$}
 \newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
@@ -1662,7 +1664,7 @@ A morphism of comprehension objects \emph{supports right adjoint types} if $\fon
 Let $\foneinv{\alpha}$ denote the inverse of $\fone{\alpha}$.
 
 \begin{definition}
-A morphism of comprehension objects $f$ \emph{supports left adjoint types} if 
+A morphism of comprehension objects $f$ \emph{supports left adjoint types} if  $q$ supports the unit type and 
 \begin{align*}
 \fdist{\alpha, x} &: \TrPlus{f}{\alpha.x} \tcell \TrPlus{f}{\alpha}.f_1(x) \\
 \fdist{\alpha, x} &:\equiv \eta^{\chi^q}_{\TrPlus{f}{\alpha.x}} ; (\ApPlus{f}{\pi^\alpha_x} \bdot \fone{\alpha.x};\ap{f_1}{\pi^\alpha_x/\alpha, \var{x}/x})
@@ -1672,7 +1674,7 @@ is an isomorphism.
 Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
 
 \begin{lemma}
-If $f$ supports left adjoint types and $q$ supports unit types, then 
+If $f$ supports left adjoint types, then
 \begin{align*}
 \eta^\chi_{\TrPlus{f}{\beta}};(\id_{\TrPlus{f}{\beta}} \bdot \fone{\beta});\fdistinv{\beta, \One_\beta} \equiv \ApPlus{f}{\eta^\chi_\beta}
 \end{align*}
@@ -1689,6 +1691,27 @@ Follows from
 &\equiv \eta^{\chi^q}_{\TrPlus{f}{\beta}} ; (\id_{\TrPlus{f}{\beta}} ; \fone{\beta})
 \end{align*}
 \end{proof}
+
+\subsection{Spatial Type Theory}
+\newcommand\fcomult[1]{\ensuremath{\mathtt{comult}_{#1}}}
+\newcommand\fcounit[1]{\ensuremath{\mathtt{counit}_{#1}}}
+
+Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad by adding morphisms
+\begin{align*}
+\alpha : p &\yields \fcounit{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \alpha \\
+\alpha : p &\yields \fcomult{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \TrPlus{f}{\TrPlus{f}{\alpha}}
+\end{align*}
+satisfying:
+\begin{align}
+\fcomult{\alpha};\ApPlus{f}{\fcomult{\alpha}} &\equiv \fcomult{\alpha};\fcomult{\TrPlus{f}{\alpha}} \\
+\fcomult{\alpha};\ApPlus{f}{\fcounit{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}} \\
+\fcomult{\alpha};\fcounit{\TrPlus{f}{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}}
+\end{align}
+
+Define:
+\begin{align*}
+\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} \yields \flat_1(x) :\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} : \El{p}{\TrPlus{f}{\alpha}}
+\end{align*}
 
 \section{Object Languages}
 
@@ -2898,6 +2921,59 @@ And the equations:
 \end{align*}
 \end{enumerate}
 
+\subsubsection{Rules for Spatial Type Theory}
+\newcommand{\counit}[1]{\mathsf{counit}_{#1}}
+\newcommand{\Flattype}[1]{\flat{#1}}
+\newcommand{\FlatI}[1]{\mathsf{flat}_{#1}}
+\newcommand{\FlatE}[1]{\mathsf{open}({#1})}
+
+The rules for spatial types are given in Figure~\ref{fig:qit-spatial-rules}.
+
+The last component of the substitution into $C$ needs to be a term of type $\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock]$
+
+Start with $\FlatI{A[\counit{\Gamma}]}$ in context $\Gamma, \lock, A[\counit{\Gamma}]$, this has type:
+\begin{align*}
+\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, \lock, A[\counit{\Gamma}]}]
+\end{align*}
+We want a substitution $\Gamma, A, \lock \qyields \Gamma, \lock, A[\counit{\Gamma}]$. We can get this by
+\begin{align*}
+\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]
+\end{align*}
+So then
+$\FlatI{A[\counit{\Gamma}]}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]]$ indeed has type
+\begin{align*}
+&\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, \lock, A[\counit{\Gamma}]}][\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]] \\
+&\equiv \Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}];\proj{\Gamma, \lock, A[\counit{\Gamma}]}] \\
+&\equiv \Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock]
+\end{align*}
+
+\begin{figure}
+\begin{mathpar}
+%\inferrule*[left=R-form]{\Gamma, \lock \qyields_q A \TYPE}{\Gamma \qyields_p \Rtype{A} \TYPE} \\
+%\inferrule*[left=R-intro]{\Gamma, \lock \qyields_q a : A}{\Gamma \qyields_p \RI{a} : \Rtype{A}} \and
+%\inferrule*[left=R-elim]{\Gamma \qyields_p b : \Rtype{B}}{\Gamma, \lock \qyields_q \RE{b} : B} \\
+\inferrule*[left=counit-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma} \\
+\inferrule*[left=$\flat$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
+\inferrule*[left=$\flat$-intro]{~}{\Gamma, \lock, A \qyields \FlatI{A} : \Flattype{A}[\proj{\Gamma, \lock, A}]} \and
+\inferrule*[left=$\flat$-elim]{\Gamma, A, \lock \qyields c : C[\proj{\Gamma, A}, \lock, \FlatI{A[\counit{\Gamma}]}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]]]}{\Gamma, \lock, \Flattype{(A[\counit{\Gamma}])} \qyields \FlatE{c} : C} \\
+\end{mathpar}
+\begin{align}
+%\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
+%(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
+%\nonumber \\
+%\Rtype{A}[\Theta] &\equiv \Rtype{(A[\Theta, \lock])} \\
+%\RI{a}[\Theta] &\equiv \RI{a[\Theta, \lock]} \\
+%\RE{\RI{a}} &\equiv a \\
+%\RI{\RE{b}} &\equiv b \\
+%\nonumber \\
+%\Ltype{A}[\Theta, \lock] &\equiv \Ltype{(A[\Theta])} \\
+%\LI{A}[\Theta \uparrow A, \lock] &\equiv \LI{A[\Theta]} \\
+%\LE{c}[\Theta, \lock \uparrow \Ltype{A}] &\equiv \LE{c[\Theta \uparrow A, \lock]} \\
+%\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] &\equiv c
+\end{align}
+\caption{Rules for Spatial Type Theory with Explicit Substitutions}\label{fig:qit-spatial-rules}
+\end{figure}
+
 \section{Semantics}
 \label{sec:semantics}
 
@@ -2949,6 +3025,8 @@ In this subsection we will concern ourselves only with the ``downstairs'' mode t
 We work with two universes in the metatheory, leading to two categories of categories denoted $\Cat$ and $\CAT$, such that $\Cat$ is an object of $\CAT$.
 If necessary, we refer to objects of $\Cat$ as \emph{small}, objects of $\CAT$ (including $\Cat$) as \emph{large}, and other categories (such as $\CAT$ itself) as \emph{very large}.
 However, for the most part size issues can be ignored.
+
+
 
 \begin{enumerate}
 \item Categories form a 2-category.
