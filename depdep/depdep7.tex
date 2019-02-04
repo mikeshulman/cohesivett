@@ -1716,7 +1716,8 @@ Define:
 \section{Object Languages}
 
 \subsection{MLTT via Explicit Substitutions}
-\newcommand{\qyields}{\Vdash} \newcommand{\varsof}[1]{{#1}^\dagger}
+\newcommand{\qyields}{\Vdash} 
+\newcommand{\varsof}[1]{{#1}^\dagger}
 \newcommand{\upstairs}[1]{\overline{#1}}
 \newcommand{\downstairs}[1]{\underline{#1}}
 \newcommand{\asdep}[1]{{#1}_p}
@@ -2922,54 +2923,26 @@ And the equations:
 \newcommand{\counit}[1]{\mathsf{counit}_{#1}}
 \newcommand{\Flattype}[1]{\flat{#1}}
 \newcommand{\FlatI}[1]{\mathsf{flat}_{#1}}
-\newcommand{\FlatE}[1]{\mathsf{open}({#1})}
-
-The rules for spatial types are given in Figure~\ref{fig:qit-spatial-rules}.
-
-The last component of the substitution into $C$ needs to be a term of type $\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock]$
-
-Start with $\FlatI{A[\counit{\Gamma}]}$ in context $\Gamma, \lock, A[\counit{\Gamma}]$, this has type:
-\begin{align*}
-\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, \lock, A[\counit{\Gamma}]}]
-\end{align*}
-We want a substitution $\Gamma, A, \lock \qyields \Gamma, \lock, A[\counit{\Gamma}]$. We can get this by
-\begin{align*}
-\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]
-\end{align*}
-So then
-$\FlatI{A[\counit{\Gamma}]}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]]$ indeed has type
-\begin{align*}
-&\Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, \lock, A[\counit{\Gamma}]}][\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]] \\
-&\equiv \Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}];\proj{\Gamma, \lock, A[\counit{\Gamma}]}] \\
-&\equiv \Flattype{(A[\counit{\Gamma}])}[\proj{\Gamma, A}, \lock]
-\end{align*}
+\newcommand{\FlatE}[1]{\mathsf{letflat}({#1})}
+\newcommand{\Sharptype}[1]{\sharp{#1}}
+\newcommand{\SharpI}[1]{{#1}^\sharp}
+\newcommand{\SharpE}[1]{{#1}_\sharp}
 
 \begin{figure}
 \begin{mathpar}
-%\inferrule*[left=R-form]{\Gamma, \lock \qyields_q A \TYPE}{\Gamma \qyields_p \Rtype{A} \TYPE} \\
-%\inferrule*[left=R-intro]{\Gamma, \lock \qyields_q a : A}{\Gamma \qyields_p \RI{a} : \Rtype{A}} \and
-%\inferrule*[left=R-elim]{\Gamma \qyields_p b : \Rtype{B}}{\Gamma, \lock \qyields_q \RE{b} : B} \\
+\inferrule*[left=ctx-$\lock$]{\qyields_p \Gamma \CTX}{\qyields_q \Gamma, \lock \CTX} \and
+\inferrule*[left=sub-$\lock$]{\Gamma \qyields_p \Theta : \Delta}{\Gamma, \lock \qyields_q \Theta, \lock : \Delta, \lock} \\
 \inferrule*[left=counit-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma} \\
-\inferrule*[left=$\flat$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
-\inferrule*[left=$\flat$-intro]{~}{\Gamma, \lock, A \qyields \FlatI{A} : \Flattype{A}[\proj{\Gamma, \lock, A}]} \and
-\inferrule*[left=$\flat$-elim]{\Gamma, A, \lock \qyields c : C[\proj{\Gamma, A}, \lock, \FlatI{A[\counit{\Gamma}]}[\proj{\Gamma, A}, \lock, \qvar{A}[\counit{\Gamma, A}]]]}{\Gamma, \lock, \Flattype{(A[\counit{\Gamma}])} \qyields \FlatE{c} : C} \\
+\inferrule*[left=$\flat$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \and
+\inferrule*[left=$\flat$-intro]{~}{\Gamma, \lock, A, \lock \qyields \FlatI{A} : \Flattype{A}[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]} \and
+\inferrule*[left=$\flat$-elim]{\Gamma, \lock, A, \lock \qyields c : C[(\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \FlatI{A}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
+\inferrule*[left=$\sharp$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma \qyields \Sharptype{A} \TYPE} \\
+\inferrule*[left=$\sharp$-intro]{\Gamma, \lock \qyields a : A}{\Gamma \qyields \SharpI{a} : \Sharptype{A}} \and
+\inferrule*[left=$\sharp$-elim]{\Gamma, \lock \qyields b : \Sharptype{B}}{\Gamma, \lock \qyields \SharpE{b} : B}
 \end{mathpar}
-\begin{align}
-%\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
-%(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
-%\nonumber \\
-%\Rtype{A}[\Theta] &\equiv \Rtype{(A[\Theta, \lock])} \\
-%\RI{a}[\Theta] &\equiv \RI{a[\Theta, \lock]} \\
-%\RE{\RI{a}} &\equiv a \\
-%\RI{\RE{b}} &\equiv b \\
-%\nonumber \\
-%\Ltype{A}[\Theta, \lock] &\equiv \Ltype{(A[\Theta])} \\
-%\LI{A}[\Theta \uparrow A, \lock] &\equiv \LI{A[\Theta]} \\
-%\LE{c}[\Theta, \lock \uparrow \Ltype{A}] &\equiv \LE{c[\Theta \uparrow A, \lock]} \\
-%\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] &\equiv c
-\end{align}
 \caption{Rules for Spatial Type Theory with Explicit Substitutions}\label{fig:qit-spatial-rules}
 \end{figure}
+
 
 \section{Semantics}
 \label{sec:semantics}
