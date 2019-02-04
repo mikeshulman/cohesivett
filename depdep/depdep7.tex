@@ -2934,15 +2934,31 @@ And the equations:
 \inferrule*[left=sub-$\lock$]{\Gamma \qyields_p \Theta : \Delta}{\Gamma, \lock \qyields_q \Theta, \lock : \Delta, \lock} \\
 \inferrule*[left=counit-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma} \\
 \inferrule*[left=$\flat$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \and
-\inferrule*[left=$\flat$-intro]{~}{\Gamma, \lock, A, \lock \qyields \FlatI{A} : \Flattype{A}[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]} \and
-\inferrule*[left=$\flat$-elim]{\Gamma, \lock, A, \lock \qyields c : C[(\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \FlatI{A}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
+\inferrule*[left=$\flat$-intro]{~}{\Gamma, \lock, A, \lock \qyields \FlatI{A} : \Flattype{A}[(\proj{\Gamma, \lock, A};\counit{\Gamma}), \lock]} \and
+\inferrule*[left=$\flat$-elim]{\Gamma, \lock, A, \lock \qyields c : C[(\proj{\Gamma, \lock, A};\counit{\Gamma}), \lock, \FlatI{A}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
 \inferrule*[left=$\sharp$-form]{\Gamma, \lock \qyields A \TYPE}{\Gamma \qyields \Sharptype{A} \TYPE} \\
 \inferrule*[left=$\sharp$-intro]{\Gamma, \lock \qyields a : A}{\Gamma \qyields \SharpI{a} : \Sharptype{A}} \and
 \inferrule*[left=$\sharp$-elim]{\Gamma, \lock \qyields b : \Sharptype{B}}{\Gamma, \lock \qyields \SharpE{b} : B}
 \end{mathpar}
+\begin{align}
+\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
+(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
+\counit{\Gamma}; \Theta &\equiv (\Theta, \lock) ; \counit{\Delta} \\
+\nonumber \\
+(\Flattype{A})[\Theta, \lock] &\equiv \Flattype{(A[\Theta, \lock])} \\
+\FlatI{A}[\Theta, \lock \uparrow A, \lock] &\equiv \FlatI{A[\Theta, \lock]} \\
+\FlatE{c}[\Theta, \lock \uparrow \Flattype{A}] &\equiv \FlatE{c[\Theta, \lock \uparrow A, \lock]} \\
+\FlatE{c}[(\proj{\Gamma, \lock, A};\counit{\Gamma}), \lock, \FlatI{A}] &\equiv c \\
+\nonumber \\
+\Sharptype{A}[\Theta] &\equiv \Sharptype{(A[\Theta, \lock])} \\
+\SharpI{a}[\Theta] &\equiv \SharpI{(a[\Theta, \lock])} \\
+\SharpE{(\SharpI{a}[\counit{\Gamma}])} &\equiv a \\
+\SharpI{(\SharpE{b})}[\counit{\Gamma}] &\equiv b \\
+\intertext{and for idempotent}
+\counit{\Gamma}, \lock &\equiv \counit{\Gamma, \lock}
+\end{align}
 \caption{Rules for Spatial Type Theory with Explicit Substitutions}\label{fig:qit-spatial-rules}
 \end{figure}
-
 
 \section{Semantics}
 \label{sec:semantics}
