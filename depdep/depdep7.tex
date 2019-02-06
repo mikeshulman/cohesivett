@@ -83,7 +83,7 @@
 \newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
 \newcommand\TeleTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
 \newcommand\TermTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
-\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash_{#5} {#2} : #3 \tcell #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash {#2} : #3 \tcell_{#5} #4}}
 %% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
 %\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
@@ -162,7 +162,7 @@ Top judgements:
 \end{itemize}
 
 Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells contravariantly in the mode theory and 
-$\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwo{\gamma}{s}{\mu}{\nu}$
+$\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$
 act \emph{contravariantly} on the subscripts of upstairs terms.
 
 We expect structurality to be admissible for the base, and structurality
@@ -277,8 +277,6 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \qu
 \ap{\TrPlus{s}{\mu}}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
 (\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
 \end{mathpar}
-
-When the context is implicit, we write $\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}$ as $s : \mu \tcell_p \mu'$. 
 
 \item We assume $1/\Sigma$ modes:
 
@@ -400,9 +398,31 @@ Pairing and projection 2-cells are definable:
               { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
 \end{mathpar}
 
-\drlnote{Check usual composition rule for pairing}
 
-
+\begin{lemma}
+For mode term morphisms
+\begin{align*}
+\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
+\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
+\TermTwoT{\gamma &}{s'}{\mu'}{\mu''}{p} \\
+\TermTwoT{\gamma &}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
+\end{align*}
+we have
+\begin{align*}
+(s, t);(s', t') \equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+\end{lemma}
+\begin{proof}
+Follows by
+\begin{align*}
+(s, t);(s', t') 
+&\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'};\ap{(\mu',y)}{t'/y};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, \TrPlus{\ap{q}{s}}{y})}{t'/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, y)}{\ApPlus{\ap{q}{s}}{t'}/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t;\ApPlus{\ap{q}{s}}{t'}/y};\extend{s;s'}{\nu''} \\
+&\equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+\end{proof}
 
 \subsection{Contexts}
 
@@ -572,20 +592,19 @@ Term/type equalities:
 %%\UStI{s}{\UI{x}{M}} &\equiv \UI{x}{M} &\St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
 %%\UI{x}{\UStI{s}{M}} &\equiv \UI{x}{M} &\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
 %\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} &\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
-\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
+\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
 \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
-\label{eqn:stype-subst} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
-\rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] 
+\StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
+\label{eq:stype-subst} \rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] 
 %% other whiskering is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align}
 %Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
 
-In the absence of eta for $\mathsf{F}$-types, we also need to assert
+Due to the lack of the eta rule for $\mathsf{F}$-types, we also need to assert
 \begin{mathpar}
 (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
 \end{mathpar}
-\mvrnote{And the one for types?}
 
 \subsection{Lemmas}
 
@@ -596,6 +615,13 @@ The \textsc{rewrite} rule commutes with pairing of telescope types:
 %(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
 \rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} ) 
 \end{align*}
+where
+\begin{align*}
+\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
+\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
+\Gamma &\yields_{\mu'} M : A \\
+\Gamma &\yields_{\nu'} N : B[M/x]
+\end{align*}
 \end{lemma}
 \begin{proof}
 \begin{align*}
@@ -605,10 +631,12 @@ The \textsc{rewrite} rule commutes with pairing of telescope types:
 &\equiv (\rewrite{\ap{\fst}{(s, t)}}{\fst (M, N)}, \rewrite{\ap{\snd}{(s, t)}}{\StI{\ap{q[\fst z/x]}{(s, t)/z}}{\snd (M, N)}} ) \\
 &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
 \end{align*}
-
-\drlnote{Add ref to equalities being used from second to third line.
-  Also write out the typing for the second half of the pair, to show how
-  the $s$-type moves work.}
+This type checks via Equation~\ref{eq:stype-subst}; in the second component we have
+\begin{align*}
+&\snd \rewrite{(s, t)}{(M, N)} &&: B[\fst\rewrite{(s, t)}{(M, N)}/x] \\
+\equiv~&\snd \rewrite{(s, t)}{(M, N)} &&: B[\rewrite{s}{M}/x] \\
+\equiv~&\rewrite{t}{\StI{\ap{q}{s/x}}{N}} &&: \St{\ap{q}{s/x}}{B[M/x]}
+\end{align*}
 \end{proof}
 
 \begin{lemma} \label{lem:rewrite-push}
@@ -668,7 +696,7 @@ The first two equations for $s$-type follow by the same reasoning as for $\maths
 \end{proof}
 
 \begin{lemma}
-The \textsc{rewrite} rule pushes into types obtained by \textsf{F}- and $s$-elimination:
+The \textsc{rewrite} rule commutes with \textsf{F}- and $s$-elimination into types:
 \begin{align*}
 (\FE{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\FE{M}{x}{C}} \\
 (\StE{t}{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\StE{t}{M}{x}{C}}
@@ -723,81 +751,81 @@ and similarly for the second.
 %\end{align*}
 %\end{proof}
 
+\newcommand{\ctxtuple}[1]{\Sigma^*{#1}}
 \begin{lemma}
-Any context $\Gamma$ can be tupled into a $\Sigma$ type $\Sigma \Gamma$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively to terms $\Gamma \yields \Sigma \Theta : \Sigma \Delta$. \mvrnote{Generalising to telescopes seems doable} 
-\mvrnote{I have been pretty inconsistent with the notation for telescope types through this whole document}
+Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE_{\ctxtuple{\gamma}}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
 \begin{mathpar}
 \inferrule*{\yields_\gamma \Gamma}
-             {\cdot \yields_{\Sigma \gamma} \Sigma \Gamma \TYPE}
+             {\cdot \yields_{\ctxtuple{\gamma}} \ctxtuple{\Gamma} \TYPE}
 \and
 \inferrule*{~}
-             {\sigma : \Sigma \Gamma \yields_{\fan{\gamma}} \fan{\Gamma} : \Gamma}
+             {\sigma : \ctxtuple{\Gamma} \yields_{\fan{\gamma}} \fan{\Gamma} : \Gamma}
 \and
 \inferrule*{\Gamma \yields_\theta \Theta : \Delta}
-             {\Gamma \yields_{\Sigma \theta} \Sigma \Theta : \Sigma \Delta}
+             {\Gamma \yields_{\ctxtuple{\theta}} \ctxtuple{\Theta} : \Sigma \Delta}
 \\
 \inferrule*{\Gamma \yields\Theta : \Delta}
-             {\Gamma \yields \Theta \equiv \fan{\Delta}[\Sigma \Theta / \sigma]}
+             {\Gamma \yields \Theta \equiv \fan{\Delta}[\ctxtuple{\Theta} / \sigma]}
 \and
-\inferrule*{\Gamma \yields a : \Sigma\Delta}
-             {\Gamma \yields a \equiv \Sigma(\fan{\Delta}[a/\sigma])}
+\inferrule*{\Gamma \yields a : \ctxtuple{\Delta}}
+             {\Gamma \yields a \equiv \ctxtuple{(\fan{\Delta}[a/\sigma])}}
 \end{mathpar}
 \end{lemma}
 \begin{proof}
 $\Sigma \Gamma$ is defined inductively by
 \begin{align*}
-\Sigma (\cdot) &:\equiv 1 \\
-\Sigma (\Gamma, x : A) &:\equiv \sum_{\sigma : \Sigma \Gamma} A[\fan{\Gamma}] \\
+\ctxtuple{(\cdot)} &:\equiv 1 \\
+\ctxtuple{(\Gamma, x : A)} &:\equiv \sum_{\sigma : \ctxtuple \Gamma} A[\fan{\Gamma}] \\
 \fan{(\cdot)} &:\equiv \cdot \\
-\fan{\Gamma, x : A} &:\equiv (\fan\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma}
+\fan{\Gamma, x : A} &:\equiv ((\fan\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma})
 \end{align*}
-with each definition lying over the identical one downstairs. For $\Sigma \Theta$ we simultaneously verify the equation $\Theta \equiv \fan{\Delta}[\Sigma \Theta / \sigma]$, as we need it to hold for $(\Sigma \Theta, M)$ to be well typed.
+with each definition lying over the identical one downstairs. For $\ctxtuple \Theta$ we simultaneously verify the equation $\Theta \equiv \fan{\Delta}[\ctxtuple \Theta / \sigma]$, as we need it to hold for $(\ctxtuple \Theta, M)$ to be well typed.
 \begin{align*}
-\Sigma(\cdot) &:\equiv \mt : 1\\
-\Sigma(\Theta, M : A) &:\equiv (\Sigma \Theta, M) : \sum_{\sigma : \Sigma \Delta} A[\fan{\Delta}] \\
+\ctxtuple(\cdot) &:\equiv \mt : 1\\
+\ctxtuple(\Theta, M : A) &:\equiv (\ctxtuple \Theta, M) : \sum_{\sigma : \ctxtuple \Delta} A[\fan{\Delta}] \\
 (\cdot)[()/\sigma]  &\equiv (\cdot) \\
-\fan{\Delta, x : A}[\Sigma(\Theta, M : A)/\sigma] &\equiv ((\fan{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\Sigma \Theta, M)/\sigma] \\
-&\equiv (\fan{\Delta}[\Sigma \Theta/\sigma]), M \\
+\fan{\Delta, x : A}[\ctxtuple{(\Theta, M : A)}/\sigma] &\equiv ((\fan{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\ctxtuple \Theta, M)/\sigma] \\
+&\equiv (\fan{\Delta}[\ctxtuple \Theta/\sigma]), M \\
 &\equiv \Theta, M
 \end{align*}
 For the second equation, we check inductively that
 \begin{align*}
-\Sigma(\fan{(\cdot)}[a/\sigma]) 
-&\equiv \Sigma(\cdot[a/\sigma]) \\
-&\equiv \Sigma(\cdot) \\
+\ctxtuple{(\fan{(\cdot)}[a/\sigma])}
+&\equiv \ctxtuple{(\cdot[a/\sigma])} \\
+&\equiv \ctxtuple{(\cdot)} \\
 &\equiv () \\
 &\equiv a \\
-\Sigma(\fan{\Delta, x : A}[a/\sigma]) 
-&\equiv \Sigma((\fan{\Delta}[\fst \sigma/\sigma], \snd \sigma)[a/\sigma]) \\
-&\equiv \Sigma(\fan{\Delta}[\fst a/\sigma], \snd a) \\
-&\equiv \Sigma(\fan{\Delta}[\fst a/\sigma]), \snd a \\
-&\equiv \fst a, \snd a \\
+\ctxtuple{(\fan{\Delta, x : A}[a/\sigma])}
+&\equiv \ctxtuple{((\fan{\Delta}[\fst \sigma/\sigma], \snd \sigma)[a/\sigma])} \\
+&\equiv \ctxtuple{(\fan{\Delta}[\fst a/\sigma], \snd a)} \\
+&\equiv \ctxtuple{(\fan{\Delta}[\fst a/\sigma]), \snd a} \\
+&\equiv (\fst a, \snd a) \\
 &\equiv a
 \end{align*}
 \end{proof}
 
 \begin{lemma}
 Tupling respects substitution: for $\gamma \yields \theta : \delta$ and $\delta \yields \kappa : \lambda$, we have:
-\begin{mathpar}
-\Sigma(\kappa[\theta]) \equiv (\Sigma \kappa)[\theta]
-\end{mathpar}
+\begin{align*}
+\ctxtuple{(\kappa[\theta])} &\equiv (\ctxtuple{\kappa})[\theta]
+\end{align*}
 \end{lemma}
 \begin{proof}
 By induction on the length of $\lambda$:
 \begin{align*}
-\Sigma((\cdot)[\theta]) 
-&\equiv \Sigma(\cdot) \\
-&\equiv (\Sigma (\cdot))[\theta] \\
-\Sigma((\kappa, M)[\theta])
-&\equiv \Sigma(\kappa[\theta], M[\theta]) \\
-&\equiv \Sigma(\kappa[\theta]), M[\theta] \\
-&\equiv (\Sigma\kappa)[\theta], M[\theta] \\
-&\equiv (\Sigma\kappa, M)[\theta]
+\ctxtuple{((\cdot)[\theta])}
+&\equiv \ctxtuple{(\cdot)} \\
+&\equiv (\ctxtuple{(\cdot)})[\theta] \\
+\ctxtuple{((\kappa, M)[\theta])}
+&\equiv \ctxtuple{(\kappa[\theta], M[\theta])} \\
+&\equiv \ctxtuple{(\kappa[\theta]), M[\theta]} \\
+&\equiv (\ctxtuple \kappa)[\theta], M[\theta] \\
+&\equiv (\ctxtuple\kappa, M)[\theta]
 \end{align*}
 \end{proof}
 
 \begin{definition}
-A 2-cell between mode substitutions $\gamma \yields t : \theta \tcell \theta' $ is given by a mode term 2-cell \[\gamma \yields_{\Sigma \delta} \Sigma t : \Sigma \theta \tcell \Sigma \theta' \].
+A 2-cell between mode substitutions $\gamma \yields t : \theta \tcell \theta' $ is given by a mode term 2-cell \[\gamma \yields_{\ctxtuple \delta} \ctxtuple t : \ctxtuple \theta \tcell \ctxtuple \theta' \].
 \end{definition}
 
 \begin{lemma}\label{lem:n-ary-ap-rewrite}
@@ -822,45 +850,61 @@ N-ary ap and rewrite are admissible:
 \begin{proof}
 These are
 \begin{align*}
-\ap {q} {t} &:\equiv \ap{q[\fan{\delta}]}{\Sigma t/\sigma} \\
-\ap {\nu} {t} &:\equiv \ap{\nu[\fan{\delta}]}{\Sigma t/\sigma} \\
-\rewrite{t}{\Theta} &:\equiv \fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]
+\ap {q} {t} &:\equiv \ap{q[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+\ap {\nu} {t} &:\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+\rewrite{t}{\Theta} &:\equiv \fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]
 \end{align*}
-which are well-typed by the equation $\theta \equiv \fan{\delta}[\Sigma \theta / \sigma]$.
+which are well-typed by the equation $\theta \equiv \fan{\delta}[\ctxtuple \theta / \sigma]$.
 \end{proof}
 
 In particular, we have the following rules for building and using 2-cells between substitutions.
 \begin{mathpar}
-\inferrule{\gamma \yields t : \theta \tcell \theta' \and \gamma \yields s : \mu[\theta] \tcell \TrPlus{\ap{p}{t}}{\mu'[\theta']}}
-{ \gamma \yields (s, t) : (\theta, \mu) \tcell (\theta', \mu') : (\delta,x:p)} \\
+\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \gamma \yields s : \mu[\theta] \tcell \TrPlus{\ap{p}{t}}{\mu'[\theta']}}
+{ \gamma \yields (s, t) : (\theta, \mu) \tcell_{(\delta,x:p)} (\theta', \mu')} \\
 %
-\inferrule{\gamma \yields t : ((\theta, \mu) \tcell (\theta', \mu')) : (\delta, x : p)}
-{\gamma \yields \ap{\fst}{t} : \theta \tcell \theta' } \and
+\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
+{\gamma \yields \ap{\fst}{t} : \theta \tcell_\delta \theta' } \and
 %
-\inferrule{\gamma \yields t : ((\theta, \mu) \tcell (\theta', \mu')) : (\delta, x : p)}
+\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
 {\gamma \yields \ap{\snd}{t} : (\mu[\theta] \tcell \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']})}
 \end{mathpar}%
 
 \begin{lemma}
 N-ary ap of a 2-cell on a substitution is admissible
 \begin{mathpar}
-\inferrule{\gamma \yields t : \theta \tcell \theta' \and \delta \yields \kappa : \lambda}
-{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell \kappa[\theta'] : \lambda}
+\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \delta \yields \kappa : \lambda}
+{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell_\lambda \kappa[\theta']}
 \end{mathpar} 
 \end{lemma}
 \begin{proof}
-Due to the equation $\Sigma(\kappa[\theta]) \equiv (\Sigma \kappa)[\theta]$ we can just define $\Sigma(\ap{\kappa}{t}) :\equiv \ap{(\Sigma \kappa)}{t}$.
+Due to the equation $\ctxtuple(\kappa[\theta]) \equiv (\ctxtuple \kappa)[\theta]$ we can just define $\ctxtuple{(\ap{\kappa}{t})} :\equiv \ap{(\ctxtuple \kappa)}{t}$.
 \end{proof}
 
 \begin{lemma}
-N-ary associativity/interchange/etc. holds
+N-ary associativity and interchange hold:
 \begin{align*}
 \ap {(\nu[\theta])} {t} &\equiv \ap \nu {\ap \theta {t}} \\
 s[\theta];\ap{\nu'}{t} &\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
 \end{align*}
 \end{lemma}
 \begin{proof}
-\mvrnote{todo}
+Unwinding definitions we find:
+\begin{align*}
+\ap {(\nu[\theta])} {t}
+&\equiv \ap{\nu[\theta][\fan{\delta}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}][\ctxtuple \theta / \sigma][\fan{\gamma}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ap{\ctxtuple \theta[\fan{\gamma}]}{\ctxtuple t/\sigma}/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ap{(\ctxtuple \theta)}{t}/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple{(\ap \theta {t})}/\sigma} \\
+&\equiv \ap \nu {\ap \theta {t}}
+\end{align*}
+and
+\begin{align*}
+s[\theta];\ap{\nu'}{t} 
+&\equiv s[\theta];\ap{\nu'[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} ; \ApPlus{(\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma})}{s[\theta']} \\
+&\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+\end{align*}
 \end{proof}
 
 \begin{lemma}
@@ -874,26 +918,26 @@ A N-ary versions of the equations concerning rewrites hold:
 \begin{proof}
 \begin{align*}
 B[\rewrite{t}{\Theta}] 
-&\equiv B[\fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
-&\equiv B[\fan{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
-&\equiv \St{\ap{q[\fan{\delta}]}{\Sigma t / \sigma}}{B[\fan{\Delta}][\Sigma \Theta/\sigma]} \\
+&\equiv B[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+&\equiv B[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+&\equiv \St{\ap{q[\fan{\delta}]}{\ctxtuple t / \sigma}}{B[\fan{\Delta}][\ctxtuple \Theta/\sigma]} \\
 &\equiv \St{\ap{q}{t}}{B[\Theta]}
 \end{align*}
 And:
 \begin{align*}
 N[\rewrite{t}{\Theta}]
-&\equiv N[\fan{\Delta}[\rewrite{\Sigma t}{\Sigma \Theta}/\sigma]] \\
-&\equiv N[\fan{\Delta}][\rewrite{\Sigma t}{\Sigma \Theta}/\sigma] \\
-&\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\Sigma t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\Sigma t/\sigma}}{N[\fan{\Delta}][\Sigma \Theta/\sigma]}} \\
+&\equiv N[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+&\equiv N[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+&\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma}}{N[\fan{\Delta}][\ctxtuple \Theta/\sigma]}} \\
 &\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
 \end{align*}
 And:
 \begin{align*}
 \rewrite{\ap{\kappa}{t}}{\Theta;\kappa}
-&\equiv \fan{\Lambda}[\rewrite{\Sigma(\ap{\kappa}{t})}{\Sigma (\Theta;\kappa)}/\sigma] \\
-&\equiv \fan{\Lambda}[\rewrite{\ap{(\Sigma \kappa)}{t}}{(\Sigma \kappa)[\Theta]}/\sigma] \\
-&\equiv \fan{\Lambda}[(\Sigma \kappa)[\rewrite{t}{\Theta}]/\sigma] \\
-&\equiv \fan{\Lambda}[(\Sigma \kappa)/\sigma][\rewrite{t}{\Theta}] \\
+&\equiv \fan{\Lambda}[\rewrite{\ctxtuple{(\ap{\kappa}{t})}}{\ctxtuple {(\Theta;\kappa)}}/\sigma] \\
+&\equiv \fan{\Lambda}[\rewrite{\ap{(\ctxtuple \kappa)}{t}}{(\ctxtuple \kappa)[\Theta]}/\sigma] \\
+&\equiv \fan{\Lambda}[(\ctxtuple \kappa)[\rewrite{t}{\Theta}]/\sigma] \\
+&\equiv \fan{\Lambda}[(\ctxtuple \kappa)/\sigma][\rewrite{t}{\Theta}] \\
 &\equiv \kappa[\rewrite{t}{\Theta}] \\
 &\equiv \rewrite{t}{\Theta};\kappa
 \end{align*}
@@ -910,10 +954,10 @@ Rewriting by a tuple is a tuple of rewritings:
 Unwinding definitions:
 \begin{align*}
 \rewrite{(t, s/x)}{\Theta, M/x}
-&\equiv \fan{\Delta, x : A}[\rewrite{\Sigma (t, s/x)}{\Sigma (\Theta, M/x)}/\sigma] \\
-&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[\rewrite{(\Sigma t, s)}{\Sigma\Theta, M}/\sigma] \\
-&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[(\rewrite{\Sigma t}{\Sigma\Theta}, \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\Sigma t/\sigma}}{N}})/\sigma] \\
-&\equiv (\fan\Delta[\rewrite{\Sigma t}{\Sigma\Theta}/\sigma], \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\Sigma t/\sigma}}{N}}) \\
+&\equiv \fan{\Delta, x : A}[\rewrite{\ctxtuple{(t, s/x)}}{\ctxtuple{(\Theta, M/x)}}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[\rewrite{(\ctxtuple t, s)}{\ctxtuple\Theta, M}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[(\rewrite{\ctxtuple t}{\ctxtuple\Theta}, \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}})/\sigma] \\
+&\equiv (\fan\Delta[\rewrite{\ctxtuple t}{\ctxtuple\Theta}/\sigma], \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}}) \\
 &\equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
 \end{align*}
 \end{proof}
@@ -2795,7 +2839,7 @@ So we can form
 {\beta : \upstairs{\Gamma, \lock} \yields_{\El{q}{\beta}} \upstairs{\Ltype{A}} :\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}} \TYPE}
 \end{mathpar}
 
-\item[\textsc{L-intro}] Our goal is a term in context $\delta : \upstairs{\Gamma, A, \lock}$ of type:
+\item[\textsc{L-intro}] Our goal is a term in context $\delta : \upstairs{\Gamma, A, \lock}$ of type: \mvrnote{We can do this easier by first using $\Ltype{A}[\proj{\Gamma, A}, \lock] \equiv \Ltype{(A[\proj{\Gamma, A}])}$, oops}
 \begin{align*}
 &\upstairs{\Ltype{A}[\proj{\Gamma, A}, \lock]} \\
 &\equiv \upstairs{\Ltype{A}}[\upstairs{\proj{\Gamma, A}, \lock}/\beta] \\
