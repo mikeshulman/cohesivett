@@ -1752,11 +1752,6 @@ satisfying:
 \fcomult{\alpha};\fcounit{\TrPlus{f}{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}}
 \end{align}
 
-Define:
-\begin{align*}
-\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} \yields \flat_1(x) :\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} : \El{p}{\TrPlus{f}{\alpha}}
-\end{align*}
-
 \section{Object Languages}
 
 \subsection{MLTT via Explicit Substitutions}
@@ -2664,7 +2659,7 @@ again using Lemma~\ref{lem:into-identities}.
 \end{enumerate}
 
 \subsubsection{Rules for Dependent Adjoints}
-\newcommand{\lock}{\mbox{\faUnlock}}
+\newcommand{\lock}{\text{\faUnlock}}
 \newcommand{\Rtype}[1]{\mathsf{R}{#1}}
 \newcommand{\RI}[1]{\mathsf{shut}({#1})}
 \newcommand{\RE}[1]{\mathsf{open}({#1})}
@@ -3004,10 +2999,12 @@ And the equations:
 \newcommand{\SharpI}[1]{{#1}^\sharp}
 \newcommand{\SharpE}[1]{{#1}_\sharp}
 
+\newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
+
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=counit-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma} \and
-\inferrule*[left=comult-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma, \lock, \lock}
+\inferrule*[left=comult-$\lock$]{~}{\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock}
 \end{mathpar}
 \begin{align}
 \counit{\Gamma}; \Theta &\equiv (\Theta, \lock) ; \counit{\Delta} \\
@@ -3042,26 +3039,30 @@ The equations follow quickly from the analogous properties in the mode theory, f
 &\equiv \upstairs{\id_{\Gamma, \lock}}
 \end{align*}
 
-We now sketch a translation of the rules appearing in Shulman \mvrnote{TODO: ref} into our algebraic presentation. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Gamma \mid \cdot$ always ends with a $\lock$. In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and its equivalent in the algebraic style.
+We now sketch a translation of the rules appearing in Shulman \mvrnote{TODO: ref} into our algebraic presentation. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Delta \mid \cdot$ always ends with a $\lock$. 
+
+In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and its equivalent in the algebraic style. A number of spatial type theory rules build in cuts or weakenings; as both are explicit in CwF style we leave these out. In $\sharp$ formation and introduction, we demonstrate how a type in the cohesive context is moved by the rule into the crisp context. The case of a general cohesive context would need a more careful inductive argument.
 
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=crisp-var]{~}{\Delta, x :: A \mid \cdot \yields x : A} \and
-\inferrule*{~}{\Gamma, \lock, A, \lock \qyields \textsf{crisp-var}_A : A[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}] } \\
+\inferrule*{~}{\Gamma, \lock, A, \lock \qyields \qcrispvar{A} : A[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}] } \\
+\inferrule*[left=crisp-ctx-ext]{\Delta \mid \cdot \yields A \TYPE}{\yields \Delta, A \mid \cdot \CTX} \and
+\inferrule*{\Gamma, \lock \qyields A \TYPE}{\qyields \Gamma, \lock, A, \lock \CTX} \\
 \inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \quad
 \inferrule*{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A, \lock} \\
 \inferrule*[left=$\flat$-form]{\Delta \mid \cdot \yields A \TYPE}{\Delta \mid \cdot \yields \Flattype{A} \TYPE} \and
 \inferrule*{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
 \inferrule*[left=$\flat$-intro]{\Delta \mid \cdot \yields a : A}{\Delta \mid \cdot \yields \FlatI{a} : \Flattype{A}} \and
-\inferrule*{\Gamma, \lock \qyields a : A \TYPE}{\Gamma, \lock \qyields \FlatI{a} : \Flattype{A} \TYPE} \\
+\inferrule*{\Gamma, \lock \qyields a : A}{\Gamma, \lock \qyields \FlatI{a} : \Flattype{A}} \\
 \inferrule*[left=$\flat$-elim]{\Delta, u :: A \mid \cdot \yields c : C[\FlatI{u}/x]}{\Delta \mid x : \Flattype{A} \yields \FlatE{c} : C} \quad
-\inferrule*{\Gamma, \lock, A, \lock \qyields c : C[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}, \FlatI{\qvar{\Gamma, \lock, A}}[\counit{\Gamma, \lock, A}]]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
+\inferrule*{\Gamma, \lock, A, \lock \qyields c : C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \FlatI{\qcrispvar{A}}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
 \inferrule*[left=$\sharp$-form]{\Delta, x :: B \mid \cdot \yields A \TYPE}{\Delta \mid x : B \yields \Sharptype{A} \TYPE} \and
 \inferrule*{\Gamma, \lock, B, \lock \qyields A \TYPE}{\Gamma, \lock, B \qyields \Sharptype{A} \TYPE} \\
 \inferrule*[left=$\sharp$-intro]{\Delta, x :: B \mid \cdot \yields a : A}{\Delta \mid x : B \yields \SharpI{a} : \Sharptype{A}} \and
 \inferrule*{\Gamma, \lock, B, \lock \qyields a : A}{\Gamma, \lock, B \qyields \SharpI{a} : \Sharptype{A}} \\
-\inferrule*[left=$\sharp$-elim]{\Delta \mid \cdot \yields b : \Sharptype{B}}{\Delta \mid \cdot \yields \SharpE{b} : B} \and
-\inferrule*{\Gamma, \lock \qyields b : \Sharptype{B}}{\Gamma, \lock \qyields \SharpE{b} : B}
+\inferrule*[left=$\sharp$-elim]{\Delta \mid \cdot \yields a : \Sharptype{A}}{\Delta \mid \cdot \yields \SharpE{a} : A} \and
+\inferrule*{\Gamma, \lock \qyields a : \Sharptype{A}}{\Gamma, \lock \qyields \SharpE{a} : A}
 \end{mathpar}
 %\begin{align}
 %\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
@@ -3082,6 +3083,105 @@ We now sketch a translation of the rules appearing in Shulman \mvrnote{TODO: ref
 %\end{align}
 \caption{Spatial type theory rules and their algebraic equivalent}\label{fig:qit-spatial-rules}
 \end{figure}
+
+\begin{proposition}
+The rules on the right are all derivable in the algebraic syntax.
+\end{proposition}
+
+\begin{enumerate}
+\item[\textsc{crisp-var}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=var]{~}
+{\Gamma, \lock, A \qyields \qvar{A} : A[\proj{\Gamma, \lock, A}]}}
+{\Gamma, \lock, A, \lock \qyields \qvar{A}[\counit{\Gamma, \lock, A}] : A[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]}
+\end{mathpar}
+\mvrnote{Interesting, there does not seem to be a way to write a version of this that uses the other map $\Gamma, \lock, \lock \yields \Gamma, \lock$.}
+
+\item[\textsc{crisp-sub-ext}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=sub-$\lock$]{
+\inferrule*[Left=sub-ext]{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A}}
+{\Gamma, \lock, \lock \qyields (\Theta, a, \lock) : \Gamma', \lock, A, \lock}}
+{\Gamma, \lock \qyields \comult{\Gamma};(\Theta, a, \lock) : \Gamma', \lock, A, \lock}
+\end{mathpar}
+
+\item[\textsc{$\flat$-form}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=$\Ltype{}$-form]
+{\Gamma, \lock \qyields A \TYPE}
+{\Gamma, \lock, \lock \qyields \Ltype{A} \TYPE}}
+{\Gamma, \lock \qyields \Ltype{A}[\comult{\Gamma}] \TYPE}
+\end{mathpar}
+
+\item[\textsc{$\flat$-intro}]
+\begin{mathpar}
+\inferrule*[Left=cut]
+{
+\inferrule*[Left=crisp-sub-ext]{\Gamma, \lock \qyields a : A}{\Gamma, \lock \qyields \comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock) : \Gamma, \lock, A, \lock }
+\and \inferrule*[left=L-intro]{~}{\Gamma, \lock, A, \lock \qyields \LI{A} : \Ltype{A}[\proj{\Gamma, \lock, A}, \lock]}}
+{\Gamma, \lock \qyields \LI{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock)] : \Ltype{A}[\proj{\Gamma, \lock, A}, \lock][\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock)]}
+\end{mathpar}
+and we see that this is of the right type:
+\begin{align*}
+&\Ltype{A}[\proj{\Gamma, \lock, A}, \lock][\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock);] \\
+&\equiv \Ltype{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock);(\proj{\Gamma, \lock, A}, \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma};((\id_{\Gamma, \lock}, a;\proj{\Gamma, \lock, A}), \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma}]
+\end{align*}
+
+\item[\textsc{$\flat$-elim}]
+Using the above derivations, $\FlatI{\qcrispvar{A}}$ becomes:
+\begin{align*}
+&\FlatI{\qcrispvar{A}} \\
+&\equiv \LI{A[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]}[\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[(\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A, \lock][\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock);((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A});((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A), \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \qvar{A}[\counit{\Gamma, \lock, A}], \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\counit{\Gamma, \lock, A};(\proj{\Gamma, \lock, A}, \qvar{A}), \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\counit{\Gamma, \lock, A}, \lock)] \\
+&\equiv \LI{A}
+\end{align*}
+We can use idempotence now to show:
+\begin{align*}
+&C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \FlatI{\qcrispvar{A}}] \\
+&\equiv C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \LI{A}] \\
+&\equiv C[( (\proj{\Gamma, \lock, A}, \lock) ; \counit{\Gamma, \lock}), \LI{A}] \\
+&\equiv C[(\proj{\Gamma, \lock, A}, \lock, \LI{A});((\proj{\Gamma, \lock, \lock, \Ltype{A}}; \counit{\Gamma, \lock}) , \qvar{\Gamma,\lock,\lock, \Ltype{A}})] \\
+&\equiv C[(\proj{\Gamma, \lock, A}, \lock, \LI{A});(\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}])] \\
+&\equiv C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\proj{\Gamma, \lock, A}, \lock, \LI{A}]
+\end{align*}
+Where idempotence shows that $\Ltype{A}[\comult{\Gamma}][\counit{\Gamma, \lock}] \equiv \Ltype{A}$.
+So we can apply $\mathsf{L}$-elim immediately:
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=L-elim]
+{\Gamma, \lock, A, \lock \qyields c : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\proj{\Gamma, \lock, A}, \lock, \LI{A}]}
+{\Gamma, \lock, \lock, \Ltype{A} \qyields \LE{c} : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]]}}
+{\Gamma, \lock, \Ltype{A} \qyields \LE{c}[\comult{\Gamma} \uparrow \Ltype{A}] : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}]}
+\end{mathpar}
+and one of the triangle equations gives that
+\begin{align*}
+C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}] \equiv C
+\end{align*}
+
+\item[\textsc{$\sharp$-form/$\sharp$-intro}] These are identical to $\Rtype{}$-formation and introduction.
+
+\item[\textsc{$\sharp$-elim}] For this we use the comultiplication:
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=R-elim]
+{\Gamma, \lock \qyields b : \Sharptype{B}}
+{\Gamma, \lock, \lock \qyields \SharpE{b} : B}}
+{\Gamma, \lock \qyields \SharpE{b}[\comult{\Gamma}] : B[\comult{\Gamma}]}
+\end{mathpar}
+\mvrnote{$B$ is not the same as $B[\comult{\Gamma}]$, we need to use the counit to put a $\lock$ on in formation/introduction}
+\end{enumerate}
 
 %\begin{lemma}
 %If $f$ is an idempotent comonad on $p$ then
