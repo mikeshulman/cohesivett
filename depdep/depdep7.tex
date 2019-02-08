@@ -3046,20 +3046,20 @@ In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and 
 \inferrule*{~}{\Gamma, \lock, A, \lock \qyields \qcrispvar{A} : A[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}] } \\
 \inferrule*[left=crisp-ctx-ext]{\Delta \mid \cdot \yields A \TYPE}{\yields \Delta, A \mid \cdot \CTX} \and
 \inferrule*{\Gamma, \lock \qyields A \TYPE}{\qyields \Gamma, \lock, A, \lock \CTX} \\
-\inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \quad
+\inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \and
 \inferrule*{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A, \lock} \\
 \inferrule*[left=$\flat$-form]{\Delta \mid \cdot \yields A \TYPE}{\Delta \mid \cdot \yields \Flattype{A} \TYPE} \and
 \inferrule*{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
 \inferrule*[left=$\flat$-intro]{\Delta \mid \cdot \yields a : A}{\Delta \mid \cdot \yields \FlatI{a} : \Flattype{A}} \and
 \inferrule*{\Gamma, \lock \qyields a : A}{\Gamma, \lock \qyields \FlatI{a} : \Flattype{A}} \\
-\inferrule*[left=$\flat$-elim]{\Delta, u :: A \mid \cdot \yields c : C[\FlatI{u}/x]}{\Delta \mid x : \Flattype{A} \yields \FlatE{c} : C} \quad
+\inferrule*[left=$\flat$-elim]{\Delta, u :: A \mid \cdot \yields c : C[\FlatI{u}/x]}{\Delta \mid x : \Flattype{A} \yields \FlatE{c} : C} \and
 \inferrule*{\Gamma, \lock, A, \lock \qyields c : C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \FlatI{\qcrispvar{A}}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
 \inferrule*[left=$\sharp$-form]{\Delta, x :: B \mid \cdot \yields A \TYPE}{\Delta \mid x : B \yields \Sharptype{A} \TYPE} \and
 \inferrule*{\Gamma, \lock, B, \lock \qyields A \TYPE}{\Gamma, \lock, B \qyields \Sharptype{A} \TYPE} \\
 \inferrule*[left=$\sharp$-intro]{\Delta, x :: B \mid \cdot \yields a : A}{\Delta \mid x : B \yields \SharpI{a} : \Sharptype{A}} \and
 \inferrule*{\Gamma, \lock, B, \lock \qyields a : A}{\Gamma, \lock, B \qyields \SharpI{a} : \Sharptype{A}} \\
 \inferrule*[left=$\sharp$-elim]{\Delta \mid \cdot \yields a : \Sharptype{A}}{\Delta \mid \cdot \yields \SharpE{a} : A} \and
-\inferrule*{\Gamma, \lock \qyields a : \Sharptype{A}}{\Gamma, \lock \qyields \SharpE{a} : A}
+\inferrule*{\Gamma, \lock, B, \lock \qyields a : \Sharptype{A}[\counit{\Gamma, \lock, B}]}{\Gamma, \lock, B, \lock \qyields \SharpE{a} : A}
 \end{mathpar}
 %\begin{align}
 %\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
@@ -3160,7 +3160,7 @@ So we can apply $\mathsf{L}$-elim immediately:
 \inferrule*[Left=L-elim]
 {\Gamma, \lock, A, \lock \qyields c : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\proj{\Gamma, \lock, A}, \lock, \LI{A}]}
 {\Gamma, \lock, \lock, \Ltype{A} \qyields \LE{c} : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]]}}
-{\Gamma, \lock, \Ltype{A} \qyields \LE{c}[\comult{\Gamma} \uparrow \Ltype{A}] : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}]}
+{\Gamma, \lock, \Ltype{A}[\comult{\Gamma}] \qyields \LE{c}[\comult{\Gamma} \uparrow \Ltype{A}] : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}]}
 \end{mathpar}
 and one of the triangle equations gives that
 \begin{align*}
@@ -3169,15 +3169,20 @@ C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \u
 
 \item[\textsc{$\sharp$-form/$\sharp$-intro}] These are identical to $\Rtype{}$-formation and introduction.
 
-\item[\textsc{$\sharp$-elim}] For this we use the comultiplication:
+\item[\textsc{$\sharp$-elim}] Note that $\Sharptype{A}[\counit{\Gamma, \lock, B}] \equiv \Sharptype{A[\counit{\Gamma, \lock, B}, \lock]}$. We can then do:
 \begin{mathpar}
 \inferrule*[Left=cut]{
 \inferrule*[Left=R-elim]
-{\Gamma, \lock \qyields b : \Sharptype{B}}
-{\Gamma, \lock, \lock \qyields \SharpE{b} : B}}
-{\Gamma, \lock \qyields \SharpE{b}[\comult{\Gamma}] : B[\comult{\Gamma}]}
+{\Gamma, \lock, B, \lock \qyields a : \Sharptype{A[\counit{\Gamma, \lock, B}, \lock]}}
+{\Gamma, \lock, B, \lock, \lock \qyields \SharpE{a} : A[\counit{\Gamma, \lock, B}, \lock]}}
+{\Gamma, \lock, B, \lock \qyields \SharpE{a}[\comult{\Gamma, \lock, B}] : A[\counit{\Gamma, \lock, B}, \lock][\comult{\Gamma, \lock, B}]}
 \end{mathpar}
-\mvrnote{$B$ is not the same as $B[\comult{\Gamma}]$, we need to use the counit to put a $\lock$ on in formation/introduction}
+and
+\begin{align*}
+&A[\counit{\Gamma, \lock, B}, \lock][\comult{\Gamma, \lock, B}] \\
+&\equiv A[\comult{\Gamma, \lock, B};(\counit{\Gamma, \lock, B}, \lock)] \\
+&\equiv A
+\end{align*}
 \end{enumerate}
 
 %\begin{lemma}
