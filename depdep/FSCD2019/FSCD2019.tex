@@ -1,0 +1,236 @@
+
+\documentclass[UKenglish,letterpaper,cleveref,autoref]{lipics-v2019}
+%This is a template for producing LIPIcs articles. 
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+
+  \usepackage{xcolor}
+  \definecolor{darkgreen}{rgb}{0,0.45,0} 
+  %% \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+  %% \usepackage{pdflscape}
+
+\usepackage{amssymb,amsthm,bbm}
+\usepackage{amsmath}
+%% \usepackage[mathscr]{euscript}
+\usepackage{dsfont}
+ \usepackage{fontawesome}
+ \usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+
+%% \newtheorem{theorem}{Theorem}
+%% \newtheorem{proposition}{Proposition}
+%% \newtheorem{lemma}{Lemma}
+%% \newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newenvironment{constr}{\begin{proof}[Construction]}{\end{proof}}
+
+\theoremstyle{definition}
+%% \newtheorem{definition}{Definition}
+%% \newtheorem{remark}{Remark}
+%% \newtheorem{example}{Example}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+\newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\Yields}{\tcell}
+\newcommand{\tcell}{\Rightarrow}
+\newcommand{\cbar}{\, | \,}
+\newcommand{\judge}{\mathcal{J}}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\ctx}{\,\,\mathsf{mctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\type}{\,\,\mathsf{mode}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+\newcommand{\tele}{\,\,\mathsf{mtele}}
+
+\newcommand{\app}[2]{\ensuremath{#1 \: #2}}
+\newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\mt}[0]{\ensuremath{()}}
+\newcommand{\sigmacl}[3]{\ensuremath{\textnormal{$\Sigma$}\,#1{:}#2.\,#3}}
+\newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
+\newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
+\newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
+
+\newcommand\fan[1]{\ensuremath{\mathsf{fan}_{#1}}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand{\rewrite}[2]{\overleftarrow{#1}(#2)}
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}_{#1}(#2)}}
+\newcommand\UStI[2]{\ensuremath{\mathsf{ust}_{#1}(#2)}}
+\newcommand\UnSt[2]{\ensuremath{\mathsf{unst}_{#1}(#2)}}
+%\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#1}{#3} \, = \, {#2} \, \mathsf{in} \, #4}}
+\newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
+% With subscript:
+\newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\FIs[2]{\ensuremath{\mathsf{F}_{#1}{(#2)}}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash {#2} : #3 \tcell_{#5} #4}}
+%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
+%\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
+\newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
+
+\newcommand\El[2]{\mathcal{T}_{#1}(#2)}
+\newcommand\ApEl[2]{\mathcal{T}_{#1}\langle#2\rangle}
+\newcommand\bdot[0]{\mathbin{.}}
+\newcommand\bang[0]{\mathord{!}}
+
+\newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+\newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
+\newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
+
+% Macros for semantics notation
+\newcommand\mm[1]{\llbracket #1 \rrbracket}
+\newcommand\op{^{\mathrm{op}}}
+\newcommand\co{^{\mathrm{co}}}
+\newcommand\coop{^{\mathrm{coop}}}
+\newcommand\Cat{\mathrm{Cat}}
+\newcommand\CAT{\mathrm{CAT}}
+\newcommand\M{\mathcal{M}}
+\newcommand\Mhat{\widehat{\mathcal{M}}}
+\newcommand\Mty{{\mathrm{Ty}_{\M}}}
+\newcommand\Mtm{{\mathrm{Tm}_{\M}}}
+\newcommand\Mtyhat{{\widehat{\mathrm{Ty}}_{\M}}}
+\newcommand\Mtmhat{{\widehat{\mathrm{Tm}}_{\M}}}
+\newcommand\Ups{\Upsilon}
+\newcommand\Upshat{{\widehat{\Upsilon}}}
+\newcommand\C{\mathcal{C}}
+\newcommand\Chat{{\widehat{\mathcal{C}}}}
+\newcommand\Cty{\mathrm{Ty}_{\C}}
+\newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\Ctyhat{{\widehat{\mathrm{Ty}}}_{\C}}
+\newcommand\Ctmhat{{\widehat{\mathrm{Tm}}}_{\C}}
+\newcommand\vp{\varpi}
+\newcommand\vpst{\vp^*}
+\newcommand\vpsh{\vp_!}
+\newcommand\vptil{\widetilde{\vp}}
+\newcommand\vpty{{\vp}_{\mathrm{Ty}}}
+\newcommand\vptm{{\vp}_{\mathrm{Tm}}}
+\newcommand\name[1]{\ulcorner #1\urcorner}
+\newcommand{\Util}{\widetilde{U}}
+\newcommand\ev{\mathrm{ev}}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbbb}{bbold}
+\newcommand\one{\mathbbb{1}}
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{A Fibrational Framework for Modal Dependent Type Theories}
+%\titlerunning{}%optional, please use if title is longer than one line
+
+\author{Daniel R. Licata}{Wesleyan University}{dlicata@wesleyan.edu}{https://orcid.org/0000-0003-0697-7405}{}
+
+\author{Mitchell Riley}{Wesleyan University}{mvriley@wesleyan.edu}{?}
+       {}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Michael Shulman}{University of San Diego}{shulman@sandiego.edu}{?}
+       {}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\authorrunning{D.\,R. Licata and M. Riley and M. Shulman}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{Daniel R. Licata and Mitchell Riley and Michael Shulman}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{Theory of computation~Type theory}%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
+
+\keywords{homotopy type theory, modal logic
+  % bicubical sets, dependent type theory,  synthetic \infty-categories,
+  % model categories, Reedy categories, internal language, univalent
+  % foundations
+}%TODO mandatory; please add comma-separated list of keywords
+
+%% \category{}%optional, e.g. invited paper
+
+%% \relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%% %\relatedversion{A full version of the paper is available at \url{...}.}
+
+%% \supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%% %\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%% \acknowledgements{I want to thank \dots}%optional
+
+%% %\nolinenumbers %uncomment to disable line numbering
+
+%% %\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%% %Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \EventEditors{John Q. Open and Joan R. Access}
+%% \EventNoEds{2}
+%% \EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+%% \EventShortTitle{CVIT 2016}
+%% \EventAcronym{CVIT}
+%% \EventYear{2016}
+%% \EventDate{December 24--27, 2016}
+%% \EventLocation{Little Whinging, United Kingdom}
+%% \EventLogo{}
+%% \SeriesVolume{42}
+%% \ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\section{Introduction}
+\input{intro}
+
+\section{Mode Theory}
+\input{modetheory}
+
+\section{Framework}\label{sec:dua-ret}
+\input{framework}
+
+\section{Examples}
+\input{examples}
+
+\section{Semantics}
+\input{semantics}
+
+\section{Conclusion}
+\input{conclusion}
+
+%%
+%% Bibliography
+%%
+
+%% Please use bibtex, 
+
+{
+  \bibliography{../../drl-common/cs}
+}
+
+\end{document}

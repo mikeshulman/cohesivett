@@ -1,0 +1,183 @@
+\subsection{Contexts}
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+  {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
+    \Gamma \yields_p A \TYPE \and (\text{where }  \gamma \yields p \type)}
+  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:p \ctx)  } \\
+\end{mathpar}
+
+\subsection{Types and Terms}
+
+\subsubsection{Structural Rules}
+
+\begin{mathpar}
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:p,\gamma' \yields x : p)} \and
+
+ \inferrule*[Left = rewrite]{
+   \Gamma \yields_\mu M : A 
+   \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
+  }
+  {\Gamma \yields_\nu \rewrite{s}{M} : A} \\ \\
+  
+  \rewrite{\id_{\mu}}{M} \equiv M \and
+  \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
+  \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}}
+\end{mathpar}
+
+\subsubsection{Telescope Types}
+
+\begin{mathpar}
+  \inferrule*{~}{\Gamma \yields_{1} 1 \TYPE} \and
+  \inferrule*{~}{\Gamma \yields_{()} () : 1} \\
+  M \equiv () \\
+  \inferrule*{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
+  \\
+  \inferrule*{ \Gamma \yields_\mu M : A \\
+               \Gamma \yields_\nu N : B[M/x]
+             }
+             { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+  \and
+  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+
+    \fst{(M,N)} \equiv M \and
+    \snd{(M,N)} \equiv N \and
+    P \equiv (\fst P, \snd P)
+\end{mathpar}
+
+
+\subsubsection{Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = F-form]{
+    %% \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \and (\text{where } \gamma \yields q \type) } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\nu} M : A
+    \and (\text{where } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \and (\text{where } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \and (\text{where } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
+  \\ \\
+
+  \inferrule*[Left = F-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\mu / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
+\\ \\
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
+    \and \gamma, x:p, c:r \yields \mu : q
+  }{\Gamma \yields_r \U{c.\mu}{A}{B} \TYPE \and (\text{where } \gamma \yields r \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \and (\text{where } \gamma,x:p \yields {\mu[\nu/c]} : q)
+  }
+  {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
+    \and (\text{where } \gamma \yields \nu : r)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \and (\text{where } \gamma \yields \nu_1 : r) \\\\
+    \Gamma \yields_{\nu_2} N_2 : A \and (\text{where } \gamma \yields \nu_2 : p)
+  }{
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+  } \\
+
+  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
+  \UI{x}{\UE{N}{x}} \equiv N
+\end{mathpar}
+
+\subsubsection{Surprisingly Strict Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = s-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \TypeTwo{\gamma}{s}{q}{p}
+  }{\Gamma \yields_q \St{s}{A} \TYPE \and (\text{where } \gamma \yields q \type)} \\
+
+  \inferrule*[Left = S-intro]{
+    \Gamma \yields_{\mu} M : A
+    \and (\text{where } \gamma \yields {\mu} : p)
+  }
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{s}{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
+
+  \inferrule*[Left = S-elim]{
+    \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
+    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : r[\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \StE{s}{\StI{s}{M}}{x}{N} \equiv N[M/x] \and
+  \StE{s}{M}{x}{N[\StI{s}{x}/z]} \equiv N[M/z]
+  \\
+  
+  \inferrule*[Left = S-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\TrPlus{s}{x} / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\TrPlus{s}{x} / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \StE{s}{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \StE{s}{\StI{s}{M}}{x}{C} \equiv C[M/x] \and
+  \StE{s}{M}{x}{C[\StI{s}{x}/z]} \equiv C[M/z]
+  \\ \\
+\end{mathpar}
+
+%\drlnote{Change the definition of $s$-types to $U$-types as primitive and derive $F$, so that having $\eta$ is less surprising.}
+
+Term/type equalities:
+\begin{align}
+%\StI{s}{\FI{M}} &\equiv \FI{M} &\St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
+%\FI{\StI{s}{M}} &\equiv \FI{M} &\F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
+%%\UStI{s}{\UI{x}{M}} &\equiv \UI{x}{M} &\St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
+%%\UI{x}{\UStI{s}{M}} &\equiv \UI{x}{M} &\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
+%\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} &\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
+\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
+\StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
+\StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
+\label{eq:stype-subst} \rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] 
+%% other whiskering is a substitution rule:
+%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
+\end{align}
+%Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
+
+Due to the lack of the eta rule for $\mathsf{F}$-types, we also need to assert
+\begin{mathpar}
+(\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+\end{mathpar}
+
+
