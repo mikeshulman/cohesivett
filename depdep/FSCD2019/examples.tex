@@ -58,9 +58,9 @@ and $\gamma \yields \beta : p$ and
 $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
 \alpha$ and $\gamma \yields \nu : \beta$):
   \begin{itemize}
-  \item A distinguished term $\emptyset : p$ is given by $\emptyset :\equiv \TrPlus{\psi}{()}$
+  \item A terminal object $\emptyset : p$ is given by $\emptyset :\equiv \TrPlus{\psi}{()}$
   \item Comprehension is given by $\alpha : p, x : \El{p}{\alpha} \yields \alpha.x :\equiv \TrPlus{\chi}{(\alpha, x)} : p$
-  \item Mode term morphisms corresponding to projection and the variable rule are defined via the counit of the adjunction $\chi^\circ \dashv \chi^+$.
+  \item Mode term morphisms corresponding to projection and the variable rule are given via the counit of the adjunction $\chi^\circ \dashv \chi^+$.
 \begin{align*}
   \TermTwoT{\alpha:p,x:\El{p}{\alpha}&}{ \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\chi_{(\alpha, x)}}}{\alpha.x}{\alpha}{p} \\
   \TermTwoT{\alpha:p,x:\El{p}{\alpha}&}{\var{x} :\equiv \ap \snd {\varepsilon^\chi_{(\alpha, x)}}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}
@@ -175,7 +175,7 @@ The framework also suggests rules for dependent \emph{left} adjoints $\Ltype{}$,
 \LE{c}[\Theta, \lock \uparrow \Ltype{A}] &\equiv \LE{c[\Theta \uparrow A, \lock]} \\
 \LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] &\equiv c
 \end{align}
-\caption{Rules for Dependent Adjoints in MLTT}\label{fig:qit-adjoint-rules}
+\caption{Rules for Dependent Adjoints}\label{fig:qit-adjoint-rules}
 \end{figure}
 
 The requirements on the mode theory are as follows.
@@ -262,7 +262,7 @@ In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and 
 \inferrule*{~}{\Gamma, \lock, A, \lock \qyields \qcrispvar{A} : A[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}] } \\
 \inferrule*[left=crisp-ctx-ext]{\Delta \mid \cdot \yields A \TYPE}{\yields \Delta, A \mid \cdot \CTX} \and
 \inferrule*{\Gamma, \lock \qyields A \TYPE}{\qyields \Gamma, \lock, A, \lock \CTX} \\
-\inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \and
+\inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \quad
 \inferrule*{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A, \lock} \\
 \inferrule*[left=$\flat$-form]{\Delta \mid \cdot \yields A \TYPE}{\Delta \mid \cdot \yields \Flattype{A} \TYPE} \and
 \inferrule*{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
@@ -323,6 +323,8 @@ is derived by
 \end{mathpar}
 Where $\TypeTwo{\cdot}{\chi}{p}{\Sigma \alpha:p.\El{p}{\alpha}}$ is of the right shape to move $\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}$ back over mode $p$.
 
+Similarly, \textsc{ctx-\lock} (recall Figure~\ref{fig:qit-adjoint-rules}) is derived by $\yields \upstairs{\Gamma, \lock} :\equiv \St{f}{\upstairs{\Gamma}} \TYPE_q$
+
 \item Structural rules are translated to rewrites by a mode term morphism. For example, projection
 \begin{mathpar}
 \inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma}
@@ -341,7 +343,7 @@ is derived as follows:
 \end{mathpar}
 Here pullback along $\pi^\alpha_x : \alpha.x \tcell_p \alpha$ allows us to consider the term in mode $\alpha$ as a term in mode $\alpha.x \equiv \TrPlus{\chi}{\alpha, x}$, which is of the correct form to apply $s$-elimination to.
 
-\item Type formation rules are translated to formation rules for the appropriate framework type. The $\Sigma$-elimination rule
+\item Type formation rules are translated to formation rules for the appropriate framework type. The $\Sigma$-formation rule
 \begin{mathpar}
 \inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE}
 \end{mathpar}
@@ -363,6 +365,14 @@ is derived by
 \end{mathpar}
 As framework $\mathsf{F}$-types are unary, we first construct a telescope type from containing both $\upstairs{A}$ and $\upstairs{B}$. The type $\upstairs{B}$ is defined in context $\beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}}$, so some unpacking is required before we can form the framework telescope type. 
 
+As a second example, $\Rtype{}$-formation is derived by
+\begin{mathpar}
+\inferrule*[Left=U-form]{
+\inferrule*[Left=cut]{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\El{p}{\beta}} \upstairs{A} \TYPE \and \alpha : \upstairs{\Gamma} \yields_{\TrPlus{f}{\alpha}} \StI{f}{\alpha} : \St{f}{\upstairs{\Gamma}}}{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\TrPlus{f}{\alpha}}} \upstairs{A}[\StI{f}{\alpha}/\beta] \TYPE}}
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \U{c.f_1(c)}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]} \TYPE}
+\end{mathpar}
+Here we form the $\mathsf{U}$-type along the mode term $\alpha : p, c : \El{p}{\alpha} \yields f_1(c) : \El{q}{\TrPlus{f}{\alpha}}$. As $\mathsf{U}$-formation acts contravariantly on mode terms, we are left with a type in the correct mode. The argument position of the $\mathsf{U}$-type is unused, so we supply the unit type.
+
 \item Term introduction and elimination rules are translated to framework-level introduction and elimination rules, together with rewrites along mode term morphisms used to maintain the invariants of the translation.
 
 For example, for $\Sigma$-introduction
@@ -380,4 +390,15 @@ the central steps in the derivation are as follows:
 {\delta : \upstairs{\Gamma,A,B} \yields_{\One_\delta} \rewrite{\contract{\delta}}{\FI{x, y}[\dots/\alpha,x,y]} : \upstairs{(\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]}}
 \end{mathpar}
 where we have omitted the particular substitution required here. 
+
+For $\Rtype{}$-elimination, we have
+\begin{mathpar}
+\inferrule*[Left=s-elim] {
+\inferrule*[Left=rewrite] {
+\inferrule*[Left=U-elim]
+{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{1}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
+\end{mathpar}
 \end{itemize}
