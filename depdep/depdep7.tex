@@ -98,6 +98,58 @@
 \newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
 \newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
 
+% MLTT
+\newcommand{\qyields}{\Vdash} 
+\newcommand{\upstairs}[1]{\overline{#1}}
+\newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
+\newcommand\qvar[1]{\ensuremath{\mathsf{var}_{#1}}}
+\newcommand\into[1]{\ensuremath{\mathsf{into}_{#1}}}
+
+\newcommand\One{\ensuremath{\mathds{1}}}
+\newcommand\var[1]{\ensuremath{\mathtt{var}_{#1}}}
+\newcommand\ApOne[1]{\ensuremath{\One_{\langle {#1} \rangle }}}
+
+\newcommand\mtt[1]{\mathtt{#1}}
+\newcommand\contract[1]{\ensuremath{\mathtt{contract}_{#1}}}
+\newcommand\fibpair[1]{\ensuremath{\mathtt{fibpair}_{#1}}}
+\newcommand\pair[1]{\ensuremath{\mathtt{pair}_{#1}}}
+\newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
+\newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
+
+\newcommand\qunitmatch[1]{\ensuremath{\mathsf{match}(#1)}}
+\newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
+\newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
+\newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
+\newcommand\qlam{\ensuremath{\mathsf{lam}}}
+
+% Adjoint type theory
+\newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
+\newcommand\foneinv[1]{\ensuremath{\fone{#1}^{-1}}}
+\newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
+\newcommand\fdistinv[1]{\ensuremath{\fdist{#1}^{-1}}}
+
+\newcommand{\lock}{\text{\faUnlock}}
+\newcommand{\Rtype}[1]{\mathsf{R}{#1}}
+\newcommand{\RI}[1]{\mathsf{shut}({#1})}
+\newcommand{\RE}[1]{\mathsf{open}({#1})}
+
+\newcommand{\Ltype}[1]{\mathsf{L}{#1}}
+\newcommand{\LI}[1]{\mathsf{left}_{#1}}
+\newcommand{\LE}[1]{\mathsf{letleft}({#1})}
+
+% Spatial type theory
+\newcommand\fcomult[1]{\ensuremath{\mathtt{comult}_{#1}}}
+\newcommand\fcounit[1]{\ensuremath{\mathtt{counit}_{#1}}}
+\newcommand{\counit}[1]{\mathsf{counit}_{#1}}
+\newcommand{\comult}[1]{\mathsf{comult}_{#1}}
+\newcommand{\Flattype}[1]{\flat{#1}}
+\newcommand{\FlatI}[1]{{#1}^\flat}
+\newcommand{\FlatE}[1]{\mathsf{letflat}({#1})}
+\newcommand{\Sharptype}[1]{\sharp{#1}}
+\newcommand{\SharpI}[1]{{#1}^\sharp}
+\newcommand{\SharpE}[1]{{#1}_\sharp}
+\newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
+
 % Macros for semantics notation
 \newcommand\mm[1]{\llbracket #1 \rrbracket}
 \newcommand\op{^{\mathrm{op}}}
@@ -1018,7 +1070,7 @@ For clarity we will often treat mode terms with a distinguished parameter as tho
 
 \subsection{Adjoint Mode Terms}
 \begin{definition}
-A mode term $\gamma, y : q \yields u : p$ has a \emph{left adjoint} if there are specified constants:
+A mode term $\gamma, x : p \yields f : q$ is \emph{left adjoint} to $\gamma, y : q \yields u : p$ if there are specified constants:
 \begin{align*}
 \gamma, x : p &\yields f : q \\
 \gamma, x : p &\yields \eta_x : x \tcell_p u(f(x)) \\
@@ -1037,12 +1089,10 @@ and the triangle identities hold:
 \end{definition}
 
 \subsection{Terminal Objects}
-\newcommand\One{\ensuremath{\mathds{1}}}
 
 \begin{definition}
-For $p \type$, a \emph{terminal object} of $p$ is specified by
+For $p \type$, the term $\emptyset : p$ is \emph{terminal} if there are specified mode term morphisms
 \begin{mathpar}
-\vdash \emptyset : p \and
 \TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
 \end{mathpar}
 such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
@@ -1064,8 +1114,6 @@ such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
 %\end{definition}
 
 \subsection{Comprehension Object}
-\newcommand\var[1]{\ensuremath{\mathtt{var}_{#1}}}
-\newcommand\ApOne[1]{\ensuremath{\One_{\langle {#1} \rangle }}}
 
 \begin{definition}[Comprehension Object]\label{def:comprehension-object}
   A \emph{comprehension object} is specified by the following
@@ -1127,6 +1175,12 @@ $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
   \item We write $\ApOne{s}$ as a short hand for $\ap{\One_z}{s/z}$
   \end{itemize}
 \end{definition}
+
+This definition is a type-theoretic analogue of a fibration that \emph{admits comprehension}. This is a fibration $E \to B$ with fibred terminal object $1 : B \to E$ such that the functor $1$ has a right adjoint, see \mvrnote{ref}.
+
+In the type-theoretic definition, $p$ and $\El{p}{\alpha}$ describe a fibration $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. The term $(\alpha, \One_\alpha)$ describes a functor $p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ that sends $\alpha$ to a distinguished object $\One_\alpha$ in the fibre over $\alpha$, and this functor has a right adjoint $\TrPlus{\chi}{\alpha,x}$.
+
+The primary difference is that we do not need to assume that $\One_\alpha$ is terminal in $\El{p}{\alpha}$, so $(\alpha, \One_\alpha) : p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ is not right adjoint to $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. We also do not assume that $p$ is full, in the sense of there being a bijection between mode term morphisms $x \tcell_{\El{p}{\alpha}} y$ and mode term morphisms $\alpha.x \tcell_p \alpha.y$ that commute with projection.
 
 The triangle identities for $\chi^\circ \dashv \chi^+$ take the following form:
 \begin{align}
@@ -1279,25 +1333,6 @@ And:
 \end{align*}
 \end{proof}
 
-\begin{remark}
-This axiomatization was inspired by the definition of comprehension
-category with unit in \cite{ahman+16fibered}:
-\msnote{I believe this definition is actually originally due to Ehrhard, and was reformulated later by Jacobs, before being picked up by AGP.  See \url{https://ncatlab.org/nlab/show/axiom+of+separation\#LawvereDefinition}.}
-\begin{itemize}
-\item A fibration $p : \mathcal{E} \to \mathcal{B}$
-\item A functor $1 : \mathcal{B} \to \mathcal{E}$ that picks out the terminal object of each fiber,
-\item A right adjoint $\{-\} : \mathcal{E} \to \mathcal{B}$ to the functor $1$.
-\end{itemize}
-In our notation:
-\begin{itemize}
-\item $\mathcal{B}$ corresponds to the mode $p$ and $\mathcal{E}$ to $\sigmacl{\alpha}{p}{\El{p}{\alpha}}$, with the morphisms in both categories given by the mode-term-2-cells in each.
-
-\item The projection $p : \mathcal{E} \to \mathcal{B}$ is the function $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. 
-
-\item The functor $\{-\}$ is given by $\chi^+$ and the functor $1$ is given by $\chi^\circ$.
-\end{itemize}
-\end{remark}
-
 \subsection{Comprehension Object with Unit}
 
 \begin{definition}
@@ -1338,11 +1373,6 @@ And the third by applying the second equation to each $\pi$ and using fusion.
 \end{proof}
 
 \subsection{Comprehension Object with $\Sigma$}
-\newcommand\mtt[1]{\mathtt{#1}}
-\newcommand\contract[1]{\ensuremath{\mathtt{contract}_{#1}}}
-\newcommand\fibpair[1]{\ensuremath{\mathtt{fibpair}_{#1}}}
-\newcommand\pair[1]{\ensuremath{\mathtt{pair}_{#1}}}
-\newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
 
 \begin{definition}\label{def:supports-sigmas}
 A comprehension object \emph{supports $\Sigma$ types} if it supports the unit type and there is a specified mode term
@@ -1367,6 +1397,10 @@ and $\contract{\alpha}$ is natural:
 \end{align}
 for any $s : \alpha \tcell_p \beta$.
 \end{definition}
+
+\mvrnote{How does this compare to left adjoint to weakening? I still don't see...}
+
+Only $\contract{\alpha}$ is needed to define $\pair{\alpha,x,y}$, as mode terms are always functorial with respect to mode term morphisms via ap. If the requirement that $\pair{\alpha, x, y}$ be an isomorphism is dropped, we may still interpret weak $\Sigma$-types with a non-dependent eliminator.
 
 \begin{lemma}
 A comprehension object that supports $\Sigma$s satisfies the following equations:
@@ -1675,7 +1709,6 @@ be defined).
 \fi
 
 \subsection{Comprehension Object with $\Pi$}
-\newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
 
 \begin{definition}\label{def:supports-pis}
 A comprehension object \emph{supports $\Pi$s} if $\ApOne{\pi^\alpha_x}$ is an isomorphism.
@@ -1714,10 +1747,6 @@ And the second from:
 \end{proof}
 
 \subsection{Morphism of Comprehension Objects}
-\newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
-\newcommand\foneinv[1]{\ensuremath{\mathtt{foneinv}_{#1}}}
-\newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
-\newcommand\fdistinv[1]{\ensuremath{\mathtt{fdistinv}_{#1}}}
 
 Suppose we have two comprehension objects $p$ and $q$.
 
@@ -1769,10 +1798,10 @@ Follows from
 \end{proof}
 
 \subsection{Spatial Type Theory}
-\newcommand\fcomult[1]{\ensuremath{\mathtt{comult}_{#1}}}
-\newcommand\fcounit[1]{\ensuremath{\mathtt{counit}_{#1}}}
 
-Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad by adding morphisms
+Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad as follows.
+\begin{definition}\label{def:supports-spatial}
+A morphism of fibrations $f$ \emph{supports spatial type theory} if \mvrnote{$f$ supports left and right types and} there are morphisms
 \begin{align*}
 \alpha : p &\yields \fcounit{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \alpha \\
 \alpha : p &\yields \fcomult{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \TrPlus{f}{\TrPlus{f}{\alpha}}
@@ -1783,23 +1812,122 @@ satisfying:
 \fcomult{\alpha};\ApPlus{f}{\fcounit{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}} \\
 \fcomult{\alpha};\fcounit{\TrPlus{f}{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}}
 \end{align}
+\end{definition}
+
 
 \section{Object Languages}
 
-\subsection{MLTT via Explicit Substitutions}
-\newcommand{\qyields}{\Vdash} 
-\newcommand{\varsof}[1]{{#1}^\dagger}
-\newcommand{\upstairs}[1]{\overline{#1}}
-\newcommand{\downstairs}[1]{\underline{#1}}
-\newcommand{\asdep}[1]{{#1}_p}
-\newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
-\newcommand\qvar[1]{\ensuremath{\mathsf{var}_{#1}}}
-\newcommand\outof[1]{\ensuremath{\mathsf{outof}_{#1}}}
-\newcommand\into[1]{\ensuremath{\mathsf{into}_{#1}}}
+Our goal is to interpret the rules of type theory in the framework. The mode theory will contain a comprehension object $p$, and in the translations of the above type theories, we maintain the following invariants:
 
-In this section we interpret all the rules and equations of the presentation of type theory given in \cite{altenkirchkaposi16qit} via QITs. 
+\begin{itemize}
+\item A context $\qyields \Gamma \CTX$ is represented by a framework type $\cdot \yields_p \upstairs{\Gamma}$.
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE$.
+\item A term $\Gamma \qyields a : A$ is represented by a framework term $\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{a} : \upstairs{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a framework term $\alpha : \upstairs{\Gamma} \yields_\alpha \upstairs{\Theta} : \upstairs{\Delta}$.
+\end{itemize}
+This allows us to translate object-language substitution into types and terms as a total framework substitution into the unique variable in the framework context.
 
-For consistency we switch from the Agda-style syntax used in the paper to ordinary inference rules. To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
+This is a change from \mvrnote{LSR}, in which object-language contexts are translated to framework contexts. \mvrnote{This didn't work because ... Something like, in principle there could be many non-equivalent ways to package a collection of types into a single context (as an object in the category of contexts), and a framework context does not have enough information in it?}
+
+The general schema is as follows: context formers are specified by mode type morphisms, structural rules are specified by mode term morphisms and type formers are specified by mode terms. We give an example of each of these in turn.
+
+\begin{itemize}
+\item Context formers are translated to $s$-types for a mode type morphism. For example, the context extension rule
+\begin{mathpar}
+\inferrule*[left=ctx-ext]{\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma, A \CTX}
+\end{mathpar}
+is derived by
+\begin{mathpar}
+\inferrule*[Left=s-intro]{
+\inferrule*[Left=()-intro]{\cdot \yields_p \upstairs{\Gamma} \TYPE \and \alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE}
+{\cdot \yields_{\Sigma \alpha:p.\El{p}{\alpha}} \telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}} \TYPE}}
+{\cdot \yields_p \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \TYPE}
+\end{mathpar}
+Where $\TypeTwo{\cdot}{\chi}{p}{\Sigma \alpha:p.\El{p}{\alpha}}$ is of the right shape to move $\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}$ back over mode $p$.
+
+Similarly, \textsc{ctx-\lock} (recall Figure~\ref{fig:qit-adjoint-rules}) is derived by $\yields \upstairs{\Gamma, \lock} :\equiv \St{f}{\upstairs{\Gamma}} \TYPE_q$
+
+\item Structural rules are translated to rewrites by a mode term morphism. For example, projection
+\begin{mathpar}
+\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma}
+\end{mathpar}
+is derived as follows:
+\begin{mathpar}
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=cut]{
+            \inferrule*[Left=rewrite]{\alpha : \upstairs{\Gamma}, x : \upstairs{A}  \vdash_\alpha \alpha : {\upstairs{\Gamma}}}
+                       {\alpha : \upstairs{\Gamma}, x : \upstairs{A}  \vdash_{\TrPlus{\chi}{\alpha, x}} \rewrite{\pi^\alpha_x}{\alpha} : {\upstairs{\Gamma}}}}
+                       {w : \telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}} \yields_{ \TrPlus{\chi}{\fst w, \snd w}} \rewrite{\pi^\alpha_x}{\alpha}[\fst w / \alpha, \snd w / x] : \upstairs{\Gamma}}
+           }
+           {
+             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_\beta \StE{\chi}{\beta}{w}{\rewrite{\pi^\alpha_x}{\alpha}[\fst w / \alpha, \snd w / x]} : \upstairs{\Gamma}
+           }
+\end{mathpar}
+Here pullback along $\pi^\alpha_x : \alpha.x \tcell_p \alpha$ allows us to consider the term in mode $\alpha$ as a term in mode $\alpha.x \equiv \TrPlus{\chi}{\alpha, x}$, which is of the correct form to apply $s$-elimination to.
+
+\item Type formation rules are translated to formation rules for the appropriate framework type. The $\Sigma$-formation rule
+\begin{mathpar}
+\inferrule*[left=$\Sigma$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma_A B \TYPE}
+\end{mathpar}
+is derived by 
+\begin{mathpar}
+\inferrule*[Left=F-form]
+{\inferrule*[Left=$()$-form]
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE \and 
+\inferrule*[left=cut]{
+\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\alpha.x} \StI{\chi}{(\alpha, x)} : \upstairs{\Gamma, A}
+\and 
+\beta : \upstairs{\Gamma, A} \yields_{\El{p}{\beta}} \upstairs{B} \TYPE
+}{
+\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\El{p}{\alpha.x}} \upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta] \TYPE
+}
+}
+{\alpha : \upstairs{\Gamma} \yields_{\telety{x}{\El{p}{\alpha}}{\El{p}{\alpha.x}}} \telety{x}{\upstairs{A}}{\upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta]} \TYPE}}
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{\telety{x}{\upstairs{A}}{\upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta]}} \TYPE}
+\end{mathpar}
+As framework $\mathsf{F}$-types are unary, we first construct a telescope type from containing both $\upstairs{A}$ and $\upstairs{B}$. The type $\upstairs{B}$ is defined in context $\beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}}$, so some unpacking is required before we can form the framework telescope type. 
+
+As a second example, $\Rtype{}$-formation is derived by
+\begin{mathpar}
+\inferrule*[Left=U-form]{
+\inferrule*[Left=cut]{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\El{p}{\beta}} \upstairs{A} \TYPE \and \alpha : \upstairs{\Gamma} \yields_{\TrPlus{f}{\alpha}} \StI{f}{\alpha} : \St{f}{\upstairs{\Gamma}}}{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\TrPlus{f}{\alpha}}} \upstairs{A}[\StI{f}{\alpha}/\beta] \TYPE}}
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \U{c.f_1(c)}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]} \TYPE}
+\end{mathpar}
+Here we form the $\mathsf{U}$-type along the mode term $\alpha : p, c : \El{p}{\alpha} \yields f_1(c) : \El{q}{\TrPlus{f}{\alpha}}$. As $\mathsf{U}$-formation acts contravariantly on mode terms, we are left with a type in the correct mode. The argument position of the $\mathsf{U}$-type is unused, so we supply the unit type.
+
+\item Term introduction and elimination rules are translated to framework-level introduction and elimination rules, together with rewrites along mode term morphisms used to maintain the invariants of the translation.
+
+For example, for $\Sigma$-introduction
+\begin{mathpar}
+\inferrule*[left=$\Sigma$-pair]{~}{\Gamma, A, B \qyields \mathsf{pair}_{A, B} : (\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]}
+\end{mathpar}
+the central steps in the derivation are as follows:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=cut]{
+\inferrule*[Left=F-intro]
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta] \yields_{(x, y)} (x, y) : \telety{x}{\upstairs{A}}{\upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta]}}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta] \yields_{\Sigma_1(\alpha, x, y)} \FI{x, y} : \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{\telety{x}{\upstairs{A}}{\upstairs{B}[\StI{\chi}{(\alpha, x)}/\beta]}}}}
+{\delta : \upstairs{\Gamma,A,B} \yields_{\Sigma_1(\delta, \One_\delta, \One_{\delta.\One})} \FI{x, y}[\dots/\alpha,x,y] : \upstairs{(\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]}}}
+{\delta : \upstairs{\Gamma,A,B} \yields_{\One_\delta} \rewrite{\contract{\delta}}{\FI{x, y}[\dots/\alpha,x,y]} : \upstairs{(\Sigma_A B)[\proj{\Gamma, A, B};\proj{\Gamma, A}]}}
+\end{mathpar}
+where we have omitted the particular substitution required here. 
+
+For $\Rtype{}$-elimination, we have
+\begin{mathpar}
+\inferrule*[Left=s-elim] {
+\inferrule*[Left=rewrite] {
+\inferrule*[Left=U-elim]
+{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{1}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
+\end{mathpar}
+\end{itemize}
+
+\subsection{Martin L\"of Type Theory}
+
+To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
 \begin{mathpar}
 \qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
 \end{mathpar}
@@ -1850,18 +1978,6 @@ defined by:
 \Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]} \\
 \hat{a} &:\equiv \id_{\Gamma} , a
 \end{align*}
-
-Our goal is to interpret these rules in the framework. The mode theory will contain a comprehension object $p$, and the basic idea for representing the judgements of MLTT is as follows:
-
-\begin{itemize}
-\item For each object-language context $\Gamma$, there is a corresponding upstairs framework type $\upstairs{\Gamma}$ with mode $p$.
-
-\item A type $\Gamma \qyields A \TYPE$ is represented by $g : \upstairs{\Gamma} \yields_{\El{p}{g}} \upstairs{A} \TYPE$.
-  
-\item A term $\Gamma \qyields a : A$ is represented by $g : \upstairs{\Gamma} \yields_{\One_g} \upstairs{a} : \upstairs{A}$.
-
-\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $g : \upstairs{\Gamma} \yields_g \upstairs{\Theta} : \upstairs{\Delta}$.
-\end{itemize}
 
 \subsubsection{Structural Rules}
 
@@ -2112,7 +2228,6 @@ Substitution by $\upstairs{\Theta \uparrow A}$ commutes with pattern matching on
 \end{proof}
 
 \subsubsection{Rules for the unit type}
-\newcommand\qunitmatch[1]{\ensuremath{\mathsf{match}(#1)}}
 
 The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
 
@@ -2203,8 +2318,6 @@ Checking the equations hold is reasonably straightforward:
 \end{enumerate}
 
 \subsubsection{Rules for $\Sigma$-types}
-\newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
-\newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
 
 The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. 
 
@@ -2541,8 +2654,6 @@ Where the manipulations in the middle follow from the object-language equations 
 \end{enumerate}
 
 \subsubsection{Rules for $\Pi$-types}
-\newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
-\newcommand\qlam{\ensuremath{\mathsf{lam}}}
 
 The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Note that stability of $\mathsf{app}$ under substitution is derivable: \mvrnote{TODO}
 
@@ -2691,16 +2802,14 @@ again using Lemma~\ref{lem:into-identities}.
 \end{enumerate}
 
 \subsubsection{Rules for Dependent Adjoints}
-\newcommand{\lock}{\text{\faUnlock}}
-\newcommand{\Rtype}[1]{\mathsf{R}{#1}}
-\newcommand{\RI}[1]{\mathsf{shut}({#1})}
-\newcommand{\RE}[1]{\mathsf{open}({#1})}
 
-\newcommand{\Ltype}[1]{\mathsf{L}{#1}}
-\newcommand{\LI}[1]{\mathsf{left}_{#1}}
-\newcommand{\LE}[1]{\mathsf{spleft}({#1})}
+Dependent right adjoint types have previously been studied in \mvrnote{cite}. An operation $\lock$ on contexts and a type former $\Rtype{}$ are added, with $\lock$ adjoint to $\Rtype{}$ in the sense that terms of $\Gamma, \lock \qyields A \TYPE$ correspond bijectively with terms of $\Gamma \qyields \Rtype{A} \TYPE$.
 
-Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}. The structural rules of MLTT can be interpreted in each comprehension object separately, so we mark turnstile with the comprehension object that the judgement corresponds to. The rules for dependent adjoint types are given in Figure~\ref{fig:qit-adjoint-rules}.
+We give the rules of dependent right adjoint types in Figure~\ref{fig:qit-adjoint-rules}. These are presented in an algebraic style with explicit weakenings and substitutions; rules written in this form are more convenient to translate into the framework. The turnstile is written as $\qyields$ to distinguish judgements in the object language from judgements in the framework.
+
+The rules of right adjoint types are mildly generalised to allow an adjoint between two different comprehension objects. Each judgement is marked with the comprehension object to which it belongs. Note that judgements with subscript $p$ necessarily have no $\lock$s in the context, and those with subscript $q$ have exactly one. To recover the type theory of \mvrnote{ref}, erase the subscripts. 
+
+The framework also suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. In the equations we use $\Theta \uparrow A$ to denote the derived form $\Gamma, A[\Theta] \qyields ((\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}) : \Delta, A$, for any substitution $\Gamma \qyields \Theta : \Delta$ and type $\Delta \qyields A \TYPE$.
 
 Similar to $\Pi$-types, naturality of $\RE{}$ follows from naturality of $\RI{}$ using eta expansion:
 \begin{align*}
@@ -2738,6 +2847,8 @@ Similar to $\Pi$-types, naturality of $\RE{}$ follows from naturality of $\RI{}$
 \caption{Rules for Dependent Adjoints in MLTT via Explicit Substitutions}\label{fig:qit-adjoint-rules}
 \end{figure}
 
+Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}). 
+
 \begin{enumerate}
 \item[\textsc{ctx-$\lock$}] Given $\yields \upstairs{\Gamma} \TYPE_p$, we have $\yields \upstairs{\Gamma, \lock} :\equiv \St{f}{\upstairs{\Gamma}} \TYPE_q$
 
@@ -2754,6 +2865,7 @@ And define $\upstairs{\Rtype{A}}$ to be:
 \begin{align*}
 \upstairs{\Rtype{A}} :\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
 \end{align*}
+\mvrnote{That $()$ should be a $1$ everywhere.}
 
 \item[\textsc{R-intro}] We are given 
 \begin{align*}
@@ -3022,16 +3134,14 @@ And the equations:
 \end{enumerate}
 
 \subsubsection{Rules for Spatial Type Theory}
-\newcommand{\counit}[1]{\mathsf{counit}_{#1}}
-\newcommand{\comult}[1]{\mathsf{comult}_{#1}}
-\newcommand{\Flattype}[1]{\flat{#1}}
-\newcommand{\FlatI}[1]{\mathsf{flat}_{#1}}
-\newcommand{\FlatE}[1]{\mathsf{letflat}({#1})}
-\newcommand{\Sharptype}[1]{\sharp{#1}}
-\newcommand{\SharpI}[1]{{#1}^\sharp}
-\newcommand{\SharpE}[1]{{#1}_\sharp}
 
-\newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
+Suppose $f$ supports spatial type theory, so $\TrPlus{f}{-}$ has the structure of an idempotent comonad (Definition~\ref{def:supports-spatial}).
+
+In our algebraic presentation these additions to the mode theory manifest as axiomatic substitutions $\Gamma, \lock \qyields \counit{\Gamma} : \Gamma$ and $\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock$. These satisfying the same equations as the mode theory, for example, $\comult{\Gamma};\counit{\Gamma, \lock} \equiv \id_{\Gamma, \lock}$.
+
+We now sketch a translation of the rules of spatial type theory \mvrnote{TODO: ref} into algebraic style. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Delta \mid \cdot$ always ends with a $\lock$. 
+
+In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and its equivalent in the algebraic style. A number of spatial type theory rules build in cuts or weakenings; as both are explicit in CwF style we leave these out. In the rules for $\sharp$ we give the special case of a $\sharp$-type that depends on a single cohesive variable. The case of a general cohesive context would need a more careful inductive argument.
 
 \begin{figure}
 \begin{mathpar}
