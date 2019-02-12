@@ -1051,6 +1051,8 @@ As a special case, note that we have
 \rewrite{(\id_\Theta, s/x)}{\Theta, M/x} \equiv (\Theta, \rewrite{s}{M}/x)
 \end{align*}
 
+\mvrnote{Need to say something like: Because the above $n$-ary versions have been derived, from now on we use $\ap{\mu}{s/x, t/y}$ as shorthand for the $n$-ary version}
+
 \subsection{Examples}
 
 \begin{itemize}
@@ -2655,7 +2657,7 @@ Where the manipulations in the middle follow from the object-language equations 
 
 \subsubsection{Rules for $\Pi$-types}
 
-The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Note that stability of $\mathsf{app}$ under substitution is derivable: \mvrnote{TODO}
+The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability of $\mathsf{app}$ under substitution is derivable from stability of $\qlam{}$ using beta and eta: \mvrnote{This is much, much more confusing because of the axiomatic $\mathsf{app}$. We need to use an exchange substitution to even get this to work, TODO}
 
 \begin{figure}
 \begin{mathpar}
@@ -2811,7 +2813,7 @@ The rules of right adjoint types are mildly generalised to allow an adjoint betw
 
 The framework also suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. In the equations we use $\Theta \uparrow A$ to denote the derived form $\Gamma, A[\Theta] \qyields ((\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}) : \Delta, A$, for any substitution $\Gamma \qyields \Theta : \Delta$ and type $\Delta \qyields A \TYPE$.
 
-Similar to $\Pi$-types, naturality of $\RE{}$ follows from naturality of $\RI{}$ using eta expansion:
+Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from stability of $\RI{}$ using eta expansion:
 \begin{align*}
 \RE{b}[\Theta, \lock] 
 &\equiv \RE{\RI{\RE{b}[\Theta, \lock]}} \\
@@ -2863,9 +2865,8 @@ Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphi
 \end{align*}
 And define $\upstairs{\Rtype{A}}$ to be:
 \begin{align*}
-\upstairs{\Rtype{A}} :\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
+\upstairs{\Rtype{A}} :\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
 \end{align*}
-\mvrnote{That $()$ should be a $1$ everywhere.}
 
 \item[\textsc{R-intro}] We are given 
 \begin{align*}
@@ -2884,7 +2885,7 @@ Define:
 
 \item[\textsc{R-elim}] Given
 \begin{align*}
-\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}
+\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{1}{\upstairs{B}[\StI{f}{\alpha}/\beta]}
 \end{align*}
 we can do:
 \begin{mathpar}
@@ -2951,10 +2952,10 @@ by Lemma~\ref{lem:s-elim-s-elim}.
 \begin{align*}
 \upstairs{\Rtype{A}[\Theta]}
 &\equiv \upstairs{\Rtype{A}}[\upstairs{\Theta}/\alpha] \\
-&\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta]}[\upstairs{\Theta}/\alpha] \\
-&\equiv \U{f_1}{()}{\upstairs{A}[\StI{f}{\alpha}/\beta][\upstairs{\Theta}/\alpha]} \\
-&\equiv \U{f_1}{()}{\upstairs{A}[\upstairs{\Theta, \lock}/\beta][\StI{f}{\alpha}/\beta]} \\
-&\equiv \U{f_1}{()}{\upstairs{A[\Theta, \lock]}[\StI{f}{\alpha}/\beta]} \\
+&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}[\upstairs{\Theta}/\alpha] \\
+&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta][\upstairs{\Theta}/\alpha]} \\
+&\equiv \U{f_1}{1}{\upstairs{A}[\upstairs{\Theta, \lock}/\beta][\StI{f}{\alpha}/\beta]} \\
+&\equiv \U{f_1}{1}{\upstairs{A[\Theta, \lock]}[\StI{f}{\alpha}/\beta]} \\
 &\equiv \upstairs{\Rtype{(A[\Theta, \lock])}} 
 \end{align*}
 
@@ -3044,11 +3045,19 @@ to obtain $\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]$ of type:
 &\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}, \rewrite{\fone{\alpha.x}}{\FIs{f_1}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}}}}/\delta] \\
 &\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\rewrite{\ApPlus{f}{\pi^\alpha_x}}{\StI{f}{\alpha}}, \rewrite{\fone{\alpha.x};\ap{f_1}{\var{x}}}{\FIs{f_1}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}}}/\delta] \\
 &\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\rewrite{\ApPlus{f}{\pi^\alpha_x}}{\StI{f}{\alpha}}, \rewrite{\fone{\alpha.x};\ap{f_1}{\var{x}};\ap{f_1}{\ApEl{p}{\pi^\alpha_x}/\alpha, \id / x}}{\FIs{f_1}{x}}}}/\delta] \\
-&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}};(\ApPlus{f}{\pi^\alpha_x} \bdot \fone{\alpha.x};\ap{f_1}{\var{x}};\ap{f_1}{\ApEl{p}{\pi^\alpha_x}/\alpha, \id / x})}{\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}}/\delta] \\
+&\equiv \upstairs{C}[\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}};(\ApPlus{f}{\pi^\alpha_x} \bdot \fone{\alpha.x};\ap{f_1}{\var{x}};\ap{f_1}{\pi^\alpha_x/\alpha, \id / x})}{\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}}/\delta] \\
 &\equiv \upstairs{C}[\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}}/\delta] \\
 &\equiv \St{\ApEl{q}{\fdist{\alpha,x}}}{\upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]}
 \end{align*}
-\mvrnote{There is a move in there that needs explanation}
+In the middle we use the following identity:
+\begin{align*}
+&\FIs{f_1}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}} \\
+&\equiv \FIs{f_1}{x[\rewrite{\pi^\alpha_x}{\alpha}/\alpha]} \\
+&\equiv \FIs{f_1}{x}[\rewrite{\pi^\alpha_x}{\alpha}/\alpha, x / x] \\
+&\equiv \rewrite{\ap{f_1}{\pi^\alpha_x/\alpha, \id / x}}{\FIs{f_1}{x}}
+\end{align*}
+\mvrnote{Of course $x[\dots/\alpha]$ looks a bit odd, but the type of $x$ is modified by that}
+
 So we define the translation of $\LE{c}$ to be:
 \begin{mathpar}
 \inferrule*[Left=s-elim]{
