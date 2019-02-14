@@ -58,6 +58,7 @@
 \newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
 \newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
 \newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
+\newcommand\TeleE[4]{\ensuremath{\mathsf{let} \, (#2, #3) \, = \, {#1} \, \mathsf{in} \, #4}}
 
 \newcommand\fan[1]{\ensuremath{\mathsf{fan}_{#1}}}
 
@@ -544,22 +545,22 @@ Follows by
 \subsubsection{Telescope Types}
 
 \begin{mathpar}
-  \inferrule*{~}{\Gamma \yields_{1} 1 \TYPE} \and
-  \inferrule*{~}{\Gamma \yields_{()} () : 1} \\
+  \inferrule*[Left=$1$-form]{~}{\Gamma \yields_{1} 1 \TYPE} \and
+  \inferrule*[Left=$1$-intro]{~}{\Gamma \yields_{()} () : 1} \\
   M \equiv () \\
-  \inferrule*{ \Gamma \yields_p A \TYPE \\
+  \inferrule*[Left=$()$-form]{ \Gamma \yields_p A \TYPE \\
                \Gamma,x:A \yields_q B \TYPE}
              { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
   \\
-  \inferrule*{ \Gamma \yields_\mu M : A \\
+  \inferrule*[Left=$()$-pair]{ \Gamma \yields_\mu M : A \\
                \Gamma \yields_\nu N : B[M/x]
              }
              { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
   \and
-  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+  \inferrule*[Left=$()$-fst]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
              { \Gamma \yields_{\fst \mu} \fst{M} : A} 
   \and
-  \inferrule*{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+  \inferrule*[Left=$()$-snd]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
              { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
 
     \fst{(M,N)} \equiv M \and
@@ -835,9 +836,31 @@ and similarly for the second.
 %\end{align*}
 %\end{proof}
 
+\begin{lemma}
+Split for telescope types is derivable:
+\begin{mathpar}
+\inferrule*[Left=$()$-split]{\Gamma, w : \telety{x}{A}{B} \yields_r C \TYPE \\\\ \Gamma \yields_{\nu} M : \telety{x}{A}{B} \\\\ \Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} \TeleE{M}{x}{y}{N} : C[M/w]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+\begin{mathpar}
+\inferrule*[Left=cut]{\Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} N[\fst M/x, \snd M/y] : C[(x, y)/w][\fst M/x, \snd M/y]}
+\end{mathpar}
+And by eta for telescope types, $C[(x, y)/w][\fst M/x, \snd M/y] \equiv C[(\fst M, \snd M)/w] \equiv C[M/w]$.
+\end{proof}
+
+Given a term such as $\beta : \St{s}{\telety{\alpha}{A}{B}}$, we will often use $s$-elimination and then split on the pair. For clarity, rather than writing
+\begin{align*}
+\StE{s}{\beta}{w}{\TeleE{w}{x}{y}{(\dots)}}
+\end{align*}
+we will write
+\begin{align*}
+\StE{s}{\beta}{x, y}{(\dots)}
+\end{align*}
+
 \newcommand{\ctxtuple}[1]{\Sigma^*{#1}}
 \begin{lemma}
-Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE_{\ctxtuple{\gamma}}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
+Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE$ of mode $\ctxtuple{\gamma}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
 \begin{mathpar}
 \inferrule*{\yields_\gamma \Gamma}
              {\cdot \yields_{\ctxtuple{\gamma}} \ctxtuple{\Gamma} \TYPE}
@@ -1980,6 +2003,12 @@ defined by:
 \Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]} \\
 \hat{a} &:\equiv \id_{\Gamma} , a
 \end{align*}
+\mvrnote{Do we use the second one? Not the way we currently do $\Pi$-types} It is straightforward to check that these satisfy the following identities: 
+\begin{align*}
+(\Theta \uparrow A) ; \proj{\Delta, A} &\equiv \proj{\Gamma, A[\Theta]} ; \Theta \\
+\qvar{\Delta, A}[\Theta \uparrow A] &\equiv \qvar{\Gamma, A[\Theta]} \\
+\end{align*}
+\mvrnote{What else have we used?}
 
 \subsubsection{Structural Rules}
 
@@ -2021,7 +2050,7 @@ The judgements and structural rules of MLTT can be interpreted in any comprehens
 \end{align*}
 which are exactly what is needed to form
 \begin{align*}
-  \inferrule*{\inferrule*{\alpha : \upstairs{\Gamma} \vdash_{(\alpha,\One_\alpha)} {(\upstairs{\Theta}, \upstairs{a})} : (\alpha : \upstairs{\Gamma}, \upstairs{A[\Theta]})}
+  \inferrule*[Left=rewrite]{\inferrule*[Left=s-intro]{\alpha : \upstairs{\Gamma} \vdash_{(\alpha,\One_\alpha)} {(\upstairs{\Theta}, \upstairs{a})} : (\alpha : \upstairs{\Gamma}, \upstairs{A[\Theta]})}
                          {\alpha : \upstairs{\Gamma}
                            \vdash_{\alpha.\One_\alpha \equiv \TrPlus{\chi}{(\alpha,\One_\alpha)}} {\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}} : \St{\chi}{(\alpha : \upstairs{\Gamma}, \upstairs{A[\Theta]})}}
              }
@@ -2039,7 +2068,7 @@ and
 $d : \upstairs{\Delta} \vdash_{d} \upstairs{\kappa} :
 \upstairs{\Lambda}$
 we have
-$g : \upstairs{\Gamma} \vdash_{g} \upstairs{\theta;\kappa} :\equiv \upstairs{\kappa}[\upstairs{\Theta}/d] : \upstairs{\Lambda}$
+$g : \upstairs{\Gamma} \vdash_{g} \upstairs{\Theta;\kappa} :\equiv \upstairs{\kappa}[\upstairs{\Theta}/d] : \upstairs{\Lambda}$
   
 \item[\textsc{sub-proj}] We are trying to construct a term
 \begin{align*}
@@ -2047,17 +2076,17 @@ $g : \upstairs{\Gamma} \vdash_{g} \upstairs{\theta;\kappa} :\equiv \upstairs{\ka
 \end{align*}
 Use:
 \begin{align*}
-\upstairs{\proj{\Gamma, A}} :\equiv \StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}
+\upstairs{\proj{\Gamma, A}} :\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\pi^\alpha_x}{\alpha}}
 \end{align*}
 
 This type checks because
 \[
-\inferrule*{
-            \inferrule*{{w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} } \vdash_{\fst w} {\fst w} : {\upstairs{\Gamma}}}
-                       {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{\fst w.\snd w \equiv \TrPlus{\chi}{w}} {\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} : \upstairs{\Gamma}}
+\inferrule*[Left=s-elim]{
+            \inferrule*[Left=rewrite]{{\alpha : \upstairs{\Gamma}, x : \upstairs{A}} \vdash_\alpha \alpha : {\upstairs{\Gamma}}}
+                       {\alpha : \upstairs{\Gamma}, x : \upstairs{A} \vdash_{\alpha.x \equiv \TrPlus{\chi}{\alpha, x}} {\rewrite{\pi^\alpha_x}{\alpha}} : \upstairs{\Gamma}}
            }
            {
-             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_\beta \StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} : \upstairs{\Gamma}
+             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_\beta \StE{\chi}{\beta}{\alpha,x}{\rewrite{\pi^\alpha_x}{\alpha}} : \upstairs{\Gamma}
            }
 \]
 
@@ -2068,23 +2097,23 @@ This type checks because
 Note that:
 \begin{align*}
 &\upstairs{A}[\upstairs{\proj{\Gamma, A}}] \\
-&\equiv \upstairs{A}[\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}/\alpha] \\
-&\equiv \StE{\chi}{\beta}{w}{\upstairs{A}[\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}/\alpha]} & (\eta)\\
-&\equiv \StE{\chi}{\beta}{w}{\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}} & (\ref{eqn:stype-subst}) \\
+&\equiv \upstairs{A}[\StE{\chi}{\beta}{\alpha,x}{\rewrite{\pi^\alpha_x}{\alpha}}/\alpha] \\
+&\equiv \StE{\chi}{\beta}{\alpha,x}{\upstairs{A}[\rewrite{\pi^\alpha_x}{\alpha}/\alpha]} \\
+&\equiv \StE{\chi}{\beta}{\alpha,x}{\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{A}}} & (\ref{eqn:stype-subst}) \\
 \end{align*}
 So we can build $\upstairs{\qvar{\Gamma, A}}$ by:
 \begin{align*}
-\upstairs{\qvar{\Gamma, A}} :\equiv \StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}}
+\upstairs{\qvar{\Gamma, A}} :\StE{\chi}{\beta}{\alpha,x}{\rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}
 \end{align*}
 because
 \[
-\inferrule*{
-  \inferrule*{ {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{{\snd{w}}} {{{\snd w}}} : {{\upstairs{A}[\fst w/\alpha]}}}    }
-      {\inferrule*{ {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{\TrPlus{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd{w}}} {{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : {\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}} }
-                       {w : {\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \vdash_{\One_{\fst w.\snd w \equiv \TrPlus{\chi}{w}}} {\rewrite{\qvar{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : {\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}}}
+\inferrule*[Left=s-elim]{
+  \inferrule*[Left=rewrite]{ {\alpha : \upstairs{\Gamma}, x : \upstairs{A} \vdash_{x} x : \upstairs{A}}    }
+      {\inferrule*[Left=s-intro]{ {\alpha : \upstairs{\Gamma}, x : \upstairs{A} \vdash_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}} {{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}} : {\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{A}}}} }
+                       {\alpha : \upstairs{\Gamma}, x : \upstairs{A} \vdash_{\One_{\alpha.x}} {\rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}} : {\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{A}}}}}
            }
            {
-             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_{\One_\beta} \StE{\chi}{\beta}{w}{\rewrite{\qvar{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} : \StE{\chi}{\beta}{w}{\St{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\upstairs{A}[\fst w/\alpha]}}
+             \beta : \St{\chi}{\telety{\alpha}{\upstairs{\Gamma}}{\upstairs{A}}} \yields_{\One_\beta} \StE{\chi}{\beta}{\alpha,x}{\rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}} : \StE{\chi}{\beta}{\alpha, x}{\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{A}}}
            }
 \]
 \end{enumerate}
@@ -2114,23 +2143,23 @@ The remaining equations are:
 \begin{align*}
 \upstairs{(\Theta, a);\proj{\Gamma,A}}
 &\equiv \upstairs{\proj{\Gamma,A}}[\upstairs{(\Theta, a)}/\beta] \\
-&\equiv (\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}})[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}/\beta] \\
-&\equiv \StE{\chi}{\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} \\
-&\equiv \rewrite{\eta^\chi_{\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}} & (Lem~\ref{lem:rewrite-push})\\
-&\equiv \rewrite{\eta^\chi_{\alpha}}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}[(\upstairs{\Theta}, \upstairs{a})/w]} \\
+&\equiv (\StE{\chi}{\beta}{\alpha, x}{\rewrite{\pi^\alpha_x}{\alpha}})[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}/\beta] \\
+&\equiv \StE{\chi}{\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}}{\alpha,x}{\rewrite{\pi^\alpha_x}{\alpha}} \\
+&\equiv \rewrite{\eta^\chi_{\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{\alpha, x}{\rewrite{\pi^\alpha_x}{\alpha}}} & (\text{Lemma}~\ref{lem:rewrite-push})\\
+&\equiv \rewrite{\eta^\chi_{\alpha}}{\rewrite{\pi^\alpha_x}{\alpha}[\upstairs{\Theta}/\alpha, \upstairs{a}/x]} \\
 &\equiv \rewrite{\eta^\chi_{\alpha}}{\rewrite{\pi^\alpha_{\One_\alpha}}{\upstairs{\Theta}}} \\
 &\equiv\upstairs{\Theta} 
 \end{align*}
-where the final steps fuse the rewrites and use a triangle identity for $\eta$ and $\pi$.  (FIXME: give this a label and insert reference).  
+where the final steps fuse the rewrites and use a triangle identity for $\eta$ and $\pi$.  \mvrnote{(FIXME: give this a label and insert reference)}
 
 \item[{$\qvar{\Delta,A}[\Theta, a] \equiv a$}] 
 \begin{align*}
 \upstairs{\qvar{\Delta,A}[\Theta, a]} 
 &\equiv \upstairs{\qvar{\Delta,A}}[\upstairs{\Theta, a}/\beta] \\
-&\equiv (\StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}})[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}/\beta] \\
-&\equiv \StE{\chi}{\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} \\
-&\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}}}} \\
-&\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}[(\upstairs{\Theta}, \upstairs{a})/w]}} \\
+&\equiv (\StE{\chi}{\beta}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}}})[\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}/\beta] \\
+&\equiv \StE{\chi}{\rewrite{\eta^\chi_{\alpha}}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}}} \\
+&\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\StE{\chi}{\StI{\chi}{(\upstairs{\Theta}, \upstairs{a})}}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}}}}} \\
+&\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}}[\upstairs{\Theta}/\alpha, \upstairs{a}/x]}} \\
 &\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\rewrite{\var{\One_\alpha}}{\StI{\ApEl{p}{\pi^{\alpha}_{\One_\alpha}}}{\upstairs{a}}}}} \\
 &\equiv \rewrite{\One_{\langle \eta^\chi_\alpha \rangle}}{\rewrite{\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\qvar{\One_\alpha}}}{\StI{\ApEl{p}{\eta^\chi_\alpha}}{\StI{\ApEl{p}{\pi^{\alpha}_{\One_\alpha}}}{\upstairs{a}}}}} \\
 &\equiv \StI{\ApEl{p}{\eta^\chi_\alpha};\ApEl{p}{\pi^{\alpha}_{\One_\alpha}}}{\upstairs{a}} \\
@@ -2141,16 +2170,17 @@ Where we have used that
 \ApOne{\eta^\chi_\alpha};\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\qvar{\One_\alpha}} \equiv \id_{\One_\alpha}
 \end{align*}
 by the triangle identity for $\chi$, Equation~\eqref{eq:chi-triangle-2}
+
 \item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}] Using eta for $\St{\chi}{}$ and a triangle identity for $\chi$:
 \begin{align*}
 \upstairs{(\proj{\Gamma,A}, \qvar{\Gamma,A})}
 &\equiv \rewrite{\eta^\chi_{\beta}}{\StI{\chi}{(\upstairs{\proj{\Gamma,A}}, \upstairs{\qvar{\Gamma,A}})}} \\
-&\equiv \rewrite{\eta^\chi_{\beta}}{\StI{\chi}{(\StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}, \StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}})}} \\
-&\equiv \StE{\chi}{\beta}{w}{\rewrite{\eta^\chi_{\TrPlus{\chi}{w}}}{\StI{\chi}{(\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}, \rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}})}}} \\
-&\equiv \StE{\chi}{\beta}{w}{\rewrite{\eta^\chi_{\TrPlus{\chi}{w}}}{\StI{\chi}{\rewrite{(\pi^{\fst w}_{\snd w},\qvar{\snd w})}{(\fst w, \snd w)}}}} \\
-&\equiv \StE{\chi}{\beta}{w}{\rewrite{\eta^\chi_{\TrPlus{\chi}{w}}}{\StI{\chi}{\rewrite{\varepsilon^\chi_w}{w}}}} \\
-&\equiv \StE{\chi}{\beta}{w}{\rewrite{\eta^\chi_{\TrPlus{\chi}{w}}}{\rewrite{\ApPlus{\chi}{\varepsilon^\chi_w}}{\StI{\chi}{w}}}} \\
-&\equiv \StE{\chi}{\beta}{w}{\StI{\chi}{w}} \\
+&\equiv \rewrite{\eta^\chi_{\beta}}{\StI{\chi}{(\StE{\chi}{\beta}{\alpha, x}{\rewrite{\pi^{\alpha}_{x}}{\alpha}}, \StE{\chi}{\beta}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}}})}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\eta^\chi_{\TrPlus{\chi}{(\alpha, x)}}}{\StI{\chi}{(\rewrite{\pi^{\alpha}_{x}}{\alpha}, \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_{x}}}{x}})}}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\eta^\chi_{\TrPlus{\chi}{(\alpha, x)}}}{\StI{\chi}{\rewrite{(\pi^{\alpha}_{x},\qvar{x})}{(\alpha, x)}}}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\eta^\chi_{\TrPlus{\chi}{(\alpha, x)}}}{\StI{\chi}{\rewrite{\varepsilon^\chi_{(\alpha, x)}}{(\alpha, x)}}}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\eta^\chi_{\TrPlus{\chi}{(\alpha, x)}}}{\rewrite{\ApPlus{\chi}{\varepsilon^\chi_{(\alpha, x)}}}{\StI{\chi}{(\alpha, x)}}}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\StI{\chi}{(\alpha, x)}} \\
 &\equiv \beta \\
 &\equiv \upstairs{\id_{\Gamma, A}}
 \end{align*}
@@ -2185,13 +2215,13 @@ where $\Gamma \qyields \Theta : \Delta$ is any substitution.
 These are straightforward to check:
 \begin{align*}
 \upstairs{\proj{\Gamma, A}}[\into{\Gamma, A}/\beta] 
-&\equiv \StE{\chi}{\beta}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}}[\StI{\chi}{(\alpha, x)}/\beta] \\
-&\equiv \StE{\chi}{\StI{\chi}{(\alpha, x)}}{w}{\rewrite{\pi^{\fst w}_{\snd w}}{\fst w}} \\
+&\equiv \StE{\chi}{\beta}{\alpha, x}{\rewrite{\pi^{\alpha}_{x}}{\alpha}}[\StI{\chi}{(\alpha, x)}/\beta] \\
+&\equiv \StE{\chi}{\StI{\chi}{(\alpha, x)}}{\alpha, x}{\rewrite{\pi^{\alpha}_{x}}{\alpha}} \\
 &\equiv \rewrite{\pi^\alpha_x}{\alpha} \\
 \upstairs{\qvar{\Gamma, A}}[\into{\Gamma, A}/\beta]
-&\equiv  \StE{\chi}{\beta}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}}[\StI{\chi}{(\alpha, x)}/\beta]  \\
-&\equiv \StE{\chi}{\StI{\chi}{(\alpha, x)}}{w}{\rewrite{\var{\snd w}}{\StI{\ApEl{p}{\pi^{\fst w}_{\snd w}}}{\snd w}}} \\
-&\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}} \\
+&\equiv  \StE{\chi}{\beta}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}[\StI{\chi}{(\alpha, x)}/\beta]  \\
+&\equiv  \StE{\chi}{\StI{\chi}{(\alpha, x)}}{\alpha, x}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}}  \\
+&\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}}
 \end{align*}
 For the last:
 \begin{align*}
