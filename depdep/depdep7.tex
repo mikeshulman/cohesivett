@@ -129,6 +129,10 @@
 \newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
 \newcommand\fdistinv[1]{\ensuremath{\fdist{#1}^{-1}}}
 
+\newcommand\flatone[1]{\ensuremath{\mathtt{flatone}_{#1}}}
+\newcommand\flatdist[1]{\ensuremath{\mathtt{flatdist}_{#1}}}
+\newcommand\flatdistinv[1]{\ensuremath{\flatdist{#1}^{-1}}}
+
 \newcommand{\lock}{\text{\faUnlock}}
 \newcommand{\Rtype}[1]{\mathsf{R}{#1}}
 \newcommand{\RI}[1]{\mathsf{shut}({#1})}
@@ -1780,13 +1784,13 @@ Suppose we have two comprehension objects $p$ and $q$.
 \begin{definition}\label{def:morphism-comprehension-object}
 A \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \chi^p, \psi^p)$ to $(q, \One^q, \chi^q, \psi^q)$ consists of constants
 \begin{align*}
-f : q \tcell p \\
-\alpha : p, x : \El{p}{\alpha} \yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
-\fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
+&\yields f : q \tcell p \\
+\alpha : p, x : \El{p}{\alpha} &\yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
+\alpha : p, x : \El{p}{\alpha} &\yields \fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
 \end{align*}
 such that $\fone{\alpha}$ is natural:
 \begin{align}
-\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
+\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}/x} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
 \end{align}
 \end{definition}
 
@@ -1827,20 +1831,67 @@ Follows from
 \subsection{Spatial Type Theory}
 
 Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad as follows.
-\begin{definition}\label{def:supports-spatial}
-A morphism of fibrations $f$ \emph{supports spatial type theory} if \mvrnote{$f$ supports left and right types and} there are morphisms
+
+\begin{definition}
+A mode term morphism $\gamma, x : p \yields \mu : p$ is a \emph{comonad} if there are morphisms
 \begin{align*}
-\alpha : p &\yields \fcounit{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \alpha \\
-\alpha : p &\yields \fcomult{\alpha} : \TrPlus{f}{\alpha} \Rightarrow_p \TrPlus{f}{\TrPlus{f}{\alpha}}
+\gamma, x : p &\yields \fcounit{x} : \mu(x) \Rightarrow_p x \\
+\gamma, x : p &\yields \fcomult{x} : \mu(x) \Rightarrow_p \mu(\mu(x))
 \end{align*}
 satisfying:
 \begin{align}
-\fcomult{\alpha};\ApPlus{f}{\fcomult{\alpha}} &\equiv \fcomult{\alpha};\fcomult{\TrPlus{f}{\alpha}} \\
-\fcomult{\alpha};\ApPlus{f}{\fcounit{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}} \\
-\fcomult{\alpha};\fcounit{\TrPlus{f}{\alpha}} &\equiv \id_{\TrPlus{f}{\alpha}}
+\fcomult{x};\ap{\mu}{\fcomult{x}} &\equiv \fcomult{x};\fcomult{\mu(x)} \\
+\fcomult{x};\ap{\mu}{\fcounit{x}} &\equiv \id_{\mu(x)} \\
+\fcomult{x};\fcounit{\mu(x)} &\equiv \id_{\mu(x)}
+\end{align}
+A comonad is \emph{idempotent} if any of the following equivalent equations hold:
+\begin{align}
+\fcounit{\mu(x)} &\equiv \ap{\mu}{\fcounit{x}} \\
+\ap{\mu}{\fcounit{x}} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} \\
+\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} 
 \end{align}
 \end{definition}
 
+\begin{definition}\label{def:supports-spatial}
+A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{-}$ is an idempotent comonad and $f$ supports left and right types.
+\end{definition}
+
+We would also like to talk about $\flat$-types for a non-idempotent comonad. 
+\begin{definition}
+A comonad \emph{supports $\flat$-types} if there are constants
+\begin{align*}
+\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
+\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\TrPlus{f}{\alpha}}} \tcell_{\TrPlus{f}{\TrPlus{f}{\alpha}}} \TrPlus{\fcounit{\TrPlus{f}{\alpha}}}{\flat_1(\One_{\TrPlus{f}{\alpha}})}
+\end{align*}
+such that
+\begin{align*}
+\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
+\flatdist{\alpha, x} &:\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
+\end{align*}
+is an isomorphism.
+\end{definition}
+
+\begin{lemma}
+If $f$ supports spatial type theory then it supports $\flat$-types.
+\end{lemma}
+\begin{proof}
+Define
+\begin{align*}
+\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
+\flatone{\alpha} &:\equiv \fone{\TrPlus{f}{\alpha}}
+\end{align*}
+where the latter typechecks with $\fcomult{x}$ cancelling with $\fcounit{\TrPlus{f}{\alpha}}$.
+
+$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
+\begin{align*}
+\flatdist{\alpha, x} &\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\equiv \eta^{\chi}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+\end{align*}
+which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
+\end{proof}
 
 \section{Object Languages}
 
