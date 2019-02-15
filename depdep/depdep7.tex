@@ -1858,15 +1858,15 @@ A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{
 
 We would also like to talk about $\flat$-types for a non-idempotent comonad. 
 \begin{definition}
-A comonad \emph{supports $\flat$-types} if there are constants
+A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
 \begin{align*}
 \alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
-\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\TrPlus{f}{\alpha}}} \tcell_{\TrPlus{f}{\TrPlus{f}{\alpha}}} \TrPlus{\fcounit{\TrPlus{f}{\alpha}}}{\flat_1(\One_{\TrPlus{f}{\alpha}})}
+\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
 \end{align*}
 such that
 \begin{align*}
 \flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
-\flatdist{\alpha, x} &:\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
+\flatdist{\alpha, x} &:\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
 \end{align*}
 is an isomorphism.
 \end{definition}
@@ -1878,18 +1878,25 @@ If $f$ supports spatial type theory then it supports $\flat$-types.
 Define
 \begin{align*}
 \flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
-\flatone{\alpha} &:\equiv \fone{\TrPlus{f}{\alpha}}
+\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
 \end{align*}
-where the latter typechecks with $\fcomult{x}$ cancelling with $\fcounit{\TrPlus{f}{\alpha}}$.
 
 $\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
 \begin{align*}
-\flatdist{\alpha, x} &\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\flatdist{\alpha, x} \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
 &\equiv \eta^{\chi}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
 \end{align*}
+%\begin{align*}
+%\flatdist{\alpha, x} &\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^{\chi}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+%\end{align*}
 which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
 \end{proof}
 
@@ -3191,7 +3198,7 @@ And the equations:
 &\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c[\Theta \uparrow A, \lock]}[\StI{f}{\into{\Gamma, A}}/\delta]}})}}} \\
 &\equiv \upstairs{\LE{c[\Theta \uparrow A, \lock]}}
 \end{align*}
-\mvrnote{Skipped some steps above that might be worth writing out in general, in particular I think the translation of split for $\Sigma$s could be improved}
+Where
 
 \item[{$\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] \equiv c$}:]
 \begin{align*}
@@ -3218,9 +3225,50 @@ And the equations:
 
 \subsubsection{Rules for Spatial Type Theory}
 
+We can interpret the rules of $\flat$ without assuming $f$ is idempotent. These are only slightly modified from the translations of $\Ltype{}$.
+
+\begin{enumerate}
+\item[\textsc{$\flat$-form}] We are given
+\begin{align*}
+\beta : \upstairs{\Gamma, \lock} \yields_{\El{p}{\beta}} \upstairs{A} \TYPE
+\end{align*}
+So we can form 
+\begin{mathpar}
+\inferrule*[Left=s-Elim]{
+\inferrule*[Left=F-form]{
+\inferrule*[Left=cut]{
+\beta : \upstairs{\Gamma, \lock} \yields_{\El{p}{\beta}} \upstairs{A} \TYPE}
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\TrPlus{f}{\alpha}}} \upstairs{A}[\StI{f}{\alpha}/\beta] \TYPE}}
+{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\TrPlus{f}{\alpha}}} \F{\flat_1}{\upstairs{A}[\StI{f}{\alpha}/\beta]} \TYPE}}
+{\beta : \upstairs{\Gamma, \lock} \yields_{\El{p}{\beta}} \upstairs{\Flattype{A}} :\equiv \StE{f}{\beta}{\alpha}{\F{\flat_1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}} \TYPE}
+\end{mathpar}
+
+\item[\textsc{$\flat$-intro}] We are given 
+\begin{align*}
+\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}
+\end{align*}
+and we can mirror the formation rule
+\begin{mathpar}
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=F-intro]{
+\inferrule*[Left=cut]{
+\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \upstairs{a} : \upstairs{A} }
+{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \upstairs{a}[\StI{f}{\alpha}/\beta] : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+{\alpha : \upstairs{\Gamma} \yields_{\flat_1(\One_{\TrPlus{f}{\alpha}})} \FI{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \F{\flat_1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}}}
+{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\flatone{\alpha}}{\FI{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \F{\flat_1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}}}
+{\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\flatone{\alpha}}{\FI{\upstairs{a}[\StI{f}{\alpha}/\beta]}}} : \upstairs{\Flattype{A}}}
+\end{mathpar}
+
+\item[\textsc{$\flat$-elim}] \mvrnote{TODO, not anticipating any surprises}
+\end{enumerate}
+
+\mvrnote{Old:}
+
 Suppose $f$ supports spatial type theory, so $\TrPlus{f}{-}$ has the structure of an idempotent comonad (Definition~\ref{def:supports-spatial}).
 
 In our algebraic presentation these additions to the mode theory manifest as axiomatic substitutions $\Gamma, \lock \qyields \counit{\Gamma} : \Gamma$ and $\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock$. These satisfying the same equations as the mode theory, for example, $\comult{\Gamma};\counit{\Gamma, \lock} \equiv \id_{\Gamma, \lock}$.
+
 
 We now sketch a translation of the rules of spatial type theory \mvrnote{TODO: ref} into algebraic style. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Delta \mid \cdot$ always ends with a $\lock$. 
 
