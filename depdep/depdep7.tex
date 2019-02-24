@@ -158,6 +158,11 @@
 
 % Linear zone
 \newcommand{\linsnd}[1]{\mathtt{linsnd}_{#1}}
+\newcommand{\linwk}[1]{\mathtt{linwk}_{#1}}
+\newcommand{\frob}[1]{\mathtt{frob}_{#1}}
+\newcommand\qlinvar[1]{\ensuremath{\mathsf{linvar}_{#1}}}
+\newcommand\linpair[1]{\ensuremath{\mathsf{linpair}_{#1}}}
+\newcommand\linsplit[1]{\ensuremath{\mathsf{linsplit}({#1})}}
 
 % Macros for semantics notation
 \newcommand\mm[1]{\llbracket #1 \rrbracket}
@@ -1898,19 +1903,35 @@ A comprehension object $p$ \emph{supports a dependently indexed linear context} 
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
 \end{align*}
-such that $\otimes_\alpha$ is symmetric and $1_\alpha$ is a unit for $\otimes_\alpha$. \mvrnote{(strictness?)}
+such that $\otimes_\alpha$ is symmetric and $1_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}, \mvrnote{Pending: What exactly do we need?} and there are morphisms 
+\begin{align*}
+\mathtt{lax}_{v,w} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes v}
+\end{align*}
 \end{definition}
 
 \begin{definition}
-A comprehension object $p$ \emph{supports $\Sigma!$-types} if there is
+A comprehension object $p$ that supports a linear zone also \emph{supports $\otimes$-types} if:
+\mvrnote{TODO}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ \emph{supports $\Sigma!$-types} if it supports a linear context and there is
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma!(x,y) : \El{p}{\alpha}
 \end{align*}
-and a mode term morphism
+and mode term morphisms
 \begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} &\yields \linsnd{x,y} : y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)} \\
+\alpha : p, x : \El{p}{\alpha}, z : \El{p}{\alpha} &\yields \linwk{x,z} : \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z}) \tcell_{\El{p}{\alpha}} z
 \end{align*}
+that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism
+\begin{align*}
+\frob{\xi, x, y} &: \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} y) \tcell_{\El{p}{\alpha}} \xi \otimes_\alpha \Sigma!(x, y) \\
+\frob{\xi, x, y} &:\equiv \ap{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} -)}{\linsnd{x,y}} ; \ap{\Sigma!(x, -)}{\mathtt{lax}_{\xi, \Sigma!(x,y)}} ; \linwk{x, \xi \otimes \Sigma!(x,y)}
+\end{align*}
+is an isomorphism.
 \end{definition}
+\mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
 
 \section{Object Languages}
 
@@ -2427,7 +2448,6 @@ Checking the equations hold is reasonably straightforward:
 \end{align*}
 
 \item[{$\qunitmatch{c}[\id_\Gamma, \star_\Gamma] \equiv c$}:] This is
-
 \begin{align*}
 &\upstairs{\qunitmatch{c}[\id_\Gamma, \star_\Gamma]} \\
 &\equiv (\StE{\chi}{\beta}{\alpha, s}{\FEs{w.\One_\alpha}{s}{w}{\rewrite{\ApOne{\pi^\alpha_{\One_\alpha}}}{\StI{\pi^\alpha_{\One_\alpha}}{\upstairs{c}}}}})[\upstairs{\id_\Gamma, \star_\Gamma}/\beta] \\
@@ -3517,7 +3537,20 @@ and
 
 \subsection{Dependently Indexed Linear Types}
 
-
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=ctx-empty]{~}{\cdot \mid \cdot \CTX} \and
+\inferrule*[left=ctx-ext]{\qyields \Gamma \mid \cdot \CTX \and \Gamma \mid \cdot \qyields A \TYPE}{\qyields \Gamma, A \mid \cdot \CTX} \\
+\inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \mid \cdot \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
+\inferrule*[left=ctx-var]{~}{\Gamma, A \mid \cdot \qyields \qvar{A} : A[\proj{\Gamma, A}]} \and
+\inferrule*[left=ctx-lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} \\
+\inferrule*[Left=$\Sigma!$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma, A \mid \cdot \qyields B \TYPE}{\Gamma \qyields \Sigma!_A B \TYPE } \\
+\inferrule*[Left=$\Sigma!$-intro]{~}{\Gamma, A \mid B \qyields \linpair{A,B} : \Sigma!_A B [\proj{\Gamma, A}]} \and
+\inferrule*[Left=$\Sigma!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}], B \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \Sigma!_A B \qyields \linsplit{c} : C} \and
+\end{mathpar}
+\mvrnote{TODO: the rest}
+\caption{Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-dependent-rules}
+\end{figure}
 
 \begin{enumerate}
 \item[\textsc{$\Sigma!$-form}] 
@@ -3547,7 +3580,29 @@ And we can produce such a term by:
 {\beta : \upstairs{\Gamma, A}, y : \upstairs{B} \yields_y \StE{\chi}{\beta}{\alpha,x}{\rewrite{\linsnd{x,y}}{\StI{\ApEl{p}{\pi^\alpha_x}}{\FIs{w. \Sigma!(\fst w, \snd w)}{x,y}}}} : \upstairs{\Sigma!_A B [\proj{\Gamma, A}]}}
 \end{mathpar}
 
-\mvrnote{Again, we could fix intro of ordinary $\Sigma$...}
+\item[\textsc{$\Sigma!$-elim}]
+The translation of the provided term is:
+\begin{align*}
+\beta : \upstairs{\Gamma, A}, \xi : \upstairs{\Xi[\proj{\Gamma, A}]}, y : \upstairs{B} \yields_{\xi \otimes y} \upstairs{c} : \StE{\chi}{\beta}{\alpha, x}{\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{C}}}
+\end{align*}
+So use:
+\begin{mathpar}
+\inferrule*[Left=F-elim]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=cut]{
+\inferrule*[Left=cut]{
+\beta : \upstairs{\Gamma, A}, \xi : \upstairs{\Xi[\proj{\Gamma, A}]}, y : \upstairs{B} \yields_{\xi \otimes y} \upstairs{c} : \StE{\chi}{\beta}{\alpha, x}{\St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{C}}}}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, \xi : \St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{\Xi}}, y : \upstairs{B}[\StI{\chi}{\alpha, x}/\beta] \yields_{\xi \otimes y} \upstairs{c}[\StI{\chi}{\alpha, x}/\beta] : \St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{C}}}}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B}[\StI{\chi}{\alpha, x}/\beta] \yields_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes y} \upstairs{c}[\StI{\chi}{\alpha, x}/\beta, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi] : \St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{C}}}
+\\\\
+\alpha : \upstairs{\Gamma}, x : \upstairs{A}, z : \upstairs{C} \yields_{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z})} \rewrite{\linwk{x,z}}{z} : \upstairs{C}
+}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B}[\StI{\chi}{\alpha, x}/\beta] \yields_{\Sigma!(x,\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes y)} \\\\ \StE{\ApEl{p}{\pi^\alpha_x}}{\upstairs{c}[\StI{\chi}{\alpha, x}/\beta, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}} : \upstairs{C} }}
+{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B}[\StI{\chi}{\alpha, x}/\beta] \yields_{\xi \otimes \Sigma!(x, y)} \\\\ \rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^\alpha_x}}{\upstairs{c}[\StI{\chi}{\alpha, x}/\beta, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}} : \upstairs{C}}}
+{\alpha : \upstairs{\Gamma}, \xi : \upstairs{\Xi}, w : \upstairs{\Sigma!_A B} \yields_{\xi \otimes w} \\\\ \FE{w}{x, y}{\rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^\alpha_x}}{\upstairs{c}[\StI{\chi}{\alpha, x}/\beta, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}}} : \upstairs{C}}
+\end{mathpar}
+
 \end{enumerate}
 
 \section{Semantics}
