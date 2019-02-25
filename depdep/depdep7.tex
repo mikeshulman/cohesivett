@@ -161,8 +161,12 @@
 \newcommand{\linwk}[1]{\mathtt{linwk}_{#1}}
 \newcommand{\frob}[1]{\mathtt{frob}_{#1}}
 \newcommand\qlinvar[1]{\ensuremath{\mathsf{linvar}_{#1}}}
+\newcommand\otimespair[1]{\ensuremath{\otimes\mathsf{pair}_{#1}}}
+\newcommand\otimessplit[1]{\ensuremath{\otimes\mathsf{split}({#1})}}
 \newcommand\linpair[1]{\ensuremath{\mathsf{linpair}_{#1}}}
 \newcommand\linsplit[1]{\ensuremath{\mathsf{linsplit}({#1})}}
+\newcommand\linapp[1]{\ensuremath{\mathsf{linapp}_{#1}}}
+\newcommand\linlam{\ensuremath{\mathsf{linlam}}}
 
 % Macros for semantics notation
 \newcommand\mm[1]{\llbracket #1 \rrbracket}
@@ -2758,8 +2762,8 @@ The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability 
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=$\Pi$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi_A B \TYPE} \\
-\inferrule*[left=$\Pi$-app]{~}{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}] \qyields \qapp{A, B} : B[\proj{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}]} \and 
-\inferrule*[left=$\Pi$-lam]{\Gamma, A \qyields b : B}{\Gamma \qyields \qlam(b) : \Pi_A B}
+\inferrule*[left=$\Pi$-intro]{\Gamma, A \qyields b : B}{\Gamma \qyields \qlam(b) : \Pi_A B} \and
+\inferrule*[left=$\Pi$-elim]{~}{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}] \qyields \qapp{A, B} : B[\proj{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}]}
 \end{mathpar}
 \begin{align}
 (\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
@@ -3544,11 +3548,20 @@ and
 \inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \mid \cdot \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
 \inferrule*[left=ctx-var]{~}{\Gamma, A \mid \cdot \qyields \qvar{A} : A[\proj{\Gamma, A}]} \and
 \inferrule*[left=ctx-lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} \\
+%%%
+\inferrule*[Left=$\otimes$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma \mid \cdot \qyields B \TYPE}{\Gamma \mid \cdot \qyields A \otimes B \TYPE} \\
+\inferrule*[Left=$\otimes$-intro]{~}{\Gamma \mid A, B \qyields \otimespair{A,B} : A \otimes B} \and
+\inferrule*[Left=$\otimes$-elim]{\Gamma \mid \Xi, A, B \qyields c : C}{\Gamma \mid \Xi, A \otimes B \qyields \otimessplit{c} : C} \\
+%%%
 \inferrule*[Left=$\Sigma!$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma, A \mid \cdot \qyields B \TYPE}{\Gamma \qyields \Sigma!_A B \TYPE } \\
 \inferrule*[Left=$\Sigma!$-intro]{~}{\Gamma, A \mid B \qyields \linpair{A,B} : \Sigma!_A B [\proj{\Gamma, A}]} \and
-\inferrule*[Left=$\Sigma!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}], B \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \Sigma!_A B \qyields \linsplit{c} : C} \and
+\inferrule*[Left=$\Sigma!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}], B \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \Sigma!_A B \qyields \linsplit{c} : C} \\
+%%%
+\inferrule*[Left=$\Pi!$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma, A \mid \cdot \qyields B \TYPE}{\Gamma \qyields \Pi!_A B \TYPE } \\
+\inferrule*[left=$\Pi!$-intro]{\Gamma, A \mid \Xi[\proj{\Gamma, A}]\qyields b : B}{\Gamma \mid \Xi \qyields \linlam(b) : \Pi!_A B} \and
+\inferrule*[left=$\Pi!$-elim]{~}{\Gamma, A \mid (\Pi_A B)[\proj{\Gamma, A}] \qyields \linapp{A, B} : B}
 \end{mathpar}
-\mvrnote{TODO: the rest}
+\mvrnote{TODO: more?}
 \caption{Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-dependent-rules}
 \end{figure}
 
