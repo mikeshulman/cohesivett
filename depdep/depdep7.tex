@@ -1951,7 +1951,7 @@ This allows us to translate object-language substitution into types and terms as
 
 This is a change from \mvrnote{LSR}, in which object-language contexts are translated to framework contexts. \mvrnote{This didn't work because ... Something like, in principle there could be many non-equivalent ways to package a collection of types into a single context (as an object in the category of contexts), and a framework context does not have enough information in it?}
 
-The general schema is as follows: context formers are specified by mode type morphisms, structural rules are specified by mode term morphisms and type formers are specified by mode terms. We give an example of each of these in turn.
+The general schema is as follows: context formers are specified by mode type morphisms, structural rules are specified by mode term morphisms and type formers are specified by mode terms. We give an example of each of these in turn. \mvrnote{TODO: also include some examples of how these translations would look if the mode theory were very strict} \mvrnote{TODO: these are out of date now}
 
 \begin{itemize}
 \item Context formers are translated to $s$-types for a mode type morphism. For example, the context extension rule
@@ -2902,7 +2902,20 @@ again using Lemma~\ref{lem:into-identities}.
 \end{align*}
 \end{enumerate}
 
-\subsubsection{Rules for Dependent Adjoints}
+\subsection{Unpacked Translation}
+\newcommand{\modeof}[1]{{#1}_p}
+
+\mvrnote{TODO}
+
+\begin{itemize}
+\item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over $\downstairs{\Gamma}$ and a mode term $\modeof{\Gamma} : p$.
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$.
+\item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \qyields \upstairs{\Theta} : \mathsf{packed}(\upstairs{\Delta})$ where \mvrnote{we can probably define packed in terms of stuff we already have}
+\end{itemize}
+
+
+\subsection{Adjoint Type Theory}
 
 Dependent right adjoint types have previously been studied in \mvrnote{cite}. An operation $\lock$ on contexts and a type former $\Rtype{}$ are added, with $\lock$ adjoint to $\Rtype{}$ in the sense that terms of $\Gamma, \lock \qyields A \TYPE$ correspond bijectively with terms of $\Gamma \qyields \Rtype{A} \TYPE$.
 
@@ -3541,29 +3554,70 @@ and
 
 \subsection{Dependently Indexed Linear Types}
 
+\mvrnote{TODO}
+
+\mvrnote{DILTT} maintains the invariant that all types in the linear zone are well-formed in the intuitionistic context. A DILTT context $\Gamma \mid A, B, \dots$ is translated to a framework context $\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B}, \dots$, where $\Gamma$ is translated as in ordinary MLTT, we may do this because each of the types $\upstairs{A}, \upstairs{B}, \dots$ are well-formed in context $\alpha : \upstairs{\Gamma}$.
+
+The rules in algebraic style are given in Figure~\ref{fig:qit-linear-dependent-rules}. Rules such as $\Sigma!$-elim and $\Pi!$-intro are presented with only a single linear type $\Xi$ in the linear context. In the presence of $\otimes$-types, we may pack a more general linear context into a single type iterated $\otimes$-type, apply the rule, then unpack the $\otimes$-type.
+
 \begin{figure}
+\mvrnote{TODO: need a different symbol for $\CTX$ when referring to the dual one}
+\mvrnote{TODO: what is the proper way of defining term-lin-sub? this single variable version? or a second substitution judgement with a linear context?}
 \begin{mathpar}
-\inferrule*[left=ctx-empty]{~}{\cdot \mid \cdot \CTX} \and
-\inferrule*[left=ctx-ext]{\qyields \Gamma \mid \cdot \CTX \and \Gamma \mid \cdot \qyields A \TYPE}{\qyields \Gamma, A \mid \cdot \CTX} \\
-\inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \mid \cdot \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
+\inferrule*[left=ctx-lin-empty]{\qyields \Gamma \CTX}{\qyields \Gamma \mid \cdot \CTX} \and
+\inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
+\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=term-sub]{\Delta \mid \Xi \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \mid \Xi[\Theta] \qyields a[\Theta] : A[\Theta]} \and
+\inferrule*[left=term-lin-sub]{\Gamma \mid \Xi, B \qyields a : A  \and \Gamma \mid \Xi' \qyields b : B}{\Gamma \mid \Xi, \Xi' \qyields a[b/B] : A} \\
 \inferrule*[left=ctx-var]{~}{\Gamma, A \mid \cdot \qyields \qvar{A} : A[\proj{\Gamma, A}]} \and
-\inferrule*[left=ctx-lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} \\
+\inferrule*[left=ctx-lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} 
+\end{mathpar}
+\begin{align}
+a[\qlinvar{A}/A] &\equiv a
+\end{align}
+\mvrnote{associativity, etc}
+\begin{mathpar}
+%\inferrule*[left=sub-lin-empty]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
+%\inferrule*[left=sub-lin-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
+%\inferrule*[left=sub-lin-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
 %%%
-\inferrule*[Left=$\otimes$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma \mid \cdot \qyields B \TYPE}{\Gamma \mid \cdot \qyields A \otimes B \TYPE} \\
+\inferrule*[Left=$\otimes$-form]{\Gamma \qyields A \TYPE \and \Gamma \qyields B \TYPE}{\Gamma \qyields A \otimes B \TYPE} \\
 \inferrule*[Left=$\otimes$-intro]{~}{\Gamma \mid A, B \qyields \otimespair{A,B} : A \otimes B} \and
 \inferrule*[Left=$\otimes$-elim]{\Gamma \mid \Xi, A, B \qyields c : C}{\Gamma \mid \Xi, A \otimes B \qyields \otimessplit{c} : C} \\
 %%%
-\inferrule*[Left=$\Sigma!$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma, A \mid \cdot \qyields B \TYPE}{\Gamma \qyields \Sigma!_A B \TYPE } \\
+\inferrule*[Left=$\Sigma!$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma!_A B \TYPE } \\
 \inferrule*[Left=$\Sigma!$-intro]{~}{\Gamma, A \mid B \qyields \linpair{A,B} : \Sigma!_A B [\proj{\Gamma, A}]} \and
 \inferrule*[Left=$\Sigma!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}], B \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \Sigma!_A B \qyields \linsplit{c} : C} \\
 %%%
-\inferrule*[Left=$\Pi!$-form]{\Gamma \mid \cdot \qyields A \TYPE \and \Gamma, A \mid \cdot \qyields B \TYPE}{\Gamma \qyields \Pi!_A B \TYPE } \\
+\inferrule*[Left=$\Pi!$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi!_A B \TYPE } \\
 \inferrule*[left=$\Pi!$-intro]{\Gamma, A \mid \Xi[\proj{\Gamma, A}]\qyields b : B}{\Gamma \mid \Xi \qyields \linlam(b) : \Pi!_A B} \and
 \inferrule*[left=$\Pi!$-elim]{~}{\Gamma, A \mid (\Pi_A B)[\proj{\Gamma, A}] \qyields \linapp{A, B} : B}
 \end{mathpar}
 \mvrnote{TODO: more?}
+\mvrnote{TODO: equations}
 \caption{Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-dependent-rules}
 \end{figure}
+
+\begin{enumerate}
+\item[\textsc{ctx-lin-ext}] 
+\item[\textsc{ctx-lin-var}] 
+\end{enumerate}
+
+For $\otimes$-types, the rules are immediate from the framework $\mathsf{F}$-type rules; no unpacking or rewriting is necessary.
+\begin{enumerate}
+\item[\textsc{$\otimes$-form}] 
+\begin{align*}
+\upstairs{A \otimes B} :\equiv \F{w. (\fst w) \otimes_\alpha (\snd w)}{\upstairs{A}, \upstairs{B}}
+\end{align*}
+\item[\textsc{$\otimes$-intro}] 
+\begin{align*}
+\upstairs{\otimespair{A,B}} :\equiv \FIs{w. (\fst w) \otimes_\alpha (\snd w)}{\upstairs{a}, \upstairs{b}}
+\end{align*}
+\item[\textsc{$\otimes$-elim}] 
+\begin{align*}
+\upstairs{\otimessplit{c}} :\equiv \FEs{w. (\fst w) \otimes_\alpha (\snd w)}{w}{x, y}{\upstairs{c}}
+\end{align*}
+\end{enumerate}
 
 \begin{enumerate}
 \item[\textsc{$\Sigma!$-form}] 
