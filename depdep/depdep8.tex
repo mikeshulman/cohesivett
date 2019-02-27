@@ -1,0 +1,2738 @@
+\documentclass[10pt]{article}
+  \usepackage{xcolor}
+  \definecolor{darkgreen}{rgb}{0,0.45,0} 
+  \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+  \usepackage{pdflscape}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{dsfont}
+\usepackage{fontawesome}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newenvironment{constr}{\begin{proof}[Construction]}{\end{proof}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+\newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\Yields}{\tcell}
+\newcommand{\tcell}{\Rightarrow}
+\newcommand{\cbar}{\, | \,}
+\newcommand{\judge}{\mathcal{J}}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\ctx}{\,\,\mathsf{mctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\type}{\,\,\mathsf{mode}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+\newcommand{\tele}{\,\,\mathsf{mtele}}
+
+\newcommand{\app}[2]{\ensuremath{#1 \: #2}}
+\newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\mt}[0]{\ensuremath{()}}
+\newcommand{\sigmacl}[3]{\ensuremath{\textnormal{$\Sigma$}\,#1{:}#2.\,#3}}
+\newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
+\newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
+\newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
+\newcommand\TeleE[4]{\ensuremath{\mathsf{let} \, (#2, #3) \, = \, {#1} \, \mathsf{in} \, #4}}
+
+\newcommand\fan[1]{\ensuremath{\mathsf{fan}_{#1}}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand{\rewrite}[2]{\overleftarrow{#1}(#2)}
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}_{#1}(#2)}}
+\newcommand\UStI[2]{\ensuremath{\mathsf{ust}_{#1}(#2)}}
+\newcommand\UnSt[2]{\ensuremath{\mathsf{unst}_{#1}(#2)}}
+%\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#1}{#3} \, = \, {#2} \, \mathsf{in} \, #4}}
+\newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
+% With subscript:
+\newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\FIs[2]{\ensuremath{\mathsf{F}_{#1}{(#2)}}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash {#2} : #3 \tcell_{#5} #4}}
+%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
+%\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
+\newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
+
+\newcommand\El[2]{\mathcal{T}_{#1}(#2)}
+\newcommand\ApEl[2]{\mathcal{T}_{#1}\langle#2\rangle}
+\newcommand\bdot[0]{\mathbin{.}}
+\newcommand\bang[0]{\mathord{!}}
+
+\newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+\newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
+\newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
+
+% Lemmas
+\newcommand{\ctxtuple}[1]{\Sigma^\bullet{#1}}
+
+% MLTT
+\newcommand{\qyields}{\Vdash} 
+\newcommand{\upstairs}[1]{\overline{#1}}
+\newcommand{\downstairs}[1]{\underline{#1}}
+\newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
+\newcommand\qvar[1]{\ensuremath{\mathsf{var}_{#1}}}
+\newcommand\into[1]{\ensuremath{\mathsf{into}_{#1}}}
+
+\newcommand\One{\ensuremath{\mathds{1}}}
+\newcommand\var[1]{\ensuremath{\mathtt{var}_{#1}}}
+\newcommand\ApOne[1]{\ensuremath{\One_{\langle {#1} \rangle }}}
+
+\newcommand\mtt[1]{\mathtt{#1}}
+\newcommand\contract[1]{\ensuremath{\mathtt{contract}_{#1}}}
+\newcommand\fibpair[1]{\ensuremath{\mathtt{fibpair}_{#1}}}
+\newcommand\pair[1]{\ensuremath{\mathtt{pair}_{#1}}}
+\newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
+\newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
+
+\newcommand\qunitmatch[1]{\ensuremath{\mathsf{match}(#1)}}
+\newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
+\newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
+\newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
+\newcommand\qlam{\ensuremath{\mathsf{lam}}}
+
+% Unpacked translation
+\newcommand{\modeof}[1]{{#1}_p}
+\newcommand{\tpack}[1]{\ensuremath{\mathtt{pack}_{#1}}}
+
+% Adjoint type theory
+\newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
+\newcommand\fibf[1]{\ensuremath{\mathtt{fibf}_{#1}}}
+\newcommand\foneinv[1]{\ensuremath{\fone{#1}^{-1}}}
+\newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
+\newcommand\fdistinv[1]{\ensuremath{\fdist{#1}^{-1}}}
+
+\newcommand\flatone[1]{\ensuremath{\mathtt{flatone}_{#1}}}
+\newcommand\flatdist[1]{\ensuremath{\mathtt{flatdist}_{#1}}}
+\newcommand\flatdistinv[1]{\ensuremath{\flatdist{#1}^{-1}}}
+
+\newcommand{\lock}{\text{\faUnlock}}
+\newcommand{\Rtype}[1]{\mathsf{R}{#1}}
+\newcommand{\RI}[1]{\mathsf{shut}({#1})}
+\newcommand{\RE}[1]{\mathsf{open}({#1})}
+
+\newcommand{\Ltype}[1]{\mathsf{L}{#1}}
+\newcommand{\LI}[1]{\mathsf{left}_{#1}}
+\newcommand{\LE}[1]{\mathsf{letleft}({#1})}
+
+% Spatial type theory
+\newcommand\fcomult[1]{\ensuremath{\mathtt{comult}_{#1}}}
+\newcommand\fcounit[1]{\ensuremath{\mathtt{counit}_{#1}}}
+\newcommand{\counit}[1]{\mathsf{counit}_{#1}}
+\newcommand{\comult}[1]{\mathsf{comult}_{#1}}
+\newcommand{\Flattype}[1]{\flat{#1}}
+\newcommand{\FlatI}[1]{{#1}^\flat}
+\newcommand{\FlatE}[1]{\mathsf{letflat}({#1})}
+\newcommand{\Sharptype}[1]{\sharp{#1}}
+\newcommand{\SharpI}[1]{{#1}^\sharp}
+\newcommand{\SharpE}[1]{{#1}_\sharp}
+\newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
+
+% Linear zone
+\newcommand{\linsnd}[1]{\mathtt{linsnd}_{#1}}
+\newcommand{\linwk}[1]{\mathtt{linwk}_{#1}}
+\newcommand{\frob}[1]{\mathtt{frob}_{#1}}
+\newcommand\qlinvar[1]{\ensuremath{\mathsf{linvar}_{#1}}}
+\newcommand\otimespair[1]{\ensuremath{\otimes\mathsf{pair}_{#1}}}
+\newcommand\otimessplit[1]{\ensuremath{\otimes\mathsf{split}({#1})}}
+\newcommand\linpair[1]{\ensuremath{\mathsf{linpair}_{#1}}}
+\newcommand\linsplit[1]{\ensuremath{\mathsf{linsplit}({#1})}}
+\newcommand\linapp[1]{\ensuremath{\mathsf{linapp}_{#1}}}
+\newcommand\linlam{\ensuremath{\mathsf{linlam}}}
+
+% Macros for semantics notation
+\newcommand\mm[1]{\llbracket #1 \rrbracket}
+\newcommand\op{^{\mathrm{op}}}
+\newcommand\co{^{\mathrm{co}}}
+\newcommand\coop{^{\mathrm{coop}}}
+\newcommand\Cat{\mathrm{Cat}}
+\newcommand\CAT{\mathrm{CAT}}
+\newcommand\M{\mathcal{M}}
+\newcommand\Mhat{\widehat{\mathcal{M}}}
+\newcommand\Mty{{\mathrm{Ty}_{\M}}}
+\newcommand\Mtm{{\mathrm{Tm}_{\M}}}
+\newcommand\Mtyhat{{\widehat{\mathrm{Ty}}_{\M}}}
+\newcommand\Mtmhat{{\widehat{\mathrm{Tm}}_{\M}}}
+\newcommand\Ups{\Upsilon}
+\newcommand\Upshat{{\widehat{\Upsilon}}}
+\newcommand\C{\mathcal{C}}
+\newcommand\Chat{{\widehat{\mathcal{C}}}}
+\newcommand\Cty{\mathrm{Ty}_{\C}}
+\newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\Ctyhat{{\widehat{\mathrm{Ty}}}_{\C}}
+\newcommand\Ctmhat{{\widehat{\mathrm{Tm}}}_{\C}}
+\newcommand\vp{\varpi}
+\newcommand\vpst{\vp^*}
+\newcommand\vpsh{\vp_!}
+\newcommand\vptil{\widetilde{\vp}}
+\newcommand\vpty{{\vp}_{\mathrm{Ty}}}
+\newcommand\vptm{{\vp}_{\mathrm{Tm}}}
+\newcommand\name[1]{\ulcorner #1\urcorner}
+\newcommand{\Util}{\widetilde{U}}
+\newcommand\ev{\mathrm{ev}}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbbb}{bbold}
+\newcommand\one{\mathbbb{1}}
+
+\title{A Fibrational Framework for Modal Dependent Type Theories}
+\author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+Recently, several modal extensions of homotopy type theory have been
+investigated, with the goal of extending the synthetic style of
+formalizing mathematics to additional situations.  For example,
+real-cohesive homotopy type theory can describe types with both a
+groupoid structure and a separate topological structure.  These modal
+dependent type theories add new type operators to the syntax, which
+typically are given universal properties relative to new judgement
+forms.  To facilitate the design of such type theories, we introduce a
+general framework for modal dependent type theories, building on our
+previous work for simple type theories.  The framework consists first of
+a base directed dependent type theory, which serves as a language for
+specifying a signature of desired modalities, which we call a mode
+theory.  This mode theory is the parameter to a second type theory,
+which gives general rules for working with the modalities it describes.
+The mode theory language is flexible enough to describe a variety of
+modalities, including adjunctions, monads, comonads, idempotent
+(co)monads, and so on; as examples, we give mode theories for ordinary
+non-modal dependent type theory with $\Pi$ and $\Sigma$ types, for a
+dependent adjoint pair of modalities, and for the spatial type theory
+used in real-cohesion.  One advantage of our framework is that we can
+give it a categorical semantics for all mode theories at once, which
+saves some of the effort involved in translating each type theory
+individually, and we describe a category-with-families-like semantics.
+While the framework does not automatically produce ``optimized''
+inference rules for a particular modal discipline (where structural
+rules are as admissible as possible), it does provide a convenient
+syntactic setting for investigating such issues, including a general
+equational theory governing the placement of structural rules in types
+and in terms.
+\end{abstract}
+
+\section{Syntax}
+
+\subsection{Overview of Judgements}
+
+Mode theory judgements:
+\begin{enumerate}
+\item $\gamma \ctx$ (empty, extension)
+\item $\gamma \yields p \type$ 
+\item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
+\item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
+\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
+    composition, identities)
+\end{enumerate}
+
+Top judgements: 
+\begin{itemize}
+\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
+\item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
+\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
+\end{itemize}
+
+Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells contravariantly in the mode theory and 
+$\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$
+act \emph{contravariantly} on the subscripts of upstairs terms.
+
+We expect structurality to be admissible for the base, and structurality
+over that to be admissible for the top, e.g.:
+\begin{mathpar}
+\inferrule*[Left = weaken-over]
+           {\Gamma,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,\gamma' \vdash \mu : p)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,y:q,\gamma' \vdash \mu : p)}
+
+\inferrule*[Left = subst-over]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \\ (\text{where } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \\ (\text{where } \gamma \vdash \mu : p)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \\ (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
+\end{mathpar}
+
+
+\subsection{Mode Theory}
+
+\begin{enumerate}
+
+\item Contexts are as usual:
+
+\begin{mathpar}
+  \inferrule*{ }
+             {\cdot \ctx}
+             
+  \inferrule*
+    {\gamma \ctx \\
+     \gamma \yields p \type}
+    {\gamma,x:p \ctx}
+\end{mathpar}  
+
+\item In all mode theories, terms must have: 
+
+\begin{mathpar}
+\inferrule*{ }
+             {\gamma,x : p, \gamma' \yields x : p}
+             
+\inferrule*
+    {\gamma \yields \mu : q \\
+     \TypeTwo{\gamma}{s}{p}{q}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : p}
+\\
+\TrPlus{\id}{\mu} \equiv \mu \qquad
+\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
+\end{mathpar}
+
+\item Mode type morphisms:
+\begin{mathpar}
+    \inferrule*{ }
+          {\TypeTwo{\gamma}{\id_p}{p}{p}}
+    \qquad
+    \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} \\
+                {\TypeTwo{\gamma}{s_2}{p_2}{p_3}}
+          }
+          {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
+
+\inferrule*{{\gamma,x:p} \vdash {q} \type \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+           } 
+           {\TypeTwo{\gamma}{\ap {q} {t/x}}{q[\mu/x]}{q[\mu'/x]}}
+
+\\
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
+\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \\ 
+\ap q {s/\_} \equiv \id_q \\ 
+\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad (\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type)\\
+s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad 
+(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
+
+%% subst: \id_\mu[\nu/x] = \id_{\mu[\nu/x]}
+%% subst: s[x/x] = s
+%% subst: (s;t)[\mu/x] = s[\mu/x];t[\mu/x]
+%% subst: s[\mu[\nu/x]/x] = s[\mu/x][\nu/x]
+%% subst: ap q (s [\mu/x]) = (ap q s)[\mu/x] and generalization
+\end{mathpar}
+
+We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
+
+\item 2-cells between terms.  First, we have
+  identity/composition/whiskering and associated equations (whiskering
+  on the other side is given by substitution):
+\begin{mathpar}
+    \inferrule*{ }
+          {\TermTwoT{\gamma}{\id_\mu}{\mu}{\mu}{p}}
+    \qquad
+    \inferrule*{{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p}} \\
+                {\TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p}}
+          }
+   {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
+
+\inferrule*{{\gamma,x:p} \yields {\nu} : {q} \\
+            \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}\\
+           } 
+           {\TermTwoT{\gamma}{\ap \nu {s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu[\mu'/x]}}{q[\mu/x]}}
+
+\\           
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
+\ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
+\ap x {s/x} \equiv s  \and
+\ap \nu {s/\_} \equiv \id_\nu \and
+\ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
+(\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q)\\
+t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \quad
+ (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}) \\
+\ap{\TrPlus{s}{\mu}}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
+(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
+\end{mathpar}
+
+\item We assume $1/\Sigma$ modes:
+
+\begin{mathpar}
+  \inferrule*{ } { \gamma \yields 1 \type } \and
+  
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \sigmacl{x}{p}{q} \type} \\
+             
+  \inferrule*{ }
+             {\gamma \yields \mt : 1}
+  \and 
+  \mu \equiv \mt
+\\
+\inferrule*{
+  \gamma \yields \mu : p \and
+  \gamma \yields \nu : q[\mu/x]
+    }
+   {\gamma \yields (\mu,\nu) : \sigmacl{x}{p}{q}}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \fst \mu : p}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \snd \mu : q[\fst \mu / x]}
+    \\
+    \fst{(\mu,\nu)} \equiv \mu \and
+    \snd{(\mu,\nu)} \equiv \nu \and
+    p \equiv (\fst p, \snd p)
+\end{mathpar}
+
+Equations for ``transport'' in $\Sigma$:
+\begin{mathpar}
+\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
+\end{mathpar}
+
+Mode type morphisms: We need congruence for $\Sigma$ to be a rule (because we don't have ap on a type variable/universes):
+\begin{mathpar}
+  \inferrule*
+  {\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
+  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
+
+  \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
+  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
+
+  \ap{(\sigmacl{x'}{p}{q})}{s/(y:r)} \equiv
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/(z:(\sigmacl{y}{r}{p}))}}
+\end{mathpar}
+
+Finally, we have the 2-cells for $1/\Sigma$-terms:
+\begin{mathpar}
+s \equiv \id_{()} \text{ for } \yields_1 s : () \tcell ()
+\\
+
+\inferrule*
+    {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+      \gamma \vdash \nu' : q[\mu'/x]
+    }
+      {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
+\ap {\fst(z)} {\extend{s}{\nu'}/z} \equiv s \and
+\ap {\snd(z)} {\extend{s}{\nu'}/z} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \\
+s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}} \quad (\text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}})
+\\      
+{\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
+{\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
+\extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]})
+\end{mathpar}
+
+\item
+  All judgements have a substitution principle
+\begin{mathpar}
+  \inferrule*{\gamma,x:p,\gamma' \yields J \\
+              \gamma \yields \mu : p
+              }
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]} \\
+
+J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
+\end{mathpar}
+
+\drlnote{write out the usual rules defining this}
+             
+\end{enumerate}
+
+We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
+variable name when it is clear how to view $\mu$ as a term with a
+distinguished variable; e.g. $\ApPlus{s}{t}$ for
+$\ap{\TrPlus{s}{x}}{t/x}$.
+
+\subsubsection{Lemmas}
+
+Horizontal composition:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma, x : p}{t}{\nu}{\nu'}{q}}
+             {\TermTwoT{\gamma}{\ap{t}{s/x} :\equiv t[\mu/x];\ap{\nu'}{s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+\\ 
+\ap{\id_\nu}{s/x} \equiv \ap{\nu}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\end{mathpar}
+
+Pairing and projection 2-cells are definable:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
+             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
+
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+   \and
+   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+\end{mathpar}
+
+
+\begin{lemma}
+For mode term morphisms
+\begin{align*}
+\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
+\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
+\TermTwoT{\gamma &}{s'}{\mu'}{\mu''}{p} \\
+\TermTwoT{\gamma &}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
+\end{align*}
+we have
+\begin{align*}
+(s, t);(s', t') \equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+\end{lemma}
+\begin{proof}
+Follows by
+\begin{align*}
+(s, t);(s', t') 
+&\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'};\ap{(\mu',y)}{t'/y};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, \TrPlus{\ap{q}{s}}{y})}{t'/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, y)}{\ApPlus{\ap{q}{s}}{t'}/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t;\ApPlus{\ap{q}{s}}{t'}/y};\extend{s;s'}{\nu''} \\
+&\equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+\end{proof}
+
+\subsection{Contexts}
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+  {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
+    \Gamma \yields_p A \TYPE \and (\text{where }  \gamma \yields p \type)}
+  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:p \ctx)  } \\
+\end{mathpar}
+
+\subsection{Types and Terms}
+
+\subsubsection{Structural Rules}
+
+\begin{mathpar}
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:p,\gamma' \yields x : p)} \and
+
+ \inferrule*[Left = rewrite]{
+   \Gamma \yields_\mu M : A 
+   \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
+  }
+  {\Gamma \yields_\nu \rewrite{s}{M} : A} \\ \\
+  
+  \rewrite{\id_{\mu}}{M} \equiv M \and
+  \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
+  \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}}
+\end{mathpar}
+
+\subsubsection{Telescope Types}
+
+\begin{mathpar}
+  \inferrule*[Left=$1$-form]{~}{\Gamma \yields_{1} 1 \TYPE} \and
+  \inferrule*[Left=$1$-intro]{~}{\Gamma \yields_{()} () : 1} \\
+  M \equiv () \\
+  \inferrule*[Left=$()$-form]{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
+  \\
+  \inferrule*[Left=$()$-pair]{ \Gamma \yields_\mu M : A \\
+               \Gamma \yields_\nu N : B[M/x]
+             }
+             { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
+  \and
+  \inferrule*[Left=$()$-fst]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+  \and
+  \inferrule*[Left=$()$-snd]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+
+    \fst{(M,N)} \equiv M \and
+    \snd{(M,N)} \equiv N \and
+    P \equiv (\fst P, \snd P)
+\end{mathpar}
+
+
+\subsubsection{Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = F-form]{
+    %% \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \and (\text{where } \gamma \yields q \type) } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\nu} M : A
+    \and (\text{where } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \and (\text{where } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \and (\text{where } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
+  \\ \\
+
+  \inferrule*[Left = F-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\mu / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
+\\ \\
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
+    \and \gamma, x:p, c:r \yields \mu : q
+  }{\Gamma \yields_r \U{c.\mu}{A}{B} \TYPE \and (\text{where } \gamma \yields r \type)} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \and (\text{where } \gamma,x:p \yields {\mu[\nu/c]} : q)
+  }
+  {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
+    \and (\text{where } \gamma \yields \nu : r)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \and (\text{where } \gamma \yields \nu_1 : r) \\\\
+    \Gamma \yields_{\nu_2} N_2 : A \and (\text{where } \gamma \yields \nu_2 : p)
+  }{
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+  } \\
+
+  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
+  \UI{x}{\UE{N}{x}} \equiv N
+\end{mathpar}
+
+\subsubsection{Surprisingly Strict Modalities}
+
+\begin{mathpar}
+  \inferrule*[Left = s-form]{
+    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
+    \and \TypeTwo{\gamma}{s}{q}{p}
+  }{\Gamma \yields_q \St{s}{A} \TYPE \and (\text{where } \gamma \yields q \type)} \\
+
+  \inferrule*[Left = S-intro]{
+    \Gamma \yields_{\mu} M : A
+    \and (\text{where } \gamma \yields {\mu} : p)
+  }
+  {\Gamma \yields_{\TrPlus{s}{\mu}} \StI{s}{M} : \St{s}{A} \and (\text{where } \gamma \yields \TrPlus{s}{\mu} : q)} \\
+
+  \inferrule*[Left = S-elim]{
+    \Gamma, y : \St{s}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \and \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x : A \yields_{\nu' [\TrPlus{s}{x} / y]} N : C [\StI{s}{x}/y]
+    \and (\text{where } \gamma, x : p \yields \nu' [\TrPlus{s}{x} / y] : r[\TrPlus{s}{x} / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \StE{s}{M}{x}{N} : C[M/y]  \and (\text{where } \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \StE{s}{\StI{s}{M}}{x}{N} \equiv N[M/x] \and
+  \StE{s}{M}{x}{N[\StI{s}{x}/z]} \equiv N[M/z]
+  \\
+  
+  \inferrule*[Left = S-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \St{s}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\TrPlus{s}{x} / y]} C \TYPE
+    \and (\text{where } \gamma, x:p \yields r [\TrPlus{s}{x} / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \StE{s}{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+  \StE{s}{\StI{s}{M}}{x}{C} \equiv C[M/x] \and
+  \StE{s}{M}{x}{C[\StI{s}{x}/z]} \equiv C[M/z]
+  \\ \\
+\end{mathpar}
+
+%\drlnote{Change the definition of $s$-types to $U$-types as primitive and derive $F$, so that having $\eta$ is less surprising.}
+
+Term/type equalities:
+\begin{align}
+%\StI{s}{\FI{M}} &\equiv \FI{M} &\St{s}{\F{x.\mu}{A}} &\equiv \F{x.\TrPlus{s}{\mu}}{A} \\
+%\FI{\StI{s}{M}} &\equiv \FI{M} &\F{x.\mu}{\St{s}{A}} &\equiv \F{x.\mu[\TrPlus{s}{x}/x]}{A} \\
+%%\UStI{s}{\UI{x}{M}} &\equiv \UI{x}{M} &\St{s}{\U{c.\mu}{x:A}{B}} &\equiv \U{c.\mu[\TrCirc{s}{c}/c]}{x:A}{B} \\
+%%\UI{x}{\UStI{s}{M}} &\equiv \UI{x}{M} &\U{c.\mu}{x:A}{\St{s}{B}} &\equiv \U{c.\TrCirc{s}{\mu}}{x:A}{B} \\
+%\UI{x}{M} &\equiv \UI{x}{M[\StI{s}{x}/x]} &\U{c.\mu}{x:\St{s}{A}}{B} &\equiv \U{c.\mu[\TrPlus{s}{x}/x]}{x:A}{B[\StI{s}{x}/x]} \\
+\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} \\
+\StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
+\StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
+\label{eq:stype-subst} \rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] 
+%% other whiskering is a substitution rule:
+%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
+\end{align}
+%Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
+
+Due to the lack of the eta rule for $\mathsf{F}$-types, we also need to assert
+\begin{mathpar}
+(\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+\end{mathpar}
+
+\subsection{Lemmas}
+
+\begin{lemma}
+The \textsc{rewrite} rule commutes with pairing of telescope types:
+\begin{align*}
+%(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
+%(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
+\rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} ) 
+\end{align*}
+where
+\begin{align*}
+\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
+\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
+\Gamma &\yields_{\mu'} M : A \\
+\Gamma &\yields_{\nu'} N : B[M/x]
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+&\rewrite{(s, t)}{(M, N)} \\
+&\equiv (\fst\rewrite{(s, t)}{(M, N)}, \snd \rewrite{(s, t)}{(M, N)} ) \\
+&\equiv (\fst z [\rewrite{(s, t)}{(M, N)}/z], \snd z [\rewrite{(s, t)}{(M, N)}/z] ) \\
+&\equiv (\rewrite{\ap{\fst}{(s, t)}}{\fst (M, N)}, \rewrite{\ap{\snd}{(s, t)}}{\StI{\ap{q[\fst z/x]}{(s, t)/z}}{\snd (M, N)}} ) \\
+&\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
+\end{align*}
+This type checks via Equation~\eqref{eq:stype-subst}; in the second component we have
+\begin{align*}
+&\snd \rewrite{(s, t)}{(M, N)} &&: B[\fst\rewrite{(s, t)}{(M, N)}/x] \\
+\equiv~&\snd \rewrite{(s, t)}{(M, N)} &&: B[\rewrite{s}{M}/x] \\
+\equiv~&\rewrite{t}{\StI{\ap{q}{s/x}}{N}} &&: \St{\ap{q}{s/x}}{B[M/x]}
+\end{align*}
+\end{proof}
+
+\begin{lemma} \label{lem:rewrite-push}
+The \textsc{rewrite} rule commutes with $\mathsf{F}$-, $\mathsf{U}$- and $s$- introduction and elimination.
+\begin{align*}
+\FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
+(\FE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}} \\
+\UE{M}{\rewrite{s}{N}} &\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
+\UE{(\rewrite{t}{M})}{N} &\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
+\UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
+\StI{t}{\rewrite{s}{M}} &\equiv \rewrite{\ApPlus{t}{s}}{\StI{t}{M}} \\
+(\StE{t}{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\StE{t}{M}{x}{N}}} \\
+(\StE{t}{M}{x}{\rewrite{s[\TrPlus{t}{x}/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\StE{t}{M}{x}{N}} 
+%\intertext{If we have definitional eta-expansion for \textsf{F}-types, we can also derive (rather than asserting)}
+%(\FE{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\FE{M}{x}{N}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+For \textsf{F}-types:
+\begin{align*}
+\FI{\rewrite{s}{M}} 
+&\equiv \rewrite{\id_{\mu[\nu/x]}}{\FI{x}}[\rewrite{s}{M}/x]  \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{x}[M/x]}} \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{M}}} \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} && \text{As $x$ does not appear in $q$.}\\
+(\FE{\rewrite{s}{M}}{x}{N})
+&\equiv \rewrite{\id_{\nu'[\nu/y]}}{\FE{y}{x}{N}}[\rewrite{s}{M}/y] \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{(\FE{y}{x}{N})[M/y]}} \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}}
+\end{align*}
+
+For \textsf{U}-types:
+\begin{align*}
+\UE{M}{\rewrite{s}{N}}
+&\equiv \rewrite{\id_{\mu[z/x, \nu_1/c]}}{\UE{M}{z}}[\rewrite{s}{N}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q[\nu_1/c]}{s/x}}{\UE{M}{N}}} \\
+&\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
+\UE{(\rewrite{t}{M})}{N}
+&\equiv \rewrite{\id_{\mu[\nu_2/x, z/c]}}{\UE{(z)}{N}}[\rewrite{t}{M}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\StI{\ap{q[\nu_2/x]}{t/c}}{\UE{M}{N}}} \\
+&\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} && \text{(As $c$ does not appear in $q$)}\\
+\rewrite{s}{\UI{x}{M}}
+&\equiv \UI{y}{\UE{(\rewrite{s}{\UI{x}{M}})}{y}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{\UE{(\UI{x}{M})}{y}}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{M[y/x]}} \\
+&\equiv \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}
+\end{align*}
+
+The first two equations for $s$-type follow by the same reasoning as for $\mathsf{F}$-types. For the third, we make use of the eta-expansion that is not available for $\mathsf{F}$-types.
+\begin{align*}
+\rewrite{s[\nu/y]}{\StE{t}{M}{x}{N}}
+&\equiv \rewrite{s}{\StE{t}{y}{x}{N}} [M/y] \\
+&\equiv \StE{t}{M}{z}{(\rewrite{s}{\StE{t}{y}{x}{N}}[\StI{t}{z}/y])} \\
+&\equiv \StE{t}{M}{z}{(\rewrite{s[\TrPlus{t}{z}/y]}{\StE{t}{\StI{t}{z}}{x}{N}})} \\
+&\equiv \StE{t}{M}{z}{\rewrite{s[\TrPlus{t}{z}/y]}{N}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+The \textsc{rewrite} rule commutes with \textsf{F}- and $s$-elimination into types:
+\begin{align*}
+(\FE{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\FE{M}{x}{C}} \\
+(\StE{t}{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\StE{t}{M}{x}{C}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+This is analogous to elimination into terms:
+\begin{align*}
+\FE{\rewrite{s}{M}}{x}{C}
+&\equiv (\FE{y}{x}{C})[\rewrite{s}{M}/y] \\
+&\equiv \St{\ap{r}{s/y}}{(\FE{y}{x}{C})[M/y]} \\
+&\equiv \St{\ap{r}{s/y}}{\FE{M}{x}{C}}
+\end{align*}
+and similarly for $s$-types.
+\end{proof}
+
+\begin{lemma}\label{lem:s-elim-s-elim}
+\textsc{s-elim} commutes with \textsc{F-elim} and \textsc{s-elim}:
+\begin{align*}
+\FE{(\StE{s}{M}{x'}{N'})}{x}{N} &\equiv \StE{s}{M}{x'}{(\FE{N'}{x}{N})} \\
+\StE{t}{(\StE{s}{M}{x'}{N'})}{x}{N} &\equiv \StE{s}{M}{x'}{(\StE{t}{N'}{x}{N})}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Using eta for $s$-types:
+\begin{align*}
+&\FE{(\StE{s}{M}{x'}{N'})}{x}{N} \\
+&\equiv (\FE{(\StE{s}{z}{x'}{N'})}{x}{N})[M/z] \\
+&\equiv \StE{s}{M}{z'}{((\FE{(\StE{s}{z}{x'}{N'})}{x}{N})[\StI{s}{z'}/z])} \\
+&\equiv \StE{s}{M}{z'}{((\FE{(\StE{s}{\StI{s}{z'}}{x'}{N'})}{x}{N}))} \\
+&\equiv \StE{s}{M}{z'}{(\FE{N'[z'/x']}{x}{N})} \\
+&\equiv \StE{s}{M}{x'}{(\FE{N'}{x}{N})}
+\end{align*}
+and similarly for the second.
+\end{proof}
+
+%\begin{lemma}
+%\textsc{F-elim} fuses with \textsc{s-intro}.
+%\end{lemma}
+%\begin{proof}
+%\begin{align*}
+%&\FEs{\TrPlus{s}{\mu}}{\StI{s}{M}}{x}{N} \\
+%&\equiv \StE{s}{\StI{s}{M}}{y}{(\FEs{\mu}{y}{x}{N})} \\
+%&\equiv \FEs{\mu}{M}{x}{N}
+%\end{align*}
+%and
+%\begin{align*}
+%& \FEs{\mu[\TrPlus{s}{x}/x]}{M}{x}{N[\StI{s}{x}/x]} \\
+%&\equiv \FEs{\mu}{M}{y}{(\StE{s}{y}{x}{N[\StI{s}{x}/x]})}  \\
+%&\equiv \FEs{\mu}{M}{y}{N[y/x]} \\
+%&\equiv \FEs{\mu}{M}{x}{N}
+%\end{align*}
+%\end{proof}
+
+\begin{lemma}
+Split for telescope types is derivable:
+\begin{mathpar}
+\inferrule*[Left=$()$-split]{\Gamma, w : \telety{x}{A}{B} \yields_r C \TYPE \\\\ \Gamma \yields_{\nu} M : \telety{x}{A}{B} \\\\ \Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} \TeleE{M}{x}{y}{N} : C[M/w]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+\begin{mathpar}
+\inferrule*[Left=cut]{\Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} N[\fst M/x, \snd M/y] : C[(x, y)/w][\fst M/x, \snd M/y]}
+\end{mathpar}
+And by eta for telescope types, $C[(x, y)/w][\fst M/x, \snd M/y] \equiv C[(\fst M, \snd M)/w] \equiv C[M/w]$.
+\end{proof}
+
+Given a term such as $\beta : \St{s}{\telety{\alpha}{A}{B}}$, we will often use $s$-elimination and then split on the pair. For clarity, rather than writing
+\begin{align*}
+\StE{s}{\beta}{w}{\TeleE{w}{x}{y}{(\dots)}}
+\end{align*}
+we will write
+\begin{align*}
+\StE{s}{\beta}{x, y}{(\dots)}
+\end{align*}
+
+\begin{lemma}\label{lem:ctxtuple}
+Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE$ of mode $\ctxtuple{\gamma}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
+\begin{mathpar}
+\inferrule*{\yields_\gamma \Gamma}
+             {\cdot \yields_{\ctxtuple{\gamma}} \ctxtuple{\Gamma} \TYPE}
+\and
+\inferrule*{~}
+             {\sigma : \ctxtuple{\Gamma} \yields_{\fan{\gamma}} \fan{\Gamma} : \Gamma}
+\and
+\inferrule*{\Gamma \yields_\theta \Theta : \Delta}
+             {\Gamma \yields_{\ctxtuple{\theta}} \ctxtuple{\Theta} : \ctxtuple \Delta}
+\\
+\inferrule*{\Gamma \yields\Theta : \Delta}
+             {\Gamma \yields \Theta \equiv \fan{\Delta}[\ctxtuple{\Theta} / \sigma]}
+\and
+\inferrule*{\Gamma \yields a : \ctxtuple{\Delta}}
+             {\Gamma \yields a \equiv \ctxtuple{(\fan{\Delta}[a/\sigma])}}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+$\ctxtuple \Gamma$ is defined inductively by
+\begin{align*}
+\ctxtuple{(\cdot)} &:\equiv 1 \\
+\ctxtuple{(\Gamma, x : A)} &:\equiv \sum_{\sigma : \ctxtuple \Gamma} A[\fan{\Gamma}] \\
+\fan{(\cdot)} &:\equiv \cdot \\
+\fan{\Gamma, x : A} &:\equiv ((\fan\Gamma[\fst{\sigma}/\sigma]), \snd{\sigma})
+\end{align*}
+with each definition lying over the identical one downstairs. For $\ctxtuple \Theta$ we simultaneously verify the equation $\Theta \equiv \fan{\Delta}[\ctxtuple \Theta / \sigma]$, as we need it to hold for $(\ctxtuple \Theta, M)$ to be well typed.
+\begin{align*}
+\ctxtuple(\cdot) &:\equiv \mt : 1\\
+\ctxtuple(\Theta, M : A) &:\equiv (\ctxtuple \Theta, M) : \sum_{\sigma : \ctxtuple \Delta} A[\fan{\Delta}] \\
+(\cdot)[()/\sigma]  &\equiv (\cdot) \\
+\fan{\Delta, x : A}[\ctxtuple{(\Theta, M : A)}/\sigma] &\equiv ((\fan{\Delta}[\fst{\sigma}/\sigma]), \snd{\sigma})[(\ctxtuple \Theta, M)/\sigma] \\
+&\equiv (\fan{\Delta}[\ctxtuple \Theta/\sigma]), M \\
+&\equiv \Theta, M
+\end{align*}
+For the second equation, we check inductively that
+\begin{align*}
+\ctxtuple{(\fan{(\cdot)}[a/\sigma])}
+&\equiv \ctxtuple{(\cdot[a/\sigma])} \\
+&\equiv \ctxtuple{(\cdot)} \\
+&\equiv () \\
+&\equiv a \\
+\ctxtuple{(\fan{\Delta, x : A}[a/\sigma])}
+&\equiv \ctxtuple{((\fan{\Delta}[\fst \sigma/\sigma], \snd \sigma)[a/\sigma])} \\
+&\equiv \ctxtuple{(\fan{\Delta}[\fst a/\sigma], \snd a)} \\
+&\equiv \ctxtuple{(\fan{\Delta}[\fst a/\sigma]), \snd a} \\
+&\equiv (\fst a, \snd a) \\
+&\equiv a
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+The following holds:
+\begin{align*}
+\ctxtuple{\id_\Gamma}[\fan{\Gamma}/\sigma] \equiv \id_{\ctxtuple{\Gamma}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Follows from the equalities of the previous Lemma:
+\begin{align*}
+\ctxtuple{\id_\Gamma}[\fan{\Gamma}/\sigma]
+&\equiv \ctxtuple{(\fan{\Gamma}[\ctxtuple{\id_\Gamma}[\fan{\Gamma}]/\sigma])} \\
+&\equiv \ctxtuple{(\fan{\Gamma}[\ctxtuple{\id_\Gamma}/\sigma][\fan{\Gamma}/\sigma])} \\
+&\equiv \ctxtuple{(\id_\Gamma[\fan{\Gamma}/\sigma])} \\
+&\equiv \ctxtuple{\fan{\Gamma}} \\
+&\equiv \id_{\ctxtuple{\Gamma}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+Tupling respects substitution: for $\gamma \yields \theta : \delta$ and $\delta \yields \kappa : \lambda$, we have:
+\begin{align*}
+\ctxtuple{(\kappa[\theta])} &\equiv (\ctxtuple{\kappa})[\theta]
+\end{align*}
+\end{lemma}
+\begin{proof}
+By induction on the length of $\lambda$:
+\begin{align*}
+\ctxtuple{((\cdot)[\theta])}
+&\equiv \ctxtuple{(\cdot)} \\
+&\equiv (\ctxtuple{(\cdot)})[\theta] \\
+\ctxtuple{((\kappa, M)[\theta])}
+&\equiv \ctxtuple{(\kappa[\theta], M[\theta])} \\
+&\equiv \ctxtuple{(\kappa[\theta]), M[\theta]} \\
+&\equiv (\ctxtuple \kappa)[\theta], M[\theta] \\
+&\equiv (\ctxtuple\kappa, M)[\theta]
+\end{align*}
+\end{proof}
+
+\begin{definition}
+A 2-cell between mode substitutions of shape $\gamma \yields t : \theta \tcell_\delta \theta' $ is specified by a mode term 2-cell \[\gamma \yields \ctxtuple t : \ctxtuple \theta \tcell_{\ctxtuple \delta} \ctxtuple \theta'. \]
+\end{definition}
+\mvrnote{A little confusing: for contexts and substitutions $\ctxtuple{}$ is an operation, here $\ctxtuple t$ is not an operation on $t$ but rather the underlying `implementation' of $t$.}
+
+\begin{lemma}\label{lem:n-ary-ap-rewrite}
+N-ary ap and rewrite are admissible:
+\begin{mathpar}
+\inferrule*{\delta \vdash {q} \type \\
+            \gamma \yields t : \theta \tcell_\delta \theta'
+           } 
+           {\TypeTwo{\gamma}{\ap {q} {t}}{q[\theta]}{q[\theta']}}
+\and
+\inferrule*{\delta \yields {\nu} : {q} \\
+            \gamma\yields t : \theta \tcell \theta'
+           } 
+           {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
+ \inferrule*[Left = rewrite]{
+   \Gamma \yields_{\theta'} \Theta : \Delta \and 
+   \gamma \yields t : \theta \tcell \theta'
+  }
+  {\Gamma \yields_{\theta} \rewrite{t}{\Theta} : \Delta}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+These are
+\begin{align*}
+\ap {q} {t} &:\equiv \ap{q[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+\ap {\nu} {t} &:\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+\rewrite{t}{\Theta} &:\equiv \fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]
+\end{align*}
+which are well-typed by the equation $\theta \equiv \fan{\delta}[\ctxtuple \theta / \sigma]$.
+\end{proof}
+
+In particular, we have the following rules for building and using 2-cells between substitutions.
+\begin{mathpar}
+\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \gamma \yields s : \mu[\theta] \tcell_{p[\theta]} \TrPlus{\ap{p}{t}}{\mu'[\theta']}}
+{ \gamma \yields (s, t) : (\theta, \mu) \tcell_{(\delta,x:p)} (\theta', \mu')} \\
+%
+\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
+{\gamma \yields \ap{\fst}{t} : \theta \tcell_\delta \theta' } \and
+%
+\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
+{\gamma \yields \ap{\snd}{t} : \mu[\theta] \tcell_{p[\theta]} \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']}}
+\end{mathpar}%
+
+\begin{lemma}
+N-ary ap of a 2-cell on a substitution is admissible
+\begin{mathpar}
+\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \delta \yields \kappa : \lambda}
+{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell_\lambda \kappa[\theta']}
+\end{mathpar} 
+\end{lemma}
+\begin{proof}
+Due to the equation $\ctxtuple(\kappa[\theta]) \equiv (\ctxtuple \kappa)[\theta]$ we can just define $\ctxtuple{(\ap{\kappa}{t})} :\equiv \ap{(\ctxtuple \kappa)}{t}$.
+\end{proof}
+
+\begin{lemma}
+N-ary associativity and interchange hold:
+\begin{align*}
+\ap {(\nu[\theta])} {t} &\equiv \ap \nu {\ap \theta {t}} \\
+s[\theta];\ap{\nu'}{t} &\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Unwinding definitions we find:
+\begin{align*}
+\ap {(\nu[\theta])} {t}
+&\equiv \ap{\nu[\theta][\fan{\delta}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}][\ctxtuple \theta / \sigma][\fan{\gamma}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ap{\ctxtuple \theta[\fan{\gamma}]}{\ctxtuple t/\sigma}/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ap{(\ctxtuple \theta)}{t}/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple{(\ap \theta {t})}/\sigma} \\
+&\equiv \ap \nu {\ap \theta {t}}
+\end{align*}
+and
+\begin{align*}
+s[\theta];\ap{\nu'}{t} 
+&\equiv s[\theta];\ap{\nu'[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} ; \ApPlus{(\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma})}{s[\theta']} \\
+&\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+A N-ary versions of the equations concerning rewrites hold:
+\begin{align*}
+\St{(\ap{q}{t})}{B[\Theta]} &\equiv B[\rewrite{t}{\Theta}] \\
+\rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} &\equiv N[\rewrite{t}{\Theta}] \\
+\rewrite{\ap{\kappa}{t}}{\Theta;\kappa} &\equiv \rewrite{t}{\Theta};\kappa
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+B[\rewrite{t}{\Theta}] 
+&\equiv B[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+&\equiv B[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+&\equiv \St{\ap{q[\fan{\delta}]}{\ctxtuple t / \sigma}}{B[\fan{\Delta}][\ctxtuple \Theta/\sigma]} \\
+&\equiv \St{\ap{q}{t}}{B[\Theta]}
+\end{align*}
+And:
+\begin{align*}
+N[\rewrite{t}{\Theta}]
+&\equiv N[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+&\equiv N[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+&\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma}}{N[\fan{\Delta}][\ctxtuple \Theta/\sigma]}} \\
+&\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
+\end{align*}
+And:
+\begin{align*}
+\rewrite{\ap{\kappa}{t}}{\Theta;\kappa}
+&\equiv \fan{\Lambda}[\rewrite{\ctxtuple{(\ap{\kappa}{t})}}{\ctxtuple {(\Theta;\kappa)}}/\sigma] \\
+&\equiv \fan{\Lambda}[\rewrite{\ap{(\ctxtuple \kappa)}{t}}{(\ctxtuple \kappa)[\Theta]}/\sigma] \\
+&\equiv \fan{\Lambda}[(\ctxtuple \kappa)[\rewrite{t}{\Theta}]/\sigma] \\
+&\equiv \fan{\Lambda}[(\ctxtuple \kappa)/\sigma][\rewrite{t}{\Theta}] \\
+&\equiv \kappa[\rewrite{t}{\Theta}] \\
+&\equiv \rewrite{t}{\Theta};\kappa
+\end{align*}
+using the previous equation.
+\end{proof}
+
+\begin{lemma}
+Rewriting by a tuple is a tuple of rewritings:
+\begin{align*}
+\rewrite{(t, s/x)}{\Theta, M/x} \equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
+\end{align*}
+\end{lemma}
+\begin{proof}
+Unwinding definitions:
+\begin{align*}
+\rewrite{(t, s/x)}{\Theta, M/x}
+&\equiv \fan{\Delta, x : A}[\rewrite{\ctxtuple{(t, s/x)}}{\ctxtuple{(\Theta, M/x)}}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[\rewrite{(\ctxtuple t, s)}{\ctxtuple\Theta, M}/\sigma] \\
+&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[(\rewrite{\ctxtuple t}{\ctxtuple\Theta}, \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}})/\sigma] \\
+&\equiv (\fan\Delta[\rewrite{\ctxtuple t}{\ctxtuple\Theta}/\sigma], \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}}) \\
+&\equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
+\end{align*}
+\end{proof}
+
+As a special case, note that we have
+\begin{align*}
+\rewrite{(\id_\Theta, s/x)}{\Theta, M/x} \equiv (\Theta, \rewrite{s}{M}/x)
+\end{align*}
+
+\mvrnote{Need to say something like: Because the above $n$-ary versions have been derived, from now on we use $\ap{\mu}{s/x, t/y}$ as shorthand for the $n$-ary version}
+
+\subsection{Examples}
+
+\begin{itemize}
+\item 
+The previous two-argument \F{\mu}{x:A,y:B} (for $x :p, y:q \vdash \mu :
+r$) is now \F{z.\mu[\fst z/x,\snd z/y]}{\telety{x}{A}{B}}, using the
+upstairs telescope type ${\telety{x}{A}{B}}$, which has mode
+$\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
+longer telescope.  
+\end{itemize}
+
+\section{Mode Theories}
+
+\mvrnote{At some point near the start we should say:
+For clarity we will often treat mode terms with a distinguished parameter as though they were functions. So if $\gamma, x : p \yields f : q$ we write $f(m)$ rather than $f[m/x]$.
+}
+
+\subsection{Adjoint Mode Terms}
+\begin{definition}
+A mode term $\gamma, x : p \yields f : q$ is \emph{left adjoint} to $\gamma, y : q \yields u : p$ if there are specified constants:
+\begin{align*}
+\gamma, x : p &\yields f : q \\
+\gamma, x : p &\yields \eta_x : x \tcell_p u(f(x)) \\
+\gamma, y : q &\yields \varepsilon_y : f(u(y)) \tcell_q y
+\end{align*}
+such that $\eta$ and $\varepsilon$ are natural:
+\begin{align}
+\eta_x ; \ap{u}{\ap{f}{s}} &\equiv s ; \eta_{x'} && \text{for } s : x \tcell_p x'  \\
+\ap{f}{\ap{u}{t}} ; \varepsilon_{y'}  &\equiv \varepsilon_y ; t && \text{for } t : y \tcell_q y'
+\end{align}
+and the triangle identities hold:
+\begin{align}
+\eta_{u(\nu)};\ap{u}{\varepsilon_\nu} &\equiv \id_{u(\nu)} \\
+\ap{f}{\eta_\mu};\varepsilon_{f(\mu)} &\equiv \id_{f(\mu)}
+\end{align}
+\end{definition}
+
+\subsection{Terminal Objects}
+
+\begin{definition}
+For $p \type$, the term $\emptyset : p$ is \emph{terminal} if there are specified mode term morphisms
+\begin{mathpar}
+\TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
+\end{mathpar}
+such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
+\end{definition}
+
+%\begin{definition}
+%For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} term is specified by:
+%\begin{mathpar}
+%x : p \vdash \One_x : S(x) \and
+%\TermTwoT{x : p, \mu : S(x)}{!_\mu}{\mu}{\One_x}{S(x)}
+%\end{mathpar}
+%such that
+%\begin{align}
+%\label{bang-unique}
+%t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{\One_\alpha}{S(\alpha)}\\
+%\label{s-plus-one-strict}
+%\TrPlus{\ap{S}{s}}{\One_\alpha} &\equiv \One_\beta && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}
+%\end{align}
+%\end{definition}
+
+\subsection{Comprehension Object}
+
+\begin{definition}[Comprehension Object]\label{def:comprehension-object}
+  A \emph{comprehension object} is specified by the following
+  constants:
+  \begin{mathpar}
+    p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
+    \\ 
+    \TypeTwo{\cdot}{\chi}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} \and
+    \TypeTwo{\cdot}{\psi}{p}{1}
+  \end{mathpar}
+  such that
+\begin{align*}
+\alpha : p &\yields (\alpha, \One_\alpha) : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \\
+\alpha : p &\yields () : 1
+\end{align*}
+are left adjoints to $\chi^+$ and $\psi^+$ respectively.
+\end{definition}
+
+In particular, a comprehension object comes equipped with natural mode term morphisms
+\begin{align*}
+\eta^\chi_\alpha {}&: \alpha \tcell_p \TrPlus{\chi}{(\alpha, \One_\alpha)} \\
+\varepsilon^\chi_{(\alpha, \mu)} {}&: (\TrPlus{\chi}{(\alpha, \mu)}, \One_{\TrPlus{\chi}{(\alpha, \mu)}}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
+\eta^\psi_\alpha {}&: \alpha \tcell_p \TrPlus{\psi}{()} \\
+\varepsilon^\psi_{x} {}&: x \tcell_1 ()
+\end{align*}
+satisfying the triangle identities. (Note that $\varepsilon^\psi_x$ is necessarily the unique morphism to $()$)
+
+\begin{definition}
+Any comprehension object supports the following derived forms (where $\gamma \yields \alpha : p$
+and $\gamma \yields \beta : p$ and
+$\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
+\alpha$ and $\gamma \yields \nu : \beta$):
+  \begin{itemize}
+  \item A distinguished term $\emptyset : p$ is given by
+  \begin{mathpar}
+  \cdot \yields \emptyset : p \and \emptyset :\equiv \TrPlus{\psi}{()}
+  \end{mathpar}
+  \item Comprehension is given by $\chi^+$:
+  \begin{mathpar}
+  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\chi}{(\alpha, x)}
+  \end{mathpar}
+  \item $\pi^\alpha_\mu$ and $\var{\mu}$ are defined via the counit of the adjunction $\chi^\circ \dashv \chi^+$.
+  \begin{mathpar}
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
+  \and
+  \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\chi_{(\alpha, x)}} \\
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}} 
+    \and
+    \var{x} :\equiv \ap \snd {\varepsilon^\chi_{(\alpha, x)}}
+  \end{mathpar}
+  \item Pairing for the comprehension object is given by ap of
+  $.$ on the pairing for telescope modes:
+  \begin{mathpar}
+  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
+             \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}}
+            {\TermTwoT{\gamma}{s.m}{\alpha.\mu}{\beta.\nu}{p}} \and
+  s \bdot m :\equiv \ApPlus{\chi}{(s, m)}
+  \end{mathpar}
+  \item We write $\ApOne{s}$ as a short hand for $\ap{\One_z}{s/z}$
+  \end{itemize}
+\end{definition}
+
+This definition is a type-theoretic analogue of a fibration that \emph{admits comprehension}. This is a fibration $E \to B$ with fibred terminal object $1 : B \to E$ such that the functor $1$ has a right adjoint, see \mvrnote{ref}.
+
+In the type-theoretic definition, $p$ and $\El{p}{\alpha}$ describe a fibration $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. The term $(\alpha, \One_\alpha)$ describes a functor $p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ that sends $\alpha$ to a distinguished object $\One_\alpha$ in the fibre over $\alpha$, and this functor has a right adjoint $\TrPlus{\chi}{\alpha,x}$.
+
+The primary difference is that we do not need to assume that $\One_\alpha$ is terminal in $\El{p}{\alpha}$, so $(\alpha, \One_\alpha) : p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ is not right adjoint to $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. We also do not assume that $p$ is full, in the sense of there being a bijection between mode term morphisms $x \tcell_{\El{p}{\alpha}} y$ and mode term morphisms $\alpha.x \tcell_p \alpha.y$ that commute with projection.
+
+The triangle identities for $\chi^\circ \dashv \chi^+$ take the following form:
+\begin{align}
+\label{eq:chi-triangle-1} \eta^\chi_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
+\label{eq:chi-triangle-2} (\eta^\chi_\alpha ; \pi^\alpha_{\One_\alpha}, \ApOne{\eta^\chi_\alpha} ; \ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\var{\One_\alpha}}) &\equiv \id_{(\alpha, \One_\alpha)}
+\end{align}
+
+Requiring a left adjoint for $\psi^+$ is a cute way of stating the following:
+\begin{lemma}
+For $p$ a comprehension object, $\emptyset : p$ is terminal.
+\end{lemma}
+\begin{proof}
+We always have a map $\eta^\psi_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that one of the triangle identities is 
+\begin{align*}
+\eta^\psi_\emptyset ; \ApPlus{\psi}{\id_{()}} \equiv \eta^\psi_\emptyset \equiv \id_\emptyset
+\end{align*}
+so for any $s : \alpha \tcell_p \emptyset$ we check:
+\begin{align*}
+s 
+&\equiv s ; \eta^\psi_\emptyset \\
+&\equiv \eta^\psi_\alpha ; \ApPlus{\psi}{\ApCirc{\psi}{s}} \\
+&\equiv \eta^\psi_\alpha ; \ApPlus{\psi}{\id_{()}} \\
+&\equiv \eta^\psi_\alpha
+\end{align*}
+by naturality of $\eta^\psi$.
+\end{proof}
+
+Some other derivable equations:
+\begin{itemize}
+\item Fusion for $.$
+\begin{align}
+\label{dot-fusion}
+    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
+\end{align}
+follows by fusing the ap's and the corresponding fusion rule for morphisms in telescope modes:
+\begin{align*}
+(s \bdot m);(s' \bdot m') &\equiv \ApPlus{\chi}{(s, m)} ; \ApPlus{\chi}{(s', m')} \\
+&\equiv \ApPlus{\chi}{(s, m);(s', m')} \\
+&\equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
+\end{align*}
+
+\item $\pi^\alpha_\mu$ is natural in $\mu$:
+  \begin{align}
+  \label{pi-naturality}
+  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}
+  \end{align}
+  by
+  \begin{align*}
+  (s \bdot m); \pi^\alpha_\mu 
+  &\equiv \ApPlus{\chi}{(s, m)} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\  
+  &\equiv \ap{\fst}{\ApCirc{\chi}{\ApPlus{\chi}{(s, m)}}} ; \ap \fst {\varepsilon^\chi_{(\alpha, \mu)}} \\
+  &\equiv \ap{\fst}{\ApCirc{\chi}{\ApPlus{\chi}{(s, m)}} ; \varepsilon^\chi_{(\alpha, \mu)}}  \\
+  &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}; (s, m) } \\
+  &\equiv \ap{\fst}{\varepsilon^\chi_{(\beta, \nu)}} ; s\\
+  &\equiv \pi^\beta_\nu ; s
+  \end{align*}
+
+\item Beta reduction for first projection:
+  \begin{align}
+\label{beta-pi}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{\One_\alpha}{\TrPlus{\ApEl{p}{s}}{\mu}}{\alpha}
+  \end{align}
+follows from naturality and the second triangle equation by:
+\begin{align*}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu
+&\equiv \eta_\beta;\pi^\beta_{\One_\beta};s \\
+&\equiv s
+\end{align*}
+
+\item Naturality of $\var{}$:
+\begin{align}
+\label{beta-var}
+\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} &\equiv \var{\nu};\ApPlus{\ApEl{p}{\pi^\beta_\nu}}{m}  && \text{where } \TermTwoT{\gamma}{m}{\nu}{\TrPlus{\ApEl{p}{s}}{\mu}}{\El{p}{\beta}}
+\end{align}
+is derivable by:
+\begin{align*}
+\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} 
+&\equiv \ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{\ApPlus{\chi}{(s, m)}}}{\ap \snd {\varepsilon^\chi_{(\alpha, \mu)}}} \\
+&\equiv \ap \snd {((s \bdot m), \ApOne{(s \bdot m)});\varepsilon^\chi_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\ap{\TrCirc{\chi}{\TrPlus{\chi}{z}}}{(s, m)/z};\varepsilon^\chi_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\varepsilon^\chi_{(\beta, \nu)};(s, m)} \\
+&\equiv \var{\nu}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{m} 
+\end{align*}
+
+\item The eta principle for pairing:
+\begin{align}
+\label{eta-pi-var}
+t &\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
+\end{align}
+is derived by the first triangle equation followed by naturality of $\eta$:
+\begin{align*}
+t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{\TrPlus{\chi}{\TrCirc{\chi}{z}}}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{(z \bdot \One_z)}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;(t \bdot \ApOne{t});(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) \\
+\end{align*}
+
+\item Naturality of $\eta^\chi_\beta$ takes the following form:
+\begin{align*}
+s;\eta^\chi_\mu \equiv \eta^\chi_{\mu'} ; (s \bdot \ApOne{s})
+\end{align*}
+
+\end{itemize}
+
+We think of a term of mode $p$ as a ``context'', a mode term morphism of
+mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
+``dependent type'', and a mode term morphism $\One_\alpha
+\Yields_{\El{p}{\alpha}} \mu$ as a ``term'' of ``type'' $\mu$.  For the
+equations: $\TrPlus{\ApEl{p}{s}}{-}$ is supposed to act like
+substitution; equation \eqref{s-plus-one-strict} says that substitution
+into the unit type gives the unit type in a different ``context''.
+
+Equation \eqref{beta-var} says that ``substituting'' into a ``variable'' is second projection on the ``substitution''.  Equation \eqref{eta-pi-var} is the usual $\eta$ principle for subsitutions.
+
+\begin{lemma}\label{sigma:total-to-fiber0} 
+For any comprehension object $p$, mode term morphisms $s : \alpha \tcell_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
+\end{lemma}
+\begin{proof}
+Given such an $s$, we can define
+\begin{align*}
+\hat{s} &: \One_\alpha \tcell_{\El{p}{\alpha}} x \\
+\hat{s} &:\equiv \ApOne{s};\ApPlus{s}{\var{x}}
+\end{align*}
+where the identity $s;\pi^\alpha_x \equiv \id_\alpha$ is used to verify that the codomain is $\TrPlus{s}{\TrPlus{\pi^\alpha_x}{x}} \equiv \TrPlus{(s;\pi^\alpha_x)}{x} \equiv x$.
+
+Conversely, given $m : \One_\alpha \tcell_{\El{p}{\alpha}} x$ we have:
+\begin{align*}
+\tilde{m} &: \alpha \tcell_p \alpha.x \\
+\tilde{m} &:\equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m)
+\end{align*}
+And indeed $\tilde{m};\pi^\alpha_x \equiv \eta^\chi_\alpha ; (\id_\alpha \bdot m);\pi^\alpha_x \equiv \id_\alpha$ by Equation~\eqref{beta-pi}.
+
+It is easy to check the round trips are the identity:
+\begin{align*}
+&\eta^\chi_\alpha ; (\id_\alpha \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\chi_\alpha ; (s;\pi^\alpha_x \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\chi_\alpha ; (s \bdot \ApOne{s});(\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s;\eta^\chi_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s
+\end{align*}
+And:
+\begin{align*}
+&\ApOne{\eta^\chi_\alpha ; (\id_\alpha \bdot m)};\ApPlus{(\eta^\chi_\alpha ; (\id_\alpha \bdot m))}{\var{x}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\ApOne{(\id_\alpha \bdot m)};\ApPlus{(\id_\alpha \bdot m)}{\var{x}}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha};\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv \ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha}};\ApPlus{\eta^\chi_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv \ApPlus{\eta^\chi_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv m
+\end{align*}
+\end{proof}
+
+\subsection{Comprehension Object with Unit}
+
+\begin{definition}
+A comprehension object \emph{supports the unit type} if $\eta^\chi_\alpha : \alpha \tcell_p \alpha.\One$ is an isomorphism, i.e.:
+\begin{align}
+\pi^\alpha_{\One_\alpha} ; \eta^\chi_\alpha \equiv \id_{\alpha.\One_\alpha}
+\end{align}
+\end{definition}
+Composition in the other direction is already the identity, by one of the triangle identities for $\chi$.
+
+\begin{lemma}
+If $p$ supports the unit type then the following equations hold:
+\begin{align}
+\var{\One_\alpha} &\equiv \ApOne{\pi^\alpha_{\One_\alpha}} \\
+\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}} &\equiv (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}}) \\
+\pi^{\alpha.\One.\One}_\One;\pi^{\alpha.\One}_\One &\equiv (\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One) \bdot (\ApOne{\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One})
+\end{align}
+\end{lemma}
+\begin{proof}
+The first:
+\begin{align*}
+\var{\One_\alpha} 
+&\equiv \ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha}}} \\
+&\equiv \ApOne{\pi^\alpha_{\One_\alpha} ; \eta^\chi_\alpha};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha}}} \\
+&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApOne{\eta^\chi_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha}}} \\
+&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApOne{\eta^\chi_\alpha};\ApPlus{\eta^\chi_\alpha}{\var{\One_\alpha}}} \\
+&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\id_{\alpha}} \\
+&\equiv \ApOne{\pi^\alpha_{\One_\alpha}}
+\end{align*}
+The second follows from naturality of $\eta^\chi$ by
+\begin{align*}
+\id_{\alpha.\One_\alpha} 
+&\equiv \pi^\alpha_{\One_\alpha} ; \eta^\chi_\alpha \\
+&\equiv \eta^\chi_{\alpha.\One_\alpha} ; (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}})
+\end{align*}
+and precomposing with $\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}$.
+And the third by applying the second equation to each $\pi$ and using fusion.
+\end{proof}
+
+\subsection{Comprehension Object with $\Sigma$}
+
+\begin{definition}\label{def:supports-sigmas}
+A comprehension object \emph{supports $\Sigma$ types} if there is a specified mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}
+\end{align*}
+and mode term morphisms
+\begin{align*}
+\contract{\alpha} &: \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}}) \\
+\tsplit{\alpha,x,y} &: \alpha.\Sigma_1(\alpha,x,y) \tcell_{p} \alpha.x.y
+\end{align*}
+such that $\tsplit{\alpha,x,y}$ is an inverse to $\pair{\alpha,x,y}$, defined by:
+\begin{align*}
+\fibpair{\alpha,x,y} &: \One_{\alpha.x.y} \tcell_{\El{p}{\alpha.x.y}} \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)} \\
+\fibpair{\alpha,x,y} &:\equiv \contract{\alpha.x.y};\ap{\Sigma_1(\alpha,x,y)}{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ApOne{\pi^{\alpha.x}_y};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}}, \ApOne{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}};\ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}}}{\var{y}})/(\alpha,x,y)} \\
+\pair{\alpha,x,y} &: \alpha.x.y \tcell_{p} \alpha.\Sigma_1(\alpha,x,y) \\
+\pair{\alpha, x, y} &:\equiv \eta^\chi_{\alpha.x.y};((\pi^{\alpha.x}_y;\pi^\alpha_x) \bdot \fibpair{\alpha,x,y})
+\end{align*}
+and $\contract{\alpha}$ is natural:
+\begin{align}
+\contract{\alpha};\ap{\Sigma_1(\alpha,x,y)}{(s, \ApOne{s}, \ApOne{s \bdot \ApOne{s}})/(\alpha,x,y)} \equiv \ApOne{s};\ApPlus{\ApEl{p}{s}}{\contract{\beta}}
+\end{align}
+for any $s : \alpha \tcell_p \beta$.
+\end{definition}
+
+\mvrnote{How does this compare to left adjoint to weakening? I still don't see...}
+
+Only $\contract{\alpha}$ is needed to define $\pair{\alpha,x,y}$, as mode terms are always functorial with respect to mode term morphisms via ap. If the requirement that $\pair{\alpha, x, y}$ be an isomorphism is dropped, we may still interpret weak $\Sigma$-types with a non-dependent eliminator.
+
+\begin{lemma}
+A comprehension object that supports $\Sigma$s satisfies the following equations:
+\begin{align}
+\pair{\alpha,x,y};\pi^\alpha_{\Sigma_1(\alpha, x, y)} &\equiv \pi^{\alpha.x}_y;\pi^\alpha_x \\
+\tsplit{\alpha,x,y};\pi^{\alpha.x}_y;\pi^\alpha_x &\equiv \pi^\alpha_{\Sigma_1(\alpha, x, y)} %\\
+%\fibpair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}};\ApPlus{(\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha})}{\contract{\alpha}} \\
+%(\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \eta^\chi_{\alpha.\One_\alpha}
+\end{align}
+\end{lemma}
+\begin{proof}
+The first follows from the definition of $\pair{}$ and Equation~\ref{beta-pi}. The second is immediate from the first, precomposing with $\tsplit{}$. 
+
+%For the third we use naturality of $\contract{}$, suppressing most of the subscripts of $1$ for readability:
+%\begin{align*}
+%&\fibpair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%%&\equiv \contract{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};\ap{\Sigma_\One(\alpha,x,y)}{(\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^{\alpha}_{\One_\alpha},\ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}};\ApPlus{\ApEl{p}{\pi^{\alpha.\One_\alpha}_y}}{\var{\One_\alpha}}, \ApOne{\pi^{\alpha.\One_\alpha.{\One_{\alpha.\One_\alpha}}}_{\One_{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}}}};\ApPlus{\ApEl{p}{\pi^{\alpha.\One_\alpha.{\One_{\alpha.\One_\alpha}}}_{\One_{\alpha.\One_\alpha.{\One_{\alpha.\One_\alpha}}}}}}{\var{\One_{\alpha.\One_\alpha}}})/(\alpha,x,y)}
+%&\equiv \contract{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};\ap{\Sigma_\One(\alpha,x,y)}{(\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One,\ApOne{\pi^{\alpha.\One}_\One};\ApPlus{\ApEl{p}{\pi^{\alpha.\One}_\One}}{\var{\One_\alpha}}, \ApOne{\pi^{\alpha.\One.\One}_\One};\ApPlus{\ApEl{p}{\pi^{\alpha.\One.\One}_\One}}{\var{\One_{\alpha.\One_\alpha}}})/(\alpha,x,y)} \\
+%&\equiv \contract{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};\ap{\Sigma_\One(\alpha,x,y)}{(\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One,\ApOne{\pi^{\alpha.\One}_\One};\ApPlus{\ApEl{p}{\pi^{\alpha.\One}_\One}}{\ApOne{\pi^\alpha_\One}}, \ApOne{\pi^{\alpha.\One.\One}_\One};\ApPlus{\ApEl{p}{\pi^{\alpha.\One.\One}_\One}}{\ApOne{\pi^{\alpha.\One}_\One}})/(\alpha,x,y)} \\
+%&\equiv \contract{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};\ap{\Sigma_\One(\alpha,x,y)}{(\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One,\ApOne{\pi^{\alpha.\One}_\One;\pi^\alpha_\One}, \ApOne{\pi^{\alpha.\One.\One}_\One;\pi^{\alpha.\One}_\One})/(\alpha,x,y)} \\
+%&\equiv \contract{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};\ap{\Sigma_\One(\alpha,x,y)}{(\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One,\ApOne{\pi^{\alpha.\One}_\One;\pi^\alpha_\One}, \ApOne{(\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One) \bdot (\ApOne{\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One})})/(\alpha,x,y)} \\
+%&\equiv \ApOne{\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One};\ApPlus{\ApEl{p}{\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One}}{\contract{\alpha}}
+%\end{align*}
+%And the last follows from the third by:
+%\begin{align*}
+%&(\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha} ; (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}}) ; (\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha} ;  \eta^\chi_{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}} ; (\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}} \bdot \ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}}) ; (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}}) ; (\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha} ;  \eta^\chi_{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}} ; ((\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}) \bdot (\ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}};\ApPlus{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}}{\ApOne{\pi^\alpha_{\One_\alpha}}})) ; (\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha};\eta^\chi_{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};((\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}) \bdot \ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}};\ApPlus{(\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha})}{\contract{\alpha}});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha};\eta^\chi_{\alpha.\One_\alpha.\One_{\alpha.\One_\alpha}};((\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}) \bdot \fibpair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha};\pair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}};\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} \\
+%&\equiv \eta^\chi_{\alpha.\One_\alpha}
+%\end{align*}
+\end{proof}
+
+\iffalse
+\mvrnote{Dan Notes:}
+
+This doesn't necessarily need to go into the final paper, but here are
+some notes that compare different ways of doing the mode theory for
+$\Sigma$ types.
+
+We assume a comprehension object $\chi$ given by a
+comprehension-terminal adjunction (definition yet to be spelled out
+without the automatic adjunction notation, but all the same stuff should
+be defined).
+
+
+\begin{enumerate}
+
+\item \label{sigma:total-to-fiber0} Conjecture: In any comprehension
+  object $\chi$, 2-cells $s : \alpha \tcell_p \alpha.x$ such that $s;\pi
+  = \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha
+  \tcell_{\El{p}{\alpha}} x$.
+
+  First, given $s : \alpha \tcell_p \alpha.x$, take $\mtt{var} : \One_{\alpha.x}
+  \tcell_{\El{p}{\alpha.x}} \TrPlus{(\pi^\alpha_x)}{x}$ and ap $s$ onto
+  it to get $\TrPlus{s}{1} \tcell_{\El{p}{\alpha}}
+  \TrPlus{s}{\TrPlus{(\pi^\alpha_x)}{x}}$.  Then fuse, reduce
+  $\TrPlus{s}{1}$, and use the section property to show that this also
+  has type
+  $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
+
+  Conversely, given $t : \One_\alpha \tcell_{\El{p}{\alpha}} x$,
+  the pairing of $\chi$ gives $(\id, t) : \alpha \tcell_p \alpha.x$.
+
+\item \label{sigma:total-to-fiber1} Conjecture: similarly, 2-cells $s :
+  \alpha.x \tcell_p \alpha.y$ such that $s;\pi_y = \pi_x$ correspond
+  bijectively to 2-cells $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}}
+  \TrPlus{\pi^\alpha_x}{y}$.
+
+  First, given $s : \alpha.x \tcell_p \alpha.y$, take $\mtt{var} :
+  \One_{\alpha.y} \tcell_{\El{p}{\alpha.y}} \TrPlus{(\pi^\alpha_y)}{y}$ and
+  ap $s$ onto it to get $\TrPlus{s}{1} \tcell_{\El{p}{\alpha.x}}
+  \TrPlus{s}{\TrPlus{(\pi^\alpha_y)}{x}}$.  Then fuse, reduce
+  $\TrPlus{s}{1}$, and use the commuting triangle to show that this also
+  has type $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi_x} y$.
+
+  Conversely, given $t : \One_{\alpha.x} \tcell_{\El{p}{\alpha.}}
+  \TrPlus{\pi_x} y$, we have $\id.t := \ap{.}{(\id, t)} : \alpha.x \tcell_p \alpha.y$.
+
+\item \label{sigma:total-to-fiber2} Conjecture: similarly, 2-cells $s :
+  \alpha.x.y \tcell_p \alpha.z$ such that $s;\pi_z = \pi_y;\pi_x$
+  correspond bijectively to 2-cells $\One_{\alpha.x.y}
+  \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^{\alpha.x}_y;\pi^\alpha_x}{y}$.
+
+\item \label{sigma:full} Define \emph{fullness} of the comprehension
+  object to mean that maps $s : \alpha.x \tcell_p \alpha.y$ such that
+  $s;\pi_y = \pi_x$ correspond bijectively to maps in the fiber $x
+  \tcell_{\El{p}{\alpha}} y$.  (Probably plus some naturality.)
+
+  (Is this the same as $U$ from the comprehesion/slide adjunction before
+  being full and faithful?)
+
+\item \label{sigma:full-interesting} Define \emph{terminal fullness}
+  (probably a better name) of the comprehension object to mean that maps
+  maps $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  out of the terminal object are bjective with $x
+  \tcell_{\El{p}{\alpha}} y$.
+
+  One direction is automatic: given $s : x \tcell_{\El{p}{\alpha}} y$,
+  we can make $(\id \bdot s) : \alpha.x \tcell_p \alpha.y$ as above, and ap that
+  onto $\mtt{var} : \One_{\alpha.y} \tcell \TrPlus{\pi_y}{y}$ to get
+  $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$.
+
+\item By \ref{sigma:total-to-fiber1}, fullness follows iff terminal
+  fullness.  
+  
+\item \label{sigma:complete}
+
+  A ``complete spec'' (cf. Jacobs REF) for $\Sigma$ types is
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item $\Sigma_1(\alpha,x,-) \dashv \TrPlus{\pi^\alpha_x}{-}$
+  \item $E : \Sigma_1(\alpha,x,\One_{\alpha.x}) \tcell x$ given by
+    transposing $\mtt{var}$ is an isomorphism
+  \item The induced map $\mtt{pair} : \alpha.x.y \tcell
+    \alpha.\Sigma_1(\alpha,x,y)$ given by $(\pi, \eta^\pi)$ is an
+    isomorphism.
+  \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s . \id)}{y})$,
+    where $s.\id : \beta.\TrPlus{s}{x} \tcell \alpha.x$
+  \end{itemize}
+  I'd be very surprised if this were not sufficient -- it's everything I
+  think we could ask for.
+
+\item Conjecture: given the adjunction $\Sigma_1(\alpha,x,-) \dashv
+  \TrPlus{\pi^\alpha_x}{-}$ (actually, only the counit) and $E$ an iso,
+  terminal fullness (and therefore fullness) holds.  The converse map
+  for $\One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\pi^\alpha_x}{y}$
+  is given by transposing to get $\Sigma_1(\alpha,x,\One_{\alpha.x}) \tcell
+  y$ and composing with $E^-1 : x \tcell
+  \Sigma_1(\alpha,x,\One_{\alpha.x})$.
+
+  Conversely, given \ref{sigma:full-interesting}, do we get the counit
+  $\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{y}) \vdash_{\El{p}{\alpha}} y$?
+
+\item \label{sigma:total-spec} Another possible spec for $\Sigma$ types
+  would be
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item A map $\mtt{pair} : \alpha.x.y \tcell
+    \alpha.\Sigma_1(\alpha,x,y)$ that commutes over $\alpha$, probably
+    with some naturality
+  \item $\mtt{pair}$ is an isomorphism (with inverse $\mtt{split}$)
+  \item A BC condition $\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \equiv
+    \Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{(s . \id)}{y})$?
+  \end{itemize}
+
+  This has all the axioms in $p$, rather than asserting the adjunction
+  in the fiber.
+
+\item Conjecture: given \ref{sigma:total-spec} (pairing and split in
+  $p$) and fullness in the sense of \ref{sigma:full-interesting}, we
+  can derive the adjunction $\Sigma_1(\alpha,x,-) \dashv
+  \TrPlus{\pi^\alpha_x}{-}$.
+
+  E.g. for the unit $y \vdash_{\alpha.x} \TrPlus{\pi^\alpha_x}{\Sigma_1(\alpha,x,y)}$
+  we can get
+  $\One_{\alpha.x.y} \vdash_{\alpha.x.y} \TrPlus{\pi_y;\pi_x}{\Sigma_1(\alpha,x,y)}$
+  from $\mtt{pair}$ by \ref{sigma:total-to-fiber2}.
+  Then use \ref{sigma:full-interesting}.  
+
+  For the counit
+  $\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \vdash_{\alpha} z$
+  we have
+  \[
+  \alpha.\Sigma_1(\alpha,x,\TrPlus{\pi^\alpha_x}{z}) \tcell \alpha.x.\TrPlus{\pi^\alpha_x}{z} \tcell \alpha.z 
+  \]
+  and then can use the full version of fullness (\ref{sigma:full}).    
+
+  Thus, if the comprehension category is already full, then pair and
+  split are enough, which explains why we don't usually talk about the
+  adjunction itself inside the type theory.  
+  
+\item The exact 2-cell that comes up in encoding pairing for
+  object-language $\Sigma$-types below is a contraction:
+  \[
+  \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})
+  \]
+  This seemed odd, because it seems like it's less than full pairing.    
+
+\item \label{sigma:get-pair} However, contraction does imply
+  $\mtt{pair}$, because we already know that $\Sigma_1$ is a functor, so
+  we have
+  \[
+  \ap{\Sigma_1}{(\pi^{\alpha.x}_y;\pi^\alpha_x, \mtt{var}, \mtt{var}?)} :
+  \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One}) \tcell \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)}
+  \]
+  Then precompose with contraction, and then use
+  \ref{sigma:total-to-fiber2}.
+
+  (This is a more dependent version of deriving $\Gamma \vdash A$ and
+  $\Gamma \vdash B$ implies $\Gamma \vdash A \times B$ from $\Gamma
+  \times \Gamma \vdash A \times B$ by functoriality and then
+  precomposing with the diagonal.)
+  
+\item Conversely, a constant $\mtt{pair} : \alpha.x.y \tcell
+  \alpha.\Sigma_1(\alpha,x,y)$ (commuting over $\alpha$) implies
+  contraction. An instance is $\alpha.\One_{\alpha}.\One_{\alpha.\One} \tcell
+  \alpha.\Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One})$, and the comprehension
+  object already has $\beta.\One \cong \beta$, so precompose, to get
+  $\alpha \tcell \alpha.\Sigma_1(\alpha,\One_\alpha,\One_{\alpha.\One})$, and
+  then use \ref{sigma:total-to-fiber0}.
+
+\item \label{sigma:spec} What we seem to need for $\Sigma$ types is just
+  \begin{itemize}
+  \item $\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}$,
+  \item A map $\mtt{contract} : \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}})$.
+  \item such that the $\mtt{pair}$ map induced as in
+    \ref{sigma:get-pair} is an isomorphism (split)
+  \end{itemize}
+
+\item It seems surprising that, in addition to not needing the
+  adjunction (which is kind of explained by never touching maps out of
+  anything other than $1$ in the fiber), we also don't need the BC
+  condition.  A partial explanation is that the BC condition is
+  (conjecture) true up to isomorphism, at least when phrased in terms of
+  total spaces.
+
+  Here are the maps:
+
+  For 
+  \[
+  \Sigma_1(\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{s.\id}}{y}) \tcell \TrPlus{\ApEl{p}{s}}{(\Sigma_1(\alpha,x,y))} 
+  \]
+  observe that there is a 2-cell in the mode theory $\Sigma$-type
+  \[
+  (\beta,\TrPlus{\ApEl{p}{s}}{x}, \TrPlus{\ApEl{p}{(s . \id)}}{y}) \tcell_{\Sigma z:p.\Sigma x:\El{p}{z}.\El{p}{z.x}} (\alpha,x,y)
+  \]
+  given by $(s, \id, \id)$ (using the equation for ``ap of framework
+  $\Sigma$ on a 2-cell'', and an associativity between $(\ap{w:(\Sigma
+    z:p.\El{p}{z}).\El{p}{(\fst w).(\snd w)}}{s , \id})$ and
+  $\ApEl{p}{s.\id}$).  $\Sigma_1$'s input is (an uncurried version of)
+  this $\Sigma$ type, so
+  \[
+  \ap{\Sigma_1 (\fst(w), \fst({\snd (w)}), \snd{(\snd w)})}{(s, \id, \id)/w}
+  \]
+  has the desired type (using the equation for ``ap of \fst{} on a
+  2-cell in $\Sigma$'').
+  By \ref{sigma:total-to-fiber1} this induces a 2-cell (leaving off the $\ApEl{p}{-}$)
+  \[
+  \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) \tcell \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} 
+  \]
+
+  For the converse, we construct 
+  \[
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \tcell \beta.\Sigma_1(\beta,\TrPlus{s}{x}, \TrPlus{s.\id}{y}) 
+  \]
+  (I'm not sure if this one is actually true in the fiber without
+  assuming fullness).
+  By post-composing with $\mtt{pair}$, it suffices to give 
+  \[
+  \beta.\TrPlus{s}{(\Sigma_1(\alpha,x,y))} \tcell \beta.\TrPlus{s}{x}.\TrPlus{(s.\id)}{y}
+  \]
+
+  Lemma 1: In general, given $\alpha \vdash \alpha.x$ which is a section
+  of $\pi^\alpha_x$, we can ``substitute'' any $s : \beta \tcell \alpha$
+  into it to get $\beta \vdash \beta.\TrPlus{x}$, which is a section of
+  $\pi^\beta_{\TrPlus{s}{x}}$.  For us, this is derived by using
+  \ref{sigma:total-to-fiber0} to reduce the problem to going from $1
+  \tcell_{\El{p}{\alpha}} x$ to $1 \tcell_{\El{p}{\beta}}
+  \TrPlus{s}{x}$, which is just the ap of ${\TrPlus{s}{-}}$ together
+  with it reducing on $1$.
+
+  Lemma 2: similarly, given $\alpha.x \vdash \alpha.y$ (commuting over
+  $\alpha$), we can ``substitute'' to get $\beta.\TrPlus{s}{x} \vdash
+  \beta.\TrPlus{s}{y}$ (commuting over $\beta$), by using
+  \ref{sigma:total-to-fiber1}, ap-ing $s$ in the fiber, reducing the ap
+  on $1$, and using the commuting triangle with $\pi$.
+
+  There is a map $\mtt{fst} : \alpha.\Sigma_1(\alpha,x,y) \tcell_p
+  \alpha.x$ given by $\mtt{split};\pi$, which commutes over $\alpha$.
+
+  There is also a section $\mtt{snd} : \alpha.\Sigma_1(\alpha,x,y)
+  \tcell_p \alpha.\Sigma_1(\alpha,x,y).\TrPlus{\mtt{fst}}{y}$ (this is
+  the total-space version of the usual second projection term).  In the
+  fiber, we need $1 \tcell_{\alpha.\Sigma_1(\alpha,x,y)}
+  \TrPlus{\mtt{fst}}{y}$, but we have the $\mtt{var}$ term $1
+  \tcell_{\alpha.x.y} \TrPlus{\pi^{\alpha.x}_y}{y}$ and ap-ing
+  $\mtt{split}$ gives the result.
+  
+  Applying Lemma 2 to $\mtt{fst}$ gives
+  \[s^*{\mtt{fst}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell \beta.\TrPlus{s}{x}
+  \]
+  which commutes over $\beta$.
+
+  Applying Lemma 1 to $\mtt{snd}$ gives $s^*{\snd{}} :
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell_p
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s}{\TrPlus{\mtt{fst}}{y}}$
+  commuting over $\alpha$.  (Some of the total space/fiber moves could
+  be $\beta$-reduced here.)
+  We also should have $s;\mtt{fst} = ;{s.\id}$, so this has type
+  \[
+  s^*{\snd{}} : \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell_p
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)}.\TrPlus{s^*\mtt{fst}}{\TrPlus{s.\id}{y}}
+  \]
+  
+  Using the comprehension-terminal adjunction to map into $.$, we can
+  pair $s^*{\mtt{fst}}$, $s^*{\snd{}}$
+  to get
+  \[
+  \beta.\TrPlus{s}{\Sigma_1(\alpha,x,y)} \tcell (\beta.\TrPlus{s}{x}).{\TrPlus{(s.\id)}{y}}
+  \]
+  
+\end{enumerate}
+\fi
+
+\subsection{Comprehension Object with $\Pi$}
+
+\begin{definition}\label{def:supports-pis}
+A comprehension object \emph{supports $\Pi$s} if $\ApOne{\pi^\alpha_x}$ is an isomorphism.
+\end{definition}
+
+Let $\pinv{\alpha,x}$ denote the inverse of $\ApOne{\pi^\alpha_x}$.
+
+\begin{lemma}
+If $\One_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
+\end{lemma}
+\begin{proof}
+Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$ and then the equations hold trivially.
+\end{proof}
+
+\begin{lemma}
+If $p$ has $\Pi$-types then:
+\begin{align*}
+\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\pinv{\alpha,\One_\alpha}} &\equiv  \ApOne{\eta^\chi_\alpha} \\
+\pinv{\alpha,x};\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}} &\equiv \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\One_\alpha}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+The first one follows from:
+\begin{align*}
+\ApOne{\eta^\chi_\alpha} ; \ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\ApOne{\pi^\alpha_{\One_\alpha}}} 
+&\equiv \ApOne{\eta^\chi_\alpha;\pi^\alpha_{\One_\alpha}}  \\
+&\equiv \ApOne{\id_\alpha} \\
+&\equiv \id_{\One_\alpha}
+\end{align*}
+And the second from:
+\begin{align*}
+&\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}} \\
+&\equiv \ApPlus{\eta^\chi_{\alpha.x}}{\ApPlus{\pi^{\alpha.x}_{1_{\alpha.x}}}{\ap{\One_u}{(\pi^\alpha_x,\var{x})/(u,v)}}} \\
+&\equiv \ApOne{\pi^\alpha_x}
+\end{align*}
+\end{proof}
+
+\subsection{Morphism of Comprehension Objects}
+
+Suppose we have two comprehension objects $p$ and $q$.
+
+\begin{definition}\label{def:morphism-comprehension-object}
+A \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \chi^p, \psi^p)$ to $(q, \One^q, \chi^q, \psi^q)$ consists of constants
+\begin{align*}
+&\yields f : q \tcell p \\
+\alpha : p, x : \El{p}{\alpha} &\yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
+\alpha : p, x : \El{p}{\alpha} &\yields \fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
+\end{align*}
+such that $\fone{\alpha}$ is natural:
+\begin{align}
+\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}/x} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
+\end{align}
+\end{definition}
+
+\begin{definition}
+A morphism of comprehension objects \emph{supports right adjoint types} if $\fone{\alpha}$ is an isomorphism.
+\end{definition}
+Let $\foneinv{\alpha}$ denote the inverse of $\fone{\alpha}$.
+
+\begin{definition}
+A morphism of comprehension objects $f$ \emph{supports left adjoint types} if $\fdist{\alpha, x}$ defined by
+\begin{align*}
+\fibf{\alpha, x} &: \One_{\TrPlus{f}{\alpha.x}} \tcell_{\El{q}{\TrPlus{f}{\alpha.x}}} \ApPlus{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{f_1(x)} \\
+\fibf{\alpha, x} &:\equiv \fone{\alpha.x};\ap{f_1}{\pi^\alpha_x/\alpha, \var{x}/x} \\
+\fdist{\alpha, x} &: \TrPlus{f}{\alpha.x} \tcell_q \TrPlus{f}{\alpha}.f_1(x) \\
+\fdist{\alpha, x} &:\equiv \eta^{\chi^q}_{\TrPlus{f}{\alpha.x}} ; (\ApPlus{f}{\pi^\alpha_x} \bdot \fibf{\alpha, x})
+\end{align*}
+is an isomorphism.
+\end{definition}
+Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
+
+\subsection{Spatial Type Theory}
+
+Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad as follows.
+
+\begin{definition}
+A mode term morphism $\gamma, x : p \yields \mu : p$ is a \emph{comonad} if there are morphisms
+\begin{align*}
+\gamma, x : p &\yields \fcounit{x} : \mu(x) \Rightarrow_p x \\
+\gamma, x : p &\yields \fcomult{x} : \mu(x) \Rightarrow_p \mu(\mu(x))
+\end{align*}
+satisfying:
+\begin{align}
+\fcomult{x};\ap{\mu}{\fcomult{x}} &\equiv \fcomult{x};\fcomult{\mu(x)} \\
+\fcomult{x};\ap{\mu}{\fcounit{x}} &\equiv \id_{\mu(x)} \\
+\fcomult{x};\fcounit{\mu(x)} &\equiv \id_{\mu(x)}
+\end{align}
+A comonad is \emph{idempotent} if any of the following equivalent equations hold:
+\begin{align}
+\fcounit{\mu(x)} &\equiv \ap{\mu}{\fcounit{x}} \\
+\ap{\mu}{\fcounit{x}} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} \\
+\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} 
+\end{align}
+\end{definition}
+
+\begin{definition}\label{def:supports-spatial}
+A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{-}$ is an idempotent comonad and $f$ supports left and right types.
+\end{definition}
+
+We would also like to talk about $\flat$-types for a non-idempotent comonad. 
+\begin{definition}
+A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
+\begin{align*}
+\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
+\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
+\end{align*}
+such that
+\begin{align*}
+\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
+\flatdist{\alpha, x} &:\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
+\end{align*}
+is an isomorphism.
+\end{definition}
+
+\begin{lemma}
+If $f$ supports spatial type theory then it supports $\flat$-types.
+\end{lemma}
+\begin{proof}
+Define
+\begin{align*}
+\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
+\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
+\end{align*}
+
+$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
+\begin{align*}
+&\flatdist{\alpha, x} \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+&\equiv \eta^{\chi}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+\end{align*}
+%\begin{align*}
+%\flatdist{\alpha, x} &\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^\chi_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^{\chi}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+%\end{align*}
+which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
+\end{proof}
+
+\subsection{First Order Logic}
+
+\subsection{Dependently Indexed Linear Types}
+
+\mvrnote{What should this be called? V\'ak\'ar just says Linear Dependent Type Theory but that is slightly overselling it... }
+
+\begin{definition}
+A comprehension object $p$ \emph{supports a dependently indexed linear context} if there is:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
+\end{align*}
+such that $\otimes_\alpha$ is symmetric and $1_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}, \mvrnote{Pending: What exactly do we need?} and there are morphisms 
+\begin{align*}
+\mathtt{lax}_{v,w} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes v}
+\end{align*}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ that supports a linear zone also \emph{supports $\otimes$-types} if:
+\mvrnote{TODO}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ \emph{supports $\Sigma!$-types} if it supports a linear context and there is
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma!(x,y) : \El{p}{\alpha}
+\end{align*}
+and mode term morphisms
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} &\yields \linsnd{x,y} : y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)} \\
+\alpha : p, x : \El{p}{\alpha}, z : \El{p}{\alpha} &\yields \linwk{x,z} : \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z}) \tcell_{\El{p}{\alpha}} z
+\end{align*}
+that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism
+\begin{align*}
+\frob{\xi, x, y} &: \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} y) \tcell_{\El{p}{\alpha}} \xi \otimes_\alpha \Sigma!(x, y) \\
+\frob{\xi, x, y} &:\equiv \ap{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} -)}{\linsnd{x,y}} ; \ap{\Sigma!(x, -)}{\mathtt{lax}_{\xi, \Sigma!(x,y)}} ; \linwk{x, \xi \otimes \Sigma!(x,y)}
+\end{align*}
+is an isomorphism.
+\end{definition}
+\mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
+
+\section{Object Languages}
+
+\begin{itemize}
+\item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$, together with a mode type morphism $\cdot \yields \tpack{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ where $\ctxtuple{\downstairs{\Gamma}}$ is the iterated telescope type of Lemma~\ref{lem:ctxtuple}. This mode type morphism describes the dependency structure of the context.
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$, where
+\begin{align*}
+\downstairs{\Gamma} \yields \modeof{\Gamma} :\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairs{\Gamma}}}} : p
+\end{align*}
+Note that $\ctxtuple{\id_{\downstairs{\Gamma}}}$ is simply an iterated tuple of the variables of $\downstairs{\Gamma}$ in order: $(((((), x), y), z), \dots)$.
+\item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$
+\end{itemize}
+
+\subsection{Martin L\"of Type Theory}
+
+To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
+\begin{mathpar}
+\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
+\end{mathpar}
+with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equations require earlier equations to hold in order to typecheck.
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=ctx-empty]{~}{\cdot \CTX} \and
+\inferrule*[left=ctx-ext]{\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma, A \CTX} \\
+\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields a[\Theta] : A[\Theta]} 
+\\
+\inferrule*[left=sub-empty]{~}{\Gamma \qyields \epsilon_\Gamma : \cdot} \and
+\inferrule*[left=sub-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \\
+\inferrule*[left=sub-id]{~}{\Gamma \qyields \id_\Gamma : \Gamma} \and
+\inferrule*[left=sub-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
+\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma} \and 
+\inferrule*[left=var]{~}{\Gamma, A \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]} 
+\end{mathpar}
+
+\begin{align}
+A[\id] &\equiv A \\
+A[\Theta ; \kappa] &\equiv A[\kappa][\Theta] \\
+\nonumber\\
+a[\id] &\equiv a \\
+a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
+\nonumber\\
+\id ; \Theta &\equiv \Theta \\
+\Theta ; \id &\equiv \Theta \\
+(\Theta; \kappa) ; \rho &\equiv \Theta ; (\kappa ; \rho) \\
+\nonumber\\
+\Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\ 
+(\Theta, a);\proj{\Gamma,A} &\equiv \Theta \\
+\qvar{\Delta,A}[\Theta, a] &\equiv a \\
+(\proj{\Gamma,A}, \qvar{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
+\Theta &\equiv \epsilon_\Gamma && \text{for } \Gamma \qyields \Theta : \cdot
+\end{align}
+\caption{Rules of MLTT via Explicit Substitutions}\label{fig:qit-rules}
+\end{figure}
+
+We can derive some useful operations that we will use later when defining $\Pi$ and $\Sigma$ types.
+\begin{mathpar}
+\inferrule*[left=derivable]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields A \TYPE}{\Gamma, A[\Theta] \qyields \Theta \uparrow A : \Delta, A} \and
+\inferrule*[left=derivable]{\Gamma \qyields a : A}{\Gamma \qyields \hat{a} : \Gamma, A}
+\end{mathpar}
+defined by:
+\begin{align*}
+\Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]} \\
+\hat{a} &:\equiv \id_{\Gamma} , a
+\end{align*}
+\mvrnote{Do we use the second one? Not the way we currently do $\Pi$-types} It is straightforward to check that these satisfy the following identities: 
+\begin{align*}
+(\Theta \uparrow A) ; \proj{\Delta, A} &\equiv \proj{\Gamma, A[\Theta]} ; \Theta \\
+\qvar{\Delta, A}[\Theta \uparrow A] &\equiv \qvar{\Gamma, A[\Theta]} \\
+\end{align*}
+\mvrnote{What else have we used?}
+
+The structural rules of MLTT then have the following translations:
+\begin{enumerate}
+\item[\textsc{ctx-empty}] Define $\upstairs{(\cdot)}$ to be the empty framework context and $\tpack{(\cdot)} :\equiv \psi : p \tcell 1$, noting that $\ctxtuple{(\cdot)} \equiv 1$.
+
+\item[\textsc{ctx-ext}] Given $\upstairs{\Gamma}
+  \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$, define $\upstairs{\Gamma, A}$ to be the extended framework context $\upstairs{\Gamma}, x : \upstairs{A}$. We need to specify a mode type morphism $\tpack{\Gamma, A} : p \tcell \ctxtuple{(\downstairs{\Gamma, A})}$. 
+  By definition,
+  \begin{align*}
+    \ctxtuple{(\downstairs{\Gamma, A})} \equiv \sum_{\sigma : \ctxtuple{\downstairs{\Gamma}}} \modeof{\Gamma}[\fan{\sigma}]
+  \end{align*}
+  and note that 
+  \begin{align*}
+  \modeof{\Gamma}[\fan{\sigma}]
+  &\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairs{\Gamma}}}}[\fan{\sigma}] \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairs{\Gamma}}}[\fan{\sigma}]} \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\id_{\ctxtuple{\Gamma}}} \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\sigma}
+  \end{align*}
+  so we have a mode type morphism
+  \begin{align*}
+  \sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}} : \sigmacl{\sigma}{p}{\El{p}{\sigma}} \tcell \sigmacl{\sigma}{\ctxtuple{\downstairs{\Gamma}}}{\TrPlus{\tpack{\Gamma}}{\sigma}}
+  \end{align*}
+  Define $\tpack{\Gamma, A}$ to be:
+  \begin{align*}
+  \tpack{\Gamma, A} :\equiv \chi ; (\sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}})
+  \end{align*}
+  
+\item[\textsc{type-sub}] Given $\upstairs{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A[\Theta]} :\equiv \StE{\tpack{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\fan{\Delta}]}
+\end{align*}
+
+\item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tpack{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\fan{\Delta}]}
+\end{align*}
+
+\item[\textsc{sub-empty}] We are constructing a term
+\begin{align*}
+\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\epsilon_\Gamma} : \St{\tpack{(\cdot)}}{\ctxtuple{(\cdot)}}
+\end{align*}
+The type is equal by definition to $\St{\psi}{1}$, so we may use the counit $\eta^\psi_{\modeof{\Gamma}} : \modeof{\Gamma} \tcell_p \TrPlus{\psi}{}$ to form
+\begin{align*}
+\upstairs{\epsilon_\Gamma} :\equiv \rewrite{\eta^\psi_{\modeof{\Gamma}}}{\StI{\psi}{}}
+\end{align*}
+
+\item[\textsc{sub-ext}] We are provided
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}} \\
+\upstairs{\Gamma} &\yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A[\Theta]}
+\end{align*}
+and we are trying to define:
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta, a} : \St{\tpack{\Delta, A}}{\ctxtuple{\upstairs{\Delta, A}}}
+\end{align*}
+Unfolding definitions:
+\begin{align*}
+\upstairs{A[\Theta]}
+&\equiv \StE{\tpack{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\fan{\Delta}]}
+\intertext{and}
+\St{\tpack{\Delta, A}}{\ctxtuple{\upstairs{\Delta, A}}}
+&\equiv \St{(\chi ; (\sigmacl{\sigma}{\tpack{\Delta}}{\id_{\TrPlus{\tpack{\Delta}}{\sigma}}}))}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\fan{\Delta}]} \\
+&\equiv \St{\chi}{\St{\sigmacl{\sigma}{\tpack{\Delta}}{\id_{\TrPlus{\tpack{\Delta}}{\sigma}}}}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\fan{\Delta}]}} \\
+&\equiv \St{\chi}{\sigma' : \St{\tpack{\Delta}}{\ctxtuple{\upstairs{\Delta}}}, \StE{\tpack{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\fan{\Delta}]}}
+\end{align*}
+So we can form:
+\begin{align*}
+\upstairs{\Theta, a} :\equiv \rewrite{\eta^\chi_{\modeof{\Gamma}}}{\StI{\chi}{\upstairs{\Theta}, \upstairs{A}}}
+\end{align*}
+
+\item[\textsc{sub-id}] We have:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\id_\Gamma} :\equiv \StI{\tpack{\Gamma}}{\ctxtuple{\id_{\upstairs{\Gamma}}}} : \St{\tpack{\Gamma}}{\ctxtuple{\upstairs{\Gamma}}}
+\end{align*}
+
+\item[\textsc{sub-comp}]
+Given 
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}} \\
+\upstairs{\Delta} &\yields_{\modeof{\Delta}} \upstairs{\kappa} : \St{\mathtt{pack}_\Lambda}{\ctxtuple{\upstairs{\Lambda}}}
+\end{align*}
+we can form
+\begin{align*}
+\upstairs{\Theta;\kappa} :\equiv \StE{\tpack{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\fan{\upstairs{\Delta}}]}
+\end{align*}
+
+\item[\textsc{sub-proj}] We are trying to construct a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\modeof{(\Gamma, A)}} \upstairs{\proj{\Gamma, A}} : \St{\mathtt{pack}_\Gamma}{\ctxtuple{\upstairs{\Gamma}}}
+\end{align*}
+with mode
+\begin{align*}
+\modeof{(\Gamma, A)}
+&\equiv \TrPlus{\tpack{(\Gamma, A)}}{\ctxtuple{\id_{\downstairs{(\Gamma, A)}}}} \\
+&\equiv \TrPlus{(\chi ; (\sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}}))}{\ctxtuple{\id_{\downstairs{\Gamma}}}, x} \\
+&\equiv \TrPlus{\chi}{\TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairs{\Gamma}}}}, x} \\
+&\equiv \TrPlus{\chi}{\modeof{\Gamma}, x} \\
+&\equiv \modeof{\Gamma}.x
+\end{align*}
+So define:
+\begin{align*}
+\upstairs{\proj{\Gamma, A}} :\equiv \rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}
+\end{align*}
+
+\item[\textsc{var}] We are a building a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\modeof{(\Gamma, A)}}} \upstairs{\qvar{\Gamma, A}} : \upstairs{A[\proj{\Gamma, A}]}
+\end{align*}
+The type in question simplifies:
+\begin{align*}
+\upstairs{A[\proj{\Gamma, A}]}
+&\equiv \StE{\tpack{\Gamma}}{\upstairs{\proj{\Gamma, A}}}{\sigma}{\upstairs{A}[\fan{\Gamma}]} \\
+&\equiv \StE{\tpack{\Gamma}}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}}{\sigma}{\upstairs{A}[\fan{\Gamma}]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tpack{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{A}[\fan{\Gamma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tpack{\Gamma}}{\StI{\tpack{\Gamma}}{\ctxtuple{\id_{\upstairs{\Gamma}}}}}{\sigma}{\upstairs{A}[\fan{\Gamma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{A}[\fan{\Gamma}][\ctxtuple{\id_{\upstairs{\Gamma}}}/\sigma]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{A}}
+\end{align*}
+
+So define $\upstairs{\qvar{\Gamma, A}}$ by:
+\begin{align*}
+\upstairs{\qvar{\Gamma, A}} :\equiv \rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}
+\end{align*}
+\end{enumerate}
+
+\subsection{2-categories with families}
+\label{sec:2cwfs}
+
+The ``canonical'' semantics should interpret each judgment as follows:
+
+Mode theory judgements:
+\begin{enumerate}
+\item $\mm{\gamma \ctx}$ is a category.
+\item $\mm{\gamma \yields p \type}$ is a functor $\mm{\gamma}\op \to \Cat$.
+\item $\mm{\TypeTwo{\gamma}{s}{p}{q}}$ is a natural transformation $\mm{\gamma \yields q} \Rightarrow \mm{\gamma \yields p}$ (note reversal of direction; this is because mode morphisms act contravariantly on mode terms and on upstairs subscripts).
+\item $\mm{\gamma \yields \mu : p}$ is a section of the projection from the Grothendieck construction $\int\mm{\gamma\yields p} \to \mm{\gamma}$.
+  In particular, it assigns to every object $x\in \mm{\gamma}$ an object $\mm{\gamma \yields \mu : p}(x)\in \mm{\gamma\yields p}(x)$.
+\item $\mm{\TermTwoT{\gamma}{s}{\mu}{\nu}{p}}$ is a natural transformation of such sections over the identity, i.e.\ whose composite with the projection is the identity natural transformation of the identity functor.
+\end{enumerate}
+
+Top judgements: 
+\begin{itemize}
+\item $\mm{\yields_\gamma \Gamma \CTX}$ is an object of $\mm{\gamma}$
+\item $\mm{\Gamma \yields_p A \TYPE}$ is an object of $\mm{\gamma \yields p}(\mm{\Gamma})$.
+\item $\mm{\Gamma \yields_\mu M : A}$ is a morphism from $\mm{\gamma \yields \mu : p}(\mm{\Gamma})$ to $\mm{\Gamma \yields_p A}$ in $\mm{\gamma \yields p}(\mm{\Gamma})$.
+\end{itemize}
+
+\drlnote{Are these right?}
+\msnote{Yes!}
+Total substitutions in the mode theory, 2-cells between them, and
+upstairs substitutions above them are not part of the primitive syntax
+of the framework, but can be defined by tupling terms.
+These can be interpreted as: 
+\begin{itemize}
+\item $\mm{\gamma \yields \theta : \delta}$ is a functor from $\mm{\gamma}$ to $\mm{\delta}$
+\item $\mm{\gamma \yields \theta_1 \tcell_\delta \theta_2}$ is a natural
+  transformation from $\mm{\gamma \yields \theta_1 : \delta}$ to
+  $\mm{\gamma \yields \theta_2 : \delta}$
+\item $\mm{\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta}$ is a
+  morphism from $\mm{\theta}(\mm{\Gamma})$ to $\mm{\Delta}$ in
+  $\mm{\delta}$.
+  Natural transformations act contravariantly because $\theta$ is in the
+  domain of the morphism.  
+  \end{itemize}
+So the semantics of contexts/substitutions is a lot like 
+one-variable adjoint logic with only $F$ types~\cite{ls15adjoint}.  
+
+The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
+In this subsection we will concern ourselves only with the ``downstairs'' mode theory, which means abstracting the behavior of Grothendieck constructions in $\Cat$; in \S\ref{sec:fib-2cwf} we will reintroduce the ``upstairs'' type theory by additionally abstracting the behavior of ``objects and morphisms''.
+
+We work with two universes in the metatheory, leading to two categories of categories denoted $\Cat$ and $\CAT$, such that $\Cat$ is an object of $\CAT$.
+If necessary, we refer to objects of $\Cat$ as \emph{small}, objects of $\CAT$ (including $\Cat$) as \emph{large}, and other categories (such as $\CAT$ itself) as \emph{very large}.
+However, for the most part size issues can be ignored.
+
+
+
+\begin{enumerate}
+\item Categories form a 2-category.
+  In general we will stipulate an arbitrary (strict) 2-category $\M$.
+\item Given a category $C$, the collection of functors and (strict) natural transformations $C\op \to \Cat$ forms a (large) category $[C\op, \Cat]$, and if we reverse the directions of the natural transformations we get $[C\op, \Cat]\op$.
+  Moreover, precomposition with functors $C\to C'$ and natural transformations between them makes $[(-)\op, \Cat]\op$ into a strict 2-functor $\Cat\op \to \CAT$; syntactically these are $q[\mu/x]$ and $\ap{q}{\mu/x}$ respectively.
+
+  Here $\CAT$ denotes the very large 2-category of large categories.
+  Note that this 2-functor is covariant on 2-cells: the two $(-)\op$s cancel each other out at that level.
+  (In fact, this 2-functor can be identified with the representable $[-,\Cat\op]$; this will be useful below.)
+
+  Thus, in general we will stipulate a strict 2-functor $\Mty:\M\op \to \CAT$.
+  \addtocounter{enumi}{1}
+\item Given a category $C$ and a functor $T:C\op\to Cat$, the sections of the projection $\int T \to C$, and natural transformations over the identity, form a category.
+  Moreover, such sections also vary functorially as $C$ does.
+  Thus, in general we will stipulate another strict 2-functor $\Mtm : \M\op\to\CAT$ with a strictly 2-natural projection map $\Mtm\to\Mty$.
+
+  The contravariant action of mode morphisms $\TypeTwo{\gamma}{s}{p}{q}$ on mode terms tells us that the morphisms of $\Mty(C)$ must act on the objects of $\Mtm$ contravariantly.
+  Moreover, this action is strictly functorial, and respected by substitution.
+  Thus, we stipulate that $\Mtm \to \Mty$ is a \emph{split fibration} internal to the 2-category $[\M\op,\CAT]$, which means that each functor $\Mtm(C) \to \Mty(C)$ is a split fibration and that all the naturality squares
+  \begin{center}
+    \begin{tikzcd}
+      \Mtm(C) \ar[d] \ar[r] & \Mtm(C')\ar[d] \\
+      \Mty(C) \ar[r] & \Mty(C')
+    \end{tikzcd}
+  \end{center}
+  are strict morphisms of split fibrations (preserve the splittings on the nose).
+
+  To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, if we form the pullback in $[\M\op,\CAT]$
+  \begin{equation}
+    \begin{tikzcd}
+      \int T \ar[d] \ar[r] & \Mtm \ar[d] \\
+      y(C) \ar[r,"\name{T}"] & \Mty
+    \end{tikzcd}\label{eq:rep-pb}
+  \end{equation}
+  then the pullback object is also of the form $y(\int T)$ for some object $\int T\in \M$.
+  Here $y(C)$ denotes the representable functor $y(C)(-) = \M(-,C) : \M\op\to\CAT$.
+  The Yoneda lemma implies that (strict) 2-natural transformations $\name{T} : y(C) \to \Mty$ are in bijection with objects $T\in \Mty(C)$; thus every $T\in \Mty(C)$ induces an object $\int T$ with a projection $\int T \to C$ in $\M$, such that elements of $\Mtm(C)$ over $T$ are in bijection with sections of this projection.
+  To make the notion algebraic, we require the object $\int T$ to be a specified function of $C$ and $T$; we call this being \textbf{algebraically representable}.
+
+  Since~\eqref{eq:rep-pb} is a pullback in a 2-category, it also has a universal property for 2-cells.
+  Thus, morphisms in $\Mtm$ (over the identity in $\Mty$) are in bijection with 2-cells between sections (over the identity).
+
+  The 2-categorical Yoneda lemma also says that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications $\name{\mu}:\name{S} \to \name{T}$.
+  Since $\Mtm\to\Mty$ is a fibration, such a $\name{\mu}$ induces a map in the other direction $\int \mu : \int T\to \int S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $\int \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
+\end{enumerate}
+
+Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated semantically by:
+
+\begin{definition}
+  A \textbf{2-category with families} is a 2-category $\M$ together with two 2-functors $\Mty,\Mtm : \M\op\to\CAT$ and a 2-natural transformation $\Ups:\Mtm\to \Mty$ that is both (1) an internal split fibration and (2) algebraically representable.
+\end{definition}
+
+Pleasingly, this is a straightforward categorification of the standard notion of category with families.
+The only really new ingredient is the requirement that $\Mtm\to \Mty$ be an internal fibration, which has no analogue for 1-categories.
+
+The ruminations above suggest that there should be a 2-category with families where $\M=\Cat$ and $\Mty(C) = [C\op,\Cat]\op$.
+In fact we can construct this precisely as an instance of a much more general operation, similar to the ``global universe'' coherence method for ordinary type theory introduced by Voevodsky.
+(There should also be a ``local universe'' method analogous to that of Lumsdaine--Warren, but we do not need that here.)
+
+\begin{definition}
+  A \textbf{2-category with a universe} is a large 2-category $\M$ together with a fully faithful 2-functor $y:\M \hookrightarrow \Mhat$, where $\Mhat$ is a very large and locally large 2-category, and a morphism $\Upshat : \Mtmhat \to \Mtyhat$ in $\Mhat$ that is both (1) an internal split fibration and (2) algebraically $\M$-representable, in the sense that for any map $y(C)\to \Mtyhat$, where $C\in \M$, has a specified pullback that also lies in the image of $y$.
+\end{definition}
+
+Usually we will treat $y$ as an implicit coercion, identifying objects of $\M$ with their images in $\Mhat$.
+
+Note that every 2-category with families is also a 2-category with a universe, taking $\Mhat = [\M\op,\CAT]$ and $\Mtyhat=\Mty$, $\Mtmhat = \Mtm$, $\Upshat = \Ups$.
+Indeed a 2-category with families is precisely a 2-category with a universe such that $\M \hookrightarrow \Mhat$ is the Yoneda embedding.
+Conversely we have:
+
+\begin{theorem}\label{thm:2cwf-univ}
+  Any 2-category with a universe has an underlying 2-category with families, defined by
+  \begin{align*}
+    \Mty(C) &= \Mhat(C,\Mtyhat)\\
+    \Mtm(C) &= \Mhat(C,\Mtmhat)\\
+    \Ups &= \Mhat(C,\Upshat)
+  \end{align*}
+\end{theorem}
+\begin{proof}
+  The definitions of $\Mty$ and $\Mtm$ are certainly 2-functors, since they are representable, and the morphism $\Upshat$ induces a 2-natural transformation $\Ups:\Mtm\to\Mty$.
+  More abstractly, we are applying the \emph{restricted Yoneda embedding} $\Mhat \to [\M\op,\CAT]$ (the term is somewhat of a misnomer since, unlike the ordinary Yoneda embedding, it may not be fully faithful).
+  Since split fibrations are defined representably, they are preserved by the restricted Yoneda embedding; thus $\Ups$ is also a split fibration.
+  Finally, since the restricted Yoneda embedding also preserves pullbacks, it preserves any pullback of $\Upshat$ to an object of $\M$; hence the vertex of any such pullback is again a specified representable.
+  Thus, $\Ups$ is algebraically representable.
+\end{proof}
+
+\begin{example}\label{eg:cat-2cwf}
+  Let $\M=\Cat$ and $\Mhat=\CAT$, with $\Mtyhat = \Cat\op$, and $\Mtmhat$ the Grothendieck construction of the contravariant functor $(\Cat\op)\op \cong \Cat \hookrightarrow \CAT$.
+  Explicitly, the objects of $\Mtmhat$ are categories $A$ equipped with an object $a\in A$, and its morphisms $(A,a) \to (B,b)$ are functors $f:B\to A$ paired with a morphism $\phi : a\to f(b)$.
+  Thus, $\Cat$ becomes a 2-category with a universe, and hence a 2-category with families, as in the above motivating discussion.
+  We have $\Mty(C) \cong [C,\Cat\op] \cong [C\op,\Cat]\op$, and $\Mtm(C)$ consists of functors $D:C\op\to\Cat$ together with a section $s:C\to \int D$ of their Grothendieck construction.
+\end{example}
+
+On the other hand, we should also have the syntactic model:
+
+\begin{example}\label{eg:syn-2cwf}
+  Let $\M$ be the 2-category whose:
+  \begin{itemize}
+  \item objects are mode contexts $\gamma \ctx$,
+  \item morphisms are total mode substitutions $\gamma \yields \theta : \delta$, and
+  \item 2-cells are total mode 2-cells $\gamma \yields_\delta \theta_1 \tcell \theta_2$.
+  \end{itemize}
+  We define $\Mty:\M\op\to\CAT$ such that
+  \begin{itemize}
+  \item the objects of $\Mty(\gamma)$ are modes $\gamma \yields p\type$, and
+  \item the morphisms of $\Mty(\gamma)$ are mode morphisms $\TypeTwo{\gamma}{s}{p}{q}$,
+  \item with functorial action by substitution.
+  \end{itemize}
+  Finally, we define $\Mtm:\M\op\to\CAT$ such that
+  \begin{itemize}
+  \item the objects of $\Mtm(\gamma)$ are mode terms $\gamma \yields \mu:p$, and
+  \item the morphisms of $\Mtm(\gamma)$ are mode 2-cells $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$,
+  \item with functorial action by substitution.
+  \end{itemize}
+  The projection $\Ups:\Mtm\to\Mty$ is clear.
+  Its representability is given, as usual, by context extension $(\gamma, x:p) \ctx$; the universal property of this follows from the definition of total substitutions and 2-cells as tuples.
+  Finally, its split fibration structure is given by the contravariant action of mode morphisms on mode terms ${\gamma \yields \TrPlus{s}{\mu} : p}$.
+  Note that, as mentioned above, so far we are only seeing the ``downstairs'' mode theory.
+\end{example}
+
+
+\subsection{$\Sigma$-modes}
+\label{sec:2-sigmas}
+
+Emboldened by this success, let's just try to write down a notion of $\Sigma$-types for 2-categories with families by categorifying the usual one for 1-categories.
+As formulated by Awodey, $\Sigma$-types for a 1-category with families involve the dependent product of the presheaf $\mathrm{Ty}$ along the projection $\mathrm{Tm}\to \mathrm{Ty}$, to encode the notion of one type dependent on another one.
+Unlike a presheaf 1-category, the presheaf 2-category $[\M\op,\CAT]$ is not locally cartesian closed, so not all dependent products exist; but fortunately, dependent products along fibrations do exist.
+
+\begin{lemma}\label{thm:fib-exp}
+  For a 2-category $\M$, any split fibration $\Ups : S\to T$ in $[\M\op,\CAT]$ is exponentiable.
+\end{lemma}
+\begin{proof}
+  Suppose given $R\to S$; we want to define $\Pi_S[R]$ over $T$.
+  Given an object $x\in T(C)$, corresponding to a morphism $\name{x}:y(C)\to T$, the objects of $\Pi_S[R](C)$ over $x$ must be bijective to the lifts of $\name{x}$ to $\Pi_S [R]$.
+  The desired universal property of $\Pi_S [R]$ means that such lifts are bijective to maps $x^* S \to R$ over $S$.
+  So we take the latter as the \emph{definition} the objects of $\Pi_S [R]$, i.e.\
+  \[ \ob (\Pi_S [R](C)) = \sum_{x:\ob (T(C))} \ob (\M_{/S}(x^*S, R)). \]
+  Next, given a morphism $\alpha :x\to y$ in $T(C)$ and objects $u,v$ of $\Pi_S[R]$ over $x,y$ respectively, morphisms $u\to v$ over $\alpha$ must correspond bijectively to lifts of the corresponding 2-cell $\name{\alpha} :\name{x} \to \name{y} :y(C) \to T$ to a 2-cell between $\name{u},\name{v} : y(C) \to \Pi_S[R]$.
+  However, the desired universal property of $\Pi_S[R]$ as a dependent product doesn't obviously determine such lifts, because the 2-cell $\name{\alpha}$ doesn't live in the slice category $\M/T$.
+  But we can use the fibration structure of $\Ups$, which induces a map $\alpha^*S : y^*S \to x^*S$ over $y(C)$ and a 2-cell
+  \begin{center}
+    \begin{tikzcd}
+      x^*S \ar[drr] \\
+      & \Downarrow\overline{\alpha} & S\\
+      y^*S \ar[urr] \ar[uu,"\alpha^*S"]
+    \end{tikzcd}
+  \end{center}
+  over $\alpha$ with a universal property (see Hermida, Buckley, Johnstone).
+  Thus, if $u$ and $v$ are determined by maps $\hat{u}:x^*S \to R$ and $\hat{v}:y^*S\to R$ over $S$, we can define a morphism $u\to v$ over $\alpha$ to be determined by a lift $\hat{\alpha}$ of $\overline{\alpha}$ to $R$.
+
+  The maps $\alpha^*S $ and 2-cells $\overline{\alpha}$ are functorial in $\alpha$ in all the ways one would hope (strictly so, since $\Ups$ is split --- although this is not really necessary), so it is straightforward to make $\Pi_S[R](C)$ thusly defined into a category and $\Pi_S[R]$ into a functor $\M\op\to\CAT$ over $T$.
+
+  Note in particular that when $\alpha$ is an identity, so is $\overline{\alpha}$, so the fiber of $\Pi_S[R]$ over an object $x$ is the category $\M_{/S}(x^*S, R)$.
+  This means that $\Pi_S[R]$ has the desired universal property with respect to maps out of representables, i.e.\ we have a natural isomorphism of hom-categories
+  \[\M_{/T}(x:y(C)\to T,\Pi_S[R]) \cong \M_{/S}(x^*S, R).\]
+  It is straightforward to extend this, using the Yoneda lemma, to the full universal property.
+\end{proof}
+
+Proceeding by analogy with the 1-categorical case, consider the dependent product $\Pi_\Ups[\Mty]$, where $\Mty$ denotes abusively the pullback $\Mtm \times \Mty \to \Mtm$ in $\M/\Mtm$.
+The universal structure of $\Pi_\Ups[\Mty]$ consists of an ``evaluation'' map $\ev:\Pi_\Ups[\Mty] \times_\Mty \Mtm \to \Mty$.
+Note that the projection $\Pi_\Ups[\Mty] \times_\Mty \Mtm \to \Pi_\Ups[\Mty]$ is a split fibration, since it is a pullback of $\Ups:\Mtm \to \Mty$.
+And we can also pull $\Ups$ back along the evaluation map to get a further split fibration:
+\begin{center}
+  \begin{tikzcd}
+    \ev^* \Mtm \ar[r] \ar[d,->>] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d,->>]\\
+    \Pi_\Ups[\Mty] \times_\Mty \Mtm \ar[r] \ar[d,->>] \ar[ddr,phantom,near start,"\lrcorner"] \ar[dr] & \Mty\\
+    \Pi_\Ups[\Mty] \ar[dr] & \Mtm \ar[d,->>] \\
+    & \Mty
+  \end{tikzcd}
+\end{center}
+Note that the composite of two split fibrations is again a split fibration.
+
+\begin{definition}
+  A 2-category with a universe (such as a 2-category with families) has \textbf{$\Sigma$-types} if $\Upshat$ is exponentiable, and it is equipped with maps $\Pi_\Upshat[\Mtyhat] \to \Mtyhat$ and $\ev^* \Mtmhat \to \Mtmhat$ such that the square
+  \begin{center}
+    \begin{tikzcd}
+      \ev^* \Mtmhat \ar[r] \ar[d,->>] & \Mtmhat \ar[dd,->>]\\
+      \Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat \ar[d,->>] \\
+      \Pi_\Upshat[\Mtyhat] \ar[r] & \Mtyhat
+    \end{tikzcd}
+  \end{center}
+  (1) commutes, (2) is a pullback, and (3) is a strict morphism of split fibrations.
+\end{definition}
+
+\begin{example}\label{eg:syn-sig}
+  Continuing Example \ref{eg:syn-2cwf}, we argue that the syntactic model has $\Sigma$-types in this sense if and only if it has $\Sigma$-modes in the syntactic sense.
+By the construction in Lemma \ref{thm:fib-exp}, an object of $\Pi_\Ups[\Mty](\gamma)$ lives over a type $p\in \Mty(\gamma)$, and consists of the additional data of a map $p^*\Mtm \to \Mty$.
+But since $\Ups$ is representable, $p^* \Mtm$ is also representable, by the extended context $\gamma.p$; thus this additional data is a type $\gamma,x:p \yields q \type$.
+The morphism $\Pi_\Ups[\Mty] \to \Mty$ thus assigns to any such pair a mode type $\gamma \yields \sigmacl{x}{p}{q} \type$.
+
+Similarly, an object of $\ev^* \Mtm$ over $(p,q)$ consists of a pair of a term $\gamma \yields \mu : p$ and $\gamma \yields \nu : q[\mu/x]$, and so the morphism $\ev^* \Mtm$ assigns to this the pair $(p,q):\sigmacl{x}{p}{q}$.
+The fact that the square is a pullback (on objects) means that we have $\fst$ and $\snd$ collectively forming an inverse isomorphism, i.e.\ the $\beta$- and $\eta$-rules hold for $\Sigma$-modes.
+
+The action of $\Pi_\Ups[\Mty] \to \Mty$ on morphisms gives the congruence rules for $\Sigma$ on mode type morphisms, along with its functoriality laws (since this map over each $\gamma$ is a functor) and its naturality law for substitution (since this map is a natural transformation as $\gamma$ varies).
+Similarly, the action of $\ev^* \Mtm \to \Mtm$ on morphisms gives the 2-cell operation on $\Sigma$-modes (although the latter is currently written to only apply when one of the morphisms being paired is cartesian), and the fact that the square is a pullback on morphisms gives the $\beta$- and $\eta$-rules for these.
+
+Finally, the fact that this square is a strict morphism of split fibrations gives the equation for ``transport'' in $\Sigma$.
+\end{example}
+
+To construct our canonical model, we again appeal to a universal case.
+
+\begin{theorem}\label{thm:sig-univ}
+  If a 2-category with a universe has $\Sigma$-types, then so does its underlying 2-category with families (as in Theorem \ref{thm:2cwf-univ}).
+\end{theorem}
+\begin{proof}
+  All the structure involved in the definition of $\Sigma$-types (dependent products, pullbacks, morphisms of split fibrations) is preserved by any restricted Yoneda embedding.
+\end{proof}
+
+\begin{example}\label{eg:cat-sig}
+  Continuing Example \ref{eg:cat-2cwf}, we want to show that $\Mtyhat=\Cat\op$ has $\Sigma$-types in the sense of Theorem \ref{thm:sig-univ}.
+  The map $\Upshat:\Mtmhat\to \Mtyhat$ is exponentiable because it is a split fibration (all fibrations are exponentiable in $\CAT$).
+  An object of $\Pi_\Upshat[\Mtyhat]$ consists of a category $A\in \Cat\op$ together with a functor from the fiber of $\Upshat$ over $A$ to $\Mtyhat$, which is to say simply a functor $A\to \Cat\op$, or equivalently $B:A\op\to\Cat$.
+  Similarly, a morphism $(A,B)\to (A',B')$ in $\Pi_\Upshat[\Mtyhat]$ consists of a functor $f:A'\to A$ together with a natural transformation $g:B' \to B \circ f$.
+
+  The fiber of $\Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat$ over $(A,B)\in \Pi_\Upshat[\Mtyhat]$ is just the category $A$, and its contravariant split fibrational action on $(f,g)$ is just the action of the functor $f$.
+  Thus, a morphism therein from $(A,B,x)$ to $(A',B',x')$ consists of $f:A'\to A$ and $g:B' \to B \circ f$ together with $\xi : x \to f(x')$.
+
+  The functor $\ev$ sends $(A,B,x)$ to the category $B(x)$.
+  Thus, the fiber of $\ev^*\Mtmhat$ over $(A,B,x)$ is just the category $B(x)$, with contravariant split fibrational action on $(f,g,\xi)$ given by the components of $g$.
+  So a morphism from $(A,B,x,y)$ to $(A',B',x',y')$ consists of $f,g,\xi$ and $\zeta : y \to B(\xi)(g_{x'}(y'))$.
+
+  It follows that the fiber of the composite $\ev^*\Mtmhat \to \Pi_\Upshat[\Mtyhat] \times_\Mtyhat \Mtmhat \to \Pi_\Upshat[\Mtyhat]$ over $(A,B)$ is (isomorphic to) the category of pairs $(x,y)$ with $x\in A$ and $y\in B(x)$, and with morphisms $(x,y)\to (x',y')$ being pairs $(\xi,\zeta)$ where $\xi:x\to x'$ and $\beta: y \to B(\xi)(y')$.
+  The split fibrational action of a morphism $(f:A'\to A,g:B' \to B \circ f)$ sends $(x',y')$ to $(f(x'),g(y'))$, with a similar action on morphisms.
+  Thus, we can define the desired functor $\Pi_\Upshat[\Mtyhat] \to \Mtyhat = \Cat\op$ by sending $(A,B)$ to precisely this category of pairs $(x,y)$, which is none other than the ordinary Grothendieck construction of $B:A\op\to \Cat$.
+  Defining this functor on morphisms by the above split fibrational action, we find tautologically that the desired square is both a pullback and a morphism of split fibrations.
+  (More abstractly, we are simply using the fact that $\Mtmhat\to \Mtyhat$ is a classifier in $\CAT$ of split fibrations with small fibers.)
+
+  Thus, the canonical 2-category with families structure on $\Cat$ has $\Sigma$-types.
+\end{example}
+
+
+\subsection{Fibered 2-categories with families}
+\label{sec:fib-2cwf}
+
+As in our previous work, with the 2-categorical analogue of the downstairs mode theory in place, the upstairs type theory corresponds to a ``local fibration'' over it.
+To define this, we first need to talk about morphisms between 2-categories with families, or more generally with universes.
+
+\begin{definition}\label{defn:fibmor}
+  Let $\vp : \mathcal{A}\to \mathcal{B}$ be any 2-functor, and $p:S\to T$ and $q:U\to V$ be split fibrations in $\mathcal{A}$ and $\mathcal{B}$ respectively.
+  A \textbf{strict $\vp$-morphism from $p$ to $q$} consists of a commutative square in $\mathcal{B}$:
+  \begin{equation}\label{eq:fibmor}
+    \begin{tikzcd}
+      \vp S \ar[r] \ar[d] & U\ar[d]\\
+      \vp T \ar[r] & V
+    \end{tikzcd}
+  \end{equation}
+  such that for any $X\in \mathcal{A}$, the induced commutative square of categories
+  \begin{equation}\label{eq:fibmor2}
+    \begin{tikzcd}
+      \mathcal{A}(X,S) \ar[r] \ar[d] & \mathcal{B}(\vp X, \vp S) \ar[r] \ar[d] & \mathcal{B}(\vp X, U) \ar[d] \\
+      \mathcal{A}(X,T) \ar[r] & \mathcal{B}(\vp X, \vp T) \ar[r] & \mathcal{B}(\vp X, V)
+    \end{tikzcd}
+  \end{equation}
+  is a strict morphism of split fibrations.
+\end{definition}
+
+If $\vp$ has a right adjoint $\vpst$, then~\eqref{eq:fibmor} is equivalent to a square in $\mathcal{A}$:
+\begin{equation}\label{eq:fibmor-mate}
+  \begin{tikzcd}
+    S \ar[r] \ar[d] & \vpst U\ar[d]\\
+    T \ar[r] & \vpst V
+  \end{tikzcd}
+\end{equation}
+and the condition in Definition \ref{defn:fibmor} is equivalent to asking that~\eqref{eq:fibmor-mate} be a strict morphism of internal split fibrations in $\mathcal{A}$.
+This makes sense since $\vpst$, as a right adjoint, preserves limits and hence split fibrations, while an analogous phrasing for~\eqref{eq:fibmor} would not since $\vp$ is not assumed to preserve fibrations.
+However, if $\vp$ \emph{does} preserve split fibrations, in the algebraic sense that it preserves the chosen cartesian lifts, and if~\eqref{eq:fibmor} is a strict morphism of split fibrations internal to $\M$, then it is also a strict $\vp$-morphism (but the converse need not hold).
+
+% Suppose $\C$ and $\M$ are 2-categories with universes and $\vp:\C\to\M$ is a 2-functor.
+% Since $\C$ is large and $\Mhat$ has large colimits, the composite $\C \xrightarrow{\vp} \M \hookrightarrow \Mhat$ has a pointwise left Kan extension along the inclusion $\C\hookrightarrow \Chat$; we denote it by $\vp_! : \Chat \to \Mhat$.
+% Since $\C\hookrightarrow \Chat$ is fully faithful, $\vp_!$ is an honest extension, i.e.\ it restricts to $\vp$ on $\C$.
+
+% If $\C$ is a 2-category with families, $\vp_!$ has a right adjoint $\vpst : \Mhat \to \Chat = [\C\op,\CAT]$ by precomposition: $\vpst(X)(C) = \Mhat(\vp(C),X)$.
+% In general, any right adjoint of $\vp_!$ comes with a mate natural transformation
+% \begin{equation}
+%   \begin{tikzcd}
+%     \C \ar[r] \ar[d,"\vp"'] \ar[dr,phantom,"{\Downarrow^{\vptil}}"] & \Chat\\
+%     \M \ar[r] & \Mhat. \ar[u,"\vpst"']
+%   \end{tikzcd}\label{eq:vpmate}
+% \end{equation}
+% If $\C$ and $\M$ are 2-categories with families, then $\vptil$ is just the action of $\vp$ on homs, $\C(-,C) \to \M(\vp(-),\vp(C))$.
+
+\begin{definition}\label{defn:mor-2cwu}
+  Let $\C$ and $\M$ be two 2-categories with universes.
+  A \textbf{morphism of 2-categories with universes} consists of:
+  \begin{enumerate}
+  \item A commutative square of 2-functors
+    \begin{equation}\label{eq:mor-2cwu}
+      \begin{tikzcd}
+        \C \ar[r] \ar[d,"\vp"'] & \Chat \ar[d,"\vpsh"] \\
+        \M \ar[r] & \Mhat
+      \end{tikzcd}
+    \end{equation}
+  \item A $\vpsh$-morphism from $\Upshat:\Ctmhat \to \Ctyhat$ to $\Upshat : \Mtmhat \to \Mtyhat$ as in Definition \ref{defn:fibmor}.
+  % \item Morphisms $\vpty$ and $\vptm$ forming a commutative square in $\Chat$:
+  %   \begin{center}
+  %     \begin{tikzcd}
+  %       \Ctmhat \ar[r,"\vptm"] \ar[d,->>,"\Upshat"'] & \vpst \Mtmhat\ar[d,->>,"\vpst(\Upshat)"] \\
+  %       \Ctyhat \ar[r,"\vpty"] & \vpst \Mtyhat
+  %     \end{tikzcd}
+  %   \end{center}
+  %   Note that the right-hand vertical morphism is still a split fibration, since split fibration structure is defined using 2-categorical limits, and $\vpst$ is a right adjoint and hence preserves all such structure.
+  % \item This commutative square is a strict morphism of split fibrations.
+  \item This morphism furthermore ``preserves the algebraic representations'' in the following sense: given $C\in \C$ and $T:C \to \Ctyhat$, with specified pullback $\int T$, the composite square
+    \begin{equation}
+      \begin{tikzcd}
+        \vp(\int T) \ar[r] \ar[d] & \vpsh \Ctmhat \ar[r] \ar[d] & \Mtmhat \ar[d]\\
+        \vp(C) \ar[r,"\vpsh(T)"'] & \vpsh \Ctyhat \ar[r] & \Mtyhat
+      \end{tikzcd}\label{eq:mor-presrep}
+    \end{equation}
+    is also a specified pullback.
+% , the composite $\vpty T : C \to \vpst \Mtyhat$ has an adjunct $\overline{\vpty T}:\vp(C) = \vp_!(C) \to \Mtyhat$, and thus two algebraically specified pullback squares
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ctmhat \ar[d] &
+%         \int \overline{ \vpty T} \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Mtmhat \ar[d] \\
+%         C \ar[r,"T"'] & \Ctyhat &
+%         \vp(C) \ar[r,"{\overline{\vpty T}}"'] & \Mtyhat
+%       \end{tikzcd}
+%     \end{center}
+%     Since $\vpst$ preserves pullbacks, the left-hand composite square below factors uniquely as on the right:
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r] \ar[d] &
+%         \Ctmhat \ar[r,"\vptm"] \ar[d] & \vpst \Mtmhat\ar[d] \ar[dr,phantom,"="] &
+%         \int T \ar[r,dashed]\ar[d] \ar[dr,phantom,"(*)"] &
+%         \vpst \int \overline{\vpty T} \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \vpst\Mtmhat \ar[d] \\
+%         C \ar[r] & \Ctyhat \ar[r,"\vpty"] & \vpst \Mtyhat &
+%         C \ar[r,"\vptil"'] & \vpst \vp (C) \ar[r] & \vpst \Mtyhat
+%       \end{tikzcd}
+%     \end{center}
+%     where $\vptil$ denotes a component of~\eqref{eq:vpmate}.
+%     The condition we require is then that the square $(*)$ above coincides with the naturality square of $\vptil$:
+%     \begin{center}
+%       \begin{tikzcd}
+%         \int T \ar[r,"\vptil"] \ar[d] & \vpst\vp(\int T) \ar[d] \\
+%         C \ar[r,"\vptil"] & \vpst\vp(C)
+%       \end{tikzcd}
+%     \end{center}
+%     (hence, in particular, that $\int \overline{\vpty T} = \vp(\int T)$).
+  \end{enumerate}
+\end{definition}
+
+If $\M$ is a 2-category with a universe for which $\Mhat$ has large colimits, $\C$ is a 2-category with families, and $\vp:\C\to\M$ is any 2-functor, then the composite $\C \xrightarrow{\vp} \M \hookrightarrow \Mhat$ has a left Kan extension along $\C\hookrightarrow \Chat$.
+Since the latter inclusion is fully faithful, $\vpsh$ is an honest extension, i.e.\ the universal square~\eqref{eq:mor-2cwu} commutes (up to isomorphism, at least, and $\vpsh$ can be chosen to make it commute strictly).
+Moreover, in this case $\vpsh$ always has a right adjoint $\vpst : \Mhat \to \Chat = [\C\op,\CAT]$ defined by precomposition: $\vpst(X)(C) = \Mhat(\vp(C),X)$.
+
+\begin{definition}
+  If $\C$ and $\M$ are 2-categories with families, a \textbf{morphism of 2-categories with families} is a morphism of 2-categories with universes such that $\vpsh$ is this left Kan extension.
+\end{definition}
+
+\begin{remark}
+  If $\M$ is a 2-category with a universe for which $\Mhat$ has large colimits, and $\M'$ denotes the 2-category with families constructed from it as in Theorem \ref{thm:2cwf-univ}, then the identity 2-functor $\M'\to\M$ is a morphism of 2-categories with universes with $\vpsh$ a left Kan extension as above.
+  Morally, this should be some kind of ``coreflection'', but we will not try to make this precise.
+\end{remark}
+
+\begin{definition}\label{thm:2cwf-ldf}
+  A morphism of 2-categories with universes $\vp : \C\to\M$ is a \textbf{local discrete fibration} if
+  \begin{enumerate}
+  \item The 2-functor $\vp:\C\to\M$ is a local discrete fibration, i.e.\ the induced functors on hom-categories $\C(X,Y) \to \M(\vp(X),\vp(Y))$ are discrete fibrations.\footnote{If they were non-discrete fibrations, there would be an additional compatibility condition on composition, but in the discrete case this is automatic.}\label{item:ldf1}
+  \item The horizontal functors in the relevant instance of~\eqref{eq:fibmor2}:
+    \begin{gather*}
+      \Chat(X,\Ctmhat) \to \Mhat(\vp X, \vpsh \Ctmhat) \to \Mhat(\vp X, \Mtmhat)\\
+      \Chat(X,\Ctyhat) \to \Mhat(\vp X, \vpsh \Ctyhat) \to \Mhat(\vp X, \Mtyhat)
+    \end{gather*}
+    are discrete fibrations.\label{item:ldf2}
+  \end{enumerate}
+  In this case we refer to $\C$ as a \textbf{fibered 2-category with a universe} (or \textbf{with families}, if $\C$ and $\M$ are such and $\vp$ is a morphism of such) over $\M$.
+\end{definition}
+
+If $\vpsh$ has a right adjoint $\vpst$ (such as if $\vp$ is a morphism of 2-categories with families), then condition \ref{item:ldf2} is equivalent to asking that the adjunct morphisms $\Ctmhat \to \vpst \Mtmhat$ and $\Ctyhat \to \vpst \Mtyhat$ are internal discrete fibrations in $\Chat$.
+
+\begin{example}\label{eg:syn-fib-2cwf}
+  Returning to Example \ref{eg:syn-2cwf}, we construct a fibered 2-category with families over the syntactic one $\M$, now using the ``upstairs'' type theory.
+  \begin{itemize}
+  \item An object of $\C$ is a context $\yields_\gamma \Gamma \CTX$.
+    Of course, its image in $\M$ is $\yields \gamma \ctx$.
+  \item A morphism in $\C$ is a total substitution $\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta$, lying over $\gamma \yields \theta : \delta$.
+  \item The fibrational action of 2-cells in $\M$ on morphisms in $\C$ is given by N-ary rewrite (Lemma \ref{lem:n-ary-ap-rewrite}).
+  \item An object of $\Cty(\Gamma)$ is a type $\Gamma_\gamma \yields_p A \TYPE$, lying over $\gamma \yields p\type$ in $\Mty(\gamma) = \Mty(\vp(\Gamma))$.
+    The fibrational action of morphisms in $\Mty$ is given by the $\St{s}{A}$ types.
+  \item An object of $\Ctm(\Gamma)$ over $A\in \Cty(\Gamma)$ is a term $\Gamma_\gamma \yields_\mu M:A_p$, lying over $\gamma \yields \mu:p$ in $\Mtm$.
+    To act on such a term by a morphism in $\Mtm(\gamma)$, we first factor the latter morphism as a mode 2-cell in a fiber $\TermTwoT{\gamma}{s}{\mu}{\TrPlus{t}{\nu}}{p}$ followed by the cartesian arrow corresponding to the action of a mode morphism $\TypeTwo{\gamma}{t}{p}{q}$ on $\nu$.
+    The cartesian morphism then acts on $M$ by S-intro, $\StI{t}{M} : \St{t}{A}$, and then we rewrite with the fiber 2-cell $\rewrite{s}{\StI{t}{M}}$.
+  \end{itemize}
+\end{example}
+
+To construct the canonical model, we appeal to a more general ``co-universe'' construction, which we decompose into three pieces.
+
+\begin{theorem}\label{thm:corefl-ldfib}
+  If $\vp:\C\to \M$ is a local discrete fibration of 2-categories with universes, then its coreflection into 2-categories with families is also a local discrete fibration.
+\end{theorem}
+\begin{proof}
+  We first have to check that it is actually a morphism of 2-categories with families.
+  The morphism $\vpsh \Ctyhat \to \Mtyhat$ induces by composition
+  \begin{equation}
+    \Chat(X,\Ctyhat) \to \Mhat(\vp X, \vpsh \Ctyhat) \to \Mhat(\vp X,\Mtyhat)\label{eq:corefl-map}
+  \end{equation}
+  and hence a map of the induced presheaves $\Cty \to \vpst \Mty$, and similarly for the $\Ctm \to \vpst \Mtm$.
+  Moreover,~\eqref{eq:fibmor2} refers only to the functors represented by $p$ and $q$, so we can restrict it to $X\in\C$ to obtain the analogous condition for these underlying presheaves.
+  And~\eqref{eq:mor-presrep} is defined in terms of~\eqref{eq:corefl-map}, so it carries over to the analogous condition as well.
+
+  Finally, condition~\ref{item:ldf1} of Definition \ref{thm:2cwf-ldf} is evident since the coreflection doesn't change the underlying categories, while condition \ref{item:ldf2} follows since it is also defined in terms of~\eqref{eq:corefl-map}.
+\end{proof}
+
+\begin{theorem}\label{thm:ldf-lift}
+  Suppose $\M$ is a 2-category with a universe, and we have a pullback square
+  \begin{equation}\label{eq:ldf-mor}
+    \begin{tikzcd}
+      \C \ar[r] \ar[d,"\vp"'] & \Chat \ar[d,"\vpsh"] \\
+      \M \ar[r] & \Mhat
+    \end{tikzcd}
+  \end{equation}
+  such that $\vpsh$ is a local discrete fibration.
+  Moreover, suppose we are given a lifting of $\Upshat : \Mtmhat \to \Mtyhat$ to a morphism $\Ctmhat \to \Ctyhat$ of $\Chat$, and that $\vpsh$ creates pullbacks of $\Ctmhat \to \Ctyhat$.
+  Then $\C\hookrightarrow\Chat$ is a 2-category with a universe and~\eqref{eq:ldf-mor} is a local discrete fibration of 2-categories with universes.
+\end{theorem}
+\begin{proof}
+  Since fully faithful 2-functors and local discrete fibrations are closed under pullback, $\C \to \Chat$ is fully faithful and $\vp$ is a local discrete fibration (of 2-categories only, for now).
+  To show that $\Ctmhat \to \Ctyhat$ is a split fibration, suppose given the following data in $\Chat$, mapping to $\Mhat$ as shown on the right:
+  \begin{equation*}
+    \begin{tikzcd}[row sep=large]
+      C \ar[d,equals] \ar[r,bend right,near end,"g'"'] & \Ctmhat \ar[d] \ar[dr,phantom,"\mapsto"] &
+      \vpsh C \ar[d,equals] \ar[r,bend right,near end,"\vpsh g'"'] & \Mtmhat \ar[d] \\
+      C \ar[r,bend left,"f"] \ar[r,bend right,"g"'] \ar[r,phantom,"\Downarrow^\alpha"] & \Ctyhat &
+      \vpsh C \ar[r,bend left,"\vpsh f"] \ar[r,bend right,"\vpsh g"'] \ar[r,phantom,"\Downarrow^{\vpsh \alpha}"] & \Mtyhat
+    \end{tikzcd}
+  \end{equation*}
+  We then have a specified cartesian lift $\gamma : h \to \vpsh g'$ in $\Mhat$.
+  Since $\vpsh$ is a local discrete fibration, $\gamma$ has a unique lift $\beta : f' \to g'$ in $\Chat$.
+  To show $\beta$ is cartesian, suppose given $\theta : k\to g'$ in $\Chat$ with $\Upshat\circ \theta = \alpha *\mu$ for some $\mu$\footnote{We are writing $\circ$ for composition of 1- and 2-morphsims along objects, including whiskering, and $*$ for composition of 2-morphisms along 1-morphisms}.
+  Then $\Upshat \circ \vpsh\theta = \vpsh\alpha *\vpsh\mu$, so $\vpsh\theta$ factors uniquely as $\gamma* \nu$ since $\gamma$ is cartesian.
+  Now since $\vpsh$ is a local discrete fibration, $\nu$ has a unique lift $\eta : k' \to f'$; but then $\beta*\eta : k' \to g'$ is a lift of $\vpsh\theta$, hence equal by uniqueness to $\theta$.
+  Uniqueness of these factorizations follows similarly, and splitness and functoriality is immediate.
+  Furthermore, by construction the identities $\vpsh\Ctyhat = \Mtyhat$ and $\vpsh\Ctmhat =\Mtmhat$ are a strict $\vpsh$-morphism of split fibrations, and since $\vpsh$ (not just $\vp$) is a local discrete fibration, condition~\ref{item:ldf2} of Definition \ref{thm:2cwf-ldf} is automatic.
+
+  It remains to show that $\Ctmhat \to \Ctyhat$ is algebraically $\C$-representable and that $\vp$ preserves these representations.
+  Since the right-hand square in~\eqref{eq:mor-presrep} is an identity, it suffices to show that given $T:C\to \Ctyhat$ with $C\in \C$, the specified pullback $\int (\vpsh T)$ lifts to a pullback in $\Chat$ with vertex in $\C$.
+  But by assumption $\vpsh$ creates pullbacks of $\Ctmhat\to\Ctyhat$, and the vertex of such a pullback must lie in $\C$ since~\eqref{eq:ldf-mor} is a pullback of 2-categories.
+\end{proof}
+
+\begin{theorem}\label{thm:laxslice-2cwf}
+  Let $\M$ be a 2-category with a universe, and let $\one$ be an arbitrary object of $\M$ equipped with a commutative triangle
+  \begin{equation}
+    \begin{tikzcd}
+      & \Mtmhat \ar[d,"\Upshat"] \\
+      \one \ar[ur,"t"] \ar[r,"\top"'] & \Mtyhat.
+    \end{tikzcd}\label{eq:laxslice-tri}
+  \end{equation}
+  Let $\C = \one\sslash \M$ be the lax slice 2-category of $\M$ under $\one$: its objects are morphisms $c:\one\to C$ in $\M$, its morphisms are 2-cells inhabiting triangles
+  \begin{equation}\label{eq:laxslice-mor}
+    \begin{tikzcd}
+      & \one \ar[dl,"a"'] \ar[dr,"b"] \ar[d,phantom,"\overset{\phi}{\Rightarrow}"] \\
+      A \ar[rr,"f"'] & {}& B
+    \end{tikzcd}
+  \end{equation}
+  and its 2-cells are 2-cells $\alpha :f\to g$ in $\M$ such that $\alpha a \circ \phi = \psi$.
+  Similarly, let $\Chat = \one\sslash\Mhat$, with the evident inclusion $\C\hookrightarrow\Chat$.
+  Let $\Ctyhat = (\top:\one \to \Mtyhat)$ and $\Ctmhat = (t:\one\to\Mtmhat)$, with~\eqref{eq:laxslice-tri} defining a map $\Ctmhat \to \Ctyhat$ in $\Chat$.
+  Then $\C$ is a 2-category with a universe, and the forgetful 2-functor $\vp:\C\to\M$ is a local discrete fibration.
+\end{theorem}
+\begin{proof}
+  First note that the forgetful functor $\vp:\C=(\one\sslash\M)\to\M$ is a local discrete fibration of 2-categories: given a morphism $(f,\phi):(A,a) \to (B,b)$ as in~\eqref{eq:laxslice-mor} and a 2-cell $\alpha:\psi\to\phi$ in $\M$, the unique lift is $\alpha$ with domain $(f,\phi * (\alpha \circ a))$.
+  Similarly, the forgetful functor $\vpsh:\Chat=(\one\sslash\Mhat)\to\Mhat$ is a local discrete fibration, and $\C$ is the pullback of $\Chat$ and $\M$ over $\Mhat$ (the objects of $\C$ are just those of $\Chat$ whose underlying objects in $\Mhat$ lie in $\M$).
+  Thus, to apply Theorem \ref{thm:ldf-lift} it remains only to check that $\vpsh$ creates pullbacks of~\eqref{eq:laxslice-tri} regarded as a morphism in $\one\sslash\Mhat$.
+
+  For brevity, write $q:X\to Y$ for $\Upshat :\Mtmhat \to \Mtyhat$; the only thing we will use about $q$ is that it is a fibration.
+  Note that we have assumed~\eqref{eq:laxslice-tri} to be commutative rather than simply inhabited by a 2-cell, so regarded as a lifting of $q$ it is special in this way as well among morphisms of $\one\sslash\Mhat$.
+  Now suppose we have a morphism $(f,\phi) : (A,a) \to (Y,\top)$ in $\one\sslash\Mhat$, and a pullback in $\Mhat$:
+  \begin{center}
+    \begin{tikzcd}
+      P \ar[r,"j"] \ar[d,"k"'] & X \ar[d,"q"]\\
+      A \ar[r,"f"'] & Y.
+    \end{tikzcd}
+  \end{center}
+  Let $\overline{\phi} : i \to t$ be a cartesian 2-cell lifting $\phi : f \circ a \to \top$.
+  Then $q \circ i = f\circ a$, so the universal property of $P$ induces a map $p:\one\to P$ with $j\circ p = i$ and $k\circ p = a$.
+  The latter identity makes $k$ into a morphism $(P,p) \to (A,a)$ in $\one\sslash\Mhat$, while $j\circ p = i \xrightarrow{\overline{\phi}} t$ makes $j$ into a morphism $(P,p) \to (X,t)$.
+  We claim the resulting square
+  \begin{center}
+    \begin{tikzcd}
+      (P,p) \ar[r,"{(j,\overline{\phi})}"] \ar[d,"{(k,1)}"'] & (X,t) \ar[d,"{(q,1)}"]\\
+      (A,a) \ar[r,"{(f,\phi)}"'] & (Y,\top)
+    \end{tikzcd}
+  \end{center}
+  (which commutes because $q \circ \overline{\phi} = \phi$) is a pullback in $\one\sslash\Mhat$.
+  To show this, suppose given $(Z,z:\one\to Z)$ and morphisms $(g,\gamma):(Z,z) \to (X,t)$ and $(h,\theta):(Z,z) \to (A,a)$ forming a commutative square, which means $q\circ g = f\circ h$ and $q\circ \gamma = \phi * (f\circ \theta)$.
+  The former equality induces, by the universal property of $P$, a unique map $\ell : Z\to P$ such that $j\circ \ell = g$ and $k\circ \ell = h$.
+
+  To make $\ell$ into a morphism in $\one\sslash\Mhat$, we need a 2-cell $\ell \circ z \to p$.
+  By the 2-cell universal property of $P$, it suffices to give 2-cells $g\circ z \to j\circ p = i$ and $h\circ z \to k \circ p = a$ that agree in $Y$.
+  For the latter, we can simply take $\theta$.
+  For the first, note that $\overline{\phi}:i\to t$ is cartesian over $\phi$, so there is a unique 2-cell $\eta : g \circ z \to i$ such that  $\overline{\phi} * \eta = \gamma$ and $q \circ \eta = f\circ \theta$.
+
+  The latter equation is the requisite agreement in $Y$, so we have a unique 2-cell $\lambda:\ell \circ z \to p$ such that $k\circ \lambda = \theta$ and $j\circ \lambda = \eta$.
+  The latter equation is equivalent, by uniqueness of $\eta$, to $q\circ j \circ \lambda = f\circ \theta$ (which follows from $k\circ \lambda = \theta$ and $q\circ j = f\circ k$) and $\overline{\phi} * (j\circ \lambda) = \gamma$.
+  Thus, these conditions are precisely the statements that $(j,\overline{\phi})\circ (\ell,\lambda) = (g,\gamma)$  and $(k,1)\circ (\ell,\lambda) = (h,\theta)$.
+  This shows the 1-cell universal property of $(P,p)$ in $\one\sslash\Mhat$.
+  The 2-cell universal property follows immediately from the 2-cell universal property of $P$.
+\end{proof}
+
+Combining Theorems \ref{thm:corefl-ldfib} and \ref{thm:laxslice-2cwf}, we can construct local discrete fibrations of 2-categories with families.
+
+\begin{example}
+  Consider the 2-category with a universe from Example \ref{eg:cat-2cwf}, with $\M=\Cat$, $\Mhat = \CAT$, and $\Mtyhat = \Cat\op$.
+  Let $\one$ be the terminal category in $\M=\Cat$, with $\top:\one \to \Cat\op$ picking out the terminal category and $t$ the unique object of the latter.
+  Thus we obtain a 2-category with a universe $\C$ where:
+  \begin{itemize}
+  \item The objects of $\C$ (resp.\ $\Chat$) are large (resp.\ very large) categories $C$ equipped with a chosen object $c\in C$.
+  \item The morphisms $(C,c) \to (D,d)$ are functors $f:C\to D$ together with a morphism $\phi :f(c) \to d$.
+  \item Natural transformations act contravariantly on such pairs by precomposition $f(c) \xrightarrow{\alpha_c} g(c) \to d$.
+  \item $\Ctyhat$ is the category $\Mtyhat = \Cat\op$ equipped with the terminal category $\top$.
+  \item Similarly, $\Ctmhat$ is the category $\Mtmhat$ of pointed categories $(A,a)$ with morphisms $(A,a) \to (B,b)$ being functors $f:B\to A$ paired with a morphism $\phi : a\to f(b)$, equipped with the terminal pointed category $(\top,t)$.
+  \end{itemize}
+  If we now apply the coreflection into 2-categories with families, we get a local discrete fibration over the ``canonical'' 2-category with families from Example \ref{eg:cat-2cwf}, where:
+  \begin{itemize}
+  \item The objects of $\Cty(C,c)$ are morphisms $(C,c) \to \Ctyhat = (\Cat\op,\top)$ in $Chat = \one\sslash\CAT$, which is to say functors $D:C\op\to \Cat$ equipped with a morphism $D(c) \to \top$ in $\Cat\op$, i.e.\ a functor $\top \to D(c)$, which is to say an object $d\in D(c)$.
+  \item The objects of $\Ctm(C,c)$ are such pairs $(D,d)$ with a section $s:C\to \int D$ of the Grothendieck construction, along with an object $d\in D(c)$ and a morphism $s(c) \to d$ in $D(c)$.
+  \end{itemize}
+  Thus, this reproduces our informal expectation from \S\ref{sec:2cwfs}.
+  Note that while $\Cty$ and $\Ctm$ in this example simply ``pick out the objects and morphisms'' of the categories $C\in\M$, in general we can regard the fibered 2-category with families $\C$ as an ``abstraction'' of the notions of ``objects and morphisms'' applicable to any 2-category with families $\M$.
+\end{example}
+
+
+
+\end{document}
