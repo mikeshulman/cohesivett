@@ -99,9 +99,13 @@
 \newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
 \newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
 
+% Lemmas
+\newcommand{\ctxtuple}[1]{\Sigma^\bullet{#1}}
+
 % MLTT
 \newcommand{\qyields}{\Vdash} 
 \newcommand{\upstairs}[1]{\overline{#1}}
+\newcommand{\downstairs}[1]{\underline{#1}}
 \newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
 \newcommand\qvar[1]{\ensuremath{\mathsf{var}_{#1}}}
 \newcommand\into[1]{\ensuremath{\mathsf{into}_{#1}}}
@@ -122,6 +126,33 @@
 \newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
 \newcommand\qapp[1]{\ensuremath{\mathsf{app}_{#1}}}
 \newcommand\qlam{\ensuremath{\mathsf{lam}}}
+
+% Unpacked translation
+\newcommand{\modeof}[1]{{#1}_p}
+\newcommand{\tpack}[1]{\ensuremath{\mathtt{pack}_{#1}}}
+
+\newcommand{\upstairsu}[1]{\widehat{#1}}
+
+% Taken from https://tex.stackexchange.com/questions/241814/an-underhat-and-underwidehat
+\newcommand{\uwidehat}[1]{%
+  \mathpalette\douwidehat{#1}%
+}
+\makeatletter
+\newcommand{\douwidehat}[2]{%
+  \sbox0{$\m@th#1\widehat{\hphantom{#2}}\vphantom{t}$}%
+  \sbox2{$t$}%
+  \dimen2=\ht0
+  \advance\dimen2 -\ht2
+  \sbox2{$#2$}%
+  \dimen0=\ht0
+  \rlap{%
+    \raisebox{\dimexpr-\dimen0-\dp2-1pt}[0pt][\dimexpr\dimen2+\dp2]{\box0}%
+  }
+  {#2}%
+}
+\makeatother
+
+\newcommand{\downstairsu}[1]{\uwidehat{#1}}
 
 % Adjoint type theory
 \newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
@@ -742,7 +773,7 @@ This type checks via Equation~\eqref{eq:stype-subst}; in the second component we
 \end{proof}
 
 \begin{lemma} \label{lem:rewrite-push}
-The \textsc{rewrite} rule pushes into terms of $\mathsf{F}$-, $\mathsf{U}$- and $s$-types:
+The \textsc{rewrite} rule commutes with $\mathsf{F}$-, $\mathsf{U}$- and $s$- introduction and elimination.
 \begin{align*}
 \FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
 (\FE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}} \\
@@ -875,8 +906,7 @@ we will write
 \StE{s}{\beta}{x, y}{(\dots)}
 \end{align*}
 
-\newcommand{\ctxtuple}[1]{\Sigma^*{#1}}
-\begin{lemma}
+\begin{lemma}\label{lem:ctxtuple}
 Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE$ of mode $\ctxtuple{\gamma}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
 \begin{mathpar}
 \inferrule*{\yields_\gamma \Gamma}
@@ -886,7 +916,7 @@ Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE$ of mode
              {\sigma : \ctxtuple{\Gamma} \yields_{\fan{\gamma}} \fan{\Gamma} : \Gamma}
 \and
 \inferrule*{\Gamma \yields_\theta \Theta : \Delta}
-             {\Gamma \yields_{\ctxtuple{\theta}} \ctxtuple{\Theta} : \Sigma \Delta}
+             {\Gamma \yields_{\ctxtuple{\theta}} \ctxtuple{\Theta} : \ctxtuple \Delta}
 \\
 \inferrule*{\Gamma \yields\Theta : \Delta}
              {\Gamma \yields \Theta \equiv \fan{\Delta}[\ctxtuple{\Theta} / \sigma]}
@@ -896,7 +926,7 @@ Any context $\Gamma$ can be tupled into a type $\ctxtuple{\Gamma} \TYPE$ of mode
 \end{mathpar}
 \end{lemma}
 \begin{proof}
-$\Sigma \Gamma$ is defined inductively by
+$\ctxtuple \Gamma$ is defined inductively by
 \begin{align*}
 \ctxtuple{(\cdot)} &:\equiv 1 \\
 \ctxtuple{(\Gamma, x : A)} &:\equiv \sum_{\sigma : \ctxtuple \Gamma} A[\fan{\Gamma}] \\
@@ -929,6 +959,24 @@ For the second equation, we check inductively that
 \end{proof}
 
 \begin{lemma}
+The following holds:
+\begin{align*}
+\ctxtuple{\id_\Gamma}[\fan{\Gamma}/\sigma] \equiv \id_{\ctxtuple{\Gamma}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Follows from the equalities of the previous Lemma:
+\begin{align*}
+\ctxtuple{\id_\Gamma}[\fan{\Gamma}/\sigma]
+&\equiv \ctxtuple{(\fan{\Gamma}[\ctxtuple{\id_\Gamma}[\fan{\Gamma}]/\sigma])} \\
+&\equiv \ctxtuple{(\fan{\Gamma}[\ctxtuple{\id_\Gamma}/\sigma][\fan{\Gamma}/\sigma])} \\
+&\equiv \ctxtuple{(\id_\Gamma[\fan{\Gamma}/\sigma])} \\
+&\equiv \ctxtuple{\fan{\Gamma}} \\
+&\equiv \id_{\ctxtuple{\Gamma}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
 Tupling respects substitution: for $\gamma \yields \theta : \delta$ and $\delta \yields \kappa : \lambda$, we have:
 \begin{align*}
 \ctxtuple{(\kappa[\theta])} &\equiv (\ctxtuple{\kappa})[\theta]
@@ -949,8 +997,9 @@ By induction on the length of $\lambda$:
 \end{proof}
 
 \begin{definition}
-A 2-cell between mode substitutions $\gamma \yields t : \theta \tcell_\delta \theta' $ is given by a mode term 2-cell \[\gamma \yields \ctxtuple t : \ctxtuple \theta \tcell_{\ctxtuple \delta} \ctxtuple \theta' \].
+A 2-cell between mode substitutions of shape $\gamma \yields t : \theta \tcell_\delta \theta' $ is specified by a mode term 2-cell \[\gamma \yields \ctxtuple t : \ctxtuple \theta \tcell_{\ctxtuple \delta} \ctxtuple \theta'. \]
 \end{definition}
+\mvrnote{A little confusing: for contexts and substitutions $\ctxtuple{}$ is an operation, here $\ctxtuple t$ is not an operation on $t$ but rather the underlying `implementation' of $t$.}
 
 \begin{lemma}\label{lem:n-ary-ap-rewrite}
 N-ary ap and rewrite are admissible:
@@ -1099,7 +1148,7 @@ As a special case, note that we have
 \item 
 The previous two-argument \F{\mu}{x:A,y:B} (for $x :p, y:q \vdash \mu :
 r$) is now \F{z.\mu[\fst z/x,\snd z/y]}{\telety{x}{A}{B}}, using the
-upstairs $\Sigma$-type ${\telety{x}{A}{B}}$, which has mode
+upstairs telescope type ${\telety{x}{A}{B}}$, which has mode
 $\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
 longer telescope.  
 \end{itemize}
@@ -1207,7 +1256,7 @@ $\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
     \var{x} :\equiv \ap \snd {\varepsilon^\chi_{(\alpha, x)}}
   \end{mathpar}
   \item Pairing for the comprehension object is given by ap of
-  $.$ on the pairing for $\Sigma$-modes:
+  $.$ on the pairing for telescope modes:
   \begin{mathpar}
   \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
              \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}}
@@ -1257,7 +1306,7 @@ Some other derivable equations:
 \label{dot-fusion}
     (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
 \end{align}
-follows by fusing the ap's and the corresponding fusion rule for morphisms in $\Sigma$ modes:
+follows by fusing the ap's and the corresponding fusion rule for morphisms in telescope modes:
 \begin{align*}
 (s \bdot m);(s' \bdot m') &\equiv \ApPlus{\chi}{(s, m)} ; \ApPlus{\chi}{(s', m')} \\
 &\equiv \ApPlus{\chi}{(s, m);(s', m')} \\
@@ -2903,17 +2952,149 @@ again using Lemma~\ref{lem:into-identities}.
 \end{enumerate}
 
 \subsection{Unpacked Translation}
-\newcommand{\modeof}[1]{{#1}_p}
 
-\mvrnote{TODO}
+
+In the above translation of MLTT we have chosen to interpret contexts $\Gamma$ as framework types $\upstairs{\Gamma} \TYPE_p$ rather than framework contexts. With the packed translation of contexts above, an object-level substitution $\Theta$ becomes a term $\alpha : \upstairs{\Gamma} \yields_\alpha \upstairs{\Theta} : \upstairs{\Delta}$, where the types on either side encode the dependency structure of each object-level context. The issue with translating contexts $\Gamma$ as framework contexts $\upstairsu{\Gamma} \CTX_{\downstairsu{\Gamma}}$ is that in the translation of a substitution $\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \upstairsu{\Delta}$, the dependency structure of $\Gamma$ is encoded in the mode terms $\modeof{\Gamma}$, but there is no part of the judgement that encodes the dependency structure of $\Delta$.
+
+This can be resolved if we translate a substitution as a single term $\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \upstairs{\Delta}$, where $\upstairs{\Delta}$ is the translation of $\Delta$ into a framework type as in the previous section. The drawback of this is that performing object-level substitution into types and terms is no longer simply framework-level substitution, and similarly composition of object-level substitutions is not translated to composition of framework substitutions.
+
+In this section we give a translation where contexts remain unpacked where possible.
 
 \begin{itemize}
-\item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over $\downstairs{\Gamma}$ and a mode term $\modeof{\Gamma} : p$.
-\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$.
-\item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
-\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \qyields \upstairs{\Theta} : \mathsf{packed}(\upstairs{\Delta})$ where \mvrnote{we can probably define packed in terms of stuff we already have}
+\item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairsu{\Gamma}$ over mode context $\downstairsu{\Gamma}$, together with a mode type morphism $\cdot \yields \tpack{\Gamma} : p \tcell \ctxtuple{\downstairsu{\Gamma}}$ where $\ctxtuple{\downstairsu{\Gamma}}$ is the iterated telescope type of Lemma~\ref{lem:ctxtuple}.
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairsu{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairsu{A} \TYPE$, where
+\begin{align*}
+\downstairsu{\Gamma} \yields \modeof{\Gamma} :\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairsu{\Gamma}}}} : p
+\end{align*}
+Note that $\ctxtuple{\id_{\downstairsu{\Gamma}}}$ is simply an iterated tuple of the variables of $\downstairsu{\Gamma}$ in order: $(((((), x), y), z), \dots)$.
+\item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairsu{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairsu{a} : \upstairsu{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairsu{\Delta}}}$
 \end{itemize}
 
+The structural rules of MLTT then have the following translations:
+\begin{enumerate}
+\item[\textsc{ctx-empty}] Define $\upstairsu{(\cdot)}$ to be the empty framework context and $\tpack{(\cdot)} :\equiv \psi : p \tcell 1$, noting that $\ctxtuple{(\cdot)} \equiv 1$.
+
+\item[\textsc{ctx-ext}] Given $\upstairsu{\Gamma}
+  \yields_{\El{p}{\modeof{\Gamma}}} \upstairsu{A} \TYPE$, define $\upstairsu{\Gamma, A}$ to be the extended framework context $\upstairsu{\Gamma}, x : \upstairsu{A}$. We need to specify a mode type morphism $\tpack{\Gamma, A} : p \tcell \ctxtuple{(\downstairsu{\Gamma, A})}$. 
+  By definition,
+  \begin{align*}
+    \ctxtuple{(\downstairsu{\Gamma, A})} \equiv \sum_{\sigma : \ctxtuple{\downstairsu{\Gamma}}} \modeof{\Gamma}[\fan{\sigma}]
+  \end{align*}
+  and note that 
+  \begin{align*}
+  \modeof{\Gamma}[\fan{\sigma}]
+  &\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairsu{\Gamma}}}}[\fan{\sigma}] \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairsu{\Gamma}}}[\fan{\sigma}]} \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\id_{\ctxtuple{\Gamma}}} \\
+  &\equiv \TrPlus{\tpack{\Gamma}}{\sigma}
+  \end{align*}
+  so we have a mode type morphism
+  \begin{align*}
+  \sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}} : \sigmacl{\sigma}{p}{\El{p}{\sigma}} \tcell \sigmacl{\sigma}{\ctxtuple{\downstairsu{\Gamma}}}{\TrPlus{\tpack{\Gamma}}{\sigma}}
+  \end{align*}
+  Define $\tpack{\Gamma, A}$ to be:
+  \begin{align*}
+  \tpack{\Gamma, A} :\equiv \chi ; (\sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}})
+  \end{align*}
+  
+\item[\textsc{type-sub}] Given $\upstairsu{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairsu{A} \TYPE$ and $\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairsu{\Delta}}}$, we can form:
+\begin{align*}
+\upstairsu{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairsu{A[\Theta]} :\equiv \StE{\tpack{\Delta}}{\upstairsu{\Theta}}{\sigma}{\upstairsu{A}[\fan{\Delta}]}
+\end{align*}
+
+\item[\textsc{term-sub}] Similarly, given $\upstairsu{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairsu{a} : \upstairsu{A} \TYPE$ and $\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairsu{\Delta}}}$, we can form:
+\begin{align*}
+\upstairsu{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairsu{a[\Theta]} :\equiv \StE{\tpack{\Delta}}{\upstairsu{\Theta}}{\sigma}{\upstairsu{a}[\fan{\Delta}]}
+\end{align*}
+
+\item[\textsc{sub-empty}] We are constructing a term
+\begin{align*}
+\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\epsilon_\Gamma} : \St{\tpack{(\cdot)}}{\ctxtuple{(\cdot)}}
+\end{align*}
+The type is equal by definition to $\St{\psi}{1}$, so we may use the counit $\eta^\psi_{\modeof{\Gamma}} : \modeof{\Gamma} \tcell_p \TrPlus{\psi}{}$ to form
+\begin{align*}
+\upstairsu{\epsilon_\Gamma} :\equiv \rewrite{\eta^\psi_{\modeof{\Gamma}}}{\StI{\psi}{}}
+\end{align*}
+
+\item[\textsc{sub-ext}] We are provided
+\begin{align*}
+\upstairsu{\Gamma} &\yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairsu{\Delta}}} \\
+\upstairsu{\Gamma} &\yields_{\One_{\modeof{\Gamma}}} \upstairsu{a} : \upstairsu{A[\Theta]}
+\end{align*}
+and we are trying to define:
+\begin{align*}
+\upstairsu{\Gamma} &\yields_{\modeof{\Gamma}} \upstairsu{\Theta, a} : \St{\tpack{\Delta, A}}{\ctxtuple{\upstairsu{\Delta, A}}}
+\end{align*}
+Unfolding definitions:
+\begin{align*}
+\upstairsu{A[\Theta]}
+&\equiv \StE{\tpack{\Delta}}{\upstairsu{\Theta}}{\sigma}{\upstairsu{A}[\fan{\Delta}]}
+\intertext{and}
+\St{\tpack{\Delta, A}}{\ctxtuple{\upstairsu{\Delta, A}}}
+&\equiv \St{(\chi ; (\sigmacl{\sigma}{\tpack{\Delta}}{\id_{\TrPlus{\tpack{\Delta}}{\sigma}}}))}{\ctxtuple{\upstairsu{\Delta}}, \upstairsu{A}[\fan{\Delta}]} \\
+&\equiv \St{\chi}{\St{\sigmacl{\sigma}{\tpack{\Delta}}{\id_{\TrPlus{\tpack{\Delta}}{\sigma}}}}{\ctxtuple{\upstairsu{\Delta}}, \upstairsu{A}[\fan{\Delta}]}} \\
+&\equiv \St{\chi}{\sigma' : \St{\tpack{\Delta}}{\ctxtuple{\upstairsu{\Delta}}}, \StE{\tpack{\Delta}}{\sigma'}{\sigma}{\upstairsu{A}[\fan{\Delta}]}}
+\end{align*}
+So we can form:
+\begin{align*}
+\upstairsu{\Theta, a} :\equiv \rewrite{\eta^\chi_{\modeof{\Gamma}}}{\StI{\chi}{\upstairsu{\Theta}, \upstairsu{A}}}
+\end{align*}
+
+\item[\textsc{sub-id}] We have:
+\begin{align*}
+\upstairsu{\Gamma} \yields_{\modeof{\Gamma}} \upstairsu{\id_\Gamma} :\equiv \StI{\tpack{\Gamma}}{\ctxtuple{\id_{\upstairsu{\Gamma}}}} : \St{\tpack{\Gamma}}{\ctxtuple{\upstairsu{\Gamma}}}
+\end{align*}
+
+\item[\textsc{sub-comp}]
+Given 
+\begin{align*}
+\upstairsu{\Gamma} &\yields_{\modeof{\Gamma}} \upstairsu{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairsu{\Delta}}} \\
+\upstairsu{\Delta} &\yields_{\modeof{\Delta}} \upstairsu{\kappa} : \St{\mathtt{pack}_\Lambda}{\ctxtuple{\upstairsu{\Lambda}}}
+\end{align*}
+we can form
+\begin{align*}
+\upstairsu{\Theta;\kappa} :\equiv \StE{\tpack{\Delta}}{\upstairsu{\Theta}}{\sigma}{\upstairsu{\kappa}[\fan{\upstairsu{\Delta}}]}
+\end{align*}
+
+\item[\textsc{sub-proj}] We are trying to construct a term
+\begin{align*}
+\upstairsu{\Gamma}, x : \upstairsu{A} \yields_{\modeof{(\Gamma, A)}} \upstairsu{\proj{\Gamma, A}} : \St{\mathtt{pack}_\Gamma}{\ctxtuple{\upstairsu{\Gamma}}}
+\end{align*}
+with mode
+\begin{align*}
+\modeof{(\Gamma, A)}
+&\equiv \TrPlus{\tpack{(\Gamma, A)}}{\ctxtuple{\id_{\downstairsu{(\Gamma, A)}}}} \\
+&\equiv \TrPlus{(\chi ; (\sigmacl{\sigma}{\tpack{\Gamma}}{\id_{\TrPlus{\tpack{\Gamma}}{\sigma}}}))}{\ctxtuple{\id_{\downstairsu{\Gamma}}}, x} \\
+&\equiv \TrPlus{\chi}{\TrPlus{\tpack{\Gamma}}{\ctxtuple{\id_{\downstairsu{\Gamma}}}}, x} \\
+&\equiv \TrPlus{\chi}{\modeof{\Gamma}, x} \\
+&\equiv \modeof{\Gamma}.x
+\end{align*}
+So define:
+\begin{align*}
+\upstairsu{\proj{\Gamma, A}} :\equiv \rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairsu{\id_\Gamma}}
+\end{align*}
+
+\item[\textsc{var}] We are a building a term
+\begin{align*}
+\upstairsu{\Gamma}, x : \upstairsu{A} \yields_{\One_{\modeof{(\Gamma, A)}}} \upstairsu{\qvar{\Gamma, A}} : \upstairsu{A[\proj{\Gamma, A}]}
+\end{align*}
+The type in question simplifies:
+\begin{align*}
+\upstairsu{A[\proj{\Gamma, A}]}
+&\equiv \StE{\tpack{\Gamma}}{\upstairsu{\proj{\Gamma, A}}}{\sigma}{\upstairsu{A}[\fan{\Gamma}]} \\
+&\equiv \StE{\tpack{\Gamma}}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairsu{\id_\Gamma}}}{\sigma}{\upstairsu{A}[\fan{\Gamma}]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tpack{\Gamma}}{\upstairsu{\id_\Gamma}}{\sigma}{\upstairsu{A}[\fan{\Gamma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tpack{\Gamma}}{\StI{\tpack{\Gamma}}{\ctxtuple{\id_{\upstairsu{\Gamma}}}}}{\sigma}{\upstairsu{A}[\fan{\Gamma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairsu{A}[\fan{\Gamma}][\ctxtuple{\id_{\upstairsu{\Gamma}}}/\sigma]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairsu{A}}
+\end{align*}
+
+So define $\upstairsu{\qvar{\Gamma, A}}$ by:
+\begin{align*}
+\upstairsu{\qvar{\Gamma, A}} : \rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}
+\end{align*}
+\end{enumerate}
 
 \subsection{Adjoint Type Theory}
 
