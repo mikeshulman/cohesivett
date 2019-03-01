@@ -846,6 +846,38 @@ Using eta for $s$-types:
 and similarly for the second.
 \end{proof}
 
+\begin{lemma}\label{lem:s-elim-fusion}
+Fusion for \textsc{s-elim} on composites:
+\begin{align*}
+\StE{s;t}{M}{x}{N} \equiv \StE{s}{M}{x'}{\StE{t}{x'}{x}{N}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\StE{s;t}{M}{x}{N}
+&\equiv \StE{s}{M}{x'}{\StE{s;t}{\StI{s}{x'}}{x}{N}} \\
+&\equiv \StE{s}{M}{x'}{\StE{t}{x'}{x''}{\StE{s;t}{\StI{s}{\StI{t}{x''}}}{x}{N}}} \\
+&\equiv \StE{s}{M}{x'}{\StE{t}{x'}{x''}{\StE{s;t}{\StI{s;t}{x''}}{x}{N}}} \\
+&\equiv \StE{s}{M}{x'}{\StE{t}{x'}{x''}{N[x''/x]}} \\
+&\equiv \StE{s}{M}{x'}{\StE{t}{x'}{x}{N}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}\label{lem:s-elim-tuple}
+Fusion for \textsc{s-elim} on tuples ???
+\begin{align*}
+\StE{(s, t)}{M}{w}{N} \equiv \StE{s}{\fst M}{x}{\StE{t}{\snd M}{y}{N[(x,y)/w]}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+%\begin{align*}
+%&\StE{(s, t)}{M}{w}{N}  \\
+%&\equiv \StE{(s, t)}{(\fst M, \snd M)}{w}{N}  \\
+%&\equiv \StE{s}{\fst M}{x}{\StE{(s, t)}{(\StI{s}{x}, \snd M)}{w}{N}}  \\
+%\end{align*}
+\mvrnote{todo}
+\end{proof}
+
 %\begin{lemma}
 %\textsc{F-elim} fuses with \textsc{s-intro}.
 %\end{lemma}
@@ -928,8 +960,8 @@ For $\pack{\Gamma}$ we simultaneously verify the equation $ \unpack{\Gamma}{\pac
 For the second equation, we check inductively that
 \begin{align*}
 \pack{(\cdot)}[\unpack{(\cdot)}{\sigma}] 
-&\equiv \mt[\id_{(\cdot)}] 
-&\equiv \sigma
+&\equiv \mt[\id_{(\cdot)}] \\
+&\equiv \sigma \\
 \pack{\Gamma, x : A}[\unpack{\Gamma, x : A}{\sigma}]
 &\equiv (\pack{\Gamma}, x)[\unpack{\Gamma}{\fst \sigma}, \snd{\sigma}/x] \\
 &\equiv (\pack{\Gamma}[\unpack{\Gamma}{\fst \sigma}], \snd \sigma) \\
@@ -1958,7 +1990,7 @@ is an isomorphism.
 \end{align*}
 Note that $\pack{\downstairs{\Gamma}}$ is simply an iterated tuple of the variables of $\downstairs{\Gamma}$ in order: $(((((), x), y), z), \dots)$.
 \item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
-\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$
 \end{itemize}
 
 \subsection{Martin L\"of Type Theory}
@@ -2040,19 +2072,19 @@ The structural rules of MLTT then have the following translations:
   \end{align*}
   so we have a mode type morphism
   \begin{align*}
-  \sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\TrPlus{\tshape{\Gamma}}{\sigma}}} : \sigmacl{\sigma}{p}{\El{p}{\sigma}} \tcell \sigmacl{\sigma}{\ctxtuple{\downstairs{\Gamma}}}{\TrPlus{\tshape{\Gamma}}{\sigma}}
+  \sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\El{p}{\TrPlus{\tshape{\Gamma}}{\sigma}}}} : \sigmacl{\sigma}{p}{\El{p}{\sigma}} \tcell \sigmacl{\sigma}{\ctxtuple{\downstairs{\Gamma}}}{\El{p}{\TrPlus{\tshape{\Gamma}}{\sigma}}}
   \end{align*}
   Define $\tshape{\Gamma, A}$ to be:
   \begin{align*}
-  \tshape{\Gamma, A} :\equiv \tdot ; (\sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\TrPlus{\tshape{\Gamma}}{\sigma}}})
+  \tshape{\Gamma, A} :\equiv \tdot ; (\sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\El{p}{\TrPlus{\tshape{\Gamma}}{\sigma}}}})
   \end{align*}
   
-\item[\textsc{type-sub}] Given $\upstairs{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
+\item[\textsc{type-sub}] Given $\upstairs{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
 \begin{align*}
 \upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}
 \end{align*}
 
-\item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
+\item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
 \begin{align*}
 \upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]}
 \end{align*}
@@ -2068,7 +2100,7 @@ The type is equal by definition to $\St{\tempty}{1}$, so we may use the counit $
 
 \item[\textsc{sub-ext}] We are provided
 \begin{align*}
-\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}} \\
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}} \\
 \upstairs{\Gamma} &\yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A[\Theta]}
 \end{align*}
 and we are trying to define:
@@ -2081,13 +2113,13 @@ Unfolding definitions:
 &\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}
 \intertext{and}
 \St{\tshape{\Delta, A}}{\ctxtuple{\upstairs{\Delta, A}}}
-&\equiv \St{(\tdot ; (\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\TrPlus{\tshape{\Delta}}{\sigma}}}))}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} \\
-&\equiv \St{\tdot}{\St{\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\TrPlus{\tshape{\Delta}}{\sigma}}}}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
-&\equiv \St{\tdot}{\sigma' : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}, \StE{\tshape{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}s]}}
+&\equiv \St{(\tdot ; (\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}}))}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \St{\tdot}{\St{\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}}}{\ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \St{\tdot}{\sigma' : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}, \StE{\tshape{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}
 \end{align*}
 So we can form:
 \begin{align*}
-\upstairs{\Theta, a} :\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{A}}}
+\upstairs{\Theta, a} :\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}
 \end{align*}
 
 \item[\textsc{sub-id}] We have:
@@ -2098,8 +2130,8 @@ So we can form:
 \item[\textsc{sub-comp}]
 Given 
 \begin{align*}
-\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\mathtt{pack}_\Delta}{\ctxtuple{\upstairs{\Delta}}} \\
-\upstairs{\Delta} &\yields_{\modeof{\Delta}} \upstairs{\kappa} : \St{\mathtt{pack}_\Lambda}{\ctxtuple{\upstairs{\Lambda}}}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}} \\
+\upstairs{\Delta} &\yields_{\modeof{\Delta}} \upstairs{\kappa} : \St{\tshape{\Lambda}}{\ctxtuple{\upstairs{\Lambda}}}
 \end{align*}
 we can form
 \begin{align*}
@@ -2108,13 +2140,13 @@ we can form
 
 \item[\textsc{sub-proj}] We are trying to construct a term
 \begin{align*}
-\upstairs{\Gamma}, x : \upstairs{A} \yields_{\modeof{(\Gamma, A)}} \upstairs{\proj{\Gamma, A}} : \St{\mathtt{pack}_\Gamma}{\ctxtuple{\upstairs{\Gamma}}}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\modeof{(\Gamma, A)}} \upstairs{\proj{\Gamma, A}} : \St{\tshape{\Gamma}}{\ctxtuple{\upstairs{\Gamma}}}
 \end{align*}
 with mode
 \begin{align*}
 \modeof{(\Gamma, A)}
 &\equiv \TrPlus{\tshape{(\Gamma, A)}}{\pack{\downstairs{\Gamma. x : A}}} \\
-&\equiv \TrPlus{(\tdot ; (\sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\TrPlus{\tshape{\Gamma}}{\sigma}}}))}{\pack{\downstairs{\Gamma}}, x} \\
+&\equiv \TrPlus{(\tdot ; (\sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\El{p}{\TrPlus{\tshape{\Gamma}}{\sigma}}}}))}{\pack{\downstairs{\Gamma}}, x} \\
 &\equiv \TrPlus{\tdot}{\TrPlus{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}}, x} \\
 &\equiv \TrPlus{\tdot}{\modeof{\Gamma}, x} \\
 &\equiv \modeof{\Gamma}.x
@@ -2141,8 +2173,115 @@ The type in question simplifies:
 
 So define $\upstairs{\qvar{\Gamma, A}}$ by:
 \begin{align*}
-\upstairs{\qvar{\Gamma, A}} :\equiv \rewrite{\qvar{x}}{\StI{\ApEl{p}{\pi^\alpha_x}}{x}}
+\upstairs{\qvar{\Gamma, A}} :\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{x}}
 \end{align*}
+\end{enumerate}
+
+Now we check that these translations satisfy the required equations.
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$A[\id_\Gamma] \equiv A$}] 
+\begin{align*}
+\upstairs{A[\id_\Gamma]}
+&\equiv \StE{\tshape{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \StE{\tshape{\Gamma}}{\StI{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \upstairs{A}[\unpack{\Gamma}{\pack{\downstairs{\Gamma}}}]\\
+&\equiv \upstairs{A}
+\end{align*}
+
+\item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}] 
+\begin{align*}
+\upstairs{A[\Theta ; \kappa]}
+&\equiv \StE{\tshape{\Lambda}}{\upstairs{\Theta ; \kappa}}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]} \\
+&\equiv \StE{\tshape{\Lambda}}{(\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma'}]})}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{\StE{\tshape{\Lambda}}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma'}]}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]}} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{(\StE{\tshape{\Lambda}}{\upstairs{\kappa}}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]})[\unpack{\Delta}{\sigma'}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{\upstairs{A[\kappa]}[\unpack{\Lambda}{\sigma'}]} \\
+&\equiv \upstairs{A[\kappa][\Theta]}
+\end{align*}
+
+\item[{$a[\id_\Gamma] \equiv a$}] Same as for types.
+\item[{$a[\Theta ; \kappa] \equiv a[\kappa][\Theta]$}] Same as for types.
+
+\item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}]
+\begin{align*}
+\upstairs{\Theta ; (\kappa , a)}
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{(\kappa , a)}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\eta^\tdot_{\modeof{\Lambda}}}{\StI{\tdot}{\upstairs{\kappa}, \upstairs{a}}}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\eta^\tdot_{\modeof{\Lambda}}}{\StI{\tdot}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}], \upstairs{a}[\unpack{\upstairs{\Delta}}{\sigma}]}}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Lambda}}}{\StI{\tdot}{(\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}]}), (\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\upstairs{\Delta}}{\sigma}]})}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Lambda}}}{\StI{\tdot}{\upstairs{(\Theta ; \kappa)}, \upstairs{a[\Theta]}}} \\
+&\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]}
+\end{align*} 
+
+\item[{$(\Theta, a);\proj{\Delta,A} \equiv \Theta$}]
+\begin{align*}
+\upstairs{(\Theta, a);\proj{\Delta,A}}
+&\equiv \StE{\tshape{\Delta, x : A}}{\upstairs{\Theta, a}}{\sigma}{\upstairs{\proj{\Delta,A}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]} \\
+&\equiv \StE{\tdot ; (\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{\rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]} \\
+&\equiv \StE{\tdot}{\rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma'}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StE{\tdot}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}{\sigma'}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta}}{\fst \sigma}/\sigma, \snd \sigma / x]}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\TrPlus{\tshape{\Delta}}{\fst \sigma}}_{\snd \sigma}}{\StI{\tshape{\Delta}}{\fst \sigma}}}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\rewrite{\pi^{\fst \sigma}_{\snd \sigma}}{\fst \sigma}[(\upstairs{\Theta}, \upstairs{a})/\sigma]} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{\Gamma}};\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}{\upstairs{\Theta}} \\
+&\equiv \upstairs{\Theta}
+\end{align*}
+
+\item[{$\qvar{\Delta,A}[\Theta, a] \equiv a$}]
+\begin{align*}
+\upstairs{\qvar{\Delta,A}[\Theta, a]}
+&\equiv \StE{\tshape{\Delta, x : A}}{\upstairs{(\Theta, a)}}{\sigma}{\upstairs{\qvar{\Delta,A}}[\unpack{\Delta, x : A}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta, x : A}}{\rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Delta}}_x}}{x}}[\unpack{\Delta, x : A}{\sigma}]} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\StE{\tshape{\Delta, x : A}}{\StI{\tdot}{\upstairs{\Theta}, \upstairs{a}}}{\sigma}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\TrPlus{\tshape{\Delta}}{\fst \sigma}}_{\snd \sigma}}}{\snd \sigma}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\StE{(\sigmacl{\sigma}{\tshape{\Delta}}{\id_{\El{p}{\TrPlus{\tshape{\Delta}}{\sigma}}}})}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\TrPlus{\tshape{\Delta}}{\fst \sigma}}_{\snd \sigma}}}{\snd \sigma}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\TrPlus{\tshape{\Delta}}{\fst \sigma}}_{\snd \sigma}}}{\snd \sigma}}[(\upstairs{\Theta}, \upstairs{a})/\sigma]}} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\rewrite{\var{\One_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}}}{\rewrite{\ApPlus{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\var{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\tdot_{\modeof{\Gamma}}};\ApPlus{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\var{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}};\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}} \\
+&\equiv \upstairs{a}
+\end{align*}
+Where we have used that
+\begin{align*}
+\ApOne{\eta^\chi_\alpha};\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\var{\One_\alpha}} \equiv \id_{\One_\alpha}
+\end{align*}
+by the triangle identity for $\chi$, Equation~\eqref{eq:chi-triangle-2}
+
+\item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
+\begin{align*}
+\upstairs{(\proj{\Gamma,A}, \qvar{\Gamma,A})}
+&\equiv \rewrite{\eta^\tdot_{\modeof{(\Gamma, x : A)}}}{\StI{\tdot}{\upstairs{\proj{\Gamma,A}}, \upstairs{\qvar{\Gamma,A}}}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{(\Gamma, x : A)}}}{\StI{\tdot}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}, \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{x}}}} \\
+&\equiv \rewrite{\eta^\tdot_{\modeof{(\Gamma, x : A)}}}{\StI{\tdot}{\rewrite{(\pi^{\modeof{\Gamma}}_x, \var{x})}{(\upstairs{\id_\Gamma}, x)}}}\\
+&\equiv \rewrite{\eta^\tdot_{\modeof{(\Gamma, x : A)}}}{\rewrite{\ApPlus{\tdot}{(\pi^{\modeof{\Gamma}}_x, \var{x})}}{\StI{\tdot}{\upstairs{\id_\Gamma}, x}}}\\
+&\equiv \StI{\tdot}{\upstairs{\id_\Gamma}, x} \\
+&\equiv \StI{\tdot}{\StI{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}}, x}\\
+&\equiv \StI{\tdot ; (\sigmacl{\sigma}{\tshape{\Gamma}}{\id_{\El{p}{\TrPlus{\tshape{\Gamma}}{\sigma}}}})}{\pack{\downstairs{\Gamma}}, x} \\
+&\equiv \StI{\tshape{\Gamma, A}}{\pack{\downstairs{\Gamma, A}}} \\
+&\equiv \upstairs{\id_{\Gamma, A}}
+\end{align*}
+
+\item[$\Theta \equiv \epsilon_\Gamma$] 
+Using eta expansion for $\St{\tempty}{}$ once in each direction:
+\begin{align*}
+\upstairs{\Theta}
+&\equiv \StE{\tshape{(\cdot)}}{\upstairs{\Theta}}{x}{\StI{\tshape{(\cdot)}}{x}} \\
+&\equiv \StE{\tempty}{\upstairs{\Theta}}{x}{\rewrite{\eta^\tempty_{\TrPlus{\tempty}{}}}{\StI{\tempty}{}}} \\
+&\equiv \StE{\tempty}{\upstairs{\Theta}}{x}{\rewrite{\eta^\tempty_{\TrPlus{\tempty}{x}}}{\StI{\tempty}{}}} \\
+&\equiv \rewrite{\eta^\tempty_{\modeof{\Gamma}}}{\StI{\tempty}{}} \\
+&\equiv \upstairs{\epsilon_\Gamma}
+\end{align*}
+%\begin{align*}
+%\upstairs{\Theta} 
+%&\equiv \StE{\psi}{\upstairs{\Theta}}{x}{\StI{\psi}{x}} \\
+%&\equiv \StE{\psi}{\upstairs{\Theta}}{x}{\StI{\psi}{()}} \\
+%&\equiv \StE{\psi}{\upstairs{\Theta}}{x}{\rewrite{\eta^\psi_{\emptyset}}{\StI{\psi}{()}}} \\
+%&\equiv \StE{\psi}{\upstairs{\Theta}}{x}{\rewrite{\eta^\psi_{\TrPlus{\psi}{()}}}{\StI{\psi}{()}}} \\
+%&\equiv \StE{\psi}{\upstairs{\Theta}}{x}{\rewrite{\eta^\psi_{\TrPlus{\psi}{x}}}{\StI{\psi}{()}}} \\
+%&\equiv \rewrite{\eta^\psi_{\alpha}}{\StI{\psi}{()}} \\
+%&\equiv \upstairs{\epsilon_\Gamma}
+%\end{align*}
 \end{enumerate}
 
 \section{Semantics}
