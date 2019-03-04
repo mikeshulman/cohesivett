@@ -2032,6 +2032,75 @@ And:
 \end{align*}
 \end{proof}
 
+\subsubsection{Unit type}
+The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=1-form]{~}{\Gamma \qyields \One_\Gamma \TYPE} \and
+\inferrule*[left=1-intro]{~}{\Gamma \qyields \star_\Gamma : \One_\Gamma} \and
+\inferrule*[left=1-elim]{\Gamma \qyields c : C[\id_\Gamma, \star_\Gamma]}{\Gamma, \One_\Gamma \qyields \qunitmatch{c} : C}
+\end{mathpar}
+\begin{align}
+\One_\Delta[\Theta] &\equiv \One_\Gamma \\
+\star_\Delta[\Theta] &\equiv \star_\Gamma \\ 
+\qunitmatch{c}[\Theta \uparrow \One_\Gamma] &\equiv \qunitmatch{c[\Theta]} \\
+\nonumber \\
+\qunitmatch{c}[\id_\Gamma, \star_\Gamma] &\equiv c
+\end{align}
+\caption{Rules for the unit type}\label{fig:qit-unit-rules}
+\end{figure}
+
+\begin{theorem}
+The rules for the unit type can be interpreted over any mode theory containing a comprehension object $p$ that has unit and such that the $\mathsf{F}$-type for $\One_\alpha$ exists.
+\end{theorem}
+
+Translating the rules:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[\textsc{1-form}] For any $\upstairs{\Gamma}$ we can form
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{1_\Gamma} :\equiv \F{\One_{\modeof{\Gamma}}}{1} \TYPE
+\end{align*}
+
+\item[\textsc{1-intro}] We have
+\begin{align*}
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{\star_\Gamma} :\equiv \FIs{\One_{\modeof{\Gamma}}}{} : \upstairs{1_\Gamma}
+\end{align*}
+
+\item[\textsc{1-elim}] We are given
+\begin{align*}
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{c} : \upstairs{C[\id_\Gamma, \star_\Gamma]} 
+\end{align*}
+The type of $\upstairs{c}$ can be simplified to:
+\begin{align*}
+\upstairs{C[\id_\Gamma, \star_\Gamma]} 
+&\equiv \StE{\tshape{\Gamma, 1_\Gamma}}{\upstairs{\id_\Gamma, \star_\Gamma}}{\sigma}{\upstairs{C}[\unpack{\Gamma, 1_\Gamma}{\sigma}]} \\
+&\equiv \StE{\tshape{\Gamma, 1_\Gamma}}{\rewrite{\eta^\tdot_{\modeof{\Gamma}}}{\StI{\tdot}{\upstairs{\id_\Gamma}, \upstairs{\star_\Gamma}}}}{\sigma}{\upstairs{C}[\unpack{\Gamma, 1_\Gamma}{\sigma}]} \\
+&\equiv \St{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\StE{\tshape{\Gamma, 1_\Gamma}}{\StI{\tdot}{\upstairs{\id_\Gamma}, \upstairs{\star_\Gamma}}}{\sigma}{\upstairs{C}[\unpack{\Gamma, 1_\Gamma}{\sigma}]}} \\
+&\equiv \St{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\upstairs{C}[\unpack{\Gamma, 1_\Gamma}{\sigma}][\pack{\Gamma}/\sigma, \upstairs{\star_\Gamma}/x]} \\
+&\equiv \St{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\upstairs{C}[\upstairs{\star_\Gamma}/x]} \\
+&\equiv \St{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\upstairs{C}[\FIs{\One_{\modeof{\Gamma}}}{}/x]}
+\end{align*}
+So as our translation use:
+\begin{mathpar}
+\inferrule*[Left=F-elim]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-intro]{
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{c} : \St{\ApEl{p}{\eta^\tdot_{\modeof{\Gamma}}}}{\upstairs{C}[\FIs{\One_{\modeof{\Gamma}}}{}/x]}}
+{\upstairs{\Gamma} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\One_{\modeof{\Gamma}}}} \StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{c}} : \upstairs{C}[\FIs{\One_{\modeof{\Gamma}}}{}/x]}}
+{\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}.\One_{\modeof{\Gamma}}}} \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{c}}} : \upstairs{C}[\FIs{\One_{\modeof{\Gamma}}}{}/x]}}
+{\upstairs{\Gamma}, z : \upstairs{1_\Gamma} \yields_{\One_{\modeof{\Gamma}}} \FE{z}{x}{\rewrite{\ApOne{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{c}}}} : \upstairs{C}}
+\end{mathpar}
+\end{enumerate}
+
+Checking the equations: \mvrnote{TODO}
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$\One_\Delta[\Theta] \equiv \One_\Gamma$}:] 
+\item[{$\star_\Delta[\Theta] \equiv \star_\Gamma $}:]
+\item[{$\qunitmatch{c}[\Theta \uparrow \One_\Gamma] \equiv \qunitmatch{c[\Theta]}$}:]
+\item[{$\qunitmatch{c}[\id_\Gamma, \star_\Gamma] \equiv c$}:] 
+\end{enumerate}
+
 \subsubsection{$\Sigma$-types}
 
 The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. 
