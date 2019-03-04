@@ -2313,7 +2313,7 @@ such that
 (\Theta \uparrow A) ; \proj{\Delta, A} &\equiv \proj{\Gamma, A[\Theta]} ; \Theta \\
 \qvar{\Delta, A}[\Theta \uparrow A] &\equiv \qvar{\Gamma, A[\Theta]} \\
 \upstairs{\Theta \uparrow A} &\equiv \StI{\tdot}{\upstairs{\Theta}, x} \\
-\StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} &\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{M[\unpack{\Delta}{\sigma}, x/x]}
+\StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} &\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma}{M[\unpack{\Delta}{\sigma}, x/x]}
 \end{align*}
 \end{lemma}
 \begin{proof}
@@ -2331,11 +2331,10 @@ And:
 \begin{align*}
 &\StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
 &\equiv \StE{\tshape{\Delta, A}}{\StI{\tdot}{\upstairs{\Theta}, x}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{\StE{\tshape{\Delta, A}}{\StI{\tdot}{\StI{\tshape{\Delta}}{\sigma'}, x}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]}} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{\StE{(\tshape{\Delta}, \id)}{\StI{(\tshape{\Delta}, \id)}{\sigma', x}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]}} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{M[\unpack{\Delta, A}{\sigma', x}]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma'}{M[\unpack{\Delta}{\sigma'}, x/x]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{M[\unpack{\Delta}{\sigma}, x/x]}
+&\equiv \StE{\tdot}{\StI{\tdot}{\upstairs{\Theta}, x}}{\sigma'}{\StE{(\tshape{\Delta}, \id)}{\sigma'}{\sigma}{M[\unpack{\Delta, A}{\sigma}]}} \\
+&\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
+&\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma, x}{M[\unpack{\Delta, A}{(\sigma, x)}]} \\
+&\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma, x}{M[\unpack{\Delta}{\sigma}, x/x]}
 \end{align*}
 \end{proof}
 
@@ -2465,17 +2464,20 @@ Now the equations:
 \begin{align*}
 &\upstairs{\qpair{A, B}[\Theta \uparrow A \uparrow B]} \\
 &\equiv \StE{\tshape{\Delta, A, B}}{\upstairs{\Theta \uparrow A \uparrow B}}{\sigma}{\upstairs{\qpair{A, B}}[\unpack{\Delta, A, B}{\sigma}]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\fibpair{x,y}}{\StI{(\pi^{\modeof{\Delta}.x}_y;\pi^{\modeof{\Delta}}_x)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}[\unpack{\Delta}{\sigma}, x/x, y/y]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\fibpair{x,y}}{\StI{(\pi^{\TrPlus{\tshape{\Delta}}{\sigma}.x}_y;\pi^{\TrPlus{\tshape{\Delta}}{\sigma}}_x)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}} \\
+&\equiv \StE{(\tshape{\Delta}, \id, \id)}{(\upstairs{\Theta},x,y)}{\sigma,x,y}{\upstairs{\qpair{A, B}}[\unpack{\Delta}{\sigma}, x/x, y/y]} \\
+&\equiv \StE{(\tshape{\Delta}, \id, \id)}{(\upstairs{\Theta},x,y)}{\sigma,x,y}{\rewrite{\fibpair{x,y}}{\StI{(\pi^{\modeof{\Delta}.x}_y;\pi^{\modeof{\Delta}}_x)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}[\unpack{\Delta}{\sigma}, x/x, y/y]} \\
+&\equiv \StE{(\tshape{\Delta}, \id, \id)}{(\upstairs{\Theta},x,y)}{\sigma,x,y}{\rewrite{\fibpair{x,y}}{\StI{(\pi^{\TrPlus{\tshape{\Delta}}{\sigma}.x}_y;\pi^{\TrPlus{\tshape{\Delta}}{\sigma}}_x)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}} \\
 &\equiv \rewrite{\fibpair{x,y}}{\StI{(\pi^{\modeof{\Gamma}.x}_y;\pi^{\modeof{\Gamma}}_x)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}} \\
 &\equiv \upstairs{\qpair{A, B}[\Theta \uparrow A \uparrow B]}
 \end{align*}
 
 \item[{$\qsplit{A,B}(c)[\Theta \uparrow \Sigma_A B] \equiv \qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])$}:]
 \begin{align*}
-&\StE{\tshape{\Delta, \Sigma_A B}}{\upstairs{\Theta \uparrow \Sigma_A B}}{\sigma}{(\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}}}})[\unpack{\Delta, \Sigma_A B}{\sigma}]} \\
-&\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{(\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}}}})[\unpack{\Delta}{\sigma}, z/z]} \\
-&\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}[\unpack{\Delta}{\sigma}, x/x,y/y]}}}} \\
+&\upstairs{\qsplit{A,B}(c)[\Theta \uparrow \Sigma_A B]} \\
+&\equiv \StE{\tshape{\Delta, \Sigma_A B}}{\upstairs{\Theta \uparrow \Sigma_A B}}{\sigma}{(\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}}}})[\unpack{\Delta, \Sigma_A B}{\sigma}]} \\
+&\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, z)}{\sigma, z}{(\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}}}})[\unpack{\Delta}{\sigma}, z/z]} \\
+&\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, z)}{\sigma, z}{\FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c}[\unpack{\Delta}{\sigma}, x/x,y/y]}}}} \\
+&\equiv ? \\
 &\equiv \FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{c}[\unpack{\Delta}{\sigma}, x/x, y/y]}}}} \\
 &\equiv \FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\StE{\tshape{\Delta, A, B}}{\upstairs{\Theta \uparrow A \uparrow B}}{\sigma}{\upstairs{c}[\unpack{\Delta, A, B}{\sigma}]}}}} \\
 &\equiv \FE{z}{x,y}{\rewrite{\ApOne{\tsplit{x,y}}}{\StI{\ApEl{p}{\tsplit{x,y}}}{\upstairs{c[\Theta \uparrow A \uparrow B]}}}} \\
