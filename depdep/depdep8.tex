@@ -1287,10 +1287,19 @@ In the type-theoretic definition, $p$ and $\El{p}{\alpha}$ describe a fibration 
 
 The primary difference is that we do not need to assume that $\One_\alpha$ is terminal in $\El{p}{\alpha}$, so $(\alpha, \One_\alpha) : p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ is not right adjoint to $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. We also do not assume that $p$ is full, in the sense of there being a bijection between mode term morphisms $x \tcell_{\El{p}{\alpha}} y$ and mode term morphisms $\alpha.x \tcell_p \alpha.y$ that commute with projection.
 
-The triangle identities for $\tdot^\circ \dashv \tdot^+$ take the following form:
+Using the above derived forms, the units and counits of the adjunctions have type
+\begin{align*}
+\eta^\tdot_\alpha {}&: \alpha \tcell_p \alpha.\One_\alpha \\
+\varepsilon^\tdot_{(\alpha, \mu)} {}&: (\alpha.\mu, \One_{\alpha.\mu}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
+\eta^\tempty_\alpha {}&: \alpha \tcell_p \emptyset \\
+\varepsilon^\tempty_{x} {}&: x \tcell_1 () \\
+\end{align*}
+and the triangle equations may be written:
 \begin{align}
 \label{eq:chi-triangle-1} \eta^\tdot_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
-\label{eq:chi-triangle-2} (\eta^\tdot_\alpha ; \pi^\alpha_{\One_\alpha}, \ApOne{\eta^\tdot_\alpha} ; \ApPlus{\ApEl{p}{\eta^\tdot_\alpha}}{\var{\One_\alpha}}) &\equiv \id_{(\alpha, \One_\alpha)}
+\label{eq:chi-triangle-2} (\eta^\tdot_\alpha ; \pi^\alpha_{\One_\alpha}, \ApOne{\eta^\tdot_\alpha} ; \ApPlus{\ApEl{p}{\eta^\tdot_\alpha}}{\var{\One_\alpha}}) &\equiv \id_{(\alpha, \One_\alpha)}\\
+\eta^\tempty_\emptyset &\equiv \id_\emptyset \\
+\id_{()}&\equiv \id_{()}
 \end{align}
 
 Requiring a left adjoint for $\tempty^+$ is a cute way of stating the following:
@@ -1298,11 +1307,7 @@ Requiring a left adjoint for $\tempty^+$ is a cute way of stating the following:
 For $p$ a comprehension object, $\emptyset : p$ is terminal.
 \end{lemma}
 \begin{proof}
-We always have a map $\eta^\tempty_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that one of the triangle identities is 
-\begin{align*}
-\eta^\tempty_\emptyset ; \ApPlus{\tempty}{\id_{()}} \equiv \eta^\tempty_\emptyset \equiv \id_\emptyset
-\end{align*}
-so for any $s : \alpha \tcell_p \emptyset$ we check:
+We always have a map $\eta^\tempty_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that for any $s : \alpha \tcell_p \emptyset$,
 \begin{align*}
 s 
 &\equiv s ; \eta^\tempty_\emptyset \\
@@ -1447,35 +1452,6 @@ A comprehension object \emph{supports the unit type} if $\eta^\tdot_\alpha : \al
 \end{align}
 \end{definition}
 Composition in the other direction is already the identity, by one of the triangle identities for $\tdot$.
-
-\begin{lemma}
-If $p$ supports the unit type then the following equations hold:
-\begin{align}
-\var{\One_\alpha} &\equiv \ApOne{\pi^\alpha_{\One_\alpha}} \\
-\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}} &\equiv (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}}) \\
-\pi^{\alpha.\One.\One}_\One;\pi^{\alpha.\One}_\One &\equiv (\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One) \bdot (\ApOne{\pi^{\alpha.\One}_\One;\pi^{\alpha}_\One})
-\end{align}
-\end{lemma}
-\begin{proof}
-The first:
-\begin{align*}
-\var{\One_\alpha} 
-&\equiv \ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}}} \\
-&\equiv \ApOne{\pi^\alpha_{\One_\alpha} ; \eta^\tdot_\alpha};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}}} \\
-&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApOne{\eta^\tdot_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}}} \\
-&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}}} \\
-&\equiv \ApOne{\pi^\alpha_{\One_\alpha}};\ApPlus{\pi^\alpha_{\One_\alpha}}{\id_{\alpha}} \\
-&\equiv \ApOne{\pi^\alpha_{\One_\alpha}}
-\end{align*}
-The second follows from naturality of $\eta^\tdot$ by
-\begin{align*}
-\id_{\alpha.\One_\alpha} 
-&\equiv \pi^\alpha_{\One_\alpha} ; \eta^\tdot_\alpha \\
-&\equiv \eta^\tdot_{\alpha.\One_\alpha} ; (\pi^\alpha_{\One_\alpha} \bdot \ApOne{\pi^\alpha_{\One_\alpha}})
-\end{align*}
-and precomposing with $\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}}$.
-And the third by applying the second equation to each $\pi$ and using fusion.
-\end{proof}
 
 \subsubsection{Comprehension Object with $\Sigma$}
 
