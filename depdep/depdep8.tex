@@ -920,10 +920,14 @@ we will write
 \end{align*}
 
 \begin{lemma}\label{lem:s-elim-telescope-type}
-\textsc{s-elim} into terms and types commutes with telescope formation.
+\textsc{s-elim} into types commutes with telescope formation and $\mathsf{U}$-formation, in the sense:
+\begin{align*}
+\StE{s}{M}{x}{(y : A, B)} &\equiv (y : \StE{s}{M}{x}{A}, \StE{(s, \id)}{(M,y)}{x, y}{B}) \\
+\StE{s}{M}{x}{\U{c.\mu'[\TrPlus{s}{x}/x]}{y : A}{B}} &\equiv \U{c.\mu'[\mu/x]}{y : \StE{s}{M}{x}{A}}{\StE{(s, \id)}{(M,y)}{x, y}{B}}
+\end{align*}
 \end{lemma}
 \begin{proof}
-For types, this is:
+For telescopes:
 \begin{align*}
 &\StE{s}{M}{x}{(y : A, B)} \\
 &\equiv \StE{s}{M}{x}{(y : \StE{s}{\StI{s}{x}}{x'}{A[x'/x]}, \StE{(s, \id)}{\StI{(s, \id)}{x, y}}{x', y'}{B[x'/x, y'/y]})} \\
@@ -931,10 +935,7 @@ For types, this is:
 &\equiv (y : \StE{s}{M}{x'}{A[x'/x]}, \StE{(s, \id)}{(M,y)}{x', y'}{B[x'/x, y'/y]}) \\
 &\equiv (y : \StE{s}{M}{x}{A}, \StE{(s, \id)}{(M,y)}{x, y}{B})
 \end{align*}
-For terms: 
-\begin{align*}
-TODO
-\end{align*}
+and for $\mathsf{U}$-types the proof is similar.
 \end{proof}
 
 \begin{lemma}\label{lem:ctxtuple}
@@ -1826,9 +1827,10 @@ Let $\pinv{\alpha,x}$ denote the inverse of $\ApOne{\pi^\alpha_x}$.
 If $\One_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
 \end{lemma}
 \begin{proof}
-Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$ and then the equations hold trivially.
+Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$.
 \end{proof}
 
+\mvrnote{Are the following needed?}
 \begin{lemma}
 If $p$ has $\Pi$-types then:
 \begin{align*}
@@ -2088,7 +2090,7 @@ The structural rules of MLTT then have the following translations:
 
 \item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
 \begin{align*}
-\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]} : \upstairs{A[\Theta]}
 \end{align*}
 
 \item[\textsc{sub-empty}] We are constructing a term
@@ -2246,9 +2248,9 @@ Now we check that these translations satisfy the required equations.
 \end{align*}
 Where we have used that
 \begin{align*}
-\ApOne{\eta^\chi_\alpha};\ApPlus{\ApEl{p}{\eta^\chi_\alpha}}{\var{\One_\alpha}} \equiv \id_{\One_\alpha}
+\ApOne{\eta^\tdot_\alpha};\ApPlus{\ApEl{p}{\eta^\tdot_\alpha}}{\var{\One_\alpha}} \equiv \id_{\One_\alpha}
 \end{align*}
-by the triangle identity for $\chi$, Equation~\eqref{eq:chi-triangle-2}
+by the triangle identity for $\tdot$, Equation~\eqref{eq:chi-triangle-2}
 
 \item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
 \begin{align*}
@@ -2279,12 +2281,23 @@ Using eta expansion for $\St{\tempty}{}$ once in each direction:
 We record some useful facts:
 \begin{lemma}
 \begin{align*}
-\upstairs{A[\proj{\Gamma, A}]} &\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{A}} \\
+\upstairs{B[\proj{\Gamma, A}]} &\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{B}} \\
+\upstairs{b[\proj{\Gamma, A}]} &\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}}} \\
 \upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}} &\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y;\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_{\Gamma}}} \\
 \end{align*}
 \end{lemma}
 \begin{proof}
-The first was shown in the translation of $\qvar{}$. For the second:
+The first was shown in the translation of $\qvar{}$. The second is similar:
+\begin{align*}
+\upstairs{b[\proj{\Gamma, A}]}
+&\equiv \StE{\tshape{\Gamma}}{\upstairs{\proj{\Gamma, A}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \StE{\tshape{\Gamma}}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tshape{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]}}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\StE{\tshape{\Gamma}}{\StI{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]}}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}[\unpack{\Gamma}{\sigma}][\pack{\downstairs{\Gamma}}/\sigma]}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}}}
+\end{align*}
+And the third:
 \begin{align*}
 \upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}} 
 &\equiv \StE{\tshape{\Gamma, A}}{\upstairs{\proj{\Gamma, A, B}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unpack{\upstairs{\Gamma, A}}{\sigma}]} \\
@@ -2338,7 +2351,7 @@ And:
 \end{align*}
 \end{proof}
 
-\subsubsection{Rules for $\Sigma$-types}
+\subsubsection{$\Sigma$-types}
 
 The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. 
 
@@ -2451,12 +2464,12 @@ Now the equations:
 \item[{$(\Sigma_A B)[\Theta] \equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A]$}:] 
 \begin{align*}
 &\upstairs{(\Sigma_A B)[\Theta]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \upstairs{A}, \upstairs{B}}[\unpack{\Delta}{\sigma}]} \\
-&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \upstairs{A}[\unpack{\Delta}{\sigma}], \upstairs{B}[\unpack{\Delta}{\sigma}, x / x] }} \\
-&\equiv \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{(\sigma : \tshape{\Delta}, \id)}{(\upstairs{\Theta},x)}{\sigma, x}{\upstairs{B}[\unpack{\Delta}{\sigma}, x/x]} } \\
-&\equiv \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{\tshape{\Delta, A}}{\StI{\tdot}{\upstairs{\Theta},x}}{\sigma, x}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]} } \\
-&\equiv \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma, x}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]} } \\
-&\equiv \F{w. \Sigma_1(\alpha,\fst w, \snd w)}{x : \upstairs{A[\Theta]}, \upstairs{B[\Theta \uparrow A]}} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\F{w. \Sigma_1(\modeof{\Delta},\fst w, \snd w)}{x : \upstairs{A}, \upstairs{B}}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\F{w. \Sigma_1(\TrPlus{\tshape{\Delta}}{\sigma},\fst w, \snd w)}{x : \upstairs{A}[\unpack{\Delta}{\sigma}], \upstairs{B}[\unpack{\Delta}{\sigma}, x / x] }} \\
+&\equiv \F{w. \Sigma_1(\modeof{\Gamma},\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{(\sigma : \tshape{\Delta}, \id)}{(\upstairs{\Theta},x)}{\sigma, x}{\upstairs{B}[\unpack{\Delta}{\sigma}, x/x]} } \\
+&\equiv \F{w. \Sigma_1(\modeof{\Gamma},\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{\tshape{\Delta, A}}{\StI{\tdot}{\upstairs{\Theta},x}}{\sigma, x}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]} } \\
+&\equiv \F{w. \Sigma_1(\modeof{\Gamma},\fst w, \snd w)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}, \StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma, x}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]} } \\
+&\equiv \F{w. \Sigma_1(\modeof{\Gamma},\fst w, \snd w)}{x : \upstairs{A[\Theta]}, \upstairs{B[\Theta \uparrow A]}} \\
 &\equiv \upstairs{\Sigma_{A[\Theta]} B[\Theta \uparrow A]}
 \end{align*}
 
@@ -2500,45 +2513,162 @@ We have already calculated the translation of the substitution, when translating
 &\equiv \rewrite{\ApOne{\pair{x,y};\tsplit{x,y}}}{\StI{\ApEl{p}{\pair{x,y};\tsplit{x,y}}}{\upstairs{c}}} \\
 &\equiv \upstairs{c}
 \end{align*}
-%Yet again:
+\end{enumerate}
+
+\subsubsection{$\Pi$-types}
+
+The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability of $\mathsf{app}$ under substitution is derivable from stability of $\qlam{}$ using beta and eta: \mvrnote{This is much, much more confusing because of the axiomatic $\mathsf{app}$. We need to use an exchange substitution to even get this to work, TODO}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=$\Pi$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi_A B \TYPE} \\
+\inferrule*[left=$\Pi$-intro]{\Gamma, A \qyields b : B}{\Gamma \qyields \qlam(b) : \Pi_A B} \and
+\inferrule*[left=$\Pi$-elim]{~}{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}] \qyields \qapp{A, B} : B[\proj{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}]}
+\end{mathpar}
+\begin{align}
+(\Pi_A B)[\Theta] &\equiv \Pi_{A[\Theta]} B[\Theta \uparrow A] \\
+\qlam(b)[\Theta] &\equiv \qlam(b[\Theta \uparrow A]) \\
+\nonumber \\
+\qapp{A,B}[\id_{\Gamma, A}, \qlam(b)[\proj{\Gamma, A}]] &\equiv b \\
+\qlam(\qapp{A,B}[\id_{\Gamma, A}, f[\proj{\Gamma, A}]]) &\equiv f
+\end{align}
+\begin{mathpar}
+
+\end{mathpar}
+\caption{Rules for $\Pi$-types in MLTT via Explicit Substitutions}\label{fig:qit-pi-rules}
+\end{figure}
+
+In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
+\end{align*}
+
+\begin{theorem}
+The rules for $\Pi$-types can be interpreted over any mode theory with a comprehension object that supports $\Pi$ types (Definition~\ref{def:supports-pis}) and such that the $\mathsf{U}$-types for $\Pi_1$ exist.
+\end{theorem}
+
+\begin{enumerate}
+\item[\textsc{$\Pi$-form}] We are given
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE \\
+\upstairs{\Gamma}, x : \upstairs{A} &\yields_{\El{p}{\modeof{\Gamma}.x}} \upstairs{B} \TYPE
+\end{align*}
+which are of the right shape to form
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{\Pi_A B} :\equiv \U{c.\Pi_1(\modeof{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}} \TYPE
+\end{align*}
+\item[\textsc{$\Pi$-intro}] We are given a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} &\yields_{\One_{\modeof{\Gamma}.x}} \upstairs{b} : \upstairs{B}
+\end{align*}
+So use
+\begin{mathpar}
+\inferrule*[Left=U-intro]{
+\inferrule*[Left=rewrite]{
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\modeof{\Gamma}.x}} \upstairs{b} : \upstairs{B}}
+{\upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\pi^{\modeof{\Gamma}}_x}{\One_{\modeof{\Gamma}}}} \rewrite{\pinv{x}}{\upstairs{b}} : \upstairs{B}}}
+{\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \UI{x}{\rewrite{\pinv{x}}{\upstairs{b}}} : \upstairs{\Pi_A B}}
+\end{mathpar}
+\item[\textsc{$\Pi$-elim}] We are trying to form a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A}, f : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Pi_A B}} &\yields_{\One_{\modeof{\Gamma}.x.f}} \upstairs{\qapp{A,B}} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{\upstairs{B}}
+\end{align*}
+Use:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-intro]{
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=U-elim]{~}
+{\upstairs{\Gamma}, x : \upstairs{A}, f' : \upstairs{\Pi_A B} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{f'}} \UE{f'}{x} : \upstairs{B}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, f : \St{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Pi_A B}} \yields_{f} \StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{f}{f'}{\UE{f'}{x}} : \upstairs{B}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, f : \St{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Pi_A B}} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{f}} \StI{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{f}{f'}{\UE{f'}{x}}} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{\upstairs{B}}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, f : \St{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Pi_A B}} \yields_{\One_{\modeof{\Gamma}.x.f}} \rewrite{\var{f}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{f}{f'}{\UE{f'}{x}}}} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_f}}{\upstairs{B}}}
+\end{mathpar}
+
+\mvrnote{Or in the other style}, we are given
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\One_{\modeof{\Gamma}}} \upstairs{f} : \upstairs{\Pi_A B}
+\end{align*}
+and want to produce
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} &\yields_{\One_{\modeof{\Gamma}.x}} \upstairs{\qapp{A,B}(f)} : \upstairs{B}
+\end{align*}
+this is:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=U-elim]{
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{f} : \upstairs{\Pi_A B}}
+{\upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\One_{\modeof{\Gamma}}}} \UE{\upstairs{f}}{x} : \upstairs{B}}}
+{\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\modeof{\Gamma}.x}} \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\UE{\upstairs{f}}{x}} : \upstairs{B}}
+\end{mathpar}
+\end{enumerate}
+And the equations:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$(\Pi_A B)[\Theta] \equiv \Pi_{A[\Theta]} B[\Theta \uparrow A]$}:] Similar to the case for $\Sigma$:
+\begin{align*}
+&\upstairs{(\Pi_A B)[\Theta]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\U{c. \Pi_1(\modeof{\Gamma},x,c)}{x : \upstairs{A}}{\upstairs{B}}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\U{c. \Pi_1(\TrPlus{\tshape{\Delta}}{\sigma},x,c)}{x : \upstairs{A}[\unpack{\Delta}{\sigma}]}{\upstairs{B}[\unpack{\Delta}{\sigma}], x/x}} \\
+&\equiv \U{c. \Pi_1(\modeof{\Delta},x,c)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}{\StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma, x}{\upstairs{B}[\unpack{\Delta}{\sigma}, x/x]}} \\
+&\equiv \U{c. \Pi_1(\modeof{\Delta},x,c)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}{\StE{\tshape{\Delta,A}}{\StI{\tdot}{\upstairs{\Theta}, x}}{\sigma}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]}} \\
+&\equiv \U{c. \Pi_1(\modeof{\Delta},x,c)}{x : \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}{\StE{\tshape{\Delta,A}}{\upstairs{\Theta \uparrow A}}{\sigma}{\upstairs{B}[\unpack{\Delta, A}{\sigma}]}} \\
+&\equiv \U{c. \Pi_1(\modeof{\Delta},x,c)}{x : \upstairs{A[\Theta]}}{\upstairs{B[\Theta \uparrow A]}} \\
+&\equiv \upstairs{\Pi_{A[\Theta]} B[\Theta \uparrow A]}
+\end{align*}
+
+\item[{$\qlam(b)[\Theta] \equiv \qlam(b[\Theta \uparrow A])$}:]
+\begin{align*}
+&\upstairs{\qlam(b)[\Theta]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\qlam(b)}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\UI{x}{\rewrite{\pinv{x}}{\upstairs{b}}}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\UI{x}{\rewrite{\pinv{x}}{\upstairs{b}[\unpack{\Delta}{\sigma}, x/x]}}} \\
+&\equiv \UI{x}{\rewrite{\pinv{x}}{\StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma, x}{\upstairs{b}[\unpack{\Delta}{\sigma}, x/x]}}} \\
+&\equiv \UI{x}{\rewrite{\pinv{x}}{\StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma}{\upstairs{b}[\unpack{\Delta,A}{\sigma}]}}} \\
+&\equiv \UI{x}{\rewrite{\pinv{x}}{\upstairs{b[\Theta \uparrow A]}}} \\
+&\equiv \upstairs{\qlam(b[\Theta \uparrow A])}
+\end{align*}
+
+\item[{$\qapp{A,B}[\id_{\Gamma, A}, \qlam(b)[\proj{\Gamma, A}]] \equiv M$}:] 
+\begin{align*}
+&\upstairs{\qapp{A,B}[\id_{\Gamma, A}, \qlam(b)[\proj{\Gamma, A}]]} \\
+&\equiv \StE{\tshape{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}}{\upstairs{\id_{\Gamma, A}, \qlam(b)[\proj{\Gamma, A}]}}{\sigma}{\upstairs{\qapp{A,B}}[\unpack{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}{\sigma}]} \\
+&\equiv \StE{\tshape{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}}{\StI{\tdot}{\upstairs{\id_{\Gamma, A}}, \upstairs{\qlam(b)[\proj{\Gamma, A}]}}}{\sigma}{\upstairs{\qapp{A,B}}[\unpack{\Gamma, A, (\Pi_A B)[\proj{\Gamma, A}]}{\sigma}]} \\
+&\equiv \upstairs{\qapp{A,B}}[\unpack{\Gamma, A}{\sigma}, f/f][\pack{\Gamma, A}, \upstairs{\qlam(b)[\proj{\Gamma, A}]}/f] \\
+&\equiv \upstairs{\qapp{A,B}}[\upstairs{\qlam(b)[\proj{\Gamma, A}]}/f] \\
+\end{align*}
 %\begin{align*}
-%&\upstairs{\qsplit{A,B}(c)[(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}]} \\
-%\equiv{} &\upstairs{\qsplit{A,B}(c)}[\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}}/\beta] \\
-%\equiv{} &(\StE{\chi}{\beta}{\alpha, s}{\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\\&\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}})[\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}}/\beta] \\
-%\equiv{} &\StE{\chi}{\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}),\qpair{A,B}}}{\alpha, s}{\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\\&\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}} \\
-%\equiv{} &\StE{\chi}{(\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\pair{x,y}}{\StI{\chi}{\alpha,\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}}})}{\alpha, s}{\\&\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}} \\
-%\equiv{} &\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\StE{\chi}{\rewrite{\pair{x,y}}{\StI{\chi}{\alpha,\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}}{\alpha, s}{\\&\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}}}} \\
-%\equiv{} &\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\One_{\pair{x,y}}}{\StI{\ApEl{p}{\pair{x,y}}}{\StE{\chi}{\StI{\chi}{\alpha,\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}{\alpha, s}{\\&\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}}}}}} \\
-%\equiv{} &\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\One_{\pair{x,y}}}{\StI{\ApEl{p}{\pair{x,y}}}{\\&\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}}}}} \\
-%\equiv{} &\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\One_{\pair{x,y}}}{\StI{\ApEl{p}{\pair{x,y}}}{\\&\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}}}} \\
-%\equiv{} &\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}} \\
-%\equiv{} &\upstairs{c}
-%\end{align*}
+%&\upstairs{\qapp{A,B}[\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]]} \\
+%\equiv{} &\upstairs{\qapp{A,B}}[\upstairs{\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]}/\delta] \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{\qvar{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}(\upstairs{\qvar{\Gamma, A}[\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}]})}[\upstairs{\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]}/\delta] \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{\qvar{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}[\upstairs{\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]}/\delta](\upstairs{\qvar{\Gamma, A}[\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}]}[\upstairs{\id_{\Gamma, A}, \qlam(M)[\proj{\Gamma, A}]}/\delta])} \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{\qlam(M)[\proj{\Gamma, A}]}(\upstairs{\qvar{\Gamma, A}})} \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{\qlam(M[\proj{\Gamma, A} \uparrow A])}(\upstairs{\qvar{\Gamma, A}})} \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{(\UI{x}{\rewrite{\pinv{\beta,x}}{\upstairs{M[\proj{\Gamma, A} \uparrow A]}[\into{\Gamma, A, A[\proj{}]}/\beta]}})(\upstairs{\qvar{\Gamma, A}})} \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{(\UI{x}{\rewrite{\pinv{\beta,x}}{\upstairs{M}[\into{\Gamma, A}/\beta][\upstairs{\proj{\Gamma, A}}/\alpha, x/x]}})(\upstairs{\qvar{\Gamma, A}})} \\
+%\equiv{} &\StI{\ApEl{p}{\eta^\chi_\beta}}{\rewrite{\pinv{\beta,\One_\beta}}{\upstairs{M}[\into{\Gamma, A}/\beta][\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}} \\
+%\equiv{} &\rewrite{\ApPlus{\ApEl{p}{\eta^\chi_\beta}}{\pinv{\beta,\One_\beta}}}{\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{M}[\into{\Gamma, A}/\beta][\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}} \\
+%\equiv{} &\rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{M}[\into{\Gamma, A}/\beta][\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}} \\
+%\equiv{} &\rewrite{\ApOne{\eta^\chi_\beta}}{\StI{\ApEl{p}{\eta^\chi_\beta}}{\upstairs{M}[\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]/\beta]}} \\
+%\equiv{} &\upstairs{M}[\rewrite{\eta^\chi_\beta}{\into{\Gamma, A}[\upstairs{\proj{\Gamma, A}}/\alpha, \upstairs{\qvar{\Gamma, A}}/x]}/\beta] \\
+%\equiv{} &\upstairs{M}
+%\end{align*} 
 %
-%\item[{$\qpair{A, B}[\Theta \uparrow A \uparrow B] \equiv \qpair{A[\Theta], B[\Theta \uparrow A]}$}:]
-%Let's try it:
-%\begin{align*}
-%&\upstairs{\qpair{A, B}[\Theta \uparrow A \uparrow B]} \\
-%&\equiv \upstairs{\qpair{A, B}}[\upstairs{\Theta \uparrow A \uparrow B}/\delta] \\
-%&\equiv \left(\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibpair{x,y}}{\StI{\ApEl{p}{\pi^{\alpha.x}_y;\pi^\alpha_x}}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}}}\right)[\upstairs{\Theta \uparrow A \uparrow B}/\delta] \\
-%&\equiv \left(\StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibpair{x,y}}{\StI{\ApEl{p}{\pi^{\alpha.x}_y;\pi^\alpha_x}}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}}}\right)[\upstairs{\Theta \uparrow A \uparrow B}/\delta] \\
-%&\equiv \StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{(\rewrite{\fibpair{x,y}}{\StI{\ApEl{p}{\pi^{\alpha.x}_y;\pi^\alpha_x}}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}})[\upstairs{\Theta}/\alpha,x/x,y/y]}} \\
-%&\equiv \StE{\chi}{\delta}{\beta,y}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibpair{x,y}}{\StI{\ApEl{p}{\pi^{\alpha.x}_y;\pi^\alpha_x}}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}}}} \\
-%&\equiv \qpair{A[\Theta], B[\Theta \uparrow A]}
-%\end{align*}
-%by Lemma~\ref{lem:match-uparrow}.
-%\mvrnote{This looks a bit silly because we reuse $\alpha$}
-%
-%\item[{$\qsplit{A,B}(c)[\Theta \uparrow \Sigma_A B] \equiv \qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])$}:]
-%
-%Using Lemma~\ref{lem:match-uparrow} and Lemma~\ref{lem:into-identities}:
-%\begin{align*}
-%&\upstairs{\qsplit{A,B}(c)[\Theta \uparrow \Sigma_A B]} \\
-%\equiv{} &\upstairs{\qsplit{A,B}(c)}[\upstairs{\Theta \uparrow \Sigma_A B}/\beta] \\
-%\equiv{} &\StE{\chi}{\beta}{\alpha, s}{\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\\&\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta]}}}}[\upstairs{\Theta \uparrow \Sigma_A B}/\beta] \\
-%\equiv{} &\StE{\chi}{\beta}{\alpha, s}{(\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\\&\upstairs{c}[\into{\Gamma, A, B}[\into{\Gamma, A}/\beta, y/y] /\delta][\upstairs{\Theta}/\alpha]}}})} \\
-%\equiv{} &\StE{\chi}{\beta}{\alpha, s}{(\FEs{w. \Sigma_1(\alpha,\fst w, \snd w)}{s}{x, y}{\rewrite{\ApOne{\tsplit{\alpha,x,y}}}{\StI{\ApEl{p}{\tsplit{\alpha,x,y}}}{\\&\upstairs{c}[\upstairs{\Theta \uparrow A \uparrow B}/\alpha][\into{\Delta, A[\Theta], B[\Theta \uparrow A]}[\into{\Delta, A[\Theta]}/\beta, y/y] /\delta]}}})} \\
-%\equiv{} &\upstairs{\qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])}
+%\item[{$\qlam(\qapp{A,B}[\id_{\Gamma, A}, f[\proj{\Gamma, A}]]) \equiv f$}:] \begin{align*}
+%&\upstairs{\qlam(\qapp{A,B}[\id_{\Gamma, A}, f[\proj{\Gamma, A}]])} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\upstairs{\qapp{A,B}[\id_{\Gamma, A}, f[\proj{\Gamma, A}]]}[\into{\Gamma, A}/\beta]}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\upstairs{\qapp{A,B}}[\upstairs{(\id_{\Gamma, A}, f[\proj{\Gamma, A}])}/\delta][\into{\Gamma, A}/\beta]}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_\delta}{\upstairs{\qvar{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}(\upstairs{\qvar{\Gamma, A}[\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}]})}[\upstairs{(\id_{\Gamma, A}, f[\proj{\Gamma, A}])}/\delta][\into{\Gamma, A}/\beta]}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_\beta}{\upstairs{\qvar{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}}[\upstairs{(\id_{\Gamma, A}, f[\proj{\Gamma, A}])}/\delta](\upstairs{\qvar{\Gamma, A}[\proj{\Gamma, A, \Pi_A B[\proj{\Gamma, A}]}]}[\upstairs{(\id_{\Gamma, A}, f[\proj{\Gamma, A}])}/\delta])}[\into{\Gamma, A}/\beta]}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_\beta}{\upstairs{f[\proj{\Gamma, A}]}(\upstairs{\qvar{\Gamma, A}})}[\into{\Gamma, A}/\beta]} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_{\alpha.x}}{\upstairs{f[\proj{\Gamma, A}]}[\into{\Gamma, A}/\beta](\upstairs{\qvar{\Gamma, A}}[\into{\Gamma, A}/\beta]}}}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_{\alpha.x}}{\upstairs{f}[\rewrite{\pi^\alpha_x}{\alpha}/\alpha](\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}})}}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_{\alpha.x}}{\upstairs{f}(x)[\rewrite{\pi^\alpha_x}{\alpha}/\alpha,\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\alpha}_x}}{x}}/x]}}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\StI{\eta^\chi_{\alpha.x}}{\rewrite{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}}{\StI{\ApEl{p}{\pi^\alpha_x \bdot \var{x}}}{\upstairs{f}(x)}}}}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x}}{\rewrite{\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}}}{\StI{\eta^\chi_{\alpha.x}}{\StI{\ApEl{p}{\pi^\alpha_x \bdot \var{x}}}{\upstairs{f}(x)}}}}} \\
+%\equiv{} &\UI{x}{\rewrite{\pinv{\alpha,x};\ApPlus{\eta^\chi_{\alpha.x}}{\ap{\TrPlus{\pi^u_v}{\One_u}}{(\pi^\alpha_x,\var{x})/(u,v)}}}{\StI{\eta^\chi_{\alpha.x}}{\StI{\ApEl{p}{\pi^\alpha_x \bdot \var{x}}}{\upstairs{f}(x)}}}} \\
+%\equiv{} &\UI{x}{\StI{\eta^\chi_{\alpha.x}}{\StI{\ApEl{p}{\pi^\alpha_x \bdot \var{x}}}{\upstairs{f}(x)}}} \\
+%\equiv{} &\UI{x}{\upstairs{f}(x)} \\
+%\equiv{} &\upstairs{f}
 %\end{align*}
 \end{enumerate}
 
