@@ -213,7 +213,7 @@
 \DeclareSymbolFontAlphabet{\mathbbb}{bbold}
 \newcommand\one{\mathbbb{1}}
 
-\title{A Fibrational Framework for Modal Dependent Type Theories}
+\title{A Fibrational Framework for \\ Substructural and Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
 \date{}
 
@@ -2356,6 +2356,360 @@ And the equations:
 \end{align*}
 \end{enumerate}
 
+\subsection{Adjoint Type Theory}
+
+Dependent right adjoint types have previously been studied in \mvrnote{cite}. An operation $\lock$ on contexts and a type former $\Rtype{}$ are added, with $\lock$ adjoint to $\Rtype{}$ in the sense that terms of $\Gamma, \lock \qyields A \TYPE$ correspond bijectively with terms of $\Gamma \qyields \Rtype{A} \TYPE$.
+
+We give the rules of dependent right adjoint types in Figure~\ref{fig:qit-adjoint-rules}. These are presented in an algebraic style with explicit weakenings and substitutions; rules written in this form are more convenient to translate into the framework. The turnstile is written as $\qyields$ to distinguish judgements in the object language from judgements in the framework.
+
+The rules of right adjoint types are mildly generalised to allow an adjoint between two different comprehension objects. Each judgement is marked with the comprehension object to which it belongs. Note that judgements with subscript $p$ necessarily have no $\lock$s in the context, and those with subscript $q$ have exactly one. To recover the type theory of \mvrnote{ref}, erase the subscripts. The framework also suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. 
+
+Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from stability of $\RI{}$ using eta expansion:
+\begin{align*}
+\RE{b}[\Theta, \lock] 
+&\equiv \RE{\RI{\RE{b}[\Theta, \lock]}} \\
+&\equiv \RE{\RI{\RE{b}}[\Theta]} \\
+&\equiv \RE{b[\Theta]}
+\end{align*}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=ctx-$\lock$]{\qyields_p \Gamma \CTX}{\qyields_q \Gamma, \lock \CTX} \and
+\inferrule*[left=sub-$\lock$]{\Gamma \qyields_p \Theta : \Delta}{\Gamma, \lock \qyields_q \Theta, \lock : \Delta, \lock} \\
+\inferrule*[left=R-form]{\Gamma, \lock \qyields_q A \TYPE}{\Gamma \qyields_p \Rtype{A} \TYPE} \\
+\inferrule*[left=R-intro]{\Gamma, \lock \qyields_q a : A}{\Gamma \qyields_p \RI{a} : \Rtype{A}} \and
+\inferrule*[left=R-elim]{\Gamma \qyields_p b : \Rtype{B}}{\Gamma, \lock \qyields_q \RE{b} : B} \\
+\inferrule*[left=L-form]{\Gamma \qyields_p A \TYPE}{\Gamma, \lock \qyields_q \Ltype{A} \TYPE} \\
+\inferrule*[left=L-intro]{~}{\Gamma, A, \lock \qyields_q \LI{A} : \Ltype{A}[\proj{\Gamma, A}, \lock]} \and
+\inferrule*[left=L-elim]{\Gamma, A, \lock \qyields_q c : C[\proj{\Gamma, A}, \lock, \LI{A}]}{\Gamma, \lock, \Ltype{A} \qyields_q \LE{c} : C} \\
+\end{mathpar}
+\begin{align}
+\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
+(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
+\nonumber \\
+\Rtype{A}[\Theta] &\equiv \Rtype{(A[\Theta, \lock])} \\
+\RI{a}[\Theta] &\equiv \RI{a[\Theta, \lock]} \\
+\RE{\RI{a}} &\equiv a \\
+\RI{\RE{b}} &\equiv b \\
+\nonumber \\
+\Ltype{A}[\Theta, \lock] &\equiv \Ltype{(A[\Theta])} \\
+\LI{A}[\Theta \uparrow A, \lock] &\equiv \LI{A[\Theta]} \\
+\LE{c}[\Theta, \lock \uparrow \Ltype{A}] &\equiv \LE{c[\Theta \uparrow A, \lock]} \\
+\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] &\equiv c
+\end{align}
+\caption{Rules for Dependent Adjoints}\label{fig:qit-adjoint-rules}
+\end{figure}
+
+Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}). 
+
+First the structural rules.
+\begin{enumerate}
+\item[\textsc{ctx-$\lock$}] Given $\yields \upstairs{\Gamma} \CTX$, we define $\upstairs{\Gamma, \lock} :\equiv \upstairs{\Gamma}$, but with
+\begin{align*}
+\tshape{\Gamma, \lock} :\equiv f ; \tshape{\Gamma}
+\end{align*}
+%
+\item[\textsc{sub-$\lock$}] We are given
+\begin{align*}
+\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}
+\end{align*}
+and need to produce:
+\begin{align*}
+\upstairs{\Gamma, \lock} \yields_{\modeof{(\Gamma, \lock)}} \upstairs{\Theta, \lock} : \St{\tshape{\Delta, \lock}}{\ctxtuple{\upstairs{\Delta, \lock}}}
+\end{align*}
+But because $\lock$ does not change the translation of the context and
+\begin{align*}
+\modeof{(\Gamma, \lock)} \equiv \TrPlus{\tshape{\Gamma, \lock}}{\pack{\downstairs{\Gamma, \lock}}} \equiv \TrPlus{(f;\tshape{\Gamma})}{\pack{\downstairs{\Gamma}}} \equiv \TrPlus{f}{\modeof{\Gamma}}
+\end{align*}
+we can define:
+\begin{align*}
+\upstairs{\Theta, \lock} :\equiv \StI{f}{\upstairs{\Theta}}
+\end{align*}
+\end{enumerate}
+
+The equations are then straightforward:
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$\id_\Gamma , \lock \equiv \id_{\Gamma, \lock}$}:]
+\begin{align*}
+\upstairs{\id_\Gamma , \lock}
+&\equiv \StI{f}{\upstairs{\id_\Gamma}} \\
+&\equiv \StI{f}{\StI{\tshape{\Gamma}}{\pack{\Gamma}}} \\
+&\equiv \StI{f;\tshape{\Gamma}}{\pack{\Gamma}} \\
+&\equiv \StI{\tshape{\Gamma, \lock}}{\pack{\Gamma, \lock}} \\
+&\equiv \upstairs{\id_{\Gamma, \lock}}
+\end{align*}
+
+\item[{$(\Theta, \lock) ; (\kappa, \lock) \equiv (\Theta ; \kappa), \lock$}:] 
+\begin{align*}
+&\upstairs{(\Theta, \lock) ; (\kappa, \lock)} \\
+&\equiv \StE{\tshape{\Delta, \lock}}{\upstairs{\Theta, \lock}}{\sigma}{\upstairs{\kappa, \lock}[\unpack{\upstairs{\Delta, \lock}}{\sigma}]} \\
+&\equiv \StE{f;\tshape{\Delta}}{\StI{f}{\upstairs{\Theta}}}{\sigma}{\StI{f}{\upstairs{\kappa}}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\StI{f}{\upstairs{\kappa}}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\StI{f}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}]}} \\
+&\equiv \StI{f}{\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}]}} \\
+&\equiv \StI{f}{\upstairs{\Theta ; \kappa}} \\
+&\equiv \upstairs{(\Theta ; \kappa), \lock}
+\end{align*}
+\end{enumerate}
+
+\subsubsection{$\mathsf{R}$-types}
+%\begin{enumerate}
+%\item[\textsc{R-form}] We are given 
+%\begin{align*}
+%\beta : \St{f}{\upstairs{\Gamma}} \yields_{\El{q}{\beta}} \upstairs{A} \TYPE
+%\end{align*}
+%And define $\upstairs{\Rtype{A}}$ to be:
+%\begin{align*}
+%\upstairs{\Rtype{A}} :\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
+%\end{align*}
+%
+%\item[\textsc{R-intro}] We are given 
+%\begin{align*}
+%\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}
+%\end{align*}
+%Define:
+%\begin{mathpar}
+%\inferrule*[Left=U-intro]{
+%\inferrule*[Left=rewrite]{
+%\inferrule*[Left=Cut]
+%{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}}
+%{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \upstairs{a}[\StI{f}{\alpha}/\beta] : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+%{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
+%{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \upstairs{\Rtype{A}}}
+%\end{mathpar}
+%
+%\item[\textsc{R-elim}] Given
+%\begin{align*}
+%\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{1}{\upstairs{B}[\StI{f}{\alpha}/\beta]}
+%\end{align*}
+%we can do:
+%\begin{mathpar}
+%\inferrule*[Left=s-elim] {
+%\inferrule*[Left=rewrite] {
+%\inferrule*[Left=U-elim]
+%{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
+%{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+%{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
+%{\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
+%\end{mathpar}
+%\end{enumerate}
+%
+%We have an analogue of Lemma~\ref{lem:match-uparrow} for the $\lock$ operation on substitutions:
+%\begin{lemma}
+%If $f$ is a morphism of comprehension objects, then
+%\begin{align}
+%\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] &\equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta] \\
+%(\StE{f}{\beta}{\alpha}{M})[\upstairs{\Theta, \lock}/\beta] &\equiv \StE{f}{\beta}{\alpha}{M[\upstairs{\Theta}/\alpha]}
+%\end{align}
+%\end{lemma}
+%\begin{proof}
+%\begin{align*}
+%&\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] \\
+%&\equiv \StI{f}{\upstairs{\Theta}} \\
+%&\equiv \StE{f}{\StI{f}{\alpha}}{\alpha}{\StI{f}{\upstairs{\Theta}}}\\
+%&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}}[\StI{f}{\alpha}/\beta] \\
+%&\equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta]
+%\intertext{and}
+%&(\StE{f}{\beta}{\alpha}{M})[\upstairs{\Theta, \lock}/\beta] \\
+%&\equiv \StE{f}{\upstairs{\Theta, \lock}}{\alpha}{M} \\
+%&\equiv \StE{f}{(\StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}})}{\alpha}{M} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\StE{f}{\StI{f}{\upstairs{\Theta}}}{\alpha'}{M[\alpha'/\alpha]}}\\
+%&\equiv \StE{f}{\beta}{\alpha}{M[\upstairs{\Theta}/\alpha]}
+%\end{align*}
+%by Lemma~\ref{lem:s-elim-s-elim}.
+%\end{proof}
+%
+
+%
+%\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
+%\begin{align*}
+%\upstairs{\Rtype{A}[\Theta]}
+%&\equiv \upstairs{\Rtype{A}}[\upstairs{\Theta}/\alpha] \\
+%&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}[\upstairs{\Theta}/\alpha] \\
+%&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta][\upstairs{\Theta}/\alpha]} \\
+%&\equiv \U{f_1}{1}{\upstairs{A}[\upstairs{\Theta, \lock}/\beta][\StI{f}{\alpha}/\beta]} \\
+%&\equiv \U{f_1}{1}{\upstairs{A[\Theta, \lock]}[\StI{f}{\alpha}/\beta]} \\
+%&\equiv \upstairs{\Rtype{(A[\Theta, \lock])}} 
+%\end{align*}
+%
+%\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
+%\begin{align*}
+%\upstairs{\RI{a}[\Theta]}
+%&\equiv \upstairs{\RI{a}}[\upstairs{\Theta}/\alpha] \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}[\upstairs{\Theta}/\alpha] \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a[\Theta, \lock]}[\StI{f}{\alpha}/\beta]}} \\
+%&\equiv \upstairs{\RI{a[\Theta, \lock]}}
+%\end{align*}
+%
+%\item[{$\RE{\RI{a}} \equiv a$}:] 
+%\begin{align*}
+%&\upstairs{\RE{\RI{a}}} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{\RI{a}}}{}}} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}}{}}} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\upstairs{a}[\StI{f}{\alpha}/\beta]} \\
+%&\equiv \upstairs{a}[\beta/\beta] \\
+%&\equiv \upstairs{a}
+%\end{align*}
+%
+%\item[{$\RI{\RE{b}} \equiv b$}:] 
+%\begin{align*}
+%&\upstairs{\RI{\RE{b}}} \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{\RE{b}}[\StI{f}{\alpha}/\beta]}} \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}[\StI{f}{\alpha}/\beta]}} \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\StE{f}{\StI{f}{\alpha}}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}}} \\
+%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}}} \\
+%&\equiv \UI{()}{\UE{\upstairs{b}}{}} \\
+%&\equiv \upstairs{b}
+%\end{align*}
+%\end{enumerate}
+
+\subsubsection{$\mathsf{L}$-types}
+
+%And now the left adjoint:
+%
+%\begin{lemma}
+%The substitution $\proj{\Gamma, A}, \lock$ is translated to the term
+%\begin{align*}
+%\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}}} : \upstairs{\Gamma, \lock}
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%\mvrnote{same as always}
+%\end{proof}
+%
+%\begin{enumerate}
+%\item[\textsc{L-form}] We are given
+%\begin{align*}
+%\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE
+%\end{align*}
+%So we can form 
+%\begin{mathpar}
+%\inferrule*[Left=s-Elim]{
+%\inferrule*[Left=F-form]
+%{\alpha : \upstairs{\Gamma} \yields_{\El{p}{\alpha}} \upstairs{A} \TYPE}
+%{\alpha : \upstairs{\Gamma} \yields_{\El{q}{\TrPlus{f}{\alpha}}} \F{f_1}{\upstairs{A}} \TYPE}}
+%{\beta : \upstairs{\Gamma, \lock} \yields_{\El{q}{\beta}} \upstairs{\Ltype{A}} :\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}} \TYPE}
+%\end{mathpar}
+%
+%\item[\textsc{L-intro}] Our goal is a term in context $\delta : \upstairs{\Gamma, A, \lock}$ of type:
+%\begin{align*}
+%&\equiv \upstairs{\Ltype{A}}[\upstairs{\proj{\Gamma, A}, \lock}/\beta] \\
+%&\equiv \upstairs{\Ltype{A}}[\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}}}/\beta] \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{(\StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}})[\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}/\beta]}} \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{(\StE{f}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}}{\alpha}{\F{f_1}{\upstairs{A}}})}} \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\F{f_1}{\upstairs{A}}[\rewrite{\pi^\alpha_x}{\alpha}/\alpha]}} \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\St{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\F{f_1}{\upstairs{A}}}}}
+%\end{align*}
+%
+%We can produce this by:
+%\begin{mathpar}
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=rewrite]{
+%\inferrule*[Left=s-intro]{
+%\inferrule*[Left=F-intro]{
+%\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{f_1(x)} \FIs{f_1}{x} : \F{f_1}{\upstairs{A}}}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\TrPlus{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{f_1(x)}} \StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}} : \St{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\F{f_1}{\upstairs{A}}}}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\TrPlus{f}{\alpha.x}}} \rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}} : \St{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\F{f_1}{\upstairs{A}}}}}
+%{\beta : \upstairs{\Gamma, A} \yields_{\One_{\TrPlus{f}{\beta}}} \StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}} : \dots}}
+%{\delta : \upstairs{\Gamma, A, \lock} \yields_{\One_\delta} \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}} : \upstairs{\Ltype{A}[\proj{\Gamma, A}, \lock]}}
+%\end{mathpar}
+%
+%\item[\textsc{L-elim}] We are given a term $\upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$. 
+%
+%The substitution $\proj{\Gamma, A}, \lock, \LI{A}$ is translated to 
+%\begin{align*}
+%&\upstairs{\proj{\Gamma, A}, \lock, \LI{A}} \\
+%\equiv{} &\rewrite{\eta^\chi_\delta}{\StI{\chi}{\upstairs{\proj{\Gamma, A}, \lock}, \upstairs{\LI{A}}}} \\
+%\equiv{} &\rewrite{\eta^\chi_\delta}{\StI{\chi}{\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}}}, \\& \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\StI{f}{\rewrite{\pi^\alpha_x}{\alpha}}, \rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}}}{\StI{\chi}{\rewrite{\ApPlus{f}{\pi^\alpha_x}}{\StI{f}{\alpha}}, \rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\eta^\chi_{\TrPlus{f}{\alpha.x}};(\ApPlus{f}{\pi^\alpha_x} \bdot \fibf{x})}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}}}}
+%\end{align*}
+%So $\upstairs{c}$ has type 
+%\begin{align*}
+%&\upstairs{C}[\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}}}}/\delta] \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\upstairs{C}[\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}}/\delta]}} \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\St{\ApEl{q}{\fdist{\alpha,x}}}{\upstairs{C}[\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}/\delta]}}}
+%\end{align*}
+%So we define the translation of $\LE{c}$ to be:
+%\begin{mathpar}
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=F-elim]{
+%\inferrule*[Left=s-intro+rewrite]{
+%\inferrule*[Left=cut]{
+%\delta : \upstairs{\Gamma, A, \lock} \yields_{1_\delta} \upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\TrPlus{f}{\alpha.x}}}\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta] : \St{\ApEl{q}{\fdist{\alpha,x}}}{\upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]}}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A} \yields_{1_{\TrPlus{f}{\alpha}.f_1(x)}} \rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}} : \upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, \FIs{f_1}{x}}/\delta]}}
+%{\alpha : \upstairs{\Gamma}, x' : \F{f_1}{\upstairs{A}} \yields_{1_{\TrPlus{f}{\alpha}.x'}} \FE{x'}{x}{(\dots)} : \upstairs{C}[\StI{\chi}{\StI{f}{\alpha}, x'}/\delta]}}
+%{\beta : \upstairs{\Gamma, \lock}, x' : \upstairs{\Ltype{A}} \yields_{1_{\beta.x'}} \StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\dots)}} : \upstairs{C}[\StI{\chi}{\beta, x'}/\delta]}}
+%{\delta : \upstairs{\Gamma, \lock, \Ltype{A}} \yields_{1_\delta} \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\dots)}}} : \upstairs{C}}
+%\end{mathpar}
+%Or all together:
+%\begin{align*}
+%&\StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{ \\&\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}
+%\end{align*}
+%\end{enumerate}
+%
+%And the equations:
+%
+%\begin{enumerate}[style = multiline, labelwidth = 80pt]
+%\item[{$\Ltype{A}[\Theta, \lock] \equiv \Ltype{(A[\Theta])}$}:]
+%\begin{align*}
+%&\upstairs{\Ltype{A}[\Theta, \lock]} \\
+%&\equiv \upstairs{\Ltype{A}}[\upstairs{\Theta, \lock]}/\beta] \\
+%&\equiv (\StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}})[\StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}}/\beta] \\
+%&\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}}[\upstairs{\Theta}/\alpha]} \\
+%&\equiv \StE{f}{\beta}{\alpha}{\F{f_1}{\upstairs{A}[\upstairs{\Theta}/\alpha]}} \\
+%&\equiv \upstairs{\Ltype{(A[\Theta])}}
+%\end{align*}
+%
+%\item[{$\LI{A}[\Theta \uparrow A, \lock] \equiv \LI{A[\Theta]}$}:]
+%
+%\begin{align*}
+%&\upstairs{\LI{A}[\Theta \uparrow A, \lock]} \\
+%&\equiv \upstairs{\LI{A}}[\upstairs{\Theta \uparrow A, \lock}/\delta] \\
+%&\equiv (\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}})[\upstairs{\Theta \uparrow A, \lock}/\delta] \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}[\upstairs{\Theta}/\alpha, x / x]}} \\
+%&\equiv \StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fibf{x}}{\StI{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{\FIs{f_1}{x}}}}} \\
+%&\equiv \upstairs{\LI{A[\Theta]}}
+%\end{align*}
+%
+%\item[{$\LE{c}[\Theta, \lock \uparrow \Ltype{A}] \equiv \LE{c[\Theta \uparrow A, \lock]}$}:]
+%\begin{align*}
+%&\upstairs{\LE{c}[\Theta, \lock \uparrow \Ltype{A}]} \\
+%&\equiv \upstairs{\LE{c}}[\upstairs{\Theta, \lock \uparrow \Ltype{A}}/\delta] \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}[\upstairs{\Theta, \lock \uparrow \Ltype{A}}/\delta] \\
+%&\equiv \StE{\chi}{\upstairs{\Theta, \lock \uparrow \Ltype{A}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}})[\upstairs{\Theta}/\alpha]}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}[\upstairs{\Theta}/\alpha]}/\delta]}})}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\upstairs{\Theta \uparrow A}[\into{\Gamma, A}/\beta]}/\delta]}})}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\upstairs{\Theta \uparrow A, \lock}[\StI{f}{\into{\Gamma, A}}/\delta]/\delta]}})}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\upstairs{\Theta \uparrow A, \lock}/\delta][\StI{f}{\into{\Gamma, A}}/\delta]}})}}} \\
+%&\equiv \StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{(\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c[\Theta \uparrow A, \lock]}[\StI{f}{\into{\Gamma, A}}/\delta]}})}}} \\
+%&\equiv \upstairs{\LE{c[\Theta \uparrow A, \lock]}}
+%\end{align*}
+%
+%\item[{$\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}] \equiv c$}:]
+%\begin{align*}
+%&\upstairs{\LE{c}[\proj{\Gamma, A}, \lock, \LI{A}]} \\
+%\equiv{} &\upstairs{\LE{c}}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}/\delta] \\
+%\equiv{} &\StE{\chi}{\delta}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}[\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}/\delta] \\
+%\equiv{} &\StE{\chi}{\upstairs{\proj{\Gamma, A}, \lock, \LI{A}}}{\beta, x'}{\StE{f}{\beta}{\alpha}{\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+%\equiv{} &\StE{\chi}{(\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}}}})}{\beta, x'}{\StE{f}{\beta}{\alpha}{\\&\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\StE{\chi}{\rewrite{\fdist{\alpha,x}}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}}})}{\beta, x'}{\StE{f}{\beta}{\alpha}{\\&\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\ApOne{\fdist{\alpha,x}}}{\StI{\ApEl{q}{\fdist{\alpha,x}}}{\StE{\chi}{\StI{\chi}{\StI{f}{\alpha},\FIs{f_1}{x}})}{\beta, x'}{\StE{f}{\beta}{\alpha}{\\&\FE{x'}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\ApOne{\fdist{\alpha,x}}}{\StI{\ApEl{q}{\fdist{\alpha,x}}}{\StE{f}{\StI{f}{\alpha}}{\alpha}{\\&\FE{\FIs{f_1}{x}}{x}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\rewrite{\ApOne{\fdist{\alpha,x}}}{\StI{\ApEl{q}{\fdist{\alpha,x}}}{\rewrite{\ApOne{\fdistinv{\alpha,x}}}{\StI{\fdistinv{\alpha,x}}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}}}}}} \\
+%\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}} \\
+%\equiv{} &\upstairs{c}
+%\end{align*}
+%\end{enumerate}
+%
 \section{Semantics}
 \label{sec:semantics}
 
