@@ -104,6 +104,7 @@
 
 % MLTT
 \newcommand{\modeof}[1]{{#1}_p}
+\newcommand{\modeofq}[1]{{#1}_q}
 \newcommand{\tdot}{\ensuremath{\mathtt{dot}}}
 \newcommand{\tempty}{\ensuremath{\mathtt{empty}}}
 \newcommand{\tshape}[1]{\ensuremath{\mathtt{shape}_{#1}}}
@@ -1671,7 +1672,7 @@ Note that $\pack{\downstairs{\Gamma}}$ is simply an iterated tuple of the variab
 \item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$
 \end{itemize}
 
-\subsection{Martin L\"of Type Theory}
+\subsection{Martin-L\"of Type Theory}
 
 To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
 \begin{mathpar}
@@ -2243,7 +2244,13 @@ We have already calculated the translation of the substitution, when translating
 
 \subsubsection{$\Pi$-types}
 
-The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability of $\mathsf{app}$ under substitution is derivable from stability of $\qlam{}$ using beta and eta: \mvrnote{This is much, much more confusing because of the axiomatic $\mathsf{app}$. We need to use an exchange substitution to even get this to work, TODO}
+The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability of $\qapp{}$ under substitution is derivable from stability of $\qlam{}$ using the beta and eta rules:
+\begin{align*}
+\qapp{f}[\Theta \uparrow A]
+&\equiv \qapp{\qlam{\qapp{f}[\Theta \uparrow A]}} \\
+&\equiv \qapp{\qlam{\qapp{f}}[\Theta]} \\
+&\equiv \qapp{f[\Theta]}
+\end{align*}
 
 \begin{figure}
 \begin{mathpar}
@@ -2362,7 +2369,11 @@ Dependent right adjoint types have previously been studied in \mvrnote{cite}. An
 
 We give the rules of dependent right adjoint types in Figure~\ref{fig:qit-adjoint-rules}. These are presented in an algebraic style with explicit weakenings and substitutions; rules written in this form are more convenient to translate into the framework. The turnstile is written as $\qyields$ to distinguish judgements in the object language from judgements in the framework.
 
-The rules of right adjoint types are mildly generalised to allow an adjoint between two different comprehension objects. Each judgement is marked with the comprehension object to which it belongs. Note that judgements with subscript $p$ necessarily have no $\lock$s in the context, and those with subscript $q$ have exactly one. To recover the type theory of \mvrnote{ref}, erase the subscripts. The framework also suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. 
+The rules of right adjoint types are mildly generalised to allow an adjoint between two different comprehension objects $p$ and $q$. Each judgement is marked with the comprehension object to which it belongs. Object-level contexts are translated to framework contexts as before, with $\qyields_p \Gamma \CTX$ given an associated mode type morphism $\tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ and $\qyields_q \Delta \CTX$ given a mode type morphism $\tshape{\Delta} : q \tcell \ctxtuple{\downstairs{\Delta}}$.
+
+Note that as our adjoint is no longer an endofunctor, judgements with subscript $p$ necessarily have no locks in the context and those with subscript $q$ have exactly one. To recover the type theory of \mvrnote{ref}, erase the subscripts; this also allows a context to contain multiple locks. 
+
+The framework suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. 
 
 Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from stability of $\RI{}$ using eta expansion:
 \begin{align*}
@@ -2453,95 +2464,67 @@ The equations are then straightforward:
 \end{enumerate}
 
 \subsubsection{$\mathsf{R}$-types}
-%\begin{enumerate}
-%\item[\textsc{R-form}] We are given 
-%\begin{align*}
-%\beta : \St{f}{\upstairs{\Gamma}} \yields_{\El{q}{\beta}} \upstairs{A} \TYPE
-%\end{align*}
-%And define $\upstairs{\Rtype{A}}$ to be:
-%\begin{align*}
-%\upstairs{\Rtype{A}} :\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}
-%\end{align*}
-%
-%\item[\textsc{R-intro}] We are given 
-%\begin{align*}
-%\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}
-%\end{align*}
-%Define:
-%\begin{mathpar}
-%\inferrule*[Left=U-intro]{
-%\inferrule*[Left=rewrite]{
-%\inferrule*[Left=Cut]
-%{\beta : \St{f}{\upstairs{\Gamma}} \yields_{\One_\beta} \upstairs{a} : \upstairs{A}}
-%{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \upstairs{a}[\StI{f}{\alpha}/\beta] : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
-%{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]} : \upstairs{A}[\StI{f}{\alpha}/\beta]}}
-%{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}} : \upstairs{\Rtype{A}}}
-%\end{mathpar}
-%
-%\item[\textsc{R-elim}] Given
-%\begin{align*}
-%\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{1}{\upstairs{B}[\StI{f}{\alpha}/\beta]}
-%\end{align*}
-%we can do:
-%\begin{mathpar}
-%\inferrule*[Left=s-elim] {
-%\inferrule*[Left=rewrite] {
-%\inferrule*[Left=U-elim]
-%{\alpha : \upstairs{\Gamma} \yields_{\One_\alpha} \upstairs{b} : \U{f_1}{()}{\upstairs{B}[\StI{f}{\alpha}/\beta]}}
-%{\alpha : \upstairs{\Gamma} \yields_{f_1(\One_\alpha)} \UE{\upstairs{b}}{} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
-%{\alpha : \upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\alpha}}} \rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}} : \upstairs{B}[\StI{f}{\alpha}/\beta]}}
-%{\beta : \upstairs{\Gamma, \lock} \yields_{\One_\beta} \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{b}}{}}} : \upstairs{B}}
-%\end{mathpar}
-%\end{enumerate}
-%
-%We have an analogue of Lemma~\ref{lem:match-uparrow} for the $\lock$ operation on substitutions:
-%\begin{lemma}
-%If $f$ is a morphism of comprehension objects, then
-%\begin{align}
-%\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] &\equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta] \\
-%(\StE{f}{\beta}{\alpha}{M})[\upstairs{\Theta, \lock}/\beta] &\equiv \StE{f}{\beta}{\alpha}{M[\upstairs{\Theta}/\alpha]}
-%\end{align}
-%\end{lemma}
-%\begin{proof}
-%\begin{align*}
-%&\StI{f}{\alpha}[\upstairs{\Theta}/\alpha] \\
-%&\equiv \StI{f}{\upstairs{\Theta}} \\
-%&\equiv \StE{f}{\StI{f}{\alpha}}{\alpha}{\StI{f}{\upstairs{\Theta}}}\\
-%&\equiv \StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}}[\StI{f}{\alpha}/\beta] \\
-%&\equiv \upstairs{\Theta, \lock}[\StI{f}{\alpha}/\beta]
-%\intertext{and}
-%&(\StE{f}{\beta}{\alpha}{M})[\upstairs{\Theta, \lock}/\beta] \\
-%&\equiv \StE{f}{\upstairs{\Theta, \lock}}{\alpha}{M} \\
-%&\equiv \StE{f}{(\StE{f}{\beta}{\alpha}{\StI{f}{\upstairs{\Theta}}})}{\alpha}{M} \\
-%&\equiv \StE{f}{\beta}{\alpha}{\StE{f}{\StI{f}{\upstairs{\Theta}}}{\alpha'}{M[\alpha'/\alpha]}}\\
-%&\equiv \StE{f}{\beta}{\alpha}{M[\upstairs{\Theta}/\alpha]}
-%\end{align*}
-%by Lemma~\ref{lem:s-elim-s-elim}.
-%\end{proof}
-%
 
-%
-%\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
-%\begin{align*}
-%\upstairs{\Rtype{A}[\Theta]}
-%&\equiv \upstairs{\Rtype{A}}[\upstairs{\Theta}/\alpha] \\
-%&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta]}[\upstairs{\Theta}/\alpha] \\
-%&\equiv \U{f_1}{1}{\upstairs{A}[\StI{f}{\alpha}/\beta][\upstairs{\Theta}/\alpha]} \\
-%&\equiv \U{f_1}{1}{\upstairs{A}[\upstairs{\Theta, \lock}/\beta][\StI{f}{\alpha}/\beta]} \\
-%&\equiv \U{f_1}{1}{\upstairs{A[\Theta, \lock]}[\StI{f}{\alpha}/\beta]} \\
-%&\equiv \upstairs{\Rtype{(A[\Theta, \lock])}} 
-%\end{align*}
-%
-%\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
-%\begin{align*}
-%\upstairs{\RI{a}[\Theta]}
-%&\equiv \upstairs{\RI{a}}[\upstairs{\Theta}/\alpha] \\
-%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a}[\StI{f}{\alpha}/\beta]}}[\upstairs{\Theta}/\alpha] \\
-%&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{a[\Theta, \lock]}[\StI{f}{\alpha}/\beta]}} \\
-%&\equiv \upstairs{\RI{a[\Theta, \lock]}}
-%\end{align*}
-%
-%\item[{$\RE{\RI{a}} \equiv a$}:] 
+\begin{enumerate}
+\item[\textsc{R-form}] We are given 
+\begin{align*}
+\upstairs{\Gamma, \lock} \yields_{\El{q}{\TrPlus{f}{\modeof{\Gamma}}}} \upstairs{A} \TYPE
+\end{align*}
+and can form
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \U{f_1}{1}{\upstairs{A}} \TYPE
+\end{align*}
+
+\item[\textsc{R-intro}] We are given 
+\begin{align*}
+\upstairs{\Gamma,\lock} \yields_{\One_{\TrPlus{f}{\modeof{\Gamma}}}} \upstairs{a} : \upstairs{A}
+\end{align*}
+and can do:
+\begin{mathpar}
+\inferrule*[Left=U-intro]{
+\inferrule*[Left=rewrite]{
+\upstairs{\Gamma,\lock} \yields_{\One_{\TrPlus{f}{\modeof{\Gamma}}}} \upstairs{a} : \upstairs{A}}
+{\upstairs{\Gamma,\lock} \yields_{f_1(\One_{\modeof{\Gamma}})} \rewrite{\foneinv{\modeof{\Gamma}}}{\upstairs{a}} : \upstairs{A}}}
+{\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \UI{()}{\rewrite{\foneinv{\modeof{\Gamma}}}{\upstairs{a}}} : \upstairs{\Rtype{A}}}
+\end{mathpar}
+
+\item[\textsc{R-elim}] Given
+\begin{align*}
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{b} : \U{f_1}{1}{\upstairs{B}}
+\end{align*}
+we can do:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=U-elim]{
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{b} : \U{f_1}{1}{\upstairs{B}}}
+{\upstairs{\Gamma} \yields_{f_1(\One_{\modeof{\Gamma}})} \UE{\upstairs{b}}{} : \upstairs{B}}}
+{\upstairs{\Gamma} \yields_{\One_{\TrPlus{f}{\modeof{\Gamma}}}} \rewrite{\fone{\modeof{\Gamma}}}{\UE{\upstairs{b}}{}} : \upstairs{B}}
+\end{mathpar}
+\end{enumerate}
+And the equations:
+\begin{enumerate}
+\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
+\begin{align*}
+&\upstairs{\Rtype{A}[\Theta]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\U{f_1}{1}{\upstairs{A}}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\U{f_1}{1}{\upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \U{f_1}{1}{\StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \U{f_1}{1}{\StE{\tshape{\Delta, \lock}}{\StI{f}{\upstairs{\Theta}}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \U{f_1}{1}{\StE{\tshape{\Delta, \lock}}{\upstairs{\Theta, \lock}}{\sigma}{\upstairs{A}[\unpack{\Delta, \lock}{\sigma}]}} \\
+&\equiv \upstairs{\Rtype{(A[\Theta, \lock])}}
+\end{align*}
+\mvrnote{The subscript $f_1$ is actually $f_1(\modeof{\Delta})$ which becomes $f_1(\TrPlus{\tshape{\Delta}}{\sigma})$ when the substitution is moved in, like $\Pi$-types}
+
+\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
+\begin{align*}
+&\upstairs{\RI{a}[\Theta]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\UI{()}{\rewrite{\foneinv{\modeof{\Delta}}}{\upstairs{a}}}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\UI{()}{\rewrite{\foneinv{\TrPlus{\tshape{\Delta}}{\sigma}}}{\upstairs{a}[\unpack{\Delta}{\sigma}]}}} \\
+&\equiv \rewrite{\foneinv{\modeof{\Gamma}}}{\StE{\tshape{\Delta, \lock}}{\upstairs{\Theta, \lock}}{\sigma}{\UI{()}{\upstairs{a}[\unpack{\Delta, \lock}{\sigma}]}}} \\
+&\equiv \upstairs{\RI{a[\Theta, \lock]}}
+\end{align*}
+
+\item[{$\RE{\RI{a}} \equiv a$}:] As for $\Pi$-types.
 %\begin{align*}
 %&\upstairs{\RE{\RI{a}}} \\
 %&\equiv \StE{f}{\beta}{\alpha}{\rewrite{\fone{\alpha}}{\UE{\upstairs{\RI{a}}}{}}} \\
@@ -2552,7 +2535,7 @@ The equations are then straightforward:
 %&\equiv \upstairs{a}
 %\end{align*}
 %
-%\item[{$\RI{\RE{b}} \equiv b$}:] 
+\item[{$\RI{\RE{b}} \equiv b$}:] As for $\Pi$-types.
 %\begin{align*}
 %&\upstairs{\RI{\RE{b}}} \\
 %&\equiv \UI{()}{\rewrite{\foneinv{\alpha}}{\upstairs{\RE{b}}[\StI{f}{\alpha}/\beta]}} \\
@@ -2562,7 +2545,7 @@ The equations are then straightforward:
 %&\equiv \UI{()}{\UE{\upstairs{b}}{}} \\
 %&\equiv \upstairs{b}
 %\end{align*}
-%\end{enumerate}
+\end{enumerate}
 
 \subsubsection{$\mathsf{L}$-types}
 
