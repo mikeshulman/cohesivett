@@ -126,14 +126,11 @@
 \newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
 \newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
 
-\newcommand\qunitmatch[1]{\ensuremath{\mathsf{match}(#1)}}
+\newcommand\qunitmatch[1]{\ensuremath{\mathsf{letunit}(#1)}}
 \newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
 \newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
 \newcommand\qapp[1]{\ensuremath{\mathsf{app}({#1})}}
 \newcommand\qlam[1]{\ensuremath{\mathsf{lam}({#1})}}
-
-% Unpacked translation
-
 
 % Adjoint type theory
 \newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
@@ -169,6 +166,7 @@
 \newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
 
 % Linear zone
+\newcommand{\tfibshape}[1]{\ensuremath{\mathtt{fibshape}_{#1}}}
 \newcommand{\linsnd}[1]{\mathtt{linsnd}_{#1}}
 \newcommand{\linwk}[1]{\mathtt{linwk}_{#1}}
 \newcommand{\frob}[1]{\mathtt{frob}_{#1}}
@@ -179,6 +177,8 @@
 \newcommand\linsplit[1]{\ensuremath{\mathsf{linsplit}({#1})}}
 \newcommand\linapp[1]{\ensuremath{\mathsf{linapp}_{#1}}}
 \newcommand\linlam{\ensuremath{\mathsf{linlam}}}
+\newcommand{\qbang}[1]{\ensuremath{\mathsf{bang}_{#1}}}
+\newcommand{\letbang}[1]{\mathsf{letbang}({#1})}
 
 % Macros for semantics notation
 \newcommand\mm[1]{\llbracket #1 \rrbracket}
@@ -1446,7 +1446,7 @@ And:
 
 \subsubsection{Comprehension Object with Unit}
 
-\begin{definition}
+\begin{definition}\label{def:supports-unit}
 A comprehension object \emph{supports the unit type} if $\eta^\tdot_\alpha : \alpha \tcell_p \alpha.\One$ is an isomorphism, i.e.:
 \begin{align}
 \pi^\alpha_{\One_\alpha} ; \eta^\tdot_\alpha \equiv \id_{\alpha.\One_\alpha}
@@ -1618,7 +1618,7 @@ $\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
 which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
 \end{proof}
 
-\subsection{First Order Logic}
+% \subsection{First Order Logic}
 
 \subsection{Dependently Indexed Linear Types}
 
@@ -1629,15 +1629,16 @@ A comprehension object $p$ \emph{supports a dependently indexed linear context} 
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
 \end{align*}
-such that $\otimes_\alpha$ is symmetric and $1_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}, \mvrnote{Pending: What exactly do we need?} and there are morphisms 
-\begin{align*}
-\mathtt{lax}_{v,w} : \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes v}
-\end{align*}
+such that $\otimes_\alpha$ is symmetric and $1_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}. \mvrnote{Pending: What exactly do we need?}
 \end{definition}
 
 \begin{definition}
 A comprehension object $p$ that supports a linear zone also \emph{supports $\otimes$-types} if:
 \mvrnote{TODO}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ \emph{supports $!$-types} if it supports a linear context and there is
 \end{definition}
 
 \begin{definition}
@@ -1650,8 +1651,10 @@ and mode term morphisms
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} &\yields \linsnd{x,y} : y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)} \\
 \alpha : p, x : \El{p}{\alpha}, z : \El{p}{\alpha} &\yields \linwk{x,z} : \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z}) \tcell_{\El{p}{\alpha}} z
 \end{align*}
-that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism
+that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism $\frob{\xi, x, y}$ defined by:
 \begin{align*}
+\mathtt{lax}_{v,w} &: \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes_{\alpha.x} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes_\alpha v} \\
+\mathtt{lax}_{v,w} &:\equiv \ap{(w \otimes_\alpha v)}{\pi^\alpha_x / \alpha, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{w}}/w, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{v}}/v} \\
 \frob{\xi, x, y} &: \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} y) \tcell_{\El{p}{\alpha}} \xi \otimes_\alpha \Sigma!(x, y) \\
 \frob{\xi, x, y} &:\equiv \ap{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} -)}{\linsnd{x,y}} ; \ap{\Sigma!(x, -)}{\mathtt{lax}_{\xi, \Sigma!(x,y)}} ; \linwk{x, \xi \otimes \Sigma!(x,y)}
 \end{align*}
@@ -1660,6 +1663,14 @@ is an isomorphism.
 \mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
 
 \section{Object Languages}
+
+\subsection{Martin-L\"of Type Theory}
+
+To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
+\begin{mathpar}
+\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
+\end{mathpar}
+with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equations require earlier equations to hold in order to typecheck.
 
 \begin{itemize}
 \item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$, together with a mode type morphism $\cdot \yields \tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ where $\ctxtuple{\downstairs{\Gamma}}$ is the iterated telescope type of Lemma~\ref{lem:ctxtuple}. This mode type morphism describes the dependency structure of the context.
@@ -1671,14 +1682,6 @@ Note that $\pack{\downstairs{\Gamma}}$ is simply an iterated tuple of the variab
 \item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
 \item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$
 \end{itemize}
-
-\subsection{Martin-L\"of Type Theory}
-
-To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
-\begin{mathpar}
-\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
-\end{mathpar}
-with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equations require earlier equations to hold in order to typecheck.
 
 \begin{figure}
 \begin{mathpar}
@@ -2014,14 +2017,14 @@ The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
 
 \begin{figure}
 \begin{mathpar}
-\inferrule*[left=1-form]{~}{\Gamma \qyields \One_\Gamma \TYPE} \and
-\inferrule*[left=1-intro]{~}{\Gamma \qyields \star_\Gamma : \One_\Gamma} \and
-\inferrule*[left=1-elim]{\Gamma \qyields c : C[\id_\Gamma, \star_\Gamma]}{\Gamma, \One_\Gamma \qyields \qunitmatch{c} : C}
+\inferrule*[left=1-form]{~}{\Gamma \qyields `_\Gamma \TYPE} \and
+\inferrule*[left=1-intro]{~}{\Gamma \qyields \star_\Gamma : 1_\Gamma} \and
+\inferrule*[left=1-elim]{\Gamma \qyields c : C[\id_\Gamma, \star_\Gamma]}{\Gamma, 1_\Gamma \qyields \qunitmatch{c} : C}
 \end{mathpar}
 \begin{align}
-\One_\Delta[\Theta] &\equiv \One_\Gamma \\
+1_\Delta[\Theta] &\equiv 1_\Gamma \\
 \star_\Delta[\Theta] &\equiv \star_\Gamma \\ 
-\qunitmatch{c}[\Theta \uparrow \One_\Gamma] &\equiv \qunitmatch{c[\Theta]} \\
+\qunitmatch{c}[\Theta \uparrow 1_\Gamma] &\equiv \qunitmatch{c[\Theta]} \\
 \nonumber \\
 \qunitmatch{c}[\id_\Gamma, \star_\Gamma] &\equiv c
 \end{align}
@@ -2607,7 +2610,7 @@ So $\upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$ becomes:
 &\equiv \St{\ApEl{q}{\fdist{x}}}{\StE{\tshape{\Gamma, \lock, \Ltype{A}}}{\StI{\chi}{\StI{f}{\upstairs{\id_\Gamma}}, \FI{x}}}{\sigma}{\upstairs{C}[\unpack{\Gamma, \lock, \Ltype{A}}{\sigma}]}} \\
 &\equiv \St{\ApEl{q}{\fdist{x}}}{\StE{\tshape{\Gamma, \lock, \Ltype{A}}}{\StI{\chi}{\StI{f}{\StI{\tshape{\Gamma}}{\pack{\Gamma}}, \FI{x}}}}{\sigma}{\upstairs{C}[\unpack{\Gamma, \lock, \Ltype{A}}{\sigma}]}} \\
 &\equiv \St{\ApEl{q}{\fdist{x}}}{\upstairs{C}[\unpack{\Gamma, \lock, \Ltype{A}}{\sigma}][\pack{\Gamma}/\sigma, \FI{x}/z]} \\
-&\equiv \St{\ApEl{q}{\fdist{x}}}{\upstairs{C}[\FI{x}/z]} \\
+&\equiv \St{\ApEl{q}{\fdist{x}}}{\upstairs{C}[\FI{x}/z]}
 \end{align*}
 Define the translation of $\LE{c}$ to be:
 \begin{mathpar}
@@ -2622,7 +2625,7 @@ Define the translation of $\LE{c}$ to be:
 And this is of the right mode, as $\TrPlus{f}{\modeof{\Gamma}}.z \equiv \modeofq{(\Gamma, \lock, \Ltype{A})}$.
 \end{enumerate}
 
-%And the equations:
+And the equations: \mvrnote{TODO}
 %
 %\begin{enumerate}[style = multiline, labelwidth = 80pt]
 %\item[{$\Ltype{A}[\Theta, \lock] \equiv \Ltype{(A[\Theta])}$}:]
@@ -2675,6 +2678,186 @@ And this is of the right mode, as $\TrPlus{f}{\modeof{\Gamma}}.z \equiv \modeofq
 %\equiv{} &\StE{f}{\delta}{\beta}{\StE{\chi}{\beta}{\alpha,x}{\upstairs{c}[\StI{f}{\into{\Gamma, A}}/\delta]}} \\
 %\equiv{} &\upstairs{c}
 %\end{align*}
+%\end{enumerate}
+
+\subsection{Spatial Type Theory}
+
+\mvrnote{TODO}
+
+\subsection{Dependently Indexed Linear Types}
+
+\mvrnote{DILTT} maintains the invariant that all types in the linear zone are well-formed in the intuitionistic context. A DILTT context $\Gamma \mid A, B, \dots$ is translated to a framework context $\upstairs{\Gamma}, a : \upstairs{A}, b : \upstairs{B}$ with $\Gamma$ translated as for MLTT, and with each of $\upstairs{A}$, $\upstairs{B}$ translated to types over $\El{p}{\modeof{\Gamma}}$.
+
+As in ordinary MLTT, the translation of an object-level context $\Gamma \mid \Xi$ is equipped with a mode term morphism $\tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$. We also require a term $\tfibshape{\Xi} : \El{p}{\modeof{\Gamma}}$ that describes the shape of the linear zone.
+
+\begin{enumerate}
+\item[\textsc{ctx-lin-ext}] 
+\item[\textsc{term-lin-sub}] 
+\item[\textsc{lin-var}] 
+\end{enumerate}
+
+\begin{figure}
+\mvrnote{TODO: need a different symbol for $\CTX$ when referring to the dual one?}
+\mvrnote{TODO: what is the proper way of defining term-lin-sub? this single variable version? or a second substitution judgement with a linear context?}
+\begin{mathpar}
+\inferrule*[left=ctx-lin-empty]{\qyields \Gamma \CTX}{\qyields \Gamma \mid \cdot \CTX} \and
+\inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
+\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=term-sub]{\Delta \mid \Xi \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \mid \Xi[\Theta] \qyields a[\Theta] : A[\Theta]} \and
+\inferrule*[left=term-lin-sub]{\Gamma \mid \Xi, B, \Xi'' \qyields a : A  \and \Gamma \mid \Xi' \qyields b : B}{\Gamma \mid \Xi, \Xi', \Xi'' \qyields a[b/B] : A} \\
+\inferrule*[left=var]{~}{\Gamma, A \mid \cdot \qyields \qvar{A} : A[\proj{\Gamma, A}]} \and
+\inferrule*[left=lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} 
+%%%
+%\inferrule*[left=sub-lin-empty]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
+%\inferrule*[left=sub-lin-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
+%\inferrule*[left=sub-lin-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
+\end{mathpar}
+\begin{align}
+a[\qlinvar{A}/A] &\equiv a
+\end{align}
+\mvrnote{associativity, etc}
+\caption{Structural Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-structural-rules}
+\end{figure}
+
+\subsubsection{Types in the Fiber}
+
+The linear zone of DILTT can be made to support the ordinary type formers of linear logic. In Figure~\ref{fig:qit-linear-fiber-rules}, the rules for $I$- and $\otimes$-types are given in algebraic style.
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[Left=$I$-form]{~}{\Gamma \qyields I_\Gamma \TYPE} \\
+\inferrule*[Left=$I$-intro]{~}{\Gamma \mid \cdot \qyields \star_\Gamma : I_\Gamma } \and
+\inferrule*[Left=$I$-elim]{\Gamma \mid \Xi \qyields c : C}{\Gamma \mid \Xi, I \qyields \qunitmatch{c} : C} \\
+%%%
+\inferrule*[Left=$\otimes$-form]{\Gamma \qyields A \TYPE \and \Gamma \qyields B \TYPE}{\Gamma \qyields A \otimes B \TYPE} \\
+\inferrule*[Left=$\otimes$-intro]{~}{\Gamma \mid A, B \qyields \otimespair{A,B} : A \otimes B} \and
+\inferrule*[Left=$\otimes$-elim]{\Gamma \mid \Xi, A, B \qyields c : C}{\Gamma \mid \Xi, A \otimes B \qyields \otimessplit{c} : C} \\
+%%%
+\end{mathpar}
+\mvrnote{TODO: the other linear type formers? $\multimap, \top, \&, \oplus, 0$}
+\caption{Rules for \mvrnote{Types in the Fiber}}\label{fig:qit-linear-fiber-rules}
+\end{figure}
+
+For $I$- and $\otimes$-types, the rules are immediate from the framework rules for $\mathsf{F}$-types; no unpacking or rewriting is necessary. \mvrnote{We are using strict associativity/unit here...} Because \textsc{$I$-elim} is non-dependent, it is not necessary for the comprehension object to support the unit type (in the sense of Definition~\ref{def:supports-unit}) in order to interpret the $I$ type.
+\begin{align*}
+\upstairs{I_\Gamma} :&\equiv \F{\One_{\modeof{\Gamma}}}{1} \\
+\upstairs{\star_\Gamma} :&\equiv \FIs{\One_{\modeof{\Gamma}}}{} \\
+\upstairs{\qunitmatch{c}} :&\equiv \FEs{\One_{\modeof{\Gamma}}}{z}{}{\upstairs{c}} \\
+\upstairs{A \otimes B} :&\equiv \F{w. (\fst w) \otimes_{\modeof{\Gamma}} (\snd w)}{\upstairs{A}, \upstairs{B}} \\
+\upstairs{\otimespair{A,B}} :&\equiv \FIs{w. (\fst w) \otimes_{\modeof{\Gamma}} (\snd w)}{\upstairs{a}, \upstairs{b}} \\
+\upstairs{\otimessplit{c}} :&\equiv \FEs{w. (\fst w) \otimes_{\modeof{\Gamma}} (\snd w)}{z}{x, y}{\upstairs{c}}
+\end{align*}
+
+\subsubsection{Dependent Types}
+
+The rules for $\Sigma!$ and $\Pi!$ in algebraic style are given in Figure~\ref{fig:qit-linear-dependent-rules}. Rules such as $\Sigma!$-elim and $\Pi!$-intro are presented with only a single linear type $\Xi$ in the linear context. In the presence of $I$- and $\otimes$-types, we may pack a more general linear context into a single iterated $\otimes$-type, apply the rule, then unpack the $\otimes$-type.
+
+\begin{figure}
+\begin{mathpar}
+%\inferrule*[Left=$!$-form]{\Gamma \qyields A \TYPE}{\Gamma \qyields \bang A \TYPE} \\
+%\inferrule*[Left=$!$-intro]{~}{\Gamma, A \mid \cdot \qyields \qbang{A} : \bang A[\proj{\Gamma, A}]} \and
+%\inferrule*[Left=$!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}] \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \bang A \qyields \letbang{c} : C} \\
+%%%
+\inferrule*[Left=$\Sigma!$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Sigma!_A B \TYPE } \\
+\inferrule*[Left=$\Sigma!$-intro]{~}{\Gamma, A \mid B \qyields \linpair{A,B} : \Sigma!_A B [\proj{\Gamma, A}]} \and
+\inferrule*[Left=$\Sigma!$-elim]{\Gamma, A \mid \Xi[\proj{\Gamma, A}], B \qyields c : C[\proj{\Gamma, A}]}{\Gamma \mid \Xi, \Sigma!_A B \qyields \linsplit{c} : C} \\
+%%%
+\inferrule*[Left=$\Pi!$-form]{\Gamma \qyields A \TYPE \and \Gamma, A \qyields B \TYPE}{\Gamma \qyields \Pi!_A B \TYPE } \\
+\inferrule*[left=$\Pi!$-intro]{\Gamma, A \mid \Xi[\proj{\Gamma, A}]\qyields b : B}{\Gamma \mid \Xi \qyields \linlam(b) : \Pi!_A B} \and
+\inferrule*[left=$\Pi!$-elim]{~}{\Gamma, A \mid (\Pi_A B)[\proj{\Gamma, A}] \qyields \linapp{A, B} : B}
+\end{mathpar}
+\mvrnote{TODO: equations}
+\caption{Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-dependent-rules}
+\end{figure}
+
+%\begin{enumerate}
+%\item[\textsc{$!$-form}]
+%\item[\textsc{$!$-intro}] We want:
+%\begin{align*}
+%\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\modeof{\Gamma}.x}} \upstairs{\qbang{A}} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\bang A}}
+%\end{align*}
+%
+%\item[\textsc{$!$-elim}] The translation of the provided term has type:
+%\begin{align*}
+%\upstairs{\Gamma}, x : \upstairs{A}, \xi : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Xi}} \yields_\xi \upstairs{c} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}
+%\end{align*}
+%\begin{mathpar}
+%\inferrule*[Left=F-elim]{
+%\inferrule*[Left=rewrite]{
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=cut]{
+%\upstairs{\Gamma}, x : \upstairs{A}, \xi : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Xi}} \yields_\xi \upstairs{c} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}}
+%{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}} \upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi] : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}
+%}\and
+%\upstairs{\Gamma}, x : \upstairs{A}, z : \upstairs{C} \yields_{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{z})} \rewrite{\linwk{x,z}}{z} : \upstairs{C}}
+%{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B} \yields_{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi} \otimes y)} \StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}} : \upstairs{C} }}
+%{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B} \yields_{\xi \otimes \Sigma!(x, y)} \rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}} : \upstairs{C}}}
+%{\upstairs{\Gamma}, \xi : \upstairs{\Xi}, z : \upstairs{\Sigma!_A B} \yields_{\xi \otimes z} \FE{z}{x,y}{\rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}}} : \upstairs{C}}
+%\end{mathpar}
+%\end{enumerate}
+
+\begin{enumerate}
+\item[\textsc{$\Sigma!$-form}] The same as for $\Sigma$-types:
+\begin{align*}
+\upstairs{\Sigma!_A B} :\equiv \F{w. \Sigma!(\fst w, \snd w)}{\upstairs{A}, \upstairs{B}}
+\end{align*}
+
+\item[\textsc{$\Sigma!$-intro}] We want a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_y \upstairs{\linpair{A,B}} : \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Sigma!_A B}}
+\end{align*}
+And we can produce such a term by:
+\begin{mathpar}
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-intro]{
+\inferrule*[Left=F-intro]{~}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\Sigma!(x,y)} \FI{x,y} : \upstairs{\Sigma!_A B}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\Sigma!(x,y)}} \StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\FI{x,y}} : \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Sigma!_A B}}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_y \rewrite{\linsnd{x,y}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\FI{x,y}}} : \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Sigma!_A B}}}
+\end{mathpar}
+
+\item[\textsc{$\Sigma!$-elim}]
+The translation of the provided term has type:
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A}, \xi : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Xi}}, y : \upstairs{B} \yields_{\xi \otimes y} \upstairs{c} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}
+\end{align*}
+So use:
+\begin{mathpar}
+\inferrule*[Left=F-elim]{
+\inferrule*[Left=rewrite]{
+\inferrule*[Left=s-elim]{
+\inferrule*[Left=cut]{
+\upstairs{\Gamma}, x : \upstairs{A}, \xi : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{\Xi}}, y : \upstairs{B} \yields_{\xi \otimes y} \upstairs{c} : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}}
+{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B} \yields_{\TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi} \otimes y} \upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi] : \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{C}}
+}\and
+\upstairs{\Gamma}, x : \upstairs{A}, z : \upstairs{C} \yields_{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{z})} \rewrite{\linwk{x,z}}{z} : \upstairs{C}}
+{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B} \yields_{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi} \otimes y)} \StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}} : \upstairs{C} }}
+{\upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi}, y : \upstairs{B} \yields_{\xi \otimes \Sigma!(x, y)} \rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}} : \upstairs{C}}}
+{\upstairs{\Gamma}, \xi : \upstairs{\Xi}, z : \upstairs{\Sigma!_A B} \yields_{\xi \otimes z} \FE{z}{x,y}{\rewrite{\frob{\xi,x,y}}{\StE{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{c}[\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\xi}/\xi]}{z}{\rewrite{\linwk{x,z}}{z}}}} : \upstairs{C}}
+\end{mathpar}
+\mvrnote{This is simpler with a non-frobenius eliminator, worth writing that out too?}
+\end{enumerate}
+%
+%\begin{enumerate}
+%\item[\textsc{$\Pi!$-form}] Identical to $\Pi$-formation.
+%
+%\item[\textsc{$\Pi!$-intro}]
+%\begin{mathpar}
+%\inferrule*[Left=U-intro]{
+%\inferrule*[Left=cut]{\beta : \upstairs{\Gamma, A}, \xi : \upstairs{\Xi[\proj{\Gamma, A}]} \yields_\xi \upstairs{b} : \upstairs{B}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, \xi : \upstairs{\Xi} \yields_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi}} \upstairs{b}[\StI{\chi}{\alpha,x}/\beta, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi] : \upstairs{B}[\StI{\chi}{\alpha,x}/\beta]}}
+%{\alpha : \upstairs{\Gamma}, \xi : \upstairs{\Xi} \yields_\xi \UI{x}{\upstairs{b}[\StI{\chi}{\alpha,x}, \StI{\ApEl{p}{\pi^\alpha_x}}{\xi}/\xi]} : \upstairs{\Pi!_A B}}
+%\end{mathpar}
+%
+%\item[\textsc{$\Pi!$-elim}]
+%\begin{mathpar}
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=s-elim]{
+%\inferrule*[Left=U-elim]{~}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, f : \upstairs{\Pi!_A B} \yields_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{f}} \UE{f}{x} : \upstairs{B}[\StI{\chi}{\alpha, x} / \beta]}}
+%{\alpha : \upstairs{\Gamma}, x : \upstairs{A}, g : \St{\ApEl{p}{\pi^\alpha_x}}{\upstairs{\Pi!_A B}} \yields_g \StE{\ApEl{p}{\pi^\alpha_x}}{g}{f}{\UE{f}{x}} : \upstairs{B}[\StI{\chi}{\alpha, x} / \beta]}}
+%{\beta : \upstairs{\Gamma, A}, g : \upstairs{\Pi!_A B[\proj{\Gamma, A}]} \yields_g \StE{\chi}{\beta}{\alpha,x}{\StE{\ApEl{p}{\pi^\alpha_x}}{g}{f}{\UE{f}{x}}} : \upstairs{B}}
+%\end{mathpar}
 %\end{enumerate}
 
 \section{Semantics}
@@ -2853,6 +3036,8 @@ On the other hand, we should also have the syntactic model:
 
 \subsection{$\Sigma$-modes}
 \label{sec:2-sigmas}
+
+\mvrnote{For consistency these should probably be called telescope modes in this section...}
 
 Emboldened by this success, let's just try to write down a notion of $\Sigma$-types for 2-categories with families by categorifying the usual one for 1-categories.
 As formulated by Awodey, $\Sigma$-types for a 1-category with families involve the dependent product of the presheaf $\mathrm{Ty}$ along the projection $\mathrm{Tm}\to \mathrm{Ty}$, to encode the notion of one type dependent on another one.
