@@ -2695,15 +2695,15 @@ As in ordinary MLTT, the translation of an object-level context $\Gamma \mid \Xi
 \end{enumerate}
 
 \begin{figure}
-\mvrnote{TODO: need a different symbol for $\CTX$ when referring to the dual one?}
-\mvrnote{TODO: what is the proper way of defining term-lin-sub? this single variable version? or a second substitution judgement with a linear context?}
 \begin{mathpar}
 \inferrule*[left=ctx-lin-empty]{\qyields \Gamma \CTX}{\qyields \Gamma \mid \cdot \CTX} \and
 \inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
-\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=sub-lin-empty]{\qyields \Gamma \CTX}{\Gamma \mid \cdot \qyields \varepsilon_{\Gamma} : \cdot} \and
+\inferrule*[left=sub-lin-ext]{\Gamma \mid \Xi \yields \Theta : \Xi' \and \Gamma \mid \Xi'' \qyields a : A}{\Gamma \mid \Xi, \Xi'' \qyields (\Theta, a) : \Xi', A} \\
+\inferrule*[left=sub-lin-id]{~}{\Gamma \mid \Xi \qyields \id_{\Xi} : \Xi} \and
+\inferrule*[left=sub-lin-comp]{\Gamma \mid \Xi \yields \Theta : \Xi' \and \Gamma \mid \Xi' \qyields \kappa : \Xi''}{\Gamma \mid \Xi \qyields (\Theta ; \kappa) : \Xi''} \\
 \inferrule*[left=term-sub]{\Delta \mid \Xi \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \mid \Xi[\Theta] \qyields a[\Theta] : A[\Theta]} \and
-\inferrule*[left=term-lin-sub]{\Gamma \mid \Xi, B, \Xi'' \qyields a : A  \and \Gamma \mid \Xi' \qyields b : B}{\Gamma \mid \Xi, \Xi', \Xi'' \qyields a[b/B] : A} \\
-\inferrule*[left=var]{~}{\Gamma, A \mid \cdot \qyields \qvar{A} : A[\proj{\Gamma, A}]} \and
+\inferrule*[left=term-lin-sub]{\Gamma \mid \Xi \qyields \Theta :  \Xi' \and \Gamma \mid \Xi' \qyields b : B}{\Gamma \mid \Xi \qyields b\{\Theta\} : B} \\
 \inferrule*[left=lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} 
 %%%
 %\inferrule*[left=sub-lin-empty]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
@@ -2711,9 +2711,14 @@ As in ordinary MLTT, the translation of an object-level context $\Gamma \mid \Xi
 %\inferrule*[left=sub-lin-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
 \end{mathpar}
 \begin{align}
-a[\qlinvar{A}/A] &\equiv a
+b\{\id_\Xi\} &\equiv b \\
+\id_\Xi;\Theta &\equiv \Theta \\
+\Theta;\id_{\Xi'} &\equiv \Theta \\
+(\Theta;\kappa);\rho &\equiv \Theta ; (\kappa; \rho) \\
+\nonumber \\
+\id_{\Xi, A} &\equiv (\id_\Xi, \qlinvar{A}) \\
+\qlinvar{A}[\Theta] &\equiv \qlinvar{A[\Theta]}
 \end{align}
-\mvrnote{associativity, etc}
 \caption{Structural Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-structural-rules}
 \end{figure}
 
