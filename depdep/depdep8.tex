@@ -1574,49 +1574,49 @@ A comonad is \emph{idempotent} if any of the following equivalent equations hold
 A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{-}$ is an idempotent comonad and $f$ supports left and right types.
 \end{definition}
 
-We would also like to talk about $\flat$-types for a non-idempotent comonad. 
-\begin{definition}
-A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
-\begin{align*}
-\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
-\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
-\end{align*}
-such that
-\begin{align*}
-\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
-\flatdist{\alpha, x} &:\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
-\end{align*}
-is an isomorphism.
-\end{definition}
-
-\begin{lemma}
-If $f$ supports spatial type theory then it supports $\flat$-types.
-\end{lemma}
-\begin{proof}
-Define
-\begin{align*}
-\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
-\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
-\end{align*}
-
-$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
-\begin{align*}
-&\flatdist{\alpha, x} \\
-&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
-\end{align*}
+%We would also like to talk about $\flat$-types for a non-idempotent comonad. 
+%\begin{definition}
+%A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
 %\begin{align*}
-%\flatdist{\alpha, x} &\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
+%\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
+%\end{align*}
+%such that
+%\begin{align*}
+%\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
+%\flatdist{\alpha, x} &:\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
+%\end{align*}
+%is an isomorphism.
+%\end{definition}
+%
+%\begin{lemma}
+%If $f$ supports spatial type theory then it supports $\flat$-types.
+%\end{lemma}
+%\begin{proof}
+%Define
+%\begin{align*}
+%\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
+%\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
+%\end{align*}
+%
+%$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
+%\begin{align*}
+%&\flatdist{\alpha, x} \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
 %&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
 %\end{align*}
-which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
-\end{proof}
+%%\begin{align*}
+%%\flatdist{\alpha, x} &\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%%&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+%%\end{align*}
+%which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
+%\end{proof}
 
 % \subsection{First Order Logic}
 
@@ -1981,11 +1981,19 @@ such that
 \begin{align*}
 (\Theta \uparrow A) ; \proj{\Delta, A} &\equiv \proj{\Gamma, A[\Theta]} ; \Theta \\
 \qvar{\Delta, A}[\Theta \uparrow A] &\equiv \qvar{\Gamma, A[\Theta]} \\
+(\Theta, a);(\kappa \uparrow A) &\equiv (\Theta;\kappa), a \\
 \upstairs{\Theta \uparrow A} &\equiv \StI{\tdot}{\upstairs{\Theta}, x} \\
 \StE{\tshape{\Delta, A}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} &\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma}{M[\unpack{\Delta}{\sigma}, x/x]}
 \end{align*}
 \end{lemma}
 \begin{proof}
+\mvrnote{first two}
+\begin{align*}
+&(\Theta, a);(\kappa \uparrow A) \\
+&\equiv (\Theta,a);((\proj{\Delta, A[\kappa]}; \kappa) , \qvar{\Delta, A[\kappa]}) \\
+&\equiv ((\Theta, a);\proj{\Delta, A[\kappa]}; \kappa) , \qvar{\Delta, A[\kappa]}[\Theta,a] \\
+&\equiv (\Theta;\kappa) , a
+\end{align*}
 \begin{align*}
 \upstairs{\Theta \uparrow A} 
 &\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}} \\
@@ -2678,9 +2686,258 @@ And the equations:
 \end{align*}
 \end{enumerate}
 
-\subsection{Spatial Type Theory}
+\subsubsection{Spatial Type Theory}
 
-\mvrnote{TODO}
+Suppose $f$ supports spatial type theory, so $\TrPlus{f}{-}$ has the structure of an idempotent comonad (Definition~\ref{def:supports-spatial}).
+
+In our algebraic presentation these additions to the mode theory manifest as axiomatic substitutions $\Gamma, \lock \qyields \counit{\Gamma} : \Gamma$ and $\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock$. These satisfy the same equations as the mode theory, for example, $\comult{\Gamma};\counit{\Gamma, \lock} \equiv \id_{\Gamma, \lock}$.
+
+%\begin{figure}
+%\begin{mathpar}
+%\inferrule*[left=counit-$\lock$]{~}{\Gamma, \lock \qyields \counit{\Gamma} : \Gamma} \and
+%\inferrule*[left=comult-$\lock$]{~}{\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock}
+%\end{mathpar}
+%\begin{align}
+%\counit{\Gamma}; \Theta &\equiv (\Theta, \lock) ; \counit{\Delta} \\
+%\comult{\Gamma}; (\Theta, \lock, \lock) &\equiv (\Theta, \lock) ; \comult{\Delta} \\
+%\nonumber \\
+%\comult{\Gamma}; (\comult{\Gamma}, \lock) &\equiv \comult{\Gamma} ; \comult{\Gamma, \lock} \\
+%\comult{\Gamma} ; \counit{\Gamma, \lock} &\equiv \id_{\Gamma, \lock} \\
+%\comult{\Gamma} ; (\counit{\Gamma}, \lock) &\equiv \id_{\Gamma, \lock}
+%\end{align}
+%\caption{\mvrnote{Name?} Minimal Rules for Spatial Type Theory with Explicit Substitutions}\label{fig:qit-minimal-spatial-rules}
+%\end{figure}
+
+The two axiomatic substitutions are defined straightforwardly as
+\begin{align*}
+\upstairs{\Gamma, \lock} &\yields_{\modeof{(\Gamma, \lock)}} \upstairs{\counit{\Gamma}} :\equiv \rewrite{\fcounit{\modeof{\Gamma}}}{\upstairs{\id_{\Gamma}}} : \St{\tshape{\Gamma}}{\ctxtuple{\upstairs{\Gamma}}} \\
+\upstairs{\Gamma, \lock} &\yields_{\modeof{(\Gamma, \lock)}} \upstairs{\comult{\Gamma}} :\equiv \rewrite{\fcomult{\modeof{\Gamma}}}{\upstairs{\id_{\Gamma, \lock, \lock}}} : \St{\tshape{\Gamma, \lock, \lock}}{\ctxtuple{\upstairs{\Gamma, \lock, \lock}}}
+\end{align*}
+
+The equations follow quickly from the analogous equations in the mode theory, for example, 
+\begin{align*}
+&\upstairs{\comult{\Gamma} ; \counit{\Gamma, \lock}} \\
+&\equiv \StE{\tshape{\Gamma, \lock, \lock}}{\upstairs{\comult{\Gamma}}}{\sigma}{\upstairs{\counit{\Gamma, \lock}}[\unpack{\upstairs{\Gamma, \lock, \lock}}{\sigma}]} \\
+&\equiv \StE{\tshape{\Gamma, \lock, \lock}}{\rewrite{\fcomult{\modeof{\Gamma}}}{\upstairs{\id_{\Gamma, \lock, \lock}}}}{\sigma}{\rewrite{\fcounit{\modeof{\Gamma, \lock}}}{\upstairs{\id_{\Gamma, \lock}}}[\unpack{\upstairs{\Gamma, \lock, \lock}}{\sigma}]} \\
+&\equiv \rewrite{\fcomult{\modeof{\Gamma}}}{\StE{\tshape{\Gamma, \lock, \lock}}{\upstairs{\id_{\Gamma, \lock, \lock}}}{\sigma}{\rewrite{\fcounit{\modeof{\Gamma, \lock}}}{\upstairs{\id_{\Gamma, \lock}}}[\unpack{\upstairs{\Gamma, \lock, \lock}}{\sigma}]}} \\
+&\equiv \rewrite{\fcomult{\modeof{\Gamma}}}{\rewrite{\fcounit{\modeof{\Gamma, \lock}}}{\upstairs{\id_{\Gamma, \lock}}}} \\
+&\equiv \rewrite{\fcomult{\modeof{\Gamma}};\fcounit{\TrPlus{f}{\modeof{\Gamma}}}}{\upstairs{\id_{\Gamma, \lock}}} \\
+&\equiv \upstairs{\id_{\Gamma, \lock}}
+\end{align*}
+
+In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and its equivalent in the algebraic style. A number of spatial type theory rules build in cuts or weakenings; as both are explicit in CwF style we leave these out.
+
+\begin{lemma}
+For any substitution $\Gamma \qyields \Theta : \Delta, \lock$, the identity $(\Theta ; \counit{\Delta}), \lock \equiv \counit{\Gamma} ; \Theta$ holds.
+\end{lemma}
+\begin{proof}
+\begin{align*}
+&(\Theta ; \counit{\Delta}), \lock \\
+&\equiv (\Theta, \lock) ; (\counit{\Delta}, \lock) \\
+&\equiv (\Theta, \lock) ; \counit{\Delta, \lock}\\
+&\equiv \counit{\Gamma} ; \Theta
+\end{align*}
+\end{proof}
+
+We now sketch a translation of the rules appearing in Shulman \mvrnote{TODO: ref} into our algebraic presentation. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Delta \mid \cdot$ always ends with a $\lock$. 
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=crisp-var]{~}{\Delta, x :: A \mid \cdot \yields x : A} \and
+\inferrule*{~}{\Gamma, \lock, A, \lock \qyields \qcrispvar{A} : A[\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}] } \\
+\inferrule*[left=crisp-ctx-ext]{\Delta \mid \cdot \yields A \TYPE}{\yields \Delta, A \mid \cdot \CTX} \and
+\inferrule*{\Gamma, \lock \qyields A \TYPE}{\qyields \Gamma, \lock, A, \lock \CTX} \\
+\inferrule*[left=crisp-sub-ext]{(\Delta \mid \cdot) \yields \Theta : (\Delta' \mid \cdot) \and (\Delta \mid \cdot) \yields a : A[\Theta]}{(\Delta \mid \cdot) \yields (\Theta, a) : (\Delta', A \mid \cdot)} \and
+\inferrule*{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A, \lock} \\
+\inferrule*[left=$\flat$-form]{\Delta \mid \cdot \yields A \TYPE}{\Delta \mid \cdot \yields \Flattype{A} \TYPE} \and
+\inferrule*{\Gamma, \lock \qyields A \TYPE}{\Gamma, \lock \qyields \Flattype{A} \TYPE} \\
+\inferrule*[left=$\flat$-intro]{\Delta \mid \cdot \yields a : A}{\Delta \mid \cdot \yields \FlatI{a} : \Flattype{A}} \and
+\inferrule*{\Gamma, \lock \qyields a : A}{\Gamma, \lock \qyields \FlatI{a} : \Flattype{A}} \\
+\inferrule*[left=$\flat$-elim]{\Delta, u :: A \mid \cdot \yields c : C[\FlatI{u}/x]}{\Delta \mid x : \Flattype{A} \yields \FlatE{c} : C} \and
+\inferrule*{\Gamma, \lock, A, \lock \qyields c : C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \FlatI{\qcrispvar{A}}]}{\Gamma, \lock, \Flattype{A} \qyields \FlatE{c} : C} \\
+\inferrule*[left=$\sharp$-form]{\Delta, \Gamma \mid \cdot \yields A \TYPE}{\Delta \mid \Gamma \yields \Sharptype{A} \TYPE} \and
+\inferrule*{\Gamma, \lock, B, \lock \qyields A \TYPE}{\Gamma, \lock, B \qyields \Sharptype{A} \TYPE} \\
+\inferrule*[left=$\sharp$-intro]{\Delta, \Gamma \mid \cdot \yields a : A}{\Delta \mid \Gamma \yields \SharpI{a} : \Sharptype{A}} \and
+\inferrule*{\Gamma, \lock, B, \lock \qyields a : A}{\Gamma, \lock, B \qyields \SharpI{a} : \Sharptype{A}} \\
+\inferrule*[left=$\sharp$-elim]{\Delta \mid \cdot \yields a : \Sharptype{A}}{\Delta \mid \cdot \yields \SharpE{a} : A} \and
+\inferrule*{\Gamma, \lock, B, \lock \qyields a : \Sharptype{A}[\counit{\Gamma, \lock, B}]}{\Gamma, \lock, B, \lock \qyields \SharpE{a} : A}
+\end{mathpar}
+%\begin{align}
+%\id_\Gamma , \lock &\equiv \id_{\Gamma, \lock} \\
+%(\Theta, \lock) ; (\kappa, \lock) &\equiv (\Theta ; \kappa), \lock \\
+%\counit{\Gamma}; \Theta &\equiv (\Theta, \lock) ; \counit{\Delta} \\
+%\nonumber \\
+%(\Flattype{A})[\Theta, \lock] &\equiv \Flattype{(A[\Theta, \lock])} \\
+%\FlatI{A}[\Theta, \lock \uparrow A, \lock] &\equiv \FlatI{A[\Theta, \lock]} \\
+%\FlatE{c}[\Theta, \lock \uparrow \Flattype{A}] &\equiv \FlatE{c[\Theta, \lock \uparrow A, \lock]} \\
+%\FlatE{c}[(\proj{\Gamma, \lock, A};\counit{\Gamma}), \lock, \FlatI{A}] &\equiv c \\
+%\nonumber \\
+%\Sharptype{A}[\Theta] &\equiv \Sharptype{(A[\Theta, \lock])} \\
+%\SharpI{a}[\Theta] &\equiv \SharpI{(a[\Theta, \lock])} \\
+%\SharpE{(\SharpI{a}[\counit{\Gamma}])} &\equiv a \\
+%\SharpI{(\SharpE{b})}[\counit{\Gamma}] &\equiv b \\
+%\intertext{and for idempotent}
+%\counit{\Gamma}, \lock &\equiv \counit{\Gamma, \lock}
+%\end{align}
+\caption{Spatial type theory rules and their algebraic equivalent}\label{fig:qit-spatial-rules}
+\end{figure}
+
+\begin{proposition}
+The rules of spatial type theory are all derivable in the algebraic syntax, with
+\begin{align*}
+\Flattype{A} &:\equiv \Ltype{A}[\comult{\Gamma}] \\
+\Sharptype{A} &:\equiv \Rtype{A}
+\end{align*}
+\end{proposition}
+
+\begin{enumerate}
+\item[\textsc{crisp-var}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=var]{~}
+{\Gamma, \lock, A \qyields \qvar{A} : A[\proj{\Gamma, \lock, A}]}}
+{\Gamma, \lock, A, \lock \qyields \qvar{A}[\counit{\Gamma, \lock, A}] : A[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]}
+\end{mathpar}
+
+\item[\textsc{crisp-sub-ext}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=sub-$\lock$]{
+\inferrule*[Left=sub-ext]{\Gamma, \lock \qyields \Theta : \Gamma', \lock \and \Gamma, \lock \yields a : A[\Theta]}{\Gamma, \lock \qyields (\Theta, a) : \Gamma', \lock, A}}
+{\Gamma, \lock, \lock \qyields (\Theta, a, \lock) : \Gamma', \lock, A, \lock}}
+{\Gamma, \lock \qyields \comult{\Gamma};(\Theta, a, \lock) : \Gamma', \lock, A, \lock}
+\end{mathpar}
+
+\item[\textsc{$\flat$-form}]
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=$\Ltype{}$-form]
+{\Gamma, \lock \qyields A \TYPE}
+{\Gamma, \lock, \lock \qyields \Ltype{A} \TYPE}}
+{\Gamma, \lock \qyields \Ltype{A}[\comult{\Gamma}] \TYPE}
+\end{mathpar}
+
+\item[\textsc{$\flat$-intro}]
+\begin{mathpar}
+\inferrule*[Left=cut]
+{
+\inferrule*[Left=crisp-sub-ext]{\Gamma, \lock \qyields a : A}{\Gamma, \lock \qyields \comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock) : \Gamma, \lock, A, \lock }
+\and \inferrule*[left=L-intro]{~}{\Gamma, \lock, A, \lock \qyields \LI{A} : \Ltype{A}[\proj{\Gamma, \lock, A}, \lock]}}
+{\Gamma, \lock \qyields \LI{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock)] : \Ltype{A}[\proj{\Gamma, \lock, A}, \lock][\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock)]}
+\end{mathpar}
+and we see that this is of the right type:
+\begin{align*}
+&\Ltype{A}[\proj{\Gamma, \lock, A}, \lock][\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock);] \\
+&\equiv \Ltype{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, a, \lock);(\proj{\Gamma, \lock, A}, \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma};((\id_{\Gamma, \lock}, a;\proj{\Gamma, \lock, A}), \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma};(\id_{\Gamma, \lock}, \lock)] \\
+&\equiv \Ltype{A}[\comult{\Gamma}]
+\end{align*}
+
+\item[\textsc{$\flat$-elim}]
+Using the above derivations, $\FlatI{\qcrispvar{A}}$ becomes:
+\begin{align*}
+&\FlatI{\qcrispvar{A}} \\
+&\equiv \LI{A[\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}]}[\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[(\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A, \lock][\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A}, \lock);((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\id_{\Gamma, \lock, A, \lock}, \qcrispvar{A});((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}) \uparrow A), \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \qcrispvar{A}, \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};((\counit{\Gamma, \lock, A};\proj{\Gamma, \lock, A}), \qvar{A}[\counit{\Gamma, \lock, A}], \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\counit{\Gamma, \lock, A};(\proj{\Gamma, \lock, A}, \qvar{A}), \lock)] \\
+&\equiv \LI{A}[\comult{\Gamma, \lock, A};(\counit{\Gamma, \lock, A}, \lock)] \\
+&\equiv \LI{A}
+\end{align*}
+We can use idempotence now to show:
+\begin{align*}
+&C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \FlatI{\qcrispvar{A}}] \\
+&\equiv C[(\counit{\Gamma, \lock, A} ; \proj{\Gamma, \lock, A}), \LI{A}] \\
+&\equiv C[( (\proj{\Gamma, \lock, A}, \lock) ; \counit{\Gamma, \lock}), \LI{A}] \\
+&\equiv C[(\proj{\Gamma, \lock, A}, \lock, \LI{A});((\proj{\Gamma, \lock, \lock, \Ltype{A}}; \counit{\Gamma, \lock}) , \qvar{\Gamma,\lock,\lock, \Ltype{A}})] \\
+&\equiv C[(\proj{\Gamma, \lock, A}, \lock, \LI{A});(\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}])] \\
+&\equiv C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\proj{\Gamma, \lock, A}, \lock, \LI{A}]
+\end{align*}
+where idempotence is used to show that $\Ltype{A}[\comult{\Gamma}][\counit{\Gamma, \lock}] \equiv \Ltype{A}$.
+So we can apply $\mathsf{L}$-elim immediately:
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=L-elim]
+{\Gamma, \lock, A, \lock \qyields c : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\proj{\Gamma, \lock, A}, \lock, \LI{A}]}
+{\Gamma, \lock, \lock, \Ltype{A} \qyields \LE{c} : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]]}}
+{\Gamma, \lock, \Ltype{A}[\comult{\Gamma}] \qyields \LE{c}[\comult{\Gamma} \uparrow \Ltype{A}] : C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}]}
+\end{mathpar}
+and one of the triangle equations gives that
+\begin{align*}
+C[\counit{\Gamma, \lock} \uparrow \Ltype{A}[\comult{\Gamma}]][\comult{\Gamma} \uparrow \Ltype{A}] \equiv C
+\end{align*}
+
+\item[\textsc{$\sharp$-form/$\sharp$-intro}] These are identical to $\Rtype{}$-formation and introduction.
+
+\item[\textsc{$\sharp$-elim}] Note that $\Sharptype{A}[\counit{\Gamma, \lock, B}] \equiv \Sharptype{(A[\counit{\Gamma, \lock, B}, \lock])}$. We can then do:
+\begin{mathpar}
+\inferrule*[Left=cut]{
+\inferrule*[Left=R-elim]
+{\Gamma, \lock, B, \lock \qyields a : \Sharptype{(A[\counit{\Gamma, \lock, B}, \lock])}}
+{\Gamma, \lock, B, \lock, \lock \qyields \SharpE{a} : A[\counit{\Gamma, \lock, B}, \lock]}}
+{\Gamma, \lock, B, \lock \qyields \SharpE{a}[\comult{\Gamma, \lock, B}] : A[\counit{\Gamma, \lock, B}, \lock][\comult{\Gamma, \lock, B}]}
+\end{mathpar}
+and
+\begin{align*}
+&A[\counit{\Gamma, \lock, B}, \lock][\comult{\Gamma, \lock, B}] \\
+&\equiv A[\comult{\Gamma, \lock, B};(\counit{\Gamma, \lock, B}, \lock)] \\
+&\equiv A
+\end{align*}
+\end{enumerate}
+
+In the algebraic versions of $\sharp$-form and $\sharp$-elim we demonstrate how a single-variable cohesive context is promoted to the cohesive zone. This is sufficient for the general case in the presence of unit and $\Sigma$-types, by the following lemma:
+
+\begin{lemma}
+The two substitutions:
+\begin{align*}
+\Gamma, A, B, \lock &\qyields \comult{\Gamma, A, B};(((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A, B}]), \lock) &&: \Gamma, A, \lock, B[\counit{\Gamma, A}], \lock \\
+\Gamma, A, \lock, B[\counit{\Gamma, A}], \lock &\qyields (\counit{\Gamma, A} \uparrow B), \lock &&: \Gamma, A, B, \lock
+\end{align*}
+are inverses.
+\end{lemma}
+
+For a general cohesive context, we can therefore pack the context into an iterated $\Sigma$-type, apply the $\sharp$ rule, then unpack and repeatedly apply the above Lemma in order to return to a context of the correct form.
+
+\begin{proof}
+Checking both directions:
+\begin{align*}
+&\comult{\Gamma, A, B};(((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]), \lock);((\counit{\Gamma, A} \uparrow B), \lock) \\
+&\equiv \comult{\Gamma, A, B};(((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]);(\counit{\Gamma, A} \uparrow B), \lock) \\
+&\equiv \comult{\Gamma, A, B};(((\proj{\Gamma, A, B}, \lock);\counit{\Gamma, A,B}, \qvar{B}[\counit{\Gamma, A}]), \lock) \\
+&\equiv \comult{\Gamma, A, B};((\counit{\Gamma, A, B};\proj{\Gamma, A, B}, \qvar{B}[\counit{\Gamma, A,B}]), \lock) \\
+&\equiv \comult{\Gamma, A, B};(\counit{\Gamma, A, B};(\proj{\Gamma, A, B}, \qvar{B}), \lock) \\
+&\equiv \comult{\Gamma, A, B};(\counit{\Gamma, A, B}, \lock) \\
+&\equiv \id_{\Gamma, A, B, \lock}
+\end{align*}
+and:
+\begin{align*}
+&((\counit{\Gamma, A} \uparrow B), \lock);\comult{\Gamma, A, B};(((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]), \lock) \\
+&\equiv \comult{\Gamma, A, \lock, B[\counit{\Gamma, A}]};((\counit{\Gamma, A} \uparrow B), \lock, \lock);(((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]), \lock) \\
+&\equiv \comult{\Gamma, A, \lock, B[\counit{\Gamma, A}]};((\counit{\Gamma, A} \uparrow B), \lock);((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]), \lock)
+\end{align*}
+On the inside we have
+\begin{align*}
+&((\counit{\Gamma, A} \uparrow B), \lock);((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]) \\
+&\equiv ((\counit{\Gamma, A} \uparrow B), \lock);(\proj{\Gamma, A, B}, \lock)), \qvar{B}[\counit{\Gamma, A,B}][((\counit{\Gamma, A} \uparrow B), \lock)]) \\
+&\equiv ((\counit{\Gamma, A} \uparrow B);\proj{\Gamma, A, B}) , \lock), \qvar{B}[((\counit{\Gamma, A} \uparrow B), \lock);\counit{\Gamma, A,B}]) \\
+&\equiv ((\proj{\Gamma, A, \lock, B[\counit{\Gamma, A}]};\counit{\Gamma, A}), \lock), \qvar{B}[((\counit{\Gamma, A} \uparrow B), \lock);\counit{\Gamma, A,B}]) \\
+&\equiv ((\proj{\Gamma, A, \lock, B[\counit{\Gamma, A}]};\counit{\Gamma, A}), \lock), \qvar{B}[\counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]};(\counit{\Gamma, A} \uparrow B)]) \\
+&\equiv ((\counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]};\proj{\Gamma, A, \lock, B[\counit{\Gamma, A}]}), \qvar{B}[(\counit{\Gamma, A} \uparrow B)][\counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]}]) \\
+&\equiv \counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]}; (\proj{\Gamma, A, \lock, B[\counit{\Gamma, A}]}), \qvar{B}[(\counit{\Gamma, A} \uparrow B)]) \\
+&\equiv \counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]}; (\proj{\Gamma, A, \lock, B[\counit{\Gamma, A}]}), \qvar{B[\counit{\Gamma, A}]}) \\
+&\equiv \counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]}
+\end{align*}
+So finally
+\begin{align*}
+&\comult{\Gamma, A, \lock, B[\counit{\Gamma, A}]};((\counit{\Gamma, A} \uparrow B), \lock);((\proj{\Gamma, A, B}, \lock), \qvar{B}[\counit{\Gamma, A,B}]), \lock) \\
+&\equiv \comult{\Gamma, A, \lock, B[\counit{\Gamma, A}]};(\counit{\Gamma, A, \lock, B[\counit{\Gamma, A}]}, \lock) \\
+&\equiv \id_{\Gamma, A, \lock, B[\counit{\Gamma, A}], \lock}
+\end{align*}
+\end{proof}
 
 \subsection{Dependently Indexed Linear Types}
 
