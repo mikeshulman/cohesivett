@@ -1746,7 +1746,7 @@ The structural rules of MLTT then have the following translations:
 
 \item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$, we can form:
 \begin{align*}
-\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]} : \upstairs{A[\Theta]}
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \StE{\tshape{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]} : \upstairs{A[\Theta]}
 \end{align*}
 
 \item[\textsc{sub-empty}] We are constructing a term
@@ -2684,31 +2684,29 @@ And the equations:
 
 \subsection{Dependently Indexed Linear Types}
 
-\mvrnote{DILTT} maintains the invariant that all types in the linear zone are well-formed in the intuitionistic context. A DILTT context $\Gamma \mid A, B, \dots$ is translated to a framework context $\upstairs{\Gamma}, a : \upstairs{A}, b : \upstairs{B}$ with $\Gamma$ translated as for MLTT, and with each of $\upstairs{A}$, $\upstairs{B}$ translated to types over $\El{p}{\modeof{\Gamma}}$.
+The structural rules of \mvrnote{DILTT} are given by the the rules for ordinary MLTT and the additional ones in Figure~\ref{fig:qit-linear-structural-rules}. Judgements are translated as follows:
 
-As in ordinary MLTT, the translation of an object-level context $\Gamma \mid \Xi$ is equipped with a mode term morphism $\tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$. We also require a term $\tfibshape{\Xi} : \El{p}{\modeof{\Gamma}}$ that describes the shape of the linear zone.
-
-\begin{enumerate}
-\item[\textsc{ctx-lin-ext}] 
-\item[\textsc{term-lin-sub}] 
-\item[\textsc{lin-var}] 
-\end{enumerate}
+\begin{itemize}
+\item A context $\qyields \Gamma \CTX$ is represented as in MLTT, by a framework context $\upstairs{\Gamma}$  together with a mode type morphism $\cdot \yields \tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$.
+\item A context $\qyields \Gamma \mid \Xi \CTX$ is represented as a framework context $\upstairs{\Gamma}, \upstairs{\Xi}$. DILTT maintains the invariant that all types in the linear zone are well-formed in the intuitionistic context, so the types in $\upstairs{\Xi}$ are all in mode $\El{p}{\modeof{\Gamma}}$. We also require an associated term $\tfibshape{\Xi} : \El{p}{\modeof{\Gamma}}$ that describes the shape of the linear zone.
+\item A type $\Gamma \qyields A \TYPE$ is represented as in MLTT, by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$`.
+\item A term $\Gamma \mid \Xi \qyields a : A$ is represented by a framework term $\upstairs{\Gamma}, \upstairs{\Xi} \yields_{\tfibshape{\Xi}} \upstairs{a} : \upstairs{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$.
+\item A linear substitution $\Gamma \mid \Xi \qyields \Theta : \Xi'$ is represented by a framework substitution $\upstairs{\Gamma}, \upstairs{\Xi} \yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Xi'}$. \mvrnote{This is our only option unless we want to require $\otimes$-types. This is also a little different to other cases, we have to externally argue that every variable in $\upstairs{\Xi}$ is used once to make sure term-lin-sub results in a term with the correct mode.}
+\end{itemize}
 
 \begin{figure}
 \begin{mathpar}
 \inferrule*[left=ctx-lin-empty]{\qyields \Gamma \CTX}{\qyields \Gamma \mid \cdot \CTX} \and
 \inferrule*[left=ctx-lin-ext]{\qyields \Gamma \mid \Xi \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma \mid \Xi, A \CTX} \\
-\inferrule*[left=sub-lin-empty]{\qyields \Gamma \CTX}{\Gamma \mid \cdot \qyields \varepsilon_{\Gamma} : \cdot} \and
+\inferrule*[left=sub-lin-empty]{~}{\Gamma \mid \cdot \qyields \varepsilon_{\Gamma} : \cdot} \and
 \inferrule*[left=sub-lin-ext]{\Gamma \mid \Xi \yields \Theta : \Xi' \and \Gamma \mid \Xi'' \qyields a : A}{\Gamma \mid \Xi, \Xi'' \qyields (\Theta, a) : \Xi', A} \\
 \inferrule*[left=sub-lin-id]{~}{\Gamma \mid \Xi \qyields \id_{\Xi} : \Xi} \and
 \inferrule*[left=sub-lin-comp]{\Gamma \mid \Xi \yields \Theta : \Xi' \and \Gamma \mid \Xi' \qyields \kappa : \Xi''}{\Gamma \mid \Xi \qyields (\Theta ; \kappa) : \Xi''} \\
 \inferrule*[left=term-sub]{\Delta \mid \Xi \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \mid \Xi[\Theta] \qyields a[\Theta] : A[\Theta]} \and
 \inferrule*[left=term-lin-sub]{\Gamma \mid \Xi \qyields \Theta :  \Xi' \and \Gamma \mid \Xi' \qyields b : B}{\Gamma \mid \Xi \qyields b\{\Theta\} : B} \\
+\inferrule*[left=var]{~}{\Gamma, A \mid \cdot \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]}  \and
 \inferrule*[left=lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} 
-%%%
-%\inferrule*[left=sub-lin-empty]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
-%\inferrule*[left=sub-lin-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \and
-%\inferrule*[left=sub-lin-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
 \end{mathpar}
 \begin{align}
 b\{\id_\Xi\} &\equiv b \\
@@ -2721,6 +2719,30 @@ b\{\id_\Xi\} &\equiv b \\
 \end{align}
 \caption{Structural Rules for Dependently Indexed Linear Types}\label{fig:qit-linear-structural-rules}
 \end{figure}
+
+\begin{enumerate}
+\item[\textsc{ctx-lin-empty}] $\Gamma \mid \cdot$ is translated to $\upstairs{\Gamma}$, with $\tfibshape{(\cdot)} :\equiv \One_{\modeof{\Gamma}}$.
+\item[\textsc{ctx-lin-ext}] $\Gamma \mid \Xi, A$ is translated to $\upstairs{\Gamma}, \upstairs{\Xi}, x : \upstairs{A}$, with $\tfibshape{\Xi, A} :\equiv \tfibshape{\Xi, A} \otimes x$
+\item[\textsc{sub-lin-empty}]  The linear substitution $\Gamma \mid \cdot \qyields \varepsilon_{\Gamma} : \cdot$ is translated to the empty framework substitution.
+\item[\textsc{sub-lin-ext}] Given translations of $\Gamma \mid \Xi \yields \Theta : \Xi'$ and $\Gamma \mid \Xi'' \qyields a : A$, define $\upstairs{(\Theta, a)}$ to be the extended framework substitution 
+\begin{align*}
+\upstairs{\Gamma}, \upstairs{\Xi}, \upstairs{\Xi''} \yields_{\downstairs{\Theta}, \tfibshape{\Xi''}} (\upstairs{\Theta}, \upstairs{a}) : \upstairs{\Xi'}, \upstairs{A}
+\end{align*}
+\item[\textsc{sub-lin-id}] We use the identity framework substitution $\upstairs{\Gamma}, \upstairs{\Xi} \yields_{\id_{\downstairs{\Xi}}} \upstairs{\id_\Xi} :\equiv \id_{\upstairs{\Xi}} : \upstairs{\Xi}$
+\item[\textsc{sub-lin-comp}] This is composition of framework substitutions. \mvrnote{And contraction on the $\Gamma$ part}
+\item[\textsc{term-sub}] This is translated similarly to substitution in MLTT: \mvrnote{This is a little messy actually... We need to pack the linear variables and include them when we do the let.} In the one variable case, 
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{\Xi[\Theta]} \yields_{\tfibshape{\Xi[\Theta]}} \upstairs{a[\Theta]} :\equiv \StE{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma, x}{\upstairs{a}[\unpack{\Delta}{\sigma}, x/x]} : \upstairs{A[\Theta]}
+\end{align*}
+\item[\textsc{term-lin-sub}] 
+\item[\textsc{var}] This is translated the same as $\qvar{A}$ in MLTT. This is a term in mode $\One_{\modeof{\Gamma, A}}$, i.e., with empty linear context.
+\item[\textsc{lin-var}] This is exactly the framework variable rule: $\upstairs{\Gamma}, x : \upstairs{A} \yields_x x : \upstairs{A}$.
+\end{enumerate}
+
+Note that terms with empty linear zone always have mode $\One_{\modeof{\Gamma}}$. The translations of the rules for ordinary $\Sigma$-, $\Pi$-, etc.\ types therefore remain valid, so long as they only operate on contexts with empty linear zone. For example:
+\begin{mathpar}
+\inferrule*[left=$\Sigma$-split]{\Gamma, A, B \mid \cdot \qyields c : C[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \qpair{A,B}]}{\Gamma, \Sigma_A B \mid \cdot \qyields \qsplit{A, B}(c) : C}
+\end{mathpar}
 
 \subsubsection{Types in the Fiber}
 
