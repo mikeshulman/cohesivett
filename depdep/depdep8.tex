@@ -220,64 +220,93 @@
 
 \begin{document}
 \maketitle
-\tableofcontents
 
 \begin{abstract}
-Recently, several modal extensions of homotopy type theory have been
-investigated, with the goal of extending the synthetic style of
-formalizing mathematics to additional situations.  For example,
-real-cohesive homotopy type theory can describe types with both a
-groupoid structure and a separate topological structure.  These modal
-dependent type theories add new type operators to the syntax, which
+Several recent modal extensions of homotopy type theory extend the
+synthetic style of formalizing mathematics to additional situations.
+For example, real-cohesive homotopy type theory can describe types with
+both a groupoid structure and a separate topological structure.  These
+modal dependent type theories add new types to the syntax, which
 typically are given universal properties relative to new judgement
 forms.  To facilitate the design of such type theories, we introduce a
-general framework for modal dependent type theories, building on our
-previous work for simple type theories.  The framework consists first of
-a base directed dependent type theory, which serves as a language for
-specifying a signature of desired modalities, which we call a mode
-theory.  This mode theory is the parameter to a second type theory,
-which gives general rules for working with the modalities it describes.
-The mode theory language is flexible enough to describe a variety of
-modalities, including adjunctions, monads, comonads, idempotent
-(co)monads, and so on; as examples, we give mode theories for ordinary
-non-modal dependent type theory with $\Pi$ and $\Sigma$ types, for a
-dependent adjoint pair of modalities, and for the spatial type theory
-used in real-cohesion.  One advantage of our framework is that we can
-give it a categorical semantics for all mode theories at once, which
-saves some of the effort involved in translating each type theory
-individually, and we describe a category-with-families-like semantics.
-While the framework does not automatically produce ``optimized''
-inference rules for a particular modal discipline (where structural
-rules are as admissible as possible), it does provide a convenient
-syntactic setting for investigating such issues, including a general
-equational theory governing the placement of structural rules in types
-and in terms.
+general framework for modal dependent type theories.  To describe a
+particular modal type theory, the first step is to specify a signature
+of desired modalities using a \emph{base} directed dependent type
+theory; we call such a signature a \emph{mode theory}.  Then,
+instantiating a \emph{top} type theory with a given a mode theory gives
+rules for working with the modalities it describes.  As examples, we
+give mode theories for adjunctions, monads, comonads, and idempotent
+(co)monads, in the context of a standard structural dependent type
+theory, as well as a linear logic dependent on a structural one.  While
+the framework does not automatically produce ``optimized'' inference
+rules for a particular modal discipline (where structural rules are as
+admissible as possible), it does provide a convenient syntactic setting
+for investigating such issues, including a general equational theory
+governing the placement of structural rules in types and in terms.  We
+show that the top type theory over the above example mode theories
+encode the expected rules.  Finally, we give the framework a categorical
+semantics for all mode theories at once, which saves some of the effort
+involved in translating each type theory individually.
+%% as examples, we give mode theories for ordinary
+%% non-modal dependent type theory with $\Pi$ and $\Sigma$ types, for a
+%% dependent adjoint pair of modalities, and for the spatial type theory
+%% used in real-cohesion.
 \end{abstract}
 
-\section{Syntax}
+\tableofcontents
 
-\subsection{Overview of Judgements}
+\section{Introduction}
 
-Mode theory judgements:
-\begin{enumerate}
-\item $\gamma \ctx$ (empty, extension)
-\item $\gamma \yields p \type$ 
-\item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
-\item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
-\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
-    composition, identities)
-\end{enumerate}
+cites: Awodey and Bauer, Nuyts bridge-path, Vakar and Krishnaswami
 
-Top judgements: 
+fibrational: base type theory for specifying mode theories.  top type
+theory is parametrized by a particular mode theory, gives general rules
+that can be instantiated.  
+
+Framework = both base and top
+
+Mode theory = a particular signature in the base
+
+In previous work~\cite{ls15adjoint,lsr17fibrational}, the mode theory
+was a 2-category, or cartesian 2-multicategory.  Objects/types of the
+mode theory represent ``modes of truth,'' or categories of types.
+Morphisms/terms of the mode theory generate type constructors,
+e.g. modalities.  The further 2-cell data of the mode theory corresponds
+to structural rules, such as weakening, exchange, contraction for a
+product, or a (co)unit or (co)multiplication of a modality.  Just as a
+2-category or 2-multicategory is a directed \emph{simple} type theory,
+here we use a directed \emph{dependent} type theory as the
+mode theory.
+
+\section{Base Type Theory}
+
+A \emph{mode theory} describes the contexts and types of a particular
+modal dependent type theory.  Mode theories are given by a signature of
+constants and equations in a directed dependent type theory, which,
+because of the fibrational perpective, we call the \emph{base} type
+theory.  We write base type theory entities with lowercase Greek
+letters, and refer to the types as \emph{mode types}, and terms as
+\emph{mode terms}, and so on, to differentiate them from the types and
+terms of the top type theory.
+
+The base type theory consists of five judgements:
 \begin{itemize}
-\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
-\item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
-\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
+\item $\gamma \ctx$ are mode contexts
+\item $\gamma \yields p \type$ are mode types
+\item $\gamma \yields \mu : p$ are mode terms
+\item $\TypeTwo{\gamma}{s}{p}{q}$ are \emph{mode type morphisms}
+\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ are \emph{mode 2-cells}
 \end{itemize}
+The first three judgements have the familiar structure of a dependent
+type theory, while the fourth and fifth add an additional notion of
+morphism between types and morphism between terms.  The mode type
+morphisms can be thought of as a special class of terms, as explained
+below.
 
-Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells contravariantly in the mode theory and 
-$\TypeTwo{\gamma}{s}{p}{q}$ and $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$
-act \emph{contravariantly} on the subscripts of upstairs terms.
+Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
+contravariantly in the mode theory and $\TypeTwo{\gamma}{s}{p}{q}$ and
+$\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ act \emph{contravariantly} on the
+subscripts of upstairs terms.
 
 We expect structurality to be admissible for the base, and structurality
 over that to be admissible for the top, e.g.:
@@ -537,6 +566,506 @@ Follows by
 &\equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
 \end{align*}
 \end{proof}
+
+\section{Example Mode Theories}
+
+\mvrnote{At some point near the start we should say:
+For clarity we will often treat mode terms with a distinguished parameter as though they were functions. So if $\gamma, x : p \yields f : q$ we write $f(m)$ rather than $f[m/x]$.
+}
+
+\subsection{Adjoint Mode Terms}
+\begin{definition}
+A mode term $\gamma, x : p \yields f : q$ is \emph{left adjoint} to $\gamma, y : q \yields u : p$ if there are specified constants:
+\begin{align*}
+\gamma, x : p &\yields f : q \\
+\gamma, x : p &\yields \eta_x : x \tcell_p u(f(x)) \\
+\gamma, y : q &\yields \varepsilon_y : f(u(y)) \tcell_q y
+\end{align*}
+such that $\eta$ and $\varepsilon$ are natural:
+\begin{align}
+\eta_x ; \ap{u}{\ap{f}{s}} &\equiv s ; \eta_{x'} && \text{for } s : x \tcell_p x'  \\
+\ap{f}{\ap{u}{t}} ; \varepsilon_{y'}  &\equiv \varepsilon_y ; t && \text{for } t : y \tcell_q y'
+\end{align}
+and the triangle identities hold:
+\begin{align}
+\eta_{u(\nu)};\ap{u}{\varepsilon_\nu} &\equiv \id_{u(\nu)} \\
+\ap{f}{\eta_\mu};\varepsilon_{f(\mu)} &\equiv \id_{f(\mu)}
+\end{align}
+\end{definition}
+
+\subsection{Terminal Objects}
+
+\begin{definition}
+For $p \type$, the term $\emptyset : p$ is \emph{terminal} if there are specified mode term morphisms
+\begin{mathpar}
+\TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
+\end{mathpar}
+such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
+\end{definition}
+
+%\begin{definition}
+%For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} term is specified by:
+%\begin{mathpar}
+%x : p \vdash \One_x : S(x) \and
+%\TermTwoT{x : p, \mu : S(x)}{!_\mu}{\mu}{\One_x}{S(x)}
+%\end{mathpar}
+%such that
+%\begin{align}
+%\label{bang-unique}
+%t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{\One_\alpha}{S(\alpha)}\\
+%\label{s-plus-one-strict}
+%\TrPlus{\ap{S}{s}}{\One_\alpha} &\equiv \One_\beta && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}
+%\end{align}
+%\end{definition}
+
+\subsection{Comprehension Object}
+
+\begin{definition}[Comprehension Object]\label{def:comprehension-object}
+  A \emph{comprehension object} is specified by the following
+  constants:
+  \begin{mathpar}
+    p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
+    \\ 
+    \TypeTwo{\cdot}{\tdot}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} \and
+    \TypeTwo{\cdot}{\tempty}{p}{1}
+  \end{mathpar}
+  such that
+\begin{align*}
+\alpha : p &\yields (\alpha, \One_\alpha) : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \\
+\alpha : p &\yields () : 1
+\end{align*}
+are left adjoints to $\tdot^+$ and $\tempty^+$ respectively.
+\end{definition}
+
+In particular, a comprehension object comes equipped with natural mode term morphisms
+\begin{align*}
+\eta^\tdot_\alpha {}&: \alpha \tcell_p \TrPlus{\tdot}{(\alpha, \One_\alpha)} \\
+\varepsilon^\tdot_{(\alpha, \mu)} {}&: (\TrPlus{\tdot}{(\alpha, \mu)}, \One_{\TrPlus{\tdot}{(\alpha, \mu)}}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
+\eta^\tempty_\alpha {}&: \alpha \tcell_p \TrPlus{\tempty}{()} \\
+\varepsilon^\tempty_{x} {}&: x \tcell_1 ()
+\end{align*}
+satisfying the triangle identities. (Note that $\varepsilon^\tempty_x$ is necessarily the unique morphism to $()$)
+
+\begin{definition}
+Any comprehension object supports the following derived forms (where $\gamma \yields \alpha : p$
+and $\gamma \yields \beta : p$ and
+$\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
+\alpha$ and $\gamma \yields \nu : \beta$):
+  \begin{itemize}
+  \item A distinguished term $\emptyset : p$ is given by
+  \begin{mathpar}
+  \cdot \yields \emptyset : p \and \emptyset :\equiv \TrPlus{\tempty}{()}
+  \end{mathpar}
+  \item Comprehension is given by $\tdot^+$:
+  \begin{mathpar}
+  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\tdot}{(\alpha, x)}
+  \end{mathpar}
+  \item $\pi^\alpha_\mu$ and $\var{\mu}$ are defined via the counit of the adjunction $\tdot^\circ \dashv \tdot^+$.
+  \begin{mathpar}
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
+  \and
+  \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\tdot_{(\alpha, x)}} \\
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}} 
+    \and
+    \var{x} :\equiv \ap \snd {\varepsilon^\tdot_{(\alpha, x)}}
+  \end{mathpar}
+  \item Pairing for the comprehension object is given by ap of
+  $.$ on the pairing for telescope modes:
+  \begin{mathpar}
+  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
+             \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}}
+            {\TermTwoT{\gamma}{s.m}{\alpha.\mu}{\beta.\nu}{p}} \and
+  s \bdot m :\equiv \ApPlus{\tdot}{(s, m)}
+  \end{mathpar}
+  \item We write $\ApOne{s}$ as a short hand for $\ap{\One_z}{s/z}$
+  \end{itemize}
+\end{definition}
+
+This definition is a type-theoretic analogue of a fibration that \emph{admits comprehension}. This is a fibration $E \to B$ with fibred terminal object $1 : B \to E$ such that the functor $1$ has a right adjoint, see \mvrnote{ref}.
+
+In the type-theoretic definition, $p$ and $\El{p}{\alpha}$ describe a fibration $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. The term $(\alpha, \One_\alpha)$ describes a functor $p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ that sends $\alpha$ to a distinguished object $\One_\alpha$ in the fibre over $\alpha$, and this functor has a right adjoint $\TrPlus{\tdot}{\alpha,x}$.
+
+The primary difference is that we do not need to assume that $\One_\alpha$ is terminal in $\El{p}{\alpha}$, so $(\alpha, \One_\alpha) : p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ is not right adjoint to $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. We also do not assume that $p$ is full, in the sense of there being a bijection between mode term morphisms $x \tcell_{\El{p}{\alpha}} y$ and mode term morphisms $\alpha.x \tcell_p \alpha.y$ that commute with projection.
+
+Using the above derived forms, the units and counits of the adjunctions have type
+\begin{align*}
+\eta^\tdot_\alpha {}&: \alpha \tcell_p \alpha.\One_\alpha \\
+\varepsilon^\tdot_{(\alpha, \mu)} {}&: (\alpha.\mu, \One_{\alpha.\mu}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
+\eta^\tempty_\alpha {}&: \alpha \tcell_p \emptyset \\
+\varepsilon^\tempty_{x} {}&: x \tcell_1 () \\
+\end{align*}
+and the triangle equations may be written:
+\begin{align}
+\label{eq:chi-triangle-1} \eta^\tdot_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
+\label{eq:chi-triangle-2} (\eta^\tdot_\alpha ; \pi^\alpha_{\One_\alpha}, \ApOne{\eta^\tdot_\alpha} ; \ApPlus{\ApEl{p}{\eta^\tdot_\alpha}}{\var{\One_\alpha}}) &\equiv \id_{(\alpha, \One_\alpha)}\\
+\eta^\tempty_\emptyset &\equiv \id_\emptyset \\
+\id_{()}&\equiv \id_{()}
+\end{align}
+
+Requiring a left adjoint for $\tempty^+$ is a cute way of stating the following:
+\begin{lemma}
+For $p$ a comprehension object, $\emptyset : p$ is terminal.
+\end{lemma}
+\begin{proof}
+We always have a map $\eta^\tempty_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that for any $s : \alpha \tcell_p \emptyset$,
+\begin{align*}
+s 
+&\equiv s ; \eta^\tempty_\emptyset \\
+&\equiv \eta^\tempty_\alpha ; \ApPlus{\tempty}{\ApCirc{\tempty}{s}} \\
+&\equiv \eta^\tempty_\alpha ; \ApPlus{\tempty}{\id_{()}} \\
+&\equiv \eta^\tempty_\alpha
+\end{align*}
+by naturality of $\eta^\tempty$.
+\end{proof}
+
+Some other derivable equations:
+\begin{itemize}
+\item Fusion for $.$
+\begin{align}
+\label{dot-fusion}
+    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
+\end{align}
+follows by fusing the ap's and the corresponding fusion rule for morphisms in telescope modes:
+\begin{align*}
+(s \bdot m);(s' \bdot m') &\equiv \ApPlus{\tdot}{(s, m)} ; \ApPlus{\tdot}{(s', m')} \\
+&\equiv \ApPlus{\tdot}{(s, m);(s', m')} \\
+&\equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
+\end{align*}
+
+\item $\pi^\alpha_\mu$ is natural in $\mu$:
+  \begin{align}
+  \label{pi-naturality}
+  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}
+  \end{align}
+  by
+  \begin{align*}
+  (s \bdot m); \pi^\alpha_\mu 
+  &\equiv \ApPlus{\tdot}{(s, m)} ; \ap \fst {\varepsilon^\tdot_{(\alpha, \mu)}} \\  
+  &\equiv \ap{\fst}{\ApCirc{\tdot}{\ApPlus{\tdot}{(s, m)}}} ; \ap \fst {\varepsilon^\tdot_{(\alpha, \mu)}} \\
+  &\equiv \ap{\fst}{\ApCirc{\tdot}{\ApPlus{\tdot}{(s, m)}} ; \varepsilon^\tdot_{(\alpha, \mu)}}  \\
+  &\equiv \ap{\fst}{\varepsilon^\tdot_{(\beta, \nu)}; (s, m) } \\
+  &\equiv \ap{\fst}{\varepsilon^\tdot_{(\beta, \nu)}} ; s\\
+  &\equiv \pi^\beta_\nu ; s
+  \end{align*}
+
+\item Beta reduction for first projection:
+  \begin{align}
+\label{beta-pi}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{\One_\alpha}{\TrPlus{\ApEl{p}{s}}{\mu}}{\alpha}
+  \end{align}
+follows from naturality and the second triangle equation by:
+\begin{align*}
+\eta_\beta;(s \bdot m);\pi^\alpha_\mu
+&\equiv \eta_\beta;\pi^\beta_{\One_\beta};s \\
+&\equiv s
+\end{align*}
+
+\item Naturality of $\var{}$:
+\begin{align}
+\label{beta-var}
+\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} &\equiv \var{\nu};\ApPlus{\ApEl{p}{\pi^\beta_\nu}}{m}  && \text{where } \TermTwoT{\gamma}{m}{\nu}{\TrPlus{\ApEl{p}{s}}{\mu}}{\El{p}{\beta}}
+\end{align}
+is derivable by:
+\begin{align*}
+\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} 
+&\equiv \ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{\ApPlus{\tdot}{(s, m)}}}{\ap \snd {\varepsilon^\tdot_{(\alpha, \mu)}}} \\
+&\equiv \ap \snd {((s \bdot m), \ApOne{(s \bdot m)});\varepsilon^\tdot_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\ap{\TrCirc{\tdot}{\TrPlus{\tdot}{z}}}{(s, m)/z};\varepsilon^\tdot_{(\alpha, \mu)}} \\
+&\equiv \ap \snd {\varepsilon^\tdot_{(\beta, \nu)};(s, m)} \\
+&\equiv \var{\nu}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{m} 
+\end{align*}
+
+\item The eta principle for pairing:
+\begin{align}
+\label{eta-pi-var}
+t &\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
+\end{align}
+is derived by the first triangle equation followed by naturality of $\eta$:
+\begin{align*}
+t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{\TrPlus{\tdot}{\TrCirc{\tdot}{z}}}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;\ap{(z \bdot \One_z)}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;(t \bdot \ApOne{t});(\pi_\mu^\alpha \bdot \var{\mu}) \\
+&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) \\
+\end{align*}
+
+\item Naturality of $\eta^\tdot_\beta$ takes the following form:
+\begin{align*}
+s;\eta^\tdot_\mu \equiv \eta^\tdot_{\mu'} ; (s \bdot \ApOne{s})
+\end{align*}
+
+\end{itemize}
+
+We think of a term of mode $p$ as a ``context'', a mode term morphism of
+mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
+``dependent type'', and a mode term morphism $\One_\alpha
+\Yields_{\El{p}{\alpha}} \mu$ as a ``term'' of ``type'' $\mu$.  For the
+equations: $\TrPlus{\ApEl{p}{s}}{-}$ is supposed to act like
+substitution; equation \eqref{s-plus-one-strict} says that substitution
+into the unit type gives the unit type in a different ``context''.
+
+Equation \eqref{beta-var} says that ``substituting'' into a ``variable'' is second projection on the ``substitution''.  Equation \eqref{eta-pi-var} is the usual $\eta$ principle for subsitutions.
+
+\begin{lemma}\label{sigma:total-to-fiber0} 
+For any comprehension object $p$, mode term morphisms $s : \alpha \tcell_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
+\end{lemma}
+\begin{proof}
+Given such an $s$, we can define
+\begin{align*}
+\hat{s} &: \One_\alpha \tcell_{\El{p}{\alpha}} x \\
+\hat{s} &:\equiv \ApOne{s};\ApPlus{s}{\var{x}}
+\end{align*}
+where the identity $s;\pi^\alpha_x \equiv \id_\alpha$ is used to verify that the codomain is $\TrPlus{s}{\TrPlus{\pi^\alpha_x}{x}} \equiv \TrPlus{(s;\pi^\alpha_x)}{x} \equiv x$.
+
+Conversely, given $m : \One_\alpha \tcell_{\El{p}{\alpha}} x$ we have:
+\begin{align*}
+\tilde{m} &: \alpha \tcell_p \alpha.x \\
+\tilde{m} &:\equiv \eta^\tdot_\alpha ; (\id_\alpha \bdot m)
+\end{align*}
+And indeed $\tilde{m};\pi^\alpha_x \equiv \eta^\tdot_\alpha ; (\id_\alpha \bdot m);\pi^\alpha_x \equiv \id_\alpha$ by Equation~\eqref{beta-pi}.
+
+It is easy to check the round trips are the identity:
+\begin{align*}
+&\eta^\tdot_\alpha ; (\id_\alpha \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\tdot_\alpha ; (s;\pi^\alpha_x \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
+&\equiv \eta^\tdot_\alpha ; (s \bdot \ApOne{s});(\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s;\eta^\tdot_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
+&\equiv s
+\end{align*}
+And:
+\begin{align*}
+&\ApOne{\eta^\tdot_\alpha ; (\id_\alpha \bdot m)};\ApPlus{(\eta^\tdot_\alpha ; (\id_\alpha \bdot m))}{\var{x}} \\
+&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\ApOne{(\id_\alpha \bdot m)};\ApPlus{(\id_\alpha \bdot m)}{\var{x}}} \\
+&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha};\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}};\ApPlus{\eta^\tdot_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv \ApPlus{\eta^\tdot_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
+&\equiv m
+\end{align*}
+\end{proof}
+
+\subsubsection{Comprehension Object with Unit}
+
+\begin{definition}\label{def:supports-unit}
+A comprehension object \emph{supports the unit type} if $\eta^\tdot_\alpha : \alpha \tcell_p \alpha.\One$ is an isomorphism, i.e.:
+\begin{align}
+\pi^\alpha_{\One_\alpha} ; \eta^\tdot_\alpha \equiv \id_{\alpha.\One_\alpha}
+\end{align}
+\end{definition}
+Composition in the other direction is already the identity, by one of the triangle identities for $\tdot$.
+
+\subsubsection{Comprehension Object with $\Sigma$}
+
+\begin{definition}\label{def:supports-sigmas}
+A comprehension object \emph{supports $\Sigma$ types} if there is a specified mode term
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}
+\end{align*}
+and mode term morphisms
+\begin{align*}
+\contract{\alpha} &: \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}}) \\
+\tsplit{\alpha,x,y} &: \alpha.\Sigma_1(\alpha,x,y) \tcell_{p} \alpha.x.y
+\end{align*}
+such that $\tsplit{\alpha,x,y}$ is an inverse to $\pair{\alpha,x,y}$, defined by:
+\begin{align*}
+\fibpair{\alpha,x,y} &: \One_{\alpha.x.y} \tcell_{\El{p}{\alpha.x.y}} \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)} \\
+\fibpair{\alpha,x,y} &:\equiv \contract{\alpha.x.y};\ap{\Sigma_1(\alpha,x,y)}{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ApOne{\pi^{\alpha.x}_y};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}}, \ApOne{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}};\ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}}}{\var{y}})/(\alpha,x,y)} \\
+\pair{\alpha,x,y} &: \alpha.x.y \tcell_{p} \alpha.\Sigma_1(\alpha,x,y) \\
+\pair{\alpha, x, y} &:\equiv \eta^\tdot_{\alpha.x.y};((\pi^{\alpha.x}_y;\pi^\alpha_x) \bdot \fibpair{\alpha,x,y})
+\end{align*}
+and $\contract{\alpha}$ is natural:
+\begin{align}
+\contract{\alpha};\ap{\Sigma_1(\alpha,x,y)}{(s, \ApOne{s}, \ApOne{s \bdot \ApOne{s}})/(\alpha,x,y)} \equiv \ApOne{s};\ApPlus{\ApEl{p}{s}}{\contract{\beta}}
+\end{align}
+for any $s : \alpha \tcell_p \beta$.
+\end{definition}
+
+\mvrnote{How does this compare to left adjoint to weakening? I still don't see...}
+
+Only $\contract{\alpha}$ is needed to define $\pair{\alpha,x,y}$, as mode terms are always functorial with respect to mode term morphisms via ap. If the requirement that $\pair{\alpha, x, y}$ be an isomorphism is dropped, we may still interpret weak $\Sigma$-types with a non-dependent eliminator.
+
+\begin{lemma}
+A comprehension object that supports $\Sigma$s satisfies the following equations:
+\begin{align}
+\pair{\alpha,x,y};\pi^\alpha_{\Sigma_1(\alpha, x, y)} &\equiv \pi^{\alpha.x}_y;\pi^\alpha_x \\
+\tsplit{\alpha,x,y};\pi^{\alpha.x}_y;\pi^\alpha_x &\equiv \pi^\alpha_{\Sigma_1(\alpha, x, y)} %\\
+%\fibpair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}};\ApPlus{(\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha})}{\contract{\alpha}} \\
+%(\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \eta^\tdot_{\alpha.\One_\alpha}
+\end{align}
+\end{lemma}
+\begin{proof}
+The first follows from the definition of $\pair{}$ and Equation~\ref{beta-pi}. The second is immediate from the first, precomposing with $\tsplit{}$. 
+\end{proof}
+
+\subsubsection{Comprehension Object with $\Pi$}
+
+\begin{definition}\label{def:supports-pis}
+A comprehension object \emph{supports $\Pi$s} if $\ApOne{\pi^\alpha_x}$ is an isomorphism.
+\end{definition}
+
+Let $\pinv{\alpha,x}$ denote the inverse of $\ApOne{\pi^\alpha_x}$.
+
+\begin{lemma}
+If $\One_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
+\end{lemma}
+\begin{proof}
+Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$.
+\end{proof}
+
+\subsection{Morphism of Comprehension Objects}
+
+Suppose we have two comprehension objects $p$ and $q$.
+
+\begin{definition}\label{def:morphism-comprehension-object}
+A \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \tdot^p, \tempty^p)$ to $(q, \One^q, \tdot^q, \tempty^q)$ consists of constants
+\begin{align*}
+&\yields f : q \tcell p \\
+\alpha : p, x : \El{p}{\alpha} &\yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
+\alpha : p, x : \El{p}{\alpha} &\yields \fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
+\end{align*}
+such that $\fone{\alpha}$ is natural:
+\begin{align}
+\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}/x} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
+\end{align}
+\end{definition}
+
+\begin{definition}
+A morphism of comprehension objects \emph{supports right adjoint types} if $\fone{\alpha}$ is an isomorphism.
+\end{definition}
+Let $\foneinv{\alpha}$ denote the inverse of $\fone{\alpha}$.
+
+\begin{definition}
+A morphism of comprehension objects $f$ \emph{supports left adjoint types} if $\fdist{\alpha, x}$ defined by
+\begin{align*}
+\fibf{\alpha, x} &: \One_{\TrPlus{f}{\alpha.x}} \tcell_{\El{q}{\TrPlus{f}{\alpha.x}}} \ApPlus{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{f_1(x)} \\
+\fibf{\alpha, x} &:\equiv \fone{\alpha.x};\ap{f_1}{\pi^\alpha_x/\alpha, \var{x}/x} \\
+\fdist{\alpha, x} &: \TrPlus{f}{\alpha.x} \tcell_q \TrPlus{f}{\alpha}.f_1(x) \\
+\fdist{\alpha, x} &:\equiv \eta^{\tdot^q}_{\TrPlus{f}{\alpha.x}} ; (\ApPlus{f}{\pi^\alpha_x} \bdot \fibf{\alpha, x})
+\end{align*}
+is an isomorphism.
+\end{definition}
+Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
+
+\subsection{Spatial Type Theory}
+
+Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad as follows.
+
+\begin{definition}
+A mode term morphism $\gamma, x : p \yields \mu : p$ is a \emph{comonad} if there are morphisms
+\begin{align*}
+\gamma, x : p &\yields \fcounit{x} : \mu(x) \Rightarrow_p x \\
+\gamma, x : p &\yields \fcomult{x} : \mu(x) \Rightarrow_p \mu(\mu(x))
+\end{align*}
+satisfying:
+\begin{align}
+\fcomult{x};\ap{\mu}{\fcomult{x}} &\equiv \fcomult{x};\fcomult{\mu(x)} \\
+\fcomult{x};\ap{\mu}{\fcounit{x}} &\equiv \id_{\mu(x)} \\
+\fcomult{x};\fcounit{\mu(x)} &\equiv \id_{\mu(x)}
+\end{align}
+A comonad is \emph{idempotent} if any of the following equivalent equations hold:
+\begin{align}
+\fcounit{\mu(x)} &\equiv \ap{\mu}{\fcounit{x}} \\
+\ap{\mu}{\fcounit{x}} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} \\
+\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} 
+\end{align}
+\end{definition}
+
+\begin{definition}\label{def:supports-spatial}
+A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{-}$ is an idempotent comonad and $f$ supports left and right types.
+\end{definition}
+
+%We would also like to talk about $\flat$-types for a non-idempotent comonad. 
+%\begin{definition}
+%A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
+%\begin{align*}
+%\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
+%\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
+%\end{align*}
+%such that
+%\begin{align*}
+%\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
+%\flatdist{\alpha, x} &:\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
+%\end{align*}
+%is an isomorphism.
+%\end{definition}
+%
+%\begin{lemma}
+%If $f$ supports spatial type theory then it supports $\flat$-types.
+%\end{lemma}
+%\begin{proof}
+%Define
+%\begin{align*}
+%\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
+%\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
+%\end{align*}
+%
+%$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
+%\begin{align*}
+%&\flatdist{\alpha, x} \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+%\end{align*}
+%%\begin{align*}
+%%\flatdist{\alpha, x} &\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
+%%&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
+%%\end{align*}
+%which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
+%\end{proof}
+
+% \subsection{First Order Logic}
+
+\subsection{Dependently Indexed Linear Types}
+
+\mvrnote{What should this be called? V\'ak\'ar just says Linear Dependent Type Theory but that is slightly overselling it... }
+
+\begin{definition}
+A comprehension object $p$ \emph{supports a dependently indexed linear context} if there is:
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
+\end{align*}
+such that $\otimes_\alpha$ is symmetric and $\One_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}. \mvrnote{Pending: What exactly do we need?}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ \emph{supports $!$-types} if it supports a linear context and there is \mvrnote{???}
+\end{definition}
+
+\begin{definition}
+A comprehension object $p$ \emph{supports $\Sigma!$-types} if it supports a linear context and there is
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma!(x,y) : \El{p}{\alpha}
+\end{align*}
+and mode term morphisms
+\begin{align*}
+\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} &\yields \linsnd{x,y} : y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)} \\
+\alpha : p, x : \El{p}{\alpha}, z : \El{p}{\alpha} &\yields \linwk{x,z} : \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z}) \tcell_{\El{p}{\alpha}} z
+\end{align*}
+that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism $\frob{\xi, x, y}$ defined by:
+\begin{align*}
+\mathtt{lax}_{v,w} &: \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes_{\alpha.x} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes_\alpha v} \\
+\mathtt{lax}_{v,w} &:\equiv \ap{(w \otimes_\alpha v)}{\pi^\alpha_x / \alpha, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{w}}/w, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{v}}/v} \\
+\frob{\xi, x, y} &: \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} y) \tcell_{\El{p}{\alpha}} \xi \otimes_\alpha \Sigma!(x, y) \\
+\frob{\xi, x, y} &:\equiv \ap{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} -)}{\linsnd{x,y}} ; \ap{\Sigma!(x, -)}{\mathtt{lax}_{\xi, \Sigma!(x,y)}} ; \linwk{x, \xi \otimes \Sigma!(x,y)}
+\end{align*}
+is an isomorphism.
+\end{definition}
+\mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
+
+
+
+\section{Type Theory over a Mode Theory}
+
+Top judgements: 
+\begin{itemize}
+\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
+\item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
+\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
+\end{itemize}
 
 \subsection{Contexts}
 
@@ -1168,494 +1697,6 @@ $\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
 longer telescope.  
 \end{itemize}
 
-\section{Mode Theories}
-
-\mvrnote{At some point near the start we should say:
-For clarity we will often treat mode terms with a distinguished parameter as though they were functions. So if $\gamma, x : p \yields f : q$ we write $f(m)$ rather than $f[m/x]$.
-}
-
-\subsection{Adjoint Mode Terms}
-\begin{definition}
-A mode term $\gamma, x : p \yields f : q$ is \emph{left adjoint} to $\gamma, y : q \yields u : p$ if there are specified constants:
-\begin{align*}
-\gamma, x : p &\yields f : q \\
-\gamma, x : p &\yields \eta_x : x \tcell_p u(f(x)) \\
-\gamma, y : q &\yields \varepsilon_y : f(u(y)) \tcell_q y
-\end{align*}
-such that $\eta$ and $\varepsilon$ are natural:
-\begin{align}
-\eta_x ; \ap{u}{\ap{f}{s}} &\equiv s ; \eta_{x'} && \text{for } s : x \tcell_p x'  \\
-\ap{f}{\ap{u}{t}} ; \varepsilon_{y'}  &\equiv \varepsilon_y ; t && \text{for } t : y \tcell_q y'
-\end{align}
-and the triangle identities hold:
-\begin{align}
-\eta_{u(\nu)};\ap{u}{\varepsilon_\nu} &\equiv \id_{u(\nu)} \\
-\ap{f}{\eta_\mu};\varepsilon_{f(\mu)} &\equiv \id_{f(\mu)}
-\end{align}
-\end{definition}
-
-\subsection{Terminal Objects}
-
-\begin{definition}
-For $p \type$, the term $\emptyset : p$ is \emph{terminal} if there are specified mode term morphisms
-\begin{mathpar}
-\TermTwoT{x : p}{!_x}{x}{\emptyset}{p}
-\end{mathpar}
-such that $t \equiv \bang_x$ for all $\TermTwoT{\gamma}{t}{\mu}{\emptyset}{p}$.
-\end{definition}
-
-%\begin{definition}
-%For a dependent mode $x : p \vdash S(x) \type$, a \emph{fibred terminal object} term is specified by:
-%\begin{mathpar}
-%x : p \vdash \One_x : S(x) \and
-%\TermTwoT{x : p, \mu : S(x)}{!_\mu}{\mu}{\One_x}{S(x)}
-%\end{mathpar}
-%such that
-%\begin{align}
-%\label{bang-unique}
-%t & \equiv \bang_\mu && \text{where } \TermTwoT{\gamma}{t}{\mu}{\One_\alpha}{S(\alpha)}\\
-%\label{s-plus-one-strict}
-%\TrPlus{\ap{S}{s}}{\One_\alpha} &\equiv \One_\beta && \text{where } \TermTwoT{\gamma}{s}{\beta}{\alpha}{p}
-%\end{align}
-%\end{definition}
-
-\subsection{Comprehension Object}
-
-\begin{definition}[Comprehension Object]\label{def:comprehension-object}
-  A \emph{comprehension object} is specified by the following
-  constants:
-  \begin{mathpar}
-    p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
-    \\ 
-    \TypeTwo{\cdot}{\tdot}{p}{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} \and
-    \TypeTwo{\cdot}{\tempty}{p}{1}
-  \end{mathpar}
-  such that
-\begin{align*}
-\alpha : p &\yields (\alpha, \One_\alpha) : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \\
-\alpha : p &\yields () : 1
-\end{align*}
-are left adjoints to $\tdot^+$ and $\tempty^+$ respectively.
-\end{definition}
-
-In particular, a comprehension object comes equipped with natural mode term morphisms
-\begin{align*}
-\eta^\tdot_\alpha {}&: \alpha \tcell_p \TrPlus{\tdot}{(\alpha, \One_\alpha)} \\
-\varepsilon^\tdot_{(\alpha, \mu)} {}&: (\TrPlus{\tdot}{(\alpha, \mu)}, \One_{\TrPlus{\tdot}{(\alpha, \mu)}}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
-\eta^\tempty_\alpha {}&: \alpha \tcell_p \TrPlus{\tempty}{()} \\
-\varepsilon^\tempty_{x} {}&: x \tcell_1 ()
-\end{align*}
-satisfying the triangle identities. (Note that $\varepsilon^\tempty_x$ is necessarily the unique morphism to $()$)
-
-\begin{definition}
-Any comprehension object supports the following derived forms (where $\gamma \yields \alpha : p$
-and $\gamma \yields \beta : p$ and
-$\TermTwoT{\gamma}{s}{\beta}{\alpha}{p}$ and $\gamma \yields \mu :
-\alpha$ and $\gamma \yields \nu : \beta$):
-  \begin{itemize}
-  \item A distinguished term $\emptyset : p$ is given by
-  \begin{mathpar}
-  \cdot \yields \emptyset : p \and \emptyset :\equiv \TrPlus{\tempty}{()}
-  \end{mathpar}
-  \item Comprehension is given by $\tdot^+$:
-  \begin{mathpar}
-  \alpha : p, x : \El{p}{\alpha} \yields \alpha.x : p \and \alpha.x :\equiv \TrPlus{\tdot}{(\alpha, x)}
-  \end{mathpar}
-  \item $\pi^\alpha_\mu$ and $\var{\mu}$ are defined via the counit of the adjunction $\tdot^\circ \dashv \tdot^+$.
-  \begin{mathpar}
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
-  \and
-  \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\tdot_{(\alpha, x)}} \\
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}} 
-    \and
-    \var{x} :\equiv \ap \snd {\varepsilon^\tdot_{(\alpha, x)}}
-  \end{mathpar}
-  \item Pairing for the comprehension object is given by ap of
-  $.$ on the pairing for telescope modes:
-  \begin{mathpar}
-  \inferrule{\TermTwoT{\gamma}{s}{\alpha}{\beta}{p} \and
-             \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}}
-            {\TermTwoT{\gamma}{s.m}{\alpha.\mu}{\beta.\nu}{p}} \and
-  s \bdot m :\equiv \ApPlus{\tdot}{(s, m)}
-  \end{mathpar}
-  \item We write $\ApOne{s}$ as a short hand for $\ap{\One_z}{s/z}$
-  \end{itemize}
-\end{definition}
-
-This definition is a type-theoretic analogue of a fibration that \emph{admits comprehension}. This is a fibration $E \to B$ with fibred terminal object $1 : B \to E$ such that the functor $1$ has a right adjoint, see \mvrnote{ref}.
-
-In the type-theoretic definition, $p$ and $\El{p}{\alpha}$ describe a fibration $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. The term $(\alpha, \One_\alpha)$ describes a functor $p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ that sends $\alpha$ to a distinguished object $\One_\alpha$ in the fibre over $\alpha$, and this functor has a right adjoint $\TrPlus{\tdot}{\alpha,x}$.
-
-The primary difference is that we do not need to assume that $\One_\alpha$ is terminal in $\El{p}{\alpha}$, so $(\alpha, \One_\alpha) : p \to \sigmacl{\alpha}{p}{\El{p}{\alpha}}$ is not right adjoint to $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$. We also do not assume that $p$ is full, in the sense of there being a bijection between mode term morphisms $x \tcell_{\El{p}{\alpha}} y$ and mode term morphisms $\alpha.x \tcell_p \alpha.y$ that commute with projection.
-
-Using the above derived forms, the units and counits of the adjunctions have type
-\begin{align*}
-\eta^\tdot_\alpha {}&: \alpha \tcell_p \alpha.\One_\alpha \\
-\varepsilon^\tdot_{(\alpha, \mu)} {}&: (\alpha.\mu, \One_{\alpha.\mu}) \tcell_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha, \mu) \\
-\eta^\tempty_\alpha {}&: \alpha \tcell_p \emptyset \\
-\varepsilon^\tempty_{x} {}&: x \tcell_1 () \\
-\end{align*}
-and the triangle equations may be written:
-\begin{align}
-\label{eq:chi-triangle-1} \eta^\tdot_{\alpha.x};(\pi_x^\alpha \bdot \var{x}) &\equiv \id_{\alpha.x} \\
-\label{eq:chi-triangle-2} (\eta^\tdot_\alpha ; \pi^\alpha_{\One_\alpha}, \ApOne{\eta^\tdot_\alpha} ; \ApPlus{\ApEl{p}{\eta^\tdot_\alpha}}{\var{\One_\alpha}}) &\equiv \id_{(\alpha, \One_\alpha)}\\
-\eta^\tempty_\emptyset &\equiv \id_\emptyset \\
-\id_{()}&\equiv \id_{()}
-\end{align}
-
-Requiring a left adjoint for $\tempty^+$ is a cute way of stating the following:
-\begin{lemma}
-For $p$ a comprehension object, $\emptyset : p$ is terminal.
-\end{lemma}
-\begin{proof}
-We always have a map $\eta^\tempty_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that for any $s : \alpha \tcell_p \emptyset$,
-\begin{align*}
-s 
-&\equiv s ; \eta^\tempty_\emptyset \\
-&\equiv \eta^\tempty_\alpha ; \ApPlus{\tempty}{\ApCirc{\tempty}{s}} \\
-&\equiv \eta^\tempty_\alpha ; \ApPlus{\tempty}{\id_{()}} \\
-&\equiv \eta^\tempty_\alpha
-\end{align*}
-by naturality of $\eta^\tempty$.
-\end{proof}
-
-Some other derivable equations:
-\begin{itemize}
-\item Fusion for $.$
-\begin{align}
-\label{dot-fusion}
-    (s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
-\end{align}
-follows by fusing the ap's and the corresponding fusion rule for morphisms in telescope modes:
-\begin{align*}
-(s \bdot m);(s' \bdot m') &\equiv \ApPlus{\tdot}{(s, m)} ; \ApPlus{\tdot}{(s', m')} \\
-&\equiv \ApPlus{\tdot}{(s, m);(s', m')} \\
-&\equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))
-\end{align*}
-
-\item $\pi^\alpha_\mu$ is natural in $\mu$:
-  \begin{align}
-  \label{pi-naturality}
-  (s \bdot m); \pi^\alpha_\mu &\equiv \pi^\beta_\nu;s && \text{where } \TermTwoT{\gamma}{m}{\mu}{\TrPlus{\ApEl{p}{s}}{\nu}}{\El{p}{\alpha}}
-  \end{align}
-  by
-  \begin{align*}
-  (s \bdot m); \pi^\alpha_\mu 
-  &\equiv \ApPlus{\tdot}{(s, m)} ; \ap \fst {\varepsilon^\tdot_{(\alpha, \mu)}} \\  
-  &\equiv \ap{\fst}{\ApCirc{\tdot}{\ApPlus{\tdot}{(s, m)}}} ; \ap \fst {\varepsilon^\tdot_{(\alpha, \mu)}} \\
-  &\equiv \ap{\fst}{\ApCirc{\tdot}{\ApPlus{\tdot}{(s, m)}} ; \varepsilon^\tdot_{(\alpha, \mu)}}  \\
-  &\equiv \ap{\fst}{\varepsilon^\tdot_{(\beta, \nu)}; (s, m) } \\
-  &\equiv \ap{\fst}{\varepsilon^\tdot_{(\beta, \nu)}} ; s\\
-  &\equiv \pi^\beta_\nu ; s
-  \end{align*}
-
-\item Beta reduction for first projection:
-  \begin{align}
-\label{beta-pi}
-\eta_\beta;(s \bdot m);\pi^\alpha_\mu &\equiv s && \text{where } \TermTwoT{\gamma}{m}{\One_\alpha}{\TrPlus{\ApEl{p}{s}}{\mu}}{\alpha}
-  \end{align}
-follows from naturality and the second triangle equation by:
-\begin{align*}
-\eta_\beta;(s \bdot m);\pi^\alpha_\mu
-&\equiv \eta_\beta;\pi^\beta_{\One_\beta};s \\
-&\equiv s
-\end{align*}
-
-\item Naturality of $\var{}$:
-\begin{align}
-\label{beta-var}
-\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} &\equiv \var{\nu};\ApPlus{\ApEl{p}{\pi^\beta_\nu}}{m}  && \text{where } \TermTwoT{\gamma}{m}{\nu}{\TrPlus{\ApEl{p}{s}}{\mu}}{\El{p}{\beta}}
-\end{align}
-is derivable by:
-\begin{align*}
-\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} 
-&\equiv \ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{\ApPlus{\tdot}{(s, m)}}}{\ap \snd {\varepsilon^\tdot_{(\alpha, \mu)}}} \\
-&\equiv \ap \snd {((s \bdot m), \ApOne{(s \bdot m)});\varepsilon^\tdot_{(\alpha, \mu)}} \\
-&\equiv \ap \snd {\ap{\TrCirc{\tdot}{\TrPlus{\tdot}{z}}}{(s, m)/z};\varepsilon^\tdot_{(\alpha, \mu)}} \\
-&\equiv \ap \snd {\varepsilon^\tdot_{(\beta, \nu)};(s, m)} \\
-&\equiv \var{\nu}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{m} 
-\end{align*}
-
-\item The eta principle for pairing:
-\begin{align}
-\label{eta-pi-var}
-t &\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) && \text{where } \TermTwoT{\gamma}{t}{\beta}{\alpha.\mu}{p}
-\end{align}
-is derived by the first triangle equation followed by naturality of $\eta$:
-\begin{align*}
-t &\equiv t;\eta_{\alpha.\mu};(\pi_\mu^\alpha \bdot \var{\mu}) \\
-&\equiv \eta_\beta;\ap{\TrPlus{\tdot}{\TrCirc{\tdot}{z}}}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
-&\equiv \eta_\beta;\ap{(z \bdot \One_z)}{t/z};(\pi_\mu^\alpha \bdot \var{\mu}) \\
-&\equiv \eta_\beta;(t \bdot \ApOne{t});(\pi_\mu^\alpha \bdot \var{\mu}) \\
-&\equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}})) \\
-\end{align*}
-
-\item Naturality of $\eta^\tdot_\beta$ takes the following form:
-\begin{align*}
-s;\eta^\tdot_\mu \equiv \eta^\tdot_{\mu'} ; (s \bdot \ApOne{s})
-\end{align*}
-
-\end{itemize}
-
-We think of a term of mode $p$ as a ``context'', a mode term morphism of
-mode $p$ as a ``substitution'', a term of mode $\El{p}{\alpha}$ as a
-``dependent type'', and a mode term morphism $\One_\alpha
-\Yields_{\El{p}{\alpha}} \mu$ as a ``term'' of ``type'' $\mu$.  For the
-equations: $\TrPlus{\ApEl{p}{s}}{-}$ is supposed to act like
-substitution; equation \eqref{s-plus-one-strict} says that substitution
-into the unit type gives the unit type in a different ``context''.
-
-Equation \eqref{beta-var} says that ``substituting'' into a ``variable'' is second projection on the ``substitution''.  Equation \eqref{eta-pi-var} is the usual $\eta$ principle for subsitutions.
-
-\begin{lemma}\label{sigma:total-to-fiber0} 
-For any comprehension object $p$, mode term morphisms $s : \alpha \tcell_p \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond bijectively to 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
-\end{lemma}
-\begin{proof}
-Given such an $s$, we can define
-\begin{align*}
-\hat{s} &: \One_\alpha \tcell_{\El{p}{\alpha}} x \\
-\hat{s} &:\equiv \ApOne{s};\ApPlus{s}{\var{x}}
-\end{align*}
-where the identity $s;\pi^\alpha_x \equiv \id_\alpha$ is used to verify that the codomain is $\TrPlus{s}{\TrPlus{\pi^\alpha_x}{x}} \equiv \TrPlus{(s;\pi^\alpha_x)}{x} \equiv x$.
-
-Conversely, given $m : \One_\alpha \tcell_{\El{p}{\alpha}} x$ we have:
-\begin{align*}
-\tilde{m} &: \alpha \tcell_p \alpha.x \\
-\tilde{m} &:\equiv \eta^\tdot_\alpha ; (\id_\alpha \bdot m)
-\end{align*}
-And indeed $\tilde{m};\pi^\alpha_x \equiv \eta^\tdot_\alpha ; (\id_\alpha \bdot m);\pi^\alpha_x \equiv \id_\alpha$ by Equation~\eqref{beta-pi}.
-
-It is easy to check the round trips are the identity:
-\begin{align*}
-&\eta^\tdot_\alpha ; (\id_\alpha \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
-&\equiv \eta^\tdot_\alpha ; (s;\pi^\alpha_x \bdot \ApOne{s};\ApPlus{s}{\var{x}}) \\
-&\equiv \eta^\tdot_\alpha ; (s \bdot \ApOne{s});(\pi^\alpha_x \bdot \var{x}) \\
-&\equiv s;\eta^\tdot_{\alpha.x} ; (\pi^\alpha_x \bdot \var{x}) \\
-&\equiv s
-\end{align*}
-And:
-\begin{align*}
-&\ApOne{\eta^\tdot_\alpha ; (\id_\alpha \bdot m)};\ApPlus{(\eta^\tdot_\alpha ; (\id_\alpha \bdot m))}{\var{x}} \\
-&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\ApOne{(\id_\alpha \bdot m)};\ApPlus{(\id_\alpha \bdot m)}{\var{x}}} \\
-&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha};\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
-&\equiv \ApOne{\eta^\tdot_\alpha};\ApPlus{\eta^\tdot_\alpha}{\var{\One_\alpha}};\ApPlus{\eta^\tdot_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
-&\equiv \ApPlus{\eta^\tdot_\alpha}{\ApPlus{\pi^\alpha_{\One_\alpha}}{m}} \\
-&\equiv m
-\end{align*}
-\end{proof}
-
-\subsubsection{Comprehension Object with Unit}
-
-\begin{definition}\label{def:supports-unit}
-A comprehension object \emph{supports the unit type} if $\eta^\tdot_\alpha : \alpha \tcell_p \alpha.\One$ is an isomorphism, i.e.:
-\begin{align}
-\pi^\alpha_{\One_\alpha} ; \eta^\tdot_\alpha \equiv \id_{\alpha.\One_\alpha}
-\end{align}
-\end{definition}
-Composition in the other direction is already the identity, by one of the triangle identities for $\tdot$.
-
-\subsubsection{Comprehension Object with $\Sigma$}
-
-\begin{definition}\label{def:supports-sigmas}
-A comprehension object \emph{supports $\Sigma$ types} if there is a specified mode term
-\begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \vdash \Sigma_1(\alpha,x,y) : \El{p}{\alpha}
-\end{align*}
-and mode term morphisms
-\begin{align*}
-\contract{\alpha} &: \One_\alpha \tcell_{\El{p}{\alpha}} \Sigma_1(\alpha,\One_\alpha,\One_{\alpha.{\One_\alpha}}) \\
-\tsplit{\alpha,x,y} &: \alpha.\Sigma_1(\alpha,x,y) \tcell_{p} \alpha.x.y
-\end{align*}
-such that $\tsplit{\alpha,x,y}$ is an inverse to $\pair{\alpha,x,y}$, defined by:
-\begin{align*}
-\fibpair{\alpha,x,y} &: \One_{\alpha.x.y} \tcell_{\El{p}{\alpha.x.y}} \TrPlus{(\pi^{\alpha.x}_y;\pi^\alpha_x)}{\Sigma_1(\alpha,x,y)} \\
-\fibpair{\alpha,x,y} &:\equiv \contract{\alpha.x.y};\ap{\Sigma_1(\alpha,x,y)}{(\pi^{\alpha.x}_y;\pi^{\alpha}_x,\ApOne{\pi^{\alpha.x}_y};\ApPlus{\ApEl{p}{\pi^{\alpha.x}_y}}{\var{x}}, \ApOne{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}};\ApPlus{\ApEl{p}{\pi^{\alpha.x.y}_{\One_{\alpha.x.y}}}}{\var{y}})/(\alpha,x,y)} \\
-\pair{\alpha,x,y} &: \alpha.x.y \tcell_{p} \alpha.\Sigma_1(\alpha,x,y) \\
-\pair{\alpha, x, y} &:\equiv \eta^\tdot_{\alpha.x.y};((\pi^{\alpha.x}_y;\pi^\alpha_x) \bdot \fibpair{\alpha,x,y})
-\end{align*}
-and $\contract{\alpha}$ is natural:
-\begin{align}
-\contract{\alpha};\ap{\Sigma_1(\alpha,x,y)}{(s, \ApOne{s}, \ApOne{s \bdot \ApOne{s}})/(\alpha,x,y)} \equiv \ApOne{s};\ApPlus{\ApEl{p}{s}}{\contract{\beta}}
-\end{align}
-for any $s : \alpha \tcell_p \beta$.
-\end{definition}
-
-\mvrnote{How does this compare to left adjoint to weakening? I still don't see...}
-
-Only $\contract{\alpha}$ is needed to define $\pair{\alpha,x,y}$, as mode terms are always functorial with respect to mode term morphisms via ap. If the requirement that $\pair{\alpha, x, y}$ be an isomorphism is dropped, we may still interpret weak $\Sigma$-types with a non-dependent eliminator.
-
-\begin{lemma}
-A comprehension object that supports $\Sigma$s satisfies the following equations:
-\begin{align}
-\pair{\alpha,x,y};\pi^\alpha_{\Sigma_1(\alpha, x, y)} &\equiv \pi^{\alpha.x}_y;\pi^\alpha_x \\
-\tsplit{\alpha,x,y};\pi^{\alpha.x}_y;\pi^\alpha_x &\equiv \pi^\alpha_{\Sigma_1(\alpha, x, y)} %\\
-%\fibpair{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \ApOne{\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha}};\ApPlus{(\pi^{\alpha.\One_\alpha}_{\One_{\alpha.\One_\alpha}};\pi^\alpha_{\One_\alpha})}{\contract{\alpha}} \\
-%(\id_\alpha \bdot \contract{\alpha});\tsplit{\alpha,\One_\alpha,\One_{\alpha.\One_\alpha}} &\equiv \eta^\tdot_{\alpha.\One_\alpha}
-\end{align}
-\end{lemma}
-\begin{proof}
-The first follows from the definition of $\pair{}$ and Equation~\ref{beta-pi}. The second is immediate from the first, precomposing with $\tsplit{}$. 
-\end{proof}
-
-\subsubsection{Comprehension Object with $\Pi$}
-
-\begin{definition}\label{def:supports-pis}
-A comprehension object \emph{supports $\Pi$s} if $\ApOne{\pi^\alpha_x}$ is an isomorphism.
-\end{definition}
-
-Let $\pinv{\alpha,x}$ denote the inverse of $\ApOne{\pi^\alpha_x}$.
-
-\begin{lemma}
-If $\One_\alpha : \El{p}{\alpha}$ is a fibred terminal object, then $p$ has $\Pi$s.
-\end{lemma}
-\begin{proof}
-Take $\pinv{\alpha,x}$ to be the identity on $\One_{\alpha.x}$.
-\end{proof}
-
-\subsection{Morphism of Comprehension Objects}
-
-Suppose we have two comprehension objects $p$ and $q$.
-
-\begin{definition}\label{def:morphism-comprehension-object}
-A \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \tdot^p, \tempty^p)$ to $(q, \One^q, \tdot^q, \tempty^q)$ consists of constants
-\begin{align*}
-&\yields f : q \tcell p \\
-\alpha : p, x : \El{p}{\alpha} &\yields f_1(x) : \El{q}{\TrPlus{f}{\alpha}} \\
-\alpha : p, x : \El{p}{\alpha} &\yields \fone{\alpha} : \One^q_{\TrPlus{f}{\alpha}}  \tcell_{\El{q}{\TrPlus{f}{\alpha}}} f_1(\One^p_\alpha)
-\end{align*}
-such that $\fone{\alpha}$ is natural:
-\begin{align}
-\fone{\alpha};\ap{f_1}{s/\alpha, \ApOne{s}/x} \equiv \ApOne{\ApPlus{f}{s}};\ApPlus{\ApEl{q}{\ApPlus{f}{s}}}{\fone{\beta}}
-\end{align}
-\end{definition}
-
-\begin{definition}
-A morphism of comprehension objects \emph{supports right adjoint types} if $\fone{\alpha}$ is an isomorphism.
-\end{definition}
-Let $\foneinv{\alpha}$ denote the inverse of $\fone{\alpha}$.
-
-\begin{definition}
-A morphism of comprehension objects $f$ \emph{supports left adjoint types} if $\fdist{\alpha, x}$ defined by
-\begin{align*}
-\fibf{\alpha, x} &: \One_{\TrPlus{f}{\alpha.x}} \tcell_{\El{q}{\TrPlus{f}{\alpha.x}}} \ApPlus{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{f_1(x)} \\
-\fibf{\alpha, x} &:\equiv \fone{\alpha.x};\ap{f_1}{\pi^\alpha_x/\alpha, \var{x}/x} \\
-\fdist{\alpha, x} &: \TrPlus{f}{\alpha.x} \tcell_q \TrPlus{f}{\alpha}.f_1(x) \\
-\fdist{\alpha, x} &:\equiv \eta^{\tdot^q}_{\TrPlus{f}{\alpha.x}} ; (\ApPlus{f}{\pi^\alpha_x} \bdot \fibf{\alpha, x})
-\end{align*}
-is an isomorphism.
-\end{definition}
-Let $\fdistinv{\alpha,x}$ denote the inverse of $\fdist{\alpha,x}$.
-
-\subsection{Spatial Type Theory}
-
-Let $f$ be a morphism of comprehension objects from $p$ to itself. We give $\TrPlus{f}{-}$ the structure of a comonad as follows.
-
-\begin{definition}
-A mode term morphism $\gamma, x : p \yields \mu : p$ is a \emph{comonad} if there are morphisms
-\begin{align*}
-\gamma, x : p &\yields \fcounit{x} : \mu(x) \Rightarrow_p x \\
-\gamma, x : p &\yields \fcomult{x} : \mu(x) \Rightarrow_p \mu(\mu(x))
-\end{align*}
-satisfying:
-\begin{align}
-\fcomult{x};\ap{\mu}{\fcomult{x}} &\equiv \fcomult{x};\fcomult{\mu(x)} \\
-\fcomult{x};\ap{\mu}{\fcounit{x}} &\equiv \id_{\mu(x)} \\
-\fcomult{x};\fcounit{\mu(x)} &\equiv \id_{\mu(x)}
-\end{align}
-A comonad is \emph{idempotent} if any of the following equivalent equations hold:
-\begin{align}
-\fcounit{\mu(x)} &\equiv \ap{\mu}{\fcounit{x}} \\
-\ap{\mu}{\fcounit{x}} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} \\
-\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} 
-\end{align}
-\end{definition}
-
-\begin{definition}\label{def:supports-spatial}
-A morphism of fibrations $f$ \emph{supports spatial type theory} if $\TrPlus{f}{-}$ is an idempotent comonad and $f$ supports left and right types.
-\end{definition}
-
-%We would also like to talk about $\flat$-types for a non-idempotent comonad. 
-%\begin{definition}
-%A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
-%\begin{align*}
-%\alpha : p, x : \El{p}{\TrPlus{f}{\alpha}} &\yields \flat_1(x) : \El{p}{\TrPlus{f}{\alpha}} \\
-%\alpha : p &\yields \flatone{\alpha} : \One_{\TrPlus{f}{\alpha}} \tcell_{\TrPlus{f}{\alpha}} \flat_1(\One_{\TrPlus{f}{\alpha}})
-%\end{align*}
-%such that
-%\begin{align*}
-%\flatdist{\alpha, x} &: \TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell_p \TrPlus{f}{\alpha}.\flat_1(x) \\
-%\flatdist{\alpha, x} &:\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}}))
-%\end{align*}
-%is an isomorphism.
-%\end{definition}
-%
-%\begin{lemma}
-%If $f$ supports spatial type theory then it supports $\flat$-types.
-%\end{lemma}
-%\begin{proof}
-%Define
-%\begin{align*}
-%\flat_1(x) &:\equiv \TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)} \\
-%\flatone{\alpha} &:\equiv \ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}}
-%\end{align*}
-%
-%$\flatdist{\alpha, x}$ is then an isomorphism, as it is equal to:
-%\begin{align*}
-%&\flatdist{\alpha, x} \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\flatone{\alpha};\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\ApOne{\fcounit{\TrPlus{f}{\alpha}}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ApOne{\fcomult{\alpha}};\ApPlus{\ApEl{p}{\fcomult{\alpha}}}{\fone{\TrPlus{f}{\alpha}}};\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1(x)}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-%&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
-%\end{align*}
-%%\begin{align*}
-%%\flatdist{\alpha, x} &\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\flatone{\alpha};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\flat_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ApPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}}}}{\ap{\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}})) \\
-%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\fcounit{\TrPlus{f}{\alpha}.x};\pi^{\TrPlus{f}{\alpha}}_x) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-%%&\equiv \eta^\tdot_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}};((\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x};\fcounit{\TrPlus{f}{\alpha}.x}) \bdot (\fone{\TrPlus{f}{\alpha}};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x})) \\
-%%&\equiv \eta^{\tdot}_{\TrPlus{f}{\TrPlus{f}{\alpha}.x}} ; (\ApPlus{f}{\pi^{\TrPlus{f}{\alpha}}_x} \bdot \fone{\TrPlus{f}{\alpha}.x};\ap{f_1}{\pi^{\TrPlus{f}{\alpha}}_x/\alpha, \var{x}/x}) ; (\fcounit{\TrPlus{f}{\alpha}} \bdot \id_{\TrPlus{\ApEl{p}{\fcounit{\TrPlus{f}{\alpha}};\fcomult{\alpha}}}{f_1(x)}})
-%%\end{align*}
-%which is the composite of the isomorphisms $\TrPlus{f}{\TrPlus{f}{\alpha}.x} \tcell \TrPlus{f}{\TrPlus{f}{\alpha}}.f_1(x) \tcell \TrPlus{f}{\alpha}.\TrPlus{\ApEl{p}{\fcomult{\alpha}}}{f_1(x)}$
-%\end{proof}
-
-% \subsection{First Order Logic}
-
-\subsection{Dependently Indexed Linear Types}
-
-\mvrnote{What should this be called? V\'ak\'ar just says Linear Dependent Type Theory but that is slightly overselling it... }
-
-\begin{definition}
-A comprehension object $p$ \emph{supports a dependently indexed linear context} if there is:
-\begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
-\end{align*}
-such that $\otimes_\alpha$ is symmetric and $\One_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}. \mvrnote{Pending: What exactly do we need?}
-\end{definition}
-
-\begin{definition}
-A comprehension object $p$ \emph{supports $!$-types} if it supports a linear context and there is \mvrnote{???}
-\end{definition}
-
-\begin{definition}
-A comprehension object $p$ \emph{supports $\Sigma!$-types} if it supports a linear context and there is
-\begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma!(x,y) : \El{p}{\alpha}
-\end{align*}
-and mode term morphisms
-\begin{align*}
-\alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} &\yields \linsnd{x,y} : y \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\Sigma!(x,y)} \\
-\alpha : p, x : \El{p}{\alpha}, z : \El{p}{\alpha} &\yields \linwk{x,z} : \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{z}) \tcell_{\El{p}{\alpha}} z
-\end{align*}
-that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}}{-}$, and the morphism $\frob{\xi, x, y}$ defined by:
-\begin{align*}
-\mathtt{lax}_{v,w} &: \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w} \otimes_{\alpha.x} \TrPlus{\ApEl{p}{\pi^\alpha_x}}{v} \tcell \TrPlus{\ApEl{p}{\pi^\alpha_x}}{w \otimes_\alpha v} \\
-\mathtt{lax}_{v,w} &:\equiv \ap{(w \otimes_\alpha v)}{\pi^\alpha_x / \alpha, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{w}}/w, \id_{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{v}}/v} \\
-\frob{\xi, x, y} &: \Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} y) \tcell_{\El{p}{\alpha}} \xi \otimes_\alpha \Sigma!(x, y) \\
-\frob{\xi, x, y} &:\equiv \ap{\Sigma!(x, \TrPlus{\ApEl{p}{\pi^\alpha_x}}{\xi} \otimes_{\alpha.x} -)}{\linsnd{x,y}} ; \ap{\Sigma!(x, -)}{\mathtt{lax}_{\xi, \Sigma!(x,y)}} ; \linwk{x, \xi \otimes \Sigma!(x,y)}
-\end{align*}
-is an isomorphism.
-\end{definition}
-\mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
 
 \section{Object Languages}
 

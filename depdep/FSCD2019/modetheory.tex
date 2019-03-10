@@ -1,17 +1,40 @@
 
-Mode theory judgements:
-\begin{enumerate}
-\item $\gamma \ctx$ (empty, extension)
-\item $\gamma \yields p \type$ 
-\item $\TypeTwo{\gamma}{s}{p}{q}$ (horizontal and vertical composition, identities)
-\item $\gamma \yields \mu : p$ (variables, action of mode type morphisms)
-\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ (horizontal and vertical
-    composition, identities)
-\end{enumerate}
+The first (``bottom'') level of our framework, called the \emph{mode
+  theory}, is used to give a signature of type constructors.  For a
+particular mode theory, the second (``top'') level, described in the
+next section, allows for constructions using those type constructors.
+In previous work~\cite{ls15adjoint,lsr17fibrational}, the mode theory
+was a 2-category, or cartesian 2-multicategory.  Objects/types of the
+mode theory represent ``modes of truth,'' or categories of types.
+Morphisms/terms of the mode theory generate type constructors,
+e.g. modalities.  The further 2-cell data of the mode theory corresponds
+to structural rules, such as weakening, exchange, contraction for a
+product, or a (co)unit or (co)multiplication of a modality.  Just as a
+2-category is a directed simple type theory, here we use a directed
+dependent type theory as the mode theory.  We write mode theory entities
+with lowercase Greek letters.
 
-\begin{enumerate}
+The mode theory consists of five judgements:
+\begin{itemize}
+\item $\gamma \ctx$ are mode theory contexts
+\item $\gamma \yields p \type$ are mode theory types
+\item $\gamma \yields \mu : p$ are mode theory terms
+\item $\TypeTwo{\gamma}{s}{p}{q}$ are \emph{mode type morphisms}
+\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ are \emph{mode 2-cells}
+\end{itemize}
+The first three judgements have the familiar structure of a dependent
+type theory, while the fourth and fifth add an additional notion of
+morphism between types and morphism between terms.  The mode type
+morphisms can be thought of as a special class of terms, as explained
+below.
 
-\item Contexts are as usual:
+In this section, we describe the rules for the mode theory that are
+general to all examples. In Section~\ref{sec:examples}, we show examples
+of specific mode theories.  
+
+\subsection{Mode Contexts}
+
+Mode contexts have the usual empty and context extension structure:
 
 \begin{mathpar}
   \inferrule*{ }
@@ -23,38 +46,49 @@ Mode theory judgements:
     {\gamma,x:p \ctx}
 \end{mathpar}  
 
-\item In all mode theories, terms must have: 
+\subsection{Mode Terms}
+
+The mode terms not specific to any particular types are
 
 \begin{mathpar}
 \inferrule*{ }
              {\gamma,x : p, \gamma' \yields x : p}
-             
+\quad
 \inferrule*
     {\gamma \yields \mu : q \\
      \TypeTwo{\gamma}{s}{p}{q}
     }
     {\gamma \yields \TrPlus{s}{\mu} : p}
-\\
-\TrPlus{\id}{\mu} \equiv \mu \qquad
+\quad
+\TrPlus{\id}{\mu} \equiv \mu \quad
 \TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
 \end{mathpar}
 
-\item Mode type morphisms:
+In addition to the usual variable rule, we have the term
+$\TrPlus{s}{\mu}$, which says that mode type morphisms act
+contravariantly on mode terms.  The equations say this action is
+functorial ($\id$ and $s;s'$ are identity and composition for mode type
+morphisms; see below).
+
+\subsection{Mode type morphisms}
+
 \begin{mathpar}
     \inferrule*{ }
           {\TypeTwo{\gamma}{\id_p}{p}{p}}
     \qquad
-    \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} \\
+    \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} 
                 {\TypeTwo{\gamma}{s_2}{p_2}{p_3}}
           }
           {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
-
+\qquad
 \inferrule*{{\gamma,x:p} \vdash {q} \type \\
             \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
            } 
            {\TypeTwo{\gamma}{\ap {q} {t/x}}{q[\mu/x]}{q[\mu'/x]}}
 
-\\
+\end{mathpar}
+
+
 \id;s \equiv s \equiv s;\id \and
 (s;s');s'' \equiv s;(s';s'') \\ 
 \ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
@@ -73,7 +107,8 @@ s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad
 
 We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
 
-\item 2-cells between terms.  First, we have
+\subsection{2-cells between terms.}
+First, we have
   identity/composition/whiskering and associated equations (whiskering
   on the other side is given by substitution):
 \begin{mathpar}
@@ -105,7 +140,9 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \qu
 (\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
 \end{mathpar}
 
-\item We assume $1/\Sigma$ modes:
+\subsection{Product modes}
+
+We assume $1/\Sigma$ modes:
 
 \begin{mathpar}
   \inferrule*{ } { \gamma \yields 1 \type } \and
@@ -177,7 +214,8 @@ s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\
 (\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]})
 \end{mathpar}
 
-\item
+\subsection{Admissible Rules}
+
   All judgements have a substitution principle
 \begin{mathpar}
   \inferrule*{\gamma,x:p,\gamma' \yields J \\
@@ -188,11 +226,17 @@ s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\
 J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 \end{mathpar}
 
-
 We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
 variable name when it is clear how to view $\mu$ as a term with a
 distinguished variable; e.g. $\ApPlus{s}{t}$ for
 $\ap{\TrPlus{s}{x}}{t/x}$.
+
+\subsection{Mode Theory Signatures}
+
+We allow extensions of the above judgements with generating
+constants/axiomn for mode types, mode terms, mode type morphisms, mode
+2-cells, and equations between all four of these classes (i.e.,
+all judgements but mode contexts).  
 
 \subsubsection{Lemmas}
 
@@ -249,5 +293,5 @@ Follows by
 \end{proof}
 
 
-\end{enumerate}
+
 
