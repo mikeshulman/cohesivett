@@ -284,10 +284,9 @@ A \emph{mode theory} describes the contexts and types of a particular
 modal dependent type theory.  Mode theories are given by a signature of
 constants and equations in a directed dependent type theory, which,
 because of the fibrational perpective, we call the \emph{base} type
-theory.  We write base type theory entities with lowercase Greek
-letters, and refer to the types as \emph{mode types}, and terms as
-\emph{mode terms}, and so on, to differentiate them from the types and
-terms of the top type theory.
+theory.  We refer to the types of the base type theory as \emph{mode
+  types} or just \emph{modes}, and terms as \emph{mode terms}, to
+differentiate them from the types and terms of the top type theory.
 
 The base type theory consists of five judgements:
 \begin{itemize}
@@ -297,38 +296,17 @@ The base type theory consists of five judgements:
 \item $\TypeTwo{\gamma}{s}{p}{q}$ are \emph{mode type morphisms}
 \item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ are \emph{mode 2-cells}
 \end{itemize}
+as well as corresponding judgemental equality judgements for each.
 The first three judgements have the familiar structure of a dependent
 type theory, while the fourth and fifth add an additional notion of
 morphism between types and morphism between terms.  The mode type
 morphisms can be thought of as a special class of terms, as explained
-below.
+below.  A \emph{mode theory} is a signature of constants for mode types,
+mode terms, mode type morphisms, and mode 2-cells.
 
-Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
-contravariantly in the mode theory and $\TypeTwo{\gamma}{s}{p}{q}$ and
-$\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ act \emph{contravariantly} on the
-subscripts of upstairs terms.
-
-We expect structurality to be admissible for the base, and structurality
-over that to be admissible for the top, e.g.:
-\begin{mathpar}
-\inferrule*[Left = weaken-over]
-           {\Gamma,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,\gamma' \vdash \mu : p)}
-           {\Gamma,y:B,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,y:q,\gamma' \vdash \mu : p)}
-
-\inferrule*[Left = subst-over]
-           {\Gamma,x:A,\Gamma' \yields_\nu N : C \\ (\text{where } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
-            \Gamma \vdash_\mu M : A \\ (\text{where } \gamma \vdash \mu : p)
-           }
-           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \\ (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
-\end{mathpar}
-
-
-\subsection{Mode Theory}
-
-\begin{enumerate}
-
-\item Contexts are as usual:
-
+\subsection{Mode Contexts}
+Mode contexts are, as usual, given by iteratively adding variables of
+mode types:
 \begin{mathpar}
   \inferrule*{ }
              {\cdot \ctx}
@@ -339,7 +317,10 @@ over that to be admissible for the top, e.g.:
     {\gamma,x:p \ctx}
 \end{mathpar}  
 
-\item In all mode theories, terms must have: 
+\subsection{Mode Terms}
+
+In addition to the constants introduced by specific mode theories, there
+are two ways of making mode terms: 
 
 \begin{mathpar}
 \inferrule*{ }
@@ -350,12 +331,25 @@ over that to be admissible for the top, e.g.:
      \TypeTwo{\gamma}{s}{p}{q}
     }
     {\gamma \yields \TrPlus{s}{\mu} : p}
-\\
+
 \TrPlus{\id}{\mu} \equiv \mu \qquad
 \TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
 \end{mathpar}
 
-\item Mode type morphisms:
+The first is the usual variable rule.  The second says a mode type
+morphism $\TypeTwo{\gamma}{s}{p}{q}$ acts contravariantly on mode terms,
+inducing a ``function'' $q \to p$ (since we do not have function types
+in the base type theory, this means a term with a free variable $x : q
+\vdash \TrPlus{s}{x} : p$), and that this action is functorial in
+identity and composition of mode type morphisms (defined next).
+
+\subsection{Mode type morphisms}
+
+In addition to the constants of a specific mode theory, mode type
+morphisms are given by identity, composition, and whiskering
+(``$\mathsf{ap}$'') of a mode type on a mode term 2-cell (which are
+defined below):
+
 \begin{mathpar}
     \inferrule*{ }
           {\TypeTwo{\gamma}{\id_p}{p}{p}}
@@ -374,12 +368,11 @@ over that to be admissible for the top, e.g.:
 \id;s \equiv s \equiv s;\id \and
 (s;s');s'' \equiv s;(s';s'') \\ 
 \ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
-\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \\ 
+\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \and
 \ap q {s/\_} \equiv \id_q \\ 
-\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad (\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type)\\
-s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad 
-(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
-
+\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad \text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type\\
+t[\nu/x];\ap{q'}{s/x} \equiv \ap{q}{s/x};t[\nu'/x] \quad 
+\text{where } \TypeTwo{\gamma,x:p}{t}{q}{q'} \text{ and } \TermTwoT{\gamma}{s}{\nu}{\nu'}{p}
 %% subst: \id_\mu[\nu/x] = \id_{\mu[\nu/x]}
 %% subst: s[x/x] = s
 %% subst: (s;t)[\mu/x] = s[\mu/x];t[\mu/x]
@@ -387,20 +380,44 @@ s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x] \quad
 %% subst: ap q (s [\mu/x]) = (ap q s)[\mu/x] and generalization
 \end{mathpar}
 
-We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
+Most of the equations are standard identity/associativity/projection
+laws.  The first two say that composition is unital and associative.
+The next two say that whiskering is functorial in the identity and
+composition of mode type 2-cells (defined below). The next says that
+whiskering with a constant function (i.e. when $x$ does not occur in
+$q$) is the identity mode type morphism.  The next says that whiskering
+a type given by substitution associates with the whiskering of a mode
+term 2-cell by a term (defined below).  The final equation is a
+naturality law saying that the two possible definitions of a horizontal
+composition $\ap t {s/x} : q[\nu/x] \tcell q'[\nu'/x]$ are equal.
+We will use the following notation for this:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+        \TypeTwo{\gamma, x : p}{t}{q}{q'}}
+      {\TypeTwo{\gamma}{\ap{t}{s/x} :\equiv t[\nu/x];\ap{q'}{s/x}}{q[\mu/x]}{q'[\mu'/x]}}
+\\ 
+\ap{\id_q}{s/x} \equiv \ap{q}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\end{mathpar}
 
-\item 2-cells between terms.  First, we have
-  identity/composition/whiskering and associated equations (whiskering
-  on the other side is given by substitution):
+We sometimes write \ap{q}{s} for \ap{q(x)}{s/x}, eliding the variable
+name when it is clear how to view $q$ as a term with a distinguished
+variable.
+
+\subsection{Mode term 2-cells}
+
+Similarly, mode term 2-cells are given by identity, composition, and
+post-whiskering (pre-whiskering is given by substitution), and
+associated equations:
 \begin{mathpar}
     \inferrule*{ }
           {\TermTwoT{\gamma}{\id_\mu}{\mu}{\mu}{p}}
-    \qquad
+    \quad
     \inferrule*{{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p}} \\
                 {\TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p}}
           }
    {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
-
+\quad
 \inferrule*{{\gamma,x:p} \yields {\nu} : {q} \\
             \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}\\
            } 
@@ -411,29 +428,88 @@ We write $\ap q {t/x}$ for whiskering (\dsd{ap} in book HoTT).
 (s;s');s'' \equiv s;(s';s'') \\ 
 \ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
 \ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
-\ap x {s/x} \equiv s  \and
-\ap \nu {s/\_} \equiv \id_\nu \and
+\ap x {s/x} \equiv s  \\ 
 \ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
-(\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q)\\
-t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \quad
- (\text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}) \\
-\ap{\TrPlus{s}{\mu}}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
-(\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and } \TermTwoT{\gamma}{t}{\nu}{\nu'}{p})
+\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q\\
+\ap \nu {s/\_} \equiv \id_\nu \\
+t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\mu'/x]/y} \quad
+ \text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+\ap{(\TrPlus{s}{\mu})}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
+\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and }
+\TermTwoT{\gamma}{t}{\nu}{\nu'}{p} \text{ and } \gamma,x:p \vdash \mu : q'
 \end{mathpar}
 
-\item We assume $1/\Sigma$ modes:
+Identity and composition are standard.  When $q$ does not depend on $x$,
+whiskering the ``function'' $x : p \vdash \nu : q$ onto the mode term
+2-cell $s : \mu \tcell_p \mu'$ between two mode terms $\mu,\mu'$ of
+mode $p$ gives a term 2-cell $\nu[\mu/x] \tcell_q \nu[\mu'/x]$.
+However, in general $q$ might depend on $x$, in which case we have a
+``dependent $\mathsf{ap}$'', which gives a mode term in $q[\mu/x]$
+between $\nu[\mu/x]$ and the ``transport'' of $\nu[\mu'/x]$ along the
+mode type morphism $\ap q {s/x} : q[\mu/x] \tcell q[\mu'/x]$ (in
+the non-dependent case, the above equations say that $\ap q {s/x} \equiv
+\id_q$, and that $\TrPlus{\id_q}{\nu[\mu'/x]} \equiv {\nu[\mu'/x]}$, so
+the ``transport'' cancels).
+
+The first two equations say that composition is associatve and unital.
+The next two that whiskering is functorial in mode term 2-cell identity
+and composition; the composition equation is the usual ``path over''
+composition using whiskering, and both equations type check because of
+the functoriality equations for $\TrPlus{s}{-}$.  The next two equations
+say that whiskering is functorial in the function position: whiskering
+with the identity function is the identity, and whiskering with a
+composition is iterated whiskering.  The next equation says that
+whiskering with a constant function ($x$ does not occur in $\nu$) is the
+identity.
+
+The next equation equates the two potential definitions of horizontal
+composition $\ap t {s/x} : \nu[\mu/x] \tcell_{q[\mu/x]}
+\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}$.  We write
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma, x : p}{t}{\nu}{\nu'}{q}}
+             {\TermTwoT{\gamma}{\ap{t}{s/x} :\equiv t[\mu/x];\ap{\nu'}{s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+\\ 
+\ap{\id_\nu}{s/x} \equiv \ap{\nu}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\end{mathpar}
+for this.
+
+The final equation distributes the $\mathsf{ap}$ of a ``transport'' 
+$\TrPlus{s}{\mu}$ into two $\mathsf{ap}$'s, and type checks because 
+$s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x]$.  
+
+We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
+variable name when it is clear how to view $\mu$ as a term with a
+distinguished variable; e.g. $\ApPlus{s}{t}$ for
+$\ap{\TrPlus{s}{x}}{t/x}$.  
+
+\subsection{Mode Unit Types}
+
+It will be useful to have the unit mode type in the base type theory:
 
 \begin{mathpar}
   \inferrule*{ } { \gamma \yields 1 \type } \and
   
-  \inferrule*{ \gamma \yields p \type \\ 
-               \gamma,x:p \yields q \type }
-             {\gamma \yields \sigmacl{x}{p}{q} \type} \\
-             
   \inferrule*{ }
              {\gamma \yields \mt : 1}
   \and 
   \mu \equiv \mt
+  \and
+s \equiv \id_{()} \text{ for } \yields s : () \tcell_1 ()
+\end{mathpar}
+
+\subsection{Mode $\Sigma$ types}
+
+It will also be convenient to have $\Sigma$ mode types.  We write these
+as telescopes $\sigmacl{x}{p}{q}$ to distinguish them from the $\Sigma$
+types of an object language.  At the mode type and term level, the rules
+are standard:
+\begin{mathpar}
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \sigmacl{x}{p}{q} \type} \\
+             
 \\
 \inferrule*{
   \gamma \yields \mu : p \and
@@ -454,109 +530,90 @@ t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ApPlus{\ap{q}{s/x}}{t[\mu'/x]} \qu
     p \equiv (\fst p, \snd p)
 \end{mathpar}
 
-Equations for ``transport'' in $\Sigma$:
-\begin{mathpar}
-\TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
-\end{mathpar}
-
-Mode type morphisms: We need congruence for $\Sigma$ to be a rule (because we don't have ap on a type variable/universes):
+Next, we assert a congruence rule for $\Sigma$-types on mode type
+morphisms:
 \begin{mathpar}
   \inferrule*
   {\TypeTwo{\gamma}{s}{p}{p'} \\
     \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
-  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} \\
-
-  \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \and
+  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} 
+  \\
+    \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \\
   (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
 
   \ap{(\sigmacl{x'}{p}{q})}{s/(y:r)} \equiv
-  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/(z:(\sigmacl{y}{r}{p}))}}
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z:(\sigmacl{y}{r}{p})}}
+  \\
+  \TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
 \end{mathpar}
+The first three equations say that this interacts with identity,
+compositions, and whiskering: The $\Sigma$ of two identities is the
+identity.  The composition of two $\Sigma$ morphisms is the $\Sigma$ of
+the composites.  The generic whiskering for mode type morphisms, when
+instantiated with a $\Sigma$ mode, is equal to the appropriate instance
+of this congruence rule (we write $\ap{q}{s/(x:p)}$ to indicate the type
+of the variable involved in the $\mathsf{ap}$).  The final equation says
+that the ``transport'' along the $\Sigma$ of two mode type morphisms
+acts componentwise.
 
-Finally, we have the 2-cells for $1/\Sigma$-terms:
+Finally, we add mode term 2-cells for $\Sigma$ mode types.  It suffices
+to add the ``horizontal'' mode term 2-cells (non-trivial in the first
+component), because the ``vertical'' ones (non-trivial in the second
+component) are given by a whiskering: if $t : \nu \tcell_{q[\mu/x]}
+\nu'$ then $\ap{(\mu,y)}{t/y} : (\mu,\nu) \tcell_{\sigmacl{x}{p}{q}}
+(\mu,\nu')$.  The rules are:
 \begin{mathpar}
-s \equiv \id_{()} \text{ for } \yields_1 s : () \tcell ()
-\\
-
 \inferrule*
     {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
       \gamma \vdash \nu' : q[\mu'/x]
     }
       {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
-\ap {\fst(z)} {\extend{s}{\nu'}/z} \equiv s \and
-\ap {\snd(z)} {\extend{s}{\nu'}/z} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \\
-s \equiv \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}} \quad (\text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}})
+\ap {\fst} {\extend{s}{\nu'}} \equiv s \and
+\ap {\snd} {\extend{s}{\nu'}} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \and
+s \equiv (\ap{\fst}{s}, \ap{\snd}{s}) %% \quad \text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}
 \\      
 {\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
 {\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
 \extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
-(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad (\text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]})
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad \text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]}
 \end{mathpar}
 
-\item
-  All judgements have a substitution principle
-\begin{mathpar}
-  \inferrule*{\gamma,x:p,\gamma' \yields J \\
-              \gamma \yields \mu : p
-              }
-             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]} \\
-
-J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
-\end{mathpar}
-
-\drlnote{write out the usual rules defining this}
-             
-\end{enumerate}
-
-We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
-variable name when it is clear how to view $\mu$ as a term with a
-distinguished variable; e.g. $\ApPlus{s}{t}$ for
-$\ap{\TrPlus{s}{x}}{t/x}$.
-
-\subsubsection{Lemmas}
-
-Horizontal composition:
-\begin{mathpar}
-  \inferrule*[Left=Derivable]
-      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
-    \TermTwoT{\gamma, x : p}{t}{\nu}{\nu'}{q}}
-             {\TermTwoT{\gamma}{\ap{t}{s/x} :\equiv t[\mu/x];\ap{\nu'}{s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
-\\ 
-\ap{\id_\nu}{s/x} \equiv \ap{\nu}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
-\end{mathpar}
-
-Pairing and projection 2-cells are definable:
+The equations make use of the following definable abbreviations for
+pairing and projection 2-cells:
 \begin{mathpar}
   \inferrule*[Left=Derivable]
       {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
     \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
              {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
-
-   \inferrule*[Left=Deriv]
+  \\
+   \inferrule*[Left=Derivable]
               { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
-              { {\TermTwoT{\gamma}{\ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
-   \and
-   \inferrule*[Left=Deriv]
+              { {\TermTwoT{\gamma}{\ap{\fst}{s} := \ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+  \\
+   \inferrule*[Left=Derivable]
               { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
-              { {\TermTwoT{\gamma}{\ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+              { {\TermTwoT{\gamma}{\ap{\snd}{s} := \ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
 \end{mathpar}
+%
+The first two equation are the $\beta$ rules for morphisms in $\Sigma$
+modes.  The next is an $\eta$ (the right-hand side expands to
+\ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}}).
+The next two equations give functoriality on identity and composition of
+mode term 2-cells in $p$. The final naturality equation
+reconciles the two possible ways of defining $(s,t)$.  
 
-
-\begin{lemma}
-For mode term morphisms
-\begin{align*}
-\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
-\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
-\TermTwoT{\gamma &}{s'}{\mu'}{\mu''}{p} \\
-\TermTwoT{\gamma &}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
-\end{align*}
+The derivable general pairing 2-cell interacts with identity and
+composition: we have $(\id_\mu,\id_{\nu}) \equiv \id_{(\mu,\nu)}$ 
+and, for mode term 2-cells 
+\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} and 
+\TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} and 
+\TermTwoT{\gamma}{s'}{\mu'}{\mu''}{p} and 
+\TermTwoT{\gamma}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
 we have
 \begin{align*}
 (s, t);(s', t') \equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
 \end{align*}
-\end{lemma}
-\begin{proof}
-Follows by
+This follows by
 \begin{align*}
 (s, t);(s', t') 
 &\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'};\ap{(\mu',y)}{t'/y};\extend{s'}{\nu''} \\
@@ -565,7 +622,35 @@ Follows by
 &\equiv \ap{(\mu,y)}{t;\ApPlus{\ap{q}{s}}{t'}/y};\extend{s;s'}{\nu''} \\
 &\equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
 \end{align*}
-\end{proof}
+
+\begin{remark}
+An alternative to specifying the mode term morphisms in $\Sigma$-types
+as above would be to have mode telescopes as part of the judgement
+structure.  For example, if we had a primitive ``Frobenius'' whiskering
+that acted on the middle of the context:
+\[
+\inferrule*{{\gamma,x:p,\gamma'} \vdash {q} \type \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+           } 
+           {\TypeTwo{\gamma,\vec{y}:\gamma'[\mu'/x]}{\ap {q} {t/x}}{q[\mu/x,\TrPlus{\ap{\gamma'}{s}}{\vec{y}}/y]}{q[\mu'/x]}}
+\]
+(and similarly for terms) then $(s,\mathsf{id})$ would be a special
+case.  Conversely, we can define these Frobenius whiskerings by packing
+$x:p,\gamma'$ into a mode $\Sigma$ type.  Though the telscope approach
+would be more judgemental, it adds a bit of weight to the presentation,
+which we choose to avoid here.
+\end{remark}
+
+\subsection{Substitution}
+  All judgements have an admissible substitution principle
+\begin{mathpar}
+  \inferrule*{\gamma,x:p,\gamma' \yields J \\
+              \gamma \yields \mu : p
+              }
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]} \\
+
+J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
+\end{mathpar}
 
 \section{Example Mode Theories}
 
@@ -1066,6 +1151,27 @@ Top judgements:
 \item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
 \item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
 \end{itemize}
+
+
+Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
+contravariantly in the mode theory and $\TypeTwo{\gamma}{s}{p}{q}$ and
+$\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ act \emph{contravariantly} on the
+subscripts of upstairs terms.
+
+We expect structurality to be admissible for the base, and structurality
+over that to be admissible for the top, e.g.:
+\begin{mathpar}
+\inferrule*[Left = weaken-over]
+           {\Gamma,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,\gamma' \vdash \mu : p)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,y:q,\gamma' \vdash \mu : p)}
+
+\inferrule*[Left = subst-over]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \\ (\text{where } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \\ (\text{where } \gamma \vdash \mu : p)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \\ (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
+\end{mathpar}
+
 
 \subsection{Contexts}
 
