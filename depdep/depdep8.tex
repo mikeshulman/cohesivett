@@ -304,6 +304,11 @@ morphisms can be thought of as a special class of terms, as explained
 below.  A \emph{mode theory} is a signature of constants for mode types,
 mode terms, mode type morphisms, and mode 2-cells.
 
+The mode theory can be thought of as a ``2-category with dependent
+types,'' generalizing the base type theories of our previous
+work~\cite{lsr17fibrational,ls15adjoint}, which were 2 (multi-)
+categories.
+
 \subsection{Mode Contexts}
 Mode contexts are, as usual, given by iteratively adding variables of
 mode types:
@@ -654,11 +659,25 @@ J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
 
 \section{Example Mode Theories}
 
-\mvrnote{At some point near the start we should say:
-For clarity we will often treat mode terms with a distinguished parameter as though they were functions. So if $\gamma, x : p \yields f : q$ we write $f(m)$ rather than $f[m/x]$.
-}
+In examples, we will often treat mode terms with a distinguished
+parameter as though they were functions, because $f(\mu)$ is shorter
+than $f[\mu/x]$.  This makes sense when $\gamma, x : p \yields f : q$
+and the fact that it should be a function of $x$ is clear from context.
 
 \subsection{Adjoint Mode Terms}
+
+The base type theory is like a 2-category, and one can define an
+adjunctions internally to any 2-category, so there is a definition
+corresponding to an internal adjunction in the base type theory.
+Adjunctions in the mode theory played a role in our previous
+work~\cite{lsr17fibrational,ls15adjoint} because an adjunction in the
+base generates to a triple adjunction in the top---this is because a
+single mode term in the base generates an adjunction in the top, and an
+adjoint pair of adjunctions is a triple adjunction.  Additional examples
+of such triple adjunctions will come up here---for example as in the
+Lawvere definition of quantifiers $\exists_x \dashv \pi_x \dashv
+\forall_x$ in first-order logic.
+
 \begin{definition}
 A mode term $\gamma, x : p \yields f : q$ is \emph{left adjoint} to $\gamma, y : q \yields u : p$ if there are specified constants:
 \begin{align*}
