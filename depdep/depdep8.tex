@@ -2164,6 +2164,7 @@ with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equ
 
 \begin{itemize}
 \item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$, together with a mode type morphism $\cdot \yields \tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ where $\ctxtuple{\downstairs{\Gamma}}$ is the iterated telescope type of Lemma~\ref{lem:ctxtuple}. This mode type morphism describes the dependency structure of the context.
+  \msnote{Wouldn't it be more accurate to say that $\downstairs{\Gamma}$ describes the \emph{internal} dependency structure of the context (i.e.\ how types in $\Gamma$ depend on variables elsewhere in $\Gamma$) and $\tshape{\Gamma}$ describes the \emph{external} dependency structure (i.e.\ how some other judgment made \emph{in} context $\Gamma$ will depend on the variables in $\Gamma$)?  Or am I misunderstanding?}
 \item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$, where
 \begin{align*}
 \downstairs{\Gamma} \yields \modeof{\Gamma} :\equiv \TrPlus{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}} : p
