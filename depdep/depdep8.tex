@@ -1452,19 +1452,23 @@ left and right adjoint types.
 
 \subsection{Dependently Indexed Linear Types}
 
-\mvrnote{What should this be called? V\'ak\'ar just says Linear Dependent Type Theory but that is slightly overselling it... }
+Next, we consider non-dependent linear types indexed by structural
+dependent types, as in \citep{vakar}, which is a simple examples of a
+dependent type theory with some linearity.
 
 \begin{definition}
 A comprehension object $p$ \emph{supports a dependently indexed linear context} if there is:
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha} &\yields x \otimes_\alpha y : \El{p}{\alpha}
 \end{align*}
-such that $\otimes_\alpha$ is symmetric and $\One_\alpha$ is a unit for $\otimes_\alpha$ \mvrnote{(strictness?)}. \mvrnote{Pending: What exactly do we need?}
+such that $\otimes_\alpha$ is associative and commutative and $\One_\alpha$ is a unit for
+$\otimes_\alpha$.
+\mvrnote{(strictness?)}. \mvrnote{Pending: What exactly do we need?}
 \end{definition}
 
-\begin{definition}
-A comprehension object $p$ \emph{supports $!$-types} if it supports a linear context and there is \mvrnote{???}
-\end{definition}
+%% \begin{definition}
+%% A comprehension object $p$ \emph{supports $!$-types} if it supports a linear context and there is \mvrnote{???}
+%% \end{definition}
 
 \begin{definition}
 A comprehension object $p$ \emph{supports $\Sigma!$-types} if it supports a linear context and there is
@@ -1485,62 +1489,75 @@ that exhibit $\Sigma!(x,-)$ as a left adjoint to $\TrPlus{\ApEl{p}{\pi^\alpha_x}
 \end{align*}
 is an isomorphism.
 \end{definition}
-\mvrnote{The latter is the Frobenius condition, we can still have a weaker $\Sigma!$-elim without it}
+Here, $\frob{}$ is a Frobenius condition, which allows carrying some
+linear assumptions $\xi$ through to the premise of a $\Sigma!$
+elimination; a weaker $\Sigma!$ elimination rule is available without
+it.
 
-
+\drlnote{What do $\Pi!$ types need?}
 
 \section{Type Theory over a Mode Theory}
 \label{sec:top-syntax}
 
-Top judgements: 
+The role of the \emph{top type theory} in our framework is to provide
+general type-theoretic rules for working ``inside'' the type theory
+specified by a mode theory.  In the previous section, we showed
+signatures for a variety of example substructural and modal dependent
+type theories, and in the next section we will prove that the instances
+of the top type theory with these mode theories support the familiar
+rules for these examples.
+
+The top type theory consists of three judgements: 
 \begin{itemize}
-\item $\yields_\gamma \Gamma \CTX$ over $\yields \gamma \ctx$
-\item $\Gamma \yields_p A \TYPE$ over $\gamma \yields p \type$
-\item $\Gamma \yields_\mu M : A$ over $\gamma \yields \mu : p$
+\item $\yields_\gamma \Gamma \CTX$ where $\yields \gamma \ctx$.
+\item $\Gamma \yields_p A \TYPE$ where $\gamma \yields p \type$.
+\item $\Gamma \yields_\mu M : A$ where $\gamma \yields \mu : p$ and
+  $\Gamma \yields_p A \TYPE$.
 \end{itemize}
+along with corresponding equality judgements.  Because of the
+fibrational perspective, we say that a judgement is ``over'' a
+corresponding entity from the base type theory: a top context $\Gamma$
+is over a mode context $\gamma$, a top type $A$ is over a mode type $p$,
+and a top term $M$ is over a mode term $\mu$.  We also say that a type $A$
+``has mode $p$'', and that a term $M$ ``has mode $\mu$''. 
 
+We treat the well-formedness of the mode theory entities as a
+presupposition of the top judgements, but sometimes write ``(over
+\ldots)'' in inference rules to emphasize the typing that is happening
+in the base.  We also treat the well-formedness of the non-principal
+subjects of a judgement as presuppostions.
 
-Mode type morphisms $\TypeTwo{\gamma}{s}{p}{q}$ induce 1-cells
-contravariantly in the mode theory and $\TypeTwo{\gamma}{s}{p}{q}$ and
-$\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ act \emph{contravariantly} on the
-subscripts of upstairs terms.
+In general, we think of the base type theory entities subscripting the
+turnstile as ``permissions'' to use variables in certain ways, with the
+mode theory dictating the ``policies'' of a particular type theory.  
 
-We expect structurality to be admissible for the base, and structurality
-over that to be admissible for the top, e.g.:
-\begin{mathpar}
-\inferrule*[Left = weaken-over]
-           {\Gamma,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,\gamma' \vdash \mu : p)}
-           {\Gamma,y:B,\Gamma' \yields_\mu M : A \\ (\text{where } \gamma,y:q,\gamma' \vdash \mu : p)}
+\subsection{Top Contexts}
 
-\inferrule*[Left = subst-over]
-           {\Gamma,x:A,\Gamma' \yields_\nu N : C \\ (\text{where } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
-            \Gamma \vdash_\mu M : A \\ (\text{where } \gamma \vdash \mu : p)
-           }
-           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \\ (\text{where } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
-\end{mathpar}
-
-
-\subsection{Contexts}
+Top contexts are as usual, over the corresponding contexts of the base.  
 
 \begin{mathpar}
   \inferrule*[Left = ctx-form]{ }
-  {\yields_{\cdot} \cdot \CTX  } \and 
+             {\yields_{\cdot} \cdot \CTX  } \and 
 
   \inferrule*[Left = ctx-form]{
-    \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx) \\\\
-    \Gamma \yields_p A \TYPE \and (\text{where }  \gamma \yields p \type)}
-  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \and (\text{where } \yields \gamma,x:p \ctx)  } \\
+    \yields_\gamma \Gamma \CTX \quad \text{over } (\yields \gamma \ctx) \\\\
+    \Gamma \yields_p A \TYPE \quad \text{over }  (\gamma \yields p \type)}
+  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \quad \text{over } (\yields \gamma,x:p \ctx)  } \\
 \end{mathpar}
 
-\subsection{Types and Terms}
+We adopt a convention that the same variable names are used in the top
+context and base context (which must, by these rules have the same
+number of variables).  
 
-\subsubsection{Structural Rules}
+\subsection{Top Structural Rules}
+\label{sec:top-syntax-structural}
 
+There are two derivable structural rules: 
 \begin{mathpar}
   \inferrule*[Left = var]{
     % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
   }
-  {\Gamma, x : A, \Gamma' \yields_x x : A \and (\text{where } \gamma,x:p,\gamma' \yields x : p)} \and
+  {\Gamma, x : A, \Gamma' \yields_x x : A \quad (\text{over } \gamma,x:p,\gamma' \yields x : p)} \and
 
  \inferrule*[Left = rewrite]{
    \Gamma \yields_\mu M : A 
@@ -1553,96 +1570,241 @@ over that to be admissible for the top, e.g.:
   \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}}
 \end{mathpar}
 
-\subsubsection{Telescope Types}
+The first is the familiar variable rule, which is over the corresponding
+variable rule in the base.  Intuitively, this says that to use an
+assumption, the subscripting mode term must tell you that you can and
+must use exactly that variable.  More permissive policies
+(e.g. weakening away unused variables) will come from specific mode
+theories.
+
+The second rule says that mode term morphisms act contravariantly on
+judgement subscripts, and the equations say that this action is
+functorial, and commutes with substitution (the $\StI{}{}$ notation is
+introduced in Section~\ref{sec:top-s-types} below).
+
+The remaining rules make weakening, exchange, and substitution
+admissible for the top type theory, where each rule is over the
+corresponding structural rule of the base.  For example, we have
+\begin{mathpar}
+\inferrule*[Left = weaken-over, Right=admissible]
+           {\Gamma,\Gamma' \yields_\mu M : A \quad (\text{over } \gamma,\gamma' \vdash \mu : p)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A \quad (\text{over } \gamma,y:q,\gamma' \vdash \mu : p)}
+
+\inferrule*[Left = subst-over, Right=admissible]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \quad (\text{over } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \quad (\text{over } \gamma \vdash \mu : p)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \quad (\text{over } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
+\end{mathpar}
+
+In terms of permissions, weakening-over-weakening says that it is always
+permissible to add a variable to the framework context, even when using
+the framework to encode a type theory without weakening; this is because
+adding $y$ to the framework context does not also add it to the
+``permissions'' $\mu$, which is a separate step that must be given in
+the mode theory.  Substitution-over-substitution says that, in the mode
+term, a substitution replaces all occurences of $x$ with the mode term
+$\mu$ used to construct the top term $M$ that is plugged in for $x$.
+
+\subsection{Top Unit Types}
+
+We introduce a unit type in the top type theory, whose rules are over
+the corresponding rules for the unit type in the base:
 
 \begin{mathpar}
   \inferrule*[Left=$1$-form]{~}{\Gamma \yields_{1} 1 \TYPE} \and
-  \inferrule*[Left=$1$-intro]{~}{\Gamma \yields_{()} () : 1} \\
+  \inferrule*[Left=$1$-intro]{~}{\Gamma \yields_{()} () : 1} \and
   M \equiv () \\
+\end{mathpar}
+
+Note that top unit types will play a rather structural role, and not, on
+their own, model the unit types of a particular encoded language.  This
+is because the unit type of an encoded language will have mode
+$\mathsf{p}$ for some constant, or e.g. for a comprehension object
+representing dependent type theory $\El{\mathsf p}{\alpha}$, and not
+mode $1$.  
+
+\subsection{Top Telescope Types}
+
+Similarly, we introduce a $\Sigma$ type to the top type theory, over the
+corresponding rules for mode $\Sigma$ types.  But as in the base type
+theory, we refer to them as \emph{telescope types} to emphasize that
+they play a structural role, rather than, on their own, represent the
+$\Sigma$ types of an encoded language.  
+
+\begin{mathpar}
   \inferrule*[Left=$()$-form]{ \Gamma \yields_p A \TYPE \\
                \Gamma,x:A \yields_q B \TYPE}
              { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
-  \\
+  \and
   \inferrule*[Left=$()$-pair]{ \Gamma \yields_\mu M : A \\
                \Gamma \yields_\nu N : B[M/x]
              }
              { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
-  \and
+
+  \\
+             
   \inferrule*[Left=$()$-fst]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
              { \Gamma \yields_{\fst \mu} \fst{M} : A} 
   \and
   \inferrule*[Left=$()$-snd]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
              { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
 
+  \\
+             
     \fst{(M,N)} \equiv M \and
     \snd{(M,N)} \equiv N \and
     P \equiv (\fst P, \snd P)
 \end{mathpar}
 
+We present telescope types as negative $\Sigma$ types, with a
+judgemental $\eta$ rule.  Each rule is over the corresponding rule of
+the base type theory.
 
-\subsubsection{Modalities}
+\subsection{Left Adjoint Modalities}
+
+Left adjoint modalities, written $\F{x.\mu}{A}$, represent a
+pushforward/cocartesian lift of a mode term $x : p \vdash \mu : q$, taking
+types of mode $p$ to types of mode $q$.  $\mathsf{F}$-types will be used
+to represent left adjoint modalities (e.g. $\flat$ in spatial type
+theory).  In combination with top unit types and top telescope types,
+these will also be used to represent encoded language unit and $\Sigma$
+types.  For example, the $\Sigma_A B$ of standard dependent type theory
+will be represented by $\F{z.\Sigma_1(\fst z, \snd
+  z)}{\telety{x}{A}{B}}$: the telescope type has telescope mode
+$\sigmacl{x}{\El{p}{\alpha}}{\El{p}{\alpha.x}}$, and then we use an
+$\mathsf{F}$ type to push forward along the mode term $\Sigma_1$ that we
+use to assert that a comprehension object supports $\Sigma$ types.
+In \citep{lsr17multi-extended}, we used an $n$-ary $\mathsf{F}$ type in
+place of having separate telescope types.
+
+The rules are:
 
 \begin{mathpar}
   \inferrule*[Left = F-form]{
-    %% \yields_\gamma \Gamma \CTX \and (\text{where } \yields \gamma \ctx)\\\\
-    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type) \\\\
+    %% \yields_\gamma \Gamma \CTX \quad (\text{over } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type) \\\\
     \gamma, x:p \yields \mu : q 
   }
-  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \and (\text{where } \gamma \yields q \type) } \\
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \quad (\text{over } \gamma \yields q \type) } \\
   
   \inferrule*[Left = F-intro]{
     \Gamma \yields_{\nu} M : A
-    \and (\text{where } \gamma \yields {\nu} : p)
+    \quad (\text{over } \gamma \yields {\nu} : p)
     %% \and \gamma \yields \nu : q 
     %% \and \gamma \yields \mu[\theta] : q 
     %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
   }
-  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \and (\text{where } \gamma \yields \mu[\nu/x] : q)} \\
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \mu[\nu/x] : q)} \\
 
   \inferrule*[Left = F-elim]{
-    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and (\text{where } \gamma, y : q \yields r \type) \\\\
-    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
     \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
-    \and (\text{where } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
-  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \and (\text{where }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+    \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \quad (\text{over }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
   \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
 %  \text{(optionally:) }
 %  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
-  \\ \\
+  \\ 
 
   \inferrule*[Left = F-Elim]{
     \gamma,y:q \yields r \type \\\\
-    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \and (\text{where } \gamma \yields \nu : q) \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
     \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
-    \and (\text{where } \gamma, x:p \yields r [\mu / y] \type )}
-  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \and (\text{where }  \gamma \yields {r[\nu/y]} \type)} \\
+    \quad (\text{over } \gamma, x:p \yields r [\mu / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \quad (\text{over }  \gamma \yields {r[\nu/y]} \type)} \\
   \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
 %  \text{(optionally:) }
 %  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
-\\ \\
+  \\
+  
+  (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+\end{mathpar}
+
+$\mathsf{F}$ types are a positive type, and can be thought of as a
+datatype with one constructor, the introduction rule $\FI{M}$.  The main
+idea is that $\Gamma, x:A \vdash_{\mu(x)} \FI{x} : \F{x.\mu}{A}$;
+i.e. to introduce $\F{x.\mu}{A}$, the mode term must be $\mu$.  The full
+form of the introduction rule builds in a substitution for $x$ to make
+substitution admissible.  The elimination rule patterm-matches on a term
+of $\mathsf{F}$ type.  In sequent calculus style, it characterizes maps
+out of $\mathsf{F}$ types:
+\begin{mathpar}
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \\\\
+    \Gamma, y : \F{x.\mu}{A}, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma, y : \F{x.\mu}{A} \yields_{\nu'} \FE{y}{x}{N} : C  \quad (\text{over }  \gamma \yields {\nu'} : r)} 
+\end{mathpar}
+This says that an assumption of $\F{x.\mu}{A}$ can be replaced by an
+assumption of $A$, but in the mode term we replace $y$ by $\mu$ to
+remember the ``permissions'' for using $x$.
+
+We treat $\mathsf{F}$ types like a positive type in dependent type
+theory: we have a judgemental $\beta$ equality, but no $\eta$ (we intend
+$\eta$ to be provable from the elimination rule with some sort of
+identity type (which we have not yet investigated)).  We also include a
+large elimination rule, i.e. a second elimination rule that maps into
+types (which we do not identify with elements of a universe).
+In general, the interaction of the structural rule applying a mode term
+2-cell to a term, $\rewrite{t}{M}$, and the terms for various types
+will follow from the equalities for $\rewrite{t}{-}$ in
+Section~\ref{sec:top-syntax-structural} and the $\eta$ rules for the
+types.  Because we do not have judgemental $\eta$ for $\mathsf{F}$
+types, we assert the necessary interaction in the final equation in the
+figure.  
+
+\subsection{Right Adjoint Modalities}
+
+A simple form of right adjoint types has the shape $\mathsf{U}_{c.\mu}(A
+\TYPE_q) \TYPE_r$ when $c:r \vdash \mu : q$, and represents a
+pullback/cartesian lift along $\mu$, and will be right adjoint to
+$\F{c.\mu}{-}$.  We will generalize this by allowing a contravariant
+position as well, so that right adjoint types include both right adjoint
+modalities and dependent function types
+($\Pi$)~\citep{atkey04separation,lsr17multi-extended}.
+
+\begin{mathpar}
   \inferrule*[Left = U-form]{
-    \Gamma \yields_p A \TYPE \and (\text{where } \gamma \yields p \type)\\\\
-    \and \Gamma,x:A \yields_q B \TYPE \and (\text{where } \gamma,x:p \yields q \type)\\\\
+    \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type)\\\\
+    \and \Gamma,x:A \yields_q B \TYPE \quad (\text{over } \gamma,x:p \yields q \type)\\\\
     \and \gamma, x:p, c:r \yields \mu : q
-  }{\Gamma \yields_r \U{c.\mu}{A}{B} \TYPE \and (\text{where } \gamma \yields r \type)} \\
+  }{\Gamma \yields_r \U{c.\mu}{x:A}{B} \TYPE \quad (\text{over } \gamma \yields r \type)} \\
 
   \inferrule*[Left = U-intro]{
-    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \and (\text{where } \gamma,x:p \yields {\mu[\nu/c]} : q)
+    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \quad (\text{over } \gamma,x:p \yields {\mu[\nu/c]} : q)
   }
   {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
-    \and (\text{where } \gamma \yields \nu : r)
+    \quad (\text{over } \gamma \yields \nu : r)
   } \\
   
   \inferrule*[Left = U-elim]{
-    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \and (\text{where } \gamma \yields \nu_1 : r) \\\\
-    \Gamma \yields_{\nu_2} N_2 : A \and (\text{where } \gamma \yields \nu_2 : p)
+    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \quad (\text{over } \gamma \yields \nu_1 : r) \\\\
+    \Gamma \yields_{\nu_2} N_2 : A \quad (\text{over } \gamma \yields \nu_2 : p)
   }{
-    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \and (\text{where } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \quad (\text{over } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
   } \\
 
   \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
   \UI{x}{\UE{N}{x}} \equiv N
 \end{mathpar}
+
+The type $\U{c.\mu}{x:A}{B}$ can be thought of as a modal verson of $\Pi
+x:A.B$, where $\mu$ describes the permissions under which the variable
+$x$ can be used.  The simplified version discussed above is the special
+case where $A$ is the top unit type $1$.  The variable $c$ in $\mu$ is a
+placeholder for the ``current'' mode term: the $\lambda$ rule says that
+to prove $\U{c.\mu}{x:A}{B}$ over $\nu$, you substitute $\nu$ for $c$ in
+$\mu$ in the premise.  In the elimination rule, application, $\mu$ tells
+you how to combine $\nu_1$ (the permissions for the function) and
+$\nu_2$ (the permissions for the argument) when you apply a function.
+For example, in the simply typed case~\citep*{lsr17multi-extended}, taking
+$\mu(c,x)$ to be $c \times x$ gives an $\to$ type right adjoint to a
+product $\times$.    
+
+We treat these as a negative type, with judgemental $\beta$ and $\eta$
+equality rules.
 
 \subsubsection{Surprisingly Strict Modalities}
 
@@ -1697,12 +1859,10 @@ Term/type equalities:
 \end{align}
 %Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
 
-Due to the lack of the eta rule for $\mathsf{F}$-types, we also need to assert
-\begin{mathpar}
-(\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
-\end{mathpar}
+\subsection{Derivable Terms and Equations}
 
-\subsection{Lemmas}
+We end this section with a number of lemmas (which apply to all mode
+theories) that will be used in example encodings.
 
 \begin{lemma}
 The \textsc{rewrite} rule commutes with pairing of telescope types:
@@ -2138,17 +2298,6 @@ For the second equation, we check inductively that
 %\end{align*}
 %
 %\mvrnote{Need to say something like: Because the above $n$-ary versions have been derived, from now on we use $\ap{\mu}{s/x, t/y}$ as shorthand for the $n$-ary version}
-
-\subsection{Examples}
-
-\begin{itemize}
-\item 
-The previous two-argument \F{\mu}{x:A,y:B} (for $x :p, y:q \vdash \mu :
-r$) is now \F{z.\mu[\fst z/x,\snd z/y]}{\telety{x}{A}{B}}, using the
-upstairs telescope type ${\telety{x}{A}{B}}$, which has mode
-$\sigmacl{x}{p}{q}$.  Iterating $\telety{x}{A}{B}$ plays the role of a
-longer telescope.  
-\end{itemize}
 
 
 \section{Example Encodings of Object Languages}
