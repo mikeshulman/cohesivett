@@ -263,32 +263,32 @@ involved in translating each type theory individually.
 
 \section{Introduction}
 
-cites: Awodey and Bauer, Nuyts bridge-path, Vakar and Krishnaswami
+%% cites: Awodey and Bauer, Nuyts bridge-path, Vakar and Krishnaswami
 
-fibrational: base type theory for specifying mode theories.  top type
-theory is parametrized by a particular mode theory, gives general rules
-that can be instantiated.  
+%% fibrational: base type theory for specifying mode theories.  top type
+%% theory is parametrized by a particular mode theory, gives general rules
+%% that can be instantiated.  
 
-Framework = both base and top
+%% Framework = both base and top
 
-Mode theory = a particular signature in the base
+%% Mode theory = a particular signature in the base
 
-In previous
-work~\citep*{ls16adjoint,ls16adjoint-extended,lsr17multi,lsr17multi-extended},
-the mode theory was a 2-category, or cartesian 2-multicategory.
-Objects/types of the mode theory represent ``modes of truth,'' or
-categories of types.  Morphisms/terms of the mode theory generate type
-constructors, e.g. modalities.  The further 2-cell data of the mode
-theory corresponds to structural rules, such as weakening, exchange,
-contraction for a product, or a (co)unit or (co)multiplication of a
-modality.  Just as a 2-category or 2-multicategory is a directed
-\emph{simple} type theory, here we use a directed \emph{dependent} type
-theory as the mode theory.
+%% In previous
+%% work~\citep*{ls16adjoint,ls16adjoint-extended,lsr17multi,lsr17multi-extended},
+%% the mode theory was a 2-category, or cartesian 2-multicategory.
+%% Objects/types of the mode theory represent ``modes of truth,'' or
+%% categories of types.  Morphisms/terms of the mode theory generate type
+%% constructors, e.g. modalities.  The further 2-cell data of the mode
+%% theory corresponds to structural rules, such as weakening, exchange,
+%% contraction for a product, or a (co)unit or (co)multiplication of a
+%% modality.  Just as a 2-category or 2-multicategory is a directed
+%% \emph{simple} type theory, here we use a directed \emph{dependent} type
+%% theory as the mode theory.
 
-choose your own adventure organization:
-proof theorist, Section~\ref{sec:base-syntax} and \ref{sec:top-syntax};
-category theoriest, Section~\ref{sec:semantics},
-examples Sections \ref{sec:mode-examples}, \ref{sec:example-encodings}.
+%% choose your own adventure organization:
+%% proof theorist, Section~\ref{sec:base-syntax} and \ref{sec:top-syntax};
+%% category theoriest, Section~\ref{sec:semantics},
+%% examples Sections \ref{sec:mode-examples}, \ref{sec:example-encodings}.
 
 \section{Base Type Theory}
 \label{sec:base-syntax}
@@ -1890,13 +1890,15 @@ $B$ to get $\Gamma \vdash_{q[\mu/x]} B[\rewrite{t}{M}/x] \TYPE$; or we
 could first substitute to get $\Gamma \vdash_{q[\nu/x]} B[M/x] \TYPE$
 and then transport the type along $\ap q {t/x}$, getting $\Gamma
 \vdash_{q[\nu/x]} \St{\ap q {t/x}}{B[M/x]} \TYPE$.  The equation says
-that these types are judgementally equal.  
+that these types are judgementally equal.  The left-hand column says
+that if we have $x : A \vdash_\nu N : B$, then substituting
+$\rewrite{t}{M}$ or substituting $M$ and then rewriting are equal.
 
 Note that the corresponding equation for whiskering on the other side,
 $(\St{s}{A})[M/x] \equiv \St{(s[\mu/x])}{A[M/x]}$, is one of the
 defining equations for substitution.
 
-For the first equation (\ref{eq:stype-pair}), the right-hand
+For the final equation (\ref{eq:stype-pair}), the right-hand
 equation interprets the action of a $\Sigma$ of mode type morphisms on
 an upstairs telescope type as a componentwise action. Recall from
 Section~\ref{sec:base-telescopes} that $\sigmacl{x'}{s}{t}$ type checks when
@@ -1921,10 +1923,6 @@ is equal to the term
 $\Gamma \vdash_{(\TrPlus{s}{\mu},\TrPlus{t[\mu/x']}{\nu})} (\StI{s}{M}, \StI{t[\mu/x]}{N}) : \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}$,
 using the equation between types and the equation for a $\Sigma$ mode
 type morphism on mode terms.  
-
-The next two
-equations say that $\St{s}{A}$ is strictly functorial in $s$, with
-corresponding equations for the introduction forms.
 
 \begin{mathpar}
   \inferrule*[Left = s-form]{
@@ -1968,7 +1966,7 @@ corresponding equations for the introduction forms.
 \label{eq:stype-comp} \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
 \label{eq:stype-subst} \rewrite{\ap{\nu}{t/x}}{\StI{\ap{q}{t/x}}{N[M/x]}} &\equiv N[\rewrite{t}{M}/x]  &\St{(\ap{q}{t/x})}{B[M/x]} & \equiv B[\rewrite{t}{M}/x] \\
 \label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} 
-%% other whiskering is a substitution rule:
+%% other whiskering 'is a substitution rule:
 %% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
 \end{align}
 %Where the last term equation is a special case of rewrite on substitutions. The inputs are typed $\Gamma,x:A \vdash_q B \TYPE $\ and $\Gamma \vdash_{\mu'} M : A$ and $\TermTwo{\gamma}{t}{\mu}{\mu'}$.
