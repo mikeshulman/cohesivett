@@ -1348,7 +1348,7 @@ Definition~\ref{def:supports-pis}, because of the way we are
 representing terms, for such a right adjoint type will need that the
 left adjoint preserves $\One$:
 
-\begin{definition}
+\begin{definition} \label{def:supports-right-adjoint}
 A morphism of comprehension objects \emph{supports right adjoint types}
 if $\fone{\alpha} : 1_{\TrPlus{f}{\alpha}} \tcell f_1(1_\alpha)$ is an isomorphism.
 \end{definition}
@@ -1357,7 +1357,7 @@ We write $\foneinv{\alpha}$ to denote the inverse of $\fone{\alpha}$.
 Analogously to Definition~\ref{def:supports-sigmas}, the elimination
 rule for a left adjoint type will require the following:
 
-\begin{definition}
+\begin{definition} \label{def:supports-left}
 A morphism of comprehension objects $f$ \emph{supports left adjoint types} if $\fdist{\alpha, x}$ defined by
 \begin{align*}
 \fibf{\alpha, x} &: \One_{\TrPlus{f}{\alpha.x}} \tcell_{\El{q}{\TrPlus{f}{\alpha.x}}} \ApPlus{\ApEl{q}{\ApPlus{f}{\pi^\alpha_x}}}{f_1(x)} \\
@@ -2415,25 +2415,57 @@ For the second equation, we check inductively that
 \section{Example Encodings of Object Languages}
 \label{sec:example-encodings}
 
+Next, we show that the top theory for the mode theories from
+Section~\ref{sec:mode-examples} support the usual rules for these type theories.
+
 \subsection{Martin-L\"of Type Theory}
 
-To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
+To distinguish judgements in the type theory we are encoding from the ones in the
+framework we use $\qyields$ as the turnstile. We have the following
+judgements:
 \begin{mathpar}
 \qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
 \end{mathpar}
-with the inference rules given in Figure~\ref{fig:qit-rules}. Note that some equations require earlier equations to hold in order to typecheck.
+with the inference rules given in Figure~\ref{fig:qit-rules}, which we
+think of in quotient inductive-inductive type style as presenting the
+free category with families.
+Note that some equations require earlier equations to hold in order to typecheck.
+
+The idea for the representation in the framework is that: 
 
 \begin{itemize}
-\item A context $\qyields \Gamma \CTX$ is represented by a framework context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$, together with a mode type morphism $\cdot \yields \tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ where $\ctxtuple{\downstairs{\Gamma}}$ is the iterated telescope type of Lemma~\ref{lem:ctxtuple}. This mode type morphism describes the dependency structure of the context.
-  \msnote{Wouldn't it be more accurate to say that $\downstairs{\Gamma}$ describes the \emph{internal} dependency structure of the context (i.e.\ how types in $\Gamma$ depend on variables elsewhere in $\Gamma$) and $\tshape{\Gamma}$ describes the \emph{external} dependency structure (i.e.\ how some other judgment made \emph{in} context $\Gamma$ will depend on the variables in $\Gamma$)?  Or am I misunderstanding?}
-\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$, where
-\begin{align*}
-\downstairs{\Gamma} \yields \modeof{\Gamma} :\equiv \TrPlus{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}} : p
-\end{align*}
-Note that $\pack{\downstairs{\Gamma}}$ is simply an iterated tuple of the variables of $\downstairs{\Gamma}$ in order: $(((((), x), y), z), \dots)$.
+\item A context $\qyields \Gamma \CTX$ is represented by a framework
+  context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$,
+  together with a mode type morphism $\cdot \yields \tshape{\Gamma} : p
+  \tcell \ctxtuple{\downstairs{\Gamma}}$ where
+  $\ctxtuple{\downstairs{\Gamma}}$ is the iterated telescope type of
+  Lemma~\ref{lem:ctxtuple}.
+  $\downstairs{\Gamma}$ describes the \emph{internal} dependency structure of the context (i.e.\ how types in $\Gamma$ depend on variables elsewhere in $\Gamma$).
+  $\tshape{\Gamma}$ describes the \emph{external} dependency structure (i.e.\ how some other judgment made \emph{in} context $\Gamma$ will depend on the variables in $\Gamma$).
+  These will be defined mutually, because the internal dependency of a
+  context extension involves a type that is externally dependent on the
+  previous context.  
+
+  We abbreviate
+  \begin{align*}
+    \downstairs{\Gamma} \yields \modeof{\Gamma} :\equiv \TrPlus{\tshape{\Gamma}}{\pack{\downstairs{\Gamma}}} : p
+  \end{align*}
+  Note that $\pack{\downstairs{\Gamma}}$ is simply an iterated tuple of the variables of $\downstairs{\Gamma}$ in order: $(((((), x), y), z), \dots)$.
+  
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$.
 \item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
 \item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$
 \end{itemize}
+
+\subsubsection{Contexts and Substitutions}
+
+\begin{theorem}
+The rules in Figure~\ref{fig:qit-rules} for the contexts and
+substitutions of Martin-L\"of type theory can be interpreted in the type
+theory over a comprehension object with $\St{\tshape{\Gamma}}{-}$ types
+for all $\Gamma$, i.e. with strict modalities for composites of $\tdot$
+and $\tempty$.
+\end{theorem}
 
 \begin{figure}
 \begin{mathpar}
@@ -2467,10 +2499,10 @@ a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
 (\proj{\Gamma,A}, \qvar{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
 \Theta &\equiv \epsilon_\Gamma && \text{for } \Gamma \qyields \Theta : \cdot
 \end{align}
-\caption{Rules of MLTT via Explicit Substitutions}\label{fig:qit-rules}
+\caption{Rules of MLTT Contexts and Substitutions}\label{fig:qit-rules}
 \end{figure}
 
-The structural rules of MLTT then have the following translations:
+The structural rules of MLTT have the following translations:
 \begin{enumerate}
 \item[\textsc{ctx-empty}] Define $\upstairs{(\cdot)}$ to be the empty framework context and $\tshape{(\cdot)} :\equiv \tempty : p \tcell 1$, noting that $\ctxtuple{(\cdot)} \equiv 1$.
 
@@ -2691,7 +2723,9 @@ Using eta expansion for $\St{\tempty}{}$ once in each direction:
 \end{align*}
 \end{enumerate}
 
-We record some useful facts:
+The above translation satisfies the following, which will be used when
+adding types:
+
 \begin{lemma}
 \begin{align*}
 \upstairs{B[\proj{\Gamma, A}]} &\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{B}} \\
@@ -2773,7 +2807,9 @@ And:
 \end{proof}
 
 \subsubsection{Unit type}
-The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
+Next, we extend the translation to include unit types, encoding the
+rules from Figure~\ref{fig:qit-unit-rules}, which give a positive unit
+type.  
 
 \begin{figure}
 \begin{mathpar}
@@ -2792,7 +2828,10 @@ The rules for the unit type are given in Figure~\ref{fig:qit-unit-rules}.
 \end{figure}
 
 \begin{theorem}
-The rules for the unit type can be interpreted over any mode theory containing a comprehension object $p$ that has unit and such that the $\mathsf{F}$-type for $\One_\alpha$ exists.
+The rules for the unit type can be interpreted over any mode theory
+containing a comprehension object $p$ that has unit (Definition \ref{def:supports-unit}), if
+the strict modalities for composites of $\tdot$ and $\tempty$ exist, and
+the $\mathsf{F}$-type for $\One_\alpha$ exists.
 \end{theorem}
 
 Translating the rules:
@@ -2843,7 +2882,8 @@ Checking the equations: \mvrnote{TODO}
 
 \subsubsection{$\Sigma$-types}
 
-The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}. 
+Next, we extend the translation to include $\Sigma$-types, again as a
+positive type, with the rules in Figure~\ref{fig:qit-sigma-rules}. 
 
 % There are two versions of the eliminator; a weak and strong version. The choice of one or the other yields \emph{weak} $\Sigma$-types or \emph{strong} $\Sigma$-types.
 
@@ -2883,14 +2923,24 @@ The rules for $\Sigma$-types are given in Figure~\ref{fig:qit-sigma-rules}.
 \caption{Rules for $\Sigma$-types}\label{fig:qit-sigma-rules}
 \end{figure}
 
-Suppose the comprehension object supports $\Sigma$ types in the sense of Definition~\ref{def:supports-sigmas}. In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
+\begin{theorem}
+The rules for $\Sigma$-types can be interpreted over any mode theory
+containing a comprehension object that supports strong $\Sigma$-types
+(Definition \ref{def:supports-sigmas}),
+if
+the strict modalities for composites of $\tdot$ and $\tempty$ exist, and
+for all $\alpha : p$,
+the $\mathsf{F}$-type for $z : \sigmacl{x}{\El p \alpha}{\El p
+  {\alpha.x}} \vdash \Sigma_1(\alpha,\fst z, \snd z)$ exists.
+\end{theorem}
+
+Suppose the comprehension object supports $\Sigma$ types. In the framework, $\Sigma$-types are the $\mathsf{F}$-types for the mode term
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, y : \El{p}{\alpha.x} \yields \Sigma_1(x,y) : \El{p}{\alpha}
 \end{align*}
-
-\begin{theorem}
-The rules for $\Sigma$-types can be interpreted over any mode theory containing a comprehension object that supports strong $\Sigma$-types (Definition \ref{def:supports-sigmas}), \mvrnote{and such that the $\mathsf{F}$-type for $\Sigma_1(\alpha,x,y)$ exists whenever needed}
-\end{theorem}
+with $\alpha$ in the context and $x$ and $y$ tupled together, i.e. for
+$z : \sigmacl{x}{\El p \alpha}{\El p
+  {\alpha.x}} \vdash \Sigma_1(\alpha,\fst z, \snd z)$.  
 
 We now translate all the rules:
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
@@ -3007,7 +3057,8 @@ We have already calculated the translation of the substitution, when translating
 
 \subsubsection{$\Pi$-types}
 
-The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability of $\qapp{}$ under substitution is derivable from stability of $\qlam{}$ using the beta and eta rules:
+The rules for $\Pi$ types are given in
+Figure~\ref{fig:qit-pi-rules}. Note that stability of $\qapp{}$ under substitution is derivable from stability of $\qlam{}$ using the $\beta$ and $\eta$ rules:
 \begin{align*}
 \qapp{f}[\Theta \uparrow A]
 &\equiv \qapp{\qlam{\qapp{f}[\Theta \uparrow A]}} \\
@@ -3031,13 +3082,18 @@ The rules for $\Pi$ types are given in Figure~\ref{fig:qit-pi-rules}. Stability 
 \caption{Rules for $\Pi$-types}\label{fig:qit-pi-rules}
 \end{figure}
 
-In the framework, $\Pi$-types are the $\mathsf{U}$-types for the mode term
+For a comprehension object $p$, write
 \begin{align*}
 \alpha : p, x : \El{p}{\alpha}, c : \El{p}{\alpha} \yields \Pi_1(\alpha,x,c) :\equiv \TrPlus{\ApEl{p}{\pi^\alpha_x}}{c} : \El{p}{\alpha.x}
 \end{align*}
 
 \begin{theorem}
-The rules for $\Pi$-types can be interpreted over any mode theory with a comprehension object that supports $\Pi$ types (Definition~\ref{def:supports-pis}) and such that the $\mathsf{U}$-types for $\Pi_1$ exist.
+The rules for $\Pi$-types can be interpreted over any mode theory with a
+comprehension object that supports $\Pi$ types
+(Definition~\ref{def:supports-pis}), if
+the strict modalities for composites of $\tdot$ and $\tempty$ exist, and
+for each $\alpha : p$, 
+the $\mathsf{U}$-types for $x:\El{p} \alpha, c:\El{p}{\alpha} \vdash \Pi_1(\alpha,x,c)$ exist.
 \end{theorem}
 
 \begin{enumerate}
@@ -3128,15 +3184,37 @@ And the equations:
 
 \subsection{Adjoint Type Theory}
 
-Dependent right adjoint types have previously been studied in \mvrnote{cite}. An operation $\lock$ on contexts and a type former $\Rtype{}$ are added, with $\lock$ adjoint to $\Rtype{}$ in the sense that terms of $\Gamma, \lock \qyields A \TYPE$ correspond bijectively with terms of $\Gamma \qyields \Rtype{A} \TYPE$.
+Continuing from the previous section, we extend MLTT with a pair of
+adjoint modalities, generated by two modes $p$ and $q$, which are
+comprehension objects (Definition~\ref{def:comprehension-object}) with a
+morphism of comprehension objects
+(Definition~\ref{def:morphism-comprehension-object}) between them.
+Next, in Section~\ref{sec:example-encodings-spatial}, we add enough
+structure to make these into the $\flat \dashv \sharp$ of spatial type
+theory, by taking $p = q$ and making the left adjoint into an idempotent
+comonad and the right adjoint into an idempotent monad.
 
-We give the rules of dependent right adjoint types in Figure~\ref{fig:qit-adjoint-rules}. These are presented in an algebraic style with explicit weakenings and substitutions; rules written in this form are more convenient to translate into the framework. The turnstile is written as $\qyields$ to distinguish judgements in the object language from judgements in the framework.
-
-The rules of right adjoint types are mildly generalised to allow an adjoint between two different comprehension objects $p$ and $q$. Each judgement is marked with the comprehension object to which it belongs. Object-level contexts are translated to framework contexts as before, with $\qyields_p \Gamma \CTX$ given an associated mode type morphism $\tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ and $\qyields_q \Delta \CTX$ given a mode type morphism $\tshape{\Delta} : q \tcell \ctxtuple{\downstairs{\Delta}}$.
-
-Note that as our adjoint is no longer an endofunctor, judgements with subscript $p$ necessarily have no locks in the context and those with subscript $q$ have exactly one. To recover the type theory of \mvrnote{ref}, erase the subscripts; this also allows a context to contain multiple locks. 
-
-The framework suggests rules for dependent \emph{left} adjoints $\Ltype{}$, also given in Figure~\ref{fig:qit-adjoint-rules}. 
+For the bare adjunction (before we add the comonad structure), the
+$\mathsf{U}$ types will support the rules for dependent right adjoint
+types by \citet{birkedal+18rightadjoint}, so we use their notation for
+the language being encoded.  The action of the left adjoint on contexts
+is written $\Gamma,\lock$, and the right adjoint types are written as
+$\Rtype{}$, with $\lock$ adjoint to $\Rtype{}$ in the sense that terms
+of $\Gamma, \lock \qyields A \TYPE$ correspond bijectively with terms of
+$\Gamma \qyields \Rtype{A} \TYPE$.  We give the rules of dependent
+adjoint types in Figure~\ref{fig:qit-adjoint-rules}, presented in an
+algebraic style with explicit weakenings and substitutions.  Each
+judgement is marked with the comprehension object to which it belongs,
+$p$ or $q$, and we assume that $p$ and $q$ both have the rules from
+Figure~\ref{fig:qit-rules}.  The rules for right adjoint types follow
+\citet{birkedal+18rightadjoint}, but our adjoint is not necessarily an
+endofunctor, so judgements with subscript $p$ necessarily have no locks
+in the context and those with subscript $q$ have exactly one.  To
+recover their type theory, we take $p = q$, which allows a context to
+contain multiple locks.  The framework suggests rules for dependent
+\emph{left} adjoint types, which we write as $\Ltype{}$; these are the
+$\mathsf{F}$ types for the same mode term generating the $\mathsf{U}$
+types implementing $\mathsf{R}$.
 
 Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from stability of $\RI{}$ using eta expansion:
 \begin{align*}
@@ -3174,7 +3252,22 @@ Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from sta
 \caption{Rules for Dependent Adjoints}\label{fig:qit-adjoint-rules}
 \end{figure}
 
-Suppose our mode theory has two comprehension objects $p$ and $q$, with a morphism $f$ between them (Definition~\ref{def:morphism-comprehension-object}). 
+Object-level contexts are translated to framework contexts as before,
+with $\qyields_p \Gamma \CTX$ given an associated mode type morphism
+$\tshape{\Gamma} : p \tcell \ctxtuple{\downstairs{\Gamma}}$ and
+$\qyields_q \Delta \CTX$ given a mode type morphism $\tshape{\Delta} : q
+\tcell \ctxtuple{\downstairs{\Delta}}$.
+
+\subsubsection{Contexts}
+
+\begin{theorem}
+  The rules for the context structure of dependent adjoints can be
+  interpreted over the mode theory of two comprehension objects $p$ and
+  $q$, with a morphism $f$ between them
+  (Definition~\ref{def:morphism-comprehension-object}), assuming strict
+  modalities for $f$ and composites of $\tdot_p$ and $\tempty_p$ and
+  $\tdot_q$ and $\tempty_q$ exist.
+\end{theorem}
 
 First the structural rules.
 \begin{enumerate}
@@ -3227,6 +3320,14 @@ The equations are then straightforward:
 \end{enumerate}
 
 \subsubsection{$\mathsf{R}$-types}
+
+\begin{theorem}
+  The rules for right adjoint types can be interpreted in any morphism
+  of comprehension objects that supports right adjoint types
+  (Definition~\ref{def:supports-right-adjoint}), if the strict modalities for
+  the contexts exist, and for each $\alpha : p$,
+  $\mathsf{U}_{c.f_1(\alpha,c)}$ types exist.
+\end{theorem}
 
 \begin{enumerate}
 \item[\textsc{R-form}] We are given 
@@ -3308,6 +3409,14 @@ The equations are verified in more or less the same way as for $\Pi$-types.
 \end{enumerate}
 
 \subsubsection{$\mathsf{L}$-types}
+
+\begin{theorem}
+  The rules for left adjoint types can be interpreted in any morphism of
+  comprehension objects that supports left adjoint types
+  (Definition~\ref{def:supports-left}) if the strict modalities for the
+  contexts exist, and for each $\alpha : p$,
+  $\mathsf{F}_{x.f_1(\alpha,x)}$ types exist.
+\end{theorem}
 
 And now the left adjoint:
 
@@ -3445,9 +3554,26 @@ And the equations:
 
 \subsubsection{Spatial Type Theory}
 
-Suppose $f$ supports spatial type theory, so $\TrPlus{f}{-}$ has the structure of an idempotent comonad (Definition~\ref{def:supports-spatial}).
+In any algebraic style, passing from adjoint type theory to spatial type
+theory is only a matter of adding some additional substitutions making
+the left adjoint on contexts into a comonad:
 
-In our algebraic presentation these additions to the mode theory manifest as axiomatic substitutions $\Gamma, \lock \qyields \counit{\Gamma} : \Gamma$ and $\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock$. These satisfy the same equations as the mode theory, for example, $\comult{\Gamma};\counit{\Gamma, \lock} \equiv \id_{\Gamma, \lock}$.
+\begin{theorem}
+Suppose $f$ supports spatial type theory
+(Definition~\ref{def:supports-spatial}), so $\TrPlus{f}{-}$ has the
+structure of an idempotent comonad, and that we have the
+top types needed for $\mathsf{L}$ and $\mathsf{R}$ types.
+If strict modalities for the counit and comultiplcation exist,
+then we can additionally interpret axiomatic substitutions
+\[
+\begin{array}{l}
+\Gamma, \lock \qyields \counit{\Gamma} : \Gamma\\
+\Gamma, \lock \qyields \comult{\Gamma} : \Gamma, \lock, \lock
+\end{array}
+\]
+satisfing the same equations as the mode theory, for example,
+$\comult{\Gamma};\counit{\Gamma, \lock} \equiv \id_{\Gamma, \lock}$.
+\end{theorem}
 
 %\begin{figure}
 %\begin{mathpar}
@@ -3482,8 +3608,6 @@ The equations follow quickly from the analogous equations in the mode theory, fo
 &\equiv \upstairs{\id_{\Gamma, \lock}}
 \end{align*}
 
-In Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule and its equivalent in the algebraic style. A number of spatial type theory rules build in cuts or weakenings; as both are explicit in CwF style we leave these out.
-
 \begin{lemma}
 For any substitution $\Gamma \qyields \Theta : \Delta, \lock$, the identity $(\Theta ; \counit{\Delta}), \lock \equiv \counit{\Gamma} ; \Theta$ holds.
 \end{lemma}
@@ -3496,7 +3620,20 @@ For any substitution $\Gamma \qyields \Theta : \Delta, \lock$, the identity $(\T
 \end{align*}
 \end{proof}
 
-We now sketch a translation of the rules appearing in Shulman \mvrnote{TODO: ref} into our algebraic presentation. A context $\Delta \mid \Gamma$ of spatial type theory is translated such that a $\lock$ is applied after every context extension of the \emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$ becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the invariant that a crisp context $\Delta \mid \cdot$ always ends with a $\lock$. 
+What remains is to connect this algebraic presentation to the rules for
+spatial type theory in \citet{shulman15realcohesion}, by translating the
+``optimized'' rules into the algebraic presentation.  In
+Figure~\ref{fig:qit-spatial-rules} we show each spatial type theory rule
+and its equivalent in the algebraic style.  The spatial type theory
+rules are slightly modified by omitting some cuts and weakenings, as
+both are derivable rules in the algebraic syntax.
+
+A context $\Delta \mid \Gamma$ of spatial type theory is translated such
+that a $\lock$ is applied after every context extension of the
+\emph{crisp context}. For example, $x :: A, y :: B \mid w : C, z : D$
+becomes $\lock, A, \lock, B, \lock, C, D$. In this way we maintain the
+invariant that a crisp context $\Delta \mid \cdot$ always ends with a
+$\lock$.
 
 \begin{figure}
 \begin{mathpar}
