@@ -4640,7 +4640,7 @@ Now our putative substitution $(x:A_p) \yields \Theta : (y:B_q, z:C_r(g(y)))$, i
 \[
   \begin{tikzcd}
     && C \ar[d,two heads] \\
-    H(A) \ar[urr,"c"] \ar[r,"\alpha"'] & GF(A) \ar[r,"Gb"'] & G(B).
+    H(A) \ar[urr,"c"] \ar[r,"\alpha_A"'] & GF(A) \ar[r,"Gb"'] & G(B).
   \end{tikzcd}
 \]
 Now how are we to represent this by a mode substitution $x:\El{p}{\emptyset} \yields \downstairs{(b,c)} : (y:\El{q}{\emptyset},z:\El{r}{g(\emptyset.y)})$?
@@ -4658,6 +4658,9 @@ This is probably achievable by adding appropriate left adjoints to pullback to o
 However, it is unclear how these operations would interact semantically with homotopical/intensional models, where the display maps are supposed to be the fibrations and not all morphisms are fibrations.
 Moreover, even in strict models, it is unclear how many of the laws obeyed by these operations can be made to hold on the nose rather than up to isomorphism, and the more isomorphisms we have to incorporate explicitly into the mode theory the less benefit we derive from the type-theoretic syntax.
 
+Our choice to represent an object-language substitution by a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$ avoids this problem, essentially by remembering \emph{only} the morphism $c:H(A) \to C$ and not the fact that it factors through $\alpha_A$ via a morphism of the form $G(b)$.
+This seems suboptimal since it retains less information about the structure of the substitution, but it is sufficient for all of our encodings so far.
+It is also less than ideal from a homotopical standpoint, since even if the object $B$ is fibrant and the morphism $C\to G(B)$ is a fibration, the object $C$ may not be fibrant, i.e.\ the functor $\St{\tshape{\Delta}}{-}$ need not preserve fibrant objects; but we leave further investigation of this question to future work.
 
 
 \bibliographystyle{abbrvnat}
