@@ -4662,6 +4662,20 @@ Our choice to represent an object-language substitution by a term $\upstairs{\Ga
 This seems suboptimal since it retains less information about the structure of the substitution, but it is sufficient for all of our encodings so far.
 It is also less than ideal from a homotopical standpoint, since even if the object $B$ is fibrant and the morphism $C\to G(B)$ is a fibration, the object $C$ may not be fibrant, i.e.\ the functor $\St{\tshape{\Delta}}{-}$ need not preserve fibrant objects; but we leave further investigation of this question to future work.
 
+\subsection{Towards homotopical models}
+\label{sec:htpy}
+
+Eventually we would like to use our framework to encode modal \emph{homotopy} type theories and interpret them in homotopical semantics such as Quillen model categories.
+This introduces the additional problem that the types in such models are to be interpreted only by \emph{fibrant} objects, or more generally \emph{fibrations} over their context, whereas not all the functors that interpret modal operators will necessarily preserve fibrations.
+
+It seems reasonable to hope that each morphism of comprehension objects can be interpreted by a \emph{Quillen adjunction} between model categories.
+This means that the right adjoint does preserve fibrations, and hence will require no modification to interpret the framework $\mathsf{U}$-types.
+The left adjoint will not generally preserve fibrations, but we should be able to apply a fibrant replacement to it to obtain a fibration; this will preserve its ability to interpret $\mathsf{F}$-types because the latter have no strict $\eta$-rule but rather a dependent eliminator like most other ``positive'' types in dependent type theory.
+
+The difficulty lies in the surprisingly strict modalities $\St{s}{-}$, which do have strict $\eta$-rules, but apparently will not in general preserve fibrations in the models (as they are in general built out of the same left adjoints).
+One possibility would be to enhance the framework type theory to a ``two-level'' system such as~\cite{2ltt} in which $\St{s}{A}$ is not necessarily a ``fibrant type'' even if $A$ is, but still exists so that we can use it to encode the object-language substitutions.
+We intend to investigate this and other possibilities in future work.
+
 
 \bibliographystyle{abbrvnat}
 \bibliography{../drl-common/cs}
