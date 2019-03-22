@@ -1212,6 +1212,7 @@ $\eta^\tdot_\alpha : \alpha \tcell_p \alpha.\One_\alpha$ and $\pi :
 Composition in the other direction is already the identity, by one of the triangle identities for $\tdot$.
 
 \subsubsection{Comprehension Object with $\Sigma$}
+\label{sec:compobj-sigma}
 
 For $\Sigma$ types, a standard description is that there is a type
 former $\Sigma$ that takes $A \in Ty(\Gamma)$, $B \in Ty(\Gamma.A)$ to
@@ -2304,6 +2305,7 @@ For the second equation, we check inductively that
 \label{sec:example-encodings}
 
 \subsection{Martin-L\"of Type Theory}
+\label{sec:mltt}
 
 To distinguish judgements in this type theory from the ones in the framework we use $\qyields$ as the turnstile. We have the following judgements:
 \begin{mathpar}
@@ -4357,12 +4359,57 @@ Combining Theorems \ref{thm:corefl-ldfib} and \ref{thm:laxslice-2cwf}, we can co
   \end{itemize}
   If we now apply the coreflection into 2-categories with families, we get a local discrete fibration over the ``canonical'' 2-category with families from Example \ref{eg:cat-2cwf}, where:
   \begin{itemize}
-  \item The objects of $\Cty(C,c)$ are morphisms $(C,c) \to \Ctyhat = (\Cat\op,\top)$ in $Chat = \one\sslash\CAT$, which is to say functors $D:C\op\to \Cat$ equipped with a morphism $D(c) \to \top$ in $\Cat\op$, i.e.\ a functor $\top \to D(c)$, which is to say an object $d\in D(c)$.
+  \item The objects of $\Cty(C,c)$ are morphisms $(C,c) \to \Ctyhat = (\Cat\op,\top)$ in $\Chat = \one\sslash\CAT$, which is to say functors $D:C\op\to \Cat$ equipped with a morphism $D(c) \to \top$ in $\Cat\op$, i.e.\ a functor $\top \to D(c)$, which is to say an object $d\in D(c)$.
   \item The objects of $\Ctm(C,c)$ are such pairs $(D,d)$ with a section $s:C\to \int D$ of the Grothendieck construction, along with an object $d\in D(c)$ and a morphism $s(c) \to d$ in $D(c)$.
   \end{itemize}
   Thus, this reproduces our informal expectation from \S\ref{sec:2cwfs}.
   Note that while $\Cty$ and $\Ctm$ in this example simply ``pick out the objects and morphisms'' of the categories $C\in\M$, in general we can regard the fibered 2-category with families $\C$ as an ``abstraction'' of the notions of ``objects and morphisms'' applicable to any 2-category with families $\M$.
 \end{example}
+
+\subsection{The problem with naive encodings}
+\label{sec:naive}
+
+In Section~\ref{sec:mltt} one might expect to see a substitution $\Gamma \qyields \Theta : \Delta$ encoded in a more symmetric manner as a mode substitution $\downstairs{\Gamma} \yields \downstairs{\Theta} : \downstairs{\Delta}$ together with a framework substitution $\upstairs{\Gamma} \yields_{\downstairs{\Theta}} \upstairs{\Theta} : \upstairs{\Delta}$, rather than as we have done it with a term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \St{\tshape{\Delta}}{\ctxtuple{\upstairs{\Delta}}}$.
+It is possible (though not certain) that some such encoding might work in the special case of MLTT; but for general modal type theories such encodings seem to require rather more structure on our comprehension objects, leading in particular to more difficult calculations and an increased difficulty of constructing particular models.
+
+Here we describe this obstacle semantically.
+Suppose we have three modes $p,q,r$ with terms
+\begin{mathpar}
+  x:p \yields f(x) : q \and
+  y:q \yields g(x) : r \and
+  x:p \yields h(x) : r
+\end{mathpar}
+and a 2-cell $\TermTwoT{x:p}{\alpha_x}{h(x)}{g(f(x))}{r}$.
+(By this we mean more specifically that $p,q,r$ should be morphisms of comprehension objects and $\alpha$ a transformation of such.)
+Consider a putative framework substitution $(x:A_p) \yields \Theta : (y:B_q, z:C_r)$.
+In such a substitution, $y$ must depend on $x$ via $f$, while $z$ could in principle depend on $x$ via $h$ or via $g\circ f$.
+In particular, because a general mode theory might contain morphisms such as $f$ and $h$ without containing any morphism such as $g$, we must at least \emph{allow} $z$ to depend on $x$ via $h$.
+
+In our case, however, we do have the morphism $g$, and so we can consider the case when $C$ in fact depends on $y$ via $g$.
+Semantically, $(x:A)$ is interpreted by an object $A\in p$, while $(y:B_q,z:C_r)$ is interpreted by an object $B\in q$ together with a display map $C \to G(B)$ in $r$.
+Now our putative substitution $(x:A_p) \yields \Theta : (y:B_q, z:C_r(g(y)))$, in which $y$ depends on $x$ via $f$ and $z$ depends on $x$ via $h$, must consist of morphisms $b:F(A) \to B$ in $q$ and $c:H(A) \to C$ in $r$, and there must be a compatibility with the dependence of $C$ on $B$ that can only be the commutativity of the following diagram in $r$:
+\[
+  \begin{tikzcd}
+    && C \ar[d,two heads] \\
+    H(A) \ar[urr,"c"] \ar[r,"\alpha"'] & GF(A) \ar[r,"Gb"'] & G(B).
+  \end{tikzcd}
+\]
+Now how are we to represent this by a mode substitution $x:\El{p}{\emptyset} \yields \downstairs{(b,c)} : (y:\El{q}{\emptyset},z:\El{r}{g(\emptyset.y)})$?
+We can take $y = f(x)$, so that the first component of the framework substitution $x:A_p \yields_{\downstairs{(b,c)}} \upstairs{(b,c)} : (y:B_q, z:C_r(g(y)))$ corresponds to our morphism $b:F(A) \to B$.
+But $z$ must then be a \emph{dependent type} in $r$ over $g(f(x))$, such that a morphism from it to $C$ over $G(b)$ is our $c$.
+In other words, we would have to convert the above diagram into an equivalent one of the form
+\[
+  \begin{tikzcd}
+    ?? \ar[r,"c"] \ar[d,two heads] & C \ar[d,two heads] \\
+    GF(A) \ar[r,"Gb"'] & G(B).
+  \end{tikzcd}
+\]
+Thus we seem to require that every morphism (such as $\alpha_A : H(A) \to GF(A)$) is isomorphic to a display map.
+This is probably achievable by adding appropriate left adjoints to pullback to our notion of comprehension object, or equivalently ``strict identity types'' in the mode theory in addition to the $\Sigma$-types of Section~\ref{sec:compobj-sigma}.
+However, it is unclear how these operations would interact semantically with homotopical/intensional models, where the display maps are supposed to be the fibrations and not all morphisms are fibrations.
+Moreover, even in strict models, it is unclear how many of the laws obeyed by these operations can be made to hold on the nose rather than up to isomorphism, and the more isomorphisms we have to incorporate explicitly into the mode theory the less benefit we derive from the type-theoretic syntax.
+
+
 
 \bibliographystyle{abbrvnat}
 \bibliography{../drl-common/cs}
