@@ -1,0 +1,1625 @@
+\documentclass[10pt]{article}
+  \usepackage{xcolor}
+  \definecolor{darkgreen}{rgb}{0,0.45,0} 
+  \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+  \usepackage{pdflscape}
+
+\usepackage[sort]{natbib}
+  
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{dsfont}
+\usepackage{fontawesome}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newenvironment{constr}{\begin{proof}[Construction]}{\end{proof}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+\newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\Yields}{\tcell}
+\newcommand{\tcell}{\Rightarrow}
+\newcommand{\cbar}{\, | \,}
+\newcommand{\judge}{\mathcal{J}}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\CTX}{\,\,\mathsf{Ctx}}
+\newcommand{\ctx}{\,\,\mathsf{mctx}}
+\newcommand{\TYPE}{\,\,\mathsf{Type}}
+\newcommand{\type}{\,\,\mathsf{mode}}
+\newcommand{\TELE}{\,\,\mathsf{Tele}}
+\newcommand{\tele}{\,\,\mathsf{mtele}}
+\newcommand{\ISFIB}{\,\,\mathsf{IsFib}}
+
+\newcommand{\app}[2]{\ensuremath{#1 \: #2}}
+\newcommand{\telety}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\mt}[0]{\ensuremath{()}}
+\newcommand{\sigmacl}[3]{\ensuremath{(#1{:}#2,#3)}}
+\newcommand{\fst}[1]{\app{\dsd{fst}}{#1}}
+\newcommand{\snd}[1]{\app{\dsd{snd}}{#1}}
+\newcommand\extend[2]{\ensuremath{(#1,\id_{#2})}}
+\newcommand\TeleE[4]{\ensuremath{\mathsf{let} \, (#2, #3) \, = \, {#1} \, \mathsf{in} \, #4}}
+
+\newcommand{\id}{\mathsf{id}}
+\DeclareMathOperator{\ob}{ob}
+
+\newcommand{\rewrite}[2]{\overleftarrow{#1}(#2)}
+\newcommand\Fsym{\ensuremath{\mathsf{F}}}
+\newcommand\Usym{\ensuremath{\mathsf{U}}}
+\newcommand\Esym{\ensuremath{\mathsf{E}}}
+\newcommand\F[2]{\ensuremath{\mathsf{F}_{#1}(#2)}}
+\newcommand\E[2]{\ensuremath{\mathsf{E}_{#1}(#2)}}
+\newcommand\U[3]{\ensuremath{\mathsf{U}_{#1}(#2 \mid #3)}}
+\newcommand\UE[2]{\ensuremath{#1(#2)}}
+\newcommand\UI[2]{\ensuremath{\lambda #1.#2}}
+\newcommand\St[2]{\ensuremath{{#1}^*(#2)}}
+\newcommand\StI[2]{\ensuremath{\mathsf{st}_{#1}(#2)}}
+\newcommand\UStI[2]{\ensuremath{\mathsf{ust}_{#1}(#2)}}
+\newcommand\UnSt[2]{\ensuremath{\mathsf{unst}_{#1}(#2)}}
+%\newcommand\StE[2]{\ensuremath{\mathsf{unst}(#1,#2)}}
+\newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#1}{#3} \, = \, {#2} \, \mathsf{in} \, #4}}
+\newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
+% With subscript:
+\newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
+\newcommand\FIs[2]{\ensuremath{\mathsf{F}_{#1}{(#2)}}}
+\newcommand\EE[3]{\ensuremath{\mathsf{let} \, \mathsf{E}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
+% With subscript:
+\newcommand\EEs[4]{\ensuremath{\mathsf{let} \, \mathsf{E}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\EI[1]{\ensuremath{\mathsf{E}{(#1)}}}
+\newcommand\EIs[2]{\ensuremath{\mathsf{E}_{#1}{(#2)}}}
+\newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
+\newcommand\TeleTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwo[4]{\ensuremath{#1 \vdash #2 : #3 \tcell #4}}
+\newcommand\TermTwoT[5]{\ensuremath{#1 \vdash {#2} : #3 \tcell_{#5} #4}}
+%% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
+%\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
+\newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
+\newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
+
+\newcommand\El[2]{\mathcal{T}_{#1}(#2)}
+\newcommand\ApEl[2]{\mathcal{T}_{#1}\langle#2\rangle}
+\newcommand\bdot[0]{\mathbin{.}}
+\newcommand\bang[0]{\mathord{!}}
+
+\newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+\newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
+\newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
+
+% Lemmas
+\newcommand\ctxtuple[1]{(#1)}
+\newcommand\pack[1]{\ensuremath{\mathsf{pack}_{#1}}}
+\newcommand\unpack[2]{\ensuremath{\mathsf{unpack}_{#1}(#2)}}
+
+% MLTT
+\newcommand{\modeof}[1]{{#1}_p}
+\newcommand{\modeofq}[1]{{#1}_q}
+\newcommand{\tdot}{\ensuremath{\mathtt{dot}}}
+\newcommand{\tempty}{\ensuremath{\mathtt{empty}}}
+\newcommand{\tshape}[1]{\ensuremath{\mathtt{shape}_{#1}}}
+
+\newcommand{\qyields}{\Vdash} 
+\newcommand{\upstairs}[1]{\overline{#1}}
+\newcommand{\downstairs}[1]{\underline{#1}}
+\newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
+\newcommand\qvar[1]{\ensuremath{\mathsf{var}_{#1}}}
+
+\newcommand\One{\ensuremath{\mathds{1}}}
+\newcommand\var[1]{\ensuremath{\mathtt{var}_{#1}}}
+\newcommand\ApOne[1]{\ensuremath{\One_{\langle {#1} \rangle }}}
+
+\newcommand\mtt[1]{\mathtt{#1}}
+\newcommand\contract[1]{\ensuremath{\mathtt{contract}_{#1}}}
+\newcommand\fibpair[1]{\ensuremath{\mathtt{fibpair}_{#1}}}
+\newcommand\pair[1]{\ensuremath{\mathtt{pair}_{#1}}}
+\newcommand\tsplit[1]{\ensuremath{\mathtt{split}_{#1}}}
+\newcommand\pinv[1]{\ensuremath{\mathtt{pinv}_{#1}}}
+
+\newcommand\qunitmatch[1]{\ensuremath{\mathsf{letunit}(#1)}}
+\newcommand\qpair[1]{\ensuremath{\mathsf{pair}_{#1}}}
+\newcommand\qsplit[1]{\ensuremath{\mathsf{split}_{#1}}}
+\newcommand\qapp[1]{\ensuremath{\mathsf{app}({#1})}}
+\newcommand\qlam[1]{\ensuremath{\mathsf{lam}({#1})}}
+
+% Adjoint type theory
+\newcommand\fone[1]{\ensuremath{\mathtt{fone}_{#1}}}
+\newcommand\fibf[1]{\ensuremath{\mathtt{fibf}_{#1}}}
+\newcommand\foneinv[1]{\ensuremath{\fone{#1}^{-1}}}
+\newcommand\fdist[1]{\ensuremath{\mathtt{fdist}_{#1}}}
+\newcommand\fdistinv[1]{\ensuremath{\fdist{#1}^{-1}}}
+
+\newcommand\flatone[1]{\ensuremath{\mathtt{flatone}_{#1}}}
+\newcommand\flatdist[1]{\ensuremath{\mathtt{flatdist}_{#1}}}
+\newcommand\flatdistinv[1]{\ensuremath{\flatdist{#1}^{-1}}}
+
+\newcommand{\lock}{\text{\faUnlock}}
+\newcommand{\Rtype}[1]{\mathsf{R}{#1}}
+\newcommand{\RI}[1]{\mathsf{shut}({#1})}
+\newcommand{\RE}[1]{\mathsf{open}({#1})}
+
+\newcommand{\Ltype}[1]{\mathsf{L}{#1}}
+\newcommand{\LI}[1]{\mathsf{left}_{#1}}
+\newcommand{\LE}[1]{\mathsf{letleft}({#1})}
+
+% Spatial type theory
+\newcommand\fcomult[1]{\ensuremath{\mathtt{comult}_{#1}}}
+\newcommand\fcounit[1]{\ensuremath{\mathtt{counit}_{#1}}}
+\newcommand{\counit}[1]{\mathsf{counit}_{#1}}
+\newcommand{\comult}[1]{\mathsf{comult}_{#1}}
+\newcommand{\Flattype}[1]{\flat{#1}}
+\newcommand{\FlatI}[1]{{#1}^\flat}
+\newcommand{\FlatE}[1]{\mathsf{letflat}({#1})}
+\newcommand{\Sharptype}[1]{\sharp{#1}}
+\newcommand{\SharpI}[1]{{#1}^\sharp}
+\newcommand{\SharpE}[1]{{#1}_\sharp}
+\newcommand\qcrispvar[1]{\ensuremath{\textsf{crisp-var}_{#1}}}
+
+% Linear zone
+\newcommand{\tfibshape}[1]{\ensuremath{\mathtt{fibshape}_{#1}}}
+\newcommand{\linsnd}[1]{\mathtt{linsnd}_{#1}}
+\newcommand{\linwk}[1]{\mathtt{linwk}_{#1}}
+\newcommand{\frob}[1]{\mathtt{frob}_{#1}}
+\newcommand\qlinvar[1]{\ensuremath{\mathsf{linvar}_{#1}}}
+\newcommand\otimespair[1]{\ensuremath{\otimes\mathsf{pair}_{#1}}}
+\newcommand\otimessplit[1]{\ensuremath{\otimes\mathsf{split}({#1})}}
+\newcommand\linpair[1]{\ensuremath{\mathsf{linpair}_{#1}}}
+\newcommand\linsplit[1]{\ensuremath{\mathsf{linsplit}({#1})}}
+\newcommand\linapp[1]{\ensuremath{\mathsf{linapp}_{#1}}}
+\newcommand\linlam{\ensuremath{\mathsf{linlam}}}
+\newcommand{\qbang}[1]{\ensuremath{\mathsf{bang}_{#1}}}
+\newcommand{\letbang}[1]{\mathsf{letbang}({#1})}
+
+% Macros for semantics notation
+\newcommand\mm[1]{\llbracket #1 \rrbracket}
+\newcommand\op{^{\mathrm{op}}}
+\newcommand\co{^{\mathrm{co}}}
+\newcommand\coop{^{\mathrm{coop}}}
+\newcommand\Cat{\mathrm{Cat}}
+\newcommand\CAT{\mathrm{CAT}}
+\newcommand\M{\mathcal{M}}
+\newcommand\Mhat{\widehat{\mathcal{M}}}
+\newcommand\Mty{{\mathrm{Ty}_{\M}}}
+\newcommand\Mtm{{\mathrm{Tm}_{\M}}}
+\newcommand\Mtyhat{{\widehat{\mathrm{Ty}}_{\M}}}
+\newcommand\Mtmhat{{\widehat{\mathrm{Tm}}_{\M}}}
+\newcommand\Ups{\Upsilon}
+\newcommand\Upshat{{\widehat{\Upsilon}}}
+\newcommand\C{\mathcal{C}}
+\newcommand\Chat{{\widehat{\mathcal{C}}}}
+\newcommand\Cty{\mathrm{Ty}_{\C}}
+\newcommand\Ctm{\mathrm{Tm}_{\C}}
+\newcommand\Ctyhat{{\widehat{\mathrm{Ty}}}_{\C}}
+\newcommand\Ctmhat{{\widehat{\mathrm{Tm}}}_{\C}}
+\newcommand\vp{\varpi}
+\newcommand\vpst{\vp^*}
+\newcommand\vpsh{\vp_!}
+\newcommand\vptil{\widetilde{\vp}}
+\newcommand\vpty{{\vp}_{\mathrm{Ty}}}
+\newcommand\vptm{{\vp}_{\mathrm{Tm}}}
+\newcommand\name[1]{\ulcorner #1\urcorner}
+\newcommand{\Util}{\widetilde{U}}
+\newcommand\ev{\mathrm{ev}}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
+\DeclareSymbolFontAlphabet{\mathbbb}{bbold}
+\newcommand\one{\mathbbb{1}}
+
+
+\defcitealias{lsr17multi-extended}{LSR}	
+\defcitealias{ls16adjoint-extended}{LS}	
+
+\title{A Fibrational Framework for \\ Substructural and Modal Dependent Type Theories}
+\author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Several recent modal extensions of homotopy type theory extend the
+synthetic style of formalizing mathematics to additional situations.
+For example, real-cohesive homotopy type theory can describe types with
+both a groupoid structure and a separate topological structure.  These
+modal dependent type theories add new types to the syntax, which
+typically are given universal properties relative to new judgement
+forms.  To facilitate the design of such type theories, we introduce a
+general framework for modal dependent type theories.  To describe a
+particular modal type theory, the first step is to specify a signature
+of desired modalities using a \emph{base} directed dependent type
+theory; we call such a signature a \emph{mode theory}.  Then,
+instantiating a \emph{top} type theory with a given a mode theory gives
+rules for working with the modalities it describes.  As examples, we
+give mode theories for adjunctions, monads, comonads, and idempotent
+(co)monads, in the context of a standard structural dependent type
+theory, as well as a linear logic dependent on a structural one.  While
+the framework does not automatically produce ``optimized'' inference
+rules for a particular modal discipline (where structural rules are as
+admissible as possible), it does provide a convenient syntactic setting
+for investigating such issues, including a general equational theory
+governing the placement of structural rules in types and in terms.  We
+show that the top type theory over the above example mode theories
+encode the expected rules.  Finally, we give the framework a categorical
+semantics for all mode theories at once, which saves some of the effort
+involved in translating each type theory individually.
+%% as examples, we give mode theories for ordinary
+%% non-modal dependent type theory with $\Pi$ and $\Sigma$ types, for a
+%% dependent adjoint pair of modalities, and for the spatial type theory
+%% used in real-cohesion.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+%% cites: Awodey and Bauer, Nuyts bridge-path, Vakar and Krishnaswami
+
+%% fibrational: base type theory for specifying mode theories.  top type
+%% theory is parametrized by a particular mode theory, gives general rules
+%% that can be instantiated.  
+
+%% Framework = both base and top
+
+%% Mode theory = a particular signature in the base
+
+%% In previous
+%% work~\citep*{ls16adjoint,ls16adjoint-extended,lsr17multi,lsr17multi-extended},
+%% the mode theory was a 2-category, or cartesian 2-multicategory.
+%% Objects/types of the mode theory represent ``modes of truth,'' or
+%% categories of types.  Morphisms/terms of the mode theory generate type
+%% constructors, e.g. modalities.  The further 2-cell data of the mode
+%% theory corresponds to structural rules, such as weakening, exchange,
+%% contraction for a product, or a (co)unit or (co)multiplication of a
+%% modality.  Just as a 2-category or 2-multicategory is a directed
+%% \emph{simple} type theory, here we use a directed \emph{dependent} type
+%% theory as the mode theory.
+
+%% choose your own adventure organization:
+%% proof theorist, Section~\ref{sec:base-syntax} and \ref{sec:top-syntax};
+%% category theoriest, Section~\ref{sec:semantics},
+%% examples Sections \ref{sec:mode-examples}, \ref{sec:example-encodings}.
+
+
+\section{Base Type Theory}
+\label{sec:base-syntax}
+
+A \emph{mode theory} describes the contexts and types of a particular
+modal dependent type theory.  Mode theories are given by a signature of
+constants and equations in a directed dependent type theory, which,
+because of the fibrational perpective, we call the \emph{base} type
+theory.  We refer to the types of the base type theory as \emph{mode
+  types} or just \emph{modes}, and terms as \emph{mode terms}, to
+differentiate them from the types and terms of the top type theory.
+
+The base type theory consists of five judgements:
+\begin{itemize}
+\item $\gamma \ctx$ are mode contexts
+\item $\gamma \yields p \type$ are mode types
+\item $\gamma \yields \mu : p$ are mode terms
+\item $\TypeTwo{\gamma}{s}{p}{q}$ are \emph{mode type morphisms}
+\item $\TermTwoT{\gamma}{s}{\mu}{\nu}{p}$ are \emph{mode 2-cells}
+\end{itemize}
+as well as corresponding judgemental equality judgements for each.
+The first three judgements have the familiar structure of a dependent
+type theory, while the fourth and fifth add an additional notion of
+morphism between types and morphism between terms.  The mode type
+morphisms can be thought of as a special class of terms, as explained
+below.  A \emph{mode theory} is a signature of constants for mode types,
+mode terms, mode type morphisms, and mode 2-cells.
+
+The mode theory can be thought of as a certain kind of ``2-category with
+dependent types,'' generalizing the base type theories of our previous
+work~\citepalias{ls16adjoint-extended,lsr17multi-extended}, which were 2
+(multi-)categories.  We describe the syntax of the base type theory in
+this section, though it may be more illuminating to read the example
+mode theories in Section~\ref{sec:mode-examples} in parallel with the formalism.
+
+\subsection{Mode Contexts}
+Mode contexts are, as usual, given by iteratively adding variables of
+mode types:
+\begin{mathpar}
+  \inferrule*{ }
+             {\cdot \ctx}
+             
+  \inferrule*
+    {\gamma \ctx \\
+     \gamma \yields p \type}
+    {\gamma,x:p \ctx}
+\end{mathpar}  
+
+\subsection{Mode Terms}
+
+In addition to the constants introduced by specific mode theories, there
+are two ways of making mode terms: 
+
+\begin{mathpar}
+\inferrule*{ }
+             {\gamma,x : p, \gamma' \yields x : p}
+             
+\inferrule*
+    {\gamma \yields \mu : q \\
+     \TypeTwo{\gamma}{s}{p}{q}
+    }
+    {\gamma \yields \TrPlus{s}{\mu} : p}
+
+\TrPlus{\id}{\mu} \equiv \mu \qquad
+\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
+\end{mathpar}
+
+The first is the usual variable rule.  The second says a mode type
+morphism $\TypeTwo{\gamma}{s}{p}{q}$ acts contravariantly on mode terms,
+inducing a ``function'' $q \to p$ (since we do not have function types
+in the base type theory, this means a term with a free variable $x : q
+\vdash \TrPlus{s}{x} : p$), and that this action is functorial in
+identity and composition of mode type morphisms (defined next).
+
+\subsection{Mode type morphisms}
+
+In addition to the constants of a specific mode theory, mode type
+morphisms are given by identity, composition, and whiskering
+(``$\mathsf{ap}$'') of a mode type on a mode term 2-cell (which are
+defined below):
+
+\begin{mathpar}
+    \inferrule*{ }
+          {\TypeTwo{\gamma}{\id_p}{p}{p}}
+    \qquad
+    \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} \\
+                {\TypeTwo{\gamma}{s_2}{p_2}{p_3}}
+          }
+          {\TypeTwo{\gamma}{s_1;s_2}{p_1}{p_3}}
+
+\inferrule*{{\gamma,x:p} \vdash {q} \type \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+           } 
+           {\TypeTwo{\gamma}{\ap {q} {t/x}}{q[\mu/x]}{q[\mu'/x]}}
+
+\\
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
+\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \and
+\ap q {s/\_} \equiv \id_q \\ 
+\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad \text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type\\
+t[\nu/x];\ap{q'}{s/x} \equiv \ap{q}{s/x};t[\nu'/x] \quad 
+\text{where } \TypeTwo{\gamma,x:p}{t}{q}{q'} \text{ and } \TermTwoT{\gamma}{s}{\nu}{\nu'}{p}
+%% subst: \id_\mu[\nu/x] = \id_{\mu[\nu/x]}
+%% subst: s[x/x] = s
+%% subst: (s;t)[\mu/x] = s[\mu/x];t[\mu/x]
+%% subst: s[\mu[\nu/x]/x] = s[\mu/x][\nu/x]
+%% subst: ap q (s [\mu/x]) = (ap q s)[\mu/x] and generalization
+\end{mathpar}
+
+Most of the equations are standard identity/associativity/projection
+laws.  The first two say that composition is unital and associative.
+The next two say that whiskering is functorial in the identity and
+composition of mode type 2-cells (defined below). The next says that
+whiskering with a constant function (i.e. when $x$ does not occur in
+$q$) is the identity mode type morphism.  The next says that whiskering
+a type given by substitution associates with the whiskering of a mode
+term 2-cell by a term (defined below).  The final equation is a
+naturality law saying that the two possible definitions of a horizontal
+composition $\ap t {s/x} : q[\nu/x] \tcell q'[\nu'/x]$ are equal.
+We will use the following notation for this:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+        \TypeTwo{\gamma, x : p}{t}{q}{q'}}
+      {\TypeTwo{\gamma}{\ap{t}{s/x} :\equiv t[\nu/x];\ap{q'}{s/x}}{q[\mu/x]}{q'[\mu'/x]}}
+\\ 
+\ap{\id_q}{s/x} \equiv \ap{q}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\end{mathpar}
+
+We sometimes write \ap{q}{s} for \ap{q(x)}{s/x}, eliding the variable
+name when it is clear how to view $q$ as a term with a distinguished
+variable.
+
+\subsection{Mode term 2-cells}
+
+Similarly, mode term 2-cells are given by identity, composition, and
+post-whiskering (pre-whiskering is given by substitution), and
+associated equations:
+\begin{mathpar}
+    \inferrule*{ }
+          {\TermTwoT{\gamma}{\id_\mu}{\mu}{\mu}{p}}
+    \quad
+    \inferrule*{{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p}} \\
+                {\TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p}}
+          }
+   {\TermTwoT{\gamma}{s_1;s_2}{\mu_1}{\mu_3}{p}}
+\quad
+\inferrule*{{\gamma,x:p} \yields {\nu} : {q} \\
+            \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}\\
+           } 
+           {\TermTwoT{\gamma}{\ap \nu {s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu[\mu'/x]}}{q[\mu/x]}}
+
+\\           
+\id;s \equiv s \equiv s;\id \and
+(s;s');s'' \equiv s;(s';s'') \\ 
+\ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
+\ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
+\ap x {s/x} \equiv s  \\ 
+\ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
+\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q\\
+\ap \nu {s/\_} \equiv \id_\nu \\
+t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\mu'/x]/y} \quad
+ \text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+\ap{(\TrPlus{s}{\mu})}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
+\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and }
+\TermTwoT{\gamma}{t}{\nu}{\nu'}{p} \text{ and } \gamma,x:p \vdash \mu : q'
+\end{mathpar}
+
+Identity and composition are standard.  When $q$ does not depend on $x$,
+whiskering the ``function'' $x : p \vdash \nu : q$ onto the mode term
+2-cell $s : \mu \tcell_p \mu'$ between two mode terms $\mu,\mu'$ of
+mode $p$ gives a term 2-cell $\nu[\mu/x] \tcell_q \nu[\mu'/x]$.
+However, in general $q$ might depend on $x$, in which case we have a
+``dependent $\mathsf{ap}$'', which gives a mode term in $q[\mu/x]$
+between $\nu[\mu/x]$ and the ``transport'' of $\nu[\mu'/x]$ along the
+mode type morphism $\ap q {s/x} : q[\mu/x] \tcell q[\mu'/x]$ (in
+the non-dependent case, the above equations say that $\ap q {s/x} \equiv
+\id_q$, and that $\TrPlus{\id_q}{\nu[\mu'/x]} \equiv {\nu[\mu'/x]}$, so
+the ``transport'' cancels).
+
+The first two equations say that composition is associatve and unital.
+The next two that whiskering is functorial in mode term 2-cell identity
+and composition; the composition equation is the usual ``path over''
+composition using whiskering, and both equations type check because of
+the functoriality equations for $\TrPlus{s}{-}$.  The next two equations
+say that whiskering is functorial in the function position: whiskering
+with the identity function is the identity, and whiskering with a
+composition is iterated whiskering.  The next equation says that
+whiskering with a constant function ($x$ does not occur in $\nu$) is the
+identity.
+
+The next equation equates the two potential definitions of horizontal
+composition $\ap t {s/x} : \nu[\mu/x] \tcell_{q[\mu/x]}
+\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}$.  We write
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma, x : p}{t}{\nu}{\nu'}{q}}
+             {\TermTwoT{\gamma}{\ap{t}{s/x} :\equiv t[\mu/x];\ap{\nu'}{s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
+\\ 
+\ap{\id_\nu}{s/x} \equiv \ap{\nu}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\end{mathpar}
+for this.
+
+The final equation distributes the $\mathsf{ap}$ of a ``transport'' 
+$\TrPlus{s}{\mu}$ into two $\mathsf{ap}$'s, and type checks because 
+$s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x]$.  
+
+We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
+variable name when it is clear how to view $\mu$ as a term with a
+distinguished variable; e.g. $\ApPlus{s}{t}$ for
+$\ap{\TrPlus{s}{x}}{t/x}$.  
+
+\subsection{Mode Unit Types}
+
+It will be useful to have the unit mode type in the base type theory:
+
+\begin{mathpar}
+  \inferrule*{ } { \gamma \yields 1 \type } \and
+  
+  \inferrule*{ }
+             {\gamma \yields \mt : 1}
+  \and 
+  \mu \equiv \mt
+  \and
+s \equiv \id_{()} \text{ for } \yields s : () \tcell_1 ()
+\end{mathpar}
+
+\subsection{Mode $\Sigma$ types}
+\label{sec:base-telescopes}
+
+It will also be convenient to have $\Sigma$ mode types.  We write these
+as telescopes $\sigmacl{x}{p}{q}$ to distinguish them from the $\Sigma$
+types of an object language.  At the mode type and term level, the rules
+are standard:
+\begin{mathpar}
+  \inferrule*{ \gamma \yields p \type \\ 
+               \gamma,x:p \yields q \type }
+             {\gamma \yields \sigmacl{x}{p}{q} \type} \\
+             
+\\
+\inferrule*{
+  \gamma \yields \mu : p \and
+  \gamma \yields \nu : q[\mu/x]
+    }
+   {\gamma \yields (\mu,\nu) : \sigmacl{x}{p}{q}}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \fst \mu : p}
+\and
+\inferrule*
+    {\gamma \yields \mu : \sigmacl{x}{p}{q}}
+    {\gamma \yields \snd \mu : q[\fst \mu / x]}
+    \\
+    \fst{(\mu,\nu)} \equiv \mu \and
+    \snd{(\mu,\nu)} \equiv \nu \and
+    p \equiv (\fst p, \snd p)
+\end{mathpar}
+
+Next, we assert a congruence rule for $\Sigma$-types on mode type
+morphisms:
+\begin{mathpar}
+  \inferrule*
+  {\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
+  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} 
+  \\
+    \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \\
+  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
+
+  \ap{(\sigmacl{x'}{p}{q})}{s/(y:r)} \equiv
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z:(\sigmacl{y}{r}{p})}}
+  \\
+  \TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
+\end{mathpar}
+The first three equations say that this interacts with identity,
+compositions, and whiskering: The $\Sigma$ of two identities is the
+identity.  The composition of two $\Sigma$ morphisms is the $\Sigma$ of
+the composites.  The generic whiskering for mode type morphisms, when
+instantiated with a $\Sigma$ mode, is equal to the appropriate instance
+of this congruence rule (we write $\ap{q}{s/(x:p)}$ to indicate the type
+of the variable involved in the $\mathsf{ap}$).  The final equation says
+that the ``transport'' along the $\Sigma$ of two mode type morphisms
+acts componentwise.
+
+Finally, we add mode term 2-cells for $\Sigma$ mode types.  It suffices
+to add the ``horizontal'' mode term 2-cells (non-trivial in the first
+component), because the ``vertical'' ones (non-trivial in the second
+component) are given by a whiskering: if $t : \nu \tcell_{q[\mu/x]}
+\nu'$ then $\ap{(\mu,y)}{t/y} : (\mu,\nu) \tcell_{\sigmacl{x}{p}{q}}
+(\mu,\nu')$.  The rules are:
+\begin{mathpar}
+\inferrule*
+    {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and
+      \gamma \vdash \nu' : q[\mu'/x]
+    }
+      {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
+\ap {\fst} {\extend{s}{\nu'}} \equiv s \and
+\ap {\snd} {\extend{s}{\nu'}} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \and
+s \equiv (\ap{\fst}{s}, \ap{\snd}{s}) %% \quad \text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}
+\\      
+{\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
+{\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
+\extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad \text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]}
+\end{mathpar}
+
+The equations make use of the following definable abbreviations for
+pairing and projection 2-cells:
+\begin{mathpar}
+  \inferrule*[Left=Derivable]
+      {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
+    \TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]}}
+             {\TermTwoT{\gamma}{(s,t) :\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'}}{(\mu,\nu)}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}
+  \\
+   \inferrule*[Left=Derivable]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\fst}{s} := \ap{\fst(y)}{s/y}}{\fst{\mu}}{\fst{\mu'}}{p}} }
+  \\
+   \inferrule*[Left=Derivable]
+              { {\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}} }
+              { {\TermTwoT{\gamma}{\ap{\snd}{s} := \ap{\snd(y)}{s/y}}{\snd{\mu}}{\TrPlus{\ap{(q(\fst y/x))}{s/y}}{\snd{\mu'}}}{q[\fst{\mu}/x]}} }
+\end{mathpar}
+%
+The first two equation are the $\beta$ rules for morphisms in $\Sigma$
+modes.  The next is an $\eta$ (the right-hand side expands to
+\ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}}).
+The next two equations give functoriality on identity and composition of
+mode term 2-cells in $p$. The final naturality equation
+reconciles the two possible ways of defining $(s,t)$.  
+
+The derivable general pairing 2-cell interacts with identity and
+composition: we have $(\id_\mu,\id_{\nu}) \equiv \id_{(\mu,\nu)}$ 
+and, for mode term 2-cells 
+\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} and 
+\TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} and 
+\TermTwoT{\gamma}{s'}{\mu'}{\mu''}{p} and 
+\TermTwoT{\gamma}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
+we have
+\begin{align*}
+(s, t);(s', t') \equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+This follows by
+\begin{align*}
+(s, t);(s', t') 
+&\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'};\ap{(\mu',y)}{t'/y};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, \TrPlus{\ap{q}{s}}{y})}{t'/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, y)}{\ApPlus{\ap{q}{s}}{t'}/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
+&\equiv \ap{(\mu,y)}{t;\ApPlus{\ap{q}{s}}{t'}/y};\extend{s;s'}{\nu''} \\
+&\equiv ((s;s'), (t;\ApPlus{\ap{q}{s}}{t'}))
+\end{align*}
+
+\begin{remark}
+An alternative to specifying the mode term morphisms in $\Sigma$-types
+as above would be to have mode telescopes as part of the judgement
+structure.  For example, if we had a primitive ``Frobenius'' whiskering
+that acted on the middle of the context:
+\[
+\inferrule*{{\gamma,x:p,\gamma'} \vdash {q} \type \\
+            \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
+           } 
+           {\TypeTwo{\gamma,\vec{y}:\gamma'[\mu'/x]}{\ap {q} {t/x}}{q[\mu/x,\TrPlus{\ap{\gamma'}{s}}{\vec{y}}/y]}{q[\mu'/x]}}
+\]
+(and similarly for terms) then $(s,\mathsf{id})$ would be a special
+case.  Conversely, we can define these Frobenius whiskerings by packing
+$x:p,\gamma'$ into a mode $\Sigma$ type.  Though the telscope approach
+would be more judgemental, it adds a bit of weight to the presentation,
+which we choose to avoid here.
+\end{remark}
+
+\subsection{Substitution}
+  All judgements have an admissible substitution principle
+\begin{mathpar}
+  \inferrule*{\gamma,x:p,\gamma' \yields J \\
+              \gamma \yields \mu : p
+              }
+             {\gamma,\gamma'[\mu/x] \yields J[\mu/x]} \\
+
+J[\mu/x][\nu/y] \equiv J[\nu/y][\mu[\nu/y]/x]
+\end{mathpar}
+
+\section{Example Mode Theories}
+\label{sec:mode-examples}
+\mvrnote{TODO: Copy over and update}
+
+
+\section{Type Theory over a Mode Theory}
+\label{sec:top-syntax}
+
+The role of the \emph{top type theory} in our framework is to provide
+general type-theoretic rules for working ``inside'' the type theory
+specified by a mode theory.  In the previous section, we showed
+signatures for a variety of example substructural and modal dependent
+type theories, and in the next section we will prove that the instances
+of the top type theory with these mode theories support the familiar
+rules for these examples.
+
+The top type theory consists of four judgements: 
+\begin{itemize}
+\item $\yields_\gamma \Gamma \CTX$ where $\yields \gamma \ctx$.
+\item $\Gamma \yields_p A \TYPE$ where $\gamma \yields p \type$.
+\item $\Gamma \yields_p A \ISFIB$ where already $\Gamma \yields_p A \TYPE$
+\item $\Gamma \yields_\mu M : A$ where $\gamma \yields \mu : p$ and
+  $\Gamma \yields_p A \TYPE$.
+\end{itemize}
+along with corresponding equality judgements.  Because of the
+fibrational perspective, we say that a judgement is ``over'' a
+corresponding entity from the base type theory: a top context $\Gamma$
+is over a mode context $\gamma$, a top type $A$ is over a mode type $p$,
+and a top term $M$ is over a mode term $\mu$.  We also say that a type $A$
+``has mode $p$'', and that a term $M$ ``has mode $\mu$''. 
+
+We treat the well-formedness of the mode theory entities as a
+presupposition of the top judgements, but sometimes write ``(over
+\ldots)'' in inference rules to emphasize the typing that is happening
+in the base.  We also treat the well-formedness of the non-principal
+subjects of a judgement as presuppostions.
+
+Using the common substructural logic parlance, we think of the base type
+theory entities subscripting the turnstile as ``resources'', with the
+mode theory dictating the ``resource usage policies'' of a particular
+type theory.  For example, in logic with weakening and contraction, the
+context $x : A \vdash J$ allows as many uses of $x$ as desired; but
+without contraction, $x$ is a ``resource'' that can be used at most
+once; while without weakening $x$ must be ``spent''.  This metaphor
+extends to modal logics, where we think of modalities as additional
+policies that must be obeyed; for example, if $f$ is a comonad, then the
+resource $f(x)$ can be used as $x$ (by the counit), and can be used to
+construct something else in the comonad; but a resource $x$ cannot be
+used to construct something in the comonad.
+
+\subsection{Top Contexts}
+
+Top contexts are as usual, over the corresponding contexts of the base.  
+
+\begin{mathpar}
+  \inferrule*[Left = ctx-form]{ }
+             {\yields_{\cdot} \cdot \CTX  } \and 
+
+  \inferrule*[Left = ctx-form]{
+    \yields_\gamma \Gamma \CTX \quad \text{over } (\yields \gamma \ctx) \\\\
+    \Gamma \yields_p A \TYPE \quad \text{over }  (\gamma \yields p \type)}
+  {\yields_{\gamma, x : p} \Gamma, x : A \CTX \quad \text{over } (\yields \gamma,x:p \ctx)  } \\
+\end{mathpar}
+
+We adopt a convention that the same variable names are used in the top
+context and base context (which must, by these rules have the same
+number of variables).  
+
+\subsection{Top Structural Rules}
+\label{sec:top-syntax-structural}
+
+There are two derivable structural rules: 
+\begin{mathpar}
+  \inferrule*[Left = var]{
+    % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
+  }
+  {\Gamma, x : A, \Gamma' \yields_x x : A \quad (\text{over } \gamma,x:p,\gamma' \yields x : p)} \and
+
+ \inferrule*[Left = rewrite]{
+   \Gamma \yields_\mu M : A 
+   \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
+  }
+  {\Gamma \yields_\nu \rewrite{s}{M} : A} \\ \\
+  
+  \rewrite{\id_{\mu}}{M} \equiv M \and
+  \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
+  \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}}
+\end{mathpar}
+
+The first is the familiar variable rule, which is over the corresponding
+variable rule in the base.  Intuitively, this says that to use an
+assumption, the subscripting mode term must tell you that you can and
+must use exactly that variable.  More permissive policies
+(e.g. weakening away unused variables) will come from specific mode
+theories.
+
+The second rule says that mode term morphisms act contravariantly on
+judgement subscripts, and the equations say that this action is
+functorial, and commutes with substitution (the $\StI{}{}$ notation is
+introduced in Section~\ref{sec:top-s-types} below).
+
+The remaining rules make weakening, exchange, and substitution
+admissible for the top type theory, where each rule is over the
+corresponding structural rule of the base.  For example, we have
+\begin{mathpar}
+\inferrule*[Left = weaken-over, Right=admissible]
+           {\Gamma,\Gamma' \yields_\mu M : A \quad (\text{over } \gamma,\gamma' \vdash \mu : p)}
+           {\Gamma,y:B,\Gamma' \yields_\mu M : A \quad (\text{over } \gamma,y:q,\gamma' \vdash \mu : p)}
+
+\inferrule*[Left = subst-over, Right=admissible]
+           {\Gamma,x:A,\Gamma' \yields_\nu N : C \quad (\text{over } \gamma,x:p,\gamma' \vdash \nu : \gamma) \\\\
+            \Gamma \vdash_\mu M : A \quad (\text{over } \gamma \vdash \mu : p)
+           }
+           {\Gamma,\Gamma'[M/x] \yields_{\nu[\mu/x]} N[M/x] : A[M/x] \quad (\text{over } \gamma,\gamma'[\mu/x] \vdash \nu[\mu/x] : p[\mu/x])}
+\end{mathpar}
+
+In terms of resources, weakening-over-weakening says that it is always
+permissible to add a variable to the framework context, even when using
+the framework to encode a type theory without weakening; this is because
+adding $y$ to the framework context does not also add it to the
+``resources'' $\mu$, which is a separate step that must be given in the
+mode theory.  Substitution-over-substitution says that, in the mode
+term, a substitution replaces all occurences of $x$ with the mode term
+$\mu$ used to construct the top term $M$ that is plugged in for $x$.
+
+\subsection{Top Unit Types}
+
+We introduce a unit type in the top type theory, whose rules are over
+the corresponding rules for the unit type in the base:
+
+\begin{mathpar}
+  \inferrule*[Left=$1$-form]{~}{\Gamma \yields_{1} 1 \TYPE} \and
+  \inferrule*[Left=$1$-fib]{~}{\Gamma \yields_{1} 1 \ISFIB} \and
+  \inferrule*[Left=$1$-intro]{~}{\Gamma \yields_{()} () : 1} \and
+  M \equiv () \\
+\end{mathpar}
+
+Note that top unit types will play a rather structural role, and not, on
+their own, model the unit types of a particular encoded language.  This
+is because the unit type of an encoded language will have mode
+$\mathsf{p}$ for some constant, or e.g. for a comprehension object
+representing dependent type theory $\El{\mathsf p}{\alpha}$, and not
+mode $1$.  
+
+\subsection{Top Telescope Types}
+
+Similarly, we introduce a $\Sigma$ type to the top type theory, over the
+corresponding rules for mode $\Sigma$ types.  But as in the base type
+theory, we refer to them as \emph{telescope types} to emphasize that
+they play a structural role, rather than, on their own, represent the
+$\Sigma$ types of an encoded language.  
+
+\begin{mathpar}
+  \inferrule*[Left=$()$-form]{ \Gamma \yields_p A \TYPE \\
+               \Gamma,x:A \yields_q B \TYPE}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \TYPE}
+  \and
+  \inferrule*[Left=$()$-fib]{ \Gamma \yields_p A \ISFIB \\
+               \Gamma,x:A \yields_q B \ISFIB}
+             { \Gamma \yields_{\sigmacl{x}{p}{q}} \telety{x}{A}{B} \ISFIB}
+  \\
+  \inferrule*[Left=$()$-pair]{ \Gamma \yields_\mu M : A \\
+               \Gamma \yields_\nu N : B[M/x]
+             }
+             { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
+  \\             
+  \inferrule*[Left=$()$-fst]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+  \and
+  \inferrule*[Left=$()$-snd]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+  \\
+             
+    \fst{(M,N)} \equiv M \and
+    \snd{(M,N)} \equiv N \and
+    P \equiv (\fst P, \snd P)
+\end{mathpar}
+
+We present telescope types as negative $\Sigma$ types, with a
+judgemental $\eta$ rule.  Each rule is over the corresponding rule of
+the base type theory.
+
+\subsection{Left Adjoint Modalities}
+
+Left adjoint modalities, written $\F{x.\mu}{A}$, represent a
+pushforward/cocartesian lift of a mode term $x : p \vdash \mu : q$, taking
+types of mode $p$ to types of mode $q$.  $\mathsf{F}$-types will be used
+to represent left adjoint modalities (e.g. $\flat$ in spatial type
+theory).  In combination with top unit types and top telescope types,
+these will also be used to represent encoded language unit and $\Sigma$
+types.  For example, the $\Sigma_A B$ of standard dependent type theory
+will be represented by $\F{z.\Sigma_1(\fst z, \snd
+  z)}{\telety{x}{A}{B}}$: the telescope type has telescope mode
+$\sigmacl{x}{\El{p}{\alpha}}{\El{p}{\alpha.x}}$, and then we use an
+$\mathsf{F}$ type to push forward along the mode term $\Sigma_1$ that we
+use to assert that a comprehension object supports $\Sigma$ types.
+In \citepalias{lsr17multi-extended}, we used an $n$-ary $\mathsf{F}$ type in
+place of having separate telescope types.
+
+The rules are:
+
+\begin{mathpar}
+  \inferrule*[Left = F-form]{
+    %% \yields_\gamma \Gamma \CTX \quad (\text{over } \yields \gamma \ctx)\\\\
+    \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \TYPE \quad (\text{over } \gamma \yields q \type) } \and
+  \inferrule*[Left = F-fib]{
+    \Gamma \yields_p A \ISFIB
+  }
+  {\Gamma \yields_q \F{x.\mu}{A} \ISFIB } \\
+  
+  \inferrule*[Left = F-intro]{
+    \Gamma \yields_{\nu} M : A
+    \quad (\text{over } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = F-elim]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \and \Gamma, y : \F{x.\mu}{A} \yields_{r} C \ISFIB \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \quad (\text{over }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
+  \\ 
+
+  \inferrule*[Left = F-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \quad (\text{over } \gamma, x:p \yields r [\mu / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \quad (\text{over }  \gamma \yields {r[\nu/y]} \type)} \\
+  \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
+%  \text{(optionally:) }
+%  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
+  \\
+  
+  (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+\end{mathpar}
+
+$\mathsf{F}$ types are a positive type, and can be thought of as a
+datatype with one constructor, the introduction rule $\FI{M}$.  The main
+idea is that $\Gamma, x:A \vdash_{\mu(x)} \FI{x} : \F{x.\mu}{A}$;
+i.e. to introduce $\F{x.\mu}{A}$, the mode term must be $\mu$.  The full
+form of the introduction rule builds in a substitution for $x$ to make
+substitution admissible.  The elimination rule patterm-matches on a term
+of $\mathsf{F}$ type.  In sequent calculus style, it characterizes maps
+out of $\mathsf{F}$ types:
+\begin{mathpar}
+  \inferrule*{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \\\\
+    \Gamma, y : \F{x.\mu}{A}, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
+    \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma, y : \F{x.\mu}{A} \yields_{\nu'} \FE{y}{x}{N} : C  \quad (\text{over }  \gamma,y:q \yields {\nu'} : r)} 
+\end{mathpar}
+This says that an assumption of $\F{x.\mu}{A}$ can be replaced by an
+assumption of $A$, but in the mode term we replace $y$ by $\mu$ to
+remember the ``resources'' used to make $x$.
+
+We treat $\mathsf{F}$ types like a positive type in dependent type
+theory: we have a judgemental $\beta$ equality, but no $\eta$ (we intend
+$\eta$ to be provable from the elimination rule with some sort of
+identity type (which we have not yet investigated)).  We also include a
+large elimination rule, i.e. a second elimination rule that maps into
+types (which we do not identify with elements of a universe).
+In general, the interaction of the structural rule applying a mode term
+2-cell to a term, $\rewrite{t}{M}$, and the terms for various types
+will follow from the equalities for $\rewrite{t}{-}$ in
+Section~\ref{sec:top-syntax-structural} and the $\eta$ rules for the
+types.  Because we do not have judgemental $\eta$ for $\mathsf{F}$
+types, we assert the necessary interaction in the final equation in the
+figure.  
+
+\subsection{Right Adjoint Modalities}
+
+A simple form of right adjoint types has the shape $\mathsf{U}_{c.\mu}(A
+\TYPE_q) \TYPE_r$ when $c:r \vdash \mu : q$, and represents a
+pullback/cartesian lift along $\mu$, and will be right adjoint to
+$\F{c.\mu}{-}$.  We will generalize this by allowing a contravariant
+position as well, so that right adjoint types include both right adjoint
+modalities and dependent function types
+($\Pi$)~\citep{atkey04separation,lsr17multi-extended}.
+
+\begin{mathpar}
+  \inferrule*[Left = U-form]{
+    \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type)\\\\
+    \and \Gamma,x:A \yields_q B \TYPE \quad (\text{over } \gamma,x:p \yields q \type)\\\\
+    \and \gamma, x:p, c:r \yields \mu : q
+  }{\Gamma \yields_r \U{c.\mu}{x:A}{B} \TYPE \quad (\text{over } \gamma \yields r \type)} \and
+  \inferrule*[Left = U-fib]{
+    \Gamma \yields_p A \ISFIB \\\\
+    \and \Gamma,x:A \yields_q B \ISFIB
+  }{\Gamma \yields_r \U{c.\mu}{x:A}{B} \ISFIB} \\
+
+  \inferrule*[Left = U-intro]{
+    \Gamma,x:A \yields_{\mu[\nu/c]} M : B \quad (\text{over } \gamma,x:p \yields {\mu[\nu/c]} : q)
+  }
+  {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
+    \quad (\text{over } \gamma \yields \nu : r)
+  } \\
+  
+  \inferrule*[Left = U-elim]{
+    \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \quad (\text{over } \gamma \yields \nu_1 : r) \\\\
+    \Gamma \yields_{\nu_2} N_2 : A \quad (\text{over } \gamma \yields \nu_2 : p)
+  }{
+    \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \quad (\text{over } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
+  } \\
+
+  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
+  \UI{x}{\UE{N}{x}} \equiv N
+\end{mathpar}
+
+The type $\U{c.\mu}{x:A}{B}$ can be thought of as a modal verson of $\Pi
+x:A.B$, where $\mu$ describes the resources under which the variable
+$x$ can be used.  The simplified version discussed above is the special
+case where $A$ is the top unit type $1$.  The variable $c$ in $\mu$ is a
+placeholder for the ``current'' mode term: the $\lambda$ rule says that
+to prove $\U{c.\mu}{x:A}{B}$ over $\nu$, you substitute $\nu$ for $c$ in
+$\mu$ in the premise.  In the elimination rule, application, $\mu$ tells
+you how to combine $\nu_1$ (the resources for the function) and
+$\nu_2$ (the resources for the argument) when you apply a function.
+For example, in the simply typed case~\citep*{lsr17multi-extended},
+taking $\mu(c,x)$ to be $c \times x$ gives an $\to$ type right adjoint
+to a product $\times$.
+
+$\mathsf{U}$ types are a negative type, with judgemental $\beta$ and
+$\eta$ equality rules.
+
+\subsection{Strict Modalities}
+
+\mvrnote{Text needs updating:}
+
+The term $\rewrite{s}{a}$ (Section~\ref{sec:top-syntax-structural})
+``transports'' a term $\Gamma \vdash_\mu a : A$ along a mode term 2-cell
+$s : \mu \tcell_p \nu$ to make a term $\Gamma \vdash_\mu \rewrite{s}{a}
+: A$.  In this section, we consider an analogous operation on types,
+transporting a type $\Gamma \vdash_p A \TYPE$ along a mode type morphism
+$s : q \tcell p$ to make a new type $\Gamma \vdash_q \St{s}{A} \TYPE$.
+For example, if $s := \ApEl{p}{\pi} : \El p {\alpha.x} \tcell \El p
+{\alpha}$ is the projection mode type morphism for a comprehension
+object, then $\St{s}{A}$ represents weakening a type in the encoded
+language ($\Gamma \vdash B \TYPE$ implies $\Gamma,A \vdash B \TYPE$).
+
+In some sense, such an operation already exists, because the mode type
+morphism $s$ contravariantly induces a mode term $x : p \vdash
+\TrPlus{s}{x} : q$, and we can take the left adjoint type
+$\F{x.\TrPlus{s}{x}}{A}$.  However, we will want the action of mode type
+morphisms to obey certain judgemental equalities that we do not assert,
+%% or do not even make sense
+for a general mode term.  We call these
+\emph{strict modalities}, written $\St{s}{A}$.  The introduction and
+elimination rules for $\St{s}{A}$ are the same as those for
+$\F{x.\TrPlus{s}{x}}{A}$, except we additionally assert a judgemental
+$\eta$ rule that any map $N$ from $\St{s}{A}$ is equal to first doing
+the elimination:
+\[
+\inferrule*{\Gamma,z:\St{s}{A} \vdash_\mu N : C \and
+            \Gamma \vdash_\nu M : \St{s}{A} \and
+           }
+           {\Gamma \vdash_{\mu[\nu/z]} (\StE{s}{M}{x}{N[\StI{s}{x}/z]}) \equiv N[M/z] : C[\St{s}{A}/z]}
+\]
+(along with a corresponding judgemental $\eta$ for the large elimination
+rule).  
+
+In addition to this, we add four judgemental equalities
+((\ref{eq:stype-id}) to \ref{eq:stype-pair}) of types (in the right-hand
+column) and of terms with those types (in the left-hand column).  These
+four equations give the four mode-theory-independent ways we have of
+making mode type morphisms strict actions on types.  For non-strict left
+adjoints $\F{x.\TrPlus{s}{x}}{A}$, these type equalities would only be an
+``equivalence'': there are functions back and forth, but we would need
+an identity type in order to use the induction principle for
+$\mathsf{F}$ types to prove that the composites are the identity.
+
+The first equation (\ref{eq:stype-id}) concerns the identity mode type
+morphism $\id{p}$, which takes a type $\vdash_p A$ to another type of
+mode $p$.  The equation in the right-hand column says that $\St{\id
+  p}{A}$ is judgementally equal to $A$, and that, for $\Gamma \vdash_\mu
+M : A$, the introduction form $\Gamma \vdash_{\TrPlus{\id p}{\mu}}
+\StI{\id p}{M} : \St{\id p}{A}$ is equal to $M$ (both terms witness the
+same judgement because of the right-hand equation and functoriality of
+$\TrPlus{\id_p}{-}$ in the mode theory.  The second equation
+(\ref{eq:stype-comp}) is the analogous rule for composition of mode type
+morphisms.
+
+%% It would type check to ask that, for general mode terms, $\F{x.x}{A}
+%% \equiv A$ and $\F{g}{\F{f}{A}} \equiv \F{g \circ f}{A}$, but we do not
+%% ask for this judgemental equality for general $\mathsf{F}$-types.
+
+The next equation (\ref{eq:stype-subst}) is an analogous rule for the
+whiskering operation that takes $t : \mu \tcell_p \mu'$ to $\ap q {t/x} :
+q[\mu/x] \tcell q[\mu'/x]$.  Suppose $\Gamma,x:A \vdash_q B \TYPE$ and
+$\Gamma \vdash_{\mu'} M : A$.  Then we could either first transport $M$,
+getting $\Gamma \vdash_\mu \rewrite{t}{M} : A$, and then substitute into
+$B$ to get $\Gamma \vdash_{q[\mu/x]} B[\rewrite{t}{M}/x] \TYPE$; or we
+could first substitute to get $\Gamma \vdash_{q[\nu/x]} B[M/x] \TYPE$
+and then transport the type along $\ap q {t/x}$, getting $\Gamma
+\vdash_{q[\nu/x]} \St{\ap q {t/x}}{B[M/x]} \TYPE$.  The equation says
+that these types are judgementally equal.  The left-hand column says
+that if we have $x : A \vdash_\nu N : B$, then substituting
+$\rewrite{t}{M}$ or substituting $M$ and then rewriting are equal.
+
+Note that the corresponding equation for whiskering on the other side,
+$(\St{s}{A})[M/x] \equiv \St{(s[\mu/x])}{A[M/x]}$, is one of the
+defining equations for substitution.
+
+For the final equation (\ref{eq:stype-pair}), the right-hand
+equation interprets the action of a $\Sigma$ of mode type morphisms on
+an upstairs telescope type as a componentwise action. Recall from
+Section~\ref{sec:base-telescopes} that $\sigmacl{x'}{s}{t}$ type checks when
+$\TypeTwo{\gamma}{s}{p}{p'}$ and
+$\TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}$,
+and here we require
+$\Gamma \vdash_{p'} A' \TYPE$ and $\Gamma,x':A' \vdash_{q'} B' \TYPE$,
+so we have
+$\Gamma \vdash_{\sigmacl{x}{p}{q}} \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}}$
+and
+$\Gamma \vdash_{p} \St{s}{A'} \TYPE$
+and 
+$\Gamma,x':p' \vdash_{q[\TrPlus{s}{x'}/x]} \St{t}{B'} \TYPE$, so
+$\Gamma,x:\St{s}{A'} \vdash_{q} \StE{s}{x}{x'}{\St{t}{B'}} \TYPE$, so
+$\Gamma \vdash_{\sigmacl{x}{p}{q}} \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}$.
+The
+left-hand column says that, assuming $\Gamma
+\vdash_\mu M : A'$ and $\Gamma \vdash_\nu N : B'[M/x']$, 
+the term
+$\Gamma \vdash_{\TrPlus{\sigmacl{x'}{s}{t}}{(\mu,\nu)}} \StI{\sigmacl{x'}{s}{t}}{(M, N)} : \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}}$ is equal to
+is equal to the term
+$\Gamma \vdash_{(\TrPlus{s}{\mu},\TrPlus{t[\mu/x']}{\nu})} (\StI{s}{M}, \StI{t[\mu/x]}{N}) : \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}$,
+using the equation between types and the equation for a $\Sigma$ mode
+type morphism on mode terms.  
+
+\begin{mathpar}
+  \inferrule*[Left = E-form]{
+    \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type) \\\\
+    \gamma, x:p \yields \mu : q 
+  }
+  {\Gamma \yields_q \E{x.\mu}{A} \TYPE \quad (\text{over } \gamma \yields q \type) } \\
+  \inferrule*[Left = E-intro]{
+    \Gamma \yields_{\nu} M : A
+    \quad (\text{over } \gamma \yields {\nu} : p)
+    %% \and \gamma \yields \nu : q 
+    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
+  }
+  {\Gamma \yields_{\mu[\nu/x]} \EI{M} : \E{x.\mu}{A} \quad (\text{over } \gamma \yields \mu[\nu/x] : q)} \\
+
+  \inferrule*[Left = E-elim]{
+    \Gamma, y : \E{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \\\\
+    \Gamma \yields_{\nu} M : \E{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\EI{x}/y]
+    \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
+  {\Gamma \yields_{\nu'[\nu/y]} \EE{M}{x}{N} : C[M/y]  \quad (\text{over }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
+  \EEs{\mu}{\EI{M}}{x}{N} \equiv N[M/x] \and
+  (\EEs{\mu}{M}{x}{N[\EI{x}/z]}) \equiv N[M/z]
+  \\
+  
+\inferrule*[Left = E-Elim]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : \E{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
+    \quad (\text{over } \gamma, x:p \yields r [\mu / y] \type )}
+  {\Gamma \yields_{r[\nu/y]} \EEs{\mu}{M}{x}{C} \TYPE \quad (\text{over }  \gamma \yields {r[\nu/y]} \type)} \\
+  \EEs{\mu}{\EI{M}}{x}{C} \equiv C[M/x] \and
+  (\EEs{\mu}{M}{x}{C[\EI{x}/z]}) \equiv C[M/z]
+\end{mathpar}
+
+\begin{align}
+\label{eq:etype-id} \EIs{x.x}{M} &\equiv M &\E{x.x}{A} &\equiv A \\
+\label{eq:etype-comp} \EIs{x.\mu}{\EIs{x.\nu}{M}} &\equiv \EIs{x.\mu[\nu/x]}{M} &\EIs{x.\mu}{\EIs{x.\nu}{A}} &\equiv \EIs{x.\mu[\nu/x]}{A} \\
+\label{eq:etype-pair}\EIs{(y,y').(\nu, \nu')}{(M, N)} &\equiv (\EIs{y.\nu}{M}, \EIs{y.\nu'[\mu/x]}{N}) &\E{(y,y').(\nu, \nu')}{x' : A', B'} & \equiv \telety{x}{\E{y.\nu}{A'}}{\EEs{\nu}{x}{x'}{\E{y.\nu'}{B'}}} 
+%% other whiskering 'is a substitution rule:
+%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
+\end{align}
+Using $\EIs{(y,y').(\nu, \nu')}{\dots}$ as a short-hand for $\EIs{w.(\nu[\fst w/y], \nu'[\snd w/y'])}{\dots}$.
+
+\mvrnote{s-types intro} An instance of $\mathsf{E}$-types that we will use frequently is the $\mathsf{E}$-type for the mode term $\TrPlus{s}{x}$, where $s : p \tcell q$ is a mode term morphism. We introduce some syntax for this situation:
+\begin{align*}
+\St{s}{A} &:\equiv \E{x.\TrPlus{s}{x}}{A} \\
+\StI{s}{x} &:\equiv \EIs{x.\TrPlus{s}{x}}{x} \\
+\StE{s}{M}{y}{N} &:\equiv \EEs{x.\TrPlus{s}{x}}{M}{y}{N}
+\end{align*}
+
+In combination with \mvrnote{mode theory equations}, the fusion equations for $\mathsf{E}$-types specialise to:
+\begin{align}
+\label{eq:stype-id} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
+\label{eq:stype-comp} \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
+\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} 
+\end{align}
+
+\subsection{Derivable Terms and Equations}
+
+We end this section with a number of lemmas (which apply to all mode
+theories) that will be used in example encodings.
+
+\begin{lemma}
+The \textsc{rewrite} rule commutes with pairing of telescope types:
+\begin{align*}
+%(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
+%(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
+\rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} ) 
+\end{align*}
+where
+\begin{align*}
+\TermTwoT{\gamma &}{s}{\mu}{\mu'}{p} \\
+\TermTwoT{\gamma &}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} \\
+\Gamma &\yields_{\mu'} M : A \\
+\Gamma &\yields_{\nu'} N : B[M/x]
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+&\rewrite{(s, t)}{(M, N)} \\
+&\equiv (\fst\rewrite{(s, t)}{(M, N)}, \snd \rewrite{(s, t)}{(M, N)} ) \\
+&\equiv (\fst z [\rewrite{(s, t)}{(M, N)}/z], \snd z [\rewrite{(s, t)}{(M, N)}/z] ) \\
+&\equiv (\rewrite{\ap{\fst}{(s, t)}}{\fst (M, N)}, \rewrite{\ap{\snd}{(s, t)}}{\StI{\ap{q[\fst z/x]}{(s, t)/z}}{\snd (M, N)}} ) \\
+&\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
+\end{align*}
+This type checks via Equation~\eqref{eq:stype-subst}; in the second component we have
+\begin{align*}
+&\snd \rewrite{(s, t)}{(M, N)} &&: B[\fst\rewrite{(s, t)}{(M, N)}/x] \\
+\equiv~&\snd \rewrite{(s, t)}{(M, N)} &&: B[\rewrite{s}{M}/x] \\
+\equiv~&\rewrite{t}{\StI{\ap{q}{s/x}}{N}} &&: \St{\ap{q}{s/x}}{B[M/x]}
+\end{align*}
+\end{proof}
+
+\begin{lemma} \label{lem:rewrite-push}
+The \textsc{rewrite} rule commutes with $\mathsf{F}$-, $\mathsf{U}$- and $E$- introduction and elimination.
+\begin{align*}
+\FI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} \\
+(\FE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}} \\
+\UE{M}{\rewrite{s}{N}} &\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
+\UE{(\rewrite{t}{M})}{N} &\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} \\
+\UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
+\EI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\EI{M}} \\
+(\EE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\EE{M}{x}{N}}} \\
+(\EEs{\mu}{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\EEs{\mu}{M}{x}{N}} 
+\end{align*}
+\end{lemma}
+\begin{proof}
+For \textsf{F}-types:
+\begin{align*}
+\FI{\rewrite{s}{M}} 
+&\equiv \rewrite{\id_{\mu[\nu/x]}}{\FI{x}}[\rewrite{s}{M}/x]  \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{x}[M/x]}} \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{M}}} \\
+&\equiv \rewrite{\ap{\mu}{s/x}}{\FI{M}} && \text{As $x$ does not appear in $q$.}\\
+(\FE{\rewrite{s}{M}}{x}{N})
+&\equiv \rewrite{\id_{\nu'[\nu/y]}}{\FE{y}{x}{N}}[\rewrite{s}{M}/y] \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{(\FE{y}{x}{N})[M/y]}} \\
+&\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\FE{M}{x}{N}}}
+\end{align*}
+
+For \textsf{U}-types:
+\begin{align*}
+\UE{M}{\rewrite{s}{N}}
+&\equiv \rewrite{\id_{\mu[z/x, \nu_1/c]}}{\UE{M}{z}}[\rewrite{s}{N}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q[\nu_1/c]}{s/x}}{\UE{M}{N}}} \\
+&\equiv \rewrite{\ap{\mu[\nu_1/c]}{s/x}}{\StI{\ap{q}{s/x}}{\UE{M}{N}}} \\
+\UE{(\rewrite{t}{M})}{N}
+&\equiv \rewrite{\id_{\mu[\nu_2/x, z/c]}}{\UE{(z)}{N}}[\rewrite{t}{M}/z] \\
+&\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\StI{\ap{q[\nu_2/x]}{t/c}}{\UE{M}{N}}} \\
+&\equiv \rewrite{\ap{\mu[\nu_2/x]}{t/c}}{\UE{M}{N}} && \text{(As $c$ does not appear in $q$)}\\
+\rewrite{s}{\UI{x}{M}}
+&\equiv \UI{y}{\UE{(\rewrite{s}{\UI{x}{M}})}{y}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{\UE{(\UI{x}{M})}{y}}} \\
+&\equiv \UI{y}{\rewrite{\ap{\mu[y/x]}{s/c}}{M[y/x]}} \\
+&\equiv \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}
+\end{align*}
+
+The first two equations for $\mathsf{E}$-types follow by the same reasoning as for $\mathsf{F}$-types. For the third, we make use of the $\eta$-expansion that is not available for $\mathsf{F}$-types.
+\begin{align*}
+\rewrite{s[\nu/y]}{\EEs{\mu}{M}{x}{N}}
+&\equiv \rewrite{s}{\EEs{\mu}{y}{x}{N}} [M/y] \\
+&\equiv \EEs{\mu}{M}{z}{(\rewrite{s}{\EEs{\mu}{y}{x}{N}}[\EIs{\mu}{z}/y])} \\
+&\equiv \EEs{\mu}{M}{z}{(\rewrite{s[\mu/y]}{\EEs{\mu}{\EIs{\mu}{z}}{x}{N}})} \\
+&\equiv \EEs{\mu}{M}{z}{\rewrite{s[\mu/y]}{N}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+The \textsc{rewrite} rule commutes with \Fsym- and \Esym-elimination into types:
+\begin{align*}
+(\FE{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\FE{M}{x}{C}} \\
+(\EE{\rewrite{s}{M}}{x}{C}) &\equiv \St{\ap{r}{s/y}}{\EE{M}{x}{C}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+This is analogous to elimination into terms:
+\begin{align*}
+\FE{\rewrite{s}{M}}{x}{C}
+&\equiv (\FE{y}{x}{C})[\rewrite{s}{M}/y] \\
+&\equiv \St{\ap{r}{s/y}}{(\FE{y}{x}{C})[M/y]} \\
+&\equiv \St{\ap{r}{s/y}}{\FE{M}{x}{C}}
+\end{align*}
+and similarly for \Esym-types.
+\end{proof}
+
+\begin{lemma}\label{lem:s-elim-s-elim}
+\textsc{E-elim} commutes with \textsc{F-elim} and \textsc{E-elim}:
+\begin{align*}
+\FE{(\EEs{\mu}{M}{x'}{N'})}{x}{N} &\equiv \EEs{\mu}{M}{x'}{(\FE{N'}{x}{N})} \\
+\EEs{\nu}{(\EEs{\mu}{M}{x'}{N'})}{x}{N} &\equiv \EEs{\mu}{M}{x'}{(\EEs{\nu}{N'}{x}{N})}
+\end{align*}
+\end{lemma}
+\begin{proof}
+Using $\eta$ for \Esym-types:
+\begin{align*}
+&\FE{(\EEs{\mu}{M}{x'}{N'})}{x}{N} \\
+&\equiv (\FE{(\EEs{\mu}{z}{x'}{N'})}{x}{N})[M/z] \\
+&\equiv \EEs{\mu}{M}{z'}{((\FE{(\EEs{\mu}{z}{x'}{N'})}{x}{N})[\EIs{\mu}{z'}/z])} \\
+&\equiv \EEs{\mu}{M}{z'}{((\FE{(\EEs{\mu}{\EIs{\mu}{z'}}{x'}{N'})}{x}{N}))} \\
+&\equiv \EEs{\mu}{M}{z'}{(\FE{N'[z'/x']}{x}{N})} \\
+&\equiv \EEs{\mu}{M}{x'}{(\FE{N'}{x}{N})}
+\end{align*}
+and similarly for the second.
+\end{proof}
+
+\begin{lemma}\label{lem:s-elim-fusion}
+Fusion for \textsc{E-elim} on composites:
+\begin{align*}
+\EEs{y.\mu[\nu/y]}{M}{x}{N} \equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\nu}{x'}{x}{N}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\begin{align*}
+\StE{s;t}{M}{x}{N}
+&\equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\mu[\nu/y]}{\EIs{y.\mu}{x'}}{x}{N}} \\
+&\equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\nu}{x'}{x''}{\EEs{y.\mu[\nu/y]}{\EIs{y.\mu}{\EIs{y.\nu}{x''}}}{x}{N}}} \\
+&\equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\nu}{x'}{x''}{\EEs{y.\mu[\nu/y]}{\EIs{y.\mu[\nu/y]}{x''}}{x}{N}}} \\
+&\equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\nu}{x'}{x''}{N[x''/x]}} \\
+&\equiv \EEs{y.\mu}{M}{x'}{\EEs{y.\nu}{x'}{x}{N}}
+\end{align*}
+\end{proof}
+
+%\begin{lemma}\label{lem:s-elim-tuple}
+%Fusion for \textsc{s-elim} on tuples:
+%\begin{align*}
+%\StE{(x : s, t)}{(M, M'[M/x])}{w}{N} \equiv \StE{s}{M}{x}{\StE{t[\TrPlus{s}{x}/x]}{M'[\StI{s}{x}/x]}{y}{N[(x,y)/w]}}
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%\begin{align*}
+%&\StE{(x : s, t)}{(M, M'[M/x])}{w}{N} \\
+%&\equiv \StE{s}{M}{x}{\StE{(s, t)}{(\StI{s}{x}, M'[\StI{s}{x}/x])}{w}{N}} \\
+%&\equiv \StE{s}{M}{x}{(\StE{t[\TrPlus{s}{x}/x]}{M'[\StI{s}{x}/x]}{y}{\StE{(s, t)}{(\StI{s}{x}, \StI{t[\TrPlus{s}{x}/x]}{y})}{w}{N}})} \\
+%&\equiv \StE{s}{M}{x}{(\StE{t[\TrPlus{s}{x}/x]}{M'[\StI{s}{x}/x]}{y}{\StE{(s, t)}{\StI{(x : s, t)}{(x,y)}}{w}{N}})} \\
+%&\equiv \StE{s}{M}{x}{\StE{t[\TrPlus{s}{x}/x]}{M'[\StI{s}{x}/x]}{y}{N[(x,y)/w]}}
+%\end{align*}
+%\end{proof}
+
+%\begin{lemma}
+%\textsc{F-elim} fuses with \textsc{s-intro}.
+%\end{lemma}
+%\begin{proof}
+%\begin{align*}
+%&\FEs{\TrPlus{s}{\mu}}{\StI{s}{M}}{x}{N} \\
+%&\equiv \StE{s}{\StI{s}{M}}{y}{(\FEs{\mu}{y}{x}{N})} \\
+%&\equiv \FEs{\mu}{M}{x}{N}
+%\end{align*}
+%and
+%\begin{align*}
+%& \FEs{\mu[\TrPlus{s}{x}/x]}{M}{x}{N[\StI{s}{x}/x]} \\
+%&\equiv \FEs{\mu}{M}{y}{(\StE{s}{y}{x}{N[\StI{s}{x}/x]})}  \\
+%&\equiv \FEs{\mu}{M}{y}{N[y/x]} \\
+%&\equiv \FEs{\mu}{M}{x}{N}
+%\end{align*}
+%\end{proof}
+
+\begin{lemma}
+Split for telescope types is derivable:
+\begin{mathpar}
+\inferrule*[Left=$()$-split]{\Gamma, w : \telety{x}{A}{B} \yields_r C \TYPE \\\\ \Gamma \yields_{\nu} M : \telety{x}{A}{B} \\\\ \Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} \TeleE{M}{x}{y}{N} : C[M/w]}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+\begin{mathpar}
+\inferrule*[Left=cut]{\Gamma, x : A, y : B \yields_{\nu'[(x,y)/w]} N : C[(x,y)/w]}{\Gamma \yields_{\nu'[\nu/w]} N[\fst M/x, \snd M/y] : C[(x, y)/w][\fst M/x, \snd M/y]}
+\end{mathpar}
+And by eta for telescope types, $C[(x, y)/w][\fst M/x, \snd M/y] \equiv C[(\fst M, \snd M)/w] \equiv C[M/w]$.
+\end{proof}
+
+Given a term such as $\beta : \St{s}{\telety{\alpha}{A}{B}}$, we will often use $s$-elimination and then split on the pair. For clarity, rather than writing
+\begin{align*}
+\StE{s}{\beta}{w}{\TeleE{w}{x}{y}{(\dots)}}
+\end{align*}
+we will write
+\begin{align*}
+\StE{s}{\beta}{x, y}{(\dots)}
+\end{align*}
+
+\begin{lemma}\label{lem:e-elim-telescope-type}
+\textsc{s-elim} into types commutes with telescope formation and $\mathsf{U}$-formation, in the following sense:
+\begin{align*}
+\EEs{y.\nu}{M}{x}{(z : A, B)} &\equiv (z : \EEs{y.\nu}{M}{x}{A}, \EEs{(y, y').(\nu, y')}{(M,z)}{x, z}{B}) \\
+\EEs{y.\nu}{M}{x}{\U{c.\mu'[\nu/x]}{z : A}{B}} &\equiv \U{c.\mu'[\mu/x]}{z : \EEs{\nu}{M}{x}{A}}{\EEs{(y, y').(\nu, y')}{(M,z)}{x, z}{B}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+For telescopes:
+\begin{align*}
+&\EEs{y.\nu}{M}{x}{(z : A, B)} \\
+&\equiv \EEs{\nu}{M}{x}{(z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{\EIs{(y, y').(\nu, y')}{x, z}}{x', z'}{B[x'/x, z'/z]})} \\
+&\equiv \EEs{\nu}{M}{x}{(z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{(\EIs{\nu}{x},z)}{x', z'}{B[x'/x, z'/z]})} \\
+&\equiv (z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{(M,z)}{x', z'}{B[x'/x, z'/z]}) \\
+&\equiv (z : \EEs{\nu}{\EIs{\nu}{x}}{x}{A}, \EEs{(y, y').(\nu, y')}{(M,z)}{x, z}{B}) 
+\end{align*}
+and for $\mathsf{U}$-types the proof is similar.
+\end{proof}
+
+\begin{lemma}\label{lem:ctxtuple}
+Any context $\Gamma$ can be tupled into an iterated telescope type $\ctxtuple{\Gamma}$ of mode $\ctxtuple{\gamma}$, so that substitutions $\Gamma \yields \Theta : \Delta$ correspond bijectively with terms of $\ctxtuple{\Delta}$.
+\begin{mathpar}
+\inferrule*{\yields_\gamma \Gamma}
+             {\cdot \yields_{\ctxtuple{\gamma}} \ctxtuple{\Gamma} \TYPE}
+\and
+\inferrule*{~}
+             {\sigma : \ctxtuple{\Gamma} \yields_{\unpack{\gamma}{\sigma}} \unpack{\Gamma}{\sigma} : \Gamma}
+\and
+\inferrule*{~}
+             {\Gamma \yields_{\pack{\gamma}} \pack{\Gamma} : \ctxtuple{\Gamma}}
+\\
+\inferrule*{~}
+             {\Gamma \yields \unpack{\Gamma}{\pack{\Gamma}} \equiv \id_\Gamma}
+\and
+\inferrule*{~}
+             {\sigma : \ctxtuple{\Gamma} \yields \pack{\Gamma}[\unpack{\Gamma}{\sigma}] \equiv \sigma}
+\end{mathpar}
+\end{lemma}
+\begin{proof}
+$\ctxtuple{\Gamma}$ is defined inductively by
+\begin{align*}
+\ctxtuple{\cdot} &:\equiv 1 \\
+\ctxtuple{\Gamma, x : A} &:\equiv \sigmacl{\sigma}{\ctxtuple \Gamma}{A[\unpack{\Gamma}{\sigma}]}\\
+\unpack{(\cdot)}{\sigma} &:\equiv \cdot \\
+\unpack{\Gamma, x : A}{\sigma} &:\equiv \unpack{\Gamma}{\fst \sigma}, \snd{\sigma}/x
+\end{align*}
+with each definition lying over the identical one downstairs. 
+For $\pack{\Gamma}$ we simultaneously verify the equation $ \unpack{\Gamma}{\pack{\Gamma}} \equiv \id_\Gamma$, as we need it to hold for $(\pack{\Gamma}, x)$ to be well typed.
+\begin{align*}
+\pack{(\cdot)} &:\equiv \mt : 1 \\
+\pack{\Gamma, x : A} &:\equiv (\pack{\Gamma}, x) : \sigmacl{\sigma}{\ctxtuple \Gamma}{A[\unpack{\Gamma}{\sigma}]} \\
+\unpack{(\cdot)}{\pack{(\cdot)}} &\equiv  \cdot \equiv \id_{(\cdot)}\\
+\unpack{\Gamma, x : A}{\pack{\Gamma, x : A}} 
+&\equiv \unpack{\Gamma}{\fst \pack{\Gamma, x : A}}, \snd{\pack{\Gamma, x : A}}/x \\
+&\equiv \unpack{\Gamma}{\pack{\Gamma}}, x/x \\
+&\equiv \id_\Gamma, x/x \\
+&\equiv \id_{\Gamma, x : A}
+\end{align*}
+For the second equation, we check inductively that
+\begin{align*}
+\pack{(\cdot)}[\unpack{(\cdot)}{\sigma}] 
+&\equiv \mt[\id_{(\cdot)}] \\
+&\equiv \sigma \\
+\pack{\Gamma, x : A}[\unpack{\Gamma, x : A}{\sigma}]
+&\equiv (\pack{\Gamma}, x)[\unpack{\Gamma}{\fst \sigma}, \snd{\sigma}/x] \\
+&\equiv (\pack{\Gamma}[\unpack{\Gamma}{\fst \sigma}], \snd \sigma) \\
+&\equiv (\fst \sigma, \snd \sigma) \\
+&\equiv \sigma
+\end{align*}
+\end{proof}
+
+%\begin{lemma}
+%Tupling respects substitution: for $\gamma \yields \theta : \delta$ and $\delta \yields \kappa : \lambda$, we have:
+%\begin{align*}
+%\ctxtuple{(\kappa[\theta])} &\equiv (\ctxtuple{\kappa})[\theta]
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%By induction on the length of $\lambda$:
+%\begin{align*}
+%\ctxtuple{((\cdot)[\theta])}
+%&\equiv \ctxtuple{(\cdot)} \\
+%&\equiv (\ctxtuple{(\cdot)})[\theta] \\
+%\ctxtuple{((\kappa, M)[\theta])}
+%&\equiv \ctxtuple{(\kappa[\theta], M[\theta])} \\
+%&\equiv \ctxtuple{(\kappa[\theta]), M[\theta]} \\
+%&\equiv (\ctxtuple \kappa)[\theta], M[\theta] \\
+%&\equiv (\ctxtuple\kappa, M)[\theta]
+%\end{align*}
+%\end{proof}
+
+%\begin{definition}
+%A 2-cell between mode substitutions of shape $\gamma \yields t : \theta \tcell_\delta \theta' $ is specified by a mode term 2-cell \[\gamma \yields \ctxtuple t : \ctxtuple \theta \tcell_{\ctxtuple \delta} \ctxtuple \theta'. \]
+%\end{definition}
+%\mvrnote{A little confusing: for contexts and substitutions $\ctxtuple{}$ is an operation, here $\ctxtuple t$ is not an operation on $t$ but rather the underlying `implementation' of $t$.}
+
+%\begin{lemma}\label{lem:n-ary-ap-rewrite}
+%N-ary ap and rewrite are admissible:
+%\begin{mathpar}
+%\inferrule*{\delta \vdash {q} \type \\
+%            \gamma \yields t : \theta \tcell_\delta \theta'
+%           } 
+%           {\TypeTwo{\gamma}{\ap {q} {t}}{q[\theta]}{q[\theta']}}
+%\and
+%\inferrule*{\delta \yields {\nu} : {q} \\
+%            \gamma\yields t : \theta \tcell \theta'
+%           } 
+%           {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
+% \inferrule*[Left = rewrite]{
+%   \Gamma \yields_{\theta'} \Theta : \Delta \and 
+%   \gamma \yields t : \theta \tcell \theta'
+%  }
+%  {\Gamma \yields_{\theta} \rewrite{t}{\Theta} : \Delta}
+%\end{mathpar}
+%\end{lemma}
+%\begin{proof}
+%These are
+%\begin{align*}
+%\ap {q} {t} &:\equiv \ap{q[\unpack{\delta}{\sigma}]}{\ctxtuple t/\sigma} \\
+%\ap {\nu} {t} &:\equiv \ap{\nu[\unpack{\delta}{\sigma}]}{\ctxtuple t/\sigma} \\
+%\rewrite{t}{\Theta} &:\equiv \unpack{\Delta}{\rewrite{\ctxtuple t}{\ctxtuple \Theta}}
+%\end{align*}
+%which are well-typed by the equation $\theta \equiv \unpack{\delta}{\ctxtuple \theta}$.
+%\end{proof}
+%
+%In particular, we have the following rules for building and using 2-cells between substitutions.
+%\begin{mathpar}
+%\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \gamma \yields s : \mu[\theta] \tcell_{p[\theta]} \TrPlus{\ap{p}{t}}{\mu'[\theta']}}
+%{ \gamma \yields (s, t) : (\theta, \mu) \tcell_{(\delta,x:p)} (\theta', \mu')} \\
+%%
+%\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
+%{\gamma \yields \ap{\fst}{t} : \theta \tcell_\delta \theta' } \and
+%%
+%\inferrule{\gamma \yields t : (\theta, \mu) \tcell_{(\delta, x : p)} (\theta', \mu')}
+%{\gamma \yields \ap{\snd}{t} : \mu[\theta] \tcell_{p[\theta]} \TrPlus{\ap{p}{\ap{\fst}{t}}}{\mu'[\theta']}}
+%\end{mathpar}%
+%
+%\begin{lemma}
+%N-ary ap of a 2-cell on a substitution is admissible
+%\begin{mathpar}
+%\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \delta \yields \kappa : \lambda}
+%{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell_\lambda \kappa[\theta']}
+%\end{mathpar} 
+%\end{lemma}
+%\begin{proof}
+%Due to the equation $\ctxtuple(\kappa[\theta]) \equiv (\ctxtuple \kappa)[\theta]$ we can just define $\ctxtuple{(\ap{\kappa}{t})} :\equiv \ap{(\ctxtuple \kappa)}{t}$.
+%\end{proof}
+
+%\begin{lemma}
+%N-ary associativity and interchange hold:
+%\begin{align*}
+%\ap {(\nu[\theta])} {t} &\equiv \ap \nu {\ap \theta {t}} \\
+%s[\theta];\ap{\nu'}{t} &\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%Unwinding definitions we find:
+%\begin{align*}
+%\ap {(\nu[\theta])} {t}
+%&\equiv \ap{\nu[\theta][\fan{\delta}]}{\ctxtuple t/\sigma} \\
+%&\equiv \ap{\nu[\fan{\delta}][\ctxtuple \theta / \sigma][\fan{\gamma}]}{\ctxtuple t/\sigma} \\
+%&\equiv \ap{\nu[\fan{\delta}]}{\ap{\ctxtuple \theta[\fan{\gamma}]}{\ctxtuple t/\sigma}/\sigma} \\
+%&\equiv \ap{\nu[\fan{\delta}]}{\ap{(\ctxtuple \theta)}{t}/\sigma} \\
+%&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple{(\ap \theta {t})}/\sigma} \\
+%&\equiv \ap \nu {\ap \theta {t}}
+%\end{align*}
+%and
+%\begin{align*}
+%s[\theta];\ap{\nu'}{t} 
+%&\equiv s[\theta];\ap{\nu'[\fan{\delta}]}{\ctxtuple t/\sigma} \\
+%&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} ; \ApPlus{(\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma})}{s[\theta']} \\
+%&\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
+%\end{align*}
+%\end{proof}
+
+%\begin{lemma}
+%A N-ary versions of the equations concerning rewrites hold:
+%\begin{align*}
+%\St{(\ap{q}{t})}{B[\Theta]} &\equiv B[\rewrite{t}{\Theta}] \\
+%\rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} &\equiv N[\rewrite{t}{\Theta}] \\
+%\rewrite{\ap{\kappa}{t}}{\Theta;\kappa} &\equiv \rewrite{t}{\Theta};\kappa
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%\begin{align*}
+%B[\rewrite{t}{\Theta}] 
+%&\equiv B[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+%&\equiv B[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+%&\equiv \St{\ap{q[\fan{\delta}]}{\ctxtuple t / \sigma}}{B[\fan{\Delta}][\ctxtuple \Theta/\sigma]} \\
+%&\equiv \St{\ap{q}{t}}{B[\Theta]}
+%\end{align*}
+%And:
+%\begin{align*}
+%N[\rewrite{t}{\Theta}]
+%&\equiv N[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
+%&\equiv N[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
+%&\equiv \rewrite{\ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma}}{\StI{\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma}}{N[\fan{\Delta}][\ctxtuple \Theta/\sigma]}} \\
+%&\equiv \rewrite{\ap{\nu}{t}}{\StI{\ap{q}{t}}{N[\Theta]}} \\
+%\end{align*}
+%And:
+%\begin{align*}
+%\rewrite{\ap{\kappa}{t}}{\Theta;\kappa}
+%&\equiv \fan{\Lambda}[\rewrite{\ctxtuple{(\ap{\kappa}{t})}}{\ctxtuple {(\Theta;\kappa)}}/\sigma] \\
+%&\equiv \fan{\Lambda}[\rewrite{\ap{(\ctxtuple \kappa)}{t}}{(\ctxtuple \kappa)[\Theta]}/\sigma] \\
+%&\equiv \fan{\Lambda}[(\ctxtuple \kappa)[\rewrite{t}{\Theta}]/\sigma] \\
+%&\equiv \fan{\Lambda}[(\ctxtuple \kappa)/\sigma][\rewrite{t}{\Theta}] \\
+%&\equiv \kappa[\rewrite{t}{\Theta}] \\
+%&\equiv \rewrite{t}{\Theta};\kappa
+%\end{align*}
+%using the previous equation.
+%\end{proof}
+
+%\begin{lemma}
+%Rewriting by a tuple is a tuple of rewritings:
+%\begin{align*}
+%\rewrite{(t, s/x)}{\Theta, M/x} \equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
+%\end{align*}
+%\end{lemma}
+%\begin{proof}
+%Unwinding definitions:
+%\begin{align*}
+%\rewrite{(t, s/x)}{\Theta, M/x}
+%&\equiv \fan{\Delta, x : A}[\rewrite{\ctxtuple{(t, s/x)}}{\ctxtuple{(\Theta, M/x)}}/\sigma] \\
+%&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[\rewrite{(\ctxtuple t, s)}{\ctxtuple\Theta, M}/\sigma] \\
+%&\equiv (\fan\Delta[\fst{\sigma}/\sigma], \snd{\sigma})[(\rewrite{\ctxtuple t}{\ctxtuple\Theta}, \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}})/\sigma] \\
+%&\equiv (\fan\Delta[\rewrite{\ctxtuple t}{\ctxtuple\Theta}/\sigma], \rewrite{s}{\StI{\ap{p[\fan{\delta}]}{\ctxtuple t/\sigma}}{N}}) \\
+%&\equiv (\rewrite{t}{\Theta}, \rewrite{s}{\StI{\ap{p}{t}}{M}})
+%\end{align*}
+%\end{proof}
+%
+%As a special case, note that we have
+%\begin{align*}
+%\rewrite{(\id_\Theta, s/x)}{\Theta, M/x} \equiv (\Theta, \rewrite{s}{M}/x)
+%\end{align*}
+%
+%\mvrnote{Need to say something like: Because the above $n$-ary versions have been derived, from now on we use $\ap{\mu}{s/x, t/y}$ as shorthand for the $n$-ary version}
+
+\bibliographystyle{abbrvnat}
+\bibliography{../drl-common/cs}
+
+\end{document}
