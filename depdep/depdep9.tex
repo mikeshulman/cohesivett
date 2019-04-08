@@ -954,7 +954,7 @@ The actual signature in the base type theory for the above situation is quite si
     p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
     \\ 
     \alpha : p, x : \El{p}{\alpha} \yields \sdot(\alpha,x) : p \and
-    \yields \emptyset : p
+    \yields \sempty : p
   \end{mathpar}
   such that
 \begin{align*}
@@ -962,12 +962,12 @@ The actual signature in the base type theory for the above situation is quite si
 \alpha : p &\yields () : 1
 \intertext{are left adjoints to}
 w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} &\yields \sdot(\fst w, \snd w) : p \\
-w : 1 &\yields \emptyset : p
+w : 1 &\yields \sempty : p
 \end{align*}
 respectively. 
 \end{definition}
 
-We will usually write $\sdot(\alpha, x)$ infix as $\alpha.x$.
+We will usually write $\sdot(\alpha, x)$ infix as $\alpha.x$, and abbreviate $\sempty$ as $\emptyset$.
 
 In Section~\ref{sec:example-encodings}, we will show that the top type
 theory for a comprehension object interprets the context structure of
@@ -1021,7 +1021,7 @@ $\mu : \El{p}{\alpha}$ and $\nu : \El{p}{\beta}$:
 
   \item For $s : \beta \tcell_p \alpha$, we write $\ApOne{s} :
     \One_{\beta} \tcell_{\El p \beta} \TrPlus{s}{\One_\alpha}$ as a
-    short hand for $\ap{\One_z}{s/z}$.  
+    short-hand for $\ap{\One_z}{s/z}$.  
   \end{itemize}
 \end{definition}
 
@@ -2463,6 +2463,373 @@ For the second equation, we check inductively that
 %\end{align*}
 %
 %\mvrnote{Need to say something like: Because the above $n$-ary versions have been derived, from now on we use $\ap{\mu}{s/x, t/y}$ as shorthand for the $n$-ary version}
+
+\section{Example Encodings of Object Languages}
+\label{sec:example-encodings}
+
+Next, we show that the top theory for the mode theories from
+Section~\ref{sec:mode-examples} support the usual rules for these type theories.
+
+\subsection{Martin-L\"of Type Theory}
+\label{sec:mltt}
+
+To distinguish judgements in the type theory we are encoding from the ones in the
+framework we use $\qyields$ as the turnstile. We have the following
+judgements:
+\begin{mathpar}
+\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
+\end{mathpar}
+with the inference rules given in Figure~\ref{fig:qit-rules}, which we
+think of in quotient inductive-inductive type style as presenting the
+free category with families.
+Note that some equations require earlier equations to hold in order to typecheck.
+
+The idea for the representation in the framework is that: 
+
+\begin{itemize}
+\item A context $\qyields \Gamma \CTX$ is represented by a framework
+  context $\upstairs{\Gamma}$ over mode context $\downstairs{\Gamma}$,
+  together with a mode term $\downstairs{\Gamma} \yields \modeof{\Gamma} : p$. The mode context $\downstairs{\Gamma}$ describes the \emph{internal} dependency structure of the context $\Gamma$ (i.e.\ how types in $\Gamma$ depend on variables elsewhere in $\Gamma$).
+  $\modeof{\Gamma}$ describes the \emph{external} dependency structure (i.e.\ how some other judgment made \emph{in} context $\Gamma$ will depend on the variables in $\Gamma$).
+  These will be defined mutually, because the internal dependency of a
+  context extension involves a type that is externally dependent on the
+  previous context.  
+\item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$.
+\item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a framework term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\sigma.\modeof{\Delta}[\unpack{\Delta}{\sigma}]}{\upstairs{\Delta}}$ where $(\upstairs{\Delta})$ denotes the iterated tupling of $\upstairs{\Delta}$ as in Lemma~\ref{lem:ctxtuple}. 
+\end{itemize}
+\mvrnote{One might expect substitutions to be represented by framework substitutions. In the current setup this is not possible: a substitution $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \upstairs{\Delta}$ has the shape of $\Gamma$ described on the turnstile, but the shape of $\Delta$ is not described anywhere. See \dots for a semantic description of where the issue lies.}
+
+\subsubsection{Contexts and Substitutions}
+
+\begin{theorem}
+The rules in Figure~\ref{fig:qit-rules} for the contexts and
+substitutions of Martin-L\"of type theory can be interpreted in the type
+theory over a comprehension object with $\E{\sigma.\modeof{\Gamma}[\unpack{\Gamma}{\sigma}]}{-}$ types
+for all $\Gamma$, i.e.\ with strict modalities for composites of $\sdot$
+and $\sempty$.
+\end{theorem}
+
+We will almost always be applying $\E{}{-}$ to an iterated tuple. To reduce clutter, we will abbreviate $\E{\sigma.\mu[\unpack{\Gamma}{\sigma}]}{-}$ as $\E{\mu}{-}$ so, for example, 
+\begin{align*}
+\E{(\modeof{\Delta}, x)}{\dots} &:\equiv \E{\sigma.(\modeof{\Delta}, x)[\unpack{\Delta, x : A}{\sigma}]}{\dots} \\
+\EIs{\sdot}{\dots} &:\equiv \EIs{w.\sdot(\fst w, \snd w)}{\dots} 
+\end{align*}
+
+\begin{figure}
+\begin{mathpar}
+\inferrule*[left=ctx-empty]{~}{\cdot \CTX} \and
+\inferrule*[left=ctx-ext]{\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma, A \CTX} \\
+\inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
+\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields a[\Theta] : A[\Theta]} 
+\\
+\inferrule*[left=sub-empty]{~}{\Gamma \qyields \epsilon_\Gamma : \cdot} \and
+\inferrule*[left=sub-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \\
+\inferrule*[left=sub-id]{~}{\Gamma \qyields \id_\Gamma : \Gamma} \and
+\inferrule*[left=sub-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
+\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma} \and 
+\inferrule*[left=var]{~}{\Gamma, A \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]} 
+\end{mathpar}
+
+\begin{align}
+A[\id] &\equiv A \\
+A[\Theta ; \kappa] &\equiv A[\kappa][\Theta] \\
+\nonumber\\
+a[\id] &\equiv a \\
+a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
+\nonumber\\
+\id ; \Theta &\equiv \Theta \\
+\Theta ; \id &\equiv \Theta \\
+(\Theta; \kappa) ; \rho &\equiv \Theta ; (\kappa ; \rho) \\
+\nonumber\\
+\Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\ 
+(\Theta, a);\proj{\Gamma,A} &\equiv \Theta \\
+\qvar{\Delta,A}[\Theta, a] &\equiv a \\
+(\proj{\Gamma,A}, \qvar{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
+\Theta &\equiv \epsilon_\Gamma && \text{for } \Gamma \qyields \Theta : \cdot
+\end{align}
+\caption{Rules of MLTT Contexts and Substitutions}\label{fig:qit-rules}
+\end{figure}
+
+The structural rules of MLTT have the following translations:
+\begin{enumerate}
+\item[\textsc{ctx-empty}] Define $\upstairs{(\cdot)}$ to be the empty framework context and $\modeof{(\cdot)} :\equiv \emptyset : p$.
+
+\item[\textsc{ctx-ext}] Given $\upstairs{\Gamma}
+  \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$, define $\upstairs{\Gamma, A}$ to be the extended framework context $\upstairs{\Gamma}, x : \upstairs{A}$. We need to specify a term $\upstairs{\Gamma}, x : \upstairs{A} \yields \modeof{(\Gamma, A)} : p$, for this we can use
+  \begin{align*}
+  \upstairs{\Gamma}, x : \upstairs{A} \yields \modeof{(\Gamma, A)} :\equiv (\modeof{\Gamma}).x : p
+  \end{align*}
+  
+\item[\textsc{type-sub}] Given $\upstairs{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}}$, we can form:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A[\Theta]} :\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]} \TYPE
+\end{align*}
+
+\item[\textsc{term-sub}] Similarly, given $\upstairs{\Delta} \yields_{\El{p}{\One_{\modeof{\Delta}}}} \upstairs{a} : \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}}$, we can form:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a[\Theta]} :\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\Delta}{\sigma}]} : \upstairs{A[\Theta]}
+\end{align*}
+
+\item[\textsc{sub-empty}] We are constructing a term
+\begin{align*}
+\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\epsilon_\Gamma} : \E{\emptyset}{}
+\end{align*}
+We may use the counit $\eta^\sempty_{\modeof{\Gamma}} : \modeof{\Gamma} \tcell_p \emptyset$ to form
+\begin{align*}
+\upstairs{\epsilon_\Gamma} :\equiv \rewrite{\eta^\tempty_{\modeof{\Gamma}}}{\EIs{\emptyset}{}}
+\end{align*}
+
+\item[\textsc{sub-ext}] We are provided
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}} \\
+\upstairs{\Gamma} &\yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A[\Theta]}
+\end{align*}
+and we are trying to define:
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta, a} : \E{\modeof{(\Delta, A)}}{\upstairs{\Delta, A}}
+\end{align*}
+Unfolding definitions:
+\begin{align*}
+\upstairs{A[\Theta]}
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}
+\intertext{and}
+\E{\modeof{(\Delta, A)}}{\upstairs{\Delta, A}} 
+&\equiv \E{\sdot(\modeof{\Delta}, x)}{\sigma : \ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} 
+ \\
+&\equiv \E{\sdot(\fst w, \snd w)[(\modeof{\Delta}, x)/w]}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \E{\sdot(\fst w, \snd w)}{\E{(\modeof{\Delta}, x)}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \E{\sdot(\fst w, \snd w)}{\ctxtuple{\sigma' : \E{\modeof{\Delta}}{\upstairs{\Delta}}, \EEs{\modeof{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}} \\
+\end{align*}
+So we can form:
+\begin{align*}
+\upstairs{\Theta, a} :\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}
+\end{align*}
+
+\item[\textsc{sub-id}] We have:
+\begin{align*}
+\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\id_\Gamma} :\equiv \EIs{\modeof{\Gamma}}{\pack{\upstairs{\Gamma}}} : \E{\modeof{\Gamma}}{\upstairs{\Gamma}}
+\end{align*}
+
+\item[\textsc{sub-comp}]
+Given 
+\begin{align*}
+\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}} \\
+\upstairs{\Delta} &\yields_{\modeof{\Delta}} \upstairs{\kappa} : \E{\modeof{\Lambda}}{\upstairs{\Lambda}}
+\end{align*}
+we can form
+\begin{align*}
+\upstairs{\Theta;\kappa} :\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}]}
+\end{align*}
+
+\item[\textsc{sub-proj}] We are trying to construct a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\modeof{(\Gamma, A)}} \upstairs{\proj{\Gamma, A}} : \E{\modeof{\Gamma}}{\upstairs{\Gamma}}
+\end{align*}
+The mode term morphism $\pi^{\modeof{\Gamma}}_x$ has type $\modeof{(\Gamma, A)} \equiv (\modeof{\Gamma}).x \tcell_{p} \modeof{\Gamma}$
+So define:
+\begin{align*}
+\upstairs{\proj{\Gamma, A}} :\equiv \rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}
+\end{align*}
+
+\item[\textsc{var}] We are a building a term
+\begin{align*}
+\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{\modeof{(\Gamma, A)}}} \upstairs{\qvar{\Gamma, A}} : \upstairs{A[\proj{\Gamma, A}]}
+\end{align*}
+The type in question simplifies:
+\begin{align*}
+\upstairs{A[\proj{\Gamma, A}]}
+&\equiv \EEs{\modeof{\Gamma}}{\upstairs{\proj{\Gamma, A}}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Gamma}}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\EEs{\modeof{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\EEs{\modeof{\Gamma}}{\EIs{\modeof{\Gamma}}{\pack{\downstairs{\Gamma}}}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]}} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{A}[\unpack{\Gamma}{\sigma}][\pack{\downstairs{\Gamma}}/\sigma]} \\
+&\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{A}}
+\end{align*}
+
+So define $\upstairs{\qvar{\Gamma, A}}$ by:
+\begin{align*}
+\upstairs{\qvar{\Gamma, A}} :\equiv \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{x}}
+\end{align*}
+\end{enumerate}
+
+Now we check that these translations satisfy the required equations.
+
+\begin{enumerate}[style = multiline, labelwidth = 80pt]
+\item[{$A[\id_\Gamma] \equiv A$}] 
+\begin{align*}
+\upstairs{A[\id_\Gamma]}
+&\equiv \EEs{\modeof{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Gamma}}{\EIs{\modeof{\Gamma}}{\pack{\downstairs{\Gamma}}}}{\sigma}{\upstairs{A}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \upstairs{A}[\unpack{\Gamma}{\pack{\downstairs{\Gamma}}}]\\
+&\equiv \upstairs{A}
+\end{align*}
+
+\item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}] 
+\begin{align*}
+\upstairs{A[\Theta ; \kappa]}
+&\equiv \EEs{\modeof{\Lambda}}{\upstairs{\Theta ; \kappa}}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Lambda}}{(\EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma'}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma'}]})}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma'}{\EEs{\modeof{\Lambda}}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma'}]}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]}} \\
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma'}{(\EEs{\modeof{\Lambda}}{\upstairs{\kappa}}{\sigma}{\upstairs{A}[\unpack{\Lambda}{\sigma}]})[\unpack{\Delta}{\sigma'}]} \\
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma'}{\upstairs{A[\kappa]}[\unpack{\Lambda}{\sigma'}]} \\
+&\equiv \upstairs{A[\kappa][\Theta]}
+\end{align*}
+
+\item[{$a[\id_\Gamma] \equiv a$}] Same as for types.
+\item[{$a[\Theta ; \kappa] \equiv a[\kappa][\Theta]$}] Same as for types.
+
+\item[{$\Theta ; (\kappa , a) \equiv (\Theta ; \kappa) , a[\Theta]$}]
+\begin{align*}
+\upstairs{\Theta ; (\kappa , a)}
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{(\kappa , a)}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{\upstairs{\kappa}, \upstairs{a}}}[\unpack{\upstairs{\Delta}}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}], \upstairs{a}[\unpack{\upstairs{\Delta}}{\sigma}]}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{(\EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unpack{\upstairs{\Delta}}{\sigma}]}), (\EEs{\modeof{\Delta}}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unpack{\upstairs{\Delta}}{\sigma}]})}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{\upstairs{(\Theta ; \kappa)}, \upstairs{a[\Theta]}}} \\
+&\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]}
+\end{align*} 
+
+\item[{$(\Theta, a);\proj{\Delta,A} \equiv \Theta$}]
+\begin{align*}
+\upstairs{(\Theta, a);\proj{\Delta,A}}
+&\equiv \EEs{\modeof{(\Delta, A)}}{\upstairs{\Theta, a}}{\sigma}{\upstairs{\proj{\Delta,A}}[\unpack{\upstairs{\Delta, A}}{\sigma}]} \\
+&\equiv \EEs{\sdot(\fst w, \snd w)[(\modeof{\Delta}, x)/w]}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]} \\
+&\equiv \EEs{\sdot}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma'}{\EEs{(\modeof{\Delta}, x)}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{\sdot}{\StI{\sdot}{\upstairs{\Theta}, \upstairs{a}}}{\sigma'}{\EEs{(\modeof{\Delta}, x)}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta}}{\fst \sigma}/\sigma, \snd \sigma / x]}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}[\unpack{\upstairs{\Delta}}{\fst \sigma}]}_{\snd \sigma}}{\EIs{\modeof{\Delta}}{\fst \sigma}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\rewrite{\pi^{\fst \sigma}_{\snd \sigma}}{\fst \sigma}[(\upstairs{\Theta}, \upstairs{a})/\sigma]} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}};\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}{\upstairs{\Theta}} \\
+&\equiv \upstairs{\Theta}
+\end{align*}
+
+\item[{$\qvar{\Delta,A}[\Theta, a] \equiv a$}]
+\begin{align*}
+\upstairs{\qvar{\Delta,A}[\Theta, a]}
+&\equiv \EEs{\modeof{(\Delta, A)}}{\upstairs{(\Theta, a)}}{\sigma}{\upstairs{\qvar{\Delta,A}}[\unpack{\Delta, x : A}{\sigma}]} \\
+&\equiv \EEs{\modeof{(\Delta, A)}}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Delta}}_x}}{x}}[\unpack{\Delta, A}{\sigma}]} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\EEs{\modeof{(\Delta, A)}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}{\sigma}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\modeof{\Delta}[\unpack{\Delta}{\fst \sigma}]}_{\snd \sigma}}}{\snd \sigma}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\modeof{\Delta}[\unpack{\Delta}{\fst \sigma}]}_{\snd \sigma}}}{\snd \sigma}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\rewrite{\var{\snd \sigma}}{\StI{\ApEl{p}{\pi^{\fst \sigma}_{\snd \sigma}}}{\snd \sigma}}[(\upstairs{\Theta}, \upstairs{a})/\sigma]}} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\rewrite{\var{\One_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}}}{\rewrite{\ApPlus{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\var{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}}}} \\
+&\equiv \rewrite{\ApOne{\eta^\sdot_{\modeof{\Gamma}}};\ApPlus{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\var{\One_{\modeof{\Gamma}}}}}{\StI{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}};\ApEl{p}{\pi^{\modeof{\Gamma}}_{\One_{\modeof{\Gamma}}}}}{\upstairs{a}}} \\
+&\equiv \upstairs{a}
+\end{align*}
+Where we have used that
+\begin{align*}
+\ApOne{\eta^\sdot_\alpha};\ApPlus{\ApEl{p}{\eta^\sdot_\alpha}}{\var{\One_\alpha}} \equiv \id_{\One_\alpha}
+\end{align*}
+by the triangle identity for $\sdot$, Equation~\eqref{eq:chi-triangle-2}
+
+\item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
+\begin{align*}
+\upstairs{(\proj{\Gamma,A}, \qvar{\Gamma,A})}
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, A)}}}{\EIs{\sdot}{\upstairs{\proj{\Gamma,A}}, \upstairs{\qvar{\Gamma,A}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, A)}}}{\EIs{\sdot}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}, \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{x}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, A)}}}{\EIs{\sdot}{\rewrite{(\pi^{\modeof{\Gamma}}_x, \var{x})}{(\upstairs{\id_\Gamma}, x)}}}\\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, A)}}}{\rewrite{\ApPlus{\sdot}{(\pi^{\modeof{\Gamma}}_x, \var{x})}}{\EIs{\sdot}{\upstairs{\id_\Gamma}, x}}}\\
+&\equiv \EIs{\sdot}{\upstairs{\id_\Gamma}, x} \\
+&\equiv \EIs{\sdot}{\EIs{\modeof{\Gamma}}{\pack{\downstairs{\Gamma}}}, x}\\
+&\equiv \EIs{\sdot(\fst w, \snd w)[(\modeof{\Gamma}, x)/w]}{\pack{\downstairs{\Gamma}}, x} \\
+&\equiv \EIs{\modeof{(\Gamma, A)}}{\pack{\downstairs{\Gamma, A}}} \\
+&\equiv \upstairs{\id_{\Gamma, A}}
+\end{align*}
+
+\item[$\Theta \equiv \epsilon_\Gamma$] 
+Using eta expansion for $\E{\emptyset}{}$ once in each direction:
+\begin{align*}
+\upstairs{\Theta}
+&\equiv \EEs{\modeof{(\cdot)}}{\upstairs{\Theta}}{x}{\EIs{\modeof{(\cdot)}}{x}} \\
+&\equiv \EEs{\emptyset}{\upstairs{\Theta}}{x}{\rewrite{\eta^\tempty_{\emptyset}}{\EIs{\emptyset}{}}} \\
+&\equiv \rewrite{\eta^\tempty_{\modeof{\Gamma}}}{\EIs{\emptyset}{}} \\
+&\equiv \upstairs{\epsilon_\Gamma}
+\end{align*}
+\end{enumerate}
+
+The above translation satisfies the following, which will be used when
+adding types:
+
+\begin{lemma}
+\begin{align*}
+\upstairs{B[\proj{\Gamma, A}]} &\equiv \St{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{B}} \\
+\upstairs{b[\proj{\Gamma, A}]} &\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}}} \\
+\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}} &\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y;\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_{\Gamma}}}
+\end{align*}
+\end{lemma}
+\begin{proof}
+The first was shown in the translation of $\qvar{}$. The second is similar:
+\begin{align*}
+\upstairs{b[\proj{\Gamma, A}]}
+&\equiv \EEs{\modeof{\Gamma}}{\upstairs{\proj{\Gamma, A}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \EEs{\modeof{\Gamma}}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\EEs{\modeof{\Gamma}}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]}}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\EEs{\modeof{\Gamma}}{\EIs{\modeof{\Gamma}}{\pack{\downstairs{\Gamma}}}}{\sigma}{\upstairs{b}[\unpack{\Gamma}{\sigma}]}}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}[\unpack{\Gamma}{\sigma}][\pack{\downstairs{\Gamma}}/\sigma]}} \\
+&\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{\upstairs{b}}}
+\end{align*}
+And the third:
+\begin{align*}
+\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}} 
+&\equiv \EEs{\modeof{(\Gamma, A)}}{\upstairs{\proj{\Gamma, A, B}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unpack{\upstairs{\Gamma, A}}{\sigma}]} \\
+&\equiv \EEs{\modeof{(\Gamma, A)}}{\rewrite{\pi^{\modeof{\Gamma}.x}_y}{\upstairs{\id_{\Gamma, A}}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unpack{\upstairs{\Gamma, A}}{\sigma}]} \\
+&\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y}{\EEs{\modeof{(\Gamma, A)}}{\upstairs{\id_{\Gamma, A}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unpack{\upstairs{\Gamma, A}}{\sigma}]}} \\
+&\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y}{\upstairs{\id_{\Gamma, A};\proj{\Gamma, A}}} \\
+&\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y}{\upstairs{\proj{\Gamma, A}}} \\
+&\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}} \\
+&\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y;\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+There is a derived operation
+\begin{mathpar}
+\inferrule*[left=derivable]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields A \TYPE}{\Gamma, A[\Theta] \qyields \Theta \uparrow A : \Delta, A}
+\end{mathpar}
+defined by:
+\begin{align*}
+\Theta \uparrow A &:\equiv (\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}
+\end{align*}
+such that
+\begin{align*}
+(\Theta \uparrow A) ; \proj{\Delta, A} &\equiv \proj{\Gamma, A[\Theta]} ; \Theta \\
+\qvar{\Delta, A}[\Theta \uparrow A] &\equiv \qvar{\Gamma, A[\Theta]} \\
+(\Theta, a);(\kappa \uparrow A) &\equiv (\Theta;\kappa), a \\
+\intertext{and in the translation,}
+\upstairs{\Theta \uparrow A} &\equiv \EIs{\sdot}{\upstairs{\Theta}, x} \\
+\EEs{\modeof{(\Delta, A)}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} &\equiv \EEs{(\tshape{\Delta}, \id)}{(\upstairs{\Theta}, x)}{\sigma}{M[\unpack{\Delta}{\sigma}, x/x]}
+\end{align*}
+\end{lemma}
+\begin{proof}
+\mvrnote{first two}
+\begin{align*}
+&(\Theta, a);(\kappa \uparrow A) \\
+&\equiv (\Theta,a);((\proj{\Delta, A[\kappa]}; \kappa) , \qvar{\Delta, A[\kappa]}) \\
+&\equiv ((\Theta, a);\proj{\Delta, A[\kappa]}; \kappa) , \qvar{\Delta, A[\kappa]}[\Theta,a] \\
+&\equiv (\Theta;\kappa) , a
+\end{align*}
+\begin{align*}
+\upstairs{\Theta \uparrow A} 
+&\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\EEs{\modeof{\Gamma}}{\upstairs{\proj{\Gamma, A[\Theta]}}}{\sigma}{\upstairs{\Theta}[\unpack{\upstairs{\Gamma}}{\sigma}]}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Theta}[\unpack{\upstairs{\Gamma}}{\sigma}][\pack{\Gamma}/\sigma]}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Theta}}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
+&\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\Theta}},  \rewrite{\var{x}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}}_x}}{x}}}} \\
+&\equiv \StI{\sdot}{\upstairs{\Theta}, x}
+\end{align*}
+And:
+\begin{align*}
+&\EEs{\modeof{(\Delta, A)}}{\upstairs{\Theta \uparrow A}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
+&\equiv \EEs{\modeof{(\Delta, A)}}{\EIs{\sdot}{\upstairs{\Theta}, x}}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
+&\equiv \EEs{\sdot}{\EIs{\sdot}{\upstairs{\Theta}, x}}{\sigma'}{\EEs{(\tshape{\Delta}, \id)}{\sigma'}{\sigma}{M[\unpack{\Delta, A}{\sigma}]}} \\
+&\equiv \EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, x)}{\sigma}{M[\unpack{\Delta, A}{\sigma}]} \\
+&\equiv \EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, x)}{\sigma, x}{M[\unpack{\Delta, A}{(\sigma, x)}]} \\
+&\equiv \EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, x)}{\sigma, x}{M[\unpack{\Delta}{\sigma}, x/x]}
+\end{align*}
+\end{proof}
 
 \section{Semantics}
 \label{sec:semantics}
