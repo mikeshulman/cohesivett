@@ -953,7 +953,7 @@ The actual signature in the base type theory for the above situation is quite si
   \begin{mathpar}
     p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
     \\ 
-    \alpha : p, x : \El{p}{\alpha} \yields \sdot(\alpha,x) : p \and
+   w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \yields \sdot\, w : p \and
     \yields \sempty : p
   \end{mathpar}
   such that
@@ -961,7 +961,7 @@ The actual signature in the base type theory for the above situation is quite si
 \alpha : p &\yields (\alpha, \One_\alpha) : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \\
 \alpha : p &\yields () : 1
 \intertext{are left adjoints to}
-w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} &\yields \sdot(\fst w, \snd w) : p \\
+w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} &\yields \sdot\, w : p \\
 w : 1 &\yields \sempty : p
 \end{align*}
 respectively. 
@@ -2512,8 +2512,7 @@ and $\sempty$.
 
 We will almost always be applying $\E{}{-}$ to an iterated tuple. To reduce clutter, we will abbreviate $\E{\sigma.\mu[\unpack{\Gamma}{\sigma}]}{-}$ as $\E{\mu}{-}$ so, for example, 
 \begin{align*}
-\E{(\modeof{\Delta}, x)}{\dots} &:\equiv \E{\sigma.(\modeof{\Delta}, x)[\unpack{\Delta, x : A}{\sigma}]}{\dots} \\
-\EIs{\sdot}{\dots} &:\equiv \EIs{w.\sdot(\fst w, \snd w)}{\dots} 
+\E{(\modeof{\Delta}, x)}{\dots} &:\equiv \E{\sigma.(\modeof{\Delta}, x)[\unpack{\Delta, x : A}{\sigma}]}{\dots}
 \end{align*}
 
 \begin{figure}
@@ -2597,9 +2596,9 @@ Unfolding definitions:
 \E{\modeof{(\Delta, A)}}{\upstairs{\Delta, A}} 
 &\equiv \E{\sdot(\modeof{\Delta}, x)}{\sigma : \ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} 
  \\
-&\equiv \E{\sdot(\fst w, \snd w)[(\modeof{\Delta}, x)/w]}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} \\
-&\equiv \E{\sdot(\fst w, \snd w)}{\E{(\modeof{\Delta}, x)}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
-&\equiv \E{\sdot(\fst w, \snd w)}{\ctxtuple{\sigma' : \E{\modeof{\Delta}}{\upstairs{\Delta}}, \EEs{\modeof{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}} \\
+&\equiv \E{\sdot\, w[(\modeof{\Delta}, x)/w]}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]} \\
+&\equiv \E{\sdot}{\E{(\modeof{\Delta}, x)}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unpack{\Delta}{\sigma}]}} \\
+&\equiv \E{\sdot}{\ctxtuple{\sigma' : \E{\modeof{\Delta}}{\upstairs{\Delta}}, \EEs{\modeof{\Delta}}{\sigma'}{\sigma}{\upstairs{A}[\unpack{\Delta}{\sigma}]}}} \\
 \end{align*}
 So we can form:
 \begin{align*}
@@ -2694,7 +2693,7 @@ Now we check that these translations satisfy the required equations.
 \begin{align*}
 \upstairs{(\Theta, a);\proj{\Delta,A}}
 &\equiv \EEs{\modeof{(\Delta, A)}}{\upstairs{\Theta, a}}{\sigma}{\upstairs{\proj{\Delta,A}}[\unpack{\upstairs{\Delta, A}}{\sigma}]} \\
-&\equiv \EEs{\sdot(\fst w, \snd w)[(\modeof{\Delta}, x)/w]}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]} \\
+&\equiv \EEs{\sdot \, w[(\modeof{\Delta}, x)/w]}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]} \\
 &\equiv \EEs{\sdot}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\Theta}, \upstairs{a}}}}{\sigma'}{\EEs{(\modeof{\Delta}, x)}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
 &\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{\sdot}{\StI{\sdot}{\upstairs{\Theta}, \upstairs{a}}}{\sigma'}{\EEs{(\modeof{\Delta}, x)}{\sigma'}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}}} \\
 &\equiv \rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EEs{(\modeof{\Delta}, x)}{(\upstairs{\Theta}, \upstairs{a})}{\sigma}{\rewrite{\pi^{\modeof{\Delta}}_x}{\upstairs{\id_\Delta}}[\unpack{\upstairs{\Delta, x : A}}{\sigma}]}} \\
