@@ -244,12 +244,17 @@
 \let\lslice\sslash
 \newcommand\Un{U}
 \newcommand\Ub{U_*}
+\newcommand\Ubfib{\Ub^{\mathsf{fib}}}
 \newcommand\pb{p_*}
 \newcommand\qb{q_*}
 \newcommand\alb{\alpha_*}
 \newcommand\mub{\mu_*}
 \newcommand\nub{\nu_*}
 \newcommand\bb[1]{{(#1)}_*}
+% Hiragana "yo" for the Yoneda embedding, from https://arxiv.org/abs/1506.08870
+\DeclareFontFamily{U}{min}{}
+\DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
+\newcommand{\yon}{\!\text{\usefont{U}{min}{m}{n}\symbol{'210}}\!}
 
 \defcitealias{lsr17multi-extended}{LSR}	
 \defcitealias{ls16adjoint-extended}{LS}	
@@ -1893,6 +1898,7 @@ $\mathsf{U}$ types are a negative type, with judgemental $\beta$ and
 $\eta$ equality rules.
 
 \subsection{Strict Modalities}
+\label{sec:strict-modalities}
 
 \mvrnote{Text needs updating:}
 
@@ -4244,7 +4250,7 @@ These can be interpreted as:
   domain of the morphism.  
   \end{itemize}
 So the semantics of contexts/substitutions is a lot like 
-one-variable adjoint logic with only $F$ types~\cite{ls15adjoint}.  
+one-variable adjoint logic with only $F$ types (\cite{ls16adjoint-extended}).
 
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
 In this subsection we will concern ourselves only with the ``downstairs'' mode theory, which means abstracting the behavior of Grothendieck constructions in $\Cat$; in \S\ref{sec:fib-2cwf} we will reintroduce the ``upstairs'' type theory by additionally abstracting the behavior of ``objects and morphisms''.
@@ -4256,7 +4262,8 @@ The reader can easily insert meta-level universe distinctions for consistency.
 \item Categories form a 2-category.
   In general we will stipulate an arbitrary (strict) 2-category $\M$.
 \item Given a category $C$, the collection of functors and (strict) natural transformations $C\op \to \Cat$ forms a category $[C\op, \Cat]$, and if we reverse the directions of the natural transformations we get $[C\op, \Cat]\op$.
-  Moreover, precomposition with functors $C\to C'$ and natural transformations between them makes $[(-)\op, \Cat]\op$ into a strict 2-functor $\Cat\op \to \Cat$; syntactically these are $q[\mu/x]$ and $\ap{q}{\mu/x}$ respectively.
+  Moreover, precomposition with functors $C\to C'$ and natural transformations between them makes $[(-)\op, \Cat]\op$ into a strict 2-functor $\Cat\op \to \Cat$.
+  Syntactically, the actions of the functor $[(C')\op, \Cat]\op \to [C\op,\Cat]\op$ induced by $\mu:C\to C'$ are $q[\mu/x]$ and $s[\mu/x]$, while the components of a natural transformation $t:\mu\Rightarrow\mu'$ are $\ap{q}{\mu/x}$.
   Note this 2-functor is covariant on 2-cells: the two $(-)\op$s cancel each other out at that level.
   (In fact, this 2-functor can be identified with the representable $[-,\Cat\op]$; this will be useful below.)
 
@@ -4274,22 +4281,23 @@ The reader can easily insert meta-level universe distinctions for consistency.
     \end{tikzcd}
   \end{center}
   are strict morphisms of split fibrations (preserve the splittings on the nose).
-\item To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, with corresponding representable functor $y(C)(-) = \M(-,C) : \M\op\to\Cat$, if we form the pullback in $[\M\op,\Cat]$
+\item To represent the Grothendieck construction $\int T$ itself, we stipulate that this projection is additionally a \emph{representable morphism} in that for any $C\in \M$, with corresponding representable functor $\yon C(-) = \M(-,C) : \M\op\to\Cat$, if we form the pullback in $[\M\op,\Cat]$
   \begin{equation}
     \begin{tikzcd}
-      \int T \ar[d] \ar[r] & \Mtm \ar[d] \\
-      y(C) \ar[r,"{T}"] & \Mty
+      \bullet \ar[d] \ar[r] \ar[dr,phantom,near start,"\lrcorner"] & \Mtm \ar[d] \\
+      \yon C \ar[r,"{T}"'] & \Mty
     \end{tikzcd}\label{eq:rep-pb}
   \end{equation}
-  then the pullback object is also of the form $y(\int T)$ for some object $\int T\in \M$.
-  The Yoneda lemma implies that (strict) 2-natural transformations ${T} : y(C) \to \Mty$ are in bijection with objects $T\in \Mty(C)$; thus every $T\in \Mty(C)$ induces an object $\int T$ with a projection $\int T \to C$ in $\M$, such that elements of $\Mtm(C)$ over $T$ are in bijection with sections of this projection.
-  To make the notion algebraic, we require the object $\int T$ to be a specified function of $C$ and $T$; we call this being \textbf{algebraically representable}.
+  then the pullback object is also of the form $\yon(C\ce T)$ for some object $C\ce T\in \M$.
+  (The notation $C\ce T$, rather than $\int T$, suggests context extension.)
+  The Yoneda lemma implies that (strict) 2-natural transformations ${T} : \yon C \to \Mty$ are in bijection with objects $T\in \Mty(C)$; thus every $T\in \Mty(C)$ induces an object $C\ce T$ with a projection $C\ce  T \to C$ in $\M$, such that elements of $\Mtm(C)$ over $T$ are in bijection with sections of this projection.
+  To make the notion algebraic, we require the object $C\ce  T$ to be a specified function of $C$ and $T$; we call this being \textbf{algebraically representable}.
 
   Since~\eqref{eq:rep-pb} is a pullback in a 2-category, it also has a universal property for 2-cells.
   Thus, morphisms in $\Mtm$ (over the identity in $\Mty$) are in bijection with 2-cells between sections (over the identity).
 
-  The 2-categorical Yoneda lemma also says that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications ${\mu}:{S} \to {T}$.
-  Since $\Mtm\to\Mty$ is a fibration, such a ${\mu}$ induces a map in the other direction $\int \mu : \int T\to \int S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $\int \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
+  The 2-categorical Yoneda lemma also says that morphisms $\mu : S\to T$ in $\Mty(C)$ correspond bijectively to modifications between strict 2-natural transformations ${\mu}:{S} \to {T} : \yon C \to \Mty$.
+  Since $\Mtm\to\Mty$ is a fibration, such a ${\mu}$ induces a map in the other direction $C\ce  \mu : C\ce  T\to C\ce  S$ (see Hermida, Buckley, Johnstone), such that postcomposing with $C\ce  \mu$ corresponds to the split (contravariant) fibrational action of $\mu$ on elements of $\Mtm$.
 \end{enumerate}
 
 Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated semantically by:
@@ -4300,7 +4308,7 @@ Thus, the entire mode theory except for 1- and $\Sigma$-modes is encapsulated se
 
 Pleasingly, this is a straightforward categorification of the standard notion of category with families (in its ``natural model'' formulation~\cite{awodey:natural-models}).
 The only really new ingredient is the requirement that $\Mtm\to \Mty$ be an internal fibration, which has no analogue for 1-categories.
-We write the terminal object as $\ec$ (the empty context), and the representing object of $T\in \Mty(C)$ (denoted above by $\int T$) as $C\ce T$ (context extension).
+We write the terminal object as $\ec$ (the empty context).
 
 \begin{example}\label{eg:syn-2cwf}
   Let $\M$ be the 2-category whose:
@@ -4328,7 +4336,7 @@ We write the terminal object as $\ec$ (the empty context), and the representing 
 \end{example}
 
 The ruminations above suggest that there should be a 2-category with families where $\M=\Cat$ and $\Mty(C) = [C\op,\Cat]\op$.
-We call this the \textbf{canonical model}; we will construct it formally in Section~\ref{sec:gray}.
+We call this the \textbf{canonical model}; we will construct it formally in Section \ref{sec:2cwf-univ}.
 
 Now we add the unit and $\Sigma$ modes.
 The unit is easy:
@@ -4346,7 +4354,8 @@ As preparation for $\Sigma$-modes, given a 2-category with families $\M$, define
 (This is the dependent exponential of $\Mty$ along $\Upsilon$, but we will not need that fact.)
 We have a projection $\pi_1 : \MtySig \to \Mty$ that picks out $T_1$.
 The pullback $\MtySig \times_{\Mty} \Mtm$ has objects over $C$ given by triples of $T_1\in \Mty(C)$, $t_1 \in \Mtm(C)$ over $T_1$, and $T_2 \in \Mty(C\ce T_1)$.
-Note that $t_1$ comprehends to a section $C\ce t_1 : C \to C \ce T_1$, so that $(C\ce t_1)^*(T_2) \in \Mty(C)$; this gives another projection $\pi_2 : \MtySig \times_{\Mty} \Mtm \to \Mty$.
+Note that $t_1$ comprehends to a section $C\ce t_1 : C \to C \ce T_1$, so that $(C\ce t_1)^*(T_2) \in \Mty(C)$.
+This gives another projection $\pi_2 : \MtySig \times_{\Mty} \Mtm \to \Mty$, along which we can once again pull back $\Upsilon : \Mtm\to\Mty$.
 
 \begin{definition}
   A 2-category with families has \textbf{$\Sigma$-types} it is equipped with horizontal maps such that the square
@@ -4396,17 +4405,17 @@ Note that any 2-functor $\vp:\C\to\M$ induces a left Kan extension $\vpsh : [\C\
   \item This morphism furthermore ``preserves the algebraic representations'' in the following sense: given $C\in \C$ and $T:C \to \Cty$, with specified pullback $C\ce T$, the composite square
     \begin{equation}
       \begin{tikzcd}
-        \vp(C\ce T) \ar[r] \ar[d] & \vpsh \Ctm \ar[r] \ar[d] & \Mtm \ar[d]\\
-        \vp(C) \ar[r,"\vpsh(T)"'] & \vpsh \Cty \ar[r,"{\vpty}"'] & \Mty
+        \mathllap{\yon \vp (C\ce T) \cong \;}\vpsh \yon (C\ce T) \ar[r] \ar[d] & \vpsh \Ctm \ar[r] \ar[d] & \Mtm \ar[d]\\
+        \mathllap{\yon \vp C \cong \;}\vpsh \yon C \ar[r,"\vpsh(T)"'] & \vpsh \Cty \ar[r,"{\vpty}"'] & \Mty
       \end{tikzcd}\label{eq:mor-presrep}
     \end{equation}
     (where the right-hand square is the adjunct of~\eqref{eq:mor2cwfsq})
-    is also a specified pullback, i.e.\ $\vp(C\ce T) = \vp(C)\ce(\vpty(\vpsh(T)))$.\msnote{Refer to Clive's thesis for the natural-models formulation of morphisms of 1-CwFs}
+    is also a specified pullback, i.e.\ $\vp(C\ce T) = \vp(C)\ce(\vpty(\vpsh(T)))$ with all the associated structure also coinciding.\msnote{Refer to Clive's thesis for the natural-models formulation of morphisms of 1-CwFs}
   \end{enumerate}
 \end{definition}
 
 \begin{definition}\label{thm:2cwf-ldf}
-  A \textbf{local discrete fibration of 2-categories with families} is a 2-functor $\vp : \C\to\M$ such that
+  A \textbf{local discrete fibration of 2-categories with families} is a morphism of 2-categories with families $\vp : \C\to\M$ such that
   \begin{enumerate}
   \item $\vp$ preserves the terminal object.
   \item The 2-functor $\vp:\C\to\M$ is a local discrete fibration, i.e.\ the induced functors on hom-categories $\C(X,Y) \to \M(\vp(X),\vp(Y))$ are discrete fibrations.\footnote{If they were non-discrete fibrations, there would be an additional compatibility condition on composition, but in the discrete case this is automatic.}\label{item:ldf1}
@@ -4456,11 +4465,16 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
 \begin{example}\label{eg:canon-2cwf}
   Let $\M =\Cat$ and $\Un= \Cat\op$, with $\Ub$ the Grothendieck construction of the identity functor $\Cat \to \Cat$ regarded as a contravariant functor from $\Cat\op$ to $\Cat$.
   Then $\pi:\Ub\to\Un$ is a split fibration, and of course $\Cat$ has pullbacks.
-  Thus Theorem~\ref{thm:2cwf-univ} yields a 2-category with families.
+  Thus Theorem~\ref{thm:2cwf-univ} yields a 2-category with families, which we call the \textbf{canonical model}.
 
-  \msnote{Explain more explicitly.}
+  We can unravel the definition of the canonical model more explicitly to see that it coincides with our intuitive description at the beginning of Section~\ref{sec:semantics}.
+  Since $\M=\Cat$, the mode contexts are categories, the total mode substitutions are functors, and the 2-cells between them are natural transformations.
+  Since $\Mty(\gamma) = \M(\gamma,\Cat\op)$, the mode types in context $\gamma$ are 2-functors $\gamma \to \Cat\op$, which are bijective with 2-functors $\gamma\op\to\Cat$.
+  Similarly, the mode type morphisms are natural transformations between 2-functors $\gamma \to \Cat\op$, which are bijective with natural transformations between 2-functors $\gamma\op\to\Cat$ but in the reversed direction.
 
-  We call this the \textbf{canonical model}.
+  The pullback of $\pi:\Ub\to\Un$ along a functor $p:\gamma\to\Un=\Cat\op$ can be verified to be isomorphic to the usual Grothendieck construction of $T$.
+  Thus mode terms $\gamma\vdash \mu:p$, being lifts of $p$ to $\Ub$, are in bijection with sections of this Grothendieck construction, and likewise for morphisms between them (that lie over identities).
+  The action $\TrPlus{s}{\mu}$ comes from the split fibration structure on $\pi$, which is to say simply the componentwise action of the natural transformation $s$ on objects of categories.
 \end{example}
 
 \begin{theorem}\label{thm:fib2cwf-univ}
@@ -4482,7 +4496,7 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
         B \ar[r,"p"'] & \Un
       \end{tikzcd}
     \]
-    and whose morphisms $(p,\pb) \to (q,\qb)$ are pairs of 2-cells $\alpha:p\to q$ and $\alb : \pb \to \qb$ such that $\pi \circ \alb = \alpha\circ  b$, and also $\alb$ belongs to the splitting of $\pi$.
+    and whose morphisms $(p,\pb) \to (q,\qb)$ are pairs of 2-cells $\alpha:p\to q$ and $\alb : \pb \to \qb$ such that $\pi \circ \alb = \alpha\circ  b$, and also $\alb$ belongs to the splitting of $\pi$ (thus, in particular, $\alb$ and $\pb$ are uniquely determined by $\alpha$ and $\qb$).
   \item $\Ctm(B,b)$ to be the category whose objects are diagrams
     \[
       \begin{tikzcd}
@@ -4492,7 +4506,7 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
     \]
     in which the bottom triangle commutes strictly (i.e.\ $\pi\circ \mu = p$) and $\pi\circ \mub$ is the identity, and whose morphisms $(p,\pb,\mu,\mub) \to (q,\qb,\nu,\nub)$ are triples of 2-cells $\alpha:p\to q$ and $\alb : \pb \to \qb$ as in $\Cty(B,b)$ and also $\beta:\mu\to\nu$ such that $\nub \cdot (\beta\circ b) = \alb \cdot \mub$.
   \end{itemize}
-  Then $\C$ is a 2-category with families, and the evident projection $\vp:\C\to\M$ is a local discrete fibration.
+  Then $\C$ is a 2-category with families, and the evident projection $\vp:\C\to\M$ is a local discrete fibration of 2-categories with families.
 \end{theorem}
 \begin{proof}
   The unique map $\one\to\ec$ is a terminal object of $\C$, and the forgetful 2-functor $\C\to\M$ preserves the terminal object.
@@ -4569,10 +4583,37 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
 \end{proof}
 
 \begin{example}
-  Continuing the canonical model of Example~\ref{eg:canon-2cwf} and taking $\one$ to be the terminal category, Theorem~\ref{thm:fib2cwf-univ} obtain a local discrete fibration of 2-categories with families.
+  Continuing the canonical model of Example~\ref{eg:canon-2cwf} and taking $\one\in\Cat$ to be the terminal category, Theorem~\ref{thm:fib2cwf-univ} yields a a local discrete fibration of 2-categories with families, to which we extend the terminology \textbf{canonical model}.
+  Explicitly, an object of $\C$ is a category with a chosen object, so that an upstairs context $\Gamma$ over a category $\gamma$ is an object of $\gamma$.
+  Similarly, a morphism from $(\gamma,\Gamma)$ to $(\delta,\Delta)$ is a functor $\theta:\gamma\to \delta$ with a morphism $\theta(\Gamma)\to \Delta$ in $\delta$, corresponding to our informal description of total upstairs substitutions from the beginning of Section~\ref{sec:semantics}.
 
-  \msnote{Explain more explicitly.}
+  An object of $\Cty(\gamma,\Gamma)$ is a functor $p:\gamma\op\to\Cat$ together with an object $A\in p(\Gamma)$.
+  And an object of $\Ctm(\gamma,\Gamma)$ over such $(p,A)$ is a section $\mu$ of the Grothendieck construction of $p$, together with a morphism from $\mu(\Gamma)$ to $A$ in $p(\Gamma)$.
+  Thus once again the construction matches our expectation.
 \end{example}
+
+\msnote{Remains to discuss unit types and $\Sigma$-types, but they should be easy.}
+
+
+\subsection{Fibrancy}
+\label{sec:fibrancy}
+
+\begin{definition}
+  A \textbf{fibrancy structure} on a local discrete fibration of 2-categories with families $\vp : \C\to\M$ consists of a full subfunctor $\Cfibty \hookrightarrow \Cty$ (i.e.\ a 2-natural transformation that is componentwise fully faithful and injective on objects) such that the composite $\Cfibty \to \Cty \to \vpst \Mty$ is again a discrete fibration.
+\end{definition}
+
+Syntactically, this means we have a subset of the upstairs types in each context (the ``fibrant types'') that is closed under substitution (because $\Cfibty$ is a sub-2-functor) and under the $\St{s}{-}$ types (because $\Cfibty \to \Cty \to \vpst \Mty$ is a discrete fibration).
+(Recall that in Section \ref{sec:strict-modalities} we stipulated that $\St{s}{-}$ preserves fibrancy of types.)
+
+\begin{theorem}
+  Let $\M$, $\pi:\Ub\to\Un$, and $\one$ be as in Theorem \ref{thm:fib2cwf-univ}, and let $\Ubfib \hookrightarrow \Ub$ be a full subobject, i.e.\ such that each functor $\M(X,\Ubfib) \to \M(X,\Ub)$ is fully faithful and injective on objects, such that the composite $\Ubfib \hookrightarrow \Ub \xrightarrow{\pi}\Un$ is a split fibration and the morphism $\Ubfib \hookrightarrow \Ub$ is a strict morphism of split fibrations.
+  Define $\Cfibty(B,b)$ to consist of those $(p,\pb)\in \Cty(B,b)$ such that $\pb$ factors (necessarily uniquely) through $\Ubfib$.
+  Then this yields a fibrancy structure.
+\end{theorem}
+\begin{proof}
+  The inclusion $\Cfibty\hookrightarrow \Cty$ is obvious, and closure of $\Ubfib$ under the splitting of $\pi$ implies closure of $\Cfibty$ under the discrete fibrational action of $\Cty \to \vpst\Mty$.
+\end{proof}
+
 
 \bibliographystyle{abbrvnat}
 \bibliography{../drl-common/cs}
