@@ -354,8 +354,8 @@ mode terms, mode type morphisms, and mode 2-cells.
 
 The mode theory can be thought of as a certain kind of ``2-category with
 dependent types,'' generalizing the base type theories of our previous
-work~\citepalias{ls16adjoint-extended,lsr17multi-extended}, which were 2
-(multi-)categories.  We describe the syntax of the base type theory in
+work~\citepalias{ls16adjoint-extended,lsr17multi-extended}, which were
+2-(multi-)categories.  We describe the syntax of the base type theory in
 this section, though it may be more illuminating to read the example
 mode theories in Section~\ref{sec:mode-examples} in parallel with the formalism.
 
@@ -506,8 +506,14 @@ the non-dependent case, the above equations say that $\ap q {s/x} \equiv
 \id_q$, and that $\TrPlus{\id_q}{\nu[\mu'/x]} \equiv {\nu[\mu'/x]}$, so
 the ``transport'' cancels).
 
-The first two equations say that composition is associatve and unital.
-The next two that whiskering is functorial in mode term 2-cell identity
+As with whiskering of types,
+we sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
+variable name when it is clear how to view $\mu$ as a term with a
+distinguished variable; e.g. $\ApPlus{s}{t}$ for
+$\ap{\TrPlus{s}{x}}{t/x}$.
+
+The first two equations say that composition is associative and unital.
+The next two say that whiskering is functorial in mode term 2-cell identity
 and composition; the composition equation is the usual ``path over''
 composition using whiskering, and both equations type check because of
 the functoriality equations for $\TrPlus{s}{-}$.  The next two equations
@@ -532,12 +538,41 @@ for this.
 
 The final equation distributes the $\mathsf{ap}$ of a ``transport'' 
 $\TrPlus{s}{\mu}$ into two $\mathsf{ap}$'s, and type checks because 
-$s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x]$.  
-
-We sometimes write \ap{\mu}{s} for \ap{\mu(x)}{s/x}, eliding the
-variable name when it is clear how to view $\mu$ as a term with a
-distinguished variable; e.g. $\ApPlus{s}{t}$ for
-$\ap{\TrPlus{s}{x}}{t/x}$.  
+$s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x]$.
+In more detail, we initially type the two sides of this equation as
+\begin{mathpar}
+  \infer*{\infer*{\gamma,x:p \vdash \mu : q' \\ \TypeTwo{\gamma,x:p}{s}{q}{q'}}
+    {\gamma, x:p \vdash \TrPlus{s}{\mu} : q} \\
+    \TermTwoT{\gamma}{t}{\nu}{\nu'}{p}
+    }
+  {\TermTwoT{\gamma}{\ap{(\TrPlus{s}{\mu})}{t/x}}{(\TrPlus{s}{\mu})[\nu/x]}{\TrPlus{\ap{q}{t/x}}{(\TrPlus{s}{\mu})[\nu'/x]}}{q[\nu/x]}}
+  \and
+  \infer*{
+    \infer*{\gamma,x:p \vdash \mu : q' \\ \TermTwoT{\gamma}{t}{\nu}{\nu'}{p}}
+    {\TermTwoT{\gamma}{\ap{\mu}{t/x}}{\mu[\nu/x]}{\TrPlus{\ap{q'}{t/x}}{\mu[\nu'/x]}}{q'[\nu/x]}}
+    \\
+    \infer*{\infer*{\gamma \vdash \nu : p \\ \TypeTwo{\gamma,x:p}{s}{q}{q'}}{\TypeTwo{\gamma}{s[\nu/x]}{q[\nu/x]}{q'[\nu/x]}}}
+    {\gamma, u:q'[\nu/x] \vdash \TrPlus{s[\nu/x]}{u} : q[\nu/x]}}
+  {\TermTwoT{\gamma}{\ap{(\TrPlus{s[\nu/x]}{u})}{\ap{\mu}{t/x}/u}}{\TrPlus{s[\nu/x]}{\mu[\nu/x]}}{\TrPlus{\ap{q[\nu/x]}{\ap{\mu}{t/x}/u}}{(\TrPlus{s[\nu/x]}{\TrPlus{\ap{q'}{t/x}}{\mu[\nu'/x]}})}}{q[\nu/x][\mu[\nu/x]/u]}}.
+\end{mathpar}
+where in the given equation $\ap{(\TrPlus{s[\nu/x]}{u})}{\ap{\mu}{t/x}/u}$ is abbreviated, in line with our above conventions, as $\ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}$.
+Since $u$ does not occur in $q[\nu/x]$, we have
+\begin{align*}
+  q[\nu/x][\mu[\nu/x]/u] &\equiv q[\nu/x]\\
+  \ap{q[\nu/x]}{\ap{\mu}{t/x}/u} &\equiv \id_{q[\nu/x]}
+\end{align*}
+so the second type reduces to
+\[ \TermTwoT{\gamma}{\ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}}{\TrPlus{s[\nu/x]}{\mu[\nu/x]}}{(\TrPlus{s[\nu/x]}{\TrPlus{\ap{q'}{t/x}}{\mu[\nu'/x]}})}{q[\nu/x]}
+\]
+and we can compute, using the definition of substitution and previously-given equations:
+\begin{align*}
+  (\TrPlus{s}{\mu})[\nu/x] &\equiv \TrPlus{s[\nu/x]}{\mu[\nu/x]}\\
+  \TrPlus{\ap{q}{t/x}}{(\TrPlus{s}{\mu})[\nu'/x]}
+  &\equiv \TrPlus{\ap{q}{t/x}}{\TrPlus{s[\nu'/x]}{\mu[\nu'/x]}}\\
+  &\equiv \TrPlus{\ap{q}{t/x};s[\nu'/x]}{\mu[\nu'/x]}\\
+  &\equiv \TrPlus{s[\nu/x];\ap{q'}{t/x}}{\mu[\nu'/x]}\\
+  &\equiv \TrPlus{s[\nu/x]}{\TrPlus{\ap{q'}{t/x}}{\mu[\nu'/x]}}.
+\end{align*}
 
 \subsection{Mode Unit Types}
 
