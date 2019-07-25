@@ -4254,7 +4254,7 @@ These can be interpreted as:
   domain of the morphism.  
   \end{itemize}
 So the semantics of contexts/substitutions is a lot like 
-one-variable adjoint logic with only $F$ types (\cite{ls16adjoint-extended}).
+one-variable adjoint logic with only $\Fsym$ types (\cite{ls16adjoint-extended}).
 
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
 In this subsection we will concern ourselves only with the ``downstairs'' mode theory, which means abstracting the behavior of Grothendieck constructions in $\Cat$; in \S\ref{sec:fib-2cwf} we will reintroduce the ``upstairs'' type theory by additionally abstracting the behavior of ``objects and morphisms''.
@@ -4777,6 +4777,86 @@ We now show that $\Esym$-types always exist in our models constructed from unive
   \msnote{$\Sigma$-types.}
   Finally, the equation $\St{s}{A}=\E{\TrPlusSym{s}}{A}$ follows from the fact that, following Johnstone, the map $\TrPlusSym{s}:\gamma\ce q \to \gamma\ce p$ is constructed in such a way that postcomposing with it (which is our definition of $\E{\TrPlusSym{s}}{-}$) implements the split fibrational action of $\pi$ (which is our definition of $\St{s}{-}$).
 \end{proof}
+
+Note that since $\Esym$-types are not required to preserve fibrancy, no additional axioms are required in the case when there is a fibrancy structure.
+(We have already remarked that the types $\St{s}{-}$ always preserve fibrancy, hence so do the $\Esym$-types $\E{\TrPlusSym{s}}{-}$ that they are equal to.)
+
+
+\subsection{$\Fsym$-types: homotopy opcartesian arrows}
+\label{sec:htpy-opcartesian}
+
+To obtain a structure corresponding to $\Fsym$-types instead of $\Esym$-types, we add the requirement that fibrancy is preserved, but weaken the condition that $\Gamma\ce A \to \Gamma \ce \E{\mu}{A}$ is opcartesian to a homotopical version thereof.
+The relevant notion is a sort of mix of opcartesianness with a lifting property, which to our knowledge first appears explicitly in~\cite{CagneMellies2019}.
+\msnote{That paper isn't public yet, but there'll be a talk about it at HoTT 2019.}
+
+We can formulate this notion in an amusingly self-referential way as a lifting property itself.
+Let $\Box$ be the category $\mathbf{2}\times \mathbf{2}$, and let $\boxslash$ be the poset $\mathbf{4}$ with objects $00 < 10 < 01 < 11$, so that we have a faithful bijective-on-objects inclusion $\Box \hookrightarrow \boxslash$:
+\[
+  \begin{tikzcd}
+    00 \ar[d] \ar[r] & 01 \ar[d] \\
+    10 \ar[r] & 11
+  \end{tikzcd}
+  \hspace{1cm}\hookrightarrow\hspace{1cm}
+  \begin{tikzcd}
+    00 \ar[d] \ar[r] & 01 \ar[d] \\
+    10 \ar[r] \ar[ur] & 11
+  \end{tikzcd}
+\]
+An equivalent way to state lifting properties is as follows: in a category $C$, a morphism $i$ has \textbf{left lifting} for a morphism $p$ if any functor $S:\Box\to C$ such that $S(00<10)=i$ and $S(01<11)=p$ has an extension to $\boxslash$:
+\[
+  \begin{tikzcd}
+    \Box \ar[r,"S"] \ar[d] & C \\
+    \boxslash \ar[ur,dashed]
+  \end{tikzcd}
+\]
+Now given a functor $\vp:C\to M$, we say that $i$ has \textbf{left lifting for $p$ relative to $\vp$} if for any such $S$, any commutative square as below has a diagonal filler:
+\[
+  \begin{tikzcd}
+    \Box \ar[r,"S"] \ar[d] & C \ar[d,"\vp"] \\
+    \boxslash \ar[ur,dashed] \ar[r] & M
+  \end{tikzcd}
+\]
+More explicitly, this means that given any commutative square in $C$ as on the left below, and any diagonal filler $k$ in $M$ as on the right below:
+\[
+  \begin{tikzcd}
+    {}\ar[d,"i"'] \ar[r,"f"] &{}\ar[d,"p"]\\
+    {}\ar[r,"g"'] \ar[ur,dashed,"h"] & {}
+  \end{tikzcd}
+  \hspace{1cm}\overset{\vp}{\mapsto}\hspace{1cm}
+  \begin{tikzcd}
+    {}\ar[d,"\vp i"'] \ar[r,"\vp f"] &{}\ar[d,"\vp p"]\\
+    {}\ar[r,"\vp g"'] \ar[ur,"k"] & {}
+  \end{tikzcd}
+\]
+there exists a dashed filler $h$ as on the left in $C$ such that $\vp h = k$.
+
+It is shown in~\cite{CagneMellies2019} that if $C$ has, and $\vp$ preserves, a terminal object, then $i$ is opcartesian for $\vp$ if and only if it has \emph{unique} left lifting for all morphisms in $C$ relative to $\vp$.
+Thus, non-unique left lifting relative to $\vp$ is a natural homotopy-theoretic weakening of opcartesianness.
+
+Of course, since we are working with 2-categories, we need a 2-categorical notion of left lifting.
+Let $\vp:\C\to\M$ be a 2-functor, let $i$ and $p$ be morphisms in $\C$, and write $\Cat_{i,p}(\Box,\C)$ for the full subcategory consisting of functors $S:\Box\to \C$ such that $S(00<10)=i$ and $S(01<11)=p$, and similarly for other notations.
+Now we say that $i$ has \textbf{left lifting for $p$ relative to $\vp$} if the functor
+\[ \Cat_{i,p}(\boxslash,\C) \to \Cat_{i,p}(\Box,\C) \times_{\Cat_{\vp i,\vp p}(\Box,\M)} \Cat_{\vp i,\vp p}(\boxslash,\M) \]
+is surjective on objects and full.
+Surjectivity on objects gives the ordinary relative lifting property as above; fullness gives a 2-categorical aspect.
+The latter is non-unique in general, but if $\vp$ is locally faithful (as is the case, for instance, if it is a local discrete fibration) then the above functor is automatically also faithful, and so the 2-cell liftings are unique.
+
+\begin{definition}\label{defn:E-sem}
+  Suppose given a local discrete fibration of 2-categories with families $\vp:\C\to\M$, objects $\gamma\in\M$, $\Gamma\in \C$ with $\vp(\Gamma)=\gamma$, $p\in \Mty(\gamma)$, $A\in\Cty(\Gamma)$ with $\vp(A)=p$, $q\in \Mty(\gamma)$, and a morphism $\mu : \gamma \ce p \to \gamma\ce q$ in $\M$ over $\gamma$.
+  An \textbf{$\Fsym$-type} consists of an object $\F{\mu}{A} \in \Cty(\Gamma)$ with $\vp(\F{\mu}{A}) = q$ and an morphism $\Fsym:\Gamma\ce A \to \Gamma\ce \F\mu A$ over $\Gamma$ satisfying $\vp(\Fsym)=\mu$ and that has left lifting relative to $\vp$ for all dependent projections $\Delta\ce B \to \Delta$ in $\C$.
+\end{definition}
+
+As usual, we can pull back any dependent projection to $\Gamma\ce \F\mu A$, and $\vp$ preserves these pullbacks; thus left lifting reduces to the case of extending sections of dependent projections over $\Gamma\ce \F\mu A$.
+The given diagonal lift in $\M$ that appears in the notion of relative lifting corresponds to the mode term $\nu'$ appearing in the $\Fsym$-elimination rule.
+Since 2-cells in $\C$ correspond to rewriting along mode 2-cells, the 2-dimensional property of left lifting corresponds to the syntactic equation for $\Fsym$-types:
+\[ (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}.\]
+
+\msnote{$\Fsym$-types don't have to be split functorial, but I presume there should still be some ``strict stability'' condition corresponding to preservation under syntactic substitution.}
+
+
+\subsection{$\Usym$-types: cartesian arrows}
+\label{sec:cartesian-arrows}
+
 
 
 \bibliographystyle{abbrvnat}
