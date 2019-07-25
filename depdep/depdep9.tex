@@ -98,6 +98,7 @@
 %% \newcommand\TermTwoDisp[5]{\ensuremath{#1 \mid #3 \tcell_{\mathsf{disp}} #2 :_{#5} #4}}
 %\newcommand\SubTwo[4]{\ensuremath{#1 \mid #3 \tcell #2 : #4}}
 \newcommand\TrPlus[2]{\ensuremath{{#1}^+(#2)}}
+\newcommand\TrPlusSym[1]{\ensuremath{{#1}^+}}
 \newcommand\TrCirc[2]{\ensuremath{{#1}^\circ(#2)}}
 
 \newcommand\El[2]{\mathcal{T}_{#1}(#2)}
@@ -4341,6 +4342,8 @@ We write the terminal object as $\ec$ (the empty context).
 The ruminations above suggest that there should be a 2-category with families where $\M=\Cat$ and $\Mty(C) = [C\op,\Cat]\op$.
 We call this the \textbf{canonical model}; we will construct it formally in Section \ref{sec:2cwf-univ}.
 
+Conversely to Example \ref{eg:syn-2cwf}, any 2-category with families can be regarded as a model for our mode theory: its objects are the mode contexts, its morphisms are the total substitutions, the objects of $\Mty(\gamma)$ are the modes in context $\gamma$, and so on.
+
 Now we add the unit and $\Sigma$ modes.
 The unit is easy:
 
@@ -4413,7 +4416,7 @@ Note that any 2-functor $\vp:\C\to\M$ induces a left Kan extension $\vpsh : [\C\
       \end{tikzcd}\label{eq:mor-presrep}
     \end{equation}
     (where the right-hand square is the adjunct of~\eqref{eq:mor2cwfsq})
-    is also a specified pullback, i.e.\ $\vp(C\ce T) = \vp(C)\ce(\vpty(\vpsh(T)))$ with all the associated structure also coinciding.\msnote{Refer to Clive's thesis for the natural-models formulation of morphisms of 1-CwFs}
+    is also a specified pullback, i.e.\ $\vp(C\ce T) = \vp(C)\ce(\vpty(\vpsh(T)))$ with all the associated structure also coinciding.\footnote{It may appear that the right-hand side of this strict equality is only defined up to isomorphism, since it involves $\vpsh$ which is defined by left Kan extension, but in fact the composite morphism $\yon\vp C\to \Mty$ is well-defined independent of any such choice.}\msnote{Refer to Clive's thesis for the natural-models formulation of morphisms of 1-CwFs}
   \end{enumerate}
 \end{definition}
 
@@ -4431,11 +4434,11 @@ Note that any 2-functor $\vp:\C\to\M$ induces a left Kan extension $\vpsh : [\C\
   \begin{itemize}
   \item An object of $\C$ is a context $\yields_\gamma \Gamma \CTX$.
     Of course, its image in $\M$ is $\yields \gamma \ctx$.
-  \item A morphism in $\C$ is a total substitution $\Gamma_{\gamma} \yields_\theta \Theta : \Delta_\delta$, lying over $\gamma \yields \theta : \delta$.
+  \item A morphism in $\C$ is a total substitution $\Gamma \yields_\theta \Theta : \Delta$, lying over $\gamma \yields \theta : \delta$.
   \item The fibrational action of 2-cells in $\M$ on morphisms in $\C$ is given by N-ary rewrite (Lemma \ref{lem:n-ary-ap-rewrite}).
-  \item An object of $\Cty(\Gamma)$ is a type $\Gamma_\gamma \yields_p A \TYPE$, lying over $\gamma \yields p\type$ in $\Mty(\gamma) = \Mty(\vp(\Gamma))$.
+  \item An object of $\Cty(\Gamma)$ is a type $\Gamma \yields_p A \TYPE$, lying over $\gamma \yields p\type$ in $\Mty(\gamma) = \Mty(\vp(\Gamma))$.
     The fibrational action of morphisms in $\Mty$ is given by the $\St{s}{A}$ types.
-  \item An object of $\Ctm(\Gamma)$ over $A\in \Cty(\Gamma)$ is a term $\Gamma_\gamma \yields_\mu M:A_p$, lying over $\gamma \yields \mu:p$ in $\Mtm$.
+  \item An object of $\Ctm(\Gamma)$ over $A\in \Cty(\Gamma)$ is a term $\Gamma \yields_\mu M:A_p$, lying over $\gamma \yields \mu:p$ in $\Mtm$.
     To act on such a term by a morphism in $\Mtm(\gamma)$, we first factor the latter morphism as a mode 2-cell in a fiber $\TermTwoT{\gamma}{s}{\mu}{\TrPlus{t}{\nu}}{p}$ followed by the cartesian arrow corresponding to the action of a mode morphism $\TypeTwo{\gamma}{t}{p}{q}$ on $\nu$.
     The cartesian morphism then acts on $M$ by S-intro, $\StI{t}{M} : \St{t}{A}$, and then we rewrite with the fiber 2-cell $\rewrite{s}{\StI{t}{M}}$.
   \end{itemize}
@@ -4465,6 +4468,9 @@ We now construct the canonical model, as a special case of a ``universe'' constr
 We can then restrict to any full sub-2-category of $\M$ that contains the terminal object and is closed under comprehension, such as to reduce the meta-level universe size.
 The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-category''.
 
+Note also that as in the 1-categorical case, if $\M$ is any 2-category with families, applying Theorem \ref{thm:2cwf-univ} to the projection $\Ups:\Mtm \to \Mty$ in $[\M\op,\Cat]$ and then restricting to the subcategory $\M \hookrightarrow [\M\op,\Cat]$ reproduces the original 2-category with families $\M$.
+Thus, any 2-category with families can be obtained from a universe.
+
 \begin{example}\label{eg:canon-2cwf}
   Let $\M =\Cat$ and $\Un= \Cat\op$, with $\Ub$ the Grothendieck construction of the identity functor $\Cat \to \Cat$ regarded as a contravariant functor from $\Cat\op$ to $\Cat$.
   Then $\pi:\Ub\to\Un$ is a split fibration, and of course $\Cat$ has pullbacks.
@@ -4477,8 +4483,33 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
 
   The pullback of $\pi:\Ub\to\Un$ along a functor $p:\gamma\to\Un=\Cat\op$ can be verified to be isomorphic to the usual Grothendieck construction of $T$.
   Thus mode terms $\gamma\vdash \mu:p$, being lifts of $p$ to $\Ub$, are in bijection with sections of this Grothendieck construction, and likewise for morphisms between them (that lie over identities).
+
   The action $\TrPlus{s}{\mu}$ comes from the split fibration structure on $\pi$, which is to say simply the componentwise action of the natural transformation $s$ on objects of categories.
+  Specifically, given $p,q:\gamma\to \Un$ and $s:p\Rightarrow q$, the term $\gamma, x:q \vdash \TrPlus{s}{x} : p$ is obtained by taking the pullback as on the left below:
+  \[
+    \begin{tikzcd}
+      \gamma\ce q \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ub \ar[d] \\
+      \gamma \ar[r,"q"'] & \Un
+    \end{tikzcd}
+    \hspace{2cm}
+    \begin{tikzcd}
+      \gamma\ce q \ar[r,"\TrPlusSym{s}",shift left=2] \ar[r,phantom,"\Downarrow"] \ar[r,shift right=2] \ar[d] & \Ub \ar[d] \\
+      \gamma \ar[r,"p", shift left=2] \ar[r,phantom,"\Downarrow \scriptstyle s"] \ar[r,"q"',shift right=2] & \Un,
+    \end{tikzcd}
+  \]
+  then using the splitting to lift $s$ as in the middle above.
+  By the universal property of the pullback
+  \[
+    \begin{tikzcd}
+      \gamma\ce p \ar[r] \ar[d] \ar[dr,phantom,near start,"\lrcorner"] & \Ub \ar[d] \\
+      \gamma \ar[r,"p"'] & \Un,
+    \end{tikzcd}
+  \]
+  this corresponds uniquely to a morphism $\TrPlusSym{s} : \gamma\ce q\to\gamma \ce p$ over $\gamma$.
+  This operation $s\mapsto \TrPlusSym{s}$ is the structure used by Johnstone to represent the split fibration $\pi$.
 \end{example}
+
+\msnote{I want to change the notation in the next theorem to match the syntax, writing $(\gamma,\Gamma)$ instead of $(A,a)$ and so on, but haven't done it yet.}
 
 \begin{theorem}\label{thm:fib2cwf-univ}
   Let $\M$ be a 2-category with (specified) pullbacks and a terminal object, $\pi:\Ub\to\Un$ be an internal split fibration in $\M$, and $\one$ an arbitrary object of $\M$. % equipped with a map $\top : \one \to \Ub$.
@@ -4650,13 +4681,102 @@ Syntactically, this means we have a subset of the upstairs types in each context
   \end{tikzcd}\]
 \end{definition}
 
-This is a $\Cat$-enriched universal property, so it has a 1-morphism and a 2-morphism aspect.
-The 1-morphism aspect says that $\Theta$ is opcartesian in the usual sense in the underlying 1-categories: for any morphism $\Theta'' : \Gamma\to\Delta'$ and factorization $\vp(\Theta'') = \theta' \theta$, there is a unique morphism $\Theta' : \Delta\to\Delta'$ with $\Theta'' = \Theta'\Theta$ and $\vp(\Theta') = \theta'$.
+This is a $\Cat$-enriched universal property, so it technically has a 1-morphism and a 2-morphism aspect.
+The 1-morphism aspect is the most important one: it says that $\Theta$ is opcartesian in the usual sense in the underlying 1-categories: for any morphism $\Theta'' : \Gamma\to\Delta'$ and factorization $\vp(\Theta'') = \theta' \theta$, there is a unique morphism $\Theta' : \Delta\to\Delta'$ with $\Theta'' = \Theta'\Theta$ and $\vp(\Theta') = \theta'$.
 The construction $\Theta\mapsto\Delta$ is therefore, insofar as it is defined, a functor from the fiber of $\vp$ over $\gamma$ to that over $\delta$, which we denote $\theta_!$.
 
 The 2-morphism aspect says that given morphisms $\Theta'_1,\Theta'_2 : \Delta\to\Delta'$ and 2-cells $R:\Theta'_1\Theta \Rightarrow \Theta'_2\Theta$ and $\rho' : \vp(\Theta'_1)\Rightarrow \vp(\Theta'_2)$ such that $\vp(R) = \rho' \theta$, there exists a unique 2-cell $R' : \Theta'_1\Rightarrow \Theta'_2$ such that $R' \Theta = R$ and $\vp(R') = \rho'$.
-But since $\vp$ is a local discrete fibration, we already know there exists a unique 2-cell $R' : \overline{\Theta'_1}\Rightarrow \Theta'_2$ such that $\vp(R') = \rho'$, so the content of this statement is that $\overline{\Theta'_1} = \Theta'_1$.
-In other words, factoring through an opcartesian arrow commutes with the local discrete fibration action.
+However, since $\vp$ is a local discrete fibration, we already know there exists a unique 2-cell $R' : \overline{\Theta'_1}\Rightarrow \Theta'_2$ such that $\vp(R') = \rho'$.
+Moreover, $R'\Theta: \overline{\Theta'_1}\Theta \Rightarrow \Theta'_2\Theta$ is a 2-cell whose image under $\vp$ is $\rho'\theta$, so by uniqueness we have $R'\Theta = R$, and in particular $\overline{\Theta'_1}\Theta = \Theta'_1\Theta$.
+But $\Theta$ is opcartesian and $\vp(\overline{\Theta'_1}) = \vp(\Theta'_1)$, so $\overline{\Theta'_1} = \Theta'_1$.
+Thus, when $\vp$ is a local discrete fibration, the 2-morphism aspect of opcartesianness is automatic.
+
+\begin{definition}\label{defn:E-sem}
+  Suppose given a local discrete fibration of 2-categories with families $\vp:\C\to\M$, objects $\gamma\in\M$, $\Gamma\in \C$ with $\vp(\Gamma)=\gamma$, $p\in \Mty(\gamma)$, $A\in\Cty(\Gamma)$ with $\vp(A)=p$, $q\in \Mty(\gamma)$, and a morphism $\mu : \gamma \ce p \to \gamma\ce q$ in $\M$ over $\gamma$.
+  An \textbf{$\Esym$-type} consists of an object $\E{\mu}{A} \in \Cty(\Gamma)$ with $\vp(\E{\mu}{A}) = q$ and an morphism $\Esym:\Gamma\ce A \to \Gamma\ce \E\mu A$ over $\Gamma$ that is opcartesian and satisfies $\vp(\Esym)=\mu$.
+\end{definition}
+
+In syntactic terms, the object $\E\mu A$ is the $\Esym$-type $\E{x.\mu}A$ and the morphism $\Esym$ is the introduction rule, while its opcartesianness represents the elimination rule with its beta and eta rules.
+Note that the existence of all $\Esym$-types, in this sense, is weaker in some ways and stronger in other ways than the assertion that all opcartesian liftings exist (i.e.\ that $\vp$ is an opfibration).
+It is weaker because liftings are only required for morphisms in $\M$ of the form $\mu : \gamma \ce p \to \gamma\ce q$ over $\gamma$, but stronger because the codomain of the lifting is also required to be of the form $\Gamma\ce \E\mu A$ for some $\E\mu A \in \Cty(\Gamma)$.
+However, as we will see below, in our models constructed from universes this distinction disappears.
+
+\begin{definition}
+  A \textbf{split choice of $\Esym$-types} consists of a choice of $\E\mu A$ for every choice of data as in Definition \ref{defn:E-sem} that are strictly stable, functorial, and respect the $\Sigma$-types strictly, i.e.:
+  \begin{enumerate}
+  \item Given the data as in \ref{defn:E-sem} and also $\theta : \delta \to \gamma$, we have $\theta^*\E\mu A = \E{\theta^*\mu}{\theta^*A}$, and the opcartesian morphisms also coincide.
+  \item If $q=p$ and $\mu=\id$, then $\E\mu A = A$ and $\Esym=\id$.
+  \item For $\mu:\gamma\ce p \to \gamma\ce q$ and $\nu : \gamma\ce q \to \gamma\ce r$, we have $\E\nu{\E\mu A} = \E{\nu\circ \mu}{A}$ and the two $\Esym$ morphisms compose to the third.
+  \item \msnote{Something with $\Sigma$-types.}
+  \item The equation $\St{s}{A}=\E{\TrPlusSym{s}}{A}$ holds, in the sense defined below.
+  \end{enumerate}
+\end{definition}
+
+To explain the last condition, suppose given $s:p\to q$ in $\Mty(\gamma)$ and any $A\in \Cty(\Gamma)$ with $\vp(A) = q$.
+Then the discrete fibrational action induces a unique cartesian morphism $\bar{s}:\St{s}{A} \to A$ in $\Cty(\Gamma)$ with $\vp(\bar{s})=s$.
+(As we noted above, this operation $\St{s}{-}$ does correspond to the like-named syntactic one.)
+Now since in the square
+\[\begin{tikzcd}
+    \Ctm \ar[d] \ar[r] & \vpst \Mtm \ar[d] \\
+    \Cty \ar[r] & \vpst \Mty
+  \end{tikzcd}
+\]
+the vertical morphisms are split fibrations, the horizontal morphisms are discrete fibrations, and the square is a strict morphism of split fibrations from left to right, and moreover $\vp$ preserves the algebraic representations, we obtain induced diagrams
+\[
+  \begin{tikzcd}
+    \Gamma\ce A \ar[dr] \ar[rr] & & \Gamma\ce \St{s}{A} \ar[dl] \\
+    & \Gamma
+  \end{tikzcd}
+  \hspace{1cm}\overset{\vp}{\mapsto}\hspace{1cm}
+  \begin{tikzcd}
+    \gamma\ce q \ar[dr] \ar[rr] & & \gamma\ce p \ar[dl] \\
+    & \gamma
+  \end{tikzcd}
+\]
+The condition, then, is that this morphism $\Gamma\ce A \to \Gamma\ce \St{s}{A}$ belongs to the splitting (and hence, in particular, is opcartesian).
+\msnote{I don't know whether this morphism is automatically opcartesian, and can't even decide whether I think it probably is or isn't.
+  But we almost certainly need to ask explicitly that it belong to the splitting.}
+
+We now show that $\Esym$-types always exist in our models constructed from universes.
+
+\begin{lemma}
+  Let $\M$ be a 2-category, $\one\in\M$ an object, and $\vp : (\one\lslice\M) \to \M$ the projection as in Theorem \ref{thm:fib2cwf-univ}.
+  Then a morphism
+  \begin{equation}
+    \begin{tikzcd}
+      & \one \ar[dl,"a"'] \ar[dr,"b"] \ar[d,phantom,"\overset{\phi}{\Rightarrow}"] \\
+      A \ar[rr,"f"'] & {}& B
+    \end{tikzcd}
+  \end{equation}
+  is opcartesian if and only if $\phi$ is an isomorphism.
+\end{lemma}
+\begin{proof}
+  If $\phi$ is an isomorphism, we note that any 2-cell as on the left can be factored uniquely through it as on the right:
+  \begin{equation}
+    \begin{tikzcd}
+      & \one \ar[dl,"a"'] \ar[dr,"c"] \ar[d,phantom,"\overset{\psi}{\Rightarrow}"] \\
+      A \ar[r,"f"'] & B \ar[r,"g"'] & C
+    \end{tikzcd}
+    \quad = \quad
+    \begin{tikzcd}
+      {} \ar[dr,phantom,very near end,"\overset{\phi}{\Rightarrow}"] & \one \ar[dl,"a"'] \ar[d,"b"] \ar[dr,"c"] & {} \ar[dl,phantom,near end,"\Rightarrow"] \\
+      A \ar[r,"f"'] & B \ar[r,"g"'] & C
+    \end{tikzcd}
+  \end{equation}
+  This shows that $(f,\phi)$ is opcartesian.
+  In particular, given $f:A\to B$ and $a$, there is an opcartesian lift, such as $b=f\circ a$ and $\phi=\id$.
+  Thus, any other opcartesian lift $(f,\phi)$ is isomorphic to this one; hence $\phi$ is, like $\id$, an isomorphism.
+\end{proof}
+
+\begin{theorem}
+  A local discrete opfibration of 2-categories with families constructed as in Theorem \ref{thm:fib2cwf-univ} always has a split choice of $\Esym$-types.
+\end{theorem}
+\begin{proof}
+  We assign to each $f:A\to B$ and $a$ the lifting $(f,\id)$.
+  These are clearly strictly stable and functorial.
+  \msnote{$\Sigma$-types.}
+  Finally, the equation $\St{s}{A}=\E{\TrPlusSym{s}}{A}$ follows from the fact that, following Johnstone, the map $\TrPlusSym{s}:\gamma\ce q \to \gamma\ce p$ is constructed in such a way that postcomposing with it (which is our definition of $\E{\TrPlusSym{s}}{-}$) implements the split fibrational action of $\pi$ (which is our definition of $\St{s}{-}$).
+\end{proof}
 
 
 \bibliographystyle{abbrvnat}
