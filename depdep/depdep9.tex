@@ -251,6 +251,7 @@
 \newcommand\mub{\mu_*}
 \newcommand\nub{\nu_*}
 \newcommand\bb[1]{{(#1)}_*}
+\newcommand{\sF}{\mathscr{F}}
 % Hiragana "yo" for the Yoneda embedding, from https://arxiv.org/abs/1506.08870
 \DeclareFontFamily{U}{min}{}
 \DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
@@ -924,7 +925,7 @@ context extension $\alpha.x$ in dependent type theory.  In this
 notation, this means we want substitutions $\beta \tcell_p \alpha.x$ to
 correspond to pair of substitutions $s : \beta \vdash_p \alpha$ and
 terms $\One_\alpha \vdash \TrPlus{s}{x}$, using the ``transport''
-$\TrPlus{s}{-} : \El{p}{\alpha} \to \El{p}{\alpha}$ to model substitution
+$\TrPlus{s}{-} : \El{p}{\alpha} \to \El{p}{\beta}$ to model substitution
 in the object language.
 
 Having objects $\One_\alpha$ with such a correspondence is very close to
@@ -932,7 +933,7 @@ Lawvere's definition of comprehension~\citep{lawvere70comprehension} in
 a hyperdoctrine, as reformulated by
 Ehrhard~\citep{ehrhardXXcomprehension} to apply to any fibration
 (avoiding the use of the pushforwards in a bifibration in Lawvere's
-formulation).  In our notation, Ehrhard's definiton says that first
+formulation).  In our notation, Ehrhard's definition says that first
 there is a mode term (functor) $p \to
 \sigmacl{\alpha}{p}{\El{p}{\alpha}}$, which is a section of the
 projection $\fst : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \to p$, and picks
@@ -946,7 +947,7 @@ and mode term 2-cells $(\beta,\One_\beta)
 \vdash_{\sigmacl{\alpha}{p}{\El{p}{\alpha}}} (\alpha,x)$, which by
 definition of 2-cells in $\Sigma$ modes are isomorphic to pairs of $s :
 \beta \tcell_p \alpha$ (a substitution from $\beta$ to $\alpha$) and
-$\One \tcell_{\El p \beta} \TrPlus{s}{x}$, which (a term of type
+$\One \tcell_{\El p \beta} \TrPlus{s}{x}$ (a term of type
 $\TrPlus s x$ in
 context $\alpha$).
 
@@ -979,7 +980,7 @@ The above analogy can be summarized as:
   \hline
   encoded language substitutions from $\alpha$ to $\beta$ & mode term 2-cells $\alpha \tcell_p \beta$ \\
   \hline
-  encoded language terms in context $\alpha$ of type $\One_\alpha$ & mode term 2-cells $\One_\alpha \tcell_p x$ \\
+  encoded language terms in context $\alpha$ of type $x$ & mode term 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$ \\
   \hline
   encoded language substitution by $s : \beta \tcell_p \alpha$ into a type $x : \El p \alpha$  & mode term $\TrPlus{s}{x} : \El{p}{\beta}$ \\
   \hline
@@ -1009,6 +1010,8 @@ respectively.
 \end{definition}
 
 We will usually write $\sdot(\alpha, x)$ infix as $\alpha.x$, and abbreviate $\sempty$ as $\emptyset$.
+
+\msnote{I find it a bit confusing to use the same infix dot for comprehension that we use for variable binding (e.g.\ $\F{x.\mu}{-}$).  What would you think about using a different dot for comprehension such as $\alpha \ce x$, which I used in the semantics?}
 
 In Section~\ref{sec:example-encodings}, we will show that the top type
 theory for a comprehension object interprets the context structure of
@@ -4605,7 +4608,7 @@ The \emph{smallest} such full sub-2-category would be a sort of ``contextual 2-c
 Syntactically, this means we have a subset of the upstairs types in each context (the ``fibrant types'') that is closed under substitution (because $\Cfibty$ is a sub-2-functor) and under the $\St{s}{-}$ types (because $\Cfibty \to \Cty \to \vpst \Mty$ is a discrete fibration).
 (Recall that in Section \ref{sec:strict-modalities} we stipulated that $\St{s}{-}$ preserves fibrancy of types.)
 
-\begin{theorem}
+\begin{theorem}\label{thm:2cwf-fib}
   Let $\M$, $\pi:\Ub\to\Un$, and $\one$ be as in Theorem \ref{thm:fib2cwf-univ}, and let $\Ubfib \hookrightarrow \Ub$ be a full subobject, i.e.\ such that each functor $\M(X,\Ubfib) \to \M(X,\Ub)$ is fully faithful and injective on objects, such that the composite $\Ubfib \hookrightarrow \Ub \xrightarrow{\pi}\Un$ is a split fibration and the morphism $\Ubfib \hookrightarrow \Ub$ is a strict morphism of split fibrations.
   Define $\Cfibty(B,b)$ to consist of those $(p,\pb)\in \Cty(B,b)$ such that $\pb$ factors (necessarily uniquely) through $\Ubfib$.
   Then this yields a fibrancy structure.
@@ -4613,6 +4616,47 @@ Syntactically, this means we have a subset of the upstairs types in each context
 \begin{proof}
   The inclusion $\Cfibty\hookrightarrow \Cty$ is obvious, and closure of $\Ubfib$ under the splitting of $\pi$ implies closure of $\Cfibty$ under the discrete fibrational action of $\Cty \to \vpst\Mty$.
 \end{proof}
+
+\begin{example}
+  As in~\cite{lackshulman:laxlim}, let $\sF$ be the category whose objects are fully faithful and injective-on-objects functors $A_\tight \to A_\loose$.
+  Let $\M=\Cat$ and $\one=1$ as before, but now let $\Un=\sF\op$, and let $\Ub$ be the Grothendieck construction of the functor $\Un\op = \sF \xrightarrow{(-)_\loose} \Cat$, while $\Ubfib$ is similarly the Grothendieck construction of $\Un\op = \sF \xrightarrow{(-)_\tight} \Cat$.
+  Then applying Theorem \ref{thm:2cwf-fib} yields a local discrete fibration of 2-categories with families having a fibrancy structure, in which:
+  \begin{itemize}
+  \item The mode types, total substitutions, and total substitution 2-cells are, again, categories, functors, and natural transformations.
+  \item A mode type in context $\gamma$ is a functor $p : \gamma\op\to\sF$, i.e.\ a functor $p_\loose : \gamma\op\to\Cat$ as in the canonical model equipped with a full subfunctor $p_\tight$.
+  \item A mode type morphism is a natural transformation in the opposite direction between functors $\gamma\op\to\sF$, i.e.\ a natural transformation $q_\loose \to p_\loose$ as in the canonical model that also maps $q_\tight$ into $p_\tight$.
+  \item The comprehension $\gamma\ce p$ is the Grothendieck construction of $p_\loose$.
+    In particular, the information about $p_\tight$ is discarded at this stage.
+    Thus, mode terms (being sections in $\Cat$ of such) also do not ``see'' $p_\tight$.
+  \item An upstairs context over $\gamma$ is an object $\Gamma\in\gamma$, and similarly for total substitutions and the action of total 2-cells, as in the canonical model.
+  \item An upstairs type in context $\Gamma$ over $p:\gamma\op\to\sF$ is, as in the canonical model, an object of $p_\loose(\Gamma)$.
+    It is fibrant precisely when it belongs to $p_\tight(\Gamma)$.
+  \item The upstairs comprehension and terms are defined as in the canonical model; thus they do not see fibrancy.
+    The action $\St{s}{-}$, however, does preserve fibrant types, as required, because each such $s$ was required to preserve the subfunctors $p_\tight$.
+  \end{itemize}
+  We call this the \textbf{canonical fibrant model}.
+\end{example}
+
+\subsection{$\Esym$-types: opcartesian arrows}
+\label{sec:opcartesian-arrows}
+
+\begin{definition}
+  Let $\vp:\C\to\M$ be a local discrete fibration of 2-categories with families, $\theta : \gamma\to\delta$ a morphism in $\M$, and $\Gamma$ an object of $\C$ with $\vp( \Gamma) = \gamma$.
+  An arrow $\Theta : \Gamma\to \Delta$ with $\vp(\Theta) = \theta$ is \textbf{(strictly) opcartesian} if for any $\Delta'\in\M$, with $\vp(\Delta') = \delta$, the following square is a pullback in $\Cat$:
+  \[
+  \begin{tikzcd}
+    \C(\Delta,\Delta') \ar[d] \ar[r] & \C(\Gamma,\Delta') \ar[d] \\
+    \M(\delta,\delta') \ar[r] & \M(\gamma,\delta').
+  \end{tikzcd}\]
+\end{definition}
+
+This is a $\Cat$-enriched universal property, so it has a 1-morphism and a 2-morphism aspect.
+The 1-morphism aspect says that $\Theta$ is opcartesian in the usual sense in the underlying 1-categories: for any morphism $\Theta'' : \Gamma\to\Delta'$ and factorization $\vp(\Theta'') = \theta' \theta$, there is a unique morphism $\Theta' : \Delta\to\Delta'$ with $\Theta'' = \Theta'\Theta$ and $\vp(\Theta') = \theta'$.
+The construction $\Theta\mapsto\Delta$ is therefore, insofar as it is defined, a functor from the fiber of $\vp$ over $\gamma$ to that over $\delta$, which we denote $\theta_!$.
+
+The 2-morphism aspect says that given morphisms $\Theta'_1,\Theta'_2 : \Delta\to\Delta'$ and 2-cells $R:\Theta'_1\Theta \Rightarrow \Theta'_2\Theta$ and $\rho' : \vp(\Theta'_1)\Rightarrow \vp(\Theta'_2)$ such that $\vp(R) = \rho' \theta$, there exists a unique 2-cell $R' : \Theta'_1\Rightarrow \Theta'_2$ such that $R' \Theta = R$ and $\vp(R') = \rho'$.
+But since $\vp$ is a local discrete fibration, we already know there exists a unique 2-cell $R' : \overline{\Theta'_1}\Rightarrow \Theta'_2$ such that $\vp(R') = \rho'$, so the content of this statement is that $\overline{\Theta'_1} = \Theta'_1$.
+In other words, factoring through an opcartesian arrow commutes with the local discrete fibration action.
 
 
 \bibliographystyle{abbrvnat}
