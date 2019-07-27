@@ -253,6 +253,7 @@
 \newcommand\nub{\nu_*}
 \newcommand\bb[1]{{(#1)}_*}
 \newcommand{\sF}{\mathscr{F}}
+\newcommand{\pbaround}[3]{\mathrm{Pb}_{#1}(#2,#3)}
 % Hiragana "yo" for the Yoneda embedding, from https://arxiv.org/abs/1506.08870
 \DeclareFontFamily{U}{min}{}
 \DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
@@ -4856,7 +4857,76 @@ Since 2-cells in $\C$ correspond to rewriting along mode 2-cells, the 2-dimensio
 \subsection{$\Usym$-types: cartesian arrows}
 \label{sec:cartesian-arrows}
 
+For $\Usym$-types, we need to similarly combine local cartesian closure with cartesian arrows.
+To our knowledge the relevant definition does not appear in the literature, but it is fairly straightforward.
 
+\begin{definition}[{\cite{Weber15}}]
+  Let $f:A\to B$ and $g:Z\to A$ be morphisms in a category $\C$.
+  A \textbf{pullback around $(f,g)$} is a commutative diagram
+  \[
+    \begin{tikzcd}
+      X \ar[r,"p"] \ar[d,"q"'] & Z \ar[r,"g"] & A \ar[d,"f"]\\
+      Y \ar[rr,"r"'] && B
+    \end{tikzcd}
+  \]
+  such that the outer rectangle is a pullback.
+  A morphism of pullbacks around $(f,g)$ is a pair of morphisms $s:X\to X'$ and $t:Y\to Y'$ making the obvious diagrams commute (i.e.\ $p' s = p$, $q s = t q'$, and $r = r' s$).
+  This defines the category $\pbaround \C f g$.
+
+  A \textbf{distributivity pullback} around $(f,g)$ is a terminal object of $\pbaround \C f g$.
+\end{definition}
+
+It is straightforward to verify that to give such a distributivity pullback around $(f,g)$ is equivalent to giving the morphism $r$ the structure of the image of $g$ under a right adjoint $\Pi_f$ to the pullback functor $f^*$, i.e.\ a dependent product of $g$ along $f$.
+
+Now, given a functor $\vp:\C\to\M$, we want a notion of ``distributivity pullback relative to $\vp$''.
+Of course if $\vp$ preserves pullbacks of $f$, it induces a functor $\pbaround\C f g \to \pbaround\M{\vp(f)}{\vp(g)}$.
+Thus all we need is a notion of ``relative terminal object''.
+
+\begin{proposition}\label{defn:rel-term}
+  For a functor $\vp:\C\to\M$ and an object $x\in \C$ with $\vp(x)=v$, the following are equivalent.
+  \begin{enumerate}
+  \item The identity morphism $\vp(x)\to v$ is a universal arrow from the functor $\vp$.
+  \item The identity morphism $\vp(x)\to v$ is a terminal object of the comma category $(\vp \downarrow v)$.
+  \item For any $y\in \C$, the function $\C(y,x) \to \M(\vp(y),\vp(x))$ is a bijection.
+  \item $x$ is a $\vp$-initial lift for the empty family of morphisms with domains $v$.
+  \item (If $\vp$ is a fibration) $x$ is a terminal object of the fiber $\vp^{-1}(v)$ that is preserved by all the reindexing functors $f^*$ for morphisms $u\to v$ in $\M$.
+  \end{enumerate}
+\end{proposition}
+
+When the conditions of Proposition \ref{defn:rel-term} are satisfied, we call $x$ a \textbf{codiscrete object relative to $\vp$}.
+It is evident that being codiscrete relative to the functor $\C\to 1$ is the same as being terminal in $\C$.
+
+\begin{definition}
+  For a functor $\vp:\C\to\M$ and morphisms $f:A\to B$ and $g:Z\to A$ in $\C$, a \textbf{distributivity pullback around $(f,g)$ relative to $\vp$} is a pullback around $(f,g)$ that is codiscrete relative to the induced functor $\pbaround\C f g \to \pbaround\M{\vp(f)}{\vp(g)}$.
+\end{definition}
+
+\begin{definition}
+  Let $\vp:\C\to\M$ be a local discrete fibration of 2-categories with families.
+  Suppose given $\gamma\in \M$, $\Gamma\in \C$ with $\vp(\Gamma)=\gamma$, $p\in \Mty(\gamma)$, $A\in\Cty(\Gamma)$ with $\vp(A)=p$, $q\in \Mty(\gamma\ce p)$, $B\in \Cty(\Gamma\ce A)$ with $\vp(B)=q$, $r\in\Mty(\gamma)$, and a morphism $\mu : \gamma\ce p\ce r \to \gamma\ce p\ce q$ over $\gamma\ce p$.
+  A \textbf{$\Usym$-type} for these data is a type $\U{\mu}{A}{B}\in \Cty(\gamma)$ with $\vp(\U\mu A B) = r$, together with a distributivity pullback around $(f,g)$ relative to (the underlying 1-functor of) $\vp$, where $f:\Gamma\ce A\to \Gamma$ and $g:\Gamma\ce A\ce B \to \Gamma\ce A$ are the projections:
+  \[
+    \begin{tikzcd}
+      \Gamma \ce A\ce \U\mu A B \ar[r] \ar[d] & \Gamma\ce A \ce B \ar[r,"g"] & \Gamma\ce A \ar[d,"f"]\\
+      \Gamma\ce \U\mu A B \ar[rr] && \Gamma
+    \end{tikzcd}
+    \hspace{1cm}\overset{\vp}{\mapsto}\hspace{1cm}
+    \begin{tikzcd}
+      \gamma\ce p \ce r \ar[r,"\mu"] \ar[d] & \gamma\ce p \ce q \ar[r] & \gamma\ce p \ar[d]\\
+      \gamma\ce r \ar[rr] && \gamma
+    \end{tikzcd}
+  \]
+  In the presence of a fibrancy structure, we require that $\U \mu A B$ is fibrant if both $A$ and $B$ are.
+\end{definition}
+
+Note that these outer rectangles are in fact pullbacks, arising from the comprehension of the reindexing of types in $\C$ and $\M$.
+The morphism $\Gamma \ce A\ce \U\mu A B \to \Gamma\ce A \ce B$ over $\Gamma\ce A$ whose $\vp$-image is $\mu$ is the semantic version of the $\Usym$-elimination rule (``application'').
+The $\Usym$-introduction rule, together with its beta and eta rules, are expressed by the universal property of the distributivity pullback relative to $\vp$.
+
+From a categorical perspective, we would expect a 2-categorical aspect to the universal property as well.
+But as in the case of $\Esym$-types, since $\vp$ is a local discrete fibration this comes for free.
+\msnote{Should explain that some more.}
+
+\msnote{Something about substitution stability too, I suppose.}
 
 
 \bibliographystyle{abbrvnat}
