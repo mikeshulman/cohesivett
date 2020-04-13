@@ -1,11 +1,11 @@
 \documentclass[10pt]{article}
   \usepackage{xcolor}
-  \definecolor{darkgreen}{rgb}{0,0.45,0} 
+  \definecolor{darkgreen}{rgb}{0,0.45,0}
   \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
   \usepackage{pdflscape}
 
 \usepackage[sort]{natbib}
-  
+
 \usepackage{fullpage}
 \usepackage{amssymb,amsthm,bbm}
 \usepackage[centertags]{amsmath}
@@ -83,12 +83,12 @@
 \newcommand\StE[4]{\ensuremath{\mathsf{let} \, \StI{#1}{#3} \, = \, {#2} \, \mathsf{in} \, #4}}
 \newcommand\FE[3]{\ensuremath{\mathsf{let} \, \mathsf{F}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
 % With subscript:
-\newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\FEs[4]{\ensuremath{\mathsf{let} \, \mathsf{F}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}}
 \newcommand\FI[1]{\ensuremath{\mathsf{F}{(#1)}}}
 \newcommand\FIs[2]{\ensuremath{\mathsf{F}_{#1}{(#2)}}}
 \newcommand\EE[3]{\ensuremath{\mathsf{let} \, \mathsf{E}(#2) \, = \, {#1} \, \mathsf{in} \, #3}}
 % With subscript:
-\newcommand\EEs[4]{\ensuremath{\mathsf{let} \, \mathsf{E}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}} 
+\newcommand\EEs[4]{\ensuremath{\mathsf{let} \, \mathsf{E}_{#1}(#3) \, = \, {#2} \, \mathsf{in} \, #4}}
 \newcommand\EI[1]{\ensuremath{\mathsf{E}{(#1)}}}
 \newcommand\EIs[2]{\ensuremath{\mathsf{E}_{#1}{(#2)}}}
 \newcommand\TypeTwo[4]{\ensuremath{#1 \vdash #2 :  #3 \tcell #4}}
@@ -125,7 +125,7 @@
 \newcommand{\sempty}{\ensuremath{\mathrm{empty}}}
 \newcommand{\tshape}[1]{\ensuremath{\mathtt{shape}_{#1}}}
 
-\newcommand{\qyields}{\Vdash} 
+\newcommand{\qyields}{\Vdash}
 \newcommand{\upstairs}[1]{\overline{#1}}
 \newcommand{\downstairs}[1]{\underline{#1}}
 \newcommand\proj[1]{\ensuremath{\mathsf{proj}_{#1}}}
@@ -259,8 +259,8 @@
 \DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
 \newcommand{\yon}{\!\text{\usefont{U}{min}{m}{n}\symbol{'210}}\!}
 
-\defcitealias{lsr17multi-extended}{LSR}	
-\defcitealias{ls16adjoint-extended}{LS}	
+\defcitealias{lsr17multi-extended}{LSR}
+\defcitealias{ls16adjoint-extended}{LS}
 
 \title{A Fibrational Framework for \\ Substructural and Modal Dependent Type Theories}
 \author{Daniel R. Licata, Mitchell Riley, Michael Shulman}
@@ -309,7 +309,7 @@ involved in translating each type theory individually.
 
 %% fibrational: base type theory for specifying mode theories.  top type
 %% theory is parametrized by a particular mode theory, gives general rules
-%% that can be instantiated.  
+%% that can be instantiated.
 
 %% Framework = both base and top
 
@@ -373,30 +373,38 @@ mode types:
 \begin{mathpar}
   \inferrule*{ }
              {\cdot \ctx}
-             
+
   \inferrule*
     {\gamma \ctx \\
      \gamma \yields p \type}
     {\gamma,x:p \ctx}
-\end{mathpar}  
+\end{mathpar}
 
 \subsection{Mode Terms}
 
 In addition to the constants introduced by specific mode theories, there
-are two ways of making mode terms: 
+are two ways of making mode terms:
 
 \begin{mathpar}
-\inferrule*{ }
+\inferrule*{~}
              {\gamma,x : p, \gamma' \yields x : p}
-             
+
 \inferrule*
     {\gamma \yields \mu : q \\
      \TypeTwo{\gamma}{s}{p}{q}
     }
-    {\gamma \yields \TrPlus{s}{\mu} : p}
+    {\gamma \yields \TrPlus{s}{\mu} : p} \\
 
-\TrPlus{\id}{\mu} \equiv \mu \qquad
-\TrPlus{s'}{\TrPlus{s}{\mu}} \equiv \TrPlus{(s';s)}{\mu} 
+\inferrule*
+    {\gamma \yields \mu : p}
+    {\gamma \yields \TrPlus{\id_p}{\mu} \equiv \mu : p}
+
+\inferrule*
+    {\gamma \yields \mu : r \\
+     \TypeTwo{\gamma}{s}{p}{q} \\
+     \TypeTwo{\gamma}{s'}{q}{r} }
+    {\gamma \yields \TrPlus{s}{\TrPlus{s'}{\mu}} \equiv
+      \TrPlus{(s;s')}{\mu} : p}
 \end{mathpar}
 
 The first is the usual variable rule.  The second says a mode type
@@ -414,7 +422,7 @@ morphisms are given by identity, composition, and whiskering
 defined below):
 
 \begin{mathpar}
-    \inferrule*{ }
+    \inferrule*{~}
           {\TypeTwo{\gamma}{\id_p}{p}{p}}
     \qquad
     \inferrule*{{\TypeTwo{\gamma}{s_1}{p_1}{p_2}} \\
@@ -424,18 +432,24 @@ defined below):
 
 \inferrule*{{\gamma,x:p} \vdash {q} \type \\
             \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
-           } 
+           }
            {\TypeTwo{\gamma}{\ap {q} {t/x}}{q[\mu/x]}{q[\mu'/x]}}
 
 \\
-\id;s \equiv s \equiv s;\id \and
-(s;s');s'' \equiv s;(s';s'') \\ 
-\ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]} \and
-\ap q {(s;t)/x} \equiv \ap q {s/x}; \ap q {t/x} \and
-\ap q {s/\_} \equiv \id_q \\ 
-\ap {(q[\mu/x])} {s/y} \equiv \ap q {\ap \mu {s/y}/x} \quad \text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash q \type\\
-t[\nu/x];\ap{q'}{s/x} \equiv \ap{q}{s/x};t[\nu'/x] \quad 
-\text{where } \TypeTwo{\gamma,x:p}{t}{q}{q'} \text{ and } \TermTwoT{\gamma}{s}{\nu}{\nu'}{p}
+\inferrule*{\TypeTwo{\gamma}{s}{p}{q}}{\TypeTwo{\gamma}{\id_p;s \equiv s \equiv s;\id_q}{p}{q}} \and
+
+\inferrule*{\TypeTwo{\gamma}{s_1}{p_1}{p_2} \\\\
+                \TypeTwo{\gamma}{s_2}{p_2}{p_3} \\\\
+                \TypeTwo{\gamma}{s_3}{p_3}{p_4}
+                }{\TypeTwo{\gamma}{(s_1;s_2);s_3 \equiv s_1;(s_2;s_3)}{p_1}{p_4}}
+\\
+
+\inferrule*{{\gamma,x:p} \vdash {q} \type}{\TypeTwo{\gamma}{\ap q {\id_{\mu}/x} \equiv \id_{q[\mu/x]}}{q[\mu/x]}{q[\mu/x]}} \and
+
+\inferrule*{{\gamma,x:p} \vdash {q} \type \\ \TermTwoT{\gamma}{t}{\mu}{\mu'}{p} \\ \TermTwoT{\gamma}{t'}{\mu'}{\mu''}{p}}{\TypeTwo{\gamma}{\ap q {(t;t')/x} \equiv \ap q {t/x}; \ap q {t'/x}}{q[\mu/x]}{q[\mu''/x]} } \and
+\inferrule*{\gamma \yields q \type \\ \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}}{\TypeTwo{\gamma}{\ap q {t/\_} \equiv \id_q }{q}{q}} \\
+\inferrule*{\gamma,y:p' \vdash \mu : p \and \gamma,x:p \vdash q \type \and \TermTwoT{\gamma}{t}{\nu}{\nu'}{p'}}{\TypeTwo{\gamma}{\ap {(q[\mu/x])} {t/y} \equiv \ap q {\ap \mu {t/y}/x}}{q[\mu/x][\nu/y]}{q[\mu/x][\nu'/y]}} \and
+\inferrule*{\TypeTwo{\gamma,x:p}{t}{q}{q'} \and \TermTwoT{\gamma}{s}{\nu}{\nu'}{p}}{\TypeTwo{\gamma}{t[\nu/x];\ap{q'}{s/x} \equiv \ap{q}{s/x};t[\nu'/x]}{q[\nu/x]}{q'[\nu'/x]}}
 %% subst: \id_\mu[\nu/x] = \id_{\mu[\nu/x]}
 %% subst: s[x/x] = s
 %% subst: (s;t)[\mu/x] = s[\mu/x];t[\mu/x]
@@ -459,8 +473,9 @@ We will use the following notation for this:
       {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
         \TypeTwo{\gamma, x : p}{t}{q}{q'}}
       {\TypeTwo{\gamma}{\ap{t}{s/x} :\equiv t[\nu/x];\ap{q'}{s/x}}{q[\mu/x]}{q'[\mu'/x]}}
-\\ 
-\ap{\id_q}{s/x} \equiv \ap{q}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
+\\
+\inferrule*{\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and \gamma, x : p \yields q \type}{\TypeTwo{\gamma}{\ap{\id_q}{s/x} \equiv \ap{q}{s/x}}{q[\mu/x]}{q[\mu'/x]}} \and 
+\inferrule*{\gamma, x : p \yields q \type \and \gamma, x : p \yields q' \type \and \TypeTwo{\gamma, x : p}{t}{q}{q'}}{\TypeTwo{\gamma}{\ap{t}{\id_{\mu}/x} \equiv t[\mu/x]}{q[\mu/x]}{q'[\mu/x]}}
 \end{mathpar}
 
 We sometimes write \ap{q}{s} for \ap{q(x)}{s/x}, eliding the variable
@@ -483,23 +498,23 @@ associated equations:
 \quad
 \inferrule*{{\gamma,x:p} \yields {\nu} : {q} \\
             \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}\\
-           } 
+           }
            {\TermTwoT{\gamma}{\ap \nu {s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu[\mu'/x]}}{q[\mu/x]}}
 
-\\           
-\id;s \equiv s \equiv s;\id \and
-(s;s');s'' \equiv s;(s';s'') \\ 
-\ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]} \and
-\ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y}) \\ 
-\ap x {s/x} \equiv s  \\ 
-\ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x} \quad
-\text{where } \gamma,y:p' \vdash \mu : p \text{ and } \gamma,x:p \vdash \nu : q\\
-\ap \nu {s/\_} \equiv \id_\nu \\
-t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\mu'/x]/y} \quad
- \text{where } \TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \text{ and } \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
-\ap{(\TrPlus{s}{\mu})}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}\quad 
-\text{where } \TypeTwo{\gamma,x:p}{s}{q}{q'} \text{ and }
-\TermTwoT{\gamma}{t}{\nu}{\nu'}{p} \text{ and } \gamma,x:p \vdash \mu : q'
+\\
+\inferrule*{\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}}{\TermTwoT{\gamma}{\id_\mu;s \equiv s \equiv s;\id_{\mu'}}{\mu}{\mu'}{p}} \and
+\inferrule*{\TermTwoT{\gamma}{s_1}{\mu_1}{\mu_2}{p} \\\\
+                \TermTwoT{\gamma}{s_2}{\mu_2}{\mu_3}{p} \\\\
+                \TermTwoT{\gamma}{s_3}{\mu_3}{\mu_4}{p}
+                }{\TermTwoT{\gamma}{(s_1;s_2);s_3 \equiv s_1;(s_2;s_3)}{\mu_1}{\mu_4}{p}} \\
+\inferrule*{{\gamma,x:p} \yields {\nu} : {q} \and}{\TermTwoT{\gamma}{\ap \nu {\id_{\mu}/x} \equiv \id_{\nu[\mu/x]}}{\nu[\mu/x]}{\nu[\mu/x]}{q[\mu/x]}} \and
+\inferrule*{\gamma, x : p \yields \nu : q \and \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and \TermTwoT{\gamma}{t}{\mu'}{\mu''}{p}}{\TermTwoT{\gamma}{\ap \nu {(s;t)/x} \equiv \ap \nu {s/x} ; (\ap {(\TrPlus{\ap{q}{s/x}}{y})} {\ap \nu {t/x}/y})}{\nu[\mu/x]}{\TrPlus{\ap{q}{(s;t)/x}}{\nu[\mu''/x]}}{q[\mu/x]}} \\
+\inferrule*{\TermTwoT{\gamma}{s}{\mu}{\mu'}{p}}{\TermTwoT{\gamma}{\ap x {s/x} \equiv s}{\mu}{\mu'}{p}} \\
+\inferrule*{\gamma,x:p \vdash \nu : q \and \gamma,y:p' \vdash \mu : p \and \TermTwoT{\gamma}{s}{\xi}{\xi'}{p'}}{\TermTwoT{\gamma}{\ap {(\nu[\mu/x])} {s/y} \equiv \ap \nu {\ap \mu {s/y}/x}}{\nu[\mu/x][\xi/y]}{\TrPlus{\ap{q[\mu/x]}{s/y}}{\nu[\mu/x][\xi'/y]}}{q[\mu/x][\xi/y]}} \\
+\inferrule*{\gamma \yields \nu : q \and \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}}{\TermTwoT{\gamma}{\ap \nu {s/\_} \equiv \id_\nu}{\nu}{\nu}{q}} \\
+\inferrule*{\TermTwoT{\gamma,x:p}{t}{\nu}{\nu'}{q} \\ \TermTwoT{\gamma}{s}{\mu}{\mu'}{p}}{\TermTwoT{\gamma}{t[\mu/x];\ap{\nu'}{s/x} \equiv \ap{\nu}{s/x};\ap{(\TrPlus{\ap{q}{s/x}}{y})}{t[\mu'/x]/y}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}} \\
+\inferrule*{\TypeTwo{\gamma,x:p}{s}{q}{q'} \and
+\TermTwoT{\gamma}{t}{\nu}{\nu'}{p} \and \gamma,x:p \vdash \mu : q'}{\TermTwoT{\gamma}{\ap{(\TrPlus{s}{\mu})}{t/x} \equiv \ApPlus{(s[\nu/x])}{\ap{\mu}{t/x}}}{\TrPlus{s}{\mu}[\nu/x]}{\TrPlus{\ap{q}{t/x}}{\TrPlus{s}{\mu}[\nu'/x]}}{q[\nu/x]}}
 \end{mathpar}
 
 Identity and composition are standard.  When $q$ does not depend on $x$,
@@ -539,13 +554,13 @@ composition $\ap t {s/x} : \nu[\mu/x] \tcell_{q[\mu/x]}
       {\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\
     \TermTwoT{\gamma, x : p}{t}{\nu}{\nu'}{q}}
              {\TermTwoT{\gamma}{\ap{t}{s/x} :\equiv t[\mu/x];\ap{\nu'}{s/x}}{\nu[\mu/x]}{\TrPlus{\ap{q}{s/x}}{\nu'[\mu'/x]}}{q[\mu/x]}}
-\\ 
+\\
 \ap{\id_\nu}{s/x} \equiv \ap{\nu}{s/x} \and \ap{t}{\id_{\mu}/x} \equiv t[\mu/x]
 \end{mathpar}
 for this.
 
-The final equation distributes the $\mathsf{ap}$ of a ``transport'' 
-$\TrPlus{s}{\mu}$ into two $\mathsf{ap}$'s, and type checks because 
+The final equation distributes the $\mathsf{ap}$ of a ``transport''
+$\TrPlus{s}{\mu}$ into two $\mathsf{ap}$'s, and type checks because
 $s[\nu/x];\ap{q'}{t/x} \equiv \ap{q}{t/x};s[\nu'/x]$.
 In more detail, we initially type the two sides of this equation as
 \begin{mathpar}
@@ -588,10 +603,10 @@ It will be useful to have the unit mode type in the base type theory:
 
 \begin{mathpar}
   \inferrule*{ } { \gamma \yields 1 \type } \and
-  
+
   \inferrule*{ }
              {\gamma \yields \mt : 1}
-  \and 
+  \and
   \mu \equiv \mt
   \and
 s \equiv \id_{()} \text{ for } \yields s : () \tcell_1 ()
@@ -605,10 +620,10 @@ as telescopes $\sigmacl{x}{p}{q}$ to distinguish them from the $\Sigma$
 types of an object language.  At the mode type and term level, the rules
 are standard:
 \begin{mathpar}
-  \inferrule*{ \gamma \yields p \type \\ 
+  \inferrule*{ \gamma \yields p \type \\
                \gamma,x:p \yields q \type }
              {\gamma \yields \sigmacl{x}{p}{q} \type} \\
-             
+
 \\
 \inferrule*{
   \gamma \yields \mu : p \and
@@ -635,15 +650,24 @@ morphisms:
   \inferrule*
   {\TypeTwo{\gamma}{s}{p}{p'} \\
     \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'}}
-  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}} 
+  {\TypeTwo{\gamma}{\sigmacl{x'}{s}{t}}{\sigmacl{x}{p}{q}}{\sigmacl{x'}{p'}{q'}}}
   \\
-    \sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}} \\
-  (\sigmacl{x'}{s}{t});(\sigmacl{x''}{s'}{t'}) \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')} \\
 
-  \ap{(\sigmacl{x'}{p}{q})}{s/(y:r)} \equiv
-  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z:(\sigmacl{y}{r}{p})}}
+  \inferrule*{ \gamma \yields p \type \\
+               \gamma,x:p \yields q \type }{\TypeTwo{\gamma}{\sigmacl{x'}{\id_p}{\id_q} \equiv \id_{\sigmacl{x'}{p}{q}}}{\sigmacl{x}{p}{q}}{\sigmacl{x}{p}{q}}} \and
+\inferrule*{\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'} \\\\ \TypeTwo{\gamma}{s'}{p'}{p''} \\
+    \TypeTwo{\gamma,x'':p''}{t'}{q'[\TrPlus{s'}{x''}/x']}{q''}}{\TypeTwo{\gamma}{  \sigmacl{x'}{s}{t};\sigmacl{x''}{s'}{t'} \equiv \sigmacl{x''}{(s;s')}{(t[\TrPlus{s'}{x''}/x'];t')}}{\sigmacl{x}{p}{q}}{\sigmacl{x''}{p''}{q''}}}
+
+\inferrule*{\gamma, y:r, \yields p \type \\
+               \gamma, y:r, x:p \yields q \type \\
+               \TermTwoT{\gamma}{s}{\mu}{\mu'}{r}
+               }{\TypeTwo{\gamma}
+               {\ap{\sigmacl{x'}{p}{q}}{s/y} \equiv
+  \sigmacl{x'}{\ap{p}{s/y}}{\ap{({q[\fst z/x,\snd z/y]})}{\extend{s}{x'}/z}}}{\sigmacl{x'}{p}{q}[\mu/y]}{\sigmacl{x'}{p}{q}[\mu'/y]}}
   \\
-  \TrPlus{(\sigmacl{x}{s}{t})}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu})
+\inferrule*{\TypeTwo{\gamma}{s}{p}{p'} \\
+    \TypeTwo{\gamma,x':p'}{t}{q[\TrPlus{s}{x'}/x]}{q'} \and \gamma \yields \mu : \sigmacl{x'}{p'}{q'}}{\gamma \yields \TrPlus{\sigmacl{x}{s}{t}}{\mu} \equiv (\TrPlus{s}{\fst \mu},\TrPlus{(t[\fst \mu/x])}{\snd \mu}) : \sigmacl{x}{p}{q}}
 \end{mathpar}
 The first three equations say that this interacts with identity,
 compositions, and whiskering: The $\Sigma$ of two identities is the
@@ -669,12 +693,12 @@ component) are given by a whiskering: if $t : \nu \tcell_{q[\mu/x]}
       {\TermTwoT{\gamma}{\extend{s}{\nu'}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu',\nu')}{\sigmacl{x}{p}{q}}}\\
 \ap {\fst} {\extend{s}{\nu'}} \equiv s \and
 \ap {\snd} {\extend{s}{\nu'}} \equiv \id_{\TrPlus{\ap{q}{s/x}}{\nu'}}  \and
-s \equiv (\ap{\fst}{s}, \ap{\snd}{s}) %% \quad \text{where } \TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}
-\\      
+\inferrule*{\TermTwoT{\gamma}{s}{\mu}{\mu'}{\sigmacl{x}{p}{q}}}{\TermTwoT{\gamma}{s \equiv (\ap{\fst}{s}, \ap{\snd}{s})}{\mu}{\mu'}{\sigmacl{x}{p}{q}}}
+\\
 {\extend{\id_\mu}{\nu'}} \equiv \id_{(\mu,\nu')} \and
 {\extend{(s;s')}{\nu''}} \equiv  \extend{s}{\TrPlus{\ap{q}{s'/x}}{\nu''}};\extend{s'}{\nu''}   \\
-\extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
-(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''} \qquad \text{where }\TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]}
+\inferrule*{\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \and \TermTwoT{\gamma}{t}{\nu'}{\nu''}{q[\mu'/x]}}{\TermTwoT{\gamma}{\extend{s}{\nu'} ; (\ap{(\mu',y)}{t/y}) \equiv
+(\ap{(\mu,\TrPlus{(\ap{q}{s})}{y})}{t/y}); \extend{s}{\nu''}}{(\mu,\TrPlus{\ap{q}{s/x}}{\nu'})}{(\mu', \nu'')}{?}}
 \end{mathpar}
 
 The equations make use of the following definable abbreviations for
@@ -699,14 +723,14 @@ modes.  The next is an $\eta$ (the right-hand side expands to
 \ap{(\fst{\mu},y)}{\ap{(\snd z)}{s/z}/y};\extend{\ap{(\fst{z})}{s/z}}{\snd{\mu'}}).
 The next two equations give functoriality on identity and composition of
 mode term 2-cells in $p$. The final naturality equation
-reconciles the two possible ways of defining $(s,t)$.  
+reconciles the two possible ways of defining $(s,t)$.
 
 The derivable general pairing 2-cell interacts with identity and
-composition: we have $(\id_\mu,\id_{\nu}) \equiv \id_{(\mu,\nu)}$ 
-and, for mode term 2-cells 
-\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} and 
-\TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} and 
-\TermTwoT{\gamma}{s'}{\mu'}{\mu''}{p} and 
+composition: we have $(\id_\mu,\id_{\nu}) \equiv \id_{(\mu,\nu)}$
+and, for mode term 2-cells
+\TermTwoT{\gamma}{s}{\mu}{\mu'}{p} and
+\TermTwoT{\gamma}{t}{\nu}{\TrPlus{\ap{q}{s}}{\nu'}}{q[\mu/x]} and
+\TermTwoT{\gamma}{s'}{\mu'}{\mu''}{p} and
 \TermTwoT{\gamma}{t'}{\nu'}{\TrPlus{\ap{q}{s'}}{\nu''}}{q[\mu'/x]}
 we have
 \begin{align*}
@@ -714,7 +738,7 @@ we have
 \end{align*}
 This follows by
 \begin{align*}
-(s, t);(s', t') 
+(s, t);(s', t')
 &\equiv \ap{(\mu,y)}{t/y};\extend{s}{\nu'};\ap{(\mu',y)}{t'/y};\extend{s'}{\nu''} \\
 &\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, \TrPlus{\ap{q}{s}}{y})}{t'/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
 &\equiv \ap{(\mu,y)}{t/y};\ap{(\mu, y)}{\ApPlus{\ap{q}{s}}{t'}/y};\extend{s}{\TrPlus{\ap{q}{s'}}{\nu''}};\extend{s'}{\nu''} \\
@@ -730,7 +754,7 @@ that acted on the middle of the context:
 \[
 \inferrule*{{\gamma,x:p,\gamma'} \vdash {q} \type \\
             \TermTwoT{\gamma}{t}{\mu}{\mu'}{p}\\
-           } 
+           }
            {\TypeTwo{\gamma,\vec{y}:\gamma'[\mu'/x]}{\ap {q} {t/x}}{q[\mu/x,\TrPlus{\ap{\gamma'}{s}}{\vec{y}}/y]}{q[\mu'/x]}}
 \]
 (and similarly for terms) then $(s,\mathsf{id})$ would be a special
@@ -803,7 +827,7 @@ described below.  For this section, we will say ``mode context'', ``mode
 type'', etc. for the contexts, types, etc. of the base type theory, and
 ``context'', ``dependent type'', etc. for the constructions in the base
 type theory that correspond to contexts, dependent types, etc. in an
-encoded language.  
+encoded language.
 
 \subsection{Adjoint Mode Terms}
 
@@ -969,7 +993,7 @@ terminal).  Since the semantics of the mode theory for comprehension in
 the ``canonical semantics'' will be a fibration with Ehrhard
 comprehension, we expect to be able to interpret the type theory for
 this mode theory in any comprehension category with unit types (by
-taking its full completion if it is not already full).  
+taking its full completion if it is not already full).
 
 The above analogy can be summarized as:
 
@@ -996,7 +1020,7 @@ The actual signature in the base type theory for the above situation is quite si
   constants:
   \begin{mathpar}
     p \type \and \alpha : p \yields \El{p}{\alpha} \type \and \alpha : p \yields \One_\alpha : \El{p}{\alpha}
-    \\ 
+    \\
    w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} \yields \sdot\, w : p \and
     \yields \sempty : p
   \end{mathpar}
@@ -1008,7 +1032,7 @@ The actual signature in the base type theory for the above situation is quite si
 w : \sigmacl{\alpha}{p}{\El{p}{\alpha}} &\yields \sdot\, w : p \\
 w : 1 &\yields \sempty : p
 \end{align*}
-respectively. 
+respectively.
 \end{definition}
 
 We will usually write $\sdot(\alpha, x)$ infix as $\alpha.x$, and abbreviate $\sempty$ as $\emptyset$.
@@ -1045,7 +1069,7 @@ $\mu : \El{p}{\alpha}$ and $\nu : \El{p}{\beta}$:
   {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\pi^\alpha_x}{\alpha.x}{\alpha}{p}}
   \and
   \pi^\alpha_x :\equiv \ap \fst {\varepsilon^\sdot_{(\alpha, x)}} \\
-  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}} 
+  {\TermTwoT{\alpha:p,x:\El{p}{\alpha}}{\var{x}}{\One_{\alpha.x}}{\TrPlus{\ApEl{p}{\pi^\alpha_x}}{x}}{\El{p}{\alpha.x}}}
     \and
     \var{x} :\equiv \ap \snd {\varepsilon^\sdot_{(\alpha, x)}}
   \end{mathpar}
@@ -1067,7 +1091,7 @@ $\mu : \El{p}{\alpha}$ and $\nu : \El{p}{\beta}$:
 
   \item For $s : \beta \tcell_p \alpha$, we write $\ApOne{s} :
     \One_{\beta} \tcell_{\El p \beta} \TrPlus{s}{\One_\alpha}$ as a
-    short-hand for $\ap{\One_z}{s/z}$.  
+    short-hand for $\ap{\One_z}{s/z}$.
   \end{itemize}
 \end{definition}
 
@@ -1088,7 +1112,7 @@ For $p$ a comprehension object, $\emptyset : p$ is terminal.
 \begin{proof}
 We always have a map $\eta^\sempty_\alpha : \alpha \tcell_p \emptyset$. To show it is unique, note that for any $s : \alpha \tcell_p \emptyset$,
 \begin{align*}
-s 
+s
 &\equiv s ; \eta^\emptyset_\emptyset \\
 &\equiv \eta^\emptyset_\alpha ; \ApPlus{\emptyset}{\ApCirc{\emptyset}{s}} \\
 &\equiv \eta^\emptyset_\alpha ; \ApPlus{\emptyset}{\id_{()}} \\
@@ -1103,11 +1127,11 @@ Some additional equations that will be useful below:
   \drlnote{Some of the $s$'s were $\alpha \tcell \beta$ instead of
     $\beta \tcell \alpha$ (or possibly inconsistent) here, so I tried to
     flip them all to $\beta \tcell \alpha$; please proofread.}
-    
+
   The following equations hold for any comprehension object:
   \begin{itemize}
   \item
-    Fusion for dot: 
+    Fusion for dot:
     $(s \bdot m);(s' \bdot m') \equiv ((s;s') \bdot (m;\ApPlus{\ApEl{p}{s}} {m'}))$
 
   \item
@@ -1123,12 +1147,12 @@ Some additional equations that will be useful below:
   \item Naturality of $\var{}$: for ${m} : {\nu} \tcell_{\El{p}{\beta}}
     {\TrPlus{\ApEl{p}{s}}{\mu}}$, we have
     $\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} \equiv \var{\nu};\ApPlus{\ApEl{p}{\pi^\beta_\nu}}{m} $
-    
+
   \item The $\eta$ principle for pairing: if ${t} : {\beta} \tcell_p
-    {\alpha.\mu}$ then 
+    {\alpha.\mu}$ then
     $t \equiv \eta_\beta;((t;\pi_\mu^\alpha) \bdot (\ApOne{t}; \ApPlus{\ApEl{p}{t}}{\var{\mu}}))$
 
-%  \item Naturality of $\eta^\tdot_\beta$: 
+%  \item Naturality of $\eta^\tdot_\beta$:
 %    $s;\eta^\tdot_\alpha \equiv \eta^\tdot_{\beta} ; (s \bdot \ApOne{s})$
   \end{itemize}
 \end{lemma}
@@ -1156,8 +1180,8 @@ follows by fusing the ap's and the corresponding fusion rule for morphisms in te
   \end{align}
   by
   \begin{align*}
-  (s \bdot m); \pi^\alpha_\mu 
-  &\equiv \ap{\sdot}{(s, m)} ; \ap \fst {\varepsilon^\sdot_{(\alpha, \mu)}} \\  
+  (s \bdot m); \pi^\alpha_\mu
+  &\equiv \ap{\sdot}{(s, m)} ; \ap \fst {\varepsilon^\sdot_{(\alpha, \mu)}} \\
   &\equiv \ap{\fst}{\ap{(z,\One_z)}{\ap{\sdot}{(s, m)}}} ; \ap \fst {\varepsilon^\sdot_{(\alpha, \mu)}} \\
   &\equiv \ap{\fst}{\ap{(z,\One_z)}{\ap{\sdot}{(s, m)}} ; \varepsilon^\sdot_{(\alpha, \mu)}}  \\
   &\equiv \ap{\fst}{\varepsilon^\sdot_{(\beta, \nu)}; (s, m) } \\
@@ -1169,7 +1193,7 @@ The main step is naturality of $\varepsilon^\sdot$, but because the adjunction
 is defined on the whole mode $\Sigma$ type \sigmacl{\alpha}{p}{\El p
   \alpha}, we need to move the first projection to the outside of the
 composition.
-  
+
 \item Beta reduction for first projection:
   \begin{align}
 \label{beta-pi}
@@ -1189,13 +1213,13 @@ follows from naturality and the second triangle equation by:
 \end{align}
 is derivable by:
 \begin{align*}
-\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}} 
+\ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{(s \bdot m)}}{\var{\mu}}
 &\equiv \ApOne{(s \bdot m)};\ApPlus{\ApEl{p}{\ap{\sdot}{(s, m)}}}{\ap \snd {\varepsilon^\sdot_{(\alpha, \mu)}}} \\
 &\equiv \ap \snd {((s \bdot m), \ApOne{(s \bdot m)});\varepsilon^\sdot_{(\alpha, \mu)}} \\
 &\equiv \ap \snd {\ap{\sdot(y,\One_y)}{(s, m)};\varepsilon^\sdot_{(\alpha, \mu)}} \\
 &\equiv \ap \snd {\varepsilon^\sdot_{(\beta, \nu)};(s, m)} \\
 &\equiv \ap \snd {\varepsilon^\sdot_{(\beta, \nu)}}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{\ap \snd (s, m)}  \\
-&\equiv \var{\nu}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{m} 
+&\equiv \var{\nu}; \ApPlus{\ApEl{p}{\pi^\beta_{\nu}}}{m}
 \end{align*}
 
 This says that ``substituting'' into a ``variable'' is second projection
@@ -1227,7 +1251,7 @@ This is the usual $\eta$ principle for ``subsitutions''.
 \end{proof}
 
 We sometimes want to switch between terms in the fiber and sections of projection:
-\begin{lemma}\label{sigma:total-to-fiber0} 
+\begin{lemma}\label{sigma:total-to-fiber0}
 For any comprehension object $p$, mode term 2-cells $s : \alpha \tcell_p
 \alpha.x$ such that $s;\pi^\alpha_x \equiv \id_\alpha$ correspond
 bijectively to 2-cells $\One_\alpha \tcell_{\El{p}{\alpha}} x$.
@@ -1349,7 +1373,7 @@ A comprehension object that supports $\Sigma$s satisfies the following equations
 \end{align}
 \end{lemma}
 \begin{proof}
-The first follows from the definition of $\pair{}$ and Equation~\ref{beta-pi}. The second is immediate from the first, precomposing with $\tsplit{}$. 
+The first follows from the definition of $\pair{}$ and Equation~\ref{beta-pi}. The second is immediate from the first, precomposing with $\tsplit{}$.
 \end{proof}
 
 \subsubsection[\dots with $\Pi$]{Comprehension Object with $\Pi$}
@@ -1360,12 +1384,12 @@ the top type theory to ask for a right adjoint to an existing mode
 term.  For $\Pi$ types, the term in questions is $\pi^\alpha_x$
 (``forall is right adjoint to weakening''), but because of the way we
 are representing terms, we will need that the $\One$ types are (pseudo)
-stable under ``weakening'' in the mode theory: 
+stable under ``weakening'' in the mode theory:
 
 \begin{definition}\label{def:supports-pis}
   A comprehension object \emph{supports $\Pi$s} if
   the unit types are pseudo-stable under weakening, i.e.
-  if 
+  if
   $\ApOne{\pi^\alpha_x} :
 \One_{\alpha.x} \tcell_{\El{p}{\alpha.x}} \TrPlus{\ApEl p {\pi^\alpha_x}}{\One_\alpha}$ is an
 isomorphism.
@@ -1395,7 +1419,7 @@ them.  First, we have
 
 \begin{definition}\label{def:morphism-comprehension-object}
 For two comprehension objects $p$ and $q$,
-a \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \sdot^p, \sempty^p)$ to $(q, \One^q, \sdot^q, \sempty^q)$ consists of 
+a \emph{morphism of comprehension objects} $f$ from $(p, \One^p, \sdot^p, \sempty^p)$ to $(q, \One^q, \sdot^q, \sempty^q)$ consists of
 \begin{align*}
 \alpha : p &\yields f(\alpha) : q \\
 \alpha : p, x : \El{p}{\alpha} &\yields f_1(x) : \El{q}{f(\alpha)} \\
@@ -1470,7 +1494,7 @@ A comonad is \emph{idempotent} if any of the following equivalent equations hold
 \begin{align}
 \fcounit{\mu(x)} &\equiv \ap{\mu}{\fcounit{x}} \\
 \ap{\mu}{\fcounit{x}} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} \\
-\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))} 
+\fcounit{\mu(x)} ; \fcomult{x} &\equiv \id_{\mu(\mu(x))}
 \end{align}
 \end{definition}
 
@@ -1480,7 +1504,7 @@ An endomorphism of comprehension objects $f$ \emph{supports spatial type
 left and right adjoint types.
 \end{definition}
 
-%We would also like to talk about $\flat$-types for a non-idempotent comonad. 
+%We would also like to talk about $\flat$-types for a non-idempotent comonad.
 %\begin{definition}
 %A \mvrnote{copointed endofunctor I suppose} \emph{supports $\flat$-types} if there are constants
 %\begin{align*}
@@ -1583,7 +1607,7 @@ type theories, and in the next section we will prove that the instances
 of the top type theory with these mode theories support the familiar
 rules for these examples.
 
-The top type theory consists of four judgements: 
+The top type theory consists of four judgements:
 \begin{itemize}
 \item $\yields_\gamma \Gamma \CTX$ where $\yields \gamma \ctx$.
 \item $\Gamma \yields_p A \TYPE$ where $\gamma \yields p \type$.
@@ -1596,7 +1620,7 @@ fibrational perspective, we say that a judgement is ``over'' a
 corresponding entity from the base type theory: a top context $\Gamma$
 is over a mode context $\gamma$, a top type $A$ is over a mode type $p$,
 and a top term $M$ is over a mode term $\mu$.  We also say that a type $A$
-``has mode $p$'', and that a term $M$ ``has mode $\mu$''. 
+``has mode $p$'', and that a term $M$ ``has mode $\mu$''.
 
 We treat the well-formedness of the mode theory entities as a
 presupposition of the top judgements, but sometimes write ``(over
@@ -1619,11 +1643,11 @@ used to construct something in the comonad.
 
 \subsection{Top Contexts}
 
-Top contexts are as usual, over the corresponding contexts of the base.  
+Top contexts are as usual, over the corresponding contexts of the base.
 
 \begin{mathpar}
   \inferrule*[Left = ctx-form]{ }
-             {\yields_{\cdot} \cdot \CTX  } \and 
+             {\yields_{\cdot} \cdot \CTX  } \and
 
   \inferrule*[Left = ctx-form]{
     \yields_\gamma \Gamma \CTX \quad \text{over } (\yields \gamma \ctx) \\\\
@@ -1633,12 +1657,12 @@ Top contexts are as usual, over the corresponding contexts of the base.
 
 We adopt a convention that the same variable names are used in the top
 context and base context (which must, by these rules have the same
-number of variables).  
+number of variables).
 
 \subsection{Top Structural Rules}
 \label{sec:top-syntax-structural}
 
-There are two derivable structural rules: 
+There are two derivable \mvrnote{Are they?} structural rules:
 \begin{mathpar}
   \inferrule*[Left = var]{
     % \yields \Gamma, x : A, \Gamma' \CTX_{\gamma, x : p, \gamma'}
@@ -1646,14 +1670,17 @@ There are two derivable structural rules:
   {\Gamma, x : A, \Gamma' \yields_x x : A \quad (\text{over } \gamma,x:p,\gamma' \yields x : p)} \and
 
  \inferrule*[Left = rewrite]{
-   \Gamma \yields_\mu M : A 
+   \Gamma \yields_\mu M : A
    \and \TermTwoT{\gamma}{s}{\nu}{\mu}{p}
   }
   {\Gamma \yields_\nu \rewrite{s}{M} : A} \\ \\
-  
+
   \rewrite{\id_{\mu}}{M} \equiv M \and
   \rewrite{(s;t)}{M} \equiv \rewrite{s}{\rewrite{t}{M}} \and
-  \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}}
+  \inferrule*{\Gamma, x : B \yields_{\mu'} M : A
+   \and \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\\\
+   \Gamma \yields_{\nu'} N : B
+   \and \TermTwoT{\gamma}{t}{\nu}{\nu'}{q}}{\Gamma \yields_{\mu[\nu/x]} \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}} : A[\rewrite{t}{N}/x]}
 \end{mathpar}
 
 The first is the familiar variable rule, which is over the corresponding
@@ -1709,7 +1736,7 @@ their own, model the unit types of a particular encoded language.  This
 is because the unit type of an encoded language will have mode
 $\mathsf{p}$ for some constant, or e.g. for a comprehension object
 representing dependent type theory $\El{\mathsf p}{\alpha}$, and not
-mode $1$.  
+mode $1$.
 
 \subsection{Top Telescope Types}
 
@@ -1717,7 +1744,7 @@ Similarly, we introduce a $\Sigma$ type to the top type theory, over the
 corresponding rules for mode $\Sigma$ types.  But as in the base type
 theory, we refer to them as \emph{telescope types} to emphasize that
 they play a structural role, rather than, on their own, represent the
-$\Sigma$ types of an encoded language.  
+$\Sigma$ types of an encoded language.
 
 \begin{mathpar}
   \inferrule*[Left=$()$-form]{ \Gamma \yields_p A \TYPE \\
@@ -1732,14 +1759,14 @@ $\Sigma$ types of an encoded language.
                \Gamma \yields_\nu N : B[M/x]
              }
              { \Gamma \yields_{(\mu,\nu)} (M,N) : \telety{x}{A}{B}}
-  \\             
+  \\
   \inferrule*[Left=$()$-fst]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
-             { \Gamma \yields_{\fst \mu} \fst{M} : A} 
+             { \Gamma \yields_{\fst \mu} \fst{M} : A}
   \and
   \inferrule*[Left=$()$-snd]{ \Gamma \yields_{\mu} M : \telety{x}{A}{B}}
-             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]} 
+             { \Gamma \yields_{\snd \mu} \snd{M} : B[\fst M/x]}
   \\
-             
+
     \fst{(M,N)} \equiv M \and
     \snd{(M,N)} \equiv N \and
     P \equiv (\fst P, \snd P)
@@ -1772,19 +1799,19 @@ The rules are:
   \inferrule*[Left = F-form]{
     %% \yields_\gamma \Gamma \CTX \quad (\text{over } \yields \gamma \ctx)\\\\
     \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type) \\\\
-    \gamma, x:p \yields \mu : q 
+    \gamma, x:p \yields \mu : q
   }
   {\Gamma \yields_q \F{x.\mu}{A} \TYPE \quad (\text{over } \gamma \yields q \type) } \and
   \inferrule*[Left = F-fib]{
     \Gamma \yields_p A \ISFIB
   }
   {\Gamma \yields_q \F{x.\mu}{A} \ISFIB } \\
-  
+
   \inferrule*[Left = F-intro]{
     \Gamma \yields_{\nu} M : A
     \quad (\text{over } \gamma \yields {\nu} : p)
-    %% \and \gamma \yields \nu : q 
-    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields \nu : q
+    %% \and \gamma \yields \mu[\theta] : q
     %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
   }
   {\Gamma \yields_{\mu[\nu/x]} \FI{M} : \F{x.\mu}{A} \quad (\text{over } \gamma \yields \mu[\nu/x] : q)} \\
@@ -1795,10 +1822,17 @@ The rules are:
     \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
     \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \FE{M}{x}{N} : C[M/y]  \quad (\text{over }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
-  \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
+  
+  \inferrule*[Left = F-beta]{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and \Gamma, y : \F{x.\mu}{A} \yields_{r} C \ISFIB \\\\
+    \Gamma \yields_{\nu} M : A \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]}
+  {\Gamma \yields_{\nu'[\mu[\nu/x]/y]} \FE{\FI{M}}{x}{N} \equiv N[M/x] : C[\FI{M}/y]} \\  
+  
+%  \FE{\FI{M}}{x}{N} \equiv N[M/x] %\and
 %  \text{(optionally:) }
 %  \FE{M}{x}{N[\FI{x}/z]} \equiv N[M/z]
-  \\ 
+  \\
 
   \inferrule*[Left = F-Elim]{
     \gamma,y:q \yields r \type \\\\
@@ -1806,12 +1840,23 @@ The rules are:
     \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
     \quad (\text{over } \gamma, x:p \yields r [\mu / y] \type )}
   {\Gamma \yields_{r[\nu/y]} \FE{M}{x}{C} \TYPE \quad (\text{over }  \gamma \yields {r[\nu/y]} \type)} \\
-  \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
+  
+  \inferrule*[Left = F-Beta]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : A \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE}
+  {\Gamma \yields_{r[\mu[\nu/x]/y]} \FE{\FI{M}}{x}{C} \equiv C[M/x] \TYPE} \\  
+%  \FE{\FI{M}}{x}{C} \equiv C[M/x] %\and
 %  \text{(optionally:) }
 %  \FE{M}{x}{C[\FI{x}/z]} \equiv C[M/z]
   \\
-  
-  (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}}
+
+  \inferrule*{
+    \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \and \Gamma, y : \F{x.\mu}{A} \yields_{r} C \ISFIB \\\\
+    \Gamma \yields_{\nu} M : \F{x.\mu}{A} \\\\
+    \Gamma, x:A \yields_{\nu''[\mu / y]} N : C [\FI{x}/y] \\\\
+    \TermTwoT{\gamma, y : q}{t}{\nu'}{\nu''}{r}}
+  {\Gamma \yields_{\nu'[\nu/y]}  (\FE{M}{x}{\rewrite{t[\mu/y]}{N}}) \equiv \rewrite{t[\nu/y]}{\FE{M}{x}{N}} : C[M/y]}
 \end{mathpar}
 
 $\mathsf{F}$ types are a positive type, and can be thought of as a
@@ -1819,7 +1864,7 @@ datatype with one constructor, the introduction rule $\FI{M}$.  The main
 idea is that $\Gamma, x:A \vdash_{\mu(x)} \FI{x} : \F{x.\mu}{A}$;
 i.e. to introduce $\F{x.\mu}{A}$, the mode term must be $\mu$.  The full
 form of the introduction rule builds in a substitution for $x$ to make
-substitution admissible.  The elimination rule patterm-matches on a term
+substitution admissible.  The elimination rule pattern-matches on a term
 of $\mathsf{F}$ type.  In sequent calculus style, it characterizes maps
 out of $\mathsf{F}$ types:
 \begin{mathpar}
@@ -1827,7 +1872,7 @@ out of $\mathsf{F}$ types:
     \Gamma, y : \F{x.\mu}{A} \yields_{r} C \TYPE \quad (\text{over } \gamma, y : q \yields r \type) \\\\
     \Gamma, y : \F{x.\mu}{A}, x:A \yields_{\nu' [\mu / y]} N : C [\FI{x}/y]
     \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
-  {\Gamma, y : \F{x.\mu}{A} \yields_{\nu'} \FE{y}{x}{N} : C  \quad (\text{over }  \gamma,y:q \yields {\nu'} : r)} 
+  {\Gamma, y : \F{x.\mu}{A} \yields_{\nu'} \FE{y}{x}{N} : C  \quad (\text{over }  \gamma,y:q \yields {\nu'} : r)}
 \end{mathpar}
 This says that an assumption of $\F{x.\mu}{A}$ can be replaced by an
 assumption of $A$, but in the mode term we replace $y$ by $\mu$ to
@@ -1845,7 +1890,7 @@ will follow from the equalities for $\rewrite{t}{-}$ in
 Section~\ref{sec:top-syntax-structural} and the $\eta$ rules for the
 types.  Because we do not have judgemental $\eta$ for $\mathsf{F}$
 types, we assert the necessary interaction in the final equation in the
-figure.  
+figure.
 
 \subsection{Right Adjoint Modalities}
 
@@ -1874,7 +1919,7 @@ modalities and dependent function types
   {\Gamma \yields_{\nu} \UI {x}{M} : \U{c.\mu}{x:A}{B}
     \quad (\text{over } \gamma \yields \nu : r)
   } \\
-  
+
   \inferrule*[Left = U-elim]{
     \Gamma \yields_{\nu_1} N_1 : \U{c.\mu}{x:A}{B} \quad (\text{over } \gamma \yields \nu_1 : r) \\\\
     \Gamma \yields_{\nu_2} N_2 : A \quad (\text{over } \gamma \yields \nu_2 : p)
@@ -1882,8 +1927,14 @@ modalities and dependent function types
     \Gamma \yields_{\mu[\nu_2/x,\nu_1/c]} \UE{N_1}{N_2} : B[N_2/x] \quad (\text{over } \gamma \yields \mu[\nu_2/x,\nu_1/c] : q)
   } \\
 
-  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and 
-  \UI{x}{\UE{N}{x}} \equiv N
+  \inferrule*[Left = U-beta]{\Gamma,x:A \yields_{\mu[\nu_1/c]} M : B \\\\
+                  \Gamma \yields_{\nu_2} N : A
+  }{\Gamma \yields_{mu[\nu_2/x,\nu_1/c]} \UE{(\UI{x}{M})}{N} \equiv M[N/x] : B[N/x]}
+
+  \inferrule*[Left = U-eta]{\Gamma \yields_\nu N : \U{c.\mu}{x:A}{B}}{\Gamma \yields_\nu \UI{x}{\UE{N}{x}} \equiv N : \U{c.\mu}{x:A}{B}}
+
+%  \UE{(\UI{x}{M})}{N} \equiv M[N/x] \and
+%  \UI{x}{\UE{N}{x}} \equiv N
 \end{mathpar}
 
 The type $\U{c.\mu}{x:A}{B}$ can be thought of as a modal verson of $\Pi
@@ -1905,7 +1956,7 @@ $\eta$ equality rules.
 \subsection{Strict Modalities}
 \label{sec:strict-modalities}
 
-\mvrnote{Text needs updating:}
+\mvrnote{Text needs updating to refer to general E types}
 
 The term $\rewrite{s}{a}$ (Section~\ref{sec:top-syntax-structural})
 ``transports'' a term $\Gamma \vdash_\mu a : A$ along a mode term 2-cell
@@ -1937,7 +1988,7 @@ the elimination:
            {\Gamma \vdash_{\mu[\nu/z]} (\StE{s}{M}{x}{N[\StI{s}{x}/z]}) \equiv N[M/z] : C[\St{s}{A}/z]}
 \]
 (along with a corresponding judgemental $\eta$ for the large elimination
-rule).  
+rule).
 
 In addition to this, we add four judgemental equalities
 ((\ref{eq:stype-id}) to \ref{eq:stype-pair}) of types (in the right-hand
@@ -1993,31 +2044,31 @@ so we have
 $\Gamma \vdash_{\sigmacl{x}{p}{q}} \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}}$
 and
 $\Gamma \vdash_{p} \St{s}{A'} \TYPE$
-and 
+and
 $\Gamma,x':p' \vdash_{q[\TrPlus{s}{x'}/x]} \St{t}{B'} \TYPE$, so
 $\Gamma,x:\St{s}{A'} \vdash_{q} \StE{s}{x}{x'}{\St{t}{B'}} \TYPE$, so
 $\Gamma \vdash_{\sigmacl{x}{p}{q}} \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}$.
 The
 left-hand column says that, assuming $\Gamma
-\vdash_\mu M : A'$ and $\Gamma \vdash_\nu N : B'[M/x']$, 
+\vdash_\mu M : A'$ and $\Gamma \vdash_\nu N : B'[M/x']$,
 the term
 $\Gamma \vdash_{\TrPlus{\sigmacl{x'}{s}{t}}{(\mu,\nu)}} \StI{\sigmacl{x'}{s}{t}}{(M, N)} : \St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}}$ is equal to
 is equal to the term
 $\Gamma \vdash_{(\TrPlus{s}{\mu},\TrPlus{t[\mu/x']}{\nu})} (\StI{s}{M}, \StI{t[\mu/x]}{N}) : \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}$,
 using the equation between types and the equation for a $\Sigma$ mode
-type morphism on mode terms.  
+type morphism on mode terms.
 
 \begin{mathpar}
   \inferrule*[Left = E-form]{
     \Gamma \yields_p A \TYPE \quad (\text{over } \gamma \yields p \type) \\\\
-    \gamma, x:p \yields \mu : q 
+    \gamma, x:p \yields \mu : q
   }
   {\Gamma \yields_q \E{x.\mu}{A} \TYPE \quad (\text{over } \gamma \yields q \type) } \\
   \inferrule*[Left = E-intro]{
     \Gamma \yields_{\nu} M : A
     \quad (\text{over } \gamma \yields {\nu} : p)
-    %% \and \gamma \yields \nu : q 
-    %% \and \gamma \yields \mu[\theta] : q 
+    %% \and \gamma \yields \nu : q
+    %% \and \gamma \yields \mu[\theta] : q
     %% \and \gamma \yields (\nu \Rightarrow \mu[\theta]) : q
   }
   {\Gamma \yields_{\mu[\nu/x]} \EI{M} : \E{x.\mu}{A} \quad (\text{over } \gamma \yields \mu[\nu/x] : q)} \\
@@ -2028,26 +2079,43 @@ type morphism on mode terms.
     \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\EI{x}/y]
     \quad (\text{over } \gamma, x:p \yields \nu' [\mu / y] : r [\mu / y] )}
   {\Gamma \yields_{\nu'[\nu/y]} \EE{M}{x}{N} : C[M/y]  \quad (\text{over }  \gamma \yields {\nu'[\nu/y]} : r[\nu/y])} \\
-  \EEs{\mu}{\EI{M}}{x}{N} \equiv N[M/x] \and
-  (\EEs{\mu}{M}{x}{N[\EI{x}/z]}) \equiv N[M/z]
-  \\
-  
+  \inferrule*[Left = E-beta]{
+    \Gamma, y : \E{x.\mu}{A} \yields_{r} C \TYPE \\\\
+    \Gamma \yields_{\nu} M : A \\\\
+    \Gamma, x:A \yields_{\nu' [\mu / y]} N : C [\EI{x}/y]}
+  {\Gamma \yields_{\nu'[\mu[\nu/x]/y]} \EE{\EI{M}}{x}{N} \equiv N[M/x] : C[\EI{M}/y]} \\ 
+  \inferrule*[Left = E-eta]{
+  \Gamma, y : \E{x.\mu}{A} \yields_{r} C \TYPE \\\\
+  \Gamma \yields_{\nu} M : \E{x.\mu}{A} \\\\ \Gamma, y : \E{x.\mu}{A} \yields_{\nu'} N : C}{\Gamma \yields_{\nu'[\nu/y]} (\EEs{\mu}{M}{x}{N[\EI{x}/y]}) \equiv N[M/y] : C[M/z]} \\
+%  \EEs{\mu}{\EI{M}}{x}{N} \equiv N[M/x] \and
+%  (\EEs{\mu}{M}{x}{N[\EI{x}/z]}) \equiv N[M/z]
+%  \\
+
 \inferrule*[Left = E-Elim]{
     \gamma,y:q \yields r \type \\\\
     \Gamma \yields_{\nu} M : \E{x.\mu}{A} \quad (\text{over } \gamma \yields \nu : q) \\\\
     \Gamma, x:A \yields_{r [\mu / y]} C \TYPE
     \quad (\text{over } \gamma, x:p \yields r [\mu / y] \type )}
   {\Gamma \yields_{r[\nu/y]} \EEs{\mu}{M}{x}{C} \TYPE \quad (\text{over }  \gamma \yields {r[\nu/y]} \type)} \\
-  \EEs{\mu}{\EI{M}}{x}{C} \equiv C[M/x] \and
-  (\EEs{\mu}{M}{x}{C[\EI{x}/z]}) \equiv C[M/z]
+    \inferrule*[Left = E-Beta]{
+    \gamma,y:q \yields r \type \\\\
+    \Gamma \yields_{\nu} M : A \\\\
+    \Gamma, x:A \yields_{r [\mu / y]} C \TYPE}
+  {\Gamma \yields_{r[\mu[\nu/x]/y]} \EE{\EI{M}}{x}{C} \equiv C[M/x] \TYPE} \\
+  \inferrule*[Left = E-Eta]{
+  \gamma,y:q \yields r \type \\\\
+  \Gamma, y : \E{x.\mu}{A} \yields_{r} C \TYPE \\\\
+  \Gamma \yields_{\nu} M : \E{x.\mu}{A}}{\Gamma \yields_{r[\nu/y]} (\EEs{\mu}{M}{x}{C[\EI{x}/y]}) \equiv C[M/y] \TYPE}
+%  \EEs{\mu}{\EI{M}}{x}{C} \equiv C[M/x] \and
+%  (\EEs{\mu}{M}{x}{C[\EI{x}/z]}) \equiv C[M/z]
 \end{mathpar}
 
 \begin{align}
 \label{eq:etype-id} \EIs{x.x}{M} &\equiv M &\E{x.x}{A} &\equiv A \\
 \label{eq:etype-comp} \EIs{x.\mu}{\EIs{x.\nu}{M}} &\equiv \EIs{x.\mu[\nu/x]}{M} &\EIs{x.\mu}{\EIs{x.\nu}{A}} &\equiv \EIs{x.\mu[\nu/x]}{A} \\
-\label{eq:etype-pair}\EIs{(y,y').(\nu, \nu')}{(M, N)} &\equiv (\EIs{y.\nu}{M}, \EIs{y.\nu'[\mu/x]}{N}) &\E{(y,y').(\nu, \nu')}{x' : A', B'} & \equiv \telety{x}{\E{y.\nu}{A'}}{\EEs{\nu}{x}{x'}{\E{y.\nu'}{B'}}} 
+\label{eq:etype-pair}\EIs{(y,y').(\nu, \nu')}{(M, N)} &\equiv (\EIs{y.\nu}{M}, \EIs{y.\nu'[\mu/x]}{N}) &\E{(y,y').(\nu, \nu')}{x' : A', B'} & \equiv \telety{x}{\E{y.\nu}{A'}}{\EEs{\nu}{x}{x'}{\E{y.\nu'}{B'}}}
 %% other whiskering 'is a substitution rule:
-%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x] 
+%% \St{(s[\mu/x])}{B[M/x]} & \equiv (\St{s}{B})[M/x]
 \end{align}
 Using $\EIs{(y,y').(\nu, \nu')}{\dots}$ as a short-hand for $\EIs{w.(\nu[\fst w/y], \nu'[\snd w/y'])}{\dots}$.
 
@@ -2062,8 +2130,19 @@ In combination with \mvrnote{mode theory equations}, the fusion equations for $\
 \begin{align}
 \label{eq:stype-id} \StI{\id_p}{M} &\equiv M &\St{\id_p}{A} &\equiv A \\
 \label{eq:stype-comp} \StI{s}{\StI{t}{M}} &\equiv \StI{s;t}{M} &\St{s}{\St{t}{A}} &\equiv \St{(s;t)}{A} \\
-\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}} 
+\label{eq:stype-pair}\StI{(s, t)}{(M, N)} &\equiv (\StI{s}{M}, \StI{t[\mu/x]}{N}) &\St{(\telety{x'}{s}{t})}{\telety{x'}{A'}{B'}} & \equiv \telety{x}{\St{s}{A'}}{\StE{s}{x}{x'}{\St{t}{B'}}}
 \end{align}
+
+\mvrnote{We can now return to the teleport equation, need to label eq:stype-subst to reference }.
+\begin{mathpar} 
+  \inferrule*{\Gamma, x : B \yields_p A \TYPE \\\\
+   \Gamma \yields_{\nu'} N : B
+   \and \TermTwoT{\gamma}{t}{\nu}{\nu'}{q}}{\Gamma \yields_{p[\nu/x]} A[\rewrite{t}{N}/x] \equiv \St{\ap{q}{t/x}}{A[N/x]} \TYPE} \and 
+  \inferrule*{\Gamma, x : B \yields_{\mu'} M : A
+   \and \TermTwoT{\gamma}{s}{\mu}{\mu'}{p} \\\\
+   \Gamma \yields_{\nu'} N : B
+   \and \TermTwoT{\gamma}{t}{\nu}{\nu'}{q}}{\Gamma \yields_{\mu[\nu/x]} \rewrite{s}{M}[\rewrite{t}{N}/x] \equiv \rewrite{\ap{s}{t/x}}{\StI{\ap{q}{t/x}}{M[N/x]}} : A[\rewrite{t}{N}/x]}
+\end{mathpar}
 
 Finally, we stipulate that $\St{s}{-}$ preserves fibrancy of types.
 \begin{mathpar}
@@ -2072,6 +2151,7 @@ Finally, we stipulate that $\St{s}{-}$ preserves fibrancy of types.
   }
   {\Gamma \yields_q \St{s}{A} \ISFIB }
 \end{mathpar}
+\mvrnote{This should be for all E-types?}
 
 \subsection{Derivable Terms and Equations}
 
@@ -2083,7 +2163,7 @@ The \textsc{rewrite} rule commutes with pairing of telescope types:
 \begin{align*}
 %(\rewrite{s}{M},N) &\equiv \rewrite{(s, \varepsilon_\nu^{\ap{q}{s/x}})}{(M, \UnSt{\ap{q}{s/x}}{N}}) \\
 %(M,\rewrite{t}{N}) &\equiv \rewrite{(\id_\mu, t)}{(M,N)} \\
-\rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} ) 
+\rewrite{(s, t)}{(M, N)} &\equiv (\rewrite{s}{M}, \rewrite{t}{\StI{\ap{q}{s/x}}{N}} )
 \end{align*}
 where
 \begin{align*}
@@ -2119,13 +2199,13 @@ The \textsc{rewrite} rule commutes with $\mathsf{F}$-, $\mathsf{U}$- and $E$- in
 \UI{x}{\rewrite{\ap{\mu}{s/c}}{M}}  &\equiv\rewrite{s}{\UI{x}{M}} \\
 \EI{\rewrite{s}{M}} &\equiv \rewrite{\ap{\mu}{s/x}}{\EI{M}} \\
 (\EE{\rewrite{s}{M}}{x}{N}) &\equiv \rewrite{\ap{\nu'}{s/y}}{\StI{\ap{r}{s/y}}{\EE{M}{x}{N}}} \\
-(\EEs{\mu}{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\EEs{\mu}{M}{x}{N}} 
+(\EEs{\mu}{M}{x}{\rewrite{s[\mu/y]}{N}}) &\equiv \rewrite{s[\nu/y]}{\EEs{\mu}{M}{x}{N}}
 \end{align*}
 \end{lemma}
 \begin{proof}
 For \textsf{F}-types:
 \begin{align*}
-\FI{\rewrite{s}{M}} 
+\FI{\rewrite{s}{M}}
 &\equiv \rewrite{\id_{\mu[\nu/x]}}{\FI{x}}[\rewrite{s}{M}/x]  \\
 &\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{x}[M/x]}} \\
 &\equiv \rewrite{\ap{\mu}{s/x}}{\StI{\ap{q}{s/x}}{\FI{M}}} \\
@@ -2273,7 +2353,7 @@ we will write
 \begin{align*}
 \EEs{\mu}{M}{x, y}{(\dots)}
 \end{align*}
-Similarly, when $x : \alpha, y : \beta \yields \mu : \delta$  rather than writing 
+Similarly, when $x : \alpha, y : \beta \yields \mu : \delta$  rather than writing
 \begin{align*}
 \EEs{w.\mu(\fst w, \snd w)}{M}{z}{N}
 \end{align*}
@@ -2296,7 +2376,7 @@ For telescopes:
 &\equiv \EEs{\nu}{M}{x}{(z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{\EIs{(y, y').(\nu, y')}{x, z}}{x', z'}{B[x'/x, z'/z]})} \\
 &\equiv \EEs{\nu}{M}{x}{(z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{(\EIs{\nu}{x},z)}{x', z'}{B[x'/x, z'/z]})} \\
 &\equiv (z : \EEs{\nu}{\EIs{\nu}{x}}{x'}{A[x'/x]}, \EEs{(y, y').(\nu, y')}{(M,z)}{x', z'}{B[x'/x, z'/z]}) \\
-&\equiv (z : \EEs{\nu}{\EIs{\nu}{x}}{x}{A}, \EEs{(y, y').(\nu, y')}{(M,z)}{x, z}{B}) 
+&\equiv (z : \EEs{\nu}{\EIs{\nu}{x}}{x}{A}, \EEs{(y, y').(\nu, y')}{(M,z)}{x, z}{B})
 \end{align*}
 and for $\mathsf{U}$-types the proof is similar.
 \end{proof}
@@ -2328,13 +2408,13 @@ $\ctxtuple{\Gamma}$ is defined inductively by
 \unpack{(\cdot)}{\sigma} &:\equiv \cdot \\
 \unpack{\Gamma, x : A}{\sigma} &:\equiv \unpack{\Gamma}{\fst \sigma}, \snd{\sigma}/x
 \end{align*}
-with each definition lying over the identical one downstairs. 
+with each definition lying over the identical one downstairs.
 For $\pack{\Gamma}$ we simultaneously verify the equation $ \unpack{\Gamma}{\pack{\Gamma}} \equiv \id_\Gamma$, as we need it to hold for $(\pack{\Gamma}, x)$ to be well typed.
 \begin{align*}
 \pack{(\cdot)} &:\equiv \mt : 1 \\
 \pack{\Gamma, x : A} &:\equiv (\pack{\Gamma}, x) : \sigmacl{\sigma}{\ctxtuple \Gamma}{A[\unpack{\Gamma}{\sigma}]} \\
 \unpack{(\cdot)}{\pack{(\cdot)}} &\equiv  \cdot \equiv \id_{(\cdot)}\\
-\unpack{\Gamma, x : A}{\pack{\Gamma, x : A}} 
+\unpack{\Gamma, x : A}{\pack{\Gamma, x : A}}
 &\equiv \unpack{\Gamma}{\fst \pack{\Gamma, x : A}}, \snd{\pack{\Gamma, x : A}}/x \\
 &\equiv \unpack{\Gamma}{\pack{\Gamma}}, x/x \\
 &\equiv \id_\Gamma, x/x \\
@@ -2342,7 +2422,7 @@ For $\pack{\Gamma}$ we simultaneously verify the equation $ \unpack{\Gamma}{\pac
 \end{align*}
 For the second equation, we check inductively that
 \begin{align*}
-\pack{(\cdot)}[\unpack{(\cdot)}{\sigma}] 
+\pack{(\cdot)}[\unpack{(\cdot)}{\sigma}]
 &\equiv \mt[\id_{(\cdot)}] \\
 &\equiv \sigma \\
 \pack{\Gamma, x : A}[\unpack{\Gamma, x : A}{\sigma}]
@@ -2383,15 +2463,15 @@ For the second equation, we check inductively that
 %\begin{mathpar}
 %\inferrule*{\delta \vdash {q} \type \\
 %            \gamma \yields t : \theta \tcell_\delta \theta'
-%           } 
+%           }
 %           {\TypeTwo{\gamma}{\ap {q} {t}}{q[\theta]}{q[\theta']}}
 %\and
 %\inferrule*{\delta \yields {\nu} : {q} \\
 %            \gamma\yields t : \theta \tcell \theta'
-%           } 
+%           }
 %           {\TermTwoT{\gamma}{\ap \nu {t}}{\nu[\theta]}{\TrPlus{\ap{q}{t}}{\nu[\theta]}}{q[\theta]}} \\
 % \inferrule*[Left = rewrite]{
-%   \Gamma \yields_{\theta'} \Theta : \Delta \and 
+%   \Gamma \yields_{\theta'} \Theta : \Delta \and
 %   \gamma \yields t : \theta \tcell \theta'
 %  }
 %  {\Gamma \yields_{\theta} \rewrite{t}{\Theta} : \Delta}
@@ -2424,7 +2504,7 @@ For the second equation, we check inductively that
 %\begin{mathpar}
 %\inferrule{\gamma \yields t : \theta \tcell_\delta \theta' \and \delta \yields \kappa : \lambda}
 %{\gamma \yields \ap{\kappa}{t} : \kappa[\theta] \tcell_\lambda \kappa[\theta']}
-%\end{mathpar} 
+%\end{mathpar}
 %\end{lemma}
 %\begin{proof}
 %Due to the equation $\ctxtuple(\kappa[\theta]) \equiv (\ctxtuple \kappa)[\theta]$ we can just define $\ctxtuple{(\ap{\kappa}{t})} :\equiv \ap{(\ctxtuple \kappa)}{t}$.
@@ -2450,7 +2530,7 @@ For the second equation, we check inductively that
 %\end{align*}
 %and
 %\begin{align*}
-%s[\theta];\ap{\nu'}{t} 
+%s[\theta];\ap{\nu'}{t}
 %&\equiv s[\theta];\ap{\nu'[\fan{\delta}]}{\ctxtuple t/\sigma} \\
 %&\equiv \ap{\nu[\fan{\delta}]}{\ctxtuple t/\sigma} ; \ApPlus{(\ap{q[\fan{\delta}]}{\ctxtuple t/\sigma})}{s[\theta']} \\
 %&\equiv \ap{\nu}{t};\ap{(\TrPlus{\ap{q}{t}}{y})}{s[\theta']/y}
@@ -2467,7 +2547,7 @@ For the second equation, we check inductively that
 %\end{lemma}
 %\begin{proof}
 %\begin{align*}
-%B[\rewrite{t}{\Theta}] 
+%B[\rewrite{t}{\Theta}]
 %&\equiv B[\fan{\Delta}[\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma]] \\
 %&\equiv B[\fan{\Delta}][\rewrite{\ctxtuple t}{\ctxtuple \Theta}/\sigma] \\
 %&\equiv \St{\ap{q[\fan{\delta}]}{\ctxtuple t / \sigma}}{B[\fan{\Delta}][\ctxtuple \Theta/\sigma]} \\
@@ -2532,14 +2612,14 @@ To distinguish judgements in the type theory we are encoding from the ones in th
 framework we use $\qyields$ as the turnstile. We have the following
 judgements:
 \begin{mathpar}
-\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta 
+\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE \and \Gamma \qyields a : A \and \Gamma \qyields \Theta : \Delta
 \end{mathpar}
 with the inference rules given in Figure~\ref{fig:qit-rules}, which we
 think of in quotient inductive-inductive type style as presenting the
 free category with families.
 Note that some equations require earlier equations to hold in order to typecheck.
 
-The idea for the representation in the framework is that: 
+The idea for the representation in the framework is that:
 
 \begin{itemize}
 \item A context $\qyields \Gamma \CTX$ is represented by a framework
@@ -2548,10 +2628,10 @@ The idea for the representation in the framework is that:
   $\modeof{\Gamma}$ describes the \emph{external} dependency structure (i.e.\ how some other judgment made \emph{in} context $\Gamma$ will depend on the variables in $\Gamma$).
   These will be defined mutually, because the internal dependency of a
   context extension involves a type that is externally dependent on the
-  previous context.  
+  previous context.
 \item A type $\Gamma \qyields A \TYPE$ is represented by a framework type $\upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE$.
 \item A term $\Gamma \qyields a : A$ is represented by a framework term $\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{a} : \upstairs{A}$.
-\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a framework term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\sigma.\modeof{\Delta}[\unpack{\Delta}{\sigma}]}{\upstairs{\Delta}}$ where $(\upstairs{\Delta})$ denotes the iterated tupling of $\upstairs{\Delta}$ as in Lemma~\ref{lem:ctxtuple}. 
+\item A substitution $\Gamma \qyields \Theta : \Delta$ is represented by a framework term $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\sigma.\modeof{\Delta}[\unpack{\Delta}{\sigma}]}{\upstairs{\Delta}}$ where $(\upstairs{\Delta})$ denotes the iterated tupling of $\upstairs{\Delta}$ as in Lemma~\ref{lem:ctxtuple}.
 \end{itemize}
 \mvrnote{One might expect substitutions to be represented by framework substitutions. In the current setup this is not possible: a substitution $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \upstairs{\Delta}$ has the shape of $\Gamma$ described on the turnstile, but the shape of $\Delta$ is not described anywhere. See \dots for a semantic description of where the issue lies.}
 
@@ -2572,14 +2652,14 @@ In what follows, to reduce clutter we will abbreviate $\unpack{\Delta}{\sigma}$ 
 \inferrule*[left=ctx-empty]{~}{\cdot \CTX} \and
 \inferrule*[left=ctx-ext]{\qyields \Gamma \CTX \and \Gamma \qyields A \TYPE}{\qyields \Gamma, A \CTX} \\
 \inferrule*[left=type-sub]{\Delta \qyields A \TYPE \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields A[\Theta] \TYPE} \and
-\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields a[\Theta] : A[\Theta]} 
+\inferrule*[left=term-sub]{\Delta \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \qyields a[\Theta] : A[\Theta]}
 \\
 \inferrule*[left=sub-empty]{~}{\Gamma \qyields \epsilon_\Gamma : \cdot} \and
 \inferrule*[left=sub-ext]{\Gamma \qyields \Theta : \Delta \and \Gamma \qyields a : A[\Theta]}{\Gamma \qyields (\Theta, a) : \Delta, A} \\
 \inferrule*[left=sub-id]{~}{\Gamma \qyields \id_\Gamma : \Gamma} \and
 \inferrule*[left=sub-comp]{\Gamma \qyields \Theta : \Delta \and \Delta \qyields \kappa : \Lambda}{\Gamma \qyields \Theta ; \kappa : \Lambda} \\
-\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma} \and 
-\inferrule*[left=var]{~}{\Gamma, A \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]} 
+\inferrule*[left=sub-proj]{~}{\Gamma, A \qyields \proj{\Gamma,A} : \Gamma} \and
+\inferrule*[left=var]{~}{\Gamma, A \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]}
 \end{mathpar}
 
 \begin{align}
@@ -2593,7 +2673,7 @@ a[\Theta ; \kappa] &\equiv a[\kappa][\Theta] \\
 \Theta ; \id &\equiv \Theta \\
 (\Theta; \kappa) ; \rho &\equiv \Theta ; (\kappa ; \rho) \\
 \nonumber\\
-\Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\ 
+\Theta ; (\kappa , a) &\equiv (\Theta ; \kappa) , a[\Theta] \\
 (\Theta, a);\proj{\Gamma,A} &\equiv \Theta \\
 \qvar{\Delta,A}[\Theta, a] &\equiv a \\
 (\proj{\Gamma,A}, \qvar{\Gamma,A}) &\equiv \id_{\Gamma, A} \\
@@ -2611,7 +2691,7 @@ The structural rules of MLTT have the following translations:
   \begin{align*}
   \upstairs{\Gamma}, x : \upstairs{A} \yields \modeof{(\Gamma, A)} :\equiv (\modeof{\Gamma}).x : p
   \end{align*}
-  
+
 \item[\textsc{type-sub}] Given $\upstairs{\Delta} \yields_{\El{p}{\modeof{\Delta}}} \upstairs{A} \TYPE$ and $\upstairs{\Gamma} \yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}}$, we can form:
 \begin{align*}
 \upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A[\Theta]} :\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unp{\Delta}{\sigma}]} \TYPE
@@ -2645,8 +2725,8 @@ Unfolding definitions:
 \upstairs{A[\Theta]}
 &\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{A}[\unp{\Delta}{\sigma}]}
 \intertext{and}
-\E{\modeof{(\Delta, A)}}{\upstairs{\Delta, A}} 
-&\equiv \E{(\sigma, x). \sdot(\modeof{\Delta}[\unp{\Delta}{\sigma}], x)}{\sigma : \ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unp{\Delta}{\sigma}]} 
+\E{\modeof{(\Delta, A)}}{\upstairs{\Delta, A}}
+&\equiv \E{(\sigma, x). \sdot(\modeof{\Delta}[\unp{\Delta}{\sigma}], x)}{\sigma : \ctxtuple{\upstairs{\Delta}}, \upstairs{A}[\unp{\Delta}{\sigma}]}
  \\
 &\equiv \E{(\sigma, x). \sdot\, w[(\modeof{\Delta}[\unp{\Delta}{\sigma}], x)/w]}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unp{\Delta}{\sigma}]} \\
 &\equiv \E{\sdot}{\E{(\sigma, x).(\modeof{\Delta}[\unp{\Delta}{\sigma}], x)}{\ctxtuple{\sigma : \upstairs{\Delta}}, \upstairs{A}[\unp{\Delta}{\sigma}]}} \\
@@ -2663,7 +2743,7 @@ So we can form:
 \end{align*}
 
 \item[\textsc{sub-comp}]
-Given 
+Given
 \begin{align*}
 \upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\modeof{\Delta}}{\upstairs{\Delta}} \\
 \upstairs{\Delta} &\yields_{\modeof{\Delta}} \upstairs{\kappa} : \E{\modeof{\Lambda}}{\upstairs{\Lambda}}
@@ -2707,7 +2787,7 @@ So define $\upstairs{\qvar{\Gamma, A}}$ by:
 Now we check that these translations satisfy the required equations.
 
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[{$A[\id_\Gamma] \equiv A$}] 
+\item[{$A[\id_\Gamma] \equiv A$}]
 \begin{align*}
 \upstairs{A[\id_\Gamma]}
 &\equiv \EEs{\sigma.\modeof{\Gamma}[\unp{\Gamma}{\sigma}]}{\upstairs{\id_\Gamma}}{\sigma}{\upstairs{A}[\unp{\Gamma}{\sigma}]} \\
@@ -2716,7 +2796,7 @@ Now we check that these translations satisfy the required equations.
 &\equiv \upstairs{A}
 \end{align*}
 
-\item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}] 
+\item[{$A[\Theta ; \kappa] \equiv A[\kappa][\Theta]$}]
 \begin{align*}
 \upstairs{A[\Theta ; \kappa]}
 &\equiv \EEs{\sigma.\modeof{\Lambda}[\unp{\Lambda}{\sigma}]}{\upstairs{\Theta ; \kappa}}{\sigma}{\upstairs{A}[\unp{\Lambda}{\sigma}]} \\
@@ -2739,7 +2819,7 @@ Now we check that these translations satisfy the required equations.
 &\equiv \rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{(\EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unp{\upstairs{\Delta}}{\sigma}]}), (\EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unp{\upstairs{\Delta}}{\sigma}]})}} \\
 &\equiv \rewrite{\eta^\sdot_{\modeof{\Lambda}}}{\EIs{\sdot}{\upstairs{(\Theta ; \kappa)}, \upstairs{a[\Theta]}}} \\
 &\equiv \upstairs{(\Theta ; \kappa) , a[\Theta]}
-\end{align*} 
+\end{align*}
 
 \item[{$(\Theta, a);\proj{\Delta,A} \equiv \Theta$}]
 \begin{align*}
@@ -2775,7 +2855,7 @@ Where we have used that
 \end{align*}
 by the triangle identity for $\sdot$, Equation~\eqref{eq:chi-triangle-2}
 
-\item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}] 
+\item[{$(\proj{\Gamma,A}, \qvar{\Gamma,A}) \equiv \id_{\Gamma, A}$}]
 \begin{align*}
 \upstairs{(\proj{\Gamma,A}, \qvar{\Gamma,A})}
 &\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, A)}}}{\EIs{\sdot}{\upstairs{\proj{\Gamma,A}}, \upstairs{\qvar{\Gamma,A}}}} \\
@@ -2789,7 +2869,7 @@ by the triangle identity for $\sdot$, Equation~\eqref{eq:chi-triangle-2}
 &\equiv \upstairs{\id_{\Gamma, A}}
 \end{align*}
 
-\item[$\Theta \equiv \epsilon_\Gamma$] 
+\item[$\Theta \equiv \epsilon_\Gamma$]
 Using eta expansion for $\E{\emptyset}{}$ once in each direction:
 \begin{align*}
 \upstairs{\Theta}
@@ -2823,7 +2903,7 @@ The first was shown in the translation of $\qvar{}$. The second is similar:
 \end{align*}
 And the third:
 \begin{align*}
-\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}} 
+\upstairs{\proj{\Gamma, A, B};\proj{\Gamma, A}}
 &\equiv \EEs{\sigma.\modeof{(\Gamma, A)}[\unp{\Gamma, A}{\sigma}]}{\upstairs{\proj{\Gamma, A, B}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unp{\upstairs{\Gamma, A}}{\sigma}]} \\
 &\equiv \EEs{\sigma.\modeof{(\Gamma, A)}[\unp{\Gamma, A}{\sigma}]}{\rewrite{\pi^{\modeof{\Gamma}.x}_y}{\upstairs{\id_{\Gamma, A}}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unp{\upstairs{\Gamma, A}}{\sigma}]} \\
 &\equiv \rewrite{\pi^{\modeof{\Gamma}.x}_y}{\EEs{\sigma.\modeof{(\Gamma, A)}[\unp{\Gamma, A}{\sigma}]}{\upstairs{\id_{\Gamma, A}}}{\sigma}{\upstairs{\proj{\Gamma, A}}[\unp{\upstairs{\Gamma, A}}{\sigma}]}} \\
@@ -2862,7 +2942,7 @@ such that
 &\equiv (\Theta;\kappa) , a
 \end{align*}
 \begin{align*}
-\upstairs{\Theta \uparrow A} 
+\upstairs{\Theta \uparrow A}
 &\equiv \upstairs{(\proj{\Gamma, A[\Theta]}; \Theta) , \qvar{\Gamma, A[\Theta]}} \\
 &\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\upstairs{(\proj{\Gamma, A[\Theta]}; \Theta)}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
 &\equiv \rewrite{\eta^\sdot_{\modeof{(\Gamma, x : A[\Theta])}}}{\EIs{\sdot}{\EEs{\sigma.\modeof{\Gamma}[\unp{\Gamma}{\sigma}]}{\upstairs{\proj{\Gamma, A[\Theta]}}}{\sigma}{\upstairs{\Theta}[\unp{\upstairs{\Gamma}}{\sigma}]}, \upstairs{\qvar{\Gamma,A[\Theta]}}}} \\
@@ -2885,7 +2965,7 @@ And:
 \subsubsection{Unit type}
 Next, we extend the translation to include unit types, encoding the
 rules from Figure~\ref{fig:qit-unit-rules}, which give a positive unit
-type.  
+type.
 
 \begin{figure}
 \begin{mathpar}
@@ -2895,7 +2975,7 @@ type.
 \end{mathpar}
 \begin{align}
 1_\Delta[\Theta] &\equiv 1_\Gamma \\
-\star_\Delta[\Theta] &\equiv \star_\Gamma \\ 
+\star_\Delta[\Theta] &\equiv \star_\Gamma \\
 \qunitmatch{c}[\Theta \uparrow 1_\Gamma] &\equiv \qunitmatch{c[\Theta]} \\
 \nonumber \\
 \qunitmatch{c}[\id_\Gamma, \star_\Gamma] &\equiv c
@@ -2924,11 +3004,11 @@ Translating the rules:
 
 \item[\textsc{1-elim}] We are given
 \begin{align*}
-\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{c} : \upstairs{C[\id_\Gamma, \star_\Gamma]} 
+\upstairs{\Gamma} \yields_{\One_{\modeof{\Gamma}}} \upstairs{c} : \upstairs{C[\id_\Gamma, \star_\Gamma]}
 \end{align*}
 The type of $\upstairs{c}$ can be simplified to:
 \begin{align*}
-\upstairs{C[\id_\Gamma, \star_\Gamma]} 
+\upstairs{C[\id_\Gamma, \star_\Gamma]}
 &\equiv \EEs{\sigma.\modeof{(\Gamma, 1_\Gamma)}[\unp{\Gamma, 1_\Gamma}{\sigma}]}{\upstairs{\id_\Gamma, \star_\Gamma}}{\sigma}{\upstairs{C}[\unp{\Gamma, 1_\Gamma}{\sigma}]} \\
 &\equiv \EEs{\sigma.\modeof{(\Gamma, 1_\Gamma)}[\unp{\Gamma, 1_\Gamma}{\sigma}]}{\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\id_\Gamma}, \upstairs{\star_\Gamma}}}}{\sigma}{\upstairs{C}[\unp{\Gamma, 1_\Gamma}{\sigma}]} \\
 &\equiv \St{\ApEl{p}{\eta^\sdot_{\modeof{\Gamma}}}}{\EEs{\sigma.\modeof{(\Gamma, 1_\Gamma)}[\unp{\Gamma, 1_\Gamma}{\sigma}]}{\EIs{\sdot}{\upstairs{\id_\Gamma}, \upstairs{\star_\Gamma}}}{\sigma}{\upstairs{C}[\unp{\Gamma, 1_\Gamma}{\sigma}]}} \\
@@ -2952,7 +3032,7 @@ So as our translation use:
 
 Checking the equations:
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[{$1_\Delta[\Theta] \equiv 1_\Gamma$}:] 
+\item[{$1_\Delta[\Theta] \equiv 1_\Gamma$}:]
 \begin{align*}
 &\upstairs{1_\Delta[\Theta]} \\
 &\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\F{\One_{\modeof{\Delta}}}{1} [\unp{\Delta}{\sigma}]} \\
@@ -2981,7 +3061,7 @@ Checking the equations:
 &\equiv \upstairs{\qunitmatch{c[\Theta]}}
 \end{align*}
 
-\item[{$\qunitmatch{c}[\id_\Gamma, \star_\Gamma] \equiv c$}:] 
+\item[{$\qunitmatch{c}[\id_\Gamma, \star_\Gamma] \equiv c$}:]
 \begin{align*}
 &\upstairs{\qunitmatch{c}[\id_\Gamma, \star_\Gamma]} \\
 &\equiv \EEs{\sigma.\modeof{(\Gamma, 1_\Gamma)}[\unp{\Gamma, 1_\Gamma}{\sigma}]}{\upstairs{\id_\Gamma, \star_\Gamma}}{\sigma}{\upstairs{\qunitmatch{c}}[\unp{\Gamma, 1_\Gamma}{\sigma}]} \\
@@ -3001,7 +3081,7 @@ Checking the equations:
 \subsubsection{$\Sigma$-types}
 
 Next, we extend the translation to include $\Sigma$-types, again as a
-positive type, with the rules in Figure~\ref{fig:qit-sigma-rules}. 
+positive type, with the rules in Figure~\ref{fig:qit-sigma-rules}.
 
 % There are two versions of the eliminator; a weak and strong version. The choice of one or the other yields \emph{weak} $\Sigma$-types or \emph{strong} $\Sigma$-types.
 
@@ -3058,11 +3138,11 @@ Suppose the comprehension object supports $\Sigma$ types. In the framework, $\Si
 \end{align*}
 with $\alpha$ in the context and $x$ and $y$ tupled together, i.e. for
 $z : \sigmacl{x}{\El p \alpha}{\El p
-  {\alpha.x}} \vdash \Sigma_1(\alpha,\fst z, \snd z)$.  
+  {\alpha.x}} \vdash \Sigma_1(\alpha,\fst z, \snd z)$.
 
 We now translate all the rules:
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[\textsc{$\Sigma$-form}] 
+\item[\textsc{$\Sigma$-form}]
 We are given
 \begin{align*}
 \upstairs{\Gamma} &\yields_{\El{p}{\modeof{\Gamma}}} \upstairs{A} \TYPE \\
@@ -3087,7 +3167,7 @@ and we can get this by
 {\alpha : \upstairs{\Gamma}, x : \upstairs{A}, y : \upstairs{B} \yields_{\One_{\modeof{\Gamma}.x.y}} \rewrite{\fibpair{x,y}}{\StI{\ApEl{p}{\pi^{\modeof{\Gamma}.x}_y;\pi^{\modeof{\Gamma}}_x}}{\FIs{w. \Sigma_1(\fst w, \snd w)}{x,y}}} : \upstairs{\Sigma_A B[\proj{\Gamma, A, B};\proj{\Gamma, A}]}}
 \end{mathpar}
 
-\item[\textsc{$\Sigma$-split}] 
+\item[\textsc{$\Sigma$-split}]
 First, the substitution $(\proj{\Gamma, A, B};\proj{\Gamma, A}), \qpair{A,B}$ is translated to:
 \begin{align*}
 &\upstairs{(\proj{\Gamma, A, B};\proj{\Gamma, A}), \qpair{A,B}} \\
@@ -3119,7 +3199,7 @@ So as the translation use:
 
 Now the equations:
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[{$(\Sigma_A B)[\Theta] \equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A]$}:] 
+\item[{$(\Sigma_A B)[\Theta] \equiv \Sigma_{A[\Theta]} B[\Theta \uparrow A]$}:]
 \begin{align*}
 &\upstairs{(\Sigma_A B)[\Theta]} \\
 &\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\F{w. \Sigma_1(\modeof{\Delta},\fst w, \snd w)}{x : \upstairs{A}, \upstairs{B}}[\unp{\Delta}{\sigma}]} \\
@@ -3156,7 +3236,7 @@ Now the equations:
 &\equiv \upstairs{\qsplit{A[\Theta],B[\Theta \uparrow A]}(c[\Theta \uparrow A \uparrow B])}
 \end{align*}
 
-\item[{$\qsplit{A,B}(c)\allowbreak[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \allowbreak\qpair{A,B}] \equiv c$}:] 
+\item[{$\qsplit{A,B}(c)\allowbreak[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \allowbreak\qpair{A,B}] \equiv c$}:]
 We have already calculated the translation of the substitution, when translating $\qsplit{}$.
 \begin{align*}
 &\upstairs{\qsplit{A,B}(c)[(\proj{\Gamma, A, B};\proj{\Gamma, A}), \qpair{A,B}]} \\
@@ -3211,7 +3291,7 @@ The rules for $\Pi$-types can be interpreted over any mode theory with a
 comprehension object that supports $\Pi$ types
 (Definition~\ref{def:supports-pis}), if
 the strict modalities for composites of $\sdot$ and $\sempty$ exist, and
-for each $\alpha : p$, 
+for each $\alpha : p$,
 the $\mathsf{U}$-types for $x:\El{p} \alpha, c:\El{p}{\alpha} \vdash \Pi_1(\alpha,x,c)$ exist.
 \end{theorem}
 
@@ -3281,7 +3361,7 @@ And the equations:
 &\equiv \upstairs{\qlam{b[\Theta \uparrow A]}}
 \end{align*}
 
-\item[{$\qapp{\qlam{b}} \equiv b$}:] 
+\item[{$\qapp{\qlam{b}} \equiv b$}:]
 \begin{align*}
 &\upstairs{\qapp{\qlam{b}}} \\
 &\equiv \rewrite{\ApOne{\pi^{\modeof{\Gamma}}_x}}{\UE{\upstairs{\qlam{b}}}{x}} \\
@@ -3337,7 +3417,7 @@ types implementing $\mathsf{R}$.
 
 Similar to $\Pi$-types, stability of $\RE{}$ under substitution follows from stability of $\RI{}$ using eta expansion:
 \begin{align*}
-\RE{b}[\Theta, \lock] 
+\RE{b}[\Theta, \lock]
 &\equiv \RE{\RI{\RE{b}[\Theta, \lock]}} \\
 &\equiv \RE{\RI{\RE{b}}[\Theta]} \\
 &\equiv \RE{b[\Theta]}
@@ -3421,7 +3501,7 @@ The equations are then straightforward:
 &\equiv \upstairs{\id_{\Gamma, \lock}}
 \end{align*}
 
-\item[{$(\Theta, \lock) ; (\kappa, \lock) \equiv (\Theta ; \kappa), \lock$}:] 
+\item[{$(\Theta, \lock) ; (\kappa, \lock) \equiv (\Theta ; \kappa), \lock$}:]
 \begin{align*}
 &\upstairs{(\Theta, \lock) ; (\kappa, \lock)} \\
 &\equiv \EEs{\sigma.\modeofq{\Delta, \lock}[\unp{\Delta, \lock}{\sigma}]}{\upstairs{\Theta, \lock}}{\sigma}{\upstairs{\kappa, \lock}[\unpack{\upstairs{\Delta, \lock}}{\sigma}]} \\
@@ -3445,7 +3525,7 @@ The equations are then straightforward:
 \end{theorem}
 
 \begin{enumerate}
-\item[\textsc{R-form}] We are given 
+\item[\textsc{R-form}] We are given
 \begin{align*}
 \upstairs{\Gamma, \lock} \yields_{\El{q}{f(\modeof{\Gamma})}} \upstairs{A} \TYPE
 \end{align*}
@@ -3454,7 +3534,7 @@ and can form
 \upstairs{\Gamma} \yields_{\El{p}{\modeof{\Gamma}}} \upstairs{\Rtype{A}} :\equiv \U{f_1}{1}{\upstairs{A}} \TYPE
 \end{align*}
 
-\item[\textsc{R-intro}] We are given 
+\item[\textsc{R-intro}] We are given
 \begin{align*}
 \upstairs{\Gamma,\lock} \yields_{\One_{f(\modeof{\Gamma})}} \upstairs{a} : \upstairs{A}
 \end{align*}
@@ -3483,7 +3563,7 @@ we can do:
 
 The equations are verified in more or less the same way as for $\Pi$-types.
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
-\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:] 
+\item[{$\Rtype{A}[\Theta] \equiv \Rtype{(A[\Theta, \lock])}$}:]
 \begin{align*}
 &\upstairs{\Rtype{A}[\Theta]} \\
 &\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\U{f_1}{1}{\upstairs{A}}[\unpack{\Delta}{\sigma}]} \\
@@ -3494,7 +3574,7 @@ The equations are verified in more or less the same way as for $\Pi$-types.
 &\equiv \upstairs{\Rtype{(A[\Theta, \lock])}}
 \end{align*}
 
-\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:] 
+\item[{$\RI{a}[\Theta] \equiv \RI{a[\Theta, \lock]}$}:]
 \begin{align*}
 &\upstairs{\RI{a}[\Theta]} \\
 &\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\UI{()}{\rewrite{\foneinv{\modeof{\Delta}}}{\upstairs{a}}}[\unpack{\Delta}{\sigma}]} \\
@@ -3548,7 +3628,7 @@ So we can form
 \begin{align*}
 &\upstairs{\proj{\Gamma, A}, \lock} \\
 &\equiv \EIs{f}{\upstairs{\proj{\Gamma, A}}} \\
-&\equiv \EIs{f}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}} \\ 
+&\equiv \EIs{f}{\rewrite{\pi^{\modeof{\Gamma}}_x}{\upstairs{\id_\Gamma}}} \\
 &\equiv \rewrite{\ap{f}{\pi^{\modeof{\Gamma}}_x}}{\EIs{f}{\upstairs{\id_\Gamma}}}
 \end{align*}
 So the type $\upstairs{\Ltype{A}[\proj{\Gamma, A}, \lock]}$ is translated to:
@@ -3571,15 +3651,15 @@ So define $\upstairs{\LI{A}}$ to be:
 {\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{f(\modeof{\Gamma}.x)}} \rewrite{\fibf{x}}{\StI{\ApEl{q}{\ap{f}{\pi^{\modeof{\Gamma}}_x}}}{\FI{x}}} : \St{\ApEl{q}{\ap{f}{\pi^{\modeof{\Gamma}}_x}}}{\upstairs{\Ltype{A}}}}
 \end{mathpar}
 
-\item[\textsc{L-elim}] We are given a term $\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{f(\modeof{\Gamma}.x)}} \upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$. 
+\item[\textsc{L-elim}] We are given a term $\upstairs{\Gamma}, x : \upstairs{A} \yields_{\One_{f(\modeof{\Gamma}.x)}} \upstairs{c} : \upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$.
 
-The substitution $\proj{\Gamma, A}, \lock, \LI{A}$ is translated to 
+The substitution $\proj{\Gamma, A}, \lock, \LI{A}$ is translated to
 \begin{align*}
 &\upstairs{\proj{\Gamma, A}, \lock, \LI{A}} \\
 \equiv{} &\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\upstairs{\proj{\Gamma, A}, \lock}, \upstairs{\LI{A}}}} \\
 \equiv{} &\rewrite{\eta^\sdot_{\modeof{\Gamma}}}{\EIs{\sdot}{\rewrite{\ap{f}{\pi^{\modeof{\Gamma}}_x}}{\EIs{f}{\upstairs{\id_\Gamma}}}, \rewrite{\fibf{x}}{\StI{\ApEl{q}{\ap{f}{\pi^{\modeof{\Gamma}}_x}}}{\FI{x}}}}} \\
 \equiv{} &\rewrite{\eta^\sdot_{\modeof{\Gamma}};(\ap{f}{\pi^{\modeof{\Gamma}}_x} \bdot \fibf{x})}{\EIs{\sdot}{\EIs{f}{\upstairs{\id_\Gamma}}, \FI{x}}} \\
-\equiv{} &\rewrite{\fdist{x}}{\EIs{\sdot}{\EIs{f}{\upstairs{\id_\Gamma}}, \FI{x}}} 
+\equiv{} &\rewrite{\fdist{x}}{\EIs{\sdot}{\EIs{f}{\upstairs{\id_\Gamma}}, \FI{x}}}
 \end{align*}
 So $\upstairs{C[\proj{\Gamma, A}, \lock, \LI{A}]}$ becomes:
 \begin{align*}
@@ -3603,7 +3683,7 @@ Define the translation of $\LE{c}$ to be:
 \end{mathpar}
 \end{enumerate}
 
-And the equations: 
+And the equations:
 
 \begin{enumerate}[style = multiline, labelwidth = 80pt]
 \item[{$\Ltype{A}[\Theta, \lock] \equiv \Ltype{(A[\Theta])}$}:]
@@ -3710,7 +3790,7 @@ The two axiomatic substitutions are defined straightforwardly as
 \upstairs{\Gamma, \lock} &\yields_{\modeof{(\Gamma, \lock)}} \upstairs{\comult{\Gamma}} :\equiv \rewrite{\fcomult{\modeof{\Gamma}}}{\upstairs{\id_{\Gamma, \lock, \lock}}} : \E{\sigma.\modeof{\Gamma, \lock, \lock}[\unp{\Gamma, \lock, \lock}{\sigma}]}{\ctxtuple{\upstairs{\Gamma, \lock, \lock}}}
 \end{align*}
 
-The equations follow quickly from the analogous equations in the mode theory, for example, 
+The equations follow quickly from the analogous equations in the mode theory, for example,
 \begin{align*}
 &\upstairs{\comult{\Gamma} ; \counit{\Gamma, \lock}} \\
 &\equiv \EEs{\sigma.\modeof{\Gamma, \lock, \lock}[\unp{\Gamma, \lock, \lock}{\sigma}]}{\upstairs{\comult{\Gamma}}}{\sigma}{\upstairs{\counit{\Gamma, \lock}}[\unpack{\upstairs{\Gamma, \lock, \lock}}{\sigma}]} \\
@@ -3972,7 +4052,7 @@ The structural rules of \mvrnote{DILTT} are given by the structural rules for or
 \inferrule*[left=term-sub]{\Delta \mid \Xi \qyields a : A  \and \Gamma \qyields \Theta : \Delta}{\Gamma \mid \Xi[\Theta] \qyields a[\Theta] : A[\Theta]} \and
 \inferrule*[left=term-lin-sub]{\Gamma \mid \Xi' \qyields b : B \and \Gamma \mid \Xi \qyields \Theta :  \Xi'}{\Gamma \mid \Xi \qyields b\{\Theta\} : B} \\
 \inferrule*[left=var]{~}{\Gamma, A \mid \cdot \qyields \qvar{\Gamma,A} : A[\proj{\Gamma,A}]}  \and
-\inferrule*[left=lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A} 
+\inferrule*[left=lin-var]{~}{\Gamma \mid A \qyields \qlinvar{A} : A}
 \end{mathpar}
 \begin{align}
 b\{\id_\Xi\} &\equiv b \\
@@ -4005,16 +4085,16 @@ we form
 \upstairs{\Theta;\kappa} :\equiv \EEs{\sigma.\fibshape{\Xi'}[\unp{\Xi'}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{\kappa}[\unp{\upstairs{\Delta}}{\sigma}]}
 \end{align*}
 
-\item[\textsc{term-sub}] 
+\item[\textsc{term-sub}]
 %\begin{align*}
 %\upstairs{\Delta}, \upstairs{\Xi} &\yields_{\fibshape{\Xi}} \upstairs{a} : \upstairs{A} \\
 %\upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\sigma.\modeof{\Delta}[\unpack{\Delta}{\sigma}]}{\upstairs{\Delta}}
-%\end{align*} 
+%\end{align*}
 \mvrnote{Here let's do the case of a single variable in the linear context.}
 \begin{align*}
 \upstairs{\Delta}, \upstairs{B} &\yields_{\fibshape{B}} \upstairs{a} : \upstairs{A} \\
 \upstairs{\Gamma} &\yields_{\modeof{\Gamma}} \upstairs{\Theta} : \E{\sigma.\modeof{\Delta}[\unpack{\Delta}{\sigma}]}{\upstairs{\Delta}}
-\end{align*} 
+\end{align*}
 and our goal is:
 \begin{align*}
 \upstairs{\Gamma}, \upstairs{B[\Theta]} &\yields_{\fibshape{B[\Theta]}} \upstairs{a[\Theta]} : \upstairs{A[\Theta]}
@@ -4027,11 +4107,11 @@ Define:
 \begin{align*}
 \upstairs{a[\Theta]} :\equiv \EEs{\sigma.\modeof{\Delta}[\unp{\Delta}{\sigma}]}{\upstairs{\Theta}}{\sigma}{\upstairs{a}[\unp{\Delta}{\sigma}]}
 \end{align*}
-\item[\textsc{term-lin-sub}] 
+\item[\textsc{term-lin-sub}]
 \begin{align*}
 \upstairs{\Gamma}, \upstairs{\Xi'} &\yields_{\fibshape{\Xi'}} \upstairs{b} : \upstairs{B} \\
 \upstairs{\Gamma}, \upstairs{\Xi} &\yields_{\fibshape{\Xi}} \upstairs{\Theta} : \E{\sigma.\fibshape{\Xi'}[\unp{\Xi'}{\sigma}]}{\upstairs{\Xi'}}
-\end{align*} 
+\end{align*}
 and our goal is:
 \begin{align*}
 \upstairs{\Gamma}, \upstairs{\Xi} &\yields_{\fibshape{\Xi}} \upstairs{b} : \upstairs{B}
@@ -4232,7 +4312,7 @@ Mode theory judgements:
 \item $\mm{\TermTwoT{\gamma}{s}{\mu}{\nu}{p}}$ is a natural transformation of such sections over the identity, i.e.\ whose composite with the projection is the identity natural transformation of the identity functor.
 \end{enumerate}
 
-Top judgements: 
+Top judgements:
 \begin{itemize}
 \item $\mm{\yields_\gamma \Gamma \CTX}$ is an object of $\mm{\gamma}$
 \item $\mm{\Gamma \yields_p A \TYPE}$ is an object of $\mm{\gamma \yields p}(\mm{\Gamma})$.
@@ -4242,7 +4322,7 @@ Top judgements:
 Total substitutions in the mode theory, 2-cells between them, and
 upstairs substitutions above them are not part of the primitive syntax
 of the framework, but can be defined by tupling terms.
-These can be interpreted as: 
+These can be interpreted as:
 \begin{itemize}
 \item $\mm{\gamma \yields \theta : \delta}$ is a functor from $\mm{\gamma}$ to $\mm{\delta}$
 \item $\mm{\gamma \yields \theta_1 \tcell_\delta \theta_2}$ is a natural
@@ -4252,9 +4332,9 @@ These can be interpreted as:
   morphism from $\mm{\theta}(\mm{\Gamma})$ to $\mm{\Delta}$ in
   $\mm{\delta}$.
   Natural transformations act contravariantly because $\theta$ is in the
-  domain of the morphism.  
+  domain of the morphism.
   \end{itemize}
-So the semantics of contexts/substitutions is a lot like 
+So the semantics of contexts/substitutions is a lot like
 one-variable adjoint logic with only $\Fsym$ types (\cite{ls16adjoint-extended}).
 
 The general categorical semantics is an abstraction of these structures --- categories, contravariant $\Cat$-valued functors, Grothendieck constructions, sections, natural transformations, objects, and morphisms.
