@@ -1,0 +1,392 @@
+\documentclass[10pt]{article}
+  \usepackage{xcolor}
+  \definecolor{darkgreen}{rgb}{0,0.45,0}
+  \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+  \usepackage{pdflscape}
+
+\usepackage[sort]{natbib}
+
+\usepackage{fullpage}
+\usepackage{amssymb,amsthm,bbm}
+\usepackage[centertags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{fontawesome}
+\usepackage{tikz-cd}
+\usepackage{mathpartir}
+\usepackage{enumitem}
+\usepackage[status=draft,inline,nomargin]{fixme}
+\FXRegisterAuthor{ms}{anms}{\color{blue}MS}
+\FXRegisterAuthor{mvr}{anmvr}{\color{olive}MVR}
+\FXRegisterAuthor{drl}{andrl}{\color{purple}DRL}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{bbold}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{problem}{Problem}
+\newenvironment{constr}{\begin{proof}[Construction]}{\end{proof}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+
+\let\oldemptyset\emptyset%
+\let\emptyset\varnothing
+
+% Fix wedge/smash
+\let\oldwedge\wedge%
+\renewcommand{\wedge}{\vee}
+\newcommand{\topsmash}{\oldwedge}
+
+% Fix equiv and defeq
+\let\oldequiv\equiv%
+\renewcommand{\equiv}{\simeq}
+\newcommand{\defeq}{\oldequiv}
+\newcommand{\ndefeq}{\not\defeq}
+
+\newcommand\dsd[1]{\ensuremath{\mathsf{#1}}}
+
+\newcommand{\yields}{\vdash}
+\newcommand{\Yields}{\tcell}
+\newcommand{\tcell}{\Rightarrow}
+\newcommand{\cbar}{\, | \,}
+\newcommand{\judge}{\mathcal{J}}
+
+\newcommand{\Id}[3]{\mathsf{Id}_{{#1}}(#2,#3)}
+\newcommand{\ctx}{\,\,\mathsf{ctx}}
+\newcommand{\type}{\,\,\mathsf{type}}
+\newcommand{\tele}{\,\,\mathsf{tele}}
+\newcommand*{\proj}{\mathsf{pr}}
+
+\newcommand\act[2]{\ensuremath{#1 \{ #2 \} \ }}
+\newcommand\ap[2]{\ensuremath{#1 \langle #2 \rangle }}
+\newcommand\ApPlus[2]{\ensuremath{{#1}^+ \langle #2 \rangle }}
+\newcommand\ApCirc[2]{\ensuremath{{#1}^\circ \langle #2 \rangle }}
+
+\makeatletter
+\def\smsym{\sum}
+\newcommand{\@thesum}[1]{\smsym_{(#1)}}
+\newcommand{\sm}[1]{\@ifnextchar\bgroup{\@sm{#1}\sm}{\@sm{#1}}}
+\newcommand{\@sm}[1]{\mathchoice{{\textstyle\@thesum{#1}}}{\@thesum{#1}}{\@thesum{#1}}{\@thesum{#1}}}
+\def\prdsym{\prod}
+\newcommand{\@theprd}[1]{\prdsym_{(#1)}}
+\newcommand{\prd}[1]{\@ifnextchar\bgroup{\@prd{#1}\prd}{\@prd{#1}}}
+\newcommand{\@prd}[1]{\mathchoice{{\textstyle\@theprd{#1}}}{\@theprd{#1}}{\@theprd{#1}}{\@theprd{#1}}}
+\makeatother
+
+\newcommand{\Arr}{\mathrm{Arr}}
+\newcommand{\Two}{\mathbb{2}}
+\newcommand{\comp}{\mathtt{comp}}
+\newcommand{\lift}{\mathtt{lift}}
+\newcommand{\uni}{\mathtt{uni}}
+
+\newcommand{\op}{\mathsf{op}}
+\newcommand{\opc}[1]{\overline{#1}}
+\newcommand{\unop}{\mathsf{unop}}
+
+\newcommand{\fop}{\mathsf{fop}}
+
+\newcommand{\Tw}{\mathrm{Tw}}
+
+\title{Another Directed Theory}
+\author{Mitchell Riley}
+\date{}
+
+\begin{document}
+\maketitle
+
+Variances: $-, +, \pm, 0$.
+
+Judgements:
+\begin{itemize}
+\item $\gamma \ctx$ meaning a category $\gamma$
+\item $\gamma \yields A \type^v$ meaning a category $A$ and a functor $A : \gamma.A \to \gamma$, so that $A$ is a fibration / opfibration / bifibration / nothing according to $v$.
+\item $\gamma \yields a : A$ is a section $a : \gamma \to \gamma.A$ of $A$, and the variance of $A$ doesn't come into it.
+\end{itemize}
+
+So the only thing he variance controls is which direction you can act with 2-cells. Any variable in the context is usable, not just those marked with $+$. And so there is also no variance restriction on substitutions.
+
+\subsection{Contexts}
+\begin{mathpar}
+\inferrule*{\gamma \yields A \type^v}{\gamma, x :^v A \ctx} \and 
+\inferrule*{~}{\gamma, x :^v A, \gamma' \yields x : A} \\
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields a : A \and \gamma, x :^v A, \gamma' \yields b : B}{\gamma, \gamma'[a/x] \yields b[a/x] : B[a/x]}
+\end{mathpar}
+
+\subsection{Sums}
+
+Let
+\begin{align*}
+v \cap v &\defeq v \\
+\pm \cap w &\defeq w \\
+w \cap \pm &\defeq w \\
+v \cap w &\defeq 0 \quad \text{otherwise}
+\end{align*}
+
+Then the type is as usual, just tracking the variance in the type former
+\begin{mathpar}
+\inferrule*{\gamma \yields A \type^v \and \gamma, x :^v A \yields B \type^w}{\gamma \yields \sm{x :^v A} B^w \type^{v \cap w}} \\
+\inferrule*{\gamma \yields a : A \and \gamma \yields b : B[a/x]}{\gamma \yields (a, b) : \sm{x :^v A} B^w} \and
+\inferrule*{\gamma \yields p : \sm{x :^v A} B^w}{\gamma \yields \proj_1(p) : A} \and
+\inferrule*{\gamma \yields p : \sm{x :^v A} B^w}{\gamma \yields \proj_2(p) : B[a/x]}
+\end{mathpar}
+
+\subsection{Products}
+The variance of the $\Pi$ type is given by $\pm \rhd w :\defeq w$ and $v \rhd w :\defeq 0$ otherwise. Non-dependent functions could be more permissive, also allow: $- \blacktriangleright + \defeq +$ and $+ \blacktriangleright - \defeq -$. (Or is there some trick that lets this work for dependent $\Pi$?)
+\begin{mathpar}
+\inferrule*{\gamma \yields A \type^v \and \gamma, x :^v A \yields B \type^w}{\gamma \yields \prd{x :^v A} B^w \type^{v \rhd w}} \\
+\inferrule*{\gamma, x :^v A \yields b : B}{\gamma \yields \lambda x. b : \prd{x :^v A} B^w} \and
+\inferrule*{\gamma \yields f : \prd{x :^v A} B^w \and \gamma \yields a : A}{\gamma \yields f(a) : B[a/x]}
+\end{mathpar}
+
+\subsection{Extensional Equality}
+\begin{mathpar}
+\inferrule*{\gamma \yields A \type^v \\\\ \gamma \yields a : A \and \gamma \yields a' : A}{\gamma \yields \Id{A}{a}{a'} \type^0} \\
+\inferrule*{\gamma \yields a : A}{\gamma \yields \mathsf{refl}_{a} : \Id{A}{a}{a}} \and
+\inferrule*{\gamma \yields e : \Id{A}{a}{a'}}{\gamma \yields a \defeq a' : A} \\
+\end{mathpar}
+
+\subsection{Arrows}
+
+Let's add a type $\Two$ (not sure if we want this to really be a type)
+
+\begin{mathpar}
+\inferrule*{\gamma \ctx}{\gamma, i :^\pm \Two \ctx} \\
+\inferrule*{~}{\gamma \yields 0 : \Two} \and \inferrule*{~}{\gamma \yields 1 : \Two}
+\end{mathpar}
+
+And a type of arrows with fixed end-points:
+\begin{mathpar}
+\inferrule*{\gamma, i :^\pm \Two \yields B \type^w \\\\ \gamma \yields b_0 : B[0/i] \and \gamma \yields b_1 : B[1/i]}{\gamma \yields \Arr_B(b_0,b_1) \type^0} \\
+\inferrule*{\gamma, i :^\pm \Two \yields b : B \\\\ b_0 \defeq b[0/i] \and b_1 \defeq b[1/i]}{\gamma \yields \lambda i. b : \Arr_B(b_0,b_1)} \and
+\inferrule*{\gamma \yields f : \Arr_B(b_0,b_1) \and \gamma \yields j : \Two}{\gamma \yields f \mathbin{@} j : B[j/i]}
+\end{mathpar}
+
+I don't think the variance of $\Arr_B(b_0,b_1)$ can be $w$, because we fixed the endpoints. If we use the free arrow category, we can have any variance:
+\begin{mathpar}
+\begin{tikzcd}
+\Arr \ar[r] \ar[d,two heads] & C^2 \ar[d, "C^2",two heads] \\
+\Gamma \ar[r, "\eta" swap] & (\Gamma \times 2)^2
+\end{tikzcd}
+\end{mathpar}
+But this doesn't seem very useful.
+
+We could also allow a more general variance on $\Arr_B(b_0,b_1)$ if we are allowed to assume that $B$ `has pullbacks', because then both the domain/codomain functors are fibrations.
+
+\subsection{Topes}
+
+Add a judgement $\gamma \yields i \leq j$:
+\begin{mathpar}
+\inferrule*{\gamma \yields x : \Two \and \gamma \yields y : \Two}{\gamma, (x \leq y) \ctx}
+\end{mathpar}
+where $x$ and $y$ are variables or 0 or 1. And (phrased as axioms)
+\begin{align*}
+(x \leq y) &\yields (x \leq y) \\
+&\yields (x \leq x) \\
+(x \leq y), (y \leq z) &\yields (x \leq z) \\
+(x \leq y), (y \leq x) &\yields (x \defeq y) \\
+&\yields (0 \leq x) \\
+&\yields (x \leq 1) \\
+&\yields (x \leq y) \vee (y \leq x)
+\end{align*}
+(the same as in RS)
+
+\subsection{Composition}
+All types are Segal:
+
+\begin{mathpar}
+\inferrule*{
+\gamma, i :^\pm \Two, j :^\pm \Two, i \leq j \yields A \type^v \\\\
+\gamma \yields r : \Two \and \gamma \yields r' : \Two \and \gamma \yields r \leq r' \\\\
+\gamma, j^\pm : \Two \yields f : A[0/i] \and \gamma, i^\pm : \Two \yields g : A[1/j] \\\\
+f[1/j] \defeq g[0/i]
+}{\gamma \yields \comp^{r,r'}_{i.j.A}(f,g) : A[r/i,r'/j] \\\\
+\comp^{0,r'}_{i.j.A}(f,g) \defeq f[r'/j] \and \comp^{r,1}_{i.j.A}(f,g) \defeq g[r/i]}
+\end{mathpar}
+
+We also want this to definitionally be the unique filler, how can we arrange that? We could add extension types, and have an eta principle for this kind of extension? 
+
+Another way to phrase what we want is that
+\begin{align*}
+\gamma, i :^\pm \Two, j :^\pm \Two, i \leq j \yields a : A
+\end{align*}
+and
+\begin{align*}
+\gamma, i :^\pm \Two, j :^\pm \Two, (i = 0) \vee (j = 1) \yields a : A
+\end{align*}
+should be identical.
+
+Something else we could do is have n-ary composition, and definitionally fuse the composition.
+
+\subsection{Lifts}
+
+\begin{mathpar}
+\inferrule*{
+\gamma, i :^\pm \Two \yields P \type^+ \\\\
+\gamma \yields r : \Two \and \gamma \yields r' : \Two \and \gamma \yields r \leq r' \\\\
+\gamma \yields p_0 : P[r/i]
+}{\gamma \yields \lift^{r \to r'}_{i.P}(p_0) : P[r'/i] \and \lift^{r \to r}_{i.P}(p_0) \defeq p_0} \and 
+\inferrule*{
+\gamma, i :^\pm \Two \yields N \type^- \\\\
+\gamma \yields r : \Two \and \gamma \yields r' : \Two \and \gamma \yields r \leq r' \\\\
+\gamma \yields n_1 : N[r'/i]
+}{\gamma \yields \lift^{r \leftarrow r'}_{i.N}(n_1) : N[r/i] \and \lift^{r' \leftarrow r'}_{i.N}(n_1) \defeq n_1}
+\end{mathpar}
+Define
+\begin{align*}
+\lift^{r \to r'}_{i.\sm{x:^+ A}B^+}(a,b) &:\defeq (\lift^{r \to r'}_{i.A}(a), \lift^{r\to r'}_{j.B[j/i][\lift^{r \to r'}_{i.A}(a)/x]}(b)) \\
+\lift^{r\to r'}_{i.\prd{x:^\pm A} B^+}(f) &:\defeq \lambda a. \lift^{r \to r'}_{j.B[j/i][\lift^{r \leftarrow r'}_{i.A}(a)/x]}(f(\lift^{r \leftarrow r'}_{i.A}(a)))
+%\lift^{r\to r'}_{i.\Arr_C(-,c_1)}(f) &:\defeq \Lambda j.\lift^{r\to r'}_{i.C}(f \mathbin{@} j)
+\end{align*}
+Do we want to make this compute on $\comp$?
+\begin{align*}
+\lift^{r \to r'}_{i.A[s/k,s'/l]}(\comp^{s,s'}_{k.l.A[r/i]}(f,g)) :\defeq \comp^{s,s'}_{k.l.A[r'/i]}(\lift^{r \to r'}_{i.A}(f),\lift^{r \to r'}_{i.A}(g))
+\end{align*}
+seems to typecheck fine.
+
+We are yet to make the lifts universal. We can try factoring maps through the lift as another filling problem:
+\begin{mathpar}
+\inferrule*{
+\gamma, i :^\pm \Two \yields P \type^+ \\\\
+\gamma, i :^\pm \Two \yields p : P \\\\
+\gamma \yields r : \Two \and \gamma \yields r' : \Two \and \gamma \yields r \leq r'
+}{
+\gamma \yields \uni^{r\to r'}_{i.P}(p) : P[r'/i] \\\\
+\uni^{0 \to 0}_{i.P}(p) \defeq p[0/i] \and 
+\uni^{0 \to 1}_{i.P}(p) \defeq \lift^{0 \to 1}_{i.P}(p[0/i]) \and 
+\uni^{1 \to 1}_{i.P}(p) \defeq p[1/i]
+}
+\end{mathpar}
+Then we get arrows
+\begin{align*}
+\Lambda j. \uni^{0 \to j}_{i.P}(p) &: \Arr_{i.P}(p[0/i], \lift^{0\to 1}_{i.P}(p[0/i])) \\
+\Lambda k. \uni^{k \to 1}_{i.P}(p) &: \Arr_{i.P[1/i]}(\lift^{0\to 1}_{i.P}(p[0/i]), p[1/i])
+\end{align*}
+
+But it looks like we can just define
+\begin{align*}
+\uni^{r\to r'}_{i.P}(p) :\defeq \lift^{r \to r'}_{i.P}(p[r/i])
+\end{align*}
+So the only thing missing is the uniqueness of this factorisation.
+
+Is there a way we could make a lift of a lift fuse into a single multi-lift?
+
+\subsection{Op?}
+Now we have to follow other systems and mark when variables are $\op$ped. Let us do this by $\opc{x}$. On variances, just flip the sign. On contexts, flip both the variance and the direction:
+\begin{align*}
+\opc{(\gamma, x :^v A)} &:\defeq \opc{\gamma}, \opc{x} :^{v^\op} A \\
+\opc{(\gamma, \opc{x} :^v A)} &:\defeq \opc{\gamma}, x :^{v^\op} A
+\end{align*}
+
+Context:
+\begin{mathpar}
+\inferrule*{\opc{\gamma} \yields A \type^{v^\op}}{\gamma, \opc{x} :^v A \ctx}
+\end{mathpar}
+
+Type former:
+\begin{mathpar}
+\inferrule*{\opc{\gamma} \yields A \type^{v^\op}}{\gamma \yields A^\op \type^v} \\
+\inferrule*{\opc{\gamma} \yields a : A}{\gamma \yields a^\op : A^\op} \and \inferrule*{\opc{\gamma} \yields a : A^\op}{\gamma \yields a^\unop : A}
+\end{mathpar}
+
+This takes a functor $A \to \Gamma^\op$ to a functor $A^\op \to \Gamma$, no matter what the functor is.
+
+But there is a different operation we could do: if $B \to \Gamma$ is a fibration, then we can instead calculate the  fiberwise opposite.  Is this the more important operation?
+
+\begin{mathpar}
+\inferrule*{\gamma \yields B \type^+}{\gamma \yields B^\fop \type^+} \\
+\end{mathpar}
+But I don't know how we would introduce a term of such a thing. It might involve some magic to do with $\Two$, like switching $0$s with $1$s or something.
+
+I think we can use this to describe a different version of arrows where transport should work the way `it is supposed to', backwards on $b_0$ and forwards on $b_1$.
+
+\begin{mathpar}
+\inferrule*{\gamma \yields B \type^+ \\\\ \gamma \yields b_0 : B^\fop \and \gamma \yields b_1 : B}{\gamma \yields \Tw_B(b_0, b_1) \type^+} \\
+\end{mathpar}
+
+\iffalse
+\section{Old Junk}
+
+\subsection{2-cells}
+I want to make these as admissible as possible:
+\begin{mathpar}
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A \yields N \type^- \and \gamma \yields n : N[a'/x]}{\gamma \yields \act{n}{s/x^-} : N[a/x]} \and
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A \yields P \type^+ \and \gamma \yields p : P[a/x]}{\gamma \yields \act{p}{s/x^+} : P[a'/x]} \\
+
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A \yields N \type^- \and \gamma, x :^v A \yields n : N}{\gamma \yields \ap{n}{s/x^-} : n[a/x] \Yields \act{n[a'/x]}{s/x^-} : N[a/x]} \and
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A \yields P \type^+ \and \gamma \yields p : P[a/x]}{\gamma \yields \ap{p}{s/x^+} : \act{p[a/x]}{s/x^+} \Yields p[a'/x] : P[a'/x]} 
+\end{mathpar}
+
+Or more generally: (just the negative ones)
+\begin{mathpar}
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A, \gamma'^{<} \yields N \type^- \and \gamma,\gamma'^{<}[a'/x] \yields n : N[a'/x]}{\gamma,\gamma'^{<}[a'/x] \yields \act{n}{s/x^-} : N[a/x]} \\
+\inferrule*[fraction={-{\,-\,}-}]{\gamma \yields s : a \Yields a' : A \\\\ \gamma, x :^v A \yields N, \gamma'^{<} \type^- \and \gamma, x :^v A,\gamma'^{<} \yields n : N}{\gamma,\gamma'^{<}[a'/x] \yields \ap{n}{s/x^-} : n[a/x] \Yields \act{n[a'/x]}{s/x^-} : N[a/x]} 
+\end{mathpar}
+where $\gamma'^{<}$ denotes a context where the variances are all either $-$ or $\pm$ (and so $N$ is a fibration over $A$)
+
+
+
+Internalising the 2-cell judgement:
+
+\begin{mathpar}
+\inferrule*{\gamma \yields A \type^v \and \gamma \yields a : A \and \gamma \yields a' : A}{\gamma \yields \Arr(a,a') \type^0} \\
+\inferrule*{\gamma \yields s : a \Yields a' : A}{\gamma \yields s : \Arr(a,a')} \and 
+\inferrule*{\gamma \yields s : \Arr(a,a')}{\gamma \yields s : a \Yields a' : A} \\
+\end{mathpar}
+
+\subsection{Mixed Variance}
+But not having a fibrant $\Arr$ is annoying. This is where things probably fall apart.
+
+We want to be able to form 
+\begin{mathpar}
+\inferrule*{\gamma \yields N \type^- \and \gamma \yields P \type^+}{\gamma \yields N \times P \type^{??}}
+\end{mathpar}
+and use a composition operator 
+\begin{mathpar}
+\inferrule*{
+\gamma, i :^\pm \Two \yields N \times P \type^{??} \\\\
+\gamma \yields t : N[1/i] \times P[0/i] \and
+\gamma \yields r : \Two
+}{\gamma \yields \comp^{r}_{N \times P}(t) : N[r/i] \times P[r/i] \and \comp^{?}_{N \times P}(t) \defeq ?}
+\end{mathpar}
+
+\subsection{Lifting}
+
+\begin{mathpar}
+\inferrule*{
+\gamma, x :^v A \yields B \type^+ \\\\
+\gamma, i :^\pm \Two \yields a : A \\\\
+\gamma \yields b_0 : B[a[0/i]/x] \and
+\gamma \yields r : \Two
+}{\gamma \yields \lift^{0 \to r}_{x.B}(i.a,b_0) : B[a[r/i]/x] \and \lift^{0 \to 0}_{x.B}(i.a,b_0) \defeq b_0}
+\end{mathpar}
+
+\begin{align*}
+\lift^{0 \to r}_{x.\sm{y:B} B'}(i.a,(b_0,b_0')) :\defeq (\lift^{0 \to r}_{x.B}(i.a,b_0), ?
+\end{align*}
+
+
+\subsection{Based Arrows}
+
+Could also try a diagram
+\begin{mathpar}
+\begin{tikzcd}
+\Arr(-,c_1) \ar[r] \ar[d,two heads] & C^2 \ar[d, "1",two heads] \\
+\Gamma \ar[r, "c_1" swap] & C
+\end{tikzcd}
+\end{mathpar}
+
+with rules
+
+\begin{mathpar}
+\inferrule*{\gamma \yields C \type^+ \and \gamma \yields c_1 : C}{\gamma \yields \Arr_C(-,c_1) \type^+} \\
+\inferrule*{\Gamma, i^\pm : \Two \yields c : C \and c[1/i] \defeq c_1}{\gamma \yields \Lambda i. c : \Arr_C(-,c_1)} \and
+\inferrule*{\gamma \yields f : \Arr_C(-,c_1) \and \gamma \yields j : \Two}{\gamma \yields f \mathbin{@} j : C \and f \mathbin{@} 1 \defeq c_1}
+\end{mathpar}
+\fi
+
+\end{document}
